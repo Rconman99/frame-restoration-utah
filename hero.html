@@ -1,0 +1,107 @@
+<!-- ═══════════════════════════════════════════════════════════════
+     HERO SECTION — Frame Restoration Utah
+     Edit this file, then paste back into index.html between:
+       <!-- ─── HERO ─── -->  and  <!-- ─── TRUST BAR ─── -->
+     ═══════════════════════════════════════════════════════════════ -->
+
+<!-- ─── HERO CSS ─── -->
+<style>
+  /* ─── HERO ─── */
+  .hero { min-height: 100vh; position: relative; display: flex; align-items: center; overflow: hidden; background: var(--navy); padding-top: 76px; }
+  .hero-img { position: absolute; inset: 0; }
+  .hero-img img { width: 100%; height: 100%; object-fit: cover; object-position: center 30%; opacity: 0.5; }
+  .hero-overlay { position: absolute; inset: 0; background: linear-gradient(135deg, rgba(12,53,71,0.78), rgba(12,53,71,0.50)); }
+  .hero-content { position: relative; z-index: 2; padding: 80px 5% 100px; width: 100%; max-width: 1100px; }
+  .hero-badge { display: inline-flex; align-items: center; gap: 8px; background: var(--gold); color: var(--navy); font-family: 'Archivo Black', sans-serif; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; padding: 7px 16px; margin-bottom: 14px; font-weight: 700; border-radius: 2px; }
+  .hero-brand { font-family: 'Archivo Black', sans-serif; font-size: 14px; letter-spacing: 3px; text-transform: uppercase; color: rgba(255,255,255,0.6); margin-bottom: 8px; display: block; }
+  .hero h1 { font-family: 'Archivo Black', sans-serif; font-size: clamp(40px, 6vw, 72px); font-weight: 700; color: var(--white); line-height: 1.04; text-transform: uppercase; margin-bottom: 18px; }
+  .hero h1 span { color: var(--gold); }
+  .hero p { font-size: 17px; color: rgba(255,255,255,0.85); line-height: 1.7; max-width: 540px; margin-bottom: 0; }
+  .hero-layout { display: grid; grid-template-columns: minmax(0,1.25fr) minmax(0,1fr); gap: 40px; margin-top: 28px; align-items: flex-start; }
+  .hero-left { display: flex; flex-direction: column; gap: 22px; padding-top: 4px; }
+  .hero-actions { display: flex; flex-wrap: wrap; gap: 14px; }
+  .btn-primary { background: var(--gold); color: var(--navy); padding: 16px 34px; font-family: 'Archivo Black', sans-serif; font-size: 15px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; text-decoration: none; border-radius: 2px; display: inline-flex; align-items: center; justify-content: center; transition: all 0.2s; border: 2px solid var(--gold); box-shadow: 0 8px 28px rgba(201,164,76,0.35); animation: pulse-cta 2.4s infinite; }
+  @keyframes pulse-cta { 0%,100%{transform:translateY(0) scale(1);} 50%{transform:translateY(-2px) scale(1.02);} }
+  .btn-primary:hover { background: var(--gold-light); transform: translateY(-2px); box-shadow: 0 10px 32px rgba(201,164,76,0.45); animation: none; }
+  .btn-secondary { background: transparent; color: var(--white); padding: 16px 34px; font-family: 'Archivo Black', sans-serif; font-size: 15px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; text-decoration: none; border-radius: 2px; border: 2px solid rgba(255,255,255,0.45); display: inline-flex; align-items: center; justify-content: center; transition: all 0.2s; }
+  .btn-secondary:hover { border-color: var(--white); background: rgba(255,255,255,0.1); }
+  .phone-cta { gap: 8px; }
+  .hero-points { list-style: none; padding: 0; margin: 0; font-size: 14px; color: rgba(255,255,255,0.9); line-height: 1.65; }
+  .hero-points li { padding-left: 22px; position: relative; }
+  .hero-points li::before { content: '\2713'; position: absolute; left: 0; color: var(--gold); font-weight: 700; font-size: 15px; }
+  .hero-points li + li { margin-top: 8px; }
+  .hero-form-card { background: rgba(250,249,245,0.99); border-radius: 6px; padding: 28px; border-top: 4px solid var(--gold); box-shadow: 0 16px 48px rgba(0,0,0,0.3), 0 0 0 1px rgba(255,255,255,0.05); }
+  .hero-form-card h2 { font-family: 'Archivo Black', sans-serif; font-size: 18px; text-transform: uppercase; color: var(--navy); margin-bottom: 6px; letter-spacing: 0.5px; }
+  .hero-form-card p { font-size: 13px; color: var(--gray); margin-bottom: 18px; line-height: 1.5; }
+  .hero-form .form-row { margin-bottom: 14px; }
+  .hero-form .form-row.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .hero-form input, .hero-form select { width: 100%; padding: 12px 14px; border-radius: 3px; border: 2px solid var(--light-gray); font-size: 15px; font-family: 'Archivo', sans-serif; color: var(--dark); background: var(--white); transition: border-color 0.2s; -webkit-appearance: none; }
+  .hero-form input:focus, .hero-form select:focus { border-color: var(--navy); outline: none; box-shadow: 0 0 0 3px rgba(12,53,71,0.1); }
+  .hero-form input::placeholder { color: #999; font-family: 'Archivo', sans-serif; }
+  .hero-submit { width: 100%; margin-top: 6px; cursor: pointer; min-height: 48px; padding: 14px 24px; font-size: 14px; letter-spacing: 1.2px; animation: none; box-shadow: 0 4px 16px rgba(201,164,76,0.3); border-radius: 3px; }
+  .hero-submit:hover { animation: none; transform: translateY(-1px); box-shadow: 0 6px 20px rgba(201,164,76,0.4); }
+  .form-note { font-size: 11px; color: #999; margin-top: 10px; line-height: 1.4; text-align: center; }
+  @media (max-width: 900px) {
+    .hero { min-height: auto; }
+    .hero-content { padding: 50px 5% 60px; }
+    .hero-layout { grid-template-columns: 1fr; gap: 28px; }
+    .hero-form-card { order: -1; }
+    .hero-actions { flex-direction: column; gap: 10px; }
+    .hero-actions .btn-primary, .hero-actions .btn-secondary { width: 100%; text-align: center; padding: 18px 24px; min-height: 54px; }
+    .nav-cta { width: 100% !important; text-align: center; justify-content: center; }
+  }
+</style>
+
+<!-- ─── HERO HTML ─── -->
+<section class="hero" id="home" aria-label="Utah roofing hero">
+  <div class="hero-img">
+    <img src="https://images.unsplash.com/photo-1635424710928-0544e8512eae?auto=format&fit=crop&w=1920&q=80"
+         alt="Close-up of residential shingle roof being repaired after storm damage in Utah"
+         fetchpriority="high" loading="eager" width="1920" height="1080">
+  </div>
+  <div class="hero-overlay" aria-hidden="true"></div>
+  <div class="hero-content">
+    <div class="hero-badge">&#9733;&#9733;&#9733;&#9733;&#9733; 5.0 Rating &bull; A+ BBB &bull; Serving 40+ Utah Cities</div>
+    <span class="hero-brand">Frame Restoration Utah</span>
+    <h1>Utah Roofing &amp;<br><span>Storm Damage Pros</span></h1>
+    <p>Free roof inspections across the Wasatch Front — Salt Lake City to Provo &amp; Heber. 5&#8209;year workmanship warranty, fully licensed &amp; insured.</p>
+    <div class="hero-layout">
+      <div class="hero-left">
+        <div class="hero-actions">
+          <a href="#heroForm" class="btn-primary" onclick="document.getElementById('heroForm').querySelector('input[name=name]').focus();return false;">Free Roof Inspection</a>
+          <a href="tel:+14353024422" class="btn-secondary phone-cta">Tap to Call 435&#8209;302&#8209;4422</a>
+        </div>
+        <ul class="hero-points" aria-label="Why Utah homeowners choose Frame Restoration">
+          <li>Local Utah crew — no out&#8209;of&#8209;state storm chasers.</li>
+          <li>We handle the insurance claim from photos to paperwork.</li>
+          <li>Emergency tarping available 24/7 after hail &amp; wind storms.</li>
+        </ul>
+      </div>
+      <div class="hero-form-card" aria-label="Request a free roof inspection">
+        <h2>Get Your Free Roof Inspection</h2>
+        <p>No pressure, no obligation. A specialist will call you within 15 minutes during business hours.</p>
+        <form id="heroForm" action="https://formspree.io/f/meeroaqa" method="POST" class="hero-form">
+          <div class="form-row"><input type="text" name="name" placeholder="Full Name" required autocomplete="name"></div>
+          <div class="form-row"><input type="tel" name="phone" placeholder="Mobile Phone" required autocomplete="tel"></div>
+          <div class="form-row"><input type="email" name="email" placeholder="Email Address" required autocomplete="email"></div>
+          <div class="form-row two-col">
+            <input type="text" name="city" placeholder="City (e.g. Sandy)" required>
+            <input type="text" name="zip" placeholder="ZIP Code" required autocomplete="postal-code" inputmode="numeric" pattern="[0-9]{5}" maxlength="5">
+          </div>
+          <div class="form-row">
+            <select name="issue" required>
+              <option value="">What's going on?</option>
+              <option value="hail">Hail / storm damage</option>
+              <option value="leak">Active roof leak</option>
+              <option value="old_roof">Old roof / replacement quote</option>
+              <option value="insurance">Insurance claim help</option>
+              <option value="other">Something else</option>
+            </select>
+          </div>
+          <button type="submit" class="btn-primary hero-submit">Get My Free Roof Inspection</button>
+          <p class="form-note">By submitting, you agree to a quick call or text from our team. No spam.</p>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>

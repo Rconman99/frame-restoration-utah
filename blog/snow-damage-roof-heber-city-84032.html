@@ -22,7 +22,7 @@
   <meta property="og:site_name" content="Frame Restoration Utah" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="robots" content="index, follow" />
-  <meta name="theme-color" content="#0B4060" />
+  <meta name="theme-color" content="#0C3547" />
   <link rel="icon" href="/favicon.ico" sizes="32x32" />
 
   <!-- BlogPosting + FAQPage Schema -->
@@ -95,50 +95,14 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Archivo:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/global.css">
   <style>
-    :root {
-      --navy: #0B4060;
-      --navy-mid: #083248;
-      --gold: #E1B969;
-      --gold-light: #E8C97A;
-      --white: #FFFFFF;
-      --off-white: #FAF9F5;
-      --gray: #4A5464;
-      --light-gray: #E5E3DF;
-      --dark: #262626;
-    }
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html { scroll-behavior: smooth; }
-    body { font-family: 'Archivo', sans-serif; background: var(--white); color: var(--dark); overflow-x: hidden; }
-    nav {
-      position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
-      background: rgba(13,27,62,0.97); backdrop-filter: blur(10px);
-      border-bottom: 2px solid var(--gold);
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 0 5%; height: 70px;
-    }
-    .nav-logo img { height: 44px; width: auto; }
-    .nav-links { display: flex; gap: 24px; list-style: none; align-items: center; }
-    .nav-links a { color: var(--white); text-decoration: none; font-family: 'Archivo Black', sans-serif; font-size: 14px; letter-spacing: 1px; text-transform: uppercase; transition: color 0.2s; }
-    .nav-links a:hover { color: var(--gold); }
-    .nav-cta { background: var(--gold) !important; color: var(--navy) !important; padding: 10px 18px !important; font-weight: 700 !important; border-radius: 2px; }
-    .nav-phone { color: var(--gold) !important; font-weight: 600 !important; }
-    .mobile-btn { display: none; background: none; border: none; cursor: pointer; flex-direction: column; gap: 5px; padding: 4px; }
-    .mobile-btn span { display: block; width: 25px; height: 2px; background: var(--white); transition: all 0.3s; }
-    section { padding: 90px 5%; }
-    .btn-primary { background: var(--gold); color: var(--navy); padding: 16px 32px; font-family: 'Archivo Black', sans-serif; font-size: 16px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; text-decoration: none; border-radius: 2px; display: inline-block; transition: all 0.2s; border: 2px solid var(--gold); }
-    .btn-primary:hover { background: var(--gold-light); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(245,197,24,0.35); }
-
     .blog-hero { min-height: 40vh; position: relative; display: flex; align-items: center; background: var(--navy); padding-top: 70px; }
-    .blog-hero-overlay { position: absolute; inset: 0; background: linear-gradient(135deg, rgba(13,27,62,0.96) 40%, rgba(13,27,62,0.8)); }
+    .blog-hero-overlay { position: absolute; inset: 0; background: linear-gradient(135deg, rgba(12,53,71,0.96) 40%, rgba(12,53,71,0.8)); }
     .blog-hero-content { position: relative; z-index: 2; padding: 80px 5% 60px; max-width: 800px; }
     .blog-hero h1 { font-family: 'Archivo Black', sans-serif; font-size: clamp(30px, 4.5vw, 52px); color: var(--white); line-height: 1.1; text-transform: uppercase; margin-bottom: 16px; }
     .blog-hero h1 span { color: var(--gold); }
     .blog-hero .blog-meta { font-size: 14px; color: rgba(255,255,255,0.55); margin-bottom: 12px; }
-    .breadcrumb { font-size: 14px; color: rgba(255,255,255,0.5); margin-bottom: 20px; }
-    .breadcrumb a { color: var(--gold); text-decoration: none; }
-    .breadcrumb a:hover { text-decoration: underline; }
-
     .blog-body { max-width: 780px; margin: 0 auto; padding: 60px 5% 40px; }
     .blog-body h2 { font-family: 'Archivo Black', sans-serif; font-size: 24px; color: var(--navy); text-transform: uppercase; margin: 48px 0 16px; line-height: 1.2; }
     .blog-body h3 { font-family: 'Archivo Black', sans-serif; font-size: 19px; color: var(--navy); margin: 32px 0 12px; }
@@ -146,46 +110,28 @@
     .blog-body ul, .blog-body ol { margin: 16px 0 24px 28px; }
     .blog-body li { font-size: 16px; color: var(--gray); line-height: 1.85; margin-bottom: 8px; }
     .blog-body strong { color: var(--dark); }
-
     .answer-block { background: var(--off-white); border-left: 4px solid var(--gold); padding: 28px 28px 20px; margin: 36px 0; }
     .answer-block h3 { font-family: 'Archivo Black', sans-serif; font-size: 17px; color: var(--navy); margin: 0 0 12px; text-transform: none; }
     .answer-block p { font-size: 15px; color: var(--gray); line-height: 1.8; margin-bottom: 0; }
-
-    .editor-note { background: #FFF8E1; border: 1px dashed #E1B969; padding: 14px 18px; margin: 24px 0; font-size: 13px; color: #7A6A3A; border-radius: 4px; }
+    .editor-note { background: #FFF8E1; border: 1px dashed #C9A44C; padding: 14px 18px; margin: 24px 0; font-size: 13px; color: #7A6A3A; border-radius: 4px; }
     .editor-note::before { content: "✏️ EDITOR CHECK: "; font-weight: 700; }
-
     .blog-cta { background: var(--gold); padding: 60px 5%; text-align: center; }
     .blog-cta h2 { font-family: 'Archivo Black', sans-serif; font-size: clamp(26px, 3.5vw, 42px); color: var(--navy); text-transform: uppercase; margin-bottom: 14px; }
-    .blog-cta p { font-size: 18px; color: rgba(13,27,62,0.7); margin-bottom: 28px; }
-    .btn-navy { background: var(--navy); color: var(--white); padding: 16px 32px; font-family: 'Archivo Black', sans-serif; font-size: 16px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; text-decoration: none; border-radius: 2px; display: inline-block; transition: all 0.2s; margin: 0 8px 12px; }
-    .btn-navy:hover { background: var(--navy-mid); transform: translateY(-2px); }
-
+    .blog-cta p { font-size: 18px; color: rgba(12,53,71,0.7); margin-bottom: 28px; }
     .related-section { background: var(--navy); padding: 60px 5%; }
     .related-section h2 { font-family: 'Archivo Black', sans-serif; font-size: 24px; color: var(--white); text-transform: uppercase; margin-bottom: 24px; text-align: center; }
     .related-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; max-width: 800px; margin: 0 auto; }
     .related-chip { background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.8); padding: 12px 24px; font-size: 14px; text-decoration: none; transition: all 0.2s; border: 1px solid rgba(255,255,255,0.1); }
-    .related-chip:hover { background: rgba(245,197,24,0.15); color: var(--white); border-color: var(--gold); }
-
-    footer { background: var(--dark); color: rgba(255,255,255,0.6); padding: 40px 5% 24px; text-align: center; }
-    footer p { font-size: 13px; margin-bottom: 8px; }
-    footer a { color: var(--gold); text-decoration: none; }
-
-    .sticky-call { display: none; position: fixed; bottom: 0; left: 0; right: 0; z-index: 999; background: var(--navy); border-top: 2px solid var(--gold); }
-    .sticky-call a { display: flex; align-items: center; justify-content: center; gap: 10px; padding: 15px; color: var(--gold); font-family: 'Archivo Black', sans-serif; font-size: 17px; font-weight: 700; letter-spacing: 1px; text-decoration: none; text-transform: uppercase; }
-    @media (max-width: 900px) {
-      .nav-links { display: none; }
-      .mobile-btn { display: flex; }
-      .sticky-call { display: block; }
-      body { padding-bottom: 58px; }
-    }
+    .related-chip:hover { background: rgba(201,164,76,0.15); color: var(--white); border-color: var(--gold); }
   </style>
+  <script src="/global-modal.js" defer></script>
 </head>
 <body>
 
 <!-- ==================== NAV ==================== -->
 <nav>
   <a href="/" class="nav-logo" aria-label="Frame Restoration Utah - Home">
-    <img src="https://images.squarespace-cdn.com/content/v1/687963cae8d2172f80997211/1752785888411-W1TXIHYZURJ5AJVGR4MA/Large_Transparent__FR+R%26C+Logo-darkblue.png" alt="Frame Restoration Utah" width="160" height="44" />
+    <img src="/logo.png" alt="Frame Restoration Roofing &amp; Construction - Utah" width="180" height="50" />
   </a>
   <ul class="nav-links" id="navLinks">
     <li><a href="/pages/residential-roofing">Residential</a></li>
@@ -195,7 +141,7 @@
     <li><a href="tel:+14353024422" class="nav-phone">435-302-4422</a></li>
     <li><a href="https://calendar.app.google/cR4bBSWfb9TQ28UF8" target="_blank" class="nav-cta">Free Inspection</a></li>
   </ul>
-  <button class="mobile-btn" aria-label="Menu" onclick="document.getElementById('navLinks').classList.toggle('show')">
+  <button class="mobile-btn" aria-label="Menu" onclick="document.getElementById('navLinks').classList.toggle('open')">
     <span></span><span></span><span></span>
   </button>
 </nav>
