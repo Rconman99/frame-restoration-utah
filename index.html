@@ -42,7 +42,7 @@
   <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
 
   <!-- Theme color (browser chrome) -->
-  <meta name="theme-color" content="#0A223E" />
+  <meta name="theme-color" content="#0B4060" />
 
   <!-- Favicon & Icons -->
   <link rel="icon" href="/favicon.ico" sizes="32x32" />
@@ -278,7 +278,7 @@
     .hero { min-height: 100vh; min-height: 100dvh; position: relative; display: flex; align-items: center; overflow: hidden; background: var(--navy); padding-top: calc(76px + env(safe-area-inset-top, 0px)); }
     .hero-img { position: absolute; inset: 0; }
     .hero-img img { width: 100%; height: 100%; object-fit: cover; object-position: center 30%; opacity: 0.5; }
-    .hero-overlay { position: absolute; inset: 0; background: linear-gradient(135deg, rgba(10,34,62,0.78), rgba(10,34,62,0.50)); }
+    .hero-overlay { position: absolute; inset: 0; background: linear-gradient(135deg, rgba(11,64,96,0.78), rgba(11,64,96,0.50)); }
     .hero-content { position: relative; z-index: 2; padding: 80px 5% 100px; width: 100%; max-width: 1100px; }
     .hero-badge { display: inline-flex; align-items: center; gap: 8px; background: var(--gold); color: var(--navy); font-family: 'Archivo Black', sans-serif; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; padding: 7px 16px; margin-bottom: 20px; font-weight: 700; border-radius: 2px; }
     .hero-brand { font-family: 'Archivo Black', sans-serif; font-size: 14px; letter-spacing: 3px; text-transform: uppercase; color: rgba(255,255,255,0.6); margin-bottom: 8px; display: block; }
@@ -304,7 +304,7 @@
     .hero-form .form-row { margin-bottom: 14px; }
     .hero-form .form-row.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
     .hero-form input, .hero-form select { width: 100%; padding: 12px 14px; border-radius: 3px; border: 2px solid var(--light-gray); font-size: 15px; font-family: 'Archivo', sans-serif; color: var(--dark); background: var(--white); transition: border-color 0.2s; -webkit-appearance: none; }
-    .hero-form input:focus, .hero-form select:focus { border-color: var(--navy); outline: none; box-shadow: 0 0 0 3px rgba(10,34,62,0.1); }
+    .hero-form input:focus, .hero-form select:focus { border-color: var(--navy); outline: none; box-shadow: 0 0 0 3px rgba(11,64,96,0.1); }
     .hero-form input::placeholder { color: #999; font-family: 'Archivo', sans-serif; }
     .hero-submit { width: 100%; margin-top: 6px; cursor: pointer; min-height: 48px; padding: 14px 24px; font-size: 14px; letter-spacing: 1.2px; animation: none; box-shadow: 0 4px 16px rgba(225,185,105,0.3); border-radius: 3px; }
     .hero-submit:hover { animation: none; transform: translateY(-1px); box-shadow: 0 6px 20px rgba(225,185,105,0.4); }
@@ -359,13 +359,13 @@
     .service-card { background: var(--white); padding: 48px 36px; position: relative; overflow: hidden; transition: all 0.3s; }
     .service-card::after { content: ''; position: absolute; bottom: 0; left: 0; width: 0; height: 3px; background: var(--gold); transition: width 0.4s ease; }
     .service-card:hover::after { width: 100%; }
-    .service-card:hover { transform: translateY(-4px); box-shadow: 0 16px 48px rgba(10,34,62,0.10); }
+    .service-card:hover { transform: translateY(-4px); box-shadow: 0 16px 48px rgba(11,64,96,0.10); }
     .service-icon { width: 60px; height: 60px; background: var(--navy); display: flex; align-items: center; justify-content: center; margin-bottom: 24px; border-radius: 2px; transition: transform 0.3s; }
     .service-icon svg { width: 28px; height: 28px; }
     .service-card h3 { font-family: 'Archivo Black', sans-serif; font-size: 22px; font-weight: 600; color: var(--navy); text-transform: uppercase; margin-bottom: 12px; }
     .service-card p { font-size: 15px; color: var(--gray); line-height: 1.7; }
     .service-card-link { display: block; text-decoration: none; color: inherit; }
-    .service-card-link:hover .service-card { transform: translateY(-8px); box-shadow: 0 20px 50px rgba(10,34,62,0.25); }
+    .service-card-link:hover .service-card { transform: translateY(-8px); box-shadow: 0 20px 50px rgba(11,64,96,0.25); }
     .service-card-link:hover .service-icon { transform: scale(1.1); }
     .service-card-link:hover .service-card::after { width: 100%; }
 
@@ -378,7 +378,7 @@
     .gallery-item:first-child { grid-column: 1/2; grid-row: 1/3; }
     .gallery-item img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; display: block; }
     .gallery-item:hover img { transform: scale(1.05); }
-    .gallery-item::after { content: ''; position: absolute; inset: 0; background: linear-gradient(to top, rgba(10,34,62,0.5), transparent); opacity: 0; transition: opacity 0.3s; }
+    .gallery-item::after { content: ''; position: absolute; inset: 0; background: linear-gradient(to top, rgba(11,64,96,0.5), transparent); opacity: 0; transition: opacity 0.3s; }
     .gallery-item:hover::after { opacity: 1; }
 
     /* ─── WHY ─── */
@@ -428,11 +428,11 @@
     /* ─── CTA BANNER ─── */
     #cta { background: var(--gold); padding: 80px 5%; text-align: center; }
     #cta h2 { font-family: 'Archivo Black', sans-serif; font-size: clamp(32px,5vw,60px); font-weight: 700; color: var(--navy); text-transform: uppercase; margin-bottom: 16px; }
-    #cta p { font-size: 18px; color: rgba(10,34,62,0.7); margin-bottom: 36px; }
+    #cta p { font-size: 18px; color: rgba(11,64,96,0.7); margin-bottom: 36px; }
     .btn-navy { background: var(--navy); color: var(--white); padding: 18px 40px; font-family: 'Archivo Black', sans-serif; font-size: 17px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; text-decoration: none; border-radius: 2px; display: inline-block; transition: all 0.2s; margin: 0 8px 12px; }
-    .btn-navy:hover { background: var(--navy-mid); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(10,34,62,0.3); }
+    .btn-navy:hover { background: var(--navy-mid); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(11,64,96,0.3); }
     .btn-outline-navy { background: transparent; color: var(--navy); padding: 18px 40px; font-family: 'Archivo Black', sans-serif; font-size: 17px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; text-decoration: none; border-radius: 2px; border: 2px solid var(--navy); display: inline-block; transition: all 0.2s; margin: 0 8px 12px; }
-    .btn-outline-navy:hover { background: rgba(10,34,62,0.08); }
+    .btn-outline-navy:hover { background: rgba(11,64,96,0.08); }
 
     /* ─── FAQ ─── */
     #faq { background: var(--off-white); }
@@ -931,7 +931,7 @@
         <div class="form-group"><label for="city">City / ZIP Code</label><input type="text" id="city" name="city" placeholder="e.g. West Jordan, UT 84084" required /></div>
         <div class="form-group"><label for="message">Additional Details (optional)</label><textarea id="message" name="message" placeholder="Tell us about your project..."></textarea></div>
         <div style="display:flex;align-items:center;gap:10px;margin:12px 0 4px;font-size:13px;color:var(--gray);">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0A223E" stroke-width="2.5" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0B4060" stroke-width="2.5" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
           <span>Your info is private. We never sell your data.</span>
         </div>
         <button type="submit" class="form-submit" id="submitBtn">Submit — Get My Free Inspection</button>
