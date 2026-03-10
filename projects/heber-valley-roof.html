@@ -53,6 +53,10 @@
   <style>
     /* ─── PROJECT PAGE STYLES ─── */
 
+    /* Hero image boost for project page */
+    .page-hero-img img { opacity: 0.35 !important; }
+    .page-hero-overlay { background: linear-gradient(135deg, rgba(11,64,96,0.88) 30%, rgba(11,64,96,0.65)) !important; }
+
     /* Project Details Grid */
     .project-details {
       display: grid;
@@ -84,7 +88,7 @@
     .gallery-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 16px;
+      gap: 12px;
       max-width: 1100px;
       margin: 0 auto;
     }
@@ -95,9 +99,9 @@
       border-radius: 4px;
       aspect-ratio: 16/9;
     }
-    .gallery-item.portrait {
-      grid-row: span 2;
-      aspect-ratio: auto;
+    .gallery-item.tall {
+      grid-row: span 1;
+      aspect-ratio: 4/3;
     }
     .gallery-item img {
       width: 100%;
@@ -240,7 +244,7 @@
       .gallery-grid {
         grid-template-columns: 1fr 1fr;
       }
-      .gallery-item.portrait { grid-row: span 1; aspect-ratio: 16/9; }
+      .gallery-item.tall { grid-row: span 1; aspect-ratio: 16/9; }
       .map-container { grid-template-columns: 1fr; }
       #projectMap { height: 350px; }
     }
@@ -330,8 +334,8 @@
       <img src="/images/projects/heber-valley-crew-wide.jpg" alt="Full Frame Restoration crew with trucks at Heber Valley job site" loading="lazy" width="1600" height="736" />
       <div class="gallery-caption">Full crew on site — 6-man team</div>
     </div>
-    <div class="gallery-item portrait" onclick="openLightbox(2)">
-      <img src="/images/projects/heber-valley-roof-aerial.jpg" alt="Aerial drone shot of finished green roof from above" loading="lazy" width="1320" height="2868" />
+    <div class="gallery-item" onclick="openLightbox(2)">
+      <img src="/images/projects/heber-valley-roof-aerial.jpg" alt="Aerial drone shot of finished green roof from above" loading="lazy" width="1320" height="768" />
       <div class="gallery-caption">Finished roof — aerial drone view</div>
     </div>
     <div class="gallery-item" onclick="openLightbox(3)">
@@ -342,8 +346,8 @@
       <img src="/images/projects/heber-valley-ranch-drone.jpg" alt="Drone shot of ranch property with mountains in background" loading="lazy" width="1600" height="736" />
       <div class="gallery-caption">Ranch property — drone overview</div>
     </div>
-    <div class="gallery-item portrait" onclick="openLightbox(5)">
-      <img src="/images/projects/heber-valley-crew-rooftop.jpg" alt="Crew working on roof tear-off waving at drone camera" loading="lazy" width="1320" height="2868" />
+    <div class="gallery-item" onclick="openLightbox(5)">
+      <img src="/images/projects/heber-valley-crew-rooftop.jpg" alt="Crew working on roof tear-off waving at drone camera" loading="lazy" width="1320" height="768" />
       <div class="gallery-caption">Tear-off in progress — crew on roof</div>
     </div>
   </div>
