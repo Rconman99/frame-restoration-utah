@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+
+  <title>Heber Valley Roof Replacement | Frame Restoration Utah Projects</title>
+  <meta name="description" content="Complete roof replacement on a luxury ranch property in Heber Valley, Utah. See drone footage, crew photos, and project details from Frame Restoration Utah." />
+
+  <meta name="geo.region" content="US-UT" />
+  <meta name="geo.placename" content="Heber Valley, Utah" />
+  <meta name="geo.position" content="40.4880;-111.4070" />
+  <meta name="ICBM" content="40.4880, -111.4070" />
+
+  <link rel="canonical" href="https://www.framerestorationutah.com/projects/heber-valley-roof" />
+
+  <meta property="og:title" content="Heber Valley Roof Replacement | Frame Restoration Utah" />
+  <meta property="og:description" content="Luxury ranch roof replacement in Heber Valley with drone footage and crew photos." />
+  <meta property="og:type" content="article" />
+  <meta property="og:image" content="/images/projects/heber-valley-ranch-drone.jpg" />
+
+  <link rel="icon" href="/favicon.ico" sizes="any" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Archivo:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/global.css" />
+
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
+
+  <!-- JSON-LD Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "Heber Valley Ranch Roof Replacement",
+    "description": "Complete tear-off and roof replacement on a luxury ranch property in Heber Valley, Utah.",
+    "image": "/images/projects/heber-valley-ranch-drone.jpg",
+    "author": {
+      "@type": "Organization",
+      "name": "Frame Restoration Utah",
+      "url": "https://www.framerestorationutah.com"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "Frame Restoration Utah"
+    }
+  }
+  </script>
+
+  <style>
+    /* ─── PROJECT PAGE STYLES ─── */
+
+    /* Project Details Grid */
+    .project-details {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 24px;
+      margin: 48px 0;
+      padding: 32px;
+      background: var(--off-white);
+      border-top: 3px solid var(--gold);
+    }
+    .detail-item { text-align: center; }
+    .detail-label {
+      font-family: 'Archivo Black', sans-serif;
+      font-size: 11px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 6px;
+    }
+    .detail-value {
+      font-family: 'Archivo Black', sans-serif;
+      font-size: 22px;
+      color: var(--navy);
+      text-transform: uppercase;
+    }
+
+    /* Photo Gallery */
+    .gallery-section { background: var(--off-white); padding: 80px 5%; }
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    .gallery-item {
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+      border-radius: 4px;
+      aspect-ratio: 16/9;
+    }
+    .gallery-item.portrait {
+      grid-row: span 2;
+      aspect-ratio: auto;
+    }
+    .gallery-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.4s ease;
+    }
+    .gallery-item:hover img { transform: scale(1.05); }
+    .gallery-item .gallery-caption {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 16px;
+      background: linear-gradient(transparent, rgba(11,64,96,0.85));
+      color: var(--white);
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      transform: translateY(100%);
+      transition: transform 0.3s ease;
+    }
+    .gallery-item:hover .gallery-caption { transform: translateY(0); }
+
+    /* Video Section */
+    .video-section { background: var(--navy); padding: 80px 5%; }
+    .video-wrapper {
+      max-width: 900px;
+      margin: 0 auto;
+      border-radius: 6px;
+      overflow: hidden;
+      box-shadow: 0 16px 48px rgba(0,0,0,0.4);
+      border: 3px solid rgba(225,185,105,0.3);
+    }
+    .video-wrapper video {
+      width: 100%;
+      display: block;
+    }
+
+    /* Map Section */
+    .map-section { padding: 80px 5%; }
+    .map-container {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 380px;
+      gap: 32px;
+      align-items: start;
+    }
+    #projectMap {
+      width: 100%;
+      height: 450px;
+      border-radius: 6px;
+      border: 2px solid var(--light-gray);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+      z-index: 1;
+    }
+    .map-info {
+      background: var(--off-white);
+      padding: 32px;
+      border-top: 3px solid var(--gold);
+    }
+    .map-info h3 {
+      font-family: 'Archivo Black', sans-serif;
+      font-size: 20px;
+      color: var(--navy);
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+    .map-info p {
+      font-size: 15px;
+      color: var(--gray);
+      line-height: 1.7;
+      margin-bottom: 12px;
+    }
+    .map-info .map-tag {
+      display: inline-block;
+      background: var(--navy);
+      color: var(--white);
+      padding: 6px 14px;
+      font-size: 11px;
+      font-family: 'Archivo Black', sans-serif;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin: 4px 4px 4px 0;
+      border-radius: 2px;
+    }
+
+    /* Lightbox */
+    .lightbox {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      background: rgba(0,0,0,0.92);
+      align-items: center;
+      justify-content: center;
+      padding: 40px;
+      cursor: pointer;
+    }
+    .lightbox.active { display: flex; }
+    .lightbox img {
+      max-width: 90vw;
+      max-height: 85vh;
+      object-fit: contain;
+      border-radius: 4px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+    }
+    .lightbox-close {
+      position: absolute;
+      top: 20px;
+      right: 24px;
+      color: var(--white);
+      font-size: 32px;
+      cursor: pointer;
+      background: none;
+      border: none;
+      font-family: 'Archivo Black', sans-serif;
+      z-index: 10000;
+    }
+    .lightbox-nav {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--white);
+      font-size: 36px;
+      cursor: pointer;
+      background: rgba(255,255,255,0.1);
+      border: none;
+      padding: 16px 20px;
+      transition: background 0.2s;
+      font-family: 'Archivo Black', sans-serif;
+    }
+    .lightbox-nav:hover { background: rgba(255,255,255,0.2); }
+    .lightbox-prev { left: 16px; }
+    .lightbox-next { right: 16px; }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      .gallery-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+      .gallery-item.portrait { grid-row: span 1; aspect-ratio: 16/9; }
+      .map-container { grid-template-columns: 1fr; }
+      #projectMap { height: 350px; }
+    }
+    @media (max-width: 600px) {
+      .gallery-grid { grid-template-columns: 1fr; }
+      .project-details { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ─── NAV ─── -->
+<nav>
+  <a href="/" class="nav-logo" aria-label="Frame Restoration Utah - Home">
+    <img loading="lazy" src="/logo.png" alt="Frame Restoration Roofing & Construction - Utah" width="210" height="60" />
+  </a>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="/#services">Services</a></li>
+    <li><a href="/blog">Blog</a></li>
+    <li><a href="/#gallery">Our Work</a></li>
+    <li><a href="/#areas">Service Areas</a></li>
+    <li><a href="/#faq">FAQ</a></li>
+    <li><a href="/#contact">Contact</a></li>
+    <li><a href="tel:+14353024422" class="nav-phone">435-302-4422</a></li>
+    <li><a href="/#heroForm" class="nav-cta">Free Inspection</a></li>
+  </ul>
+  <button class="mobile-btn" id="menuBtn" aria-label="Toggle navigation" aria-expanded="false" aria-controls="navLinks">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- ─── HERO ─── -->
+<section class="page-hero">
+  <div class="page-hero-img">
+    <img src="/images/projects/heber-valley-ranch-drone.jpg" alt="Drone shot of completed ranch roof in Heber Valley Utah" width="1600" height="736" />
+  </div>
+  <div class="page-hero-overlay"></div>
+  <div class="page-hero-content">
+    <div class="breadcrumb">
+      <a href="/">Home</a> &rsaquo; <a href="/#gallery">Projects</a> &rsaquo; Heber Valley
+    </div>
+    <h1>HEBER VALLEY<br><span>RANCH ROOF REPLACEMENT</span></h1>
+    <p>Complete tear-off and re-roof on a luxury ranch property in Utah's stunning Heber Valley. Our crew delivered a brand-new, long-lasting roof backed by expert craftsmanship and mountain-country durability.</p>
+    <div class="hero-actions">
+      <a href="/#heroForm" class="btn-primary">Get Your Free Inspection</a>
+      <a href="#gallery" class="btn-secondary">View Photos ↓</a>
+    </div>
+  </div>
+</section>
+
+<!-- ─── PROJECT DETAILS ─── -->
+<section style="padding: 0 5%;">
+  <div class="project-details" style="max-width: 1100px; margin: -40px auto 0;">
+    <div class="detail-item">
+      <div class="detail-label">Location</div>
+      <div class="detail-value">Heber Valley</div>
+    </div>
+    <div class="detail-item">
+      <div class="detail-label">Project Type</div>
+      <div class="detail-value">Full Re-Roof</div>
+    </div>
+    <div class="detail-item">
+      <div class="detail-label">Property</div>
+      <div class="detail-value">Ranch Estate</div>
+    </div>
+    <div class="detail-item">
+      <div class="detail-label">Status</div>
+      <div class="detail-value" style="color: #2ecc71;">✓ Complete</div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── PHOTO GALLERY ─── -->
+<section class="gallery-section" id="gallery">
+  <div style="text-align: center; margin-bottom: 48px;">
+    <span class="section-label">Project Gallery</span>
+    <h2 class="section-title" style="margin: 0 auto;">FROM TEAR-OFF<br>TO FINISHED ROOF</h2>
+    <p class="section-sub" style="margin: 16px auto 0;">Drone and ground-level documentation of the entire Heber Valley ranch roof replacement — from crew mobilization to the final aerial inspection.</p>
+  </div>
+
+  <div class="gallery-grid">
+    <div class="gallery-item" onclick="openLightbox(0)">
+      <img src="/images/projects/heber-valley-roof-front.jpg" alt="Completed green roof on stone and wood ranch home in Heber Valley" loading="lazy" width="1600" height="736" />
+      <div class="gallery-caption">Completed roof — front elevation</div>
+    </div>
+    <div class="gallery-item" onclick="openLightbox(1)">
+      <img src="/images/projects/heber-valley-crew-wide.jpg" alt="Full Frame Restoration crew with trucks at Heber Valley job site" loading="lazy" width="1600" height="736" />
+      <div class="gallery-caption">Full crew on site — 6-man team</div>
+    </div>
+    <div class="gallery-item portrait" onclick="openLightbox(2)">
+      <img src="/images/projects/heber-valley-roof-aerial.jpg" alt="Aerial drone shot of finished green roof from above" loading="lazy" width="1320" height="2868" />
+      <div class="gallery-caption">Finished roof — aerial drone view</div>
+    </div>
+    <div class="gallery-item" onclick="openLightbox(3)">
+      <img src="/images/projects/heber-valley-crew-trucks.jpg" alt="Crew members standing by Ford trucks at Heber Valley project" loading="lazy" width="1600" height="736" />
+      <div class="gallery-caption">Crew lineup with fleet trucks</div>
+    </div>
+    <div class="gallery-item" onclick="openLightbox(4)">
+      <img src="/images/projects/heber-valley-ranch-drone.jpg" alt="Drone shot of ranch property with mountains in background" loading="lazy" width="1600" height="736" />
+      <div class="gallery-caption">Ranch property — drone overview</div>
+    </div>
+    <div class="gallery-item portrait" onclick="openLightbox(5)">
+      <img src="/images/projects/heber-valley-crew-rooftop.jpg" alt="Crew working on roof tear-off waving at drone camera" loading="lazy" width="1320" height="2868" />
+      <div class="gallery-caption">Tear-off in progress — crew on roof</div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── LIGHTBOX ─── -->
+<div class="lightbox" id="lightbox" onclick="closeLightbox(event)">
+  <button class="lightbox-close" aria-label="Close">&times;</button>
+  <button class="lightbox-nav lightbox-prev" onclick="event.stopPropagation(); navigateLightbox(-1)" aria-label="Previous">&#8249;</button>
+  <img id="lightboxImg" src="" alt="" />
+  <button class="lightbox-nav lightbox-next" onclick="event.stopPropagation(); navigateLightbox(1)" aria-label="Next">&#8250;</button>
+</div>
+
+<!-- ─── DRONE VIDEO ─── -->
+<section class="video-section" id="video">
+  <div style="text-align: center; margin-bottom: 40px;">
+    <span class="section-label" style="color: var(--gold);">Drone Footage</span>
+    <h2 class="section-title" style="color: var(--white); margin: 0 auto;">AERIAL SITE OVERVIEW</h2>
+    <p class="section-sub" style="color: rgba(255,255,255,0.7); margin: 16px auto 0;">Drone flyover of the Heber Valley ranch property capturing the roof scope, mountain setting, and surrounding landscape.</p>
+  </div>
+  <div class="video-wrapper">
+    <video controls preload="metadata" poster="/images/projects/heber-valley-ranch-drone.jpg">
+      <source src="/assets/drone-footage.mp4" type="video/mp4" />
+      Your browser does not support video playback.
+    </video>
+  </div>
+</section>
+
+<!-- ─── MAP SECTION ─── -->
+<section class="map-section" id="map">
+  <div style="text-align: center; margin-bottom: 48px;">
+    <span class="section-label">Project Location</span>
+    <h2 class="section-title" style="margin: 0 auto;">HEBER VALLEY, UTAH</h2>
+  </div>
+  <div class="map-container">
+    <div id="projectMap"></div>
+    <div class="map-info">
+      <h3>Project Area</h3>
+      <p>This ranch roof replacement was completed in the Heber Valley area of Wasatch County, Utah — surrounded by the Wasatch Mountains and just minutes from Deer Creek Reservoir.</p>
+      <p>Frame Restoration serves all of Heber Valley including Heber City, Midway, Daniel, Charleston, and surrounding communities.</p>
+      <div style="margin-top: 20px;">
+        <span class="map-tag">Heber City</span>
+        <span class="map-tag">Midway</span>
+        <span class="map-tag">Wasatch County</span>
+        <span class="map-tag">Ranch Property</span>
+      </div>
+      <a href="/#heroForm" class="btn-primary" style="margin-top: 24px; width: 100%; text-align: center;">Get A Free Quote</a>
+    </div>
+  </div>
+</section>
+
+<!-- ─── CTA BANNER ─── -->
+<section class="page-cta">
+  <h2>NEED A ROOF IN HEBER VALLEY?</h2>
+  <p>Free inspections for Heber City, Midway, Park City, and all of Wasatch County.</p>
+  <a href="/#heroForm" class="btn-navy">Schedule Free Inspection</a>
+  <a href="tel:+14353024422" class="btn-navy">Call 435-302-4422</a>
+</section>
+
+<!-- ─── FOOTER ─── -->
+<footer>
+  <p>&copy; 2026 Frame Restoration Utah. All rights reserved. | Licensed &amp; Insured in Utah</p>
+  <p><a href="/">Home</a> &nbsp;|&nbsp; <a href="/blog">Blog</a> &nbsp;|&nbsp; <a href="/#contact">Contact</a> &nbsp;|&nbsp; <a href="tel:+14353024422">435-302-4422</a></p>
+</footer>
+
+<!-- ─── STICKY MOBILE CALL BAR ─── -->
+<div class="sticky-call" role="complementary" aria-label="Call us">
+  <a href="tel:+14353024422">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 10.8 19.79 19.79 0 01.03 2.18 2 2 0 012 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 14.92z"/></svg>
+    CALL 435-302-4422
+  </a>
+</div>
+
+<!-- ─── SCRIPTS ─── -->
+
+<!-- Leaflet JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+
+<script>
+// Mobile nav toggle
+const menuBtn = document.getElementById('menuBtn');
+const navLinks = document.getElementById('navLinks');
+menuBtn.addEventListener('click', () => {
+  navLinks.classList.toggle('open');
+  menuBtn.setAttribute('aria-expanded', navLinks.classList.contains('open'));
+});
+
+// Gallery lightbox
+const galleryImages = [
+  { src: '/images/projects/heber-valley-roof-front.jpg', alt: 'Completed green roof on stone and wood ranch home' },
+  { src: '/images/projects/heber-valley-crew-wide.jpg', alt: 'Full crew with trucks at Heber Valley job site' },
+  { src: '/images/projects/heber-valley-roof-aerial.jpg', alt: 'Aerial drone shot of finished green roof' },
+  { src: '/images/projects/heber-valley-crew-trucks.jpg', alt: 'Crew members by Ford trucks' },
+  { src: '/images/projects/heber-valley-ranch-drone.jpg', alt: 'Drone shot of ranch property' },
+  { src: '/images/projects/heber-valley-crew-rooftop.jpg', alt: 'Crew working on roof tear-off' }
+];
+
+let currentIndex = 0;
+const lightbox = document.getElementById('lightbox');
+const lightboxImg = document.getElementById('lightboxImg');
+
+function openLightbox(index) {
+  currentIndex = index;
+  lightboxImg.src = galleryImages[index].src;
+  lightboxImg.alt = galleryImages[index].alt;
+  lightbox.classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeLightbox(e) {
+  if (e.target === lightbox || e.target.classList.contains('lightbox-close')) {
+    lightbox.classList.remove('active');
+    document.body.style.overflow = '';
+  }
+}
+
+function navigateLightbox(dir) {
+  currentIndex = (currentIndex + dir + galleryImages.length) % galleryImages.length;
+  lightboxImg.src = galleryImages[currentIndex].src;
+  lightboxImg.alt = galleryImages[currentIndex].alt;
+}
+
+document.addEventListener('keydown', (e) => {
+  if (!lightbox.classList.contains('active')) return;
+  if (e.key === 'Escape') { lightbox.classList.remove('active'); document.body.style.overflow = ''; }
+  if (e.key === 'ArrowLeft') navigateLightbox(-1);
+  if (e.key === 'ArrowRight') navigateLightbox(1);
+});
+
+// Leaflet Map — Heber Valley project area
+const map = L.map('projectMap', { scrollWheelZoom: false }).setView([40.488, -111.407], 13);
+
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  attribution: '© OpenStreetMap contributors',
+  maxZoom: 18
+}).addTo(map);
+
+// Custom gold marker
+const goldIcon = L.divIcon({
+  className: '',
+  html: `<div style="
+    width: 36px; height: 36px;
+    background: #E1B969;
+    border: 3px solid #0B4060;
+    border-radius: 50% 50% 50% 0;
+    transform: rotate(-45deg);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    display: flex; align-items: center; justify-content: center;
+  "><div style="
+    width: 12px; height: 12px;
+    background: #0B4060;
+    border-radius: 50%;
+    transform: rotate(45deg);
+  "></div></div>`,
+  iconSize: [36, 36],
+  iconAnchor: [18, 36],
+  popupAnchor: [0, -36]
+});
+
+L.marker([40.488, -111.407], { icon: goldIcon })
+  .addTo(map)
+  .bindPopup(`
+    <div style="font-family: 'Archivo', sans-serif; text-align: center; padding: 4px;">
+      <strong style="font-family: 'Archivo Black', sans-serif; color: #0B4060; font-size: 14px; text-transform: uppercase;">Heber Valley Ranch</strong><br>
+      <span style="color: #4A5464; font-size: 13px;">Full Roof Replacement</span><br>
+      <span style="color: #E1B969; font-weight: 600; font-size: 12px;">Wasatch County, UT</span>
+    </div>
+  `)
+  .openPopup();
+
+// Service area circle
+L.circle([40.507, -111.413], {
+  color: 'rgba(225,185,105,0.5)',
+  fillColor: 'rgba(225,185,105,0.08)',
+  fillOpacity: 0.3,
+  radius: 8000,
+  weight: 2
+}).addTo(map).bindPopup('<strong>Frame Restoration</strong><br>Heber City Service Area');
+
+// Office marker
+const officeIcon = L.divIcon({
+  className: '',
+  html: `<div style="
+    width: 28px; height: 28px;
+    background: #0B4060;
+    border: 2px solid #E1B969;
+    border-radius: 50%;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    display: flex; align-items: center; justify-content: center;
+    color: #E1B969; font-size: 14px; font-weight: bold;
+  ">★</div>`,
+  iconSize: [28, 28],
+  iconAnchor: [14, 14],
+  popupAnchor: [0, -14]
+});
+
+L.marker([40.5069, -111.4133], { icon: officeIcon })
+  .addTo(map)
+  .bindPopup(`
+    <div style="font-family: 'Archivo', sans-serif; text-align: center;">
+      <strong style="color: #0B4060;">Frame Restoration Utah</strong><br>
+      <span style="font-size: 12px; color: #4A5464;">142 S Main St, Heber City</span><br>
+      <a href="tel:+14353024422" style="color: #E1B969; font-weight: 600;">435-302-4422</a>
+    </div>
+  `);
+</script>
+
+</body>
+</html>
