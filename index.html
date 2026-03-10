@@ -392,6 +392,19 @@
     .why-point h4 { font-family: 'Archivo Black', sans-serif; font-size: 18px; text-transform: uppercase; color: var(--navy); margin-bottom: 5px; }
     .why-point p { font-size: 14px; color: var(--gray); line-height: 1.7; }
 
+    /* ─── VIDEO SHOWCASE ─── */
+    #video-showcase { background: var(--white); padding: 0 0 80px; position: relative; }
+    .video-curve { width: 100%; line-height: 0; margin-bottom: 0; }
+    .video-curve svg { width: 100%; height: 80px; display: block; }
+    .video-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: center; max-width: 1200px; margin: 0 auto; padding: 40px 24px 0; }
+    .video-player video { width: 100%; border-radius: 8px; display: block; box-shadow: 0 8px 30px rgba(0,0,0,0.15); }
+    .video-headline h2 { font-family: 'Archivo Black', sans-serif; font-size: clamp(24px, 3vw, 38px); text-transform: uppercase; color: var(--navy); line-height: 1.25; }
+    .video-headline .gold { color: var(--gold); }
+    @media (max-width: 768px) {
+      .video-grid { grid-template-columns: 1fr; gap: 32px; text-align: center; }
+      .video-headline h2 { font-size: 22px; }
+    }
+
     /* ─── TESTIMONIALS ─── */
     #testimonials { background: var(--white); }
     .testimonials-header { text-align: center; margin-bottom: 56px; }
@@ -672,6 +685,27 @@
     <div class="gallery-item"><img src="/images/photos/frame-restoration-04.jpg" alt="Frame Restoration crew working on residential roof replacement in Utah" loading="lazy" width="600" height="260" /></div>
     <div class="gallery-item"><img src="/images/photos/frame-restoration-16.jpg" alt="Completed gray shingle roof with mountains in background" loading="lazy" width="600" height="260" /></div>
     <div class="gallery-item"><img src="/images/photos/frame-restoration-10.jpg" alt="Beautiful Utah home with new roof at golden hour" loading="lazy" width="600" height="260" /></div>
+  </div>
+</section>
+
+<!-- ─── VIDEO SHOWCASE ─── -->
+<section id="video-showcase">
+  <!-- Curved navy-to-white transition -->
+  <div class="video-curve" aria-hidden="true">
+    <svg viewBox="0 0 1440 100" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M0,0 L0,60 Q720,120 1440,60 L1440,0 Z" fill="var(--navy)"/>
+    </svg>
+  </div>
+  <div class="video-grid">
+    <div class="video-player reveal">
+      <video autoplay muted loop playsinline preload="metadata" poster="/images/photos/frame-restoration-08.jpg">
+        <source src="/assets/drone-footage.mp4" type="video/mp4" />
+        Your browser does not support the video tag.
+      </video>
+    </div>
+    <div class="video-headline reveal">
+      <h2><span class="gold">Frame Restoration</span> Is Your Trusted Local Roofing Company and General Contractor.</h2>
+    </div>
   </div>
 </section>
 
