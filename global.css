@@ -24,22 +24,22 @@ body { font-family: 'Archivo', sans-serif; background: var(--white); color: var(
 /* ─── NAV ─── */
 nav {
   position: fixed; top: 0; left: 0; right: 0; z-index: 1001;
-  background: rgba(11,64,96,0.97); backdrop-filter: blur(10px);
-  border-bottom: 2px solid var(--gold);
+  background: var(--white); box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  border-bottom: none;
   display: flex; align-items: center; justify-content: space-between;
   padding: 0 5%; height: 76px;
   padding-top: env(safe-area-inset-top, 0px);
 }
 .nav-logo img { height: 60px; width: auto; }
 .nav-links { display: flex; gap: 24px; list-style: none; align-items: center; }
-.nav-links a { color: var(--white); text-decoration: none; font-family: 'Archivo Black', sans-serif; font-size: 14px; letter-spacing: 1px; text-transform: uppercase; transition: color 0.2s; }
+.nav-links a { color: var(--navy); text-decoration: none; font-family: 'Archivo Black', sans-serif; font-size: 14px; letter-spacing: 1px; text-transform: uppercase; transition: color 0.2s; }
 .nav-links a:hover { color: var(--gold); }
 .nav-links a.active { color: var(--gold); }
-.nav-cta { background: var(--gold) !important; color: var(--navy) !important; padding: 12px 22px !important; font-weight: 700 !important; border-radius: 2px; min-height: 44px; display: inline-flex !important; align-items: center; box-shadow: 0 2px 8px rgba(225,185,105,0.25); transition: all 0.2s; }
-.nav-cta:hover { background: var(--gold-light) !important; color: var(--navy) !important; transform: translateY(-1px); box-shadow: 0 6px 20px rgba(225,185,105,0.4); }
-.nav-phone { color: var(--gold) !important; font-weight: 600 !important; }
+.nav-cta { background: var(--navy) !important; color: var(--white) !important; padding: 12px 22px !important; font-weight: 700 !important; border-radius: 2px; min-height: 44px; display: inline-flex !important; align-items: center; box-shadow: 0 2px 8px rgba(11,64,96,0.2); transition: all 0.2s; }
+.nav-cta:hover { background: var(--navy-mid) !important; color: var(--white) !important; transform: translateY(-1px); box-shadow: 0 6px 20px rgba(11,64,96,0.3); }
+.nav-phone { color: var(--navy) !important; font-weight: 600 !important; }
 .mobile-btn { display: none; background: none; border: none; cursor: pointer; flex-direction: column; gap: 5px; padding: 4px; }
-.mobile-btn span { display: block; width: 25px; height: 2px; background: var(--white); transition: all 0.3s; }
+.mobile-btn span { display: block; width: 25px; height: 2px; background: var(--navy); transition: all 0.3s; }
 
 /* ─── SECTION DEFAULTS ─── */
 section { padding: 90px 5%; }
