@@ -480,6 +480,12 @@
     .footer-col ul li a:hover { color: var(--white); }
     .footer-bottom { border-top: 1px solid rgba(255,255,255,0.08); padding-top: 28px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; font-size: 13px; }
     .footer-bottom a { color: var(--gold); text-decoration: none; }
+    .footer-social { display: flex; gap: 14px; margin-top: 18px; }
+    .footer-social a { display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 50%; background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.55); transition: background 0.2s, color 0.2s; }
+    .footer-social a:hover { background: var(--gold); color: var(--dark); }
+    .footer-social svg { width: 18px; height: 18px; fill: currentColor; }
+    .footer-map { margin-top: 20px; border-radius: 8px; overflow: hidden; border: 1px solid rgba(255,255,255,0.08); }
+    .footer-map iframe { width: 100%; height: 200px; border: 0; filter: grayscale(0.3); }
 
     /* ─── REVEAL ANIMATION ─── */
     /* Default: visible (no-JS fallback, file:// preview, etc.) */
@@ -721,6 +727,15 @@
       <div class="testimonial-city">Heber City, UT</div>
     </div>
   </div>
+
+  <!-- Google Reviews Widget — replace PLACE_ID with Frame Restoration's Google Place ID once available -->
+  <div id="google-reviews-widget" style="max-width:1100px;margin:48px auto 0;text-align:center;" class="reveal">
+    <a href="https://www.google.com/maps/place/Frame+Restoration+Utah/@40.5069,-111.4133,17z/" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:10px;padding:14px 28px;background:var(--off-white);border:1px solid var(--light-gray);border-radius:8px;text-decoration:none;color:var(--dark);font-size:15px;font-weight:600;transition:border-color 0.2s;">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+      ★★★★★ &nbsp;See All Google Reviews →
+    </a>
+    <!-- TODO: Once customer provides Google Place ID, replace this link with an Elfsight widget or Google Reviews API embed -->
+  </div>
 </section>
 
 <!-- ─── SERVICE AREAS — Full Wasatch Front ─── -->
@@ -878,7 +893,7 @@
         </div>
         <div class="contact-detail">
           <div class="contact-detail-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="#E1B969" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div>
-          <div><h5>Email</h5><a href="/cdn-cgi/l/email-protection#87f4e6ebe2f4c7e1f5e6eae2f5e2f4f3e8f5e6f3eee8e9f4a9e4e8ea"><span class="__cf_email__" data-cfemail="7605171a1305361004171b1304130502190417021f1918055815191b">[email&#160;protected]</span></a></div>
+          <div><h5>Email</h5><a href="mailto:sales@framerestorations.com">sales@framerestorations.com</a></div>
         </div>
         <div class="contact-detail">
           <div class="contact-detail-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="#E1B969" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
@@ -898,8 +913,8 @@
           <div class="form-group"><label for="fname">First Name</label><input type="text" id="fname" name="first_name" placeholder="John" required /></div>
           <div class="form-group"><label for="lname">Last Name</label><input type="text" id="lname" name="last_name" placeholder="Smith" required /></div>
         </div>
-        <div class="form-group"><label for="phone">Phone Number</label><input type="tel" id="phone" name="phone" placeholder="(801) 555-0100" required /></div>
-        <div class="form-group"><label for="email">Email Address</label><input type="email" id="email" name="email" placeholder="john@example.com" required /></div>
+        <div class="form-group"><label for="phone">Phone Number</label><input type="tel" id="phone" name="phone" placeholder="(435) 302-4422" required /></div>
+        <div class="form-group"><label for="email">Email Address</label><input type="email" id="email" name="email" placeholder="you@email.com" required /></div>
         <div class="form-group">
           <label for="service">Service Needed</label>
           <select id="service" name="service" required>
@@ -934,9 +949,25 @@
 <footer>
   <div class="footer-grid">
     <div class="footer-brand">
-      <img src="https://images.squarespace-cdn.com/content/v1/687963cae8d2172f80997211/1752785888411-W1TXIHYZURJ5AJVGR4MA/Large_Transparent__FR+R%26C+Logo-darkblue.png?format=webp&quality=80"
-           alt="Frame Restoration Utah" width="160" height="44" loading="lazy" />
+      <img src="/images/wordmark-white.svg" alt="Frame Restoration Utah" width="160" height="44" loading="lazy" />
       <p>Utah's trusted roofing and general contracting experts. Serving Salt Lake City, Provo, Ogden, Heber, and 40+ communities across the Wasatch Front and Salt Lake Valley.</p>
+      <div class="footer-social">
+        <a href="https://www.facebook.com/framerestorationutah" target="_blank" rel="noopener" aria-label="Facebook">
+          <svg viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+        </a>
+        <a href="https://www.instagram.com/framerestorationutah" target="_blank" rel="noopener" aria-label="Instagram">
+          <svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+        </a>
+        <a href="https://g.co/kgs/framerestorationutah" target="_blank" rel="noopener" aria-label="Google Business">
+          <svg viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+        </a>
+        <a href="https://www.yelp.com/biz/frame-restoration-utah" target="_blank" rel="noopener" aria-label="Yelp">
+          <svg viewBox="0 0 24 24"><path d="M20.16 12.594l-4.995 1.433c-.96.276-1.74-.8-1.176-1.63l2.762-4.08c.276-.408.18-.948-.228-1.224-.192-.132-.42-.192-.648-.18l-4.956.516c-1.008.108-1.62-1.08-.924-1.788L14.403.744c.336-.336.336-.876 0-1.212-.168-.168-.396-.252-.624-.252H9.003c-.492 0-.888.396-.888.888v9.852c0 .612-.792.852-1.116.336L3.243 4.776a.884.884 0 00-1.2-.312.884.884 0 00-.312 1.2l4.764 8.1c.3.504-.084 1.14-.672 1.14H.891c-.492 0-.888.396-.888.888v4.776c0 .492.396.888.888.888h4.932c.588 0 .972.636.672 1.14l-1.476 2.508a.884.884 0 00.312 1.2.884.884 0 001.2-.312l3.756-5.58c.324-.516 1.116-.276 1.116.336v2.784c0 .492.396.888.888.888h4.776c.228 0 .456-.084.624-.252.336-.336.336-.876 0-1.212l-4.404-4.896c-.696-.708-.084-1.896.924-1.788l4.956.516c.228.012.456-.048.648-.18.408-.276.504-.816.228-1.224l-2.7-3.996z"/></svg>
+        </a>
+      </div>
+      <div class="footer-map">
+        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3044.5!2d-111.4155!3d40.5069!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNDDCsDMwJzI0LjgiTiAxMTHCsDI0JzQ3LjkiVw!5e0!3m2!1sen!2sus!4v1" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="Frame Restoration Utah - Heber City Office"></iframe>
+      </div>
     </div>
     <div class="footer-col">
       <h4>Services</h4>
@@ -964,7 +995,7 @@
       <h4>Contact</h4>
       <ul>
         <li><a href="tel:+14353024422">435-302-4422</a></li>
-        <li><a href="/cdn-cgi/l/email-protection#1063717c7563507662717d75627563647f627164797f7e633e737f7d"><span class="__cf_email__" data-cfemail="95e6f4f9f0e6d5f3e7f4f8f0e7f0e6e1fae7f4e1fcfafbe6bbf6faf8">[email&#160;protected]</span></a></li>
+        <li><a href="mailto:sales@framerestorations.com">sales@framerestorations.com</a></li>
         <li><a href="#contact">142 S Main St, Heber City UT</a></li>
         <li><a href="https://www.framerestorations.com/" target="_blank" rel="noopener">Frame Restoration DFW →</a></li>
       </ul>
@@ -990,7 +1021,7 @@
 </div>
 
 <!-- FIX 1+4: Complete JS, no defer on inline scripts (defer only works on external src scripts) -->
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+<script>
   // Scroll to top on load — prevents iOS/mobile opening mid-page
   window.addEventListener('load', function() { window.scrollTo(0, 0); });
 
