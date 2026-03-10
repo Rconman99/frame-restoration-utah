@@ -10,7 +10,7 @@
   .hero { min-height: 100vh; position: relative; display: flex; align-items: center; overflow: hidden; background: var(--navy); padding-top: 76px; }
   .hero-img { position: absolute; inset: 0; }
   .hero-img img { width: 100%; height: 100%; object-fit: cover; object-position: center 30%; opacity: 0.5; }
-  .hero-overlay { position: absolute; inset: 0; background: linear-gradient(135deg, rgba(12,53,71,0.78), rgba(12,53,71,0.50)); }
+  .hero-overlay { position: absolute; inset: 0; background: linear-gradient(135deg, rgba(10,34,62,0.78), rgba(10,34,62,0.50)); }
   .hero-content { position: relative; z-index: 2; padding: 80px 5% 100px; width: 100%; max-width: 1100px; }
   .hero-badge { display: inline-flex; align-items: center; gap: 8px; background: var(--gold); color: var(--navy); font-family: 'Archivo Black', sans-serif; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; padding: 7px 16px; margin-bottom: 14px; font-weight: 700; border-radius: 2px; }
   .hero-brand { font-family: 'Archivo Black', sans-serif; font-size: 14px; letter-spacing: 3px; text-transform: uppercase; color: rgba(255,255,255,0.6); margin-bottom: 8px; display: block; }
@@ -20,9 +20,9 @@
   .hero-layout { display: grid; grid-template-columns: minmax(0,1.25fr) minmax(0,1fr); gap: 40px; margin-top: 28px; align-items: flex-start; }
   .hero-left { display: flex; flex-direction: column; gap: 22px; padding-top: 4px; }
   .hero-actions { display: flex; flex-wrap: wrap; gap: 14px; }
-  .btn-primary { background: var(--gold); color: var(--navy); padding: 16px 34px; font-family: 'Archivo Black', sans-serif; font-size: 15px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; text-decoration: none; border-radius: 2px; display: inline-flex; align-items: center; justify-content: center; transition: all 0.2s; border: 2px solid var(--gold); box-shadow: 0 8px 28px rgba(201,164,76,0.35); animation: pulse-cta 2.4s infinite; }
+  .btn-primary { background: var(--gold); color: var(--navy); padding: 16px 34px; font-family: 'Archivo Black', sans-serif; font-size: 15px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; text-decoration: none; border-radius: 2px; display: inline-flex; align-items: center; justify-content: center; transition: all 0.2s; border: 2px solid var(--gold); box-shadow: 0 8px 28px rgba(225,185,105,0.35); animation: pulse-cta 2.4s infinite; }
   @keyframes pulse-cta { 0%,100%{transform:translateY(0) scale(1);} 50%{transform:translateY(-2px) scale(1.02);} }
-  .btn-primary:hover { background: var(--gold-light); transform: translateY(-2px); box-shadow: 0 10px 32px rgba(201,164,76,0.45); animation: none; }
+  .btn-primary:hover { background: var(--gold-light); transform: translateY(-2px); box-shadow: 0 10px 32px rgba(225,185,105,0.45); animation: none; }
   .btn-secondary { background: transparent; color: var(--white); padding: 16px 34px; font-family: 'Archivo Black', sans-serif; font-size: 15px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; text-decoration: none; border-radius: 2px; border: 2px solid rgba(255,255,255,0.45); display: inline-flex; align-items: center; justify-content: center; transition: all 0.2s; }
   .btn-secondary:hover { border-color: var(--white); background: rgba(255,255,255,0.1); }
   .phone-cta { gap: 8px; }
@@ -36,10 +36,10 @@
   .hero-form .form-row { margin-bottom: 14px; }
   .hero-form .form-row.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
   .hero-form input, .hero-form select { width: 100%; padding: 12px 14px; border-radius: 3px; border: 2px solid var(--light-gray); font-size: 15px; font-family: 'Archivo', sans-serif; color: var(--dark); background: var(--white); transition: border-color 0.2s; -webkit-appearance: none; }
-  .hero-form input:focus, .hero-form select:focus { border-color: var(--navy); outline: none; box-shadow: 0 0 0 3px rgba(12,53,71,0.1); }
+  .hero-form input:focus, .hero-form select:focus { border-color: var(--navy); outline: none; box-shadow: 0 0 0 3px rgba(10,34,62,0.1); }
   .hero-form input::placeholder { color: #999; font-family: 'Archivo', sans-serif; }
-  .hero-submit { width: 100%; margin-top: 6px; cursor: pointer; min-height: 48px; padding: 14px 24px; font-size: 14px; letter-spacing: 1.2px; animation: none; box-shadow: 0 4px 16px rgba(201,164,76,0.3); border-radius: 3px; }
-  .hero-submit:hover { animation: none; transform: translateY(-1px); box-shadow: 0 6px 20px rgba(201,164,76,0.4); }
+  .hero-submit { width: 100%; margin-top: 6px; cursor: pointer; min-height: 48px; padding: 14px 24px; font-size: 14px; letter-spacing: 1.2px; animation: none; box-shadow: 0 4px 16px rgba(225,185,105,0.3); border-radius: 3px; }
+  .hero-submit:hover { animation: none; transform: translateY(-1px); box-shadow: 0 6px 20px rgba(225,185,105,0.4); }
   .form-note { font-size: 11px; color: #999; margin-top: 10px; line-height: 1.4; text-align: center; }
   @media (max-width: 900px) {
     .hero { min-height: auto; }
