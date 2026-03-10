@@ -109,7 +109,32 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Archivo:wght@400;600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/global.css">
-  
+  <style>
+    .blog-hero { min-height: 40vh; position: relative; display: flex; align-items: center; background: var(--navy); padding-top: 70px; }
+    .blog-hero-overlay { position: absolute; inset: 0; background: linear-gradient(135deg, rgba(10,34,62,0.96) 40%, rgba(10,34,62,0.8)); }
+    .blog-hero-content { position: relative; z-index: 2; padding: 80px 5% 60px; max-width: 800px; }
+    .blog-hero h1 { font-family: 'Archivo Black', sans-serif; font-size: clamp(30px, 4.5vw, 52px); color: var(--white); line-height: 1.1; text-transform: uppercase; margin-bottom: 16px; }
+    .blog-hero h1 span { color: var(--gold); }
+    .blog-hero .blog-meta { font-size: 14px; color: rgba(255,255,255,0.55); margin-bottom: 12px; }
+    .blog-body { max-width: 780px; margin: 0 auto; padding: 60px 5% 40px; }
+    .blog-body h2 { font-family: 'Archivo Black', sans-serif; font-size: 24px; color: var(--navy); text-transform: uppercase; margin: 48px 0 16px; line-height: 1.2; }
+    .blog-body h3 { font-family: 'Archivo Black', sans-serif; font-size: 19px; color: var(--navy); margin: 32px 0 12px; }
+    .blog-body p { font-size: 16px; color: var(--gray); line-height: 1.85; margin-bottom: 18px; }
+    .blog-body ul, .blog-body ol { margin: 16px 0 24px 28px; }
+    .blog-body li { font-size: 16px; color: var(--gray); line-height: 1.85; margin-bottom: 8px; }
+    .blog-body strong { color: var(--dark); }
+    .answer-block { background: var(--off-white); border-left: 4px solid var(--gold); padding: 28px 28px 20px; margin: 36px 0; }
+    .answer-block h3 { font-family: 'Archivo Black', sans-serif; font-size: 17px; color: var(--navy); margin: 0 0 12px; text-transform: none; }
+    .answer-block p { font-size: 15px; color: var(--gray); line-height: 1.8; margin-bottom: 0; }
+    .blog-cta { background: var(--gold); padding: 60px 5%; text-align: center; }
+    .blog-cta h2 { font-family: 'Archivo Black', sans-serif; font-size: clamp(26px, 3.5vw, 42px); color: var(--navy); text-transform: uppercase; margin-bottom: 14px; }
+    .blog-cta p { font-size: 18px; color: rgba(10,34,62,0.7); margin-bottom: 28px; }
+    .related-section { background: var(--navy); padding: 60px 5%; }
+    .related-section h2 { font-family: 'Archivo Black', sans-serif; font-size: 24px; color: var(--white); text-transform: uppercase; margin-bottom: 24px; text-align: center; }
+    .related-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; max-width: 800px; margin: 0 auto; }
+    .related-chip { background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.8); padding: 12px 24px; font-size: 14px; text-decoration: none; transition: all 0.2s; border: 1px solid rgba(255,255,255,0.1); }
+    .related-chip:hover { background: rgba(225,185,105,0.15); color: var(--white); border-color: var(--gold); }
+  </style>
   <script src="/global-modal.js" defer></script>
 </head>
 <body>
@@ -143,6 +168,7 @@
 </header>
 
 <article class="blog-body">
+    <figure class="blog-featured-image" style="margin:0 0 32px;border-radius:4px;overflow:hidden"><img src="https://images.squarespace-cdn.com/content/v1/687963cae8d2172f80997211/1752785874374-1H1F8WHE1JM21FDOPCUK/FR_showcase_53.jpeg?format=webp&quality=70" alt="Frame Restoration Utah - Professional Roofing" width="780" height="440" style="width:100%;height:auto;display:block;object-fit:cover;max-height:400px" loading="lazy" /></figure>
 
   <p>If you're a homeowner in West Valley City staring at aging shingles and wondering what a full replacement is going to run you, you're not alone. West Valley is one of the largest cities in Utah &mdash; over 140,000 residents &mdash; and a huge portion of its housing stock is hitting the age where roofs need serious attention. The problem is that "roof replacement cost" searches return vague national averages that don't reflect what you'll actually pay on a home near Valley Fair Mall, along 3500 South, or in the newer builds west of 5600 West.</p>
 
