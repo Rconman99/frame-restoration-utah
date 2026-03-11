@@ -132,8 +132,23 @@
     .related-section { background: var(--navy); padding: 60px 5%; }
     .related-section h2 { font-family: 'Archivo Black', sans-serif; font-size: 24px; color: var(--white); text-transform: uppercase; margin-bottom: 24px; text-align: center; }
     .related-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; max-width: 800px; margin: 0 auto; }
-    .related-chip { background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.8); padding: 12px 24px; font-size: 14px; text-decoration: none; transition: all 0.2s; border: 1px solid rgba(255,255,255,0.1); }
+    .related-chip { background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.8); padding: 14px 22px; font-size: 15px; min-height: 48px; display: inline-flex; align-items: center; text-decoration: none; transition: all 0.2s; border: 1px solid rgba(255,255,255,0.1); }
     .related-chip:hover { background: rgba(225,185,105,0.15); color: var(--white); border-color: var(--gold); }
+    /* ─── TABLE RESPONSIVE ─── */
+    .table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; margin: 24px 0 32px; border: 1px solid var(--light-gray); border-radius: 4px; }
+    table { width: 100%; border-collapse: collapse; min-width: 560px; }
+    th, td { padding: 14px 16px; text-align: left; font-size: 15px; border-bottom: 1px solid var(--light-gray); }
+    th { background: var(--navy); color: var(--white); font-family: 'Archivo Black', sans-serif; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px; white-space: nowrap; }
+    td { color: var(--gray); }
+    tbody tr:nth-child(even) { background: var(--off-white); }
+    tbody tr:hover { background: rgba(225,185,105,0.08); }
+    /* ─── RELATED ARTICLES INLINE GRID FIX ─── */
+    .related-articles { background: var(--off-white) !important; border-radius: 4px; padding: 2rem; margin: 2rem 0; }
+    @media (max-width: 600px) {
+      .table-wrap { margin: 16px -5% 24px; border-radius: 0; border-left: none; border-right: none; }
+      th, td { padding: 12px 14px; font-size: 14px; }
+      .related-articles div[style*="grid"] { display: flex !important; flex-direction: column !important; }
+    }
   </style>
   <script src="/global-modal.js" defer></script>
 </head>
@@ -141,7 +156,7 @@
 
 <nav>
   <a href="/" class="nav-logo" aria-label="Frame Restoration Utah - Home">
-    <img loading="lazy" src="/logo.png" alt="Frame Restoration Roofing &amp; Construction - Utah" width="180" height="50" />
+    <img loading="eager" src="/logo.png" alt="Frame Restoration Roofing &amp; Construction - Utah" width="180" height="50" />
   </a>
   <ul class="nav-links" id="navLinks">
     <li><a href="/pages/residential-roofing">Residential</a></li>
@@ -178,6 +193,7 @@
 
   <p>Here are realistic 2026 ranges for West Valley City based on home size, roof complexity, and material:</p>
 
+  <div class="table-wrap">
   <table>
     <thead>
       <tr>
@@ -212,6 +228,7 @@
       </tr>
     </tbody>
   </table>
+  </div>
 
   <p><strong>Important notes on these numbers:</strong></p>
   <ul>

@@ -115,6 +115,13 @@ section { padding: 90px 5%; }
   .blog-card-body { border-top: 3px solid var(--gold); }
 }
 
+/* ─── BLOG TABLE RESPONSIVE ─── */
+.table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; margin: 24px 0 32px; border: 1px solid var(--light-gray); border-radius: 4px; }
+.content-section table, .blog-body table { width: 100%; border-collapse: collapse; min-width: 520px; }
+.content-section th, .content-section td, .blog-body th, .blog-body td { padding: 14px 16px; text-align: left; font-size: 15px; border-bottom: 1px solid var(--light-gray); }
+.content-section th, .blog-body th { background: var(--navy); color: var(--white); font-family: 'Archivo Black', sans-serif; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px; white-space: nowrap; }
+.content-section td, .blog-body td { color: var(--gray); }
+
 /* ─── FOOTER (simple — used on subpages) ─── */
 footer { background: var(--dark); color: rgba(255,255,255,0.6); padding: 40px 5% 24px; text-align: center; }
 footer p { font-size: 13px; margin-bottom: 8px; }
@@ -129,13 +136,46 @@ footer a { color: var(--gold); text-decoration: none; }
   .nav-links { display: none; }
   .mobile-btn { display: flex; }
   .nav-links.open { display: flex; flex-direction: column; position: fixed; top: calc(76px + env(safe-area-inset-top, 0px)); left: 0; right: 0; background: var(--navy); padding: 24px 5% 32px; gap: 20px; border-bottom: 2px solid var(--gold); z-index: 1000; }
-  .nav-links.open a { font-size: 18px; color: var(--white); }
+  .nav-links.open a { font-size: 18px; color: var(--white); min-height: 44px; display: flex; align-items: center; }
   .nav-links.open a:hover, .nav-links.open a:active { color: var(--gold); }
   .nav-links.open .nav-phone { color: var(--gold) !important; }
-  .nav-cta { width: 100% !important; text-align: center; justify-content: center; }
+  .nav-cta { width: 100% !important; text-align: center; justify-content: center; min-height: 52px; }
   .sticky-call { display: block; }
+  .sticky-call a { min-height: 52px; padding: 16px; }
   body { padding-bottom: 58px; }
+  /* Subpage hero — better mobile sizing */
+  .page-hero { min-height: 40vh; }
+  .page-hero h1 { font-size: clamp(28px, 7vw, 48px); }
+  .page-hero p { font-size: 16px; }
+  .page-hero .hero-actions { flex-direction: column; }
+  .page-hero .hero-actions a { width: 100%; text-align: center; justify-content: center; min-height: 52px; }
+  /* Content section mobile */
+  .content-section h2 { font-size: 22px; margin-top: 36px; }
+  .content-section p { font-size: 15px; }
+  /* Service mini cards — full width on mobile */
+  .services-mini { grid-template-columns: 1fr; }
+  /* Nearby chips — better touch targets */
+  .nearby-chip { padding: 14px 22px; font-size: 15px; min-height: 48px; display: inline-flex; align-items: center; }
+  /* Page CTA mobile */
+  .page-cta h2 { font-size: clamp(22px, 5vw, 36px); }
+  .page-cta .btn-navy { width: 100%; max-width: 360px; min-height: 52px; display: inline-flex; align-items: center; justify-content: center; }
+  /* Blog cards mobile */
+  .blog-card { flex-direction: column; }
+  .blog-card-thumb { flex: none; min-height: 160px; }
 }
 @media (max-width: 600px) {
   section { padding: 60px 5%; }
+  /* Nearby grid — 2 columns on small screens */
+  .nearby-grid { gap: 8px; }
+  .nearby-chip { padding: 12px 16px; font-size: 14px; flex: 1 1 calc(50% - 8px); justify-content: center; text-align: center; }
+  /* Blog related-articles inline grid — stack on small screens */
+  .related-articles div[style*="grid"] { display: flex !important; flex-direction: column !important; }
+  .related-articles div[style*="grid"] a { min-height: 48px; display: flex !important; align-items: center; }
+}
+/* ─── TOUCH DEVICE IMPROVEMENTS ─── */
+@media (hover: none) {
+  .service-card-link:active .service-card { transform: translateY(-4px); box-shadow: 0 16px 48px rgba(11,64,96,0.15); }
+  .nearby-chip:active { background: rgba(225,185,105,0.15); color: var(--white); border-color: var(--gold); }
+  .btn-primary:active { transform: translateY(-1px); }
+  .btn-navy:active { transform: translateY(-1px); }
 }
