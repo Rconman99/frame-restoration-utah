@@ -62,9 +62,9 @@
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
       gap: 24px;
-      margin: 48px 0;
-      padding: 32px;
-      background: var(--off-white);
+      margin: 0;
+      padding: 40px 32px;
+      background: var(--navy);
       border-top: 3px solid var(--gold);
     }
     .detail-item { text-align: center; }
@@ -79,7 +79,7 @@
     .detail-value {
       font-family: 'Archivo Black', sans-serif;
       font-size: 22px;
-      color: var(--navy);
+      color: var(--white);
       text-transform: uppercase;
     }
 
@@ -296,8 +296,8 @@
 </section>
 
 <!-- ─── PROJECT DETAILS ─── -->
-<section style="padding: 0 5%;">
-  <div class="project-details" style="max-width: 1100px; margin: -40px auto 0;">
+<section style="padding: 0 5%; background: var(--navy); position: relative; z-index: 2;">
+  <div class="project-details" style="max-width: 1100px; margin: 0 auto; position: relative; z-index: 2;">
     <div class="detail-item">
       <div class="detail-label">Location</div>
       <div class="detail-value">Heber Valley</div>
