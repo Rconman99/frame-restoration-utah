@@ -125,6 +125,10 @@
       transition: transform 0.3s ease;
     }
     .gallery-item:hover .gallery-caption { transform: translateY(0); }
+    /* Show captions always on touch devices */
+    @media (hover: none) {
+      .gallery-item .gallery-caption { transform: translateY(0); }
+    }
 
     /* Video Section */
     .video-section { background: var(--navy); padding: 80px 5%; }
@@ -246,11 +250,22 @@
       }
       .gallery-item.tall { grid-row: span 1; aspect-ratio: 16/9; }
       .map-container { grid-template-columns: 1fr; }
-      #projectMap { height: 350px; }
+      .map-info { padding: 24px 20px; }
+      #projectMap { height: 300px; }
+      .lightbox { padding: 16px; }
+      .lightbox img { max-width: 95vw; max-height: 80vh; }
+      .lightbox-nav { padding: 20px 24px; min-width: 54px; min-height: 54px; font-size: 28px; }
+      .lightbox-prev { left: 4px; }
+      .lightbox-next { right: 4px; }
+      .lightbox-close { top: 12px; right: 12px; font-size: 36px; min-width: 44px; min-height: 44px; }
     }
     @media (max-width: 600px) {
       .gallery-grid { grid-template-columns: 1fr; }
       .project-details { grid-template-columns: 1fr 1fr; }
+      .gallery-section { padding: 60px 5%; }
+      .video-section { padding: 60px 5%; }
+      .map-section { padding: 60px 5%; }
+      #projectMap { height: 250px; }
     }
   </style>
 </head>
@@ -476,6 +491,16 @@ document.addEventListener('keydown', (e) => {
   if (e.key === 'ArrowLeft') navigateLightbox(-1);
   if (e.key === 'ArrowRight') navigateLightbox(1);
 });
+
+// Swipe support for mobile lightbox
+let touchStartX = 0;
+lightbox.addEventListener('touchstart', (e) => { touchStartX = e.changedTouches[0].screenX; }, { passive: true });
+lightbox.addEventListener('touchend', (e) => {
+  const diff = e.changedTouches[0].screenX - touchStartX;
+  if (Math.abs(diff) > 50) {
+    navigateLightbox(diff > 0 ? -1 : 1);
+  }
+}, { passive: true });
 
 // Leaflet Map — Heber Valley project area
 const map = L.map('projectMap', { scrollWheelZoom: false }).setView([40.488, -111.407], 13);

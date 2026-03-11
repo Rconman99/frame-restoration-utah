@@ -129,7 +129,9 @@ footer a { color: var(--gold); text-decoration: none; }
   .nav-links { display: none; }
   .mobile-btn { display: flex; }
   .nav-links.open { display: flex; flex-direction: column; position: fixed; top: calc(76px + env(safe-area-inset-top, 0px)); left: 0; right: 0; background: var(--navy); padding: 24px 5% 32px; gap: 20px; border-bottom: 2px solid var(--gold); z-index: 1000; }
-  .nav-links.open a { font-size: 18px; }
+  .nav-links.open a { font-size: 18px; color: var(--white); }
+  .nav-links.open a:hover, .nav-links.open a:active { color: var(--gold); }
+  .nav-links.open .nav-phone { color: var(--gold) !important; }
   .nav-cta { width: 100% !important; text-align: center; justify-content: center; }
   .sticky-call { display: block; }
   body { padding-bottom: 58px; }

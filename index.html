@@ -310,13 +310,14 @@
       .hero { min-height: auto; align-items: flex-start; }
       .hero-content { padding: 28px 5% 48px; }
       .hero-layout { grid-template-columns: 1fr; gap: 28px; }
-      .hero-form-card { order: -1; }
       .hero-actions { flex-direction: column; gap: 10px; }
       .hero-actions .btn-primary, .hero-actions .btn-secondary { width: 100%; text-align: center; padding: 18px 24px; min-height: 54px; }
       .nav-cta { width: 100% !important; text-align: center; justify-content: center; }
       .hero h1 { margin-bottom: 14px; }
       .hero p { font-size: 15px; margin-bottom: 0; }
       .hero-badge { margin-bottom: 16px; }
+      /* Prevent iOS zoom on input focus — keep at 16px minimum */
+      .hero-form input, .hero-form select { font-size: 16px; }
     }
     @media (max-width: 600px) {
       .hero-content { padding: 24px 5% 36px; }
@@ -336,7 +337,7 @@
       .hero-form-card { padding: 18px 16px; }
       .hero-form-card p { margin-bottom: 12px; }
       .hero-form .form-row { margin-bottom: 10px; }
-      .hero-form input, .hero-form select { padding: 10px 12px; font-size: 14px; }
+      .hero-form input, .hero-form select { padding: 10px 12px; font-size: 16px; }
       .hero-submit { min-height: 44px; padding: 12px 20px; }
       .hero-badge { margin-bottom: 8px; }
       .hero h1 { margin-bottom: 8px; }
