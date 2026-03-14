@@ -352,7 +352,7 @@
     #services { background: var(--white); }
     .services-header { text-align: center; margin-bottom: 60px; }
     .services-header .section-sub { margin: 0 auto; }
-    .services-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2px; background: var(--light-gray); }
+    .services-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; background: var(--light-gray); }
     .service-card { background: var(--white); padding: 48px 36px; position: relative; overflow: hidden; transition: all 0.3s; }
     .service-card::after { content: ''; position: absolute; bottom: 0; left: 0; width: 0; height: 3px; background: var(--gold); transition: width 0.4s ease; }
     .service-card:hover::after { width: 100%; }
@@ -526,8 +526,8 @@
       /* Testimonial cards mobile */
       .testimonials-grid { grid-template-columns: 1fr; }
       .testimonial-text { font-size: 16px; }
-      /* Services grid — force single column on tablets */
-      .services-grid { grid-template-columns: 1fr; }
+      /* Services grid — 2 columns on tablets */
+      .services-grid { grid-template-columns: repeat(2, 1fr); }
       .service-card { padding: 36px 28px; }
     }
     @media (max-width: 600px) {
@@ -538,6 +538,8 @@
       .footer-grid { grid-template-columns: 1fr; }
       .footer-bottom { flex-direction: column; text-align: center; }
       .form-row { grid-template-columns: 1fr; }
+      /* Services grid — single column on phones */
+      .services-grid { grid-template-columns: 1fr; }
       /* Small screen gallery — single column */
       .gallery-grid { grid-template-columns: 1fr; }
       .gallery-item:first-child { grid-column: 1; height: 220px; }
