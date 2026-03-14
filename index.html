@@ -112,7 +112,6 @@
         "closes": "18:00"
       }
     ],
-    "priceRange": "$$",
     "hasOfferCatalog": {
       "@type": "OfferCatalog",
       "name": "Roofing & Restoration Services",
@@ -202,7 +201,7 @@
         "name": "What areas does Frame Restoration Utah serve?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "We serve 40+ communities across the full Wasatch Front including Salt Lake City, West Jordan, West Valley City, Sandy, Draper, South Jordan, Murray, Taylorsville, Millcreek, Cottonwood Heights, Bountiful, Layton, Lehi, Orem, Provo, and more. Home base is Heber City, UT."
+          "text": "We serve 40+ communities across the full Wasatch Front including Salt Lake City, West Jordan, West Valley City, Sandy, Draper, South Jordan, Murray, Taylorsville, Millcreek, Cottonwood Heights, Bountiful, Layton, Lehi, Orem, Provo, and more. Headquartered in Heber City. "
         }
       },
       {
@@ -210,7 +209,7 @@
         "name": "What warranty does Frame Restoration Utah offer?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Every job is backed by a 5-year workmanship warranty plus lifetime material warranties from our manufacturer partners. If any issue with our work arises, we return and fix it at no charge."
+          "text": "Every job is backed by a 10‑year workmanship warranty plus lifetime material warranties from our manufacturer partners. If any issue with our work arises, we return and fix it at no charge."
         }
       },
       {
@@ -263,7 +262,7 @@
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Archivo:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Archivo:wght@400;600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/global.css">
 
   <style>
@@ -432,12 +431,7 @@
     .area-chip { background: rgba(255,255,255,0.04); padding: 14px 20px; color: rgba(255,255,255,0.75); font-size: 14px; display: flex; align-items: center; gap: 10px; transition: all 0.2s; text-decoration: none; }
     .area-chip::before { content: ''; width: 5px; height: 5px; background: var(--gold); border-radius: 50%; flex-shrink: 0; }
     .area-chip:hover { background: rgba(225,185,105,0.1); color: var(--white); }
-    .dallas-connect { margin-top: 56px; background: rgba(225,185,105,0.07); border: 1px solid rgba(225,185,105,0.22); border-left: 4px solid var(--gold); padding: 28px 32px; display: flex; align-items: center; gap: 28px; flex-wrap: wrap; }
-    .dallas-logo img { height: 48px; filter: brightness(0) invert(1); opacity: 0.9; }
-    .dallas-text h4 { font-family: 'Archivo Black', sans-serif; font-size: 18px; color: var(--gold); text-transform: uppercase; margin-bottom: 6px; }
-    .dallas-text p { font-size: 14px; color: rgba(255,255,255,0.6); line-height: 1.7; }
-    .dallas-text a { color: var(--gold); text-decoration: none; font-weight: 600; }
-    .dallas-text a:hover { text-decoration: underline; }
+    
 
     /* ─── CTA BANNER ─── */
     #cta { background: var(--gold); padding: 80px 5%; text-align: center; }
@@ -596,8 +590,8 @@
   <div class="hero-content">
     <div class="hero-badge">&#9733;&#9733;&#9733;&#9733;&#9733; 5.0 Rating &bull; A+ BBB &bull; Serving 40+ Utah Cities</div>
     <span class="hero-brand">Frame Restoration Utah</span>
-    <h1>Utah Roofing &amp;<br><span>Storm Damage Pros</span></h1>
-    <p>Free roof inspections across the Wasatch Front — Salt Lake City to Provo &amp; Heber. 5&#8209;year workmanship warranty, fully licensed &amp; insured.</p>
+    <h1>The Gold Standard<br><span>For Your Utah Home</span></h1>
+    <p>Expert Craftsmanship. Industrial-Grade Quality. Superior Workmanship. Free roof inspections across the Wasatch Front — fully licensed &amp; insured with a 10&#8209;year workmanship warranty.</p>
     <div class="hero-layout">
       <div class="hero-left">
         <div class="hero-actions">
@@ -605,9 +599,9 @@
           <a href="tel:+14353024422" class="btn-secondary phone-cta">Tap to Call 435&#8209;302&#8209;4422</a>
         </div>
         <ul class="hero-points" aria-label="Why Utah homeowners choose Frame Restoration">
-          <li>Local Utah crew — no out&#8209;of&#8209;state storm chasers.</li>
-          <li>We handle the insurance claim from photos to paperwork.</li>
-          <li>Emergency tarping available 24/7 after hail &amp; wind storms.</li>
+          <li>Uncompromising standards — no corners cut, built to endure.</li>
+          <li>Local, licensed &amp; invested in your neighborhood.</li>
+          <li>Frictionless experience — fast, easy, beautiful craftsmanship.</li>
         </ul>
       </div>
       <div class="hero-form-card" aria-label="Request a free roof inspection">
@@ -623,12 +617,12 @@
           </div>
           <div class="form-row">
             <select name="issue" required>
-              <option value="">What's going on?</option>
-              <option value="hail">Hail / storm damage</option>
-              <option value="leak">Active roof leak</option>
-              <option value="old_roof">Old roof / replacement quote</option>
-              <option value="insurance">Insurance claim help</option>
-              <option value="other">Something else</option>
+              <option value="">What do you need?</option>
+              <option value="reroof">Reroof My Home</option>
+              <option value="leak">Active Roof Leak</option>
+              <option value="storm">Storm Damage</option>
+              <option value="gutters">Gutters &amp; Gutter Guards</option>
+              <option value="other">Something Else</option>
             </select>
           </div>
           <button type="submit" class="btn-primary hero-submit">Get My Free Roof Inspection</button>
@@ -654,14 +648,21 @@
   <div class="services-header reveal">
     <span class="section-label">What We Do</span>
     <h2 class="section-title">Full-Service Roofing &amp;<br />Restoration in Utah</h2>
-    <p class="section-sub">From <strong>emergency roof repairs</strong> to complete remodels — the same standards that built our A+ reputation in Dallas–Fort Worth, now serving all of Utah.</p>
+    <p class="section-sub">From <strong>premium reroofs</strong> to emergency repairs — uncompromising standards, beautiful craftsmanship, and a frictionless experience across all of Utah.</p>
   </div>
   <div class="services-grid">
     <a href="/pages/residential-roofing" class="service-card-link">
       <div class="service-card reveal">
         <div class="service-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="#E1B969" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>
         <h3>Residential Roofing</h3>
-        <p><strong>New roofs, full replacements, and storm repairs</strong> for Utah homes. Shingles, metal, tile, and flat systems built for Utah's freeze-thaw cycles and heavy Wasatch snowloads.</p>
+        <p><strong>Premium reroofs and full replacements</strong> for Utah homes. Shingles, standing seam metal, Presidential and Shake style shingles — beautiful craftsmanship built to endure Utah's mountain climate.</p>
+      </div>
+    </a>
+    <a href="/pages/storm-damage-restoration" class="service-card-link">
+      <div class="service-card reveal">
+        <div class="service-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="#E1B969" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+        <h3>Storm Damage Restoration</h3>
+        <p><strong>Utah hail, wind, and snow damage specialists.</strong> We work directly with your insurance company to get your claim approved and your roof restored fast — transparent, upfront estimates.</p>
       </div>
     </a>
     <a href="/pages/commercial-roofing" class="service-card-link">
@@ -671,16 +672,16 @@
         <p>Large-scale flat roofing, TPO, EPDM, and metal systems for Utah businesses, HOAs, industrial facilities, and multifamily properties across the Wasatch Front.</p>
       </div>
     </a>
-    <a href="/pages/storm-damage-restoration" class="service-card-link">
+    <a href="/pages/gutters" class="service-card-link">
       <div class="service-card reveal">
-        <div class="service-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="#E1B969" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
-        <h3>Storm Damage Restoration</h3>
-        <p><strong>Utah hail, wind, and snow damage specialists.</strong> We work directly with your insurance company to get your claim approved and your roof restored fast — no out-of-pocket surprises.</p>
+        <div class="service-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="#E1B969" stroke-width="2"><path d="M12 2.69l5.66 5.66a8 8 0 11-11.31 0z"/></svg></div>
+        <h3>Gutters &amp; Gutter Guards</h3>
+        <p><strong>Seamless aluminum, copper, and steel gutter systems</strong> with premium gutter guards. Protect your Utah home from water damage with expert installation and a 10&#8209;year workmanship warranty.</p>
       </div>
     </a>
     <a href="/pages/water-fire-flood-restoration" class="service-card-link">
       <div class="service-card reveal">
-        <div class="service-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="#E1B969" stroke-width="2"><path d="M12 2.69l5.66 5.66a8 8 0 11-11.31 0z"/></svg></div>
+        <div class="service-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="#E1B969" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg></div>
         <h3>Water, Fire &amp; Flood Restoration</h3>
         <p>24/7 emergency restoration for water intrusion, fire damage, and flooding. We mitigate fast and restore your Utah property to pre-loss condition, start to finish.</p>
       </div>
@@ -690,13 +691,6 @@
         <div class="service-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="#E1B969" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg></div>
         <h3>Solar Installation</h3>
         <p>Maximize Utah's 300+ annual sunny days. Roof-integrated solar systems that protect your roof while slashing energy bills for homeowners across the Salt Lake Valley.</p>
-      </div>
-    </a>
-    <a href="/pages/general-contracting" class="service-card-link">
-      <div class="service-card reveal">
-        <div class="service-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="#E1B969" stroke-width="2"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg></div>
-        <h3>General Contracting</h3>
-        <p>Kitchen remodels, bathroom renovations, home additions, flooring, and framing. One licensed Utah contractor for your entire project — from permits to final walkthrough.</p>
       </div>
     </a>
   </div>
@@ -750,11 +744,11 @@
     <div class="reveal">
       <span class="section-label">Why Frame Restoration</span>
       <h2 class="section-title">The Frame<br />Difference</h2>
-      <p class="section-sub">We don't just fix roofs — we protect what matters most to Utah homeowners.</p>
+      <p class="section-sub">Uncompromising standards. No corners cut. Roofs built to endure.</p>
       <div class="why-points">
-        <div class="why-point"><span class="why-num" aria-hidden="true">01</span><div><h4>Insurance Claim Experts</h4><p>We've helped hundreds of Utah homeowners navigate the insurance process. We document everything and work directly with your adjuster to maximize your payout.</p></div></div>
-        <div class="why-point"><span class="why-num" aria-hidden="true">02</span><div><h4>5-Year Workmanship Warranty</h4><p>Every job backed by a 5-year warranty on labor plus lifetime material warranties from our manufacturer partners. If it fails, we fix it — no questions asked.</p></div></div>
-        <div class="why-point"><span class="why-num" aria-hidden="true">03</span><div><h4>Backed by the Frame Network</h4><p>Same company that earned A+ BBB ratings and NTRCA membership across Dallas–Fort Worth since 2014. Same standards. Same quality. Now in Utah.</p></div></div>
+        <div class="why-point"><span class="why-num" aria-hidden="true">01</span><div><h4>Uncompromising Standards</h4><p>Industrial-grade quality on every project. We never cut corners — from materials to installation, every detail is executed with precision and care.</p></div></div>
+        <div class="why-point"><span class="why-num" aria-hidden="true">02</span><div><h4>Local, Licensed &amp; Invested</h4><p>We live and work in the communities we serve. Headquartered in Heber City, our Utah crew is invested in your neighborhood for the long haul — backed by a 10&#8209;year workmanship warranty.</p></div></div>
+        <div class="why-point"><span class="why-num" aria-hidden="true">03</span><div><h4>A Frictionless Experience</h4><p>Easy. Fast. High quality. From your first call to final walkthrough, we make the process streamlined and stress-free — so you can focus on what matters.</p></div></div>
         <div class="why-point"><span class="why-num" aria-hidden="true">04</span><div><h4>Free Inspections. No Pressure.</h4><p>100% free with zero obligation. Our Utah experts assess your roof and give you a clear written report — whether you need work done or not.</p></div></div>
       </div>
     </div>
@@ -771,21 +765,39 @@
   <div class="testimonials-grid">
     <div class="testimonial-card reveal">
       <div class="testimonial-stars" aria-label="5 out of 5 stars"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></div>
-      <p class="testimonial-text">"Landon was top notch. He made everything easy and checked in with me along the way for a total roof replacement I needed done. I cant say enough about the job they did for my moms house. She needed a new roof badly. Thank you for being a honest and fair roofing contractor who lived up to every inch of what was promised."</p>
+      <p class="testimonial-text">"I had a persistent roof leak for several years that was extremely difficult to locate. Two other roofing companies couldn't find the source. Both simply recommended replacing the entire roof. Landon approached the problem completely differently. He sent a crew out to carefully patch all of the most likely problem areas instead of pushing a full replacement. Excellent value, honest work, and outstanding service."</p>
+      <div class="testimonial-author">Timothy Kaspar</div>
+      <div class="testimonial-city">Millcreek &middot; Google Review</div>
+    </div>
+    <div class="testimonial-card reveal">
+      <div class="testimonial-stars" aria-label="5 out of 5 stars"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></div>
+      <p class="testimonial-text">"Landon was top notch. He made everything easy and checked in with me along the way for a total roof replacement I needed done. I can't say enough about the job they did for my mom's house. She needed a new roof badly. Thank you for being an honest and fair roofing contractor who lived up to every inch of what was promised."</p>
       <div class="testimonial-author">Coach Sis</div>
+      <div class="testimonial-city">Sandy &middot; Google Review</div>
+    </div>
+    <div class="testimonial-card reveal">
+      <div class="testimonial-stars" aria-label="5 out of 5 stars"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></div>
+      <p class="testimonial-text">"Landon, the owner, is a pleasure to work with. He's forthright, a good communicator, and is fair with pricing. Frame Restoration re-roofed 2 of our buildings and the final product looks great. Plus, the work was done efficiently and cleanly — my yard and gardens look like they did before we re-roofed."</p>
+      <div class="testimonial-author">Stephen Tolpinrud</div>
       <div class="testimonial-city">Google Review</div>
     </div>
     <div class="testimonial-card reveal">
       <div class="testimonial-stars" aria-label="5 out of 5 stars"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></div>
-      <p class="testimonial-text">"Working with Landon was a breeze. He was knowledgeable and provided me with excellent advice on the best options for our new roof. He even took the time to look into the possibility of submitting an insurance claim but was honest in his assessment."</p>
+      <p class="testimonial-text">"High quality workmanship by his crew, cleaned up every nail and garbage. Communicated throughout the process and made sure we were happy before he got paid."</p>
+      <div class="testimonial-author">Chris Chatzis</div>
+      <div class="testimonial-city">Google Review</div>
+    </div>
+    <div class="testimonial-card reveal">
+      <div class="testimonial-stars" aria-label="5 out of 5 stars"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></div>
+      <p class="testimonial-text">"Frame Restoration did an excellent job replacing our casitas roof in only one day. The crew was very efficient, respectful, and clean. I highly recommend this company to anyone needing a new roof, as their work is of high quality and they are trustworthy people."</p>
+      <div class="testimonial-author">Marie Conroe</div>
+      <div class="testimonial-city">Google Review</div>
+    </div>
+    <div class="testimonial-card reveal">
+      <div class="testimonial-stars" aria-label="5 out of 5 stars"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></div>
+      <p class="testimonial-text">"Working with Landon was a breeze. He was knowledgeable and provided me with excellent advice on the best options for our new roof. His pricing came in at just over a third of a bid we received from another company. The crew did excellent work, completed our roof in a single day, and left the property clean afterward."</p>
       <div class="testimonial-author">Sam Thornton</div>
-      <div class="testimonial-city">Google Review</div>
-    </div>
-    <div class="testimonial-card reveal">
-      <div class="testimonial-stars" aria-label="5 out of 5 stars"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></div>
-      <p class="testimonial-text">"Landon is great to work with. He has replaced two roofs for me and does top notch work. He should be your first call if you need a roofer."</p>
-      <div class="testimonial-author">Rick Rekoutis</div>
-      <div class="testimonial-city">Google Review</div>
+      <div class="testimonial-city">Millcreek &middot; Google Review</div>
     </div>
   </div>
 
@@ -872,7 +884,7 @@
   </div>
 
   <div class="county-group reveal">
-    <p class="county-label">Wasatch Back — Our Home Base</p>
+    <p class="county-label">Wasatch Back &amp; Mountain Communities</p>
     <div class="areas-grid">
       <a href="/locations/heber-city" class="area-chip">Heber City</a>
       <a href="/locations/midway" class="area-chip">Midway</a>
@@ -880,16 +892,6 @@
     </div>
   </div>
 
-  <div class="dallas-connect reveal">
-    <div class="dallas-logo">
-      <img src="https://images.squarespace-cdn.com/content/v1/67f7e8e1209c1947d380006a/0aefe199-d62d-49c6-8d3a-a37089931ca6/new+FR+R%26C+Logo-darkblue+%26+yellow.png?format=webp&quality=80"
-           alt="Frame Restoration Dallas Fort Worth" width="160" height="48" loading="lazy" />
-    </div>
-    <div class="dallas-text">
-      <h4>Part of the Frame Restoration Family</h4>
-      <p>Our Utah operations connect directly to <a href="https://www.framerestorations.com/" target="_blank" rel="noopener nofollow">Frame Restoration DFW</a> — top-rated roofers serving all of Dallas–Fort Worth since 2014. A+ BBB | NTRCA Member | Same quality, same warranties. Moving between Texas and Utah? We cover both ends.</p>
-    </div>
-  </div>
 </section>
 
 <!-- ─── CTA BANNER ─── -->
@@ -897,7 +899,7 @@
   <h2 class="reveal">Get Your Free<br />Roof Inspection Today</h2>
   <p class="reveal">No pressure. No obligation. Just honest answers from Utah's roofing experts.</p>
   <div class="reveal">
-    <a href="https://calendar.app.google/tdbfvEqUtPHoAHvY8" target="_blank" rel="noopener" class="btn-navy">Schedule Online</a>
+    <a href="https://calendar.app.google/cR4bBSWfb9TQ28UF8" target="_blank" rel="noopener" class="btn-navy">Schedule Online</a>
     <a href="tel:+14353024422" class="btn-outline-navy">Call 435-302-4422</a>
   </div>
 </section>
@@ -920,15 +922,15 @@
     </div>
     <div class="faq-item">
       <div class="faq-q" role="button" tabindex="0" aria-expanded="false">What areas does Frame Restoration Utah serve?<span class="faq-toggle" aria-hidden="true">+</span></div>
-      <div class="faq-a">We serve 40+ communities across the Wasatch Front including Salt Lake City, West Jordan, Sandy, Draper, Murray, Cottonwood Heights, Bountiful, Layton, Lehi, Orem, Provo, and more. Our home base is Heber City, UT.</div>
+      <div class="faq-a">We serve 40+ communities across the Wasatch Front including Salt Lake City, West Jordan, Sandy, Draper, Murray, Cottonwood Heights, Bountiful, Layton, Lehi, Orem, Provo, and more. our headquarters is Heber City, UT.</div>
     </div>
     <div class="faq-item">
       <div class="faq-q" role="button" tabindex="0" aria-expanded="false">What warranty do you offer on roofing work?<span class="faq-toggle" aria-hidden="true">+</span></div>
-      <div class="faq-a">We back every job with a 5-year workmanship warranty plus lifetime material warranties from our manufacturer partners. If any issue with our work arises, we return and fix it at no charge.</div>
+      <div class="faq-a">We back every job with a 10‑year workmanship warranty plus lifetime material warranties from our manufacturer partners. If any issue with our work arises, we return and fix it at no charge.</div>
     </div>
     <div class="faq-item">
       <div class="faq-q" role="button" tabindex="0" aria-expanded="false">Is Frame Restoration Utah licensed and insured?<span class="faq-toggle" aria-hidden="true">+</span></div>
-      <div class="faq-a">Yes. Fully licensed and insured in Utah. Part of the Frame Restoration network which holds an A+ BBB rating and NTRCA membership earned since 2014 in the Dallas–Fort Worth market.</div>
+      <div class="faq-a">Yes. Fully licensed and insured in Utah. Frame Restoration holds an A+ BBB rating and NTRCA membership. We carry full liability and workers' compensation coverage on every project.</div>
     </div>
     <div class="faq-item">
       <div class="faq-q" role="button" tabindex="0" aria-expanded="false">Do you handle emergency storm damage in Utah?<span class="faq-toggle" aria-hidden="true">+</span></div>
@@ -1038,7 +1040,7 @@
         <li><a href="/pages/storm-damage-restoration">Storm Damage</a></li>
         <li><a href="#services">Water &amp; Fire Restoration</a></li>
         <li><a href="#services">Solar Installation</a></li>
-        <li><a href="#services">General Contracting</a></li>
+        <li><a href="/pages/gutters">Gutters &amp; Gutter Guards</a></li>
       </ul>
     </div>
     <div class="footer-col">
@@ -1058,7 +1060,7 @@
         <li><a href="tel:+14353024422">435-302-4422</a></li>
         <li><a href="mailto:sales@framerestorations.com">sales@framerestorations.com</a></li>
         <li><a href="#contact">142 S Main St, Heber City UT</a></li>
-        <li><a href="https://www.framerestorations.com/" target="_blank" rel="noopener">Frame Restoration DFW →</a></li>
+        <li><a href="https://www.framerestorations.com/" target="_blank" rel="noopener">Frame Restoration →</a></li>
       </ul>
     </div>
   </div>
@@ -1068,7 +1070,7 @@
       <a href="/privacy">Privacy Policy</a> &nbsp;|&nbsp;
       <a href="/terms">Terms of Service</a> &nbsp;|&nbsp;
       <a href="/sitemap.xml">Sitemap</a> &nbsp;|&nbsp;
-      Part of <a href="https://www.framerestorations.com/" target="_blank" rel="noopener nofollow">Frame Restoration</a> — Serving Utah &amp; Dallas–Fort Worth
+      Part of <a href="https://www.framerestorations.com/" target="_blank" rel="noopener nofollow">Frame Restoration</a> — Proudly Serving Utah
     </span>
   </div>
 </footer>
