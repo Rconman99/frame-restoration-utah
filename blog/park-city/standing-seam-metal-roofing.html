@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Archivo:wght@400;600&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/css/styles.css" />
+  <link rel="stylesheet" href="/global.css" />
 
   <script type="application/ld+json">
   {
@@ -233,22 +233,19 @@
   <meta property="og:image" content="/images/photos/frame-restoration-19.jpg" />
 </head>
 <body>
-
-  <!-- Navigation -->
-  <nav class="navbar">
-    <div class="nav-container">
-      <a href="/" class="nav-logo">
-        <img src="/images/frame-restoration-logo.png" alt="Frame Restoration Utah" />
-      </a>
-      <ul class="nav-links">
-        <li><a href="/pages/residential-roofing">Residential</a></li>
-        <li><a href="/pages/commercial-roofing">Commercial</a></li>
-        <li><a href="/pages/storm-damage">Storm Damage</a></li>
-        <li><a href="/locations/park-city">Park City</a></li>
-        <li><a href="tel:+14353024422" class="nav-phone">(435) 302-4422</a></li>
-        <li><a href="https://calendar.app.google/cR4bBSWfb9TQ28UF8" class="nav-cta" target="_blank" rel="noopener">Free Inspection</a></li>
-      </ul>
-    </div>
+  <nav>
+    <a href="/" class="nav-logo" aria-label="Frame Restoration Utah - Home">
+      <img loading="eager" src="/logo.png" alt="Frame Restoration Roofing &amp; Construction - Utah" width="180" height="50" />
+    </a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="/pages/residential-roofing">Residential</a></li>
+      <li><a href="/pages/commercial-roofing">Commercial</a></li>
+      <li><a href="/pages/storm-damage-restoration">Storm Damage</a></li>
+      <li><a href="/locations/park-city">Park City</a></li>
+      <li><a href="tel:+14353024422" class="nav-phone">435-302-4422</a></li>
+      <li><a href="https://calendar.app.google/cR4bBSWfb9TQ28UF8" target="_blank" rel="noopener" class="nav-cta">Free Inspection</a></li>
+    </ul>
+    <button class="mobile-btn" id="menuBtn" aria-label="Toggle navigation"><span></span><span></span><span></span></button>
   </nav>
 
   <!-- Breadcrumb -->
@@ -380,42 +377,15 @@
   </div>
 
   <!-- Footer -->
-  <footer class="footer">
-    <div class="footer-container">
-      <div class="footer-col">
-        <h4>Frame Restoration Utah</h4>
-        <p>Luxury mountain artistry — bespoke roofing for Park City, Heber City, and the Wasatch Front.</p>
-      </div>
-      <div class="footer-col">
-        <h4>Services</h4>
-        <ul>
-          <li><a href="/pages/residential-roofing">Residential Roofing</a></li>
-          <li><a href="/pages/commercial-roofing">Commercial Roofing</a></li>
-          <li><a href="/pages/storm-damage">Storm Damage Repair</a></li>
-          <li><a href="/pages/emergency-tarping">Emergency Tarping</a></li>
-        </ul>
-      </div>
-      <div class="footer-col">
-        <h4>Service Areas</h4>
-        <ul>
-          <li><a href="/locations/park-city">Park City</a></li>
-          <li><a href="/locations/heber-city">Heber City</a></li>
-          <li><a href="/locations/salt-lake-city">Salt Lake City</a></li>
-          <li><a href="/locations">All Locations</a></li>
-        </ul>
-      </div>
-      <div class="footer-col">
-        <h4>Contact</h4>
-        <ul>
-          <li><a href="tel:+14353024422">(435) 302-4422</a></li>
-          <li><a href="https://calendar.app.google/cR4bBSWfb9TQ28UF8" target="_blank" rel="noopener">Schedule Consultation</a></li>
-        </ul>
-      </div>
-    </div>
-    <div class="footer-bottom">
-      <p>&copy; 2026 Frame Restoration Utah. All rights reserved.</p>
-    </div>
+    <footer>
+    <p>&copy; 2026 Frame Restoration Utah. All rights reserved. Licensed &amp; Insured in Utah.</p>
+    <p><a href="/">Home</a> &middot; <a href="/privacy">Privacy Policy</a> &middot; <a href="/terms">Terms</a> &middot; <a href="tel:+14353024422">435-302-4422</a></p>
   </footer>
-
+  <div class="sticky-call"><a href="tel:+14353024422">&#9742; Call 435-302-4422</a></div>
+  <script>
+const btn=document.getElementById('menuBtn'),links=document.getElementById('navLinks');
+if(btn&&links)btn.addEventListener('click',()=>{links.classList.toggle('open');btn.setAttribute('aria-expanded',links.classList.contains('open'))});
+  </script>
+  <script src="/global-modal.js" defer></script>
 </body>
 </html>

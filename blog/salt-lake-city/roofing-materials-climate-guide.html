@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Archivo:wght@400;600&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/css/styles.css" />
+  <link rel="stylesheet" href="/global.css" />
   <style>
     .blog-hero {
       position: relative;
@@ -382,34 +382,15 @@
   </section>
 
   <!-- Footer -->
-  <footer class="footer">
-    <div class="footer-inner">
-      <div class="footer-brand">
-        <img src="/images/FRU-logo.png" alt="Frame Restoration Utah" />
-        <p>Uncompromising standards — exacting specifications and meticulous finish for Salt Lake City and the Wasatch Front.</p>
-      </div>
-      <div class="footer-links">
-        <h4>Services</h4>
-        <a href="/pages/residential-roofing">Residential Roofing</a>
-        <a href="/pages/commercial-roofing">Commercial Roofing</a>
-        <a href="/pages/storm-damage">Storm Damage</a>
-        <a href="/pages/emergency-tarping">Emergency Tarping</a>
-      </div>
-      <div class="footer-links">
-        <h4>Service Areas</h4>
-        <a href="/locations/salt-lake-city">Salt Lake City</a>
-        <a href="/locations/park-city">Park City</a>
-        <a href="/locations/heber-city">Heber City</a>
-      </div>
-      <div class="footer-links">
-        <h4>Contact</h4>
-        <a href="tel:+14353024422">(435) 302-4422</a>
-        <a href="https://calendar.app.google/cR4bBSWfb9TQ28UF8" target="_blank" rel="noopener">Book Free Inspection</a>
-      </div>
-    </div>
-    <div class="footer-bottom">
-      <p>&copy; 2026 Frame Restoration Utah. All rights reserved.</p>
-    </div>
+    <footer>
+    <p>&copy; 2026 Frame Restoration Utah. All rights reserved. Licensed &amp; Insured in Utah.</p>
+    <p><a href="/">Home</a> &middot; <a href="/privacy">Privacy Policy</a> &middot; <a href="/terms">Terms</a> &middot; <a href="tel:+14353024422">435-302-4422</a></p>
   </footer>
+  <div class="sticky-call"><a href="tel:+14353024422">&#9742; Call 435-302-4422</a></div>
+  <script>
+const btn=document.getElementById('menuBtn'),links=document.getElementById('navLinks');
+if(btn&&links)btn.addEventListener('click',()=>{links.classList.toggle('open');btn.setAttribute('aria-expanded',links.classList.contains('open'))});
+  </script>
+  <script src="/global-modal.js" defer></script>
 </body>
 </html>
