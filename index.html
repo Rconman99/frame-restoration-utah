@@ -629,7 +629,7 @@
       <div class="hero-form-card" aria-label="Request a free roof inspection">
         <h2>Get Your Free Roof Inspection</h2>
         <p>No pressure, no obligation. A specialist will call you within 15 minutes during business hours.</p>
-        <form id="heroForm" action="https://formspree.io/f/meeroaqa" method="POST" class="hero-form">
+        <form id="heroForm" class="hero-form" data-endpoint="https://hdcflshhomzildwqlmwh.supabase.co/functions/v1/handle-lead">
           <div class="form-row"><input type="text" name="name" placeholder="Full Name" required autocomplete="name"></div>
           <div class="form-row"><input type="tel" name="phone" placeholder="Mobile Phone" required autocomplete="tel"></div>
           <div class="form-row"><input type="email" name="email" placeholder="Email Address" required autocomplete="email"></div>
@@ -741,9 +741,9 @@
 <section class="stats-section" aria-label="Company statistics">
   <div class="stats-grid">
     <div class="stat-item reveal">
-      <div class="stat-number" data-target="500" data-suffix="+">0<span class="stat-suffix">+</span></div>
-      <div class="stat-label">Roofs Completed</div>
-      <div class="stat-desc">Premium installations across the Wasatch Front</div>
+      <div class="stat-number" data-target="10" data-suffix="+">0<span class="stat-suffix">+</span></div>
+      <div class="stat-label">Years Experience</div>
+      <div class="stat-desc">Trusted roofing expertise you can count on</div>
     </div>
     <div class="stat-item reveal">
       <div class="stat-number" data-target="44">0</div>
@@ -786,7 +786,7 @@
     <div class="gallery-item"><img src="/images/photos/frame-restoration-21.jpg" alt="Aerial view of finished residential roof replacement in rural Utah" loading="lazy" width="600" height="260" /></div>
     <div class="gallery-item"><img src="/images/photos/frame-restoration-04.jpg" alt="Frame Restoration crew working on residential roof replacement in Utah" loading="lazy" width="600" height="260" /></div>
     <div class="gallery-item"><img src="/images/photos/frame-restoration-16.jpg" alt="Completed gray shingle roof with mountains in background" loading="lazy" width="600" height="260" /></div>
-    <div class="gallery-item"><img src="/images/photos/frame-restoration-10.jpg" alt="Beautiful Utah home with new roof at golden hour" loading="lazy" width="600" height="260" /></div>
+    <div class="gallery-item"><img src="/images/projects/heber-valley-roof-front.jpg" alt="Completed luxury home roof with crew and equipment in Heber Valley" loading="lazy" width="600" height="260" /></div>
   </div>
 </section>
 
@@ -1043,12 +1043,8 @@
       </div>
     </div>
     <div class="reveal">
-      <!-- Contact Form — Formspree endpoint: meeroaqa -->
-      <form class="contact-form" id="leadForm"
-            action="https://formspree.io/f/meeroaqa"
-            method="POST">
-        <input type="hidden" name="_next" value="https://www.frameroofingutah.com/thank-you.html" />
-        <input type="hidden" name="_subject" value="New Lead — Frame Roofing Utah" />
+      <!-- Contact Form — Supabase edge function -->
+      <form class="contact-form" id="leadForm" data-endpoint="https://hdcflshhomzildwqlmwh.supabase.co/functions/v1/handle-lead">
         <h3>Request a Free Inspection</h3>
         <div class="form-row">
           <div class="form-group"><label for="fname">First Name</label><input type="text" id="fname" name="first_name" placeholder="John" required /></div>
@@ -1317,6 +1313,45 @@
         if (entries[0].isIntersecting) animateCounters();
       }, { threshold: 0.3 }).observe(statsSection);
     }
+  })();
+  </script>
+
+  <!-- Lead Form Handler — sends to Supabase edge function -->
+  <script>
+  (function() {
+    document.querySelectorAll('form[data-endpoint]').forEach(function(form) {
+      form.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        var btn = form.querySelector('button[type=submit]');
+        var originalText = btn.textContent;
+        btn.textContent = 'Sending...';
+        btn.disabled = true;
+
+        var data = {};
+        new FormData(form).forEach(function(val, key) { data[key] = val; });
+        data.source_page = window.location.pathname;
+
+        try {
+          var res = await fetch(form.dataset.endpoint, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+          });
+          var result = await res.json();
+          if (result.success) {
+            form.innerHTML = '<div style="text-align:center;padding:40px 20px"><h3 style="color:var(--gold);margin-bottom:12px">Thank You!</h3><p style="color:var(--white,#333)">We received your request and will call you shortly.</p></div>';
+          } else {
+            btn.textContent = 'Try Again';
+            btn.disabled = false;
+            alert('Something went wrong. Please call us at 435-302-4422.');
+          }
+        } catch (err) {
+          btn.textContent = originalText;
+          btn.disabled = false;
+          alert('Connection error. Please call us at 435-302-4422.');
+        }
+      });
+    });
   })();
   </script>
 

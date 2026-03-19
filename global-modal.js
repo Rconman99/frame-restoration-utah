@@ -50,7 +50,7 @@
     '  <div class="fr-modal-body" id="frModalBody">',
     '    <h2>Get Your Free Roof Inspection</h2>',
     '    <p>No pressure, no obligation. We\'ll call within 15 minutes during business hours.</p>',
-    '    <form id="frModalForm" action="https://formspree.io/f/meeroaqa" method="POST">',
+    '    <form id="frModalForm" data-endpoint="https://hdcflshhomzildwqlmwh.supabase.co/functions/v1/handle-lead">',
     '      <div class="fr-modal-row"><input type="text" name="name" placeholder="Full Name" required autocomplete="name"></div>',
     '      <div class="fr-modal-row"><input type="tel" name="phone" placeholder="Mobile Phone" required autocomplete="tel"></div>',
     '      <div class="fr-modal-row"><input type="email" name="email" placeholder="Email Address" required autocomplete="email"></div>',
