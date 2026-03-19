@@ -387,6 +387,33 @@
     .why-point h4 { font-family: 'Archivo Black', sans-serif; font-size: 18px; text-transform: uppercase; color: var(--navy); margin-bottom: 5px; }
     .why-point p { font-size: 14px; color: var(--gray); line-height: 1.7; }
 
+    /* ─── STATS COUNTER ─── */
+    .stats-section { background: var(--navy); padding: 80px 5%; position: relative; overflow: hidden; }
+    .stats-section::before { content: ''; position: absolute; inset: 0; background: linear-gradient(135deg, rgba(11,64,96,1) 0%, rgba(9,53,82,0.95) 100%); }
+    .stats-grid { position: relative; z-index: 2; display: grid; grid-template-columns: repeat(4, 1fr); gap: 40px; max-width: 1100px; margin: 0 auto; text-align: center; }
+    .stat-item { padding: 20px; }
+    .stat-number { font-family: 'Archivo Black', sans-serif; font-size: clamp(42px, 5vw, 64px); color: var(--gold); line-height: 1; margin-bottom: 8px; }
+    .stat-number .stat-suffix { font-size: 0.5em; vertical-align: super; color: var(--gold); }
+    .stat-label { font-family: 'Archivo Black', sans-serif; font-size: 14px; letter-spacing: 2px; text-transform: uppercase; color: var(--white); margin-bottom: 8px; }
+    .stat-desc { font-size: 13px; color: rgba(255,255,255,0.6); line-height: 1.5; }
+    .stats-divider { width: 1px; background: rgba(225,185,105,0.2); }
+    @media (max-width: 768px) { .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 32px; } }
+    @media (max-width: 480px) { .stats-grid { grid-template-columns: 1fr; gap: 24px; } }
+
+    /* ─── FULL-WIDTH DRONE BREAK ─── */
+    .drone-break { position: relative; height: 400px; overflow: hidden; }
+    .drone-break img { width: 100%; height: 100%; object-fit: cover; object-position: center 40%; display: block; filter: brightness(0.85); }
+    .drone-break-overlay { position: absolute; inset: 0; background: linear-gradient(to right, rgba(11,64,96,0.7), transparent 60%); display: flex; align-items: center; padding: 0 5%; }
+    .drone-break-text { max-width: 500px; }
+    .drone-break-text h2 { font-family: 'Archivo Black', sans-serif; font-size: clamp(28px, 3.5vw, 44px); color: var(--white); text-transform: uppercase; line-height: 1.1; margin-bottom: 16px; }
+    .drone-break-text p { font-size: 16px; color: rgba(255,255,255,0.85); line-height: 1.6; margin-bottom: 24px; }
+    @media (max-width: 768px) { .drone-break { height: 300px; } .drone-break-overlay { background: linear-gradient(to top, rgba(11,64,96,0.8), transparent); align-items: flex-end; padding-bottom: 32px; } }
+
+    /* ─── CTA ARROW ─── */
+    .btn-arrow { display: inline-flex; align-items: center; gap: 10px; }
+    .btn-arrow::after { content: '→'; font-size: 1.1em; transition: transform 0.2s; }
+    .btn-arrow:hover::after { transform: translateX(4px); }
+
     /* ─── VIDEO SHOWCASE ─── */
     #video-showcase { background: var(--white); padding: 0 0 80px; position: relative; }
     .video-curve { width: 100%; line-height: 0; margin-bottom: 0; }
@@ -590,8 +617,8 @@
     <div class="hero-layout">
       <div class="hero-left">
         <div class="hero-actions">
-          <a href="#heroForm" class="btn-primary" onclick="document.getElementById('heroForm').querySelector('input[name=name]').focus();return false;">Free Roof Inspection</a>
-          <a href="tel:+14353024422" class="btn-secondary phone-cta">Tap to Call 435&#8209;302&#8209;4422</a>
+          <a href="#heroForm" class="btn-primary btn-arrow" onclick="document.getElementById('heroForm').querySelector('input[name=name]').focus();return false;">Free Roof Inspection</a>
+          <a href="tel:+14353024422" class="btn-secondary btn-arrow phone-cta">Tap to Call 435&#8209;302&#8209;4422</a>
         </div>
         <ul class="hero-points" aria-label="Why Utah homeowners choose Frame Restoration">
           <li>Uncompromising standards — no corners cut, built to endure.</li>
@@ -602,7 +629,7 @@
       <div class="hero-form-card" aria-label="Request a free roof inspection">
         <h2>Get Your Free Roof Inspection</h2>
         <p>No pressure, no obligation. A specialist will call you within 15 minutes during business hours.</p>
-        <form id="heroForm" action="https://formspree.io/f/meeroaqa" method="POST" class="hero-form">
+        <form id="heroForm" class="hero-form" data-endpoint="https://hdcflshhomzildwqlmwh.supabase.co/functions/v1/handle-lead">
           <div class="form-row"><input type="text" name="name" placeholder="Full Name" required autocomplete="name"></div>
           <div class="form-row"><input type="tel" name="phone" placeholder="Mobile Phone" required autocomplete="tel"></div>
           <div class="form-row"><input type="email" name="email" placeholder="Email Address" required autocomplete="email"></div>
@@ -709,6 +736,44 @@
   </div>
 </section>
 <!-- ───── SERVICES END ───── -->
+
+<!-- ─── STATS COUNTER ─── -->
+<section class="stats-section" aria-label="Company statistics">
+  <div class="stats-grid">
+    <div class="stat-item reveal">
+      <div class="stat-number" data-target="500" data-suffix="+">0<span class="stat-suffix">+</span></div>
+      <div class="stat-label">Roofs Completed</div>
+      <div class="stat-desc">Premium installations across the Wasatch Front</div>
+    </div>
+    <div class="stat-item reveal">
+      <div class="stat-number" data-target="44">0</div>
+      <div class="stat-label">Cities Served</div>
+      <div class="stat-desc">From Ogden to Provo and everywhere between</div>
+    </div>
+    <div class="stat-item reveal">
+      <div class="stat-number" data-target="5" data-decimals="1" data-suffix="★">0<span class="stat-suffix">★</span></div>
+      <div class="stat-label">Google Rating</div>
+      <div class="stat-desc">19 five-star reviews and counting</div>
+    </div>
+    <div class="stat-item reveal">
+      <div class="stat-number" data-target="24" data-suffix="/7">0<span class="stat-suffix">/7</span></div>
+      <div class="stat-label">Emergency Response</div>
+      <div class="stat-desc">Storm damage? We're there when you need us</div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── FULL-WIDTH DRONE BREAK ─── -->
+<div class="drone-break">
+  <img src="/images/projects/heber-valley-roof-aerial.jpg" alt="Aerial view of completed luxury roof by Frame Roofing Utah" loading="lazy" />
+  <div class="drone-break-overlay">
+    <div class="drone-break-text">
+      <h2>See the Difference<br><span style="color:var(--gold)">From Above</span></h2>
+      <p>Every project gets the drone treatment. We document our work because we're proud of it.</p>
+      <a href="/projects/heber-valley-roof" class="btn-primary btn-arrow">View Our Work</a>
+    </div>
+  </div>
+</div>
 
 <!-- ─── GALLERY ─── -->
 <section id="gallery">
@@ -978,12 +1043,8 @@
       </div>
     </div>
     <div class="reveal">
-      <!-- Contact Form — Formspree endpoint: meeroaqa -->
-      <form class="contact-form" id="leadForm"
-            action="https://formspree.io/f/meeroaqa"
-            method="POST">
-        <input type="hidden" name="_next" value="https://www.frameroofingutah.com/thank-you.html" />
-        <input type="hidden" name="_subject" value="New Lead — Frame Roofing Utah" />
+      <!-- Contact Form — Supabase edge function -->
+      <form class="contact-form" id="leadForm" data-endpoint="https://hdcflshhomzildwqlmwh.supabase.co/functions/v1/handle-lead">
         <h3>Request a Free Inspection</h3>
         <div class="form-row">
           <div class="form-group"><label for="fname">First Name</label><input type="text" id="fname" name="first_name" placeholder="John" required /></div>
@@ -1212,6 +1273,85 @@
       });
     });
 
+  })();
+  </script>
+
+  <!-- Stats Counter Animation -->
+  <script>
+  (function() {
+    var counted = false;
+    function animateCounters() {
+      if (counted) return;
+      var stats = document.querySelectorAll('.stat-number[data-target]');
+      if (!stats.length) return;
+      counted = true;
+      stats.forEach(function(el) {
+        var target = parseFloat(el.getAttribute('data-target'));
+        var suffix = el.getAttribute('data-suffix') || '';
+        var decimals = parseInt(el.getAttribute('data-decimals')) || 0;
+        var duration = 2000;
+        var start = 0;
+        var startTime = null;
+        function step(timestamp) {
+          if (!startTime) startTime = timestamp;
+          var progress = Math.min((timestamp - startTime) / duration, 1);
+          var eased = 1 - Math.pow(1 - progress, 3);
+          var current = eased * target;
+          if (decimals > 0) {
+            el.innerHTML = current.toFixed(decimals) + '<span class="stat-suffix">' + suffix + '</span>';
+          } else {
+            el.innerHTML = Math.floor(current).toLocaleString() + '<span class="stat-suffix">' + suffix + '</span>';
+          }
+          if (progress < 1) requestAnimationFrame(step);
+        }
+        requestAnimationFrame(step);
+      });
+    }
+    var statsSection = document.querySelector('.stats-section');
+    if (statsSection && 'IntersectionObserver' in window) {
+      new IntersectionObserver(function(entries) {
+        if (entries[0].isIntersecting) animateCounters();
+      }, { threshold: 0.3 }).observe(statsSection);
+    }
+  })();
+  </script>
+
+  <!-- Lead Form Handler — sends to Supabase edge function -->
+  <script>
+  (function() {
+    document.querySelectorAll('form[data-endpoint]').forEach(function(form) {
+      form.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        var btn = form.querySelector('button[type=submit]');
+        var originalText = btn.textContent;
+        btn.textContent = 'Sending...';
+        btn.disabled = true;
+
+        var data = {};
+        new FormData(form).forEach(function(val, key) { data[key] = val; });
+        data.source_page = window.location.pathname;
+
+        try {
+          var res = await fetch(form.dataset.endpoint, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+          });
+          var result = await res.json();
+          if (result.success) {
+            form.innerHTML = '<div style="text-align:center;padding:40px 20px"><h3 style="color:var(--gold);margin-bottom:12px">Thank You!</h3><p style="color:var(--white,#333)">We received your request and will call you shortly.</p></div>';
+          } else {
+            btn.textContent = 'Try Again';
+            btn.disabled = false;
+            alert('Something went wrong. Please call us at 435-302-4422.');
+          }
+        } catch (err) {
+          btn.textContent = originalText;
+          btn.disabled = false;
+          alert('Connection error. Please call us at 435-302-4422.');
+        }
+      });
+    });
   })();
   </script>
 
