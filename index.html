@@ -342,14 +342,17 @@
     .services-header { text-align: center; margin-bottom: 60px; }
     .services-header .section-sub { margin: 0 auto; }
     .services-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; background: var(--light-gray); }
-    .service-card { background: var(--white); padding: 48px 36px; position: relative; overflow: hidden; transition: all 0.3s; }
+    .service-card { background: var(--white); position: relative; overflow: hidden; transition: all 0.3s; }
     .service-card::after { content: ''; position: absolute; bottom: 0; left: 0; width: 0; height: 3px; background: var(--gold); transition: width 0.4s ease; }
     .service-card:hover::after { width: 100%; }
     .service-card:hover { transform: translateY(-4px); box-shadow: 0 16px 48px rgba(11,64,96,0.10); }
-    .service-icon { width: 60px; height: 60px; background: var(--navy); display: flex; align-items: center; justify-content: center; margin-bottom: 24px; border-radius: 2px; transition: transform 0.3s; }
-    .service-icon svg { width: 28px; height: 28px; }
-    .service-card h3 { font-family: 'Archivo Black', sans-serif; font-size: 22px; font-weight: 600; color: var(--navy); text-transform: uppercase; margin-bottom: 12px; }
-    .service-card p { font-size: 15px; color: var(--gray); line-height: 1.7; }
+    .service-card-img { width: 100%; height: 200px; object-fit: cover; display: block; transition: transform 0.5s ease; }
+    .service-card:hover .service-card-img { transform: scale(1.05); }
+    .service-card-body { padding: 28px 32px 36px; }
+    .service-icon { width: 48px; height: 48px; background: var(--navy); display: flex; align-items: center; justify-content: center; margin-bottom: 16px; border-radius: 2px; transition: transform 0.3s; margin-top: -36px; position: relative; z-index: 2; box-shadow: 0 4px 12px rgba(11,64,96,0.25); }
+    .service-icon svg { width: 24px; height: 24px; }
+    .service-card h3 { font-family: 'Archivo Black', sans-serif; font-size: 20px; font-weight: 600; color: var(--navy); text-transform: uppercase; margin-bottom: 10px; }
+    .service-card p { font-size: 14px; color: var(--gray); line-height: 1.7; }
     .service-card-link { display: block; text-decoration: none; color: inherit; }
     .service-card-link:hover .service-card { transform: translateY(-8px); box-shadow: 0 20px 50px rgba(11,64,96,0.25); }
     .service-card-link:hover .service-icon { transform: scale(1.1); }
@@ -517,7 +520,8 @@
       .testimonial-text { font-size: 16px; }
       /* Services grid — 2 columns on tablets */
       .services-grid { grid-template-columns: repeat(2, 1fr); }
-      .service-card { padding: 36px 28px; }
+      .service-card-img { height: 180px; }
+      .service-card-body { padding: 24px 24px 28px; }
     }
     @media (max-width: 600px) {
       .trust-bar { gap: 10px; padding: 20px 8%; flex-direction: column; align-items: flex-start; justify-content: flex-start; }
@@ -644,44 +648,62 @@
   <div class="services-grid">
     <a href="/pages/residential-roofing" class="service-card-link">
       <div class="service-card reveal">
-        <div class="service-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="#E1B969" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>
-        <h3>Residential Roofing</h3>
-        <p><strong>Premium reroofs and full replacements</strong> for Utah homes. Shingles, standing seam metal, Presidential and Shake style shingles — beautiful craftsmanship built to endure Utah's mountain climate.</p>
+        <img src="/images/services/residential.jpg" alt="Premium residential roofing installation on Utah luxury home" class="service-card-img" loading="lazy" />
+        <div class="service-card-body">
+          <div class="service-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="#E1B969" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>
+          <h3>Residential Roofing</h3>
+          <p><strong>Premium reroofs and full replacements</strong> for Utah homes. Shingles, standing seam metal, Presidential and Shake style shingles — beautiful craftsmanship built to endure Utah's mountain climate.</p>
+        </div>
       </div>
     </a>
     <a href="/pages/storm-damage-restoration" class="service-card-link">
       <div class="service-card reveal">
-        <div class="service-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="#E1B969" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
-        <h3>Storm Damage Restoration</h3>
-        <p><strong>Utah hail, wind, and snow damage specialists.</strong> We work directly with your insurance company to get your claim approved and your roof restored fast — transparent, upfront estimates.</p>
+        <img src="/images/services/storm-damage.jpg" alt="Crew performing storm damage roof tear-off and repair" class="service-card-img" loading="lazy" />
+        <div class="service-card-body">
+          <div class="service-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="#E1B969" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+          <h3>Storm Damage Restoration</h3>
+          <p><strong>Utah hail, wind, and snow damage specialists.</strong> We work directly with your insurance company to get your claim approved and your roof restored fast — transparent, upfront estimates.</p>
+        </div>
       </div>
     </a>
     <a href="/pages/commercial-roofing" class="service-card-link">
       <div class="service-card reveal">
-        <div class="service-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="#E1B969" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/></svg></div>
-        <h3>Commercial Roofing</h3>
-        <p>Large-scale flat roofing, TPO, EPDM, and metal systems for Utah businesses, HOAs, industrial facilities, and multifamily properties across the Wasatch Front.</p>
+        <img src="/images/services/commercial.jpg" alt="Standing seam metal roof installation for commercial building" class="service-card-img" loading="lazy" />
+        <div class="service-card-body">
+          <div class="service-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="#E1B969" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/></svg></div>
+          <h3>Commercial Roofing</h3>
+          <p>Large-scale flat roofing, TPO, EPDM, and metal systems for Utah businesses, HOAs, industrial facilities, and multifamily properties across the Wasatch Front.</p>
+        </div>
       </div>
     </a>
     <a href="/pages/gutters" class="service-card-link">
       <div class="service-card reveal">
-        <div class="service-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="#E1B969" stroke-width="2"><path d="M12 2.69l5.66 5.66a8 8 0 11-11.31 0z"/></svg></div>
-        <h3>Gutters &amp; Gutter Guards</h3>
-        <p><strong>Seamless aluminum, copper, and steel gutter systems</strong> with premium gutter guards. Protect your Utah home from water damage with expert installation and a 10&#8209;year workmanship warranty.</p>
+        <img src="/images/services/gutters.jpg" alt="Completed roof with clean gutter lines and premium shingles" class="service-card-img" loading="lazy" />
+        <div class="service-card-body">
+          <div class="service-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="#E1B969" stroke-width="2"><path d="M12 2.69l5.66 5.66a8 8 0 11-11.31 0z"/></svg></div>
+          <h3>Gutters &amp; Gutter Guards</h3>
+          <p><strong>Seamless aluminum, copper, and steel gutter systems</strong> with premium gutter guards. Protect your Utah home from water damage with expert installation and a 10&#8209;year workmanship warranty.</p>
+        </div>
       </div>
     </a>
     <a href="/pages/water-fire-flood-restoration" class="service-card-link">
       <div class="service-card reveal">
-        <div class="service-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="#E1B969" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg></div>
-        <h3>Water, Fire &amp; Flood Restoration</h3>
-        <p>24/7 emergency restoration for water intrusion, fire damage, and flooding. We mitigate fast and restore your Utah property to pre-loss condition, start to finish.</p>
+        <img src="/images/services/restoration.jpg" alt="Frame Roofing Utah work truck and trailer at emergency restoration job site" class="service-card-img" loading="lazy" />
+        <div class="service-card-body">
+          <div class="service-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="#E1B969" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg></div>
+          <h3>Water, Fire &amp; Flood Restoration</h3>
+          <p>24/7 emergency restoration for water intrusion, fire damage, and flooding. We mitigate fast and restore your Utah property to pre-loss condition, start to finish.</p>
+        </div>
       </div>
     </a>
     <a href="/pages/solar-installation" class="service-card-link">
       <div class="service-card reveal">
-        <div class="service-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="#E1B969" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg></div>
-        <h3>Solar Installation</h3>
-        <p>Maximize Utah's 300+ annual sunny days. Roof-integrated solar systems that protect your roof while slashing energy bills for homeowners across the Salt Lake Valley.</p>
+        <img src="/images/services/solar.jpg" alt="Clean roof surface ready for solar panel installation with Utah mountains" class="service-card-img" loading="lazy" />
+        <div class="service-card-body">
+          <div class="service-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="#E1B969" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg></div>
+          <h3>Solar Installation</h3>
+          <p>Maximize Utah's 300+ annual sunny days. Roof-integrated solar systems that protect your roof while slashing energy bills for homeowners across the Salt Lake Valley.</p>
+        </div>
       </div>
     </a>
   </div>
