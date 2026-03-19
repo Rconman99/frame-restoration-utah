@@ -24,6 +24,10 @@
         {
           "key": "Permissions-Policy",
           "value": "camera=(), microphone=(), geolocation=()"
+        },
+        {
+          "key": "Strict-Transport-Security",
+          "value": "max-age=63072000; includeSubDomains; preload"
         }
       ]
     },
@@ -68,6 +72,21 @@
     {
       "source": "/home",
       "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/hero",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/services",
+      "destination": "/#services",
+      "permanent": true
+    },
+    {
+      "source": "/pages/storm-damage",
+      "destination": "/pages/storm-damage-restoration",
       "permanent": true
     }
   ]

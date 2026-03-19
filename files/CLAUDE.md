@@ -294,7 +294,7 @@ const homeFAQs = [
   { question: "Do you offer free inspections in Salt Lake City?", answer: "Yes — 100% free, no-obligation roof inspections across the entire Salt Lake Valley and Wasatch Front. From Bountiful and Layton in the north to Provo and Payson in the south. Call 435-302-4422 or schedule online." },
   { question: "What areas does Frame Restoration Utah serve?", answer: "We serve 40+ communities across the Wasatch Front including Salt Lake City, West Jordan, Sandy, Draper, Murray, Cottonwood Heights, Bountiful, Layton, Lehi, Orem, Provo, and more. Our home base is Heber City, UT." },
   { question: "What warranty do you offer on roofing work?", answer: "We back every job with a 5-year workmanship warranty plus lifetime material warranties from our manufacturer partners. If any issue with our work arises, we return and fix it at no charge." },
-  { question: "Is Frame Restoration Utah licensed and insured?", answer: "Yes. Fully licensed and insured in Utah. Part of the Frame Restoration network which holds an A+ BBB rating and NTRCA membership earned since 2014 in the Dallas-Fort Worth market." },
+  { question: "Is Frame Restoration Utah licensed and insured?", answer: "Yes. Fully licensed and insured in Utah. Part of the Frame Restoration network which holds an A+ BBB rating and NRCA membership earned since 2014 in the Dallas-Fort Worth market." },
   { question: "Do you handle emergency storm damage in Utah?", answer: "Yes. We provide 24/7 emergency response for storm, hail, wind, and snow damage across the Wasatch Front. Call 435-302-4422 any time for urgent roof tarping, leak mitigation, and damage assessment." }
 ]
 ```
@@ -362,7 +362,7 @@ export default function LocationPage({ params }: { params: { city: string } }) {
             <li>Insurance claim experts — we work directly with Utah adjusters</li>
             <li>5-year workmanship warranty on all roofing work</li>
             <li>24/7 emergency storm response in {city.county}</li>
-            <li>A+ BBB rating | NTRCA member | Fully licensed & insured in Utah</li>
+            <li>A+ BBB rating | NRCA member | Fully licensed & insured in Utah</li>
           </ul>
         </section>
 
