@@ -30,7 +30,7 @@ nav {
   padding: 0 5%; height: 76px;
   padding-top: env(safe-area-inset-top, 0px);
 }
-.nav-logo img { height: 60px; width: auto; }
+.nav-logo img { height: 54px; width: auto; max-width: 280px; }
 .nav-links { display: flex; gap: 24px; list-style: none; align-items: center; }
 .nav-links a { color: var(--navy); text-decoration: none; font-family: 'Archivo Black', sans-serif; font-size: 14px; letter-spacing: 1px; text-transform: uppercase; transition: color 0.2s; }
 .nav-links a:hover { color: var(--gold); }
