@@ -27,10 +27,10 @@ nav {
   background: var(--white); box-shadow: 0 2px 8px rgba(0,0,0,0.08);
   border-bottom: none;
   display: flex; align-items: center; justify-content: space-between;
-  padding: 0 5%; height: 76px;
+  padding: 0 5%; height: 90px;
   padding-top: env(safe-area-inset-top, 0px);
 }
-.nav-logo img { height: 54px; width: auto; max-width: 280px; }
+.nav-logo img { height: 72px; width: auto; max-width: 360px; }
 .nav-links { display: flex; gap: 24px; list-style: none; align-items: center; }
 .nav-links a { color: var(--navy); text-decoration: none; font-family: 'Archivo Black', sans-serif; font-size: 14px; letter-spacing: 1px; text-transform: uppercase; transition: color 0.2s; }
 .nav-links a:hover { color: var(--gold); }
@@ -56,7 +56,7 @@ section { padding: 90px 5%; }
 .btn-navy:hover { background: var(--navy-mid); transform: translateY(-2px); }
 
 /* ─── PAGE HERO (subpages) ─── */
-.page-hero { min-height: 50vh; position: relative; display: flex; align-items: center; background: var(--navy); padding-top: 76px; }
+.page-hero { min-height: 50vh; position: relative; display: flex; align-items: center; background: var(--navy); padding-top: 90px; }
 .page-hero-overlay { position: absolute; inset: 0; background: linear-gradient(135deg, rgba(11,64,96,0.95) 40%, rgba(11,64,96,0.75)); }
 .page-hero-img { position: absolute; inset: 0; }
 .page-hero-img img { width: 100%; height: 100%; object-fit: cover; opacity: 0.2; }
