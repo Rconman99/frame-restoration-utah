@@ -6,7 +6,7 @@
 
   <!-- SEO: Title 55 chars, keyword-first, Utah-specific -->
   <title>Frame Roofing Utah | Premium Roof Replacement & Storm Repair</title>
-  <meta name="description" content="Utah's premium roofing contractor. Expert roof replacement, storm damage repair & free inspections across Salt Lake City, Park City, Heber City & the Wasatch Front. Call 435-292-8802." />
+  <meta name="description" content="Utah's premium roofing contractor. Expert roof replacement, storm damage repair & free inspections across Salt Lake City, Park City, Heber City & the Wasatch Front. Call 435-302-4422." />
 
   <!-- Geo meta tags -->
   <meta name="geo.region" content="US-UT" />
@@ -19,7 +19,7 @@
 
   <!-- Open Graph -->
   <meta property="og:title" content="Frame Roofing Utah | Premium Roof Replacement & Storm Repair" />
-  <meta property="og:description" content="Expert roof replacement, storm damage repair & free inspections across Utah's Wasatch Front. Heber City based, serving 44 communities. Call 435-292-8802." />
+  <meta property="og:description" content="Expert roof replacement, storm damage repair & free inspections across Utah's Wasatch Front. Heber City based, serving 44 communities. Call 435-302-4422." />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://www.frameroofingutah.com/" />
   <meta property="og:image" content="https://www.frameroofingutah.com/images/og-image.jpg" />
@@ -31,7 +31,7 @@
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="Frame Roofing Utah | Premium Roof Replacement & Storm Repair" />
-  <meta name="twitter:description" content="Expert roof replacement, storm damage repair & free inspections across Utah's Wasatch Front. Call 435-292-8802." />
+  <meta name="twitter:description" content="Expert roof replacement, storm damage repair & free inspections across Utah's Wasatch Front. Call 435-302-4422." />
   <meta name="twitter:image" content="https://www.frameroofingutah.com/images/og-image.jpg" />
 
   <!-- Robots -->
@@ -141,22 +141,6 @@
       "https://www.bbb.org/",
       "https://www.google.com/maps/place/Frame+Restoration+Utah/@40.5069,-111.4133,17z/"
     ],
-    "hasCredential": [
-      {
-        "@type": "EducationalOccupationalCredential",
-        "credentialCategory": "license",
-        "name": "Utah DOPL Contractor License",
-        "recognizedBy": {
-          "@type": "GovernmentOrganization",
-          "name": "Utah Division of Professional Licensing (DOPL)"
-        },
-        "identifier": "14256097-5501",
-        "validIn": {
-          "@type": "AdministrativeArea",
-          "name": "Utah"
-        }
-      }
-    ],
     "aggregateRating": {
       "@type": "AggregateRating",
       "ratingValue": "5",
@@ -229,7 +213,15 @@
         "name": "Is Frame Roofing Utah licensed and insured?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Yes. Frame Roofing Utah is fully licensed and insured in Utah. Utah DOPL License #14256097-5501 — active and verifiable. A+ BBB rating and NRCA membership earned since 2014. Lien Recovery Fund member."
+          "text": "Yes. Frame Restoration Utah LLC is fully licensed and insured in Utah (DOPL License #14256097-5501). We carry comprehensive general liability insurance and workers' compensation coverage on every project. A+ BBB rated and NRCA member since 2014."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Do you offer financing for roofing projects?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. We partner with Wisetack to offer flexible financing on all roofing and restoration projects. Get pre-qualified in minutes with no credit impact. Loans from $500 to $100,000, terms up to 60 months, no prepayment penalties."
         }
       },
       {
@@ -259,7 +251,8 @@
         "@type": "ImageObject",
         "url": "https://www.frameroofingutah.com/logo.png"
       }
-    }
+    },
+
   }
   </script>
 
@@ -416,6 +409,19 @@
     @media (max-width: 480px) { .stats-grid { grid-template-columns: 1fr; gap: 24px; } }
 
     /* ─── FULL-WIDTH DRONE BREAK ─── */
+    /* ─── FINANCING SECTION ─── */
+    .financing-section { background: var(--off-white); padding: 100px 5%; }
+    .financing-inner { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: 1fr 300px; gap: 60px; align-items: center; }
+    .financing-text p { font-size: 17px; line-height: 1.7; color: var(--gray); margin-top: 16px; }
+    .financing-features { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 24px; }
+    .financing-feat { display: flex; align-items: center; gap: 10px; font-size: 15px; font-weight: 600; color: var(--navy); }
+    .financing-badge { display: flex; justify-content: center; }
+    .financing-badge-inner { background: var(--navy); border: 3px solid var(--gold); padding: 40px 32px; text-align: center; max-width: 260px; }
+    .financing-badge-text { font-size: 13px; color: rgba(255,255,255,0.6); text-transform: uppercase; letter-spacing: 2px; margin-top: 20px; }
+    .financing-badge-brand { font-family: 'Archivo Black', sans-serif; font-size: 28px; color: var(--gold); margin: 4px 0 12px; }
+    .financing-badge-sub { font-size: 14px; color: rgba(255,255,255,0.8); line-height: 1.5; }
+    @media (max-width: 768px) { .financing-inner { grid-template-columns: 1fr; gap: 40px; } .financing-features { grid-template-columns: 1fr; } .financing-badge-inner { max-width: 100%; } }
+
     .drone-break { position: relative; height: 400px; overflow: hidden; }
     .drone-break img { width: 100%; height: 100%; object-fit: cover; object-position: center 40%; display: block; filter: brightness(0.85); }
     .drone-break-overlay { position: absolute; inset: 0; background: linear-gradient(to right, rgba(11,64,96,0.7), transparent 60%); display: flex; align-items: center; padding: 0 5%; }
@@ -585,11 +591,7 @@
     }
   </style>
   <script src="/global-modal.js" defer></script>
-  <script>
-    !function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.crossOrigin="anonymous",p.async=!0,p.src=s.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+".people (stub)"},o="init capture register register_once register_for_session unregister unregister_for_session getFeatureFlag getFeatureFlagPayload isFeatureEnabled reloadFeatureFlags updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures on onFeatureFlags onSessionId getSurveys getActiveMatchingSurveys renderSurvey canRenderSurvey identify setPersonProperties group resetGroups setPersonPropertiesForFlags resetPersonPropertiesForFlags setGroupPropertiesForFlags resetGroupPropertiesForFlags reset get_distinct_id getGroups get_session_id get_session_replay_url alias set_config startSessionRecording stopSessionRecording sessionRecordingStarted captureException loadToolbar get_property getSessionProperty createPersonProfile opt_in_capturing opt_out_capturing has_opted_in_capturing has_opted_out_capturing clear_opt_in_out_capturing debug getPageviewId".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
-    posthog.init('phc_BnECzlZ2OeDujli2dbqcgGODXlv2tYERbp40dTF7UBV',{api_host:'https://us.i.posthog.com', person_profiles: 'identified_only'})
-  </script>
-  </head>
+</head>
 <body>
 
 <!-- Skip to main content (accessibility) -->
@@ -611,7 +613,7 @@
     <li><a href="#areas">Service Areas</a></li>
     <li><a href="#faq">FAQ</a></li>
     <li><a href="#contact">Contact</a></li>
-    <li><a href="tel:+14352928802" class="nav-phone">435-292-8802</a></li>
+    <li><a href="tel:+14353024422" class="nav-phone">435-302-4422</a></li>
     <li><a href="#heroForm" class="nav-cta" onclick="document.getElementById('heroForm').querySelector('input[name=name]').focus();return false;">Free Inspection</a></li>
   </ul>
   <button class="mobile-btn" id="menuBtn" aria-label="Toggle navigation" aria-expanded="false" aria-controls="navLinks">
@@ -637,9 +639,9 @@
       <div class="hero-left">
         <div class="hero-actions">
           <a href="#heroForm" class="btn-primary btn-arrow" onclick="document.getElementById('heroForm').querySelector('input[name=name]').focus();return false;">Free Roof Inspection</a>
-          <a href="tel:+14352928802" class="btn-secondary btn-arrow phone-cta">Tap to Call 435-292-8802</a>
+          <a href="tel:+14353024422" class="btn-secondary btn-arrow phone-cta">Tap to Call 435&#8209;302&#8209;4422</a>
         </div>
-        <ul class="hero-points" aria-label="Why Utah homeowners choose Frame Roofing Utah">
+        <ul class="hero-points" aria-label="Why Utah homeowners choose Frame Restoration">
           <li>Uncompromising standards — no corners cut, built to endure.</li>
           <li>Local, licensed &amp; invested in your neighborhood.</li>
           <li>Frictionless experience — fast, easy, beautiful craftsmanship.</li>
@@ -678,10 +680,11 @@
 <!-- ─── TRUST BAR ─── -->
 <div class="trust-bar" role="list" aria-label="Trust signals — Utah Roofing Contractor">
   <div class="trust-item" role="listitem"><div class="trust-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="#E1B969"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></div><strong>BBB A+ Rated</strong></div>
-  <div class="trust-item" role="listitem"><div class="trust-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="#E1B969" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div><strong>Utah DOPL License #14256097-5501 &mdash; Active | Lien Recovery Fund Member</strong></div>
+  <div class="trust-item" role="listitem"><div class="trust-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="#E1B969" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div><strong>Licensed &amp; Insured in Utah</strong></div>
   <div class="trust-item" role="listitem"><div class="trust-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="#E1B969" stroke-width="2.5"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div><strong>Free Roof Inspections</strong></div>
   <div class="trust-item" role="listitem"><div class="trust-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="#E1B969" stroke-width="2.5"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg></div><strong>24/7 Storm Response</strong></div>
   <div class="trust-item" role="listitem"><div class="trust-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="#E1B969" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M8 12l2.5 2.5L16 9"/></svg></div><strong>NRCA Member Since 2014</strong></div>
+  <div class="trust-item" role="listitem"><div class="trust-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="#E1B969"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17.93c-.52.07-1.06.07-1.58 0A7.987 7.987 0 014 12c0-4.41 3.59-8 8-8s8 3.59 8 8a7.987 7.987 0 01-7 7.93zM12.5 7H11v6l5.25 3.15.75-1.23-4.5-2.67V7z"/></svg></div><strong>Financing Available</strong></div>
 </div>
 
 <!-- ───── SERVICES START ───── -->
@@ -760,7 +763,7 @@
 <section class="stats-section" aria-label="Company statistics">
   <div class="stats-grid">
     <div class="stat-item reveal">
-      <div class="stat-number" data-target="12" data-suffix="+">0<span class="stat-suffix">+</span></div>
+      <div class="stat-number" data-target="10" data-suffix="+">0<span class="stat-suffix">+</span></div>
       <div class="stat-label">Years Experience</div>
       <div class="stat-desc">Trusted roofing expertise you can count on</div>
     </div>
@@ -778,6 +781,32 @@
       <div class="stat-number" data-target="24" data-suffix="/7">0<span class="stat-suffix">/7</span></div>
       <div class="stat-label">Emergency Response</div>
       <div class="stat-desc">Storm damage? We're there when you need us</div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── FINANCING CTA ─── -->
+<section class="financing-section" aria-label="Financing options">
+  <div class="financing-inner reveal">
+    <div class="financing-text">
+      <span class="section-label">Flexible Payment Options</span>
+      <h2 class="section-title" style="color:var(--navy);">Quality Roofing,<br><span style="color:var(--gold);">Affordable Payments</span></h2>
+      <p>Don't let budget stop you from protecting your home. We've partnered with <strong>Wisetack</strong> to offer easy, affordable financing on all roofing and restoration projects. Get pre-qualified in minutes with no impact to your credit score.</p>
+      <div class="financing-features">
+        <div class="financing-feat"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="var(--gold)" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M8 12l2.5 2.5L16 9"/></svg> Loans from $500–$100,000</div>
+        <div class="financing-feat"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="var(--gold)" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M8 12l2.5 2.5L16 9"/></svg> Terms up to 60 months</div>
+        <div class="financing-feat"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="var(--gold)" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M8 12l2.5 2.5L16 9"/></svg> No prepayment penalties</div>
+        <div class="financing-feat"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="var(--gold)" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M8 12l2.5 2.5L16 9"/></svg> Quick pre-qualification — no credit impact</div>
+      </div>
+      <a href="#contact" class="btn-primary btn-arrow" style="margin-top:24px;">Get a Free Quote + Financing Options →</a>
+    </div>
+    <div class="financing-badge">
+      <div class="financing-badge-inner">
+        <svg viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="var(--gold)" stroke-width="1.5"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+        <div class="financing-badge-text">Powered by</div>
+        <div class="financing-badge-brand">Wisetack</div>
+        <div class="financing-badge-sub">Customer financing<br>people actually love</div>
+      </div>
     </div>
   </div>
 </section>
@@ -801,11 +830,11 @@
     <h2 class="section-title">Utah Projects &amp; Completed Work</h2>
   </div>
   <div class="gallery-grid">
-    <div class="gallery-item"><img src="/images/photos/frame-restoration-26.jpg" alt="Completed architectural shingle roof with complex roofline in Utah" loading="lazy" width="600" height="520" /></div>
-    <div class="gallery-item"><img src="/images/photos/frame-restoration-28.jpg" alt="Frame Roofing Utah crew installing shingles on roof with nail gun" loading="lazy" width="600" height="260" /></div>
-    <div class="gallery-item"><img src="/images/photos/frame-restoration-33.jpg" alt="Roof tear-off in progress showing exposed decking and crew working" loading="lazy" width="600" height="260" /></div>
-    <div class="gallery-item"><img src="/images/photos/frame-restoration-25.jpg" alt="Cedar shake roof close-up showing natural wood texture and ridgeline" loading="lazy" width="600" height="260" /></div>
-    <div class="gallery-item"><img src="/images/photos/frame-restoration-29.jpg" alt="Completed shingle roof from above showing clean lines and vent placement" loading="lazy" width="600" height="260" /></div>
+    <div class="gallery-item"><img src="/images/photos/frame-restoration-08.jpg" alt="Completed gray shingle roof installation in Utah with mountain views" loading="lazy" width="600" height="520" /></div>
+    <div class="gallery-item"><img src="/images/photos/frame-restoration-21.jpg" alt="Aerial view of finished residential roof replacement in rural Utah" loading="lazy" width="600" height="260" /></div>
+    <div class="gallery-item"><img src="/images/photos/frame-restoration-04.jpg" alt="Frame Restoration crew working on residential roof replacement in Utah" loading="lazy" width="600" height="260" /></div>
+    <div class="gallery-item"><img src="/images/photos/frame-restoration-16.jpg" alt="Completed gray shingle roof with mountains in background" loading="lazy" width="600" height="260" /></div>
+    <div class="gallery-item"><img src="/images/projects/heber-valley-roof-front.jpg" alt="Completed luxury home roof with crew and equipment in Heber Valley" loading="lazy" width="600" height="260" /></div>
   </div>
 </section>
 
@@ -825,7 +854,7 @@
       </video>
     </div>
     <div class="video-headline reveal">
-      <h2><span class="gold">Frame Roofing Utah</span> Is Your Trusted Local Roofing Company and General Contractor.</h2>
+      <h2><span class="gold">Frame Restoration</span> Is Your Trusted Local Roofing Company and General Contractor.</h2>
     </div>
   </div>
 </section>
@@ -835,11 +864,11 @@
   <div class="why-grid">
     <div class="why-img reveal">
       <img src="/images/photos/frame-restoration-03.jpg"
-           alt="Stone and wood Utah home with completed green shingle roof by Frame Roofing Utah" width="600" height="500" loading="lazy" />
+           alt="Stone and wood Utah home with completed green shingle roof by Frame Restoration" width="600" height="500" loading="lazy" />
       <div class="why-badge" aria-hidden="true"><div class="num">100%</div><div class="lbl">Satisfaction<br>Guarantee</div></div>
     </div>
     <div class="reveal">
-      <span class="section-label">Why Frame Roofing Utah</span>
+      <span class="section-label">Why Frame Restoration</span>
       <h2 class="section-title">The Frame<br />Difference</h2>
       <p class="section-sub">Uncompromising standards. No corners cut. Roofs built to endure.</p>
       <div class="why-points">
@@ -857,7 +886,7 @@
   <div class="testimonials-header reveal">
     <span class="section-label">What Utah Homeowners Say</span>
     <h2 class="section-title">Real Reviews.<br />Real Results.</h2>
-    <p class="section-sub">From the Salt Lake Valley to the Wasatch Back — hear from Utah homeowners who trusted Frame Roofing Utah.</p>
+    <p class="section-sub">From the Salt Lake Valley to the Wasatch Back — hear from Utah homeowners who trusted Frame Restoration.</p>
   </div>
   <div class="testimonials-grid">
     <div class="testimonial-card reveal">
@@ -904,7 +933,7 @@
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
       ★★★★★ 5.0 &nbsp;See All 19 Google Reviews →
     </a>
-    <!-- TODO: Once Google Place ID is available, replace with Elfsight widget or Google Reviews API embed -->
+    <!-- TODO: Once customer provides Google Place ID, replace this link with an Elfsight widget or Google Reviews API embed -->
   </div>
 </section>
 
@@ -997,7 +1026,7 @@
   <p class="reveal">No pressure. No obligation. Just honest answers from Utah's roofing experts.</p>
   <div class="reveal">
     <a href="https://calendar.app.google/cR4bBSWfb9TQ28UF8" target="_blank" rel="noopener" class="btn-navy">Schedule Online</a>
-    <a href="tel:+14352928802" class="btn-outline-navy">Call 435-292-8802</a>
+    <a href="tel:+14353024422" class="btn-outline-navy">Call 435-302-4422</a>
   </div>
 </section>
 
@@ -1010,12 +1039,12 @@
   </div>
   <div class="faq-grid">
     <div class="faq-item">
-      <div class="faq-q" role="button" tabindex="0" aria-expanded="false">Does Frame Roofing Utah work with insurance?<span class="faq-toggle" aria-hidden="true">+</span></div>
+      <div class="faq-q" role="button" tabindex="0" aria-expanded="false">Does Frame Restoration work with insurance?<span class="faq-toggle" aria-hidden="true">+</span></div>
       <div class="faq-a">Yes. We specialize in insurance claim navigation. We document all storm and hail damage, work directly with your adjuster, and help ensure you receive the full payout you're entitled to. We've helped hundreds of Utah homeowners get claims approved.</div>
     </div>
     <div class="faq-item">
       <div class="faq-q" role="button" tabindex="0" aria-expanded="false">Do you offer free inspections in Salt Lake City?<span class="faq-toggle" aria-hidden="true">+</span></div>
-      <div class="faq-a">Yes — 100% free, no-obligation roof inspections across the entire Salt Lake Valley and Wasatch Front. From Bountiful and Layton in the north to Provo and Payson in the south. Call 435-292-8802 or schedule online.</div>
+      <div class="faq-a">Yes — 100% free, no-obligation roof inspections across the entire Salt Lake Valley and Wasatch Front. From Bountiful and Layton in the north to Provo and Payson in the south. Call 435-302-4422 or schedule online.</div>
     </div>
     <div class="faq-item">
       <div class="faq-q" role="button" tabindex="0" aria-expanded="false">What areas does Frame Roofing Utah serve?<span class="faq-toggle" aria-hidden="true">+</span></div>
@@ -1027,11 +1056,15 @@
     </div>
     <div class="faq-item">
       <div class="faq-q" role="button" tabindex="0" aria-expanded="false">Is Frame Roofing Utah licensed and insured?<span class="faq-toggle" aria-hidden="true">+</span></div>
-      <div class="faq-a">Yes. Fully licensed and insured in Utah. Frame Roofing Utah holds an A+ BBB rating and NRCA membership. We carry full liability and workers' compensation coverage on every project.</div>
+      <div class="faq-a">Yes. Frame Restoration Utah LLC is fully licensed and insured in the state of Utah (DOPL License #14256097-5501). We carry comprehensive general liability insurance and workers' compensation coverage on every project — verified by ACORD certificate on file with the Utah Division of Occupational and Professional Licensing. A+ BBB rated and NRCA member since 2014.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" role="button" tabindex="0" aria-expanded="false">Do you offer financing for roofing projects?<span class="faq-toggle" aria-hidden="true">+</span></div>
+      <div class="faq-a">Yes! We've partnered with Wisetack to offer flexible financing on all roofing and restoration projects. Get pre-qualified in minutes with no impact to your credit score. Loan amounts from $500 to $100,000 with terms up to 60 months and no prepayment penalties. Ask about financing options during your free inspection.</div>
     </div>
     <div class="faq-item">
       <div class="faq-q" role="button" tabindex="0" aria-expanded="false">Do you handle emergency storm damage in Utah?<span class="faq-toggle" aria-hidden="true">+</span></div>
-      <div class="faq-a">Yes. We provide 24/7 emergency response for storm, hail, wind, and snow damage across the Wasatch Front. Call 435-292-8802 any time for urgent roof tarping, leak mitigation, and damage assessment.</div>
+      <div class="faq-a">Yes. We provide 24/7 emergency response for storm, hail, wind, and snow damage across the Wasatch Front. Call 435-302-4422 any time for urgent roof tarping, leak mitigation, and damage assessment.</div>
     </div>
   </div>
 </section>
@@ -1041,7 +1074,7 @@
   <div class="contact-grid">
     <div class="reveal">
       <span class="section-label">Get In Touch</span>
-      <h2 class="section-title">Contact Frame<br />Roofing Utah</h2>
+      <h2 class="section-title">Contact Frame<br />Restoration Utah</h2>
       <div style="margin-top:36px">
         <div class="contact-detail">
           <div class="contact-detail-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="#E1B969" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg></div>
@@ -1049,7 +1082,7 @@
         </div>
         <div class="contact-detail">
           <div class="contact-detail-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="#E1B969" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 10.8 19.79 19.79 0 01.03 2.18 2 2 0 012 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 14.92z"/></svg></div>
-          <div><h5>Phone</h5><a href="tel:+14352928802">435-292-8802</a></div>
+          <div><h5>Phone</h5><a href="tel:+14353024422">435-302-4422</a></div>
         </div>
         <div class="contact-detail">
           <div class="contact-detail-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="#E1B969" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div>
@@ -1150,7 +1183,7 @@
     <div class="footer-col">
       <h4>Contact</h4>
       <ul>
-        <li><a href="tel:+14352928802">435-292-8802</a></li>
+        <li><a href="tel:+14353024422">435-302-4422</a></li>
         <li><a href="mailto:sales@framerestorations.com">sales@framerestorations.com</a></li>
         <li><a href="#contact">142 S Main St, Heber City UT</a></li>
         <li><a href="https://www.framerestorations.com/" target="_blank" rel="noopener">Frame Restoration →</a></li>
@@ -1158,7 +1191,7 @@
     </div>
   </div>
   <div class="footer-bottom">
-    <span>© 2026 Frame Roofing Utah. All rights reserved. | Utah DOPL License #14256097-5501 &mdash; Active | Lien Recovery Fund Member</span>
+    <span>© 2026 Frame Roofing Utah. All rights reserved. | Licensed &amp; Insured in Utah</span>
     <span>
       <a href="/privacy">Privacy Policy</a> &nbsp;|&nbsp;
       <a href="/terms">Terms of Service</a> &nbsp;|&nbsp;
@@ -1170,9 +1203,9 @@
 
 <!-- ─── STICKY MOBILE CALL BAR ─── -->
 <div class="sticky-call" role="complementary" aria-label="Call us">
-  <a href="tel:+14352928802">
+  <a href="tel:+14353024422">
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 10.8 19.79 19.79 0 01.03 2.18 2 2 0 012 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 14.92z"/></svg>
-    Call Now — 435-292-8802 — Free Inspection
+    Call Now — 435-302-4422 — Free Inspection
   </a>
 </div>
 
@@ -1238,7 +1271,7 @@
     document.querySelectorAll('a[href^="tel:"]').forEach(function(a) {
       a.addEventListener('click', function() {
         if (window.dataLayer) {
-          window.dataLayer.push({ event: 'phone_click', phone_number: '435-292-8802' });
+          window.dataLayer.push({ event: 'phone_click', phone_number: '435-302-4422' });
         }
       });
     });
@@ -1252,23 +1285,23 @@
         btn.disabled = true;
         btn.textContent = 'Sending...';
 
-        fetch(heroForm.dataset.endpoint, {
+        fetch(heroForm.action, {
           method: 'POST',
           body: new FormData(heroForm),
           headers: { 'Accept': 'application/json' }
         }).then(function(res) {
           if (res.ok) {
-            formCard.innerHTML = '<div style="text-align:center;padding:40px 20px"><svg viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2.5" style="width:48px;height:48px;margin:0 auto 16px;display:block"><circle cx="12" cy="12" r="10"/><path d="M8 12l2.5 2.5L16 9"/></svg><h2 style="font-family:Archivo Black,sans-serif;color:var(--navy);font-size:22px;text-transform:uppercase;margin-bottom:8px">Thanks!</h2><p style="color:var(--gray);font-size:15px;line-height:1.6">We\'ll call you within 15 minutes<br>during business hours.</p><a href="tel:+14352928802" style="display:inline-block;margin-top:16px;color:var(--navy);font-family:Archivo Black,sans-serif;font-size:14px;text-transform:uppercase;letter-spacing:1px;text-decoration:none">Or call now: 435-292-8802</a></div>';
+            formCard.innerHTML = '<div style="text-align:center;padding:40px 20px"><svg viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2.5" style="width:48px;height:48px;margin:0 auto 16px;display:block"><circle cx="12" cy="12" r="10"/><path d="M8 12l2.5 2.5L16 9"/></svg><h2 style="font-family:Archivo Black,sans-serif;color:var(--navy);font-size:22px;text-transform:uppercase;margin-bottom:8px">Thanks!</h2><p style="color:var(--gray);font-size:15px;line-height:1.6">We\'ll call you within 15 minutes<br>during business hours.</p><a href="tel:+14353024422" style="display:inline-block;margin-top:16px;color:var(--navy);font-family:Archivo Black,sans-serif;font-size:14px;text-transform:uppercase;letter-spacing:1px;text-decoration:none">Or call now: 435-302-4422</a></div>';
             if (window.dataLayer) { window.dataLayer.push({ event: 'form_submit', form_name: 'hero_inspection' }); }
           } else {
             btn.disabled = false;
             btn.textContent = 'Get My Free Roof Inspection';
-            btn.insertAdjacentHTML('afterend', '<p style="color:#c0392b;font-size:12px;text-align:center;margin-top:8px">Something went wrong. Please try again or call 435-292-8802.</p>');
+            btn.insertAdjacentHTML('afterend', '<p style="color:#c0392b;font-size:12px;text-align:center;margin-top:8px">Something went wrong. Please try again or call 435-302-4422.</p>');
           }
         }).catch(function() {
           btn.disabled = false;
           btn.textContent = 'Get My Free Roof Inspection';
-          btn.insertAdjacentHTML('afterend', '<p style="color:#c0392b;font-size:12px;text-align:center;margin-top:8px">Network error. Please call 435-292-8802.</p>');
+          btn.insertAdjacentHTML('afterend', '<p style="color:#c0392b;font-size:12px;text-align:center;margin-top:8px">Network error. Please call 435-302-4422.</p>');
         });
       });
     }
@@ -1362,12 +1395,12 @@
           } else {
             btn.textContent = 'Try Again';
             btn.disabled = false;
-            alert('Something went wrong. Please call us at 435-292-8802.');
+            alert('Something went wrong. Please call us at 435-302-4422.');
           }
         } catch (err) {
           btn.textContent = originalText;
           btn.disabled = false;
-          alert('Connection error. Please call us at 435-292-8802.');
+          alert('Connection error. Please call us at 435-302-4422.');
         }
       });
     });
