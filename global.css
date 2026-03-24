@@ -56,11 +56,12 @@ section { padding: 110px 5%; }
 .btn-navy:hover { background: var(--navy-mid); transform: translateY(-2px); }
 
 /* ─── PAGE HERO (subpages) ─── */
-.page-hero { min-height: 50vh; position: relative; display: flex; align-items: center; background: var(--navy); padding-top: 100px; }
-.page-hero-overlay { position: absolute; inset: 0; background: linear-gradient(135deg, rgba(11,64,96,0.95) 40%, rgba(11,64,96,0.75)); }
-.page-hero-img { position: absolute; inset: 0; }
-.page-hero-img img { width: 100%; height: 100%; object-fit: cover; opacity: 0.2; }
-.page-hero-content { position: relative; z-index: 2; padding: 80px 5% 60px; max-width: 780px; }
+.page-hero { min-height: 50vh; position: relative; display: flex; align-items: stretch; background: var(--navy); padding-top: 80px; overflow: hidden; }
+.page-hero-overlay { position: absolute; inset: 0; background: linear-gradient(135deg, rgba(11,64,96,0.95) 40%, rgba(11,64,96,0.75)); z-index: 1; }
+.page-hero-img { position: absolute; right: 0; top: 0; bottom: 0; width: 48%; z-index: 2; }
+.page-hero-img img { width: 100%; height: 100%; object-fit: cover; opacity: 1; }
+.page-hero-img::before { content: ''; position: absolute; inset: 0; z-index: 1; background: linear-gradient(to right, var(--navy) 0%, rgba(11,64,96,0.4) 30%, transparent 60%); }
+.page-hero-content { position: relative; z-index: 3; padding: 80px 5% 60px; max-width: 52%; }
 .page-hero h1 { font-family: 'Archivo Black', sans-serif; font-size: clamp(36px, 5.5vw, 64px); font-weight: 700; color: var(--white); line-height: 1.05; text-transform: uppercase; margin-bottom: 20px; }
 .page-hero h1 span { color: var(--gold); }
 .page-hero p { font-size: 18px; color: rgba(255,255,255,0.82); line-height: 1.7; max-width: 560px; margin-bottom: 32px; }
@@ -145,6 +146,10 @@ footer a { color: var(--gold); text-decoration: none; }
   body { padding-bottom: 58px; }
   /* Subpage hero — better mobile sizing */
   .page-hero { min-height: 40vh; }
+  .page-hero-img { width: 100%; opacity: 0.25; }
+  .page-hero-img::before { background: linear-gradient(to bottom, var(--navy) 0%, rgba(11,64,96,0.5) 40%, transparent 70%); }
+  .page-hero-img img { opacity: 0.3; }
+  .page-hero-content { max-width: 100%; }
   .page-hero h1 { font-size: clamp(28px, 7vw, 48px); }
   .page-hero p { font-size: 16px; }
   .page-hero .hero-actions { flex-direction: column; }
