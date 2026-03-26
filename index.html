@@ -375,10 +375,12 @@
     .gallery-item:first-child { grid-column: 1/2; grid-row: 1/3; }
     .gallery-item img { width: 100%; height: 100%; object-fit: cover; object-position: center top; transition: transform 0.5s ease; display: block; }
     .gallery-item:hover img { transform: scale(1.05); }
-    .gallery-item::after { content: ''; position: absolute; inset: 0; background: linear-gradient(to top, rgba(11,64,96,0.5), transparent); opacity: 0; transition: opacity 0.3s; }
-    .gallery-item:hover::after { opacity: 1; }
+    .gallery-item::after { content: ''; position: absolute; inset: 0; background: linear-gradient(to top, rgba(11,64,96,0.6) 0%, transparent 50%); pointer-events: none; }
+    .gallery-caption { position: absolute; bottom: 0; left: 0; right: 0; padding: 12px 14px; z-index: 2; color: #fff; }
+    .gallery-caption strong { display: block; font-size: 0.95rem; font-weight: 700; text-shadow: 0 1px 3px rgba(0,0,0,0.5); }
+    .gallery-caption span { display: block; font-size: 0.78rem; opacity: 0.9; margin-top: 2px; text-shadow: 0 1px 2px rgba(0,0,0,0.4); }
     @media (hover: none) {
-      .gallery-item::after { opacity: 1; background: linear-gradient(to top, rgba(11,64,96,0.35), transparent 60%); }
+      /* captions always visible on mobile */
     }
 
     /* ─── WHY ─── */
@@ -822,11 +824,11 @@
     <h2 class="section-title">Utah Projects &amp; Completed Work</h2>
   </div>
   <div class="gallery-grid">
-    <div class="gallery-item"><img src="/images/projects/cities/holladay-residential-reroof-2025.jpg" alt="Completed residential roof replacement in Holladay, Utah with Wasatch Mountain views" loading="lazy" width="1920" height="1440" /></div>
-    <div class="gallery-item"><img src="/images/projects/heber-valley-roof-aerial.jpg" alt="Aerial drone view of luxury home roofing project in Heber Valley, Utah" loading="lazy" width="1320" height="768" /></div>
-    <div class="gallery-item"><img src="/images/projects/cities/midway-residential-reroof-2026.jpg" alt="Premium shingle craftsmanship detail on residential reroof in Midway, Utah" loading="lazy" width="1440" height="1920" /></div>
-    <div class="gallery-item"><img src="/images/projects/heber-valley-roof-front.jpg" alt="Completed luxury home with new roof in Heber Valley, Utah" loading="lazy" width="1600" height="736" /></div>
-    <div class="gallery-item"><img src="/images/projects/cities/sandy-storm-damage-reroof-2025-oct.jpg" alt="Storm damage roof restoration with clean ridgeline in Sandy, Utah" loading="lazy" width="1440" height="1920" /></div>
+    <div class="gallery-item"><img src="/images/projects/cities/holladay-residential-reroof-2025.jpg" alt="Completed residential roof replacement in Holladay, Utah with Wasatch Mountain views" loading="lazy" width="1920" height="1440" /><div class="gallery-caption"><strong>Holladay, UT</strong><span>Full Residential Reroof</span></div></div>
+    <div class="gallery-item"><img src="/images/projects/heber-valley-roof-aerial.jpg" alt="Aerial drone view of luxury home roofing project in Heber Valley, Utah" loading="lazy" width="1320" height="768" /><div class="gallery-caption"><strong>Heber Valley, UT</strong><span>Luxury Home — Aerial View</span></div></div>
+    <div class="gallery-item"><img src="/images/projects/cities/midway-residential-reroof-2026.jpg" alt="Premium shingle craftsmanship detail on residential reroof in Midway, Utah" loading="lazy" width="1440" height="1920" /><div class="gallery-caption"><strong>Midway, UT</strong><span>Premium Shingle Detail</span></div></div>
+    <div class="gallery-item"><img src="/images/projects/heber-valley-roof-front.jpg" alt="Completed luxury home with new roof in Heber Valley, Utah" loading="lazy" width="1600" height="736" /><div class="gallery-caption"><strong>Heber Valley, UT</strong><span>Completed Luxury Reroof</span></div></div>
+    <div class="gallery-item"><img src="/images/projects/cities/sandy-storm-damage-reroof-2025-oct.jpg" alt="Storm damage roof restoration with clean ridgeline in Sandy, Utah" loading="lazy" width="1440" height="1920" /><div class="gallery-caption"><strong>Sandy, UT</strong><span>Storm Damage Restoration</span></div></div>
   </div>
 </section>
 
