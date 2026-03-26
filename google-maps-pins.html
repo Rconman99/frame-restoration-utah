@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Frame Roofing Utah — Project Map</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:'Archivo',sans-serif; background:#0B4060; }
+  .map-header { background:#0B4060; color:#fff; padding:20px 24px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px; }
+  .map-header h1 { font-family:'Archivo Black',sans-serif; font-size:1.4rem; }
+  .legend { display:flex; gap:16px; font-size:.85rem; }
+  .legend span { display:flex; align-items:center; gap:6px; }
+  .dot { width:12px; height:12px; border-radius:50%; display:inline-block; }
+  .dot-storm { background:#E53E3E; }
+  .dot-residential { background:#3182CE; }
+  .dot-commercial { background:#38A169; }
+  .dot-hq { background:#D69E2E; }
+  #map { width:100%; height:calc(100vh - 70px); }
+</style>
+</head>
+<body>
+<div class="map-header">
+  <h1>Frame Roofing Utah — Completed Projects</h1>
+  <div class="legend">
+    <span><span class="dot dot-storm"></span> Storm Damage</span>
+    <span><span class="dot dot-residential"></span> Residential</span>
+    <span><span class="dot dot-commercial"></span> Commercial</span>
+    <span><span class="dot dot-hq"></span> HQ</span>
+  </div>
+</div>
+<div id="map"></div>
+
+<script>
+const projects = [
+  { lat:40.6609, lng:-111.8247, city:"Holladay", type:"residential", label:"Holladay Residential Reroof (2025)", color:"#3182CE" },
+  { lat:40.3827, lng:-111.4219, city:"Wallsburg", type:"storm", label:"Wallsburg Storm Damage Reroof (2026)", color:"#E53E3E" },
+  { lat:40.5122, lng:-111.4735, city:"Midway", type:"residential", label:"Midway Residential Reroof (2026)", color:"#3182CE" },
+  { lat:40.5649, lng:-111.8590, city:"Sandy", type:"storm", label:"Sandy Storm Damage (Oct 2025)", color:"#E53E3E" },
+  { lat:40.5655, lng:-111.8585, city:"Sandy", type:"storm", label:"Sandy Storm Damage (Nov 2025)", color:"#E53E3E" },
+  { lat:40.5069, lng:-111.4133, city:"Heber City", type:"storm", label:"Heber City Storm Damage (2025)", color:"#E53E3E" },
+  { lat:40.5075, lng:-111.4140, city:"Heber City", type:"residential", label:"Heber City Residential Reroof (2026)", color:"#3182CE" },
+  { lat:40.6866, lng:-111.8246, city:"Millcreek", type:"commercial", label:"Millcreek Commercial Reroof (2025)", color:"#38A169" },
+  { lat:40.5622, lng:-111.9297, city:"South Jordan", type:"storm", label:"South Jordan Storm Damage (2026)", color:"#E53E3E" },
+  { lat:40.7608, lng:-111.8910, city:"Salt Lake City", type:"residential", label:"Salt Lake City Residential Reroof (2026)", color:"#3182CE" }
+];
+
+const hq = { lat:40.5069, lng:-111.4133, label:"Frame Roofing Utah HQ\n142 S Main St, Heber City, UT 84032\n435-302-4422" };
+
+function initMap() {
+  const map = new google.maps.Map(document.getElementById("map"), {
+    center: { lat: 40.58, lng: -111.70 },
+    zoom: 10,
+    styles: [
+      { featureType:"water", stylers:[{color:"#a8d4e6"}] },
+      { featureType:"landscape", stylers:[{color:"#e8f0e4"}] },
+      { featureType:"road", stylers:[{visibility:"simplified"}] }
+    ]
+  });
+
+  // HQ marker (gold)
+  const hqMarker = new google.maps.Marker({
+    position: { lat: hq.lat, lng: hq.lng },
+    map: map,
+    title: "Frame Roofing Utah HQ",
+    icon: { path: google.maps.SymbolPath.CIRCLE, scale:12, fillColor:"#D69E2E", fillOpacity:1, strokeColor:"#fff", strokeWeight:3 }
+  });
+  const hqInfo = new google.maps.InfoWindow({ content:'<div style="font-family:Archivo,sans-serif;"><strong>Frame Roofing Utah HQ</strong><br>142 S Main St, Heber City, UT 84032<br><a href="tel:+14353024422">435-302-4422</a><br><a href="https://www.frameroofingutah.com" target="_blank">frameroofingutah.com</a></div>' });
+  hqMarker.addListener('click', ()=>hqInfo.open(map, hqMarker));
+
+  // Project markers
+  projects.forEach(p => {
+    const marker = new google.maps.Marker({
+      position: { lat: p.lat, lng: p.lng },
+      map: map,
+      title: p.label,
+      icon: { path: google.maps.SymbolPath.CIRCLE, scale:9, fillColor:p.color, fillOpacity:1, strokeColor:"#fff", strokeWeight:2 }
+    });
+    const info = new google.maps.InfoWindow({
+      content: '<div style="font-family:Archivo,sans-serif;"><strong>'+p.label+'</strong><br>'+p.city+', UT<br>Type: '+p.type.charAt(0).toUpperCase()+p.type.slice(1)+'<br><a href="tel:+14353024422">435-302-4422</a></div>'
+    });
+    marker.addListener('click', ()=>info.open(map, marker));
+  });
+}
+</script>
+
+<!-- REPLACE YOUR_GOOGLE_MAPS_API_KEY with your actual key from https://console.cloud.google.com -->
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=YOUR_GOOGLE_MAPS_API_KEY&callback=initMap"></script>
+</body>
+</html>
