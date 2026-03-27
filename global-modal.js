@@ -146,10 +146,15 @@
       var prevErr = form.querySelector('.fr-modal-error');
       if (prevErr) prevErr.remove();
 
-      fetch(form.action, {
+      // Build JSON payload from form fields
+      var payload = {};
+      new FormData(form).forEach(function(v, k) { payload[k] = v; });
+      payload.source_page = window.location.pathname;
+
+      fetch(form.getAttribute('data-endpoint'), {
         method: 'POST',
-        body: new FormData(form),
-        headers: { 'Accept': 'application/json' }
+        body: JSON.stringify(payload),
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' }
       }).then(function(res) {
         if (res.ok) {
           body.innerHTML = [
