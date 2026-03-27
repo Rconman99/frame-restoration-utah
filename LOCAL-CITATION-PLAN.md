@@ -83,12 +83,14 @@
 
 CRITICAL: Every directory listing MUST use identical info:
 
-- **Name:** Frame Restoration Utah LLC (or "Frame Roofing Utah" if character limited)
+- **Name:** Frame Restoration Utah LLC (this is the legal LLC name — use on all directories and GBP)
 - **Address:** 142 S Main St, Heber City, UT 84032
 - **Phone:** (435) 302-4422
 - **Website:** https://www.frameroofingutah.com
 
-Do NOT use variations like "Frame Restoration," "Frame Roofing," or the old domain.
+The LLC name is "Frame Restoration Utah LLC" — keep this on GBP and all directory listings.
+The website uses "Frame Roofing Utah" as the consumer-facing brand (matches the domain).
+Do NOT mix the two — directories get the LLC name, website content uses the brand name.
 
 ## Submission Priority Order
 
