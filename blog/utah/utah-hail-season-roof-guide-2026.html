@@ -69,6 +69,24 @@
   </script>
   <link rel="stylesheet" href="/global.css?v=20260324">
   <script src="/global-modal.js" defer></script>
+  <style>
+    .blog-hero { min-height: 40vh; position: relative; display: flex; align-items: center; background: var(--navy); padding-top: 70px; }
+    .blog-hero-overlay { position: absolute; inset: 0; background: linear-gradient(135deg, rgba(11,64,96,0.96) 40%, rgba(11,64,96,0.8)); }
+    .blog-hero-content { position: relative; z-index: 2; padding: 80px 5% 60px; max-width: 800px; }
+    .blog-hero h1 { font-family: 'Archivo Black', sans-serif; font-size: clamp(30px, 4.5vw, 52px); color: var(--white); line-height: 1.1; text-transform: uppercase; margin-bottom: 16px; }
+    .blog-hero h1 span { color: var(--gold); }
+    .blog-hero .blog-meta { font-size: 14px; color: rgba(255,255,255,0.55); margin-bottom: 12px; }
+    .blog-body { max-width: 780px; margin: 0 auto; padding: 60px 5% 40px; }
+    .blog-body h2 { font-family: 'Archivo Black', sans-serif; font-size: 24px; color: var(--navy); text-transform: uppercase; margin: 48px 0 16px; line-height: 1.2; }
+    .blog-body h3 { font-family: 'Archivo Black', sans-serif; font-size: 19px; color: var(--navy); margin: 32px 0 12px; }
+    .blog-body p { font-size: 16px; color: var(--gray); line-height: 1.85; margin-bottom: 18px; }
+    .blog-body ul, .blog-body ol { margin: 16px 0 24px 28px; }
+    .blog-body li { font-size: 16px; color: var(--gray); line-height: 1.85; margin-bottom: 8px; }
+    .blog-body strong { color: var(--dark); }
+    .blog-cta { background: var(--gold); padding: 60px 5%; text-align: center; }
+    .blog-cta h2 { font-family: 'Archivo Black', sans-serif; font-size: clamp(26px, 3.5vw, 42px); color: var(--navy); text-transform: uppercase; margin-bottom: 14px; }
+    .blog-cta p { font-size: 18px; color: rgba(11,64,96,0.7); margin-bottom: 28px; }
+  </style>
   <script>
     !function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.crossOrigin="anonymous",p.async=!0,p.src=s.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+".people (stub)"},o="init capture register register_once register_for_session unregister unregister_for_session getFeatureFlag getFeatureFlagPayload isFeatureEnabled reloadFeatureFlags updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures on onFeatureFlags onSessionId getSurveys getActiveMatchingSurveys renderSurvey canRenderSurvey identify setPersonProperties group resetGroups setPersonPropertiesForFlags resetPersonPropertiesForFlags setGroupPropertiesForFlags resetGroupPropertiesForFlags reset get_distinct_id getGroups get_session_id get_session_replay_url alias set_config startSessionRecording stopSessionRecording sessionRecordingStarted captureException loadToolbar get_property getSessionProperty createPersonProfile opt_in_capturing opt_out_capturing has_opted_in_capturing has_opted_out_capturing clear_opt_in_out_capturing debug getPageviewId".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
     posthog.init('phc_BnECzlZ2OeDujli2dbqcgGODXlv2tYERbp40dTF7UBV',{api_host:'https://us.i.posthog.com', person_profiles: 'identified_only'})
@@ -93,10 +111,16 @@
 </nav>
 
 <main>
-<article style="max-width: 780px; margin: 0 auto; padding: 40px 5%;">
-  <div class="breadcrumb" style="margin-bottom: 20px;"><a href="/">Home</a> &rsaquo; <a href="/blog">Blog</a> &rsaquo; Utah Hail Season Roof Guide</div>
-  <h1 style="font-size: 2rem; line-height: 1.2; color: #1a2744;">Utah Hail Season Roof Guide 2026: Damage, Insurance Claims &amp; Prevention</h1>
-  <p style="color: #777; font-size: 14px; margin-bottom: 30px;">By Landon Yokers, Owner &mdash; Frame Roofing Utah &nbsp;|&nbsp; March 27, 2026 &nbsp;|&nbsp; 9 min read</p>
+<header class="blog-hero">
+  <div class="blog-hero-overlay"></div>
+  <div class="blog-hero-content">
+    <div class="breadcrumb"><a href="/">Home</a> &rsaquo; <a href="/blog">Blog</a> &rsaquo; Utah Hail Season Roof Guide</div>
+    <div class="blog-meta">March 27, 2026 &bull; 9 min read &bull; Utah Statewide</div>
+    <h1>Utah Hail Season <span>Roof Guide</span> 2026: Damage, Insurance Claims &amp; Prevention</h1>
+  </div>
+</header>
+
+<article class="blog-body">
 
   <p>Utah ranks among the top 10 states for hail damage claims nationally, and the Wasatch Front corridor from Ogden to Provo is the state's most hail-prone region. According to the National Weather Service Salt Lake City office, this corridor averages 3-5 significant hailstorms per year, with the most destructive events producing hail exceeding 1.5 inches in diameter. For Utah homeowners, understanding hail season timing, damage identification, and the insurance claims process can mean the difference between a fully covered repair and thousands of dollars out of pocket.</p>
 
@@ -129,8 +153,8 @@
   <p>When a significant hailstorm hits your area, act within the first 48 hours. Document all visible damage to your property with photos and video. Check soft metals (gutters, vents, mailbox) for impact marks — if they are dented, your roof likely sustained damage. Contact your insurance company to open a claim. Then call a licensed Utah roofing contractor for a free damage assessment. Do not sign any contracts with door-to-door solicitors in the immediate aftermath of a storm — take time to verify credentials and get at least one additional opinion.</p>
   <p>Frame Roofing Utah provides free post-storm inspections across 40+ Utah communities, handles all insurance documentation and adjuster coordination, and backs every repair with a 10-year workmanship warranty. Call 435-292-8802 or <a href="https://calendar.app.google/cR4bBSWfb9TQ28UF8" target="_blank" rel="noopener">schedule your free inspection online</a>.</p>
 
-  <h2 style="margin-top: 40px; font-size: 1.1rem;">Sources &amp; References</h2>
-  <ul style="font-size: 14px; color: #555; line-height: 1.8;">
+  <h2>Sources &amp; References</h2>
+  <ul>
     <li><a href="https://www.weather.gov/slc/" target="_blank" rel="noopener">National Weather Service — Salt Lake City</a> — Utah hail and storm frequency data</li>
     <li><a href="https://www.nrca.net/" target="_blank" rel="noopener">National Roofing Contractors Association (NRCA)</a> — Hail damage identification standards</li>
     <li><a href="https://dopl.utah.gov/" target="_blank" rel="noopener">Utah Division of Professional Licensing (DOPL)</a> — Contractor license verification</li>
@@ -148,11 +172,11 @@
   </div>
 </section>
 
-<section class="page-cta" style="text-align:center;padding:40px 5%;background:#1a2744;color:#fff;">
-  <h2 style="color:#fff;">Hail Damage? Get a Free Inspection</h2>
-  <p style="color:#ccc;">Fast response across 40+ Utah communities. Full insurance claim support included.</p>
-  <a href="https://calendar.app.google/cR4bBSWfb9TQ28UF8" target="_blank" rel="noopener" style="background:#fff;color:#1a2744;padding:14px 28px;text-decoration:none;font-weight:700;display:inline-block;margin:8px;">Schedule Free Inspection</a>
-  <a href="tel:+14352928802" style="background:transparent;color:#fff;border:2px solid #fff;padding:14px 28px;text-decoration:none;font-weight:700;display:inline-block;margin:8px;">Call 435-292-8802</a>
+<section class="blog-cta">
+  <h2>Hail Damage? Get a Free Inspection</h2>
+  <p>Fast response across 40+ Utah communities. Full insurance claim support included.</p>
+  <a href="https://calendar.app.google/cR4bBSWfb9TQ28UF8" target="_blank" rel="noopener" class="btn-navy">Schedule Free Inspection</a>
+  <a href="tel:+14352928802" class="btn-navy">Call 435-292-8802</a>
 </section>
 
 <section class="nearby-section" style="padding:40px 5%;">
