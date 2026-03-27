@@ -1275,10 +1275,14 @@
         btn.disabled = true;
         btn.textContent = 'Sending...';
 
-        fetch(heroForm.action, {
+        var payload = {};
+        new FormData(heroForm).forEach(function(v, k) { payload[k] = v; });
+        payload.source_page = window.location.pathname;
+
+        fetch(heroForm.getAttribute('data-endpoint'), {
           method: 'POST',
-          body: new FormData(heroForm),
-          headers: { 'Accept': 'application/json' }
+          body: JSON.stringify(payload),
+          headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' }
         }).then(function(res) {
           if (res.ok) {
             formCard.innerHTML = '<div style="text-align:center;padding:40px 20px"><svg viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2.5" style="width:48px;height:48px;margin:0 auto 16px;display:block"><circle cx="12" cy="12" r="10"/><path d="M8 12l2.5 2.5L16 9"/></svg><h2 style="font-family:Archivo Black,sans-serif;color:var(--navy);font-size:22px;text-transform:uppercase;margin-bottom:8px">Thanks!</h2><p style="color:var(--gray);font-size:15px;line-height:1.6">We\'ll call you within 15 minutes<br>during business hours.</p><a href="tel:+14353024422" style="display:inline-block;margin-top:16px;color:var(--navy);font-family:Archivo Black,sans-serif;font-size:14px;text-transform:uppercase;letter-spacing:1px;text-decoration:none">Or call now: 435-302-4422</a></div>';
@@ -1291,6 +1295,38 @@
         }).catch(function() {
           btn.disabled = false;
           btn.textContent = 'Get My Free Roof Inspection';
+          btn.insertAdjacentHTML('afterend', '<p style="color:#c0392b;font-size:12px;text-align:center;margin-top:8px">Network error. Please call 435-302-4422.</p>');
+        });
+      });
+    }
+
+    // Lead form (bottom of page): AJAX submit
+    var leadForm = document.getElementById('leadForm');
+    if (leadForm) {
+      leadForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        var btn = leadForm.querySelector('.form-submit');
+        btn.disabled = true;
+        btn.textContent = 'Sending...';
+        var payload = {};
+        new FormData(leadForm).forEach(function(v, k) { payload[k] = v; });
+        payload.source_page = window.location.pathname;
+        fetch(leadForm.getAttribute('data-endpoint'), {
+          method: 'POST',
+          body: JSON.stringify(payload),
+          headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' }
+        }).then(function(res) {
+          if (res.ok) {
+            leadForm.innerHTML = '<div style="text-align:center;padding:40px 20px"><svg viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2.5" style="width:48px;height:48px;margin:0 auto 16px;display:block"><circle cx="12" cy="12" r="10"/><path d="M8 12l2.5 2.5L16 9"/></svg><h2 style="font-family:Archivo Black,sans-serif;color:var(--navy);font-size:22px;text-transform:uppercase;margin-bottom:8px">Thanks!</h2><p style="color:var(--gray);font-size:15px;line-height:1.6">We\'ll call you within 15 minutes<br>during business hours.</p><a href="tel:+14353024422" style="display:inline-block;margin-top:16px;color:var(--navy);font-family:Archivo Black,sans-serif;font-size:14px;text-transform:uppercase;letter-spacing:1px;text-decoration:none">Or call now: 435-302-4422</a></div>';
+            if (window.dataLayer) { window.dataLayer.push({ event: 'form_submit', form_name: 'lead_form' }); }
+          } else {
+            btn.disabled = false;
+            btn.textContent = 'Submit — Get My Free Inspection';
+            btn.insertAdjacentHTML('afterend', '<p style="color:#c0392b;font-size:12px;text-align:center;margin-top:8px">Something went wrong. Please try again or call 435-302-4422.</p>');
+          }
+        }).catch(function() {
+          btn.disabled = false;
+          btn.textContent = 'Submit — Get My Free Inspection';
           btn.insertAdjacentHTML('afterend', '<p style="color:#c0392b;font-size:12px;text-align:center;margin-top:8px">Network error. Please call 435-302-4422.</p>');
         });
       });
