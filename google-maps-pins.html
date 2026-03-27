@@ -65,7 +65,7 @@ function initMap() {
     title: "Frame Roofing Utah HQ",
     icon: { path: google.maps.SymbolPath.CIRCLE, scale:12, fillColor:"#D69E2E", fillOpacity:1, strokeColor:"#fff", strokeWeight:3 }
   });
-  const hqInfo = new google.maps.InfoWindow({ content:'<div style="font-family:Archivo,sans-serif;"><strong>Frame Roofing Utah HQ</strong><br>142 S Main St, Heber City, UT 84032<br><a href="tel:+14353024422">435-302-4422</a><br><a href="https://www.frameroofingutah.com" target="_blank">frameroofingutah.com</a></div>' });
+  const hqInfo = new google.maps.InfoWindow({ content:'<div style="font-family:Archivo,sans-serif;"><strong>Frame Roofing Utah HQ</strong><br>142 S Main St, Heber City, UT 84032<br><a href="tel:+14352928802">435-292-8802</a><br><a href="https://www.frameroofingutah.com" target="_blank">frameroofingutah.com</a></div>' });
   hqMarker.addListener('click', ()=>hqInfo.open(map, hqMarker));
 
   // Project markers
@@ -77,7 +77,7 @@ function initMap() {
       icon: { path: google.maps.SymbolPath.CIRCLE, scale:9, fillColor:p.color, fillOpacity:1, strokeColor:"#fff", strokeWeight:2 }
     });
     const info = new google.maps.InfoWindow({
-      content: '<div style="font-family:Archivo,sans-serif;"><strong>'+p.label+'</strong><br>'+p.city+', UT<br>Type: '+p.type.charAt(0).toUpperCase()+p.type.slice(1)+'<br><a href="tel:+14353024422">435-302-4422</a></div>'
+      content: '<div style="font-family:Archivo,sans-serif;"><strong>'+p.label+'</strong><br>'+p.city+', UT<br>Type: '+p.type.charAt(0).toUpperCase()+p.type.slice(1)+'<br><a href="tel:+14352928802">435-292-8802</a></div>'
     });
     marker.addListener('click', ()=>info.open(map, marker));
   });
