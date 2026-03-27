@@ -69,7 +69,7 @@
     '        </select>',
     '      </div>',
     '      <button type="submit" class="fr-modal-submit">Get My Free Roof Inspection</button>',
-    '      <p class="fr-modal-note">By submitting, you agree to a quick call or text. No spam.</p>',
+    '      <p class="fr-modal-note">By submitting, you consent to receive SMS/text messages and phone calls from Frame Roofing Utah regarding your inquiry. Msg &amp; data rates may apply. Reply STOP to opt out.</p>',
     '    </form>',
     '  </div>',
     '</div>'
