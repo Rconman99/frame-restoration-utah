@@ -5,4 +5,41 @@ Disallow: /privacy
 Disallow: /terms
 Disallow: /hero
 
-Sitemap: https://www.frameroofingutah.com/sitemap.xml
+# AI Search Crawlers - ALLOWED for maximum AI visibility
+User-agent: GPTBot
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: anthropic-ai
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+User-agent: Google-Extended
+Allow: /
+
+User-agent: GoogleOther
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
+User-agent: Amazonbot
+Allow: /
+
+User-agent: FacebookBot
+Allow: /
+
+# Aggressive crawlers - BLOCKED
+User-agent: Bytespider
+Disallow: /
+
+Sitemap: https://frameroofingutah.com/sitemap.xml
