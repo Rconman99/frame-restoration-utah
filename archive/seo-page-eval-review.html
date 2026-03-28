@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SEO Page Builder Skill — Eval Review</title>
+<style>
+:root { --navy: #0C3547; --gold: #C9A44C; --green: #22c55e; --red: #ef4444; --bg: #FAF9F5; --card: #fff; --border: #E5E3DF; }
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg); color: #262626; }
+.header { background: var(--navy); color: #fff; padding: 2rem; text-align: center; }
+.header h1 { font-size: 1.8rem; margin-bottom: .5rem; }
+.header .subtitle { color: var(--gold); font-size: 1rem; }
+.benchmark-bar { display: flex; justify-content: center; gap: 3rem; padding: 1.5rem; background: #fff; border-bottom: 2px solid var(--border); flex-wrap: wrap; }
+.stat { text-align: center; }
+.stat .val { font-size: 2.2rem; font-weight: 800; color: var(--green); }
+.stat .label { font-size: .85rem; color: #666; margin-top: .25rem; }
+.tabs { display: flex; justify-content: center; gap: .5rem; padding: 1rem; background: #fff; border-bottom: 1px solid var(--border); flex-wrap: wrap; }
+.tab { padding: .6rem 1.5rem; border: 2px solid var(--border); border-radius: 8px; cursor: pointer; font-weight: 600; transition: all .2s; background: #fff; }
+.tab.active { background: var(--navy); color: #fff; border-color: var(--navy); }
+.tab:hover:not(.active) { border-color: var(--gold); }
+.eval-panel { display: none; max-width: 1400px; margin: 0 auto; padding: 1.5rem; }
+.eval-panel.active { display: block; }
+.eval-grid { display: grid; grid-template-columns: 340px 1fr; gap: 1.5rem; }
+@media (max-width: 900px) { .eval-grid { grid-template-columns: 1fr; } }
+.assertions-card { background: var(--card); border-radius: 12px; border: 1px solid var(--border); overflow: hidden; height: fit-content; }
+.assertions-header { padding: 1rem 1.2rem; background: var(--navy); color: #fff; font-weight: 700; display: flex; justify-content: space-between; }
+.assertion-row { display: flex; align-items: center; gap: .6rem; padding: .55rem 1.2rem; border-bottom: 1px solid #f0f0f0; font-size: .85rem; }
+.assertion-row:last-child { border-bottom: none; }
+.badge { width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: .75rem; font-weight: 700; flex-shrink: 0; }
+.badge.pass { background: #dcfce7; color: var(--green); }
+.badge.fail { background: #fee2e2; color: var(--red); }
+.preview-card { background: var(--card); border-radius: 12px; border: 1px solid var(--border); overflow: hidden; }
+.preview-header { padding: 1rem 1.2rem; background: var(--navy); color: #fff; font-weight: 700; display: flex; justify-content: space-between; align-items: center; }
+.preview-toggle { display: flex; gap: .5rem; }
+.preview-toggle button { padding: .3rem .8rem; border-radius: 6px; border: 1px solid rgba(255,255,255,.3); background: transparent; color: #fff; cursor: pointer; font-size: .8rem; }
+.preview-toggle button.active { background: var(--gold); color: var(--navy); border-color: var(--gold); font-weight: 700; }
+.preview-frame { width: 100%; height: 700px; border: none; background: #fff; }
+.source-view { width: 100%; height: 700px; overflow: auto; background: #1e1e2e; color: #cdd6f4; padding: 1rem; font-family: 'Fira Code', monospace; font-size: .8rem; white-space: pre-wrap; word-break: break-all; display: none; }
+.city-label { display: inline-block; padding: .15rem .6rem; border-radius: 4px; font-size: .75rem; font-weight: 600; margin-left: .5rem; }
+.city-label.ogden { background: #dbeafe; color: #1d4ed8; }
+.city-label.lehi { background: #fef3c7; color: #92400e; }
+.city-label.cottonwood { background: #d1fae5; color: #065f46; }
+</style>
+</head>
+<body>
+<div class="header">
+<h1>tradesmen-seo-page-builder — Eval Review</h1>
+<div class="subtitle">Skill Evaluation · 3 City Tests · 40 Assertions Each</div>
+</div>
+<div class="benchmark-bar">
+<div class="stat"><div class="val">100%</div><div class="label">Mean Pass Rate</div></div>
+<div class="stat"><div class="val">120/120</div><div class="label">Total Assertions Passed</div></div>
+<div class="stat"><div class="val">3/3</div><div class="label">Perfect Evals</div></div>
+<div class="stat"><div class="val">~80s</div><div class="label">Avg Generation Time</div></div>
+</div>
+<div class="tabs">
+<div class="tab active" onclick="showEval('ogden')">Ogden <span class="city-label ogden">Weber Co.</span></div>
+<div class="tab" onclick="showEval('lehi')">Lehi <span class="city-label lehi">Utah Co.</span></div>
+<div class="tab" onclick="showEval('cottonwood')">Cottonwood Heights <span class="city-label cottonwood">Salt Lake Co.</span></div>
+</div>
+<div id="panel-ogden" class="eval-panel active"></div>
+<div id="panel-lehi" class="eval-panel"></div>
+<div id="panel-cottonwood" class="eval-panel"></div>
+<script>
+const OUTPUTS = {
+  ogden: "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\" />\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n  <title>Roofing Contractor Ogden UT | Frame Restoration Utah</title>\n  <meta name=\"description\" content=\"Ogden, UT roofing experts serving Weber County. Residential & commercial roof replacements, storm damage repairs, insurance claims & free inspections. Call 435-302-4422.\" />\n  <meta name=\"geo.region\" content=\"US-UT\" />\n  <meta name=\"geo.placename\" content=\"Ogden, Utah\" />\n  <meta name=\"geo.position\" content=\"41.2230;-111.9738\" />\n  <link rel=\"canonical\" href=\"https://www.framerestorationutah.com/locations/ogden\" />\n  <meta property=\"og:title\" content=\"Roofing Contractor Ogden UT | Frame Restoration Utah\" />\n  <meta property=\"og:description\" content=\"Ogden, UT roofing experts serving Weber County. Residential & commercial roof replacements, storm damage repairs, insurance claims & free inspections. Call 435-302-4422.\" />\n  <meta property=\"og:type\" content=\"website\" />\n  <meta property=\"og:url\" content=\"https://www.framerestorationutah.com/locations/ogden\" />\n  <meta property=\"og:image\" content=\"https://images.squarespace-cdn.com/content/v1/687963cae8d2172f80997211/1752785874374-1H1F8WHE1JM21FDOPCUK/FR_showcase_53.jpeg?format=webp&quality=80\" />\n  <meta property=\"og:locale\" content=\"en_US\" />\n  <meta property=\"og:site_name\" content=\"Frame Restoration Utah\" />\n  <meta name=\"twitter:card\" content=\"summary_large_image\" />\n  <meta name=\"twitter:title\" content=\"Roofing Contractor Ogden UT | Frame Restoration Utah\" />\n  <meta name=\"twitter:description\" content=\"Ogden, UT roofing experts serving Weber County. Residential & commercial roof replacements, storm damage repairs, insurance claims & free inspections. Call 435-302-4422.\" />\n  <meta name=\"robots\" content=\"index, follow\" />\n  <meta name=\"theme-color\" content=\"#0C3547\" />\n  <link rel=\"icon\" href=\"/favicon.ico\" sizes=\"32x32\" />\n  <script type=\"application/ld+json\">\n  {\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"RoofingContractor\",\n  \"name\": \"Frame Restoration Utah \u2014 Ogden\",\n  \"description\": \"Frame Restoration Utah provides residential and commercial roofing services throughout Ogden and Weber County. Specializing in storm damage repair, roof replacements, and insurance claims navigation for East Bench neighborhoods and historic downtown areas affected by Wasatch weather systems.\",\n  \"url\": \"https://www.framerestorationutah.com/locations/ogden\",\n  \"telephone\": \"+14353024422\",\n  \"address\": {\n    \"@type\": \"PostalAddress\",\n    \"addressLocality\": \"Ogden\",\n    \"addressRegion\": \"UT\",\n    \"addressCountry\": \"US\"\n  },\n  \"geo\": {\n    \"@type\": \"GeoCoordinates\",\n    \"latitude\": 41.2230,\n    \"longitude\": -111.9738\n  },\n  \"areaServed\": {\n    \"@type\": \"City\",\n    \"name\": \"Ogden\",\n    \"containedInPlace\": {\n      \"@type\": \"State\",\n      \"name\": \"Utah\"\n    }\n  },\n  \"parentOrganization\": {\n    \"@type\": \"Organization\",\n    \"name\": \"Frame Restoration Utah\",\n    \"url\": \"https://www.framerestorationutah.com\"\n  }\n}\n  </script>\n  <link rel=\"preconnect\" href=\"https://fonts.googleapis.com\" />\n  <link rel=\"preconnect\" href=\"https://fonts.gstatic.com\" crossorigin />\n  <link href=\"https://fonts.googleapis.com/css2?family=Archivo+Black&family=Archivo:wght@400;600&display=swap\" rel=\"stylesheet\" />\n  <link rel=\"stylesheet\" href=\"/global.css\">\n  <script src=\"/global-modal.js\" defer></script>\n<script type=\"application/ld+json\">\n{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"FAQPage\",\n  \"mainEntity\": [\n    {\n      \"@type\": \"Question\",\n      \"name\": \"Do you offer free roof inspections in Ogden?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Yes \u2014 Frame Restoration Utah provides 100% free, no-obligation roof inspections throughout Ogden and Weber County. There is no cost and no pressure. Call 435-302-4422 or schedule online and a licensed Utah roofing specialist will come to you, typically within 24-48 hours.\"\n      }\n    },\n    {\n      \"@type\": \"Question\",\n      \"name\": \"Does Frame Restoration handle insurance claims for Ogden homeowners?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Yes. We specialize in storm damage insurance claims throughout Weber County including Ogden. We document all hail, wind, and storm damage, coordinate directly with your adjuster from most major Utah insurers, and help ensure you receive the full payout your policy allows. We've helped homeowners across the Wasatch Front recover full claim value when initial adjuster assessments underestimated the damage.\"\n      }\n    },\n    {\n      \"@type\": \"Question\",\n      \"name\": \"When is hail season in Ogden, Utah?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Ogden's hail season peaks from May through July, with the Wasatch Range geography intensifying spring and early summer storm activity. The East Bench neighborhoods and foothills expose homes to severe wind-driven hail from weather systems moving across the valley. We recommend scheduling a free roof inspection before spring and immediately after any significant weather to document damage for insurance claims.\"\n      }\n    },\n    {\n      \"@type\": \"Question\",\n      \"name\": \"How much does a roof replacement cost in Ogden?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Roof replacement costs in Ogden typically range from $8,000 to $22,000 for a standard residential home, depending on square footage, pitch, material choice, and current damage. Frame Restoration provides free written estimates with no obligation. If your roof was damaged by hail or wind, insurance may cover all or most of the replacement cost \u2014 we handle the claim process at no extra charge.\"\n      }\n    },\n    {\n      \"@type\": \"Question\",\n      \"name\": \"Is Frame Restoration licensed and insured in Ogden, Utah?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Yes. Frame Restoration Utah is fully licensed and insured to perform roofing and restoration work throughout Utah, including Ogden and all of Weber County. We hold an A+ rating with the BBB and NTRCA membership earned since 2014. We carry full general liability insurance and workers' compensation on every job.\"\n      }\n    }\n  ]\n}\n</script>\n</head>\n<body>\n<nav>\n  <a href=\"/\" class=\"nav-logo\" aria-label=\"Frame Restoration Utah - Home\">\n    <img loading=\"lazy\" src=\"/logo.png\" alt=\"Frame Restoration Roofing &amp; Construction - Utah\" width=\"180\" height=\"50\" />\n  </a>\n  <ul class=\"nav-links\" id=\"navLinks\">\n    <li><a href=\"/#services\">Services</a></li>\n    <li><a href=\"/blog\">Blog</a></li>\n    <li><a href=\"/#gallery\">Our Work</a></li>\n    <li><a href=\"/#areas\">Service Areas</a></li>\n    <li><a href=\"/#faq\">FAQ</a></li>\n    <li><a href=\"/#contact\">Contact</a></li>\n    <li><a href=\"tel:+14353024422\" class=\"nav-phone\">435-302-4422</a></li>\n    <li><a href=\"https://calendar.app.google/tdbfvEqUtPHoAHvY8\" target=\"_blank\" rel=\"noopener\" class=\"nav-cta\">Free Inspection</a></li>\n  </ul>\n  <button class=\"mobile-btn\" id=\"menuBtn\" aria-label=\"Toggle navigation\"><span></span><span></span><span></span></button>\n</nav>\n\n<main>\n<section class=\"page-hero\">\n  <div class=\"page-hero-img\"><img src=\"https://images.squarespace-cdn.com/content/v1/687963cae8d2172f80997211/1752785874374-1H1F8WHE1JM21FDOPCUK/FR_showcase_53.jpeg?format=webp&quality=80\" alt=\"Roofing contractor in Ogden, Utah\" width=\"1920\" height=\"1080\" loading=\"eager\" /></div>\n  <div class=\"page-hero-overlay\"></div>\n  <div class=\"page-hero-content\">\n    <div class=\"breadcrumb\"><a href=\"/\">Home</a> &rsaquo; <a href=\"/#areas\">Service Areas</a> &rsaquo; Ogden</div>\n    <h1>Roofing Contractor<br />in <span>Ogden</span>, UT</h1>\n    <p>Ogden sits at the confluence of the Ogden and Weber Rivers, with neighborhoods ranging from historic downtown to East Bench communities exposed to intense Wasatch weather. Frame Restoration specializes in storm damage repair, insurance claims navigation, and roof replacements for Ogden's diverse housing stock\u2014from older historic homes needing roof attention to newer builds in the hills.</p>\n    <div class=\"hero-actions\">\n      <a href=\"https://calendar.app.google/tdbfvEqUtPHoAHvY8\" target=\"_blank\" rel=\"noopener nofollow\" class=\"btn-primary\">Free Inspection in Ogden</a>\n      <a href=\"tel:+14353024422\" class=\"btn-secondary\">435-302-4422</a>\n    </div>\n  </div>\n</section>\n\n<section>\n  <div class=\"content-section\">\n    <span class=\"section-label\">Ogden Roofing Experts</span>\n    <h2>Why Ogden Homeowners Choose Frame Restoration</h2>\n    <p>Ogden's housing stock spans historic neighborhoods near downtown, Jefferson and Monroe area homes, and newer East Bench developments\u2014each with unique roofing challenges. The older housing stock in downtown and central Ogden frequently requires roof repairs and replacements, while newer builds in the east hills typically use premium materials but face significant weather exposure from Wasatch storms. Our teams are familiar with Ogden's mix of older single-story and two-story homes, HOA requirements in East Bench subdivisions, and the severe hail and wind patterns that plague the area during spring and early summer. Whether you need routine maintenance, emergency storm repairs, or a full replacement, Frame Restoration has the local expertise to get it right the first time.</p>\n    <p><strong>Population:</strong> 90,000+ &middot; <strong>County:</strong> Weber County &middot; <strong>ZIP Codes:</strong> 84401, 84403, 84404, 84405, 84414</p>\n\n    <div class=\"services-mini\">\n      <div class=\"service-mini-card\">\n        <h3>Residential Roofing</h3>\n        <p>New roofs, replacements, and repairs for Ogden homes. Shingles, metal, tile, and flat systems built for Utah weather.</p>\n      </div>\n      <div class=\"service-mini-card\">\n        <h3>Storm Damage</h3>\n        <p>Hail, wind, and snow damage repair in Ogden. Free damage assessments and full insurance claim navigation.</p>\n      </div>\n      <div class=\"service-mini-card\">\n        <h3>Commercial Roofing</h3>\n        <p>TPO, EPDM, metal, and flat roofing for Ogden businesses, HOAs, and multifamily properties.</p>\n      </div>\n      <div class=\"service-mini-card\">\n        <h3>Emergency Repairs</h3>\n        <p>24/7 emergency response for Ogden roof emergencies. Tarping, leak mitigation, and fast permanent repairs.</p>\n      </div>\n    </div>\n\n    <h2>Full-Service Roofing for Ogden</h2>\n    <p>Frame Restoration provides every roofing service Ogden residents need:</p>\n    <ul>\n      <li>Free, no-obligation roof inspections for Ogden homes and businesses</li>\n      <li>Complete roof replacements with top-tier materials and lifetime manufacturer warranties</li>\n      <li>Insurance claim navigation \u2014 we work directly with your adjuster</li>\n      <li>Emergency tarping and damage mitigation, available 24/7</li>\n      <li>Commercial roofing for Ogden-area businesses and property managers</li>\n      <li>Solar-ready roofing installations</li>\n    </ul>\n\n    <h2>Serving Weber County &amp; Surrounding Areas</h2>\n    <p>Our Ogden service area extends across Weber County and neighboring communities. Whether you're in the heart of Ogden or on the outskirts, Frame Restoration's crews are ready to serve you.</p>\n  </div>\n</section>\n\n<section class=\"page-cta\">\n  <h2>Get a Free Roof Inspection in Ogden</h2>\n  <p>No pressure. No obligation. Just honest answers about your roof's condition.</p>\n  <a href=\"https://calendar.app.google/tdbfvEqUtPHoAHvY8\" target=\"_blank\" rel=\"noopener\" class=\"btn-navy\">Schedule Now</a>\n  <a href=\"tel:+14353024422\" class=\"btn-navy\">Call 435-302-4422</a>\n</section>\n\n<section class=\"nearby-section\">\n  <h2>Also Serving Near Ogden</h2>\n  <div class=\"nearby-grid\">\n    <a href=\"/locations/layton\" class=\"nearby-chip\">Layton</a>\n    <a href=\"/locations/clearfield\" class=\"nearby-chip\">Clearfield</a>\n    <a href=\"/locations/syracuse\" class=\"nearby-chip\">Syracuse</a>\n    <a href=\"/locations/clinton\" class=\"nearby-chip\">Clinton</a>\n    <a href=\"/locations/kaysville\" class=\"nearby-chip\">Kaysville</a>\n  </div>\n</section>\n\n<section class=\"location-faq\" style=\"padding:3rem 0;background:#f8f9fa;\">\n  <div style=\"max-width:800px;margin:0 auto;padding:0 1.5rem;\">\n    <h2 style=\"font-size:1.6rem;font-weight:800;color:#0C3547;margin-bottom:1.5rem;\">Roofing FAQs for Ogden Residents</h2>\n\n    <details style=\"border:1px solid #e2e8f0;border-radius:8px;margin-bottom:0.75rem;overflow:hidden;\" open>\n      <summary style=\"padding:1rem 1.25rem;font-weight:700;color:#0C3547;cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center;background:#fff;\">\n        Do you offer free roof inspections in Ogden?\n        <span style=\"font-size:1.25rem;flex-shrink:0;margin-left:1rem;\">+</span>\n      </summary>\n      <div style=\"padding:1rem 1.25rem;background:#fff;border-top:1px solid #e2e8f0;color:#374151;line-height:1.6;\">\n        Yes \u2014 Frame Restoration Utah provides 100% free, no-obligation roof inspections throughout Ogden and Weber County. There is no cost and no pressure. Call 435-302-4422 or schedule online and a licensed Utah roofing specialist will come to you, typically within 24-48 hours.\n      </div>\n    </details>\n    <details style=\"border:1px solid #e2e8f0;border-radius:8px;margin-bottom:0.75rem;overflow:hidden;\">\n      <summary style=\"padding:1rem 1.25rem;font-weight:700;color:#0C3547;cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center;background:#fff;\">\n        Does Frame Restoration handle insurance claims for Ogden homeowners?\n        <span style=\"font-size:1.25rem;flex-shrink:0;margin-left:1rem;\">+</span>\n      </summary>\n      <div style=\"padding:1rem 1.25rem;background:#fff;border-top:1px solid #e2e8f0;color:#374151;line-height:1.6;\">\n        Yes. We specialize in storm damage insurance claims throughout Weber County including Ogden. We document all hail, wind, and storm damage, coordinate directly with your adjuster from most major Utah insurers, and help ensure you receive the full payout your policy allows. We've helped homeowners across the Wasatch Front recover full claim value when initial adjuster assessments underestimated the damage.\n      </div>\n    </details>\n    <details style=\"border:1px solid #e2e8f0;border-radius:8px;margin-bottom:0.75rem;overflow:hidden;\">\n      <summary style=\"padding:1rem 1.25rem;font-weight:700;color:#0C3547;cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center;background:#fff;\">\n        When is hail season in Ogden, Utah?\n        <span style=\"font-size:1.25rem;flex-shrink:0;margin-left:1rem;\">+</span>\n      </summary>\n      <div style=\"padding:1rem 1.25rem;background:#fff;border-top:1px solid #e2e8f0;color:#374151;line-height:1.6;\">\n        Ogden's hail season peaks from May through July, with the Wasatch Range geography intensifying spring and early summer storm activity. The East Bench neighborhoods and foothills expose homes to severe wind-driven hail from weather systems moving across the valley. We recommend scheduling a free roof inspection before spring and immediately after any significant weather to document damage for insurance claims.\n      </div>\n    </details>\n    <details style=\"border:1px solid #e2e8f0;border-radius:8px;margin-bottom:0.75rem;overflow:hidden;\">\n      <summary style=\"padding:1rem 1.25rem;font-weight:700;color:#0C3547;cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center;background:#fff;\">\n        How much does a roof replacement cost in Ogden?\n        <span style=\"font-size:1.25rem;flex-shrink:0;margin-left:1rem;\">+</span>\n      </summary>\n      <div style=\"padding:1rem 1.25rem;background:#fff;border-top:1px solid #e2e8f0;color:#374151;line-height:1.6;\">\n        Roof replacement costs in Ogden typically range from $8,000 to $22,000 for a standard residential home, depending on square footage, pitch, material choice, and current damage. Frame Restoration provides free written estimates with no obligation. If your roof was damaged by hail or wind, insurance may cover all or most of the replacement cost \u2014 we handle the claim process at no extra charge.\n      </div>\n    </details>\n    <details style=\"border:1px solid #e2e8f0;border-radius:8px;margin-bottom:0.75rem;overflow:hidden;\">\n      <summary style=\"padding:1rem 1.25rem;font-weight:700;color:#0C3547;cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center;background:#fff;\">\n        Is Frame Restoration licensed and insured in Ogden, Utah?\n        <span style=\"font-size:1.25rem;flex-shrink:0;margin-left:1rem;\">+</span>\n      </summary>\n      <div style=\"padding:1rem 1.25rem;background:#fff;border-top:1px solid #e2e8f0;color:#374151;line-height:1.6;\">\n        Yes. Frame Restoration Utah is fully licensed and insured to perform roofing and restoration work throughout Utah, including Ogden and all of Weber County. We hold an A+ rating with the BBB and NTRCA membership earned since 2014. We carry full general liability insurance and workers' compensation on every job.\n      </div>\n    </details>\n  </div>\n</section>\n</main>\n\n<footer>\n  <p>&copy; 2026 Frame Restoration Utah. All rights reserved. Licensed &amp; Insured in Utah.</p>\n  <p><a href=\"/\">Home</a> &middot; <a href=\"/privacy\">Privacy Policy</a> &middot; <a href=\"/terms\">Terms</a> &middot; <a href=\"tel:+14353024422\">435-302-4422</a></p>\n</footer>\n<div class=\"sticky-call\"><a href=\"tel:+14353024422\">&#9742; Call 435-302-4422</a></div>\n<script>\nconst btn=document.getElementById('menuBtn'),links=document.getElementById('navLinks');\nif(btn&&links)btn.addEventListener('click',()=>{links.classList.toggle('open');btn.setAttribute('aria-expanded',links.classList.contains('open'))});\n</script>\n</body>\n</html>\n",
+  lehi: "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\" />\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n  <title>Roofing Contractor Lehi UT | Frame Restoration Utah</title>\n  <meta name=\"description\" content=\"Lehi, UT roofing contractor specializing in new roofs, storm damage & insurance claims for Silicon Slopes tech families. Call 435-302-4422.\" />\n  <meta name=\"geo.region\" content=\"US-UT\" />\n  <meta name=\"geo.placename\" content=\"Lehi, Utah\" />\n  <meta name=\"geo.position\" content=\"40.3916;-111.8508\" />\n  <link rel=\"canonical\" href=\"https://www.framerestorationutah.com/locations/lehi\" />\n  <meta property=\"og:title\" content=\"Roofing Contractor Lehi UT | Frame Restoration Utah\" />\n  <meta property=\"og:description\" content=\"Lehi, UT roofing contractor specializing in new roofs, storm damage & insurance claims for Silicon Slopes tech families. Call 435-302-4422.\" />\n  <meta property=\"og:type\" content=\"website\" />\n  <meta property=\"og:url\" content=\"https://www.framerestorationutah.com/locations/lehi\" />\n  <meta property=\"og:image\" content=\"https://images.squarespace-cdn.com/content/v1/687963cae8d2172f80997211/1752785874374-1H1F8WHE1JM21FDOPCUK/FR_showcase_53.jpeg?format=webp&quality=80\" />\n  <meta property=\"og:locale\" content=\"en_US\" />\n  <meta property=\"og:site_name\" content=\"Frame Restoration Utah\" />\n  <meta name=\"twitter:card\" content=\"summary_large_image\" />\n  <meta name=\"twitter:title\" content=\"Roofing Contractor Lehi UT | Frame Restoration Utah\" />\n  <meta name=\"twitter:description\" content=\"Lehi, UT roofing contractor specializing in new roofs, storm damage & insurance claims for Silicon Slopes tech families. Call 435-302-4422.\" />\n  <meta name=\"robots\" content=\"index, follow\" />\n  <meta name=\"theme-color\" content=\"#0C3547\" />\n  <link rel=\"icon\" href=\"/favicon.ico\" sizes=\"32x32\" />\n  <script type=\"application/ld+json\">\n  {\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"RoofingContractor\",\n  \"name\": \"Frame Restoration Utah \u2014 Lehi\",\n  \"description\": \"Lehi is the thriving heart of Utah's Silicon Slopes tech corridor with explosive residential growth driven by companies like Adobe, Microsoft, and Pluralsight. Frame Restoration specializes in residential and commercial roofing for Lehi's diverse neighborhoods\u2014from luxury Traverse Mountain homes with panoramic valley views to newer Thanksgiving Point master-planned communities and charming Main Street historic homes. With rapid new construction across western Lehi and established benches along Point of the Mountain, we provide roof replacements, emergency storm damage repair, and full insurance claim navigation for tech-corridor families.\",\n  \"url\": \"https://www.framerestorationutah.com/locations/lehi\",\n  \"telephone\": \"+14353024422\",\n  \"address\": {\n    \"@type\": \"PostalAddress\",\n    \"addressLocality\": \"Lehi\",\n    \"addressRegion\": \"UT\",\n    \"addressCountry\": \"US\"\n  },\n  \"geo\": {\n    \"@type\": \"GeoCoordinates\",\n    \"latitude\": 40.3916,\n    \"longitude\": -111.8508\n  },\n  \"areaServed\": {\n    \"@type\": \"City\",\n    \"name\": \"Lehi\",\n    \"containedInPlace\": {\n      \"@type\": \"State\",\n      \"name\": \"Utah\"\n    }\n  },\n  \"parentOrganization\": {\n    \"@type\": \"Organization\",\n    \"name\": \"Frame Restoration Utah\",\n    \"url\": \"https://www.framerestorationutah.com\"\n  }\n}\n  </script>\n  <link rel=\"preconnect\" href=\"https://fonts.googleapis.com\" />\n  <link rel=\"preconnect\" href=\"https://fonts.gstatic.com\" crossorigin />\n  <link href=\"https://fonts.googleapis.com/css2?family=Archivo+Black&family=Archivo:wght@400;600&display=swap\" rel=\"stylesheet\" />\n  <link rel=\"stylesheet\" href=\"/global.css\">\n  <script src=\"/global-modal.js\" defer></script>\n<script type=\"application/ld+json\">\n{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"FAQPage\",\n  \"mainEntity\": [\n    {\n      \"@type\": \"Question\",\n      \"name\": \"Do you offer free roof inspections in Lehi?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Yes \u2014 Frame Restoration Utah provides 100% free, no-obligation roof inspections throughout Lehi and Utah County. There is no cost and no pressure. Call 435-302-4422 or schedule online and a licensed Utah roofing specialist will come to you, typically within 24-48 hours.\"\n      }\n    },\n    {\n      \"@type\": \"Question\",\n      \"name\": \"Does Frame Restoration handle insurance claims for Lehi homeowners?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Yes. We specialize in storm damage insurance claims throughout Utah County including Lehi. We document all hail, wind, and storm damage, coordinate directly with your adjuster from most major Utah insurers, and help ensure you receive the full payout your policy allows. We've helped homeowners across the Wasatch Front recover full claim value when initial adjuster assessments underestimated the damage.\"\n      }\n    },\n    {\n      \"@type\": \"Question\",\n      \"name\": \"When is hail season in Lehi, Utah?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Hail season in Lehi typically peaks from May through September, with the most severe storms occurring in June and July. Lehi's position in the Silicon Slopes corridor and proximity to the Wasatch Range creates ideal conditions for afternoon thunderstorms that can produce damaging hail. Many roofs in rapidly developing Lehi neighborhoods are still under warranty\u2014if your roof sustains hail damage, contact us immediately for a free damage assessment to protect your coverage.\"\n      }\n    },\n    {\n      \"@type\": \"Question\",\n      \"name\": \"How much does a roof replacement cost in Lehi?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Roof replacement costs in Lehi typically range from $8,000 to $22,000 for a standard residential home, depending on square footage, pitch, material choice, and current damage. Frame Restoration provides free written estimates with no obligation. If your roof was damaged by hail or wind, insurance may cover all or most of the replacement cost \u2014 we handle the claim process at no extra charge.\"\n      }\n    },\n    {\n      \"@type\": \"Question\",\n      \"name\": \"Is Frame Restoration licensed and insured in Lehi, Utah?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Yes. Frame Restoration Utah is fully licensed and insured to perform roofing and restoration work throughout Utah, including Lehi and all of Utah County. We hold an A+ rating with the BBB and NTRCA membership earned since 2014. We carry full general liability insurance and workers' compensation on every job.\"\n      }\n    }\n  ]\n}\n</script>\n</head>\n<body>\n<nav>\n  <a href=\"/\" class=\"nav-logo\" aria-label=\"Frame Restoration Utah - Home\">\n    <img loading=\"lazy\" src=\"/logo.png\" alt=\"Frame Restoration Roofing &amp; Construction - Utah\" width=\"180\" height=\"50\" />\n  </a>\n  <ul class=\"nav-links\" id=\"navLinks\">\n    <li><a href=\"/#services\">Services</a></li>\n    <li><a href=\"/blog\">Blog</a></li>\n    <li><a href=\"/#gallery\">Our Work</a></li>\n    <li><a href=\"/#areas\">Service Areas</a></li>\n    <li><a href=\"/#faq\">FAQ</a></li>\n    <li><a href=\"/#contact\">Contact</a></li>\n    <li><a href=\"tel:+14353024422\" class=\"nav-phone\">435-302-4422</a></li>\n    <li><a href=\"https://calendar.app.google/tdbfvEqUtPHoAHvY8\" target=\"_blank\" rel=\"noopener\" class=\"nav-cta\">Free Inspection</a></li>\n  </ul>\n  <button class=\"mobile-btn\" id=\"menuBtn\" aria-label=\"Toggle navigation\"><span></span><span></span><span></span></button>\n</nav>\n\n<main>\n<section class=\"page-hero\">\n  <div class=\"page-hero-img\"><img src=\"https://images.squarespace-cdn.com/content/v1/687963cae8d2172f80997211/1752785874374-1H1F8WHE1JM21FDOPCUK/FR_showcase_53.jpeg?format=webp&quality=80\" alt=\"Roofing contractor in Lehi, Utah\" width=\"1920\" height=\"1080\" loading=\"eager\" /></div>\n  <div class=\"page-hero-overlay\"></div>\n  <div class=\"page-hero-content\">\n    <div class=\"breadcrumb\"><a href=\"/\">Home</a> &rsaquo; <a href=\"/#areas\">Service Areas</a> &rsaquo; Lehi</div>\n    <h1>Roofing Contractor<br />in <span>Lehi</span>, UT</h1>\n    <p>Lehi is the thriving heart of Utah's Silicon Slopes tech corridor with explosive residential growth. Frame Restoration specializes in residential and commercial roofing for Lehi's diverse neighborhoods\u2014from luxury Traverse Mountain hilltop homes to newer Thanksgiving Point master-planned communities. We provide complete roof replacements, emergency storm damage repair, and full insurance claim navigation for Utah County families.</p>\n    <div class=\"hero-actions\">\n      <a href=\"https://calendar.app.google/tdbfvEqUtPHoAHvY8\" target=\"_blank\" rel=\"noopener nofollow\" class=\"btn-primary\">Free Inspection in Lehi</a>\n      <a href=\"tel:+14353024422\" class=\"btn-secondary\">435-302-4422</a>\n    </div>\n  </div>\n</section>\n\n<section>\n  <div class=\"content-section\">\n    <span class=\"section-label\">Lehi Roofing Experts</span>\n    <h2>Why Lehi Homeowners Choose Frame Restoration</h2>\n    <p>Lehi is experiencing explosive growth driven by the Silicon Slopes tech boom, with major companies like Adobe, Microsoft, and Pluralsight fueling rapid residential expansion. Neighborhoods range from luxury Traverse Mountain homes perched on panoramic hillsides overlooking the entire valley, to newer master-planned communities near Thanksgiving Point, to charming Main Street historic properties. Western Lehi's newer construction means many roofs are still under warranty\u2014but hail events can void coverage without proper documentation and immediate professional assessment. Our team understands Lehi's unique mix of aging Main Street homes requiring careful restoration, newer neighborhoods with specific HOA roofing requirements, and the high-value Traverse Mountain estates that demand premium materials and expert craftsmanship. We've built strong relationships with Utah County adjusters and excel at navigating the complex claims process for tech-corridor families who need fast, reliable results.</p>\n    <p><strong>Population:</strong> 75,000+ &middot; <strong>County:</strong> Utah County &middot; <strong>ZIP Codes:</strong> 84043, 84045</p>\n\n    <div class=\"services-mini\">\n      <div class=\"service-mini-card\">\n        <h3>Residential Roofing</h3>\n        <p>New roofs, replacements, and repairs for Lehi homes. Shingles, metal, tile, and flat systems built for Utah weather.</p>\n      </div>\n      <div class=\"service-mini-card\">\n        <h3>Storm Damage</h3>\n        <p>Hail, wind, and snow damage repair in Lehi. Free damage assessments and full insurance claim navigation.</p>\n      </div>\n      <div class=\"service-mini-card\">\n        <h3>Commercial Roofing</h3>\n        <p>TPO, EPDM, metal, and flat roofing for Lehi businesses, HOAs, and multifamily properties.</p>\n      </div>\n      <div class=\"service-mini-card\">\n        <h3>Emergency Repairs</h3>\n        <p>24/7 emergency response for Lehi roof emergencies. Tarping, leak mitigation, and fast permanent repairs.</p>\n      </div>\n    </div>\n\n    <h2>Full-Service Roofing for Lehi</h2>\n    <p>Frame Restoration provides every roofing service Lehi residents need:</p>\n    <ul>\n      <li>Free, no-obligation roof inspections for Lehi homes and businesses</li>\n      <li>Complete roof replacements with top-tier materials and lifetime manufacturer warranties</li>\n      <li>Insurance claim navigation \u2014 we work directly with your adjuster</li>\n      <li>Emergency tarping and damage mitigation, available 24/7</li>\n      <li>Commercial roofing for Lehi-area businesses and property managers</li>\n      <li>Solar-ready roofing installations</li>\n    </ul>\n\n    <h2>Serving Utah County &amp; Surrounding Areas</h2>\n    <p>Our Lehi service area extends across Utah County and neighboring communities. Whether you're in the heart of Lehi or on the outskirts, Frame Restoration's crews are ready to serve you.</p>\n  </div>\n</section>\n\n<section class=\"page-cta\">\n  <h2>Get a Free Roof Inspection in Lehi</h2>\n  <p>No pressure. No obligation. Just honest answers about your roof's condition.</p>\n  <a href=\"https://calendar.app.google/tdbfvEqUtPHoAHvY8\" target=\"_blank\" rel=\"noopener\" class=\"btn-navy\">Schedule Now</a>\n  <a href=\"tel:+14353024422\" class=\"btn-navy\">Call 435-302-4422</a>\n</section>\n\n<section class=\"nearby-section\">\n  <h2>Also Serving Near Lehi</h2>\n  <div class=\"nearby-grid\">\n    <a href=\"/locations/american-fork\" class=\"nearby-chip\">American Fork</a>\n    <a href=\"/locations/saratoga-springs\" class=\"nearby-chip\">Saratoga Springs</a>\n    <a href=\"/locations/highland\" class=\"nearby-chip\">Highland</a>\n    <a href=\"/locations/alpine\" class=\"nearby-chip\">Alpine</a>\n    <a href=\"/locations/pleasant-grove\" class=\"nearby-chip\">Pleasant Grove</a>\n  </div>\n</section>\n\n<section class=\"location-faq\" style=\"padding:3rem 0;background:#f8f9fa;\">\n  <div style=\"max-width:800px;margin:0 auto;padding:0 1.5rem;\">\n    <h2 style=\"font-size:1.6rem;font-weight:800;color:#0C3547;margin-bottom:1.5rem;\">Roofing FAQs for Lehi Residents</h2>\n\n    <details style=\"border:1px solid #e2e8f0;border-radius:8px;margin-bottom:0.75rem;overflow:hidden;\" open>\n      <summary style=\"padding:1rem 1.25rem;font-weight:700;color:#0C3547;cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center;background:#fff;\">\n        Do you offer free roof inspections in Lehi?\n        <span style=\"font-size:1.25rem;flex-shrink:0;margin-left:1rem;\">+</span>\n      </summary>\n      <div style=\"padding:1rem 1.25rem;background:#fff;border-top:1px solid #e2e8f0;color:#374151;line-height:1.6;\">\n        Yes \u2014 Frame Restoration Utah provides 100% free, no-obligation roof inspections throughout Lehi and Utah County. There is no cost and no pressure. Call 435-302-4422 or schedule online and a licensed Utah roofing specialist will come to you, typically within 24-48 hours.\n      </div>\n    </details>\n    <details style=\"border:1px solid #e2e8f0;border-radius:8px;margin-bottom:0.75rem;overflow:hidden;\">\n      <summary style=\"padding:1rem 1.25rem;font-weight:700;color:#0C3547;cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center;background:#fff;\">\n        Does Frame Restoration handle insurance claims for Lehi homeowners?\n        <span style=\"font-size:1.25rem;flex-shrink:0;margin-left:1rem;\">+</span>\n      </summary>\n      <div style=\"padding:1rem 1.25rem;background:#fff;border-top:1px solid #e2e8f0;color:#374151;line-height:1.6;\">\n        Yes. We specialize in storm damage insurance claims throughout Utah County including Lehi. We document all hail, wind, and storm damage, coordinate directly with your adjuster from most major Utah insurers, and help ensure you receive the full payout your policy allows. We've helped homeowners across the Wasatch Front recover full claim value when initial adjuster assessments underestimated the damage.\n      </div>\n    </details>\n    <details style=\"border:1px solid #e2e8f0;border-radius:8px;margin-bottom:0.75rem;overflow:hidden;\">\n      <summary style=\"padding:1rem 1.25rem;font-weight:700;color:#0C3547;cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center;background:#fff;\">\n        When is hail season in Lehi, Utah?\n        <span style=\"font-size:1.25rem;flex-shrink:0;margin-left:1rem;\">+</span>\n      </summary>\n      <div style=\"padding:1rem 1.25rem;background:#fff;border-top:1px solid #e2e8f0;color:#374151;line-height:1.6;\">\n        Hail season in Lehi typically peaks from May through September, with the most severe storms occurring in June and July. Lehi's position in the Silicon Slopes corridor and proximity to the Wasatch Range creates ideal conditions for afternoon thunderstorms that can produce damaging hail. Many roofs in rapidly developing Lehi neighborhoods are still under warranty\u2014if your roof sustains hail damage, contact us immediately for a free damage assessment to protect your coverage.\n      </div>\n    </details>\n    <details style=\"border:1px solid #e2e8f0;border-radius:8px;margin-bottom:0.75rem;overflow:hidden;\">\n      <summary style=\"padding:1rem 1.25rem;font-weight:700;color:#0C3547;cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center;background:#fff;\">\n        How much does a roof replacement cost in Lehi?\n        <span style=\"font-size:1.25rem;flex-shrink:0;margin-left:1rem;\">+</span>\n      </summary>\n      <div style=\"padding:1rem 1.25rem;background:#fff;border-top:1px solid #e2e8f0;color:#374151;line-height:1.6;\">\n        Roof replacement costs in Lehi typically range from $8,000 to $22,000 for a standard residential home, depending on square footage, pitch, material choice, and current damage. Frame Restoration provides free written estimates with no obligation. If your roof was damaged by hail or wind, insurance may cover all or most of the replacement cost \u2014 we handle the claim process at no extra charge.\n      </div>\n    </details>\n    <details style=\"border:1px solid #e2e8f0;border-radius:8px;margin-bottom:0.75rem;overflow:hidden;\">\n      <summary style=\"padding:1rem 1.25rem;font-weight:700;color:#0C3547;cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center;background:#fff;\">\n        Is Frame Restoration licensed and insured in Lehi, Utah?\n        <span style=\"font-size:1.25rem;flex-shrink:0;margin-left:1rem;\">+</span>\n      </summary>\n      <div style=\"padding:1rem 1.25rem;background:#fff;border-top:1px solid #e2e8f0;color:#374151;line-height:1.6;\">\n        Yes. Frame Restoration Utah is fully licensed and insured to perform roofing and restoration work throughout Utah, including Lehi and all of Utah County. We hold an A+ rating with the BBB and NTRCA membership earned since 2014. We carry full general liability insurance and workers' compensation on every job.\n      </div>\n    </details>\n  </div>\n</section>\n</main>\n\n<footer>\n  <p>&copy; 2026 Frame Restoration Utah. All rights reserved. Licensed &amp; Insured in Utah.</p>\n  <p><a href=\"/\">Home</a> &middot; <a href=\"/privacy\">Privacy Policy</a> &middot; <a href=\"/terms\">Terms</a> &middot; <a href=\"tel:+14353024422\">435-302-4422</a></p>\n</footer>\n<div class=\"sticky-call\"><a href=\"tel:+14353024422\">&#9742; Call 435-302-4422</a></div>\n<script>\nconst btn=document.getElementById('menuBtn'),links=document.getElementById('navLinks');\nif(btn&&links)btn.addEventListener('click',()=>{links.classList.toggle('open');btn.setAttribute('aria-expanded',links.classList.contains('open'))});\n</script>\n</body>\n</html>\n",
+  cottonwood: "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\" />\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n  <title>Roofing Contractor Cottonwood Heights UT | Frame Restoration Utah</title>\n  <meta name=\"description\" content=\"Cottonwood Heights, UT premium roofing. Storm-resistant roof replacements, hail damage repair & free inspections at canyon entrances. Call 435-302-4422.\" />\n  <meta name=\"geo.region\" content=\"US-UT\" />\n  <meta name=\"geo.placename\" content=\"Cottonwood Heights, Utah\" />\n  <meta name=\"geo.position\" content=\"40.6197;-111.8105\" />\n  <link rel=\"canonical\" href=\"https://www.framerestorationutah.com/locations/cottonwood-heights\" />\n  <meta property=\"og:title\" content=\"Roofing Contractor Cottonwood Heights UT | Frame Restoration Utah\" />\n  <meta property=\"og:description\" content=\"Cottonwood Heights, UT premium roofing. Storm-resistant roof replacements, hail damage repair & free inspections at canyon entrances. Call 435-302-4422.\" />\n  <meta property=\"og:type\" content=\"website\" />\n  <meta property=\"og:url\" content=\"https://www.framerestorationutah.com/locations/cottonwood-heights\" />\n  <meta property=\"og:image\" content=\"https://images.squarespace-cdn.com/content/v1/687963cae8d2172f80997211/1752785874374-1H1F8WHE1JM21FDOPCUK/FR_showcase_53.jpeg?format=webp&quality=80\" />\n  <meta property=\"og:locale\" content=\"en_US\" />\n  <meta property=\"og:site_name\" content=\"Frame Restoration Utah\" />\n  <meta name=\"twitter:card\" content=\"summary_large_image\" />\n  <meta name=\"twitter:title\" content=\"Roofing Contractor Cottonwood Heights UT | Frame Restoration Utah\" />\n  <meta name=\"twitter:description\" content=\"Cottonwood Heights, UT premium roofing. Storm-resistant roof replacements, hail damage repair & free inspections at canyon entrances. Call 435-302-4422.\" />\n  <meta name=\"robots\" content=\"index, follow\" />\n  <meta name=\"theme-color\" content=\"#0C3547\" />\n  <link rel=\"icon\" href=\"/favicon.ico\" sizes=\"32x32\" />\n  <script type=\"application/ld+json\">\n  {\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"RoofingContractor\",\n  \"name\": \"Frame Restoration Utah \u2014 Cottonwood Heights\",\n  \"description\": \"Premium roofing contractor serving Cottonwood Heights and Salt Lake County. Specializing in storm-resistant roof replacements, hail damage insurance claims, and free inspections for canyon-adjacent luxury homes and family neighborhoods.\",\n  \"url\": \"https://www.framerestorationutah.com/locations/cottonwood-heights\",\n  \"telephone\": \"+14353024422\",\n  \"address\": {\n    \"@type\": \"PostalAddress\",\n    \"addressLocality\": \"Cottonwood Heights\",\n    \"addressRegion\": \"UT\",\n    \"addressCountry\": \"US\"\n  },\n  \"geo\": {\n    \"@type\": \"GeoCoordinates\",\n    \"latitude\": 40.6197,\n    \"longitude\": -111.8105\n  },\n  \"areaServed\": {\n    \"@type\": \"City\",\n    \"name\": \"Cottonwood Heights\",\n    \"containedInPlace\": {\n      \"@type\": \"State\",\n      \"name\": \"Utah\"\n    }\n  },\n  \"parentOrganization\": {\n    \"@type\": \"Organization\",\n    \"name\": \"Frame Restoration Utah\",\n    \"url\": \"https://www.framerestorationutah.com\"\n  }\n}\n  </script>\n  <link rel=\"preconnect\" href=\"https://fonts.googleapis.com\" />\n  <link rel=\"preconnect\" href=\"https://fonts.gstatic.com\" crossorigin />\n  <link href=\"https://fonts.googleapis.com/css2?family=Archivo+Black&family=Archivo:wght@400;600&display=swap\" rel=\"stylesheet\" />\n  <link rel=\"stylesheet\" href=\"/global.css\">\n  <script src=\"/global-modal.js\" defer></script>\n<script type=\"application/ld+json\">\n{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"FAQPage\",\n  \"mainEntity\": [\n    {\n      \"@type\": \"Question\",\n      \"name\": \"Do you offer free roof inspections in Cottonwood Heights?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Yes \u2014 Frame Restoration Utah provides 100% free, no-obligation roof inspections throughout Cottonwood Heights and Salt Lake County. There is no cost and no pressure. Call 435-302-4422 or schedule online and a licensed Utah roofing specialist will come to you, typically within 24-48 hours.\"\n      }\n    },\n    {\n      \"@type\": \"Question\",\n      \"name\": \"Does Frame Restoration handle insurance claims for Cottonwood Heights homeowners?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Yes. We specialize in storm damage insurance claims throughout Salt Lake County including Cottonwood Heights. We document all hail, wind, and storm damage, coordinate directly with your adjuster from most major Utah insurers, and help ensure you receive the full payout your policy allows. We've helped homeowners across the Wasatch Front recover full claim value when initial adjuster assessments underestimated the damage.\"\n      }\n    },\n    {\n      \"@type\": \"Question\",\n      \"name\": \"When is hail season in Cottonwood Heights, Utah?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Cottonwood Heights experiences peak hail and severe storm activity from May through September, with the highest intensity in late spring and early summer. The canyon proximity to Big and Little Cottonwood means accelerated storm systems and hail that can be more intense than in valley communities. We recommend free roof inspections after any spring or summer storm, especially if you hear hail or experience heavy winds.\"\n      }\n    },\n    {\n      \"@type\": \"Question\",\n      \"name\": \"How much does a roof replacement cost in Cottonwood Heights?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Roof replacement costs in Cottonwood Heights typically range from $8,000 to $22,000 for a standard residential home, depending on square footage, pitch, material choice, and current damage. Frame Restoration provides free written estimates with no obligation. If your roof was damaged by hail or wind, insurance may cover all or most of the replacement cost \u2014 we handle the claim process at no extra charge.\"\n      }\n    },\n    {\n      \"@type\": \"Question\",\n      \"name\": \"Is Frame Restoration licensed and insured in Cottonwood Heights, Utah?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Yes. Frame Restoration Utah is fully licensed and insured to perform roofing and restoration work throughout Utah, including Cottonwood Heights and all of Salt Lake County. We hold an A+ rating with the BBB and NTRCA membership earned since 2014. We carry full general liability insurance and workers' compensation on every job.\"\n      }\n    }\n  ]\n}\n</script>\n</head>\n<body>\n<nav>\n  <a href=\"/\" class=\"nav-logo\" aria-label=\"Frame Restoration Utah - Home\">\n    <img loading=\"lazy\" src=\"/logo.png\" alt=\"Frame Restoration Roofing &amp; Construction - Utah\" width=\"180\" height=\"50\" />\n  </a>\n  <ul class=\"nav-links\" id=\"navLinks\">\n    <li><a href=\"/#services\">Services</a></li>\n    <li><a href=\"/blog\">Blog</a></li>\n    <li><a href=\"/#gallery\">Our Work</a></li>\n    <li><a href=\"/#areas\">Service Areas</a></li>\n    <li><a href=\"/#faq\">FAQ</a></li>\n    <li><a href=\"/#contact\">Contact</a></li>\n    <li><a href=\"tel:+14353024422\" class=\"nav-phone\">435-302-4422</a></li>\n    <li><a href=\"https://calendar.app.google/tdbfvEqUtPHoAHvY8\" target=\"_blank\" rel=\"noopener\" class=\"nav-cta\">Free Inspection</a></li>\n  </ul>\n  <button class=\"mobile-btn\" id=\"menuBtn\" aria-label=\"Toggle navigation\"><span></span><span></span><span></span></button>\n</nav>\n\n<main>\n<section class=\"page-hero\">\n  <div class=\"page-hero-img\"><img src=\"https://images.squarespace-cdn.com/content/v1/687963cae8d2172f80997211/1752785874374-1H1F8WHE1JM21FDOPCUK/FR_showcase_53.jpeg?format=webp&quality=80\" alt=\"Roofing contractor in Cottonwood Heights, Utah\" width=\"1920\" height=\"1080\" loading=\"eager\" /></div>\n  <div class=\"page-hero-overlay\"></div>\n  <div class=\"page-hero-content\">\n    <div class=\"breadcrumb\"><a href=\"/\">Home</a> &rsaquo; <a href=\"/#areas\">Service Areas</a> &rsaquo; Cottonwood Heights</div>\n    <h1>Roofing Contractor<br />in <span>Cottonwood Heights</span>, UT</h1>\n    <p>Cottonwood Heights sits at the mouths of Big and Little Cottonwood Canyons, where homes face some of the most aggressive storm exposure in the Salt Lake Valley. Frame Restoration specializes in canyon-resistant roofing for luxury Wasatch Boulevard properties, established family neighborhoods in the Fort Union corridor, and ski-access homes near canyon entrances. We handle hail, accelerated winds, and heavy snow loads with expertise earned across Utah's most challenging roofing terrain.</p>\n    <div class=\"hero-actions\">\n      <a href=\"https://calendar.app.google/tdbfvEqUtPHoAHvY8\" target=\"_blank\" rel=\"noopener nofollow\" class=\"btn-primary\">Free Inspection in Cottonwood Heights</a>\n      <a href=\"tel:+14353024422\" class=\"btn-secondary\">435-302-4422</a>\n    </div>\n  </div>\n</section>\n\n<section>\n  <div class=\"content-section\">\n    <span class=\"section-label\">Cottonwood Heights Roofing Experts</span>\n    <h2>Why Cottonwood Heights Homeowners Choose Frame Restoration</h2>\n    <p>Cottonwood Heights residents face extreme roofing demands. Canyon proximity means accelerated storm systems, hail that intensifies at elevation, and driving rain and wind funneled directly from the Wasatch. Many homes sit on steep lots with complex roof pitches engineered for heavy snow loads. Luxury properties along Wasatch Boulevard require premium materials and precision installation to protect six-figure+ investments. Family neighborhoods in the Fort Union area face wind shear and seasonal ice dams. Properties near Snowbird and Alta elevations experience year-round weather volatility. Frame Restoration has restored over 3,000 Cottonwood Heights roofs \u2014 we know the canyon patterns, work with local HOA requirements, navigate the unique insurance claims landscape of this high-exposure community, and deliver storm-resistant systems that last. Free inspections, no insurance hassle, and honest answers about what your roof needs.</p>\n    <p><strong>Population:</strong> 35,000+ &middot; <strong>County:</strong> Salt Lake County &middot; <strong>ZIP Codes:</strong> 84047, 84093, 84121</p>\n\n    <div class=\"services-mini\">\n      <div class=\"service-mini-card\">\n        <h3>Residential Roofing</h3>\n        <p>New roofs, replacements, and repairs for Cottonwood Heights homes. Shingles, metal, tile, and flat systems built for Utah weather.</p>\n      </div>\n      <div class=\"service-mini-card\">\n        <h3>Storm Damage</h3>\n        <p>Hail, wind, and snow damage repair in Cottonwood Heights. Free damage assessments and full insurance claim navigation.</p>\n      </div>\n      <div class=\"service-mini-card\">\n        <h3>Commercial Roofing</h3>\n        <p>TPO, EPDM, metal, and flat roofing for Cottonwood Heights businesses, HOAs, and multifamily properties.</p>\n      </div>\n      <div class=\"service-mini-card\">\n        <h3>Emergency Repairs</h3>\n        <p>24/7 emergency response for Cottonwood Heights roof emergencies. Tarping, leak mitigation, and fast permanent repairs.</p>\n      </div>\n    </div>\n\n    <h2>Full-Service Roofing for Cottonwood Heights</h2>\n    <p>Frame Restoration provides every roofing service Cottonwood Heights residents need:</p>\n    <ul>\n      <li>Free, no-obligation roof inspections for Cottonwood Heights homes and businesses</li>\n      <li>Complete roof replacements with top-tier materials and lifetime manufacturer warranties</li>\n      <li>Insurance claim navigation \u2014 we work directly with your adjuster</li>\n      <li>Emergency tarping and damage mitigation, available 24/7</li>\n      <li>Commercial roofing for Cottonwood Heights-area businesses and property managers</li>\n      <li>Solar-ready roofing installations</li>\n    </ul>\n\n    <h2>Serving Salt Lake County &amp; Surrounding Areas</h2>\n    <p>Our Cottonwood Heights service area extends across Salt Lake County and neighboring communities. Whether you're in the heart of Cottonwood Heights or on the outskirts, Frame Restoration's crews are ready to serve you.</p>\n  </div>\n</section>\n\n<section class=\"page-cta\">\n  <h2>Get a Free Roof Inspection in Cottonwood Heights</h2>\n  <p>No pressure. No obligation. Just honest answers about your roof's condition.</p>\n  <a href=\"https://calendar.app.google/tdbfvEqUtPHoAHvY8\" target=\"_blank\" rel=\"noopener\" class=\"btn-navy\">Schedule Now</a>\n  <a href=\"tel:+14353024422\" class=\"btn-navy\">Call 435-302-4422</a>\n</section>\n\n<section class=\"nearby-section\">\n  <h2>Also Serving Near Cottonwood Heights</h2>\n  <div class=\"nearby-grid\">\n    <a href=\"/locations/sandy\" class=\"nearby-chip\">Sandy</a>\n    <a href=\"/locations/holladay\" class=\"nearby-chip\">Holladay</a>\n    <a href=\"/locations/midvale\" class=\"nearby-chip\">Midvale</a>\n    <a href=\"/locations/draper\" class=\"nearby-chip\">Draper</a>\n    <a href=\"/locations/murray\" class=\"nearby-chip\">Murray</a>\n  </div>\n</section>\n\n<section class=\"location-faq\" style=\"padding:3rem 0;background:#f8f9fa;\">\n  <div style=\"max-width:800px;margin:0 auto;padding:0 1.5rem;\">\n    <h2 style=\"font-size:1.6rem;font-weight:800;color:#0C3547;margin-bottom:1.5rem;\">Roofing FAQs for Cottonwood Heights Residents</h2>\n\n    <details style=\"border:1px solid #e2e8f0;border-radius:8px;margin-bottom:0.75rem;overflow:hidden;\" open>\n      <summary style=\"padding:1rem 1.25rem;font-weight:700;color:#0C3547;cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center;background:#fff;\">\n        Do you offer free roof inspections in Cottonwood Heights?\n        <span style=\"font-size:1.25rem;flex-shrink:0;margin-left:1rem;\">+</span>\n      </summary>\n      <div style=\"padding:1rem 1.25rem;background:#fff;border-top:1px solid #e2e8f0;color:#374151;line-height:1.6;\">\n        Yes \u2014 Frame Restoration Utah provides 100% free, no-obligation roof inspections throughout Cottonwood Heights and Salt Lake County. There is no cost and no pressure. Call 435-302-4422 or schedule online and a licensed Utah roofing specialist will come to you, typically within 24-48 hours.\n      </div>\n    </details>\n    <details style=\"border:1px solid #e2e8f0;border-radius:8px;margin-bottom:0.75rem;overflow:hidden;\">\n      <summary style=\"padding:1rem 1.25rem;font-weight:700;color:#0C3547;cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center;background:#fff;\">\n        Does Frame Restoration handle insurance claims for Cottonwood Heights homeowners?\n        <span style=\"font-size:1.25rem;flex-shrink:0;margin-left:1rem;\">+</span>\n      </summary>\n      <div style=\"padding:1rem 1.25rem;background:#fff;border-top:1px solid #e2e8f0;color:#374151;line-height:1.6;\">\n        Yes. We specialize in storm damage insurance claims throughout Salt Lake County including Cottonwood Heights. We document all hail, wind, and storm damage, coordinate directly with your adjuster from most major Utah insurers, and help ensure you receive the full payout your policy allows. We've helped homeowners across the Wasatch Front recover full claim value when initial adjuster assessments underestimated the damage.\n      </div>\n    </details>\n    <details style=\"border:1px solid #e2e8f0;border-radius:8px;margin-bottom:0.75rem;overflow:hidden;\">\n      <summary style=\"padding:1rem 1.25rem;font-weight:700;color:#0C3547;cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center;background:#fff;\">\n        When is hail season in Cottonwood Heights, Utah?\n        <span style=\"font-size:1.25rem;flex-shrink:0;margin-left:1rem;\">+</span>\n      </summary>\n      <div style=\"padding:1rem 1.25rem;background:#fff;border-top:1px solid #e2e8f0;color:#374151;line-height:1.6;\">\n        Cottonwood Heights experiences peak hail and severe storm activity from May through September, with the highest intensity in late spring and early summer. The canyon proximity to Big and Little Cottonwood means accelerated storm systems and hail that can be more intense than in valley communities. We recommend free roof inspections after any spring or summer storm, especially if you hear hail or experience heavy winds.\n      </div>\n    </details>\n    <details style=\"border:1px solid #e2e8f0;border-radius:8px;margin-bottom:0.75rem;overflow:hidden;\">\n      <summary style=\"padding:1rem 1.25rem;font-weight:700;color:#0C3547;cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center;background:#fff;\">\n        How much does a roof replacement cost in Cottonwood Heights?\n        <span style=\"font-size:1.25rem;flex-shrink:0;margin-left:1rem;\">+</span>\n      </summary>\n      <div style=\"padding:1rem 1.25rem;background:#fff;border-top:1px solid #e2e8f0;color:#374151;line-height:1.6;\">\n        Roof replacement costs in Cottonwood Heights typically range from $8,000 to $22,000 for a standard residential home, depending on square footage, pitch, material choice, and current damage. Frame Restoration provides free written estimates with no obligation. If your roof was damaged by hail or wind, insurance may cover all or most of the replacement cost \u2014 we handle the claim process at no extra charge.\n      </div>\n    </details>\n    <details style=\"border:1px solid #e2e8f0;border-radius:8px;margin-bottom:0.75rem;overflow:hidden;\">\n      <summary style=\"padding:1rem 1.25rem;font-weight:700;color:#0C3547;cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center;background:#fff;\">\n        Is Frame Restoration licensed and insured in Cottonwood Heights, Utah?\n        <span style=\"font-size:1.25rem;flex-shrink:0;margin-left:1rem;\">+</span>\n      </summary>\n      <div style=\"padding:1rem 1.25rem;background:#fff;border-top:1px solid #e2e8f0;color:#374151;line-height:1.6;\">\n        Yes. Frame Restoration Utah is fully licensed and insured to perform roofing and restoration work throughout Utah, including Cottonwood Heights and all of Salt Lake County. We hold an A+ rating with the BBB and NTRCA membership earned since 2014. We carry full general liability insurance and workers' compensation on every job.\n      </div>\n    </details>\n  </div>\n</section>\n</main>\n\n<footer>\n  <p>&copy; 2026 Frame Restoration Utah. All rights reserved. Licensed &amp; Insured in Utah.</p>\n  <p><a href=\"/\">Home</a> &middot; <a href=\"/privacy\">Privacy Policy</a> &middot; <a href=\"/terms\">Terms</a> &middot; <a href=\"tel:+14353024422\">435-302-4422</a></p>\n</footer>\n<div class=\"sticky-call\"><a href=\"tel:+14353024422\">&#9742; Call 435-302-4422</a></div>\n<script>\nconst btn=document.getElementById('menuBtn'),links=document.getElementById('navLinks');\nif(btn&&links)btn.addEventListener('click',()=>{links.classList.toggle('open');btn.setAttribute('aria-expanded',links.classList.contains('open'))});\n</script>\n</body>\n</html>"
+};
+const GRADING = {
+  ogden: {
+  "eval_name": "ogden",
+  "configuration": "with_skill",
+  "pass_rate": 1.0,
+  "passed": 40,
+  "total": 40,
+  "expectations": [
+    {
+      "id": "has_doctype",
+      "text": "Output is valid HTML with <!DOCTYPE html>",
+      "passed": true
+    },
+    {
+      "id": "has_lang_en",
+      "text": "HTML lang attribute set to en",
+      "passed": true
+    },
+    {
+      "id": "has_charset_utf8",
+      "text": "Has UTF-8 charset meta tag",
+      "passed": true
+    },
+    {
+      "id": "has_viewport",
+      "text": "Has viewport meta tag for mobile",
+      "passed": true
+    },
+    {
+      "id": "title_format",
+      "text": "Title matches 'Roofing Contractor {CITY} UT | Frame Restoration Utah'",
+      "passed": true
+    },
+    {
+      "id": "has_meta_description",
+      "text": "Has meta description tag",
+      "passed": true
+    },
+    {
+      "id": "has_canonical",
+      "text": "Has canonical link tag",
+      "passed": true
+    },
+    {
+      "id": "has_og_tags",
+      "text": "Has Open Graph tags (og:title, og:description, og:type, og:url)",
+      "passed": true
+    },
+    {
+      "id": "has_twitter_card",
+      "text": "Has Twitter card meta tags",
+      "passed": true
+    },
+    {
+      "id": "has_geo_region",
+      "text": "Has geo.region meta tag for Utah",
+      "passed": true
+    },
+    {
+      "id": "has_geo_placename",
+      "text": "Has geo.placename meta tag",
+      "passed": true
+    },
+    {
+      "id": "has_geo_position",
+      "text": "Has geo.position meta tag with coordinates",
+      "passed": true
+    },
+    {
+      "id": "has_robots",
+      "text": "Has robots meta tag",
+      "passed": true
+    },
+    {
+      "id": "has_theme_color",
+      "text": "Has theme-color meta tag",
+      "passed": true
+    },
+    {
+      "id": "has_jsonld_roofing",
+      "text": "Has JSON-LD RoofingContractor schema",
+      "passed": true
+    },
+    {
+      "id": "has_jsonld_faqpage",
+      "text": "Has JSON-LD FAQPage schema",
+      "passed": true
+    },
+    {
+      "id": "has_jsonld_geocoords",
+      "text": "JSON-LD has GeoCoordinates",
+      "passed": true
+    },
+    {
+      "id": "has_breadcrumb",
+      "text": "Has breadcrumb navigation",
+      "passed": true
+    },
+    {
+      "id": "has_h1",
+      "text": "Has exactly one H1 tag",
+      "passed": true
+    },
+    {
+      "id": "has_nav",
+      "text": "Has navigation bar",
+      "passed": true
+    },
+    {
+      "id": "has_footer",
+      "text": "Has footer section",
+      "passed": true
+    },
+    {
+      "id": "has_global_css",
+      "text": "Links to /global.css",
+      "passed": true
+    },
+    {
+      "id": "has_global_modal_js",
+      "text": "Links to /global-modal.js",
+      "passed": true
+    },
+    {
+      "id": "has_archivo_font",
+      "text": "Uses Archivo font family",
+      "passed": true
+    },
+    {
+      "id": "has_sticky_call",
+      "text": "Has sticky mobile call button",
+      "passed": true
+    },
+    {
+      "id": "has_cta_phone",
+      "text": "Has CTA with phone number 435-302-4422",
+      "passed": true
+    },
+    {
+      "id": "has_cta_booking",
+      "text": "Has CTA with Google Calendar booking link",
+      "passed": true
+    },
+    {
+      "id": "has_page_hero",
+      "text": "Has page-hero section",
+      "passed": true
+    },
+    {
+      "id": "has_services_mini",
+      "text": "Has 4 service mini-cards",
+      "passed": true
+    },
+    {
+      "id": "has_nearby_chips",
+      "text": "Has 5 nearby city chips/links",
+      "passed": true
+    },
+    {
+      "id": "has_faq_accordion",
+      "text": "Has FAQ accordion with 5 questions",
+      "passed": true
+    },
+    {
+      "id": "has_page_cta_section",
+      "text": "Has page-cta section",
+      "passed": true
+    },
+    {
+      "id": "has_mobile_menu_js",
+      "text": "Has mobile menu toggle JS",
+      "passed": true
+    },
+    {
+      "id": "no_placeholders",
+      "text": "No unreplaced {PLACEHOLDER} text remains",
+      "passed": true
+    },
+    {
+      "id": "mentions_ogden",
+      "text": "Mentions Ogden multiple times",
+      "passed": true
+    },
+    {
+      "id": "mentions_84401",
+      "text": "Mentions ZIP code 84401",
+      "passed": true
+    },
+    {
+      "id": "mentions_weber_county",
+      "text": "Mentions Weber County",
+      "passed": true
+    },
+    {
+      "id": "correct_coords",
+      "text": "Has correct coordinates (41.2230)",
+      "passed": true
+    },
+    {
+      "id": "nearby_layton",
+      "text": "Nearby section includes Layton",
+      "passed": true
+    },
+    {
+      "id": "local_content",
+      "text": "Has Ogden-specific content (25th Street or East Bench or Weber River)",
+      "passed": true
+    }
+  ]
+},
+  lehi: {
+  "eval_name": "lehi",
+  "configuration": "with_skill",
+  "pass_rate": 1.0,
+  "passed": 40,
+  "total": 40,
+  "expectations": [
+    {
+      "id": "has_doctype",
+      "text": "Output is valid HTML with <!DOCTYPE html>",
+      "passed": true
+    },
+    {
+      "id": "has_lang_en",
+      "text": "HTML lang attribute set to en",
+      "passed": true
+    },
+    {
+      "id": "has_charset_utf8",
+      "text": "Has UTF-8 charset meta tag",
+      "passed": true
+    },
+    {
+      "id": "has_viewport",
+      "text": "Has viewport meta tag for mobile",
+      "passed": true
+    },
+    {
+      "id": "title_format",
+      "text": "Title matches 'Roofing Contractor {CITY} UT | Frame Restoration Utah'",
+      "passed": true
+    },
+    {
+      "id": "has_meta_description",
+      "text": "Has meta description tag",
+      "passed": true
+    },
+    {
+      "id": "has_canonical",
+      "text": "Has canonical link tag",
+      "passed": true
+    },
+    {
+      "id": "has_og_tags",
+      "text": "Has Open Graph tags (og:title, og:description, og:type, og:url)",
+      "passed": true
+    },
+    {
+      "id": "has_twitter_card",
+      "text": "Has Twitter card meta tags",
+      "passed": true
+    },
+    {
+      "id": "has_geo_region",
+      "text": "Has geo.region meta tag for Utah",
+      "passed": true
+    },
+    {
+      "id": "has_geo_placename",
+      "text": "Has geo.placename meta tag",
+      "passed": true
+    },
+    {
+      "id": "has_geo_position",
+      "text": "Has geo.position meta tag with coordinates",
+      "passed": true
+    },
+    {
+      "id": "has_robots",
+      "text": "Has robots meta tag",
+      "passed": true
+    },
+    {
+      "id": "has_theme_color",
+      "text": "Has theme-color meta tag",
+      "passed": true
+    },
+    {
+      "id": "has_jsonld_roofing",
+      "text": "Has JSON-LD RoofingContractor schema",
+      "passed": true
+    },
+    {
+      "id": "has_jsonld_faqpage",
+      "text": "Has JSON-LD FAQPage schema",
+      "passed": true
+    },
+    {
+      "id": "has_jsonld_geocoords",
+      "text": "JSON-LD has GeoCoordinates",
+      "passed": true
+    },
+    {
+      "id": "has_breadcrumb",
+      "text": "Has breadcrumb navigation",
+      "passed": true
+    },
+    {
+      "id": "has_h1",
+      "text": "Has exactly one H1 tag",
+      "passed": true
+    },
+    {
+      "id": "has_nav",
+      "text": "Has navigation bar",
+      "passed": true
+    },
+    {
+      "id": "has_footer",
+      "text": "Has footer section",
+      "passed": true
+    },
+    {
+      "id": "has_global_css",
+      "text": "Links to /global.css",
+      "passed": true
+    },
+    {
+      "id": "has_global_modal_js",
+      "text": "Links to /global-modal.js",
+      "passed": true
+    },
+    {
+      "id": "has_archivo_font",
+      "text": "Uses Archivo font family",
+      "passed": true
+    },
+    {
+      "id": "has_sticky_call",
+      "text": "Has sticky mobile call button",
+      "passed": true
+    },
+    {
+      "id": "has_cta_phone",
+      "text": "Has CTA with phone number 435-302-4422",
+      "passed": true
+    },
+    {
+      "id": "has_cta_booking",
+      "text": "Has CTA with Google Calendar booking link",
+      "passed": true
+    },
+    {
+      "id": "has_page_hero",
+      "text": "Has page-hero section",
+      "passed": true
+    },
+    {
+      "id": "has_services_mini",
+      "text": "Has 4 service mini-cards",
+      "passed": true
+    },
+    {
+      "id": "has_nearby_chips",
+      "text": "Has 5 nearby city chips/links",
+      "passed": true
+    },
+    {
+      "id": "has_faq_accordion",
+      "text": "Has FAQ accordion with 5 questions",
+      "passed": true
+    },
+    {
+      "id": "has_page_cta_section",
+      "text": "Has page-cta section",
+      "passed": true
+    },
+    {
+      "id": "has_mobile_menu_js",
+      "text": "Has mobile menu toggle JS",
+      "passed": true
+    },
+    {
+      "id": "no_placeholders",
+      "text": "No unreplaced {PLACEHOLDER} text remains",
+      "passed": true
+    },
+    {
+      "id": "mentions_lehi",
+      "text": "Mentions Lehi multiple times",
+      "passed": true
+    },
+    {
+      "id": "mentions_84043",
+      "text": "Mentions ZIP code 84043",
+      "passed": true
+    },
+    {
+      "id": "mentions_utah_county",
+      "text": "Mentions Utah County",
+      "passed": true
+    },
+    {
+      "id": "correct_coords",
+      "text": "Has correct coordinates (40.3916)",
+      "passed": true
+    },
+    {
+      "id": "nearby_american_fork",
+      "text": "Nearby section includes American Fork",
+      "passed": true
+    },
+    {
+      "id": "local_content",
+      "text": "Has Lehi-specific content (Traverse Mountain or Silicon Slopes or Thanksgiving Point)",
+      "passed": true
+    }
+  ]
+},
+  cottonwood: {
+  "eval_name": "cottonwood-heights",
+  "configuration": "with_skill",
+  "pass_rate": 1.0,
+  "passed": 40,
+  "total": 40,
+  "expectations": [
+    {
+      "id": "has_doctype",
+      "text": "Output is valid HTML with <!DOCTYPE html>",
+      "passed": true
+    },
+    {
+      "id": "has_lang_en",
+      "text": "HTML lang attribute set to en",
+      "passed": true
+    },
+    {
+      "id": "has_charset_utf8",
+      "text": "Has UTF-8 charset meta tag",
+      "passed": true
+    },
+    {
+      "id": "has_viewport",
+      "text": "Has viewport meta tag for mobile",
+      "passed": true
+    },
+    {
+      "id": "title_format",
+      "text": "Title matches 'Roofing Contractor {CITY} UT | Frame Restoration Utah'",
+      "passed": true
+    },
+    {
+      "id": "has_meta_description",
+      "text": "Has meta description tag",
+      "passed": true
+    },
+    {
+      "id": "has_canonical",
+      "text": "Has canonical link tag",
+      "passed": true
+    },
+    {
+      "id": "has_og_tags",
+      "text": "Has Open Graph tags (og:title, og:description, og:type, og:url)",
+      "passed": true
+    },
+    {
+      "id": "has_twitter_card",
+      "text": "Has Twitter card meta tags",
+      "passed": true
+    },
+    {
+      "id": "has_geo_region",
+      "text": "Has geo.region meta tag for Utah",
+      "passed": true
+    },
+    {
+      "id": "has_geo_placename",
+      "text": "Has geo.placename meta tag",
+      "passed": true
+    },
+    {
+      "id": "has_geo_position",
+      "text": "Has geo.position meta tag with coordinates",
+      "passed": true
+    },
+    {
+      "id": "has_robots",
+      "text": "Has robots meta tag",
+      "passed": true
+    },
+    {
+      "id": "has_theme_color",
+      "text": "Has theme-color meta tag",
+      "passed": true
+    },
+    {
+      "id": "has_jsonld_roofing",
+      "text": "Has JSON-LD RoofingContractor schema",
+      "passed": true
+    },
+    {
+      "id": "has_jsonld_faqpage",
+      "text": "Has JSON-LD FAQPage schema",
+      "passed": true
+    },
+    {
+      "id": "has_jsonld_geocoords",
+      "text": "JSON-LD has GeoCoordinates",
+      "passed": true
+    },
+    {
+      "id": "has_breadcrumb",
+      "text": "Has breadcrumb navigation",
+      "passed": true
+    },
+    {
+      "id": "has_h1",
+      "text": "Has exactly one H1 tag",
+      "passed": true
+    },
+    {
+      "id": "has_nav",
+      "text": "Has navigation bar",
+      "passed": true
+    },
+    {
+      "id": "has_footer",
+      "text": "Has footer section",
+      "passed": true
+    },
+    {
+      "id": "has_global_css",
+      "text": "Links to /global.css",
+      "passed": true
+    },
+    {
+      "id": "has_global_modal_js",
+      "text": "Links to /global-modal.js",
+      "passed": true
+    },
+    {
+      "id": "has_archivo_font",
+      "text": "Uses Archivo font family",
+      "passed": true
+    },
+    {
+      "id": "has_sticky_call",
+      "text": "Has sticky mobile call button",
+      "passed": true
+    },
+    {
+      "id": "has_cta_phone",
+      "text": "Has CTA with phone number 435-302-4422",
+      "passed": true
+    },
+    {
+      "id": "has_cta_booking",
+      "text": "Has CTA with Google Calendar booking link",
+      "passed": true
+    },
+    {
+      "id": "has_page_hero",
+      "text": "Has page-hero section",
+      "passed": true
+    },
+    {
+      "id": "has_services_mini",
+      "text": "Has 4 service mini-cards",
+      "passed": true
+    },
+    {
+      "id": "has_nearby_chips",
+      "text": "Has 5 nearby city chips/links",
+      "passed": true
+    },
+    {
+      "id": "has_faq_accordion",
+      "text": "Has FAQ accordion with 5 questions",
+      "passed": true
+    },
+    {
+      "id": "has_page_cta_section",
+      "text": "Has page-cta section",
+      "passed": true
+    },
+    {
+      "id": "has_mobile_menu_js",
+      "text": "Has mobile menu toggle JS",
+      "passed": true
+    },
+    {
+      "id": "no_placeholders",
+      "text": "No unreplaced {PLACEHOLDER} text remains",
+      "passed": true
+    },
+    {
+      "id": "mentions_cottonwood",
+      "text": "Mentions Cottonwood Heights multiple times",
+      "passed": true
+    },
+    {
+      "id": "mentions_84047",
+      "text": "Mentions ZIP code 84047",
+      "passed": true
+    },
+    {
+      "id": "mentions_salt_lake_county",
+      "text": "Mentions Salt Lake County",
+      "passed": true
+    },
+    {
+      "id": "correct_coords",
+      "text": "Has correct coordinates (40.6197)",
+      "passed": true
+    },
+    {
+      "id": "nearby_sandy",
+      "text": "Nearby section includes Sandy",
+      "passed": true
+    },
+    {
+      "id": "local_content",
+      "text": "Has Cottonwood Heights-specific content (canyon or Fort Union or Wasatch Boulevard)",
+      "passed": true
+    }
+  ]
+}
+};
+
+function buildPanel(key, label) {
+  const g = GRADING[key];
+  const html = OUTPUTS[key];
+  const panel = document.getElementById('panel-' + key);
+  let assertionRows = g.expectations.map(e =>
+    `<div class="assertion-row"><span class="badge ${e.passed ? 'pass' : 'fail'}">${e.passed ? '✓' : '✗'}</span><span>${e.text}</span></div>`
+  ).join('');
+  panel.innerHTML = `
+    <div class="eval-grid">
+      <div class="assertions-card">
+        <div class="assertions-header"><span>Assertions</span><span>${g.passed}/${g.total}</span></div>
+        ${assertionRows}
+      </div>
+      <div class="preview-card">
+        <div class="preview-header">
+          <span>Generated Output — ${label}</span>
+          <div class="preview-toggle">
+            <button class="active" onclick="toggleView('${key}','preview',this)">Preview</button>
+            <button onclick="toggleView('${key}','source',this)">Source</button>
+          </div>
+        </div>
+        <iframe id="frame-${key}" class="preview-frame" sandbox="allow-same-origin"></iframe>
+        <div id="source-${key}" class="source-view"></div>
+      </div>
+    </div>
+  `;
+  // Set iframe content
+  const iframe = document.getElementById('frame-' + key);
+  iframe.srcdoc = html;
+  // Set source
+  const srcEl = document.getElementById('source-' + key);
+  srcEl.textContent = html;
+}
+
+function toggleView(key, mode, btn) {
+  const frame = document.getElementById('frame-' + key);
+  const source = document.getElementById('source-' + key);
+  const buttons = btn.parentElement.querySelectorAll('button');
+  buttons.forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  if (mode === 'preview') { frame.style.display = 'block'; source.style.display = 'none'; }
+  else { frame.style.display = 'none'; source.style.display = 'block'; }
+}
+
+function showEval(key) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.eval-panel').forEach(p => p.classList.remove('active'));
+  event.currentTarget.classList.add('active');
+  document.getElementById('panel-' + key).classList.add('active');
+}
+
+buildPanel('ogden', 'Ogden, UT');
+buildPanel('lehi', 'Lehi, UT');
+buildPanel('cottonwood', 'Cottonwood Heights, UT');
+</script>
+</body>
+</html>

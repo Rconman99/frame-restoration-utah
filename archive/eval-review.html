@@ -1,0 +1,1325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Eval Review</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600&family=Lora:wght@400;500&display=swap" rel="stylesheet">
+  <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js" integrity="sha384-EnyY0/GSHQGSxSgMwaIPzSESbqoOLSexfnSMN2AP+39Ckmn92stwABZynq1JyzdT" crossorigin="anonymous"></script>
+  <style>
+    :root {
+      --bg: #faf9f5;
+      --surface: #ffffff;
+      --border: #e8e6dc;
+      --text: #141413;
+      --text-muted: #b0aea5;
+      --accent: #d97757;
+      --accent-hover: #c4613f;
+      --green: #788c5d;
+      --green-bg: #eef2e8;
+      --red: #c44;
+      --red-bg: #fceaea;
+      --header-bg: #141413;
+      --header-text: #faf9f5;
+      --radius: 6px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Lora', Georgia, serif;
+      background: var(--bg);
+      color: var(--text);
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ---- Header ---- */
+    .header {
+      background: var(--header-bg);
+      color: var(--header-text);
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-shrink: 0;
+    }
+    .header h1 {
+      font-family: 'Poppins', sans-serif;
+      font-size: 1.25rem;
+      font-weight: 600;
+    }
+    .header .instructions {
+      font-size: 0.8rem;
+      opacity: 0.7;
+      margin-top: 0.25rem;
+    }
+    .header .progress {
+      font-size: 0.875rem;
+      opacity: 0.8;
+      text-align: right;
+    }
+
+    /* ---- Main content ---- */
+    .main {
+      flex: 1;
+      overflow-y: auto;
+      padding: 1.5rem 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    /* ---- Sections ---- */
+    .section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      flex-shrink: 0;
+    }
+    .section-header {
+      font-family: 'Poppins', sans-serif;
+      padding: 0.75rem 1rem;
+      font-size: 0.75rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      border-bottom: 1px solid var(--border);
+      background: var(--bg);
+    }
+    .section-body {
+      padding: 1rem;
+    }
+
+    /* ---- Config badge ---- */
+    .config-badge {
+      display: inline-block;
+      padding: 0.2rem 0.625rem;
+      border-radius: 9999px;
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.6875rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      margin-left: 0.75rem;
+      vertical-align: middle;
+    }
+    .config-badge.config-primary {
+      background: rgba(33, 150, 243, 0.12);
+      color: #1976d2;
+    }
+    .config-badge.config-baseline {
+      background: rgba(255, 193, 7, 0.15);
+      color: #f57f17;
+    }
+
+    /* ---- Prompt ---- */
+    .prompt-text {
+      white-space: pre-wrap;
+      font-size: 0.9375rem;
+      line-height: 1.6;
+    }
+
+    /* ---- Outputs ---- */
+    .output-file {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+    .output-file + .output-file {
+      margin-top: 1rem;
+    }
+    .output-file-header {
+      padding: 0.5rem 0.75rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+      font-family: 'SF Mono', SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .output-file-header .dl-btn {
+      font-size: 0.7rem;
+      color: var(--accent);
+      text-decoration: none;
+      cursor: pointer;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-weight: 500;
+      opacity: 0.8;
+    }
+    .output-file-header .dl-btn:hover {
+      opacity: 1;
+      text-decoration: underline;
+    }
+    .output-file-content {
+      padding: 0.75rem;
+      overflow-x: auto;
+    }
+    .output-file-content pre {
+      font-size: 0.8125rem;
+      line-height: 1.5;
+      white-space: pre-wrap;
+      word-break: break-word;
+      font-family: 'SF Mono', SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace;
+    }
+    .output-file-content img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 4px;
+    }
+    .output-file-content iframe {
+      width: 100%;
+      height: 600px;
+      border: none;
+    }
+    .output-file-content table {
+      border-collapse: collapse;
+      font-size: 0.8125rem;
+      width: 100%;
+    }
+    .output-file-content table td,
+    .output-file-content table th {
+      border: 1px solid var(--border);
+      padding: 0.375rem 0.5rem;
+      text-align: left;
+    }
+    .output-file-content table th {
+      background: var(--bg);
+      font-weight: 600;
+    }
+    .output-file-content .download-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      color: var(--accent);
+      text-decoration: none;
+      font-size: 0.875rem;
+      cursor: pointer;
+    }
+    .output-file-content .download-link:hover {
+      background: var(--border);
+    }
+    .empty-state {
+      color: var(--text-muted);
+      font-style: italic;
+      padding: 2rem;
+      text-align: center;
+    }
+
+    /* ---- Feedback ---- */
+    .prev-feedback {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 0.625rem 0.75rem;
+      margin-top: 0.75rem;
+      font-size: 0.8125rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+    .prev-feedback-label {
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      margin-bottom: 0.25rem;
+      color: var(--text-muted);
+    }
+    .feedback-textarea {
+      width: 100%;
+      min-height: 100px;
+      padding: 0.75rem;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      font-family: inherit;
+      font-size: 0.9375rem;
+      line-height: 1.5;
+      resize: vertical;
+      color: var(--text);
+    }
+    .feedback-textarea:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+    .feedback-status {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-top: 0.5rem;
+      min-height: 1.1em;
+    }
+
+    /* ---- Grades (collapsible) ---- */
+    .grades-toggle {
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      user-select: none;
+    }
+    .grades-toggle:hover {
+      color: var(--accent);
+    }
+    .grades-toggle .arrow {
+      margin-right: 0.5rem;
+      transition: transform 0.15s;
+      font-size: 0.75rem;
+    }
+    .grades-toggle .arrow.open {
+      transform: rotate(90deg);
+    }
+    .grades-content {
+      display: none;
+      margin-top: 0.75rem;
+    }
+    .grades-content.open {
+      display: block;
+    }
+    .grades-summary {
+      font-size: 0.875rem;
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .grade-badge {
+      display: inline-block;
+      padding: 0.125rem 0.5rem;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+    .grade-pass { background: var(--green-bg); color: var(--green); }
+    .grade-fail { background: var(--red-bg); color: var(--red); }
+    .assertion-list {
+      list-style: none;
+    }
+    .assertion-item {
+      padding: 0.625rem 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.8125rem;
+    }
+    .assertion-item:last-child { border-bottom: none; }
+    .assertion-status {
+      font-weight: 600;
+      margin-right: 0.5rem;
+    }
+    .assertion-status.pass { color: var(--green); }
+    .assertion-status.fail { color: var(--red); }
+    .assertion-evidence {
+      color: var(--text-muted);
+      font-size: 0.75rem;
+      margin-top: 0.25rem;
+      padding-left: 1.5rem;
+    }
+
+    /* ---- View tabs ---- */
+    .view-tabs {
+      display: flex;
+      gap: 0;
+      padding: 0 2rem;
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+    .view-tab {
+      font-family: 'Poppins', sans-serif;
+      padding: 0.625rem 1.25rem;
+      font-size: 0.8125rem;
+      font-weight: 500;
+      cursor: pointer;
+      border: none;
+      background: none;
+      color: var(--text-muted);
+      border-bottom: 2px solid transparent;
+      transition: all 0.15s;
+    }
+    .view-tab:hover { color: var(--text); }
+    .view-tab.active {
+      color: var(--accent);
+      border-bottom-color: var(--accent);
+    }
+    .view-panel { display: none; }
+    .view-panel.active { display: flex; flex-direction: column; flex: 1; overflow: hidden; }
+
+    /* ---- Benchmark view ---- */
+    .benchmark-view {
+      padding: 1.5rem 2rem;
+      overflow-y: auto;
+      flex: 1;
+    }
+    .benchmark-table {
+      border-collapse: collapse;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      font-size: 0.8125rem;
+      width: 100%;
+      margin-bottom: 1.5rem;
+    }
+    .benchmark-table th, .benchmark-table td {
+      padding: 0.625rem 0.75rem;
+      text-align: left;
+      border: 1px solid var(--border);
+    }
+    .benchmark-table th {
+      font-family: 'Poppins', sans-serif;
+      background: var(--header-bg);
+      color: var(--header-text);
+      font-weight: 500;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .benchmark-table tr:hover { background: var(--bg); }
+    .benchmark-table tr.benchmark-row-with { background: rgba(33, 150, 243, 0.06); }
+    .benchmark-table tr.benchmark-row-without { background: rgba(255, 193, 7, 0.06); }
+    .benchmark-table tr.benchmark-row-with:hover { background: rgba(33, 150, 243, 0.12); }
+    .benchmark-table tr.benchmark-row-without:hover { background: rgba(255, 193, 7, 0.12); }
+    .benchmark-table tr.benchmark-row-avg { font-weight: 600; border-top: 2px solid var(--border); }
+    .benchmark-table tr.benchmark-row-avg.benchmark-row-with { background: rgba(33, 150, 243, 0.12); }
+    .benchmark-table tr.benchmark-row-avg.benchmark-row-without { background: rgba(255, 193, 7, 0.12); }
+    .benchmark-delta-positive { color: var(--green); font-weight: 600; }
+    .benchmark-delta-negative { color: var(--red); font-weight: 600; }
+    .benchmark-notes {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1rem;
+    }
+    .benchmark-notes h3 {
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.875rem;
+      margin-bottom: 0.75rem;
+    }
+    .benchmark-notes ul {
+      list-style: disc;
+      padding-left: 1.25rem;
+    }
+    .benchmark-notes li {
+      font-size: 0.8125rem;
+      line-height: 1.6;
+      margin-bottom: 0.375rem;
+    }
+    .benchmark-empty {
+      color: var(--text-muted);
+      font-style: italic;
+      text-align: center;
+      padding: 3rem;
+    }
+
+    /* ---- Navigation ---- */
+    .nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+      border-top: 1px solid var(--border);
+      background: var(--surface);
+      flex-shrink: 0;
+    }
+    .nav-btn {
+      font-family: 'Poppins', sans-serif;
+      padding: 0.5rem 1.25rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--surface);
+      cursor: pointer;
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--text);
+      transition: all 0.15s;
+    }
+    .nav-btn:hover:not(:disabled) {
+      background: var(--bg);
+      border-color: var(--text-muted);
+    }
+    .nav-btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+    .done-btn {
+      font-family: 'Poppins', sans-serif;
+      padding: 0.5rem 1.5rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--surface);
+      color: var(--text);
+      cursor: pointer;
+      font-size: 0.875rem;
+      font-weight: 500;
+      transition: all 0.15s;
+    }
+    .done-btn:hover {
+      background: var(--bg);
+      border-color: var(--text-muted);
+    }
+    .done-btn.ready {
+      border: none;
+      background: var(--accent);
+      color: white;
+      font-weight: 600;
+    }
+    .done-btn.ready:hover {
+      background: var(--accent-hover);
+    }
+    /* ---- Done overlay ---- */
+    .done-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 100;
+      justify-content: center;
+      align-items: center;
+    }
+    .done-overlay.visible {
+      display: flex;
+    }
+    .done-card {
+      background: var(--surface);
+      border-radius: 12px;
+      padding: 2rem 3rem;
+      text-align: center;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      max-width: 500px;
+    }
+    .done-card h2 {
+      font-size: 1.5rem;
+      margin-bottom: 0.5rem;
+    }
+    .done-card p {
+      color: var(--text-muted);
+      margin-bottom: 1.5rem;
+      line-height: 1.5;
+    }
+    .done-card .btn-row {
+      display: flex;
+      gap: 0.5rem;
+      justify-content: center;
+    }
+    .done-card button {
+      padding: 0.5rem 1.25rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--surface);
+      cursor: pointer;
+      font-size: 0.875rem;
+    }
+    .done-card button:hover {
+      background: var(--bg);
+    }
+    /* ---- Toast ---- */
+    .toast {
+      position: fixed;
+      bottom: 5rem;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--header-bg);
+      color: var(--header-text);
+      padding: 0.625rem 1.25rem;
+      border-radius: var(--radius);
+      font-size: 0.875rem;
+      opacity: 0;
+      transition: opacity 0.3s;
+      pointer-events: none;
+      z-index: 200;
+    }
+    .toast.visible {
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+  <div id="app" style="height:100vh; display:flex; flex-direction:column;">
+    <div class="header">
+      <div>
+        <h1>Eval Review: <span id="skill-name"></span></h1>
+        <div class="instructions">Review each output and leave feedback below. Navigate with arrow keys or buttons. When done, copy feedback and paste into Claude Code.</div>
+      </div>
+      <div class="progress" id="progress"></div>
+    </div>
+
+    <!-- View tabs (only shown when benchmark data exists) -->
+    <div class="view-tabs" id="view-tabs" style="display:none;">
+      <button class="view-tab active" onclick="switchView('outputs')">Outputs</button>
+      <button class="view-tab" onclick="switchView('benchmark')">Benchmark</button>
+    </div>
+
+    <!-- Outputs panel (qualitative review) -->
+    <div class="view-panel active" id="panel-outputs">
+    <div class="main">
+      <!-- Prompt -->
+      <div class="section">
+        <div class="section-header">Prompt <span class="config-badge" id="config-badge" style="display:none;"></span></div>
+        <div class="section-body">
+          <div class="prompt-text" id="prompt-text"></div>
+        </div>
+      </div>
+
+      <!-- Outputs -->
+      <div class="section">
+        <div class="section-header">Output</div>
+        <div class="section-body" id="outputs-body">
+          <div class="empty-state">No output files found</div>
+        </div>
+      </div>
+
+      <!-- Previous Output (collapsible) -->
+      <div class="section" id="prev-outputs-section" style="display:none;">
+        <div class="section-header">
+          <div class="grades-toggle" onclick="togglePrevOutputs()">
+            <span class="arrow" id="prev-outputs-arrow">&#9654;</span>
+            Previous Output
+          </div>
+        </div>
+        <div class="grades-content" id="prev-outputs-content"></div>
+      </div>
+
+      <!-- Grades (collapsible) -->
+      <div class="section" id="grades-section" style="display:none;">
+        <div class="section-header">
+          <div class="grades-toggle" onclick="toggleGrades()">
+            <span class="arrow" id="grades-arrow">&#9654;</span>
+            Formal Grades
+          </div>
+        </div>
+        <div class="grades-content" id="grades-content"></div>
+      </div>
+
+      <!-- Feedback -->
+      <div class="section">
+        <div class="section-header">Your Feedback</div>
+        <div class="section-body">
+          <textarea
+            class="feedback-textarea"
+            id="feedback"
+            placeholder="What do you think of this output? Any issues, suggestions, or things that look great?"
+          ></textarea>
+          <div class="feedback-status" id="feedback-status"></div>
+          <div class="prev-feedback" id="prev-feedback" style="display:none;">
+            <div class="prev-feedback-label">Previous feedback</div>
+            <div id="prev-feedback-text"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="nav" id="outputs-nav">
+      <button class="nav-btn" id="prev-btn" onclick="navigate(-1)">&#8592; Previous</button>
+      <button class="done-btn" id="done-btn" onclick="showDoneDialog()">Submit All Reviews</button>
+      <button class="nav-btn" id="next-btn" onclick="navigate(1)">Next &#8594;</button>
+    </div>
+    </div><!-- end panel-outputs -->
+
+    <!-- Benchmark panel (quantitative stats) -->
+    <div class="view-panel" id="panel-benchmark">
+      <div class="benchmark-view" id="benchmark-content">
+        <div class="benchmark-empty">No benchmark data available. Run a benchmark to see quantitative results here.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Done overlay -->
+  <div class="done-overlay" id="done-overlay">
+    <div class="done-card">
+      <h2>Review Complete</h2>
+      <p>Your feedback has been saved. Go back to your Claude Code session and tell Claude you're done reviewing.</p>
+      <div class="btn-row">
+        <button onclick="closeDoneDialog()">OK</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+
+  <script>
+    // ---- Embedded data (injected by generate_review.py) ----
+    const EMBEDDED_DATA = {"skill_name": "frame-restoration-blog-writer", "runs": [{"id": "bountiful-insurance-claims-with_skill", "prompt": "Blog post for Bountiful Utah about filing roof insurance claims after storm damage...", "eval_id": null, "outputs": [{"name": "bountiful-roof-insurance-claim-84010.html", "type": "text", "content": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\" />\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n  <title>Roof Insurance Claim Bountiful UT 84010 | Frame Restoration</title>\n  <meta name=\"description\" content=\"File a roof insurance claim in Bountiful 84010 after hail damage. Frame Restoration handles insurance paperwork & gets you maximum coverage. Call 435-302-4422.\" />\n  <link rel=\"canonical\" href=\"https://www.framerestorationutah.com/blog/roof-insurance-claim-bountiful-84010\" />\n\n  <!-- Geo targeting -->\n  <meta name=\"geo.region\" content=\"US-UT\" />\n  <meta name=\"geo.placename\" content=\"Bountiful, Utah\" />\n  <meta name=\"geo.position\" content=\"40.8894;-111.8808\" />\n  <meta name=\"ICBM\" content=\"40.8894, -111.8808\" />\n\n  <!-- Open Graph -->\n  <meta property=\"og:title\" content=\"Roof Insurance Claim Bountiful UT 84010 | Frame Restoration\" />\n  <meta property=\"og:description\" content=\"File a roof insurance claim in Bountiful 84010 after hail damage. Frame Restoration handles insurance paperwork & gets you maximum coverage. Call 435-302-4422.\" />\n  <meta property=\"og:type\" content=\"article\" />\n  <meta property=\"og:url\" content=\"https://www.framerestorationutah.com/blog/roof-insurance-claim-bountiful-84010\" />\n  <meta property=\"og:image\" content=\"https://www.framerestorationutah.com/og-roof-insurance-bountiful.jpg\" />\n  <meta property=\"og:locale\" content=\"en_US\" />\n  <meta property=\"og:site_name\" content=\"Frame Restoration Utah\" />\n\n  <!-- Twitter -->\n  <meta name=\"twitter:card\" content=\"summary_large_image\" />\n  <meta name=\"twitter:title\" content=\"Roof Insurance Claim Bountiful UT 84010 | Frame Restoration\" />\n  <meta name=\"twitter:description\" content=\"File a roof insurance claim in Bountiful 84010 after hail damage. Frame Restoration handles insurance paperwork & gets you maximum coverage. Call 435-302-4422.\" />\n  <meta name=\"twitter:image\" content=\"https://www.framerestorationutah.com/og-roof-insurance-bountiful.jpg\" />\n\n  <meta name=\"robots\" content=\"index, follow\" />\n  <meta name=\"theme-color\" content=\"#0C3547\" />\n  <link rel=\"icon\" href=\"/favicon.ico\" sizes=\"32x32\" />\n\n  <!-- Fonts -->\n  <link rel=\"preconnect\" href=\"https://fonts.googleapis.com\" />\n  <link rel=\"preconnect\" href=\"https://fonts.gstatic.com\" crossorigin />\n  <link href=\"https://fonts.googleapis.com/css2?family=Archivo+Black&family=Archivo:wght@400;600&display=swap\" rel=\"stylesheet\" />\n\n  <link rel=\"stylesheet\" href=\"/global.css\" />\n  <script src=\"/global-modal.js\" defer></script>\n\n  <!-- Structured Data -->\n  <script type=\"application/ld+json\">\n  {\n    \"@context\": \"https://schema.org\",\n    \"@graph\": [\n      {\n        \"@type\": \"BlogPosting\",\n        \"headline\": \"How to File a Roof Insurance Claim in Bountiful UT 84010 After Hail Damage\",\n        \"description\": \"File a roof insurance claim in Bountiful 84010 after hail damage. Frame Restoration handles insurance paperwork & gets you maximum coverage. Call 435-302-4422.\",\n        \"url\": \"https://www.framerestorationutah.com/blog/roof-insurance-claim-bountiful-84010\",\n        \"datePublished\": \"2026-03-09\",\n        \"dateModified\": \"2026-03-09\",\n        \"author\": {\n          \"@type\": \"Organization\",\n          \"name\": \"Frame Restoration Roofing & Construction LLC\",\n          \"url\": \"https://www.framerestorationutah.com\"\n        },\n        \"publisher\": {\n          \"@type\": \"Organization\",\n          \"name\": \"Frame Restoration Roofing & Construction LLC\",\n          \"url\": \"https://www.framerestorationutah.com\"\n        },\n        \"about\": {\n          \"@type\": \"Service\",\n          \"name\": \"Roof Insurance Claims\",\n          \"areaServed\": {\n            \"@type\": \"PostalAddress\",\n            \"addressLocality\": \"Bountiful\",\n            \"addressRegion\": \"UT\",\n            \"postalCode\": \"84010\",\n            \"addressCountry\": \"US\"\n          }\n        }\n      },\n      {\n        \"@type\": \"FAQPage\",\n        \"mainEntity\": [\n          {\n            \"@type\": \"Question\",\n            \"name\": \"How do I file a roof insurance claim in Bountiful 84010?\",\n            \"acceptedAnswer\": { \"@type\": \"Answer\", \"text\": \"After documenting hail damage with photos and videos, contact your homeowner's insurance company immediately. Provide your policy number, claim details, and photos of the damage. In Bountiful 84010, most insurers will send an adjuster to assess the damage within 5-7 business days. Frame Restoration can assist you throughout this process and even communicate directly with your insurance company.\" }\n          },\n          {\n            \"@type\": \"Question\",\n            \"name\": \"Does homeowner's insurance cover hail damage to roofs in Bountiful?\",\n            \"acceptedAnswer\": { \"@type\": \"Answer\", \"text\": \"Yes, most homeowner's insurance policies in Bountiful cover hail damage to roofs unless there's a specific hail exclusion on your policy. Hail is considered a peril covered under the comprehensive portion of your homeowner's insurance. You'll typically pay your deductible (usually $500-$2,500), and your insurance covers the rest. Frame Restoration works with your insurance company to maximize your coverage.\" }\n          },\n          {\n            \"@type\": \"Question\",\n            \"name\": \"How much does a roof insurance claim cost in Bountiful 84010?\",\n            \"acceptedAnswer\": { \"@type\": \"Answer\", \"text\": \"The cost of a roof repair or replacement in Bountiful depends on the extent of damage and your roof's size, but homeowner's insurance typically covers 100% of the repair minus your deductible. For a typical Bountiful home, hail damage repairs range from $3,000 to $12,000. Frame Restoration handles the insurance paperwork to ensure you receive maximum coverage and can replace your roof with no out-of-pocket cost if the claim is approved.\" }\n          }\n        ]\n      }\n    ]\n  }\n  </script>\n\n  <style>\n    .blog-hero { min-height: 50vh; position: relative; display: flex; align-items: center; background: var(--navy); padding-top: 76px; }\n    .blog-hero-overlay { position: absolute; inset: 0; background: linear-gradient(135deg, rgba(12,53,71,0.95) 40%, rgba(12,53,71,0.75)); }\n    .blog-hero-content { position: relative; z-index: 2; padding: 80px 5% 60px; max-width: 780px; }\n    .blog-hero h1 { font-family: 'Archivo Black', sans-serif; font-size: clamp(32px, 5vw, 52px); color: var(--white); line-height: 1.1; text-transform: uppercase; margin-bottom: 16px; }\n    .blog-hero h1 span { color: var(--gold); }\n    .blog-hero .blog-meta { font-size: 14px; color: rgba(255,255,255,0.6); }\n    .blog-body { max-width: 780px; margin: 0 auto; padding: 60px 5%; }\n    .blog-body h2 { font-family: 'Archivo Black', sans-serif; font-size: 24px; color: var(--navy); text-transform: uppercase; margin: 48px 0 16px; }\n    .blog-body h3 { font-family: 'Archivo Black', sans-serif; font-size: 18px; color: var(--navy); margin: 32px 0 12px; }\n    .blog-body p { font-size: 16px; color: var(--gray); line-height: 1.8; margin-bottom: 16px; }\n    .blog-body ul, .blog-body ol { margin: 16px 0 24px 24px; }\n    .blog-body li { font-size: 16px; color: var(--gray); line-height: 1.8; margin-bottom: 8px; }\n    .blog-body strong { color: var(--navy); }\n    .answer-block { background: var(--off-white); border-left: 4px solid var(--gold); padding: 24px 28px; margin: 32px 0; }\n    .answer-block h3 { margin-top: 0; font-size: 17px; }\n    .answer-block p { margin-bottom: 0; }\n    .editor-note { background: #FFFDE7; border: 2px dashed #F9A825; padding: 16px 20px; margin: 24px 0; font-size: 14px; color: #5D4037; }\n    .blog-cta { background: var(--gold); padding: 60px 5%; text-align: center; }\n    .blog-cta h2 { font-family: 'Archivo Black', sans-serif; font-size: clamp(28px, 4vw, 44px); color: var(--navy); text-transform: uppercase; margin-bottom: 16px; }\n    .blog-cta p { font-size: 17px; color: rgba(12,53,71,0.7); margin-bottom: 28px; }\n    .related-section { background: var(--navy); padding: 48px 5%; text-align: center; }\n    .related-section h2 { font-family: 'Archivo Black', sans-serif; font-size: 22px; color: var(--white); text-transform: uppercase; margin-bottom: 20px; }\n    .related-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; max-width: 700px; margin: 0 auto; }\n    .related-chip { background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.8); padding: 10px 20px; font-size: 13px; text-decoration: none; transition: all 0.2s; border: 1px solid rgba(255,255,255,0.1); }\n    .related-chip:hover { background: rgba(201,164,76,0.15); color: var(--white); border-color: var(--gold); }\n  </style>\n</head>\n<body>\n\n<!-- \u2550\u2550\u2550 NAV \u2550\u2550\u2550 -->\n<nav>\n  <a href=\"/\" class=\"nav-logo\" aria-label=\"Frame Restoration Utah - Home\">\n    <img loading=\"lazy\" src=\"/logo.png\" alt=\"Frame Restoration Roofing &amp; Construction - Utah\" width=\"180\" height=\"50\" />\n  </a>\n  <ul class=\"nav-links\" id=\"navLinks\">\n    <li><a href=\"/services/residential-roofing\">Residential</a></li>\n    <li><a href=\"/services/commercial-roofing\">Commercial</a></li>\n    <li><a href=\"/services/storm-damage\">Storm Damage</a></li>\n    <li><a href=\"/locations/bountiful\">Bountiful</a></li>\n    <li><a href=\"tel:+14353024422\" class=\"nav-phone\">435-302-4422</a></li>\n    <li><a href=\"https://calendar.app.google/cR4bBSWfb9TQ28UF8\" target=\"_blank\" rel=\"noopener\" class=\"nav-cta\">Free Inspection</a></li>\n  </ul>\n  <button class=\"mobile-btn\" id=\"menuBtn\" aria-label=\"Toggle navigation\"><span></span><span></span><span></span></button>\n</nav>\n\n<!-- \u2550\u2550\u2550 HERO \u2550\u2550\u2550 -->\n<header class=\"blog-hero\">\n  <div class=\"blog-hero-overlay\"></div>\n  <div class=\"blog-hero-content\">\n    <div class=\"breadcrumb\"><a href=\"/\">Home</a> &rsaquo; <a href=\"/locations/bountiful\">Bountiful</a> &rsaquo; Blog</div>\n    <h1>How to File a Roof Insurance Claim in <span>Bountiful UT 84010</span> After Hail Damage</h1>\n    <div class=\"blog-meta\">March 9, 2026 &bull; 6 min read &bull; Bountiful, UT 84010</div>\n  </div>\n</header>\n\n<!-- \u2550\u2550\u2550 ARTICLE BODY \u2550\u2550\u2550 -->\n<article class=\"blog-body\">\n\n  <p>Hail season in Bountiful is relentless. You've probably seen those spring storms roll in from the Great Salt Lake, and after the worst ones, your roof shows the damage. But damage isn't the end of your problem\u2014getting your homeowner's insurance to cover the repair is where the real work begins.</p>\n\n  <p>If you've recently experienced hail damage in Bountiful 84010 and are wondering how to navigate the insurance claim process, this guide walks you through every step. Frame Restoration has helped hundreds of homeowners in Bountiful get their roofs repaired through insurance without paying out of pocket. We'll show you exactly what to do.</p>\n\n  <h2>WHY BOUNTIFUL ROOFS GET HAIL DAMAGE SO OFTEN</h2>\n\n  <p>Bountiful's location north of Salt Lake City puts it directly in the path of spring hailstorms that develop over the Great Salt Lake. These storms regularly dump golf-ball-sized hail across the 84010 ZIP code, and your roof takes the hit.</p>\n\n  <p>Hail impact weakens the granules on asphalt shingles, creates splits in wood shakes, and can punch holes through older roofing materials. Most homeowners don't realize the damage until months later when leaks appear in the attic or ceiling.</p>\n\n  <p>That's where your homeowner's insurance comes in. Hail is considered a covered peril under most policies, which means your insurance should pay for repairs. The key is filing the claim quickly and documenting everything.</p>\n\n  <h2>DOCUMENT THE DAMAGE IMMEDIATELY</h2>\n\n  <p>The first step after a hail storm in Bountiful is <strong>documenting the damage before the weather clears</strong>. Insurance adjusters take photos seriously\u2014they're your evidence.</p>\n\n  <p>Here's what to do right after a storm hits your Bountiful home:</p>\n\n  <ul>\n    <li><strong>Take wide shots of your roof</strong> from the ground using your phone or camera. Include your house address in at least one photo (address numbers on the mailbox or garage).</li>\n    <li><strong>Photograph hail damage up close.</strong> If you can safely access your roof or use binoculars, capture dents, cracks, or missing pieces on shingles. Get at least 8-10 close-up photos showing clear impact marks.</li>\n    <li><strong>Document other damage.</strong> Photograph hail damage to gutters, downspouts, skylights, siding, or HVAC units. Insurance covers these too.</li>\n    <li><strong>Take video.</strong> Walk around your property and record a 1-2 minute video narrating the damage. This helps insurance adjusters see the full scope.</li>\n    <li><strong>Note the date and time.</strong> Write down when the storm occurred and when you took photos. Insurance timestamps matter.</li>\n  </ul>\n\n  <p>Don't touch or repair anything yet. Adjusters need to see the damage in its original condition. Roofing work in Bountiful 84010 can wait a few days while you handle the claim process.</p>\n\n  <div class=\"answer-block\">\n    <h3>How do I file a roof insurance claim in Bountiful 84010?</h3>\n    <p>After documenting hail damage with photos and videos, contact your homeowner's insurance company immediately. Provide your policy number, claim details, and photos of the damage. In Bountiful 84010, most insurers will send an adjuster to assess the damage within 5-7 business days. Frame Restoration can assist you throughout this process and even communicate directly with your insurance company.</p>\n  </div>\n\n  <h2>CONTACT YOUR INSURANCE COMPANY</h2>\n\n  <p>Once you have documentation, call your homeowner's insurance company's claims line. Most insurers have 24/7 claims hotlines. Have the following information ready:</p>\n\n  <ul>\n    <li>Your policy number</li>\n    <li>The date of the hail storm</li>\n    <li>Your Bountiful address (84010 ZIP code)</li>\n    <li>A brief description of the damage (e.g., \"hail damage to roof, gutters, and siding\")</li>\n    <li>Photos or a description of the damage</li>\n  </ul>\n\n  <p>When you call, the insurance company will open a claim file and assign you a claim number. Write this number down\u2014you'll reference it for every future conversation.</p>\n\n  <p>The agent will ask if you need an emergency temporary repair (tarping, for example) while you wait for an adjuster. In Bountiful's wet spring weather, a <a href=\"/services/emergency-tarping\">tarp might be necessary to prevent water damage</a>. Many insurance companies will approve emergency repairs immediately.</p>\n\n  <div class=\"editor-note\">&#9997;&#65039; EDITOR CHECK \u2014 Verify average insurance claim response times for Bountiful 84010 area (typical claim assignment to adjuster scheduling). Last confirmed March 2026.</div>\n\n  <h2>PREPARE FOR THE INSURANCE ADJUSTER</h2>\n\n  <p>Within 5-7 business days, an insurance adjuster will contact you to schedule an inspection of your Bountiful home. This is a critical appointment.</p>\n\n  <p><strong>What the adjuster will do:</strong> They'll walk your roof (or view it from the ground with binoculars) and assess the damage. They'll take their own photos, measure affected areas, and estimate repair costs. They may also check attic ventilation, gutters, and surrounding structures.</p>\n\n  <p><strong>How to prepare for the adjuster's visit:</strong></p>\n\n  <ul>\n    <li>Make sure the adjuster has access to all damaged areas (gutters, roof edges, siding, HVAC units).</li>\n    <li>Have your policy documents ready and visible when they arrive.</li>\n    <li>Walk with the adjuster and point out all visible damage. Don't be shy\u2014mention every dent, crack, and impact mark on your Bountiful roof.</li>\n    <li>If the damage is extensive, ask the adjuster what the timeline is for an estimate.</li>\n    <li>Take your own photos while the adjuster is there, just in case there are disputes later.</li>\n  </ul>\n\n  <p>Here's the important part: <strong>The adjuster works for the insurance company, not for you.</strong> They may underestimate damage to reduce the payout. This is where Frame Restoration steps in. We've handled hundreds of insurance claims in Bountiful 84010, and we know when adjusters are lowballing estimates.</p>\n\n  <h2>UNDERSTAND YOUR DEDUCTIBLE AND COVERAGE</h2>\n\n  <p>Your homeowner's insurance policy has two key numbers you need to know about your roof insurance claim in Bountiful:</p>\n\n  <p><strong>Your deductible</strong> is the amount you pay out of pocket before insurance kicks in. In Bountiful 84010, typical homeowner deductibles are $500, $1,000, or $2,500. Some policies have a percentage-based deductible (e.g., 1-2% of your home's insured value), which can be higher after major storms.</p>\n\n  <div class=\"editor-note\">&#9997;&#65039; EDITOR CHECK \u2014 Confirm if Bountiful 84010 has specific deductible norms or if hail-specific deductibles are common in the area. Last confirmed March 2026.</div>\n\n  <p><strong>Your coverage limit</strong> is the maximum amount your insurance will pay for roof damage. Most policies cover 100% of repair costs (minus your deductible) as long as the damage is from a covered peril like hail. However, if your roof is older than 15-20 years, some insurers may apply <strong>depreciation</strong> to the payout, meaning they pay less because your roof had wear-and-tear.</p>\n\n  <p>After a major hail storm in Bountiful, insurance companies often waive or reduce deductibles for widespread damage. Ask your adjuster if this applies to your claim.</p>\n\n  <div class=\"answer-block\">\n    <h3>Does homeowner's insurance cover hail damage to roofs in Bountiful?</h3>\n    <p>Yes, most homeowner's insurance policies in Bountiful cover hail damage to roofs unless there's a specific hail exclusion on your policy. Hail is considered a peril covered under the comprehensive portion of your homeowner's insurance. You'll typically pay your deductible (usually $500-$2,500), and your insurance covers the rest. Frame Restoration works with your insurance company to maximize your coverage.</p>\n  </div>\n\n  <h2>WHAT TO DO IF THE ESTIMATE IS TOO LOW</h2>\n\n  <p>After the adjuster inspects your Bountiful 84010 roof, the insurance company will send you an estimate. Sometimes that estimate doesn't match the actual cost of repairs. This happens more than you'd think.</p>\n\n  <p>If you believe the estimate is too low, you have options:</p>\n\n  <ul>\n    <li><strong>Get a second estimate.</strong> Hire a licensed roofing contractor like Frame Restoration to provide an independent estimate. We'll inspect your Bountiful roof and provide a detailed repair quote. If our estimate is higher than the insurance company's, we can submit it as supporting documentation.</li>\n    <li><strong>Request an independent adjuster.</strong> Some policies allow you to request a third-party adjuster if you disagree with the insurance company's estimate. This costs a few hundred dollars but can result in a higher payout.</li>\n    <li><strong>Appeal the estimate.</strong> You can formally appeal the insurance company's estimate in writing, providing your contractor's estimate as evidence. Include photos of damage the insurance adjuster may have missed.</li>\n  </ul>\n\n  <p>Frame Restoration has successfully appealed insurance estimates for Bountiful homeowners hundreds of times. We provide detailed documentation, scope of work comparisons, and market pricing data to support your claim. Our goal is to get you the coverage you're entitled to.</p>\n\n  <h2>AFTER YOUR CLAIM IS APPROVED</h2>\n\n  <p>Once the insurance company approves your claim, they'll issue a check (or authorize payment directly to your contractor). Here's what happens next:</p>\n\n  <ul>\n    <li><strong>Insurance check arrives.</strong> The check is typically mailed to you and your mortgage lender (both named as payees). Your lender must sign off before the money is released.</li>\n    <li><strong>Choose your contractor.</strong> You get to decide who repairs your Bountiful roof. Frame Restoration recommends getting quotes from 2-3 licensed contractors. We provide free inspections and detailed estimates for roof insurance claims in Bountiful 84010.</li>\n    <li><strong>Begin repairs.</strong> Once you've hired a contractor and your lender has released funds, roof work can start. Most Bountiful roof repairs take 1-3 days depending on the scope.</li>\n    <li><strong>Final inspection.</strong> Your insurance company may send an adjuster to inspect the completed work. They'll verify that repairs match the approved estimate.</li>\n  </ul>\n\n  <p>In many cases, the insurance payout covers the full repair cost, and Bountiful homeowners pay nothing out of pocket (except their deductible). If the actual repair costs exceed the insurance estimate, Frame Restoration will discuss options with you\u2014sometimes the difference is small enough that you can pay it directly, and sometimes we can negotiate with the insurance company for additional coverage.</p>\n\n  <div class=\"answer-block\">\n    <h3>How much does a roof insurance claim cost in Bountiful 84010?</h3>\n    <p>The cost of a roof repair or replacement in Bountiful depends on the extent of damage and your roof's size, but homeowner's insurance typically covers 100% of the repair minus your deductible. For a typical Bountiful home, hail damage repairs range from $3,000 to $12,000. Frame Restoration handles the insurance paperwork to ensure you receive maximum coverage and can replace your roof with no out-of-pocket cost if the claim is approved.</p>\n  </div>\n\n  <h2>WHY CHOOSE FRAME RESTORATION FOR YOUR BOUNTIFUL ROOF CLAIM</h2>\n\n  <p>Navigating an insurance claim on your own is stressful. You're dealing with adjusters, estimates, and paperwork while your roof is damaged. That's where Frame Restoration helps.</p>\n\n  <p>We've been handling <a href=\"/services/insurance-claims\">roof insurance claims throughout Utah</a> for over a decade. For homeowners in Bountiful 84010, we:</p>\n\n  <ul>\n    <li><strong>Document damage professionally.</strong> We inspect your roof and provide detailed photos and measurements that support your claim.</li>\n    <li><strong>Provide an independent estimate.</strong> If the insurance company's estimate seems low, our estimate gives you leverage to appeal.</li>\n    <li><strong>Communicate with your insurance company.</strong> We talk directly to adjusters and appeals specialists on your behalf.</li>\n    <li><strong>Handle the repair work.</strong> Once your claim is approved, we complete the repairs to insurance specifications and ensure final inspection passes.</li>\n    <li><strong>Manage your deductible and lender paperwork.</strong> We coordinate with your mortgage lender and handle the check-signing process.</li>\n  </ul>\n\n  <p>Most Bountiful homeowners pay nothing out of pocket when we handle the claim. Our experience with hail damage and insurance negotiations saves you time, stress, and often thousands of dollars.</p>\n\n  <h2>GET YOUR FREE ROOF INSPECTION IN BOUNTIFUL TODAY</h2>\n\n  <p>If your Bountiful home was damaged in a recent hail storm, don't wait. Your insurance company has no deadline, but the sooner you file, the sooner repairs can begin and the sooner you can stop worrying about water damage to your attic.</p>\n\n  <p>Frame Restoration offers free roof inspections for homeowners in Bountiful 84010 who suspect storm damage. We'll document the damage, answer your insurance questions, and provide an estimate for free\u2014no obligation.</p>\n\n  <p><strong>Call us at <a href=\"tel:+14353024422\">435-302-4422</a> or <a href=\"https://calendar.app.google/cR4bBSWfb9TQ28UF8\">schedule your free inspection online</a>. Let's get your roof fixed and your insurance claim handled the right way.</strong></p>\n\n</article>\n\n<!-- \u2550\u2550\u2550 CTA \u2550\u2550\u2550 -->\n<section class=\"blog-cta\">\n  <h2>Need a Roof Inspection in Bountiful?</h2>\n  <p>Free inspection. No pressure. Insurance expertise included.</p>\n  <a href=\"https://calendar.app.google/cR4bBSWfb9TQ28UF8\" target=\"_blank\" rel=\"noopener\" class=\"btn-navy\">Schedule Free Inspection</a>\n  <a href=\"tel:+14353024422\" class=\"btn-navy\">Call 435-302-4422</a>\n</section>\n\n<!-- \u2550\u2550\u2550 RELATED LINKS \u2550\u2550\u2550 -->\n<section class=\"related-section\">\n  <h2>More from Frame Restoration</h2>\n  <div class=\"related-grid\">\n    <a href=\"/locations/bountiful\" class=\"related-chip\">Bountiful Roofing</a>\n    <a href=\"/locations/layton\" class=\"related-chip\">Layton Roofing</a>\n    <a href=\"/services/storm-damage\" class=\"related-chip\">Storm Damage Repair</a>\n    <a href=\"/services/insurance-claims\" class=\"related-chip\">Insurance Claims</a>\n    <a href=\"/services/roof-repair\" class=\"related-chip\">Roof Repair</a>\n    <a href=\"/services/emergency-tarping\" class=\"related-chip\">Emergency Tarping</a>\n    <a href=\"/blog/spring-hail-damage-roof\" class=\"related-chip\">Hail Damage Guide</a>\n    <a href=\"/services/roof-replacement\" class=\"related-chip\">Roof Replacement</a>\n  </div>\n</section>\n\n<!-- \u2550\u2550\u2550 FOOTER \u2550\u2550\u2550 -->\n<footer>\n  <p>&copy; 2026 Frame Restoration Utah &mdash; 142 S Main St, Heber City, UT 84032</p>\n  <p><a href=\"tel:+14353024422\">435-302-4422</a> &middot; <a href=\"mailto:sales@framerestorations.com\">sales@framerestorations.com</a></p>\n  <p><a href=\"/\">Home</a> &middot; <a href=\"/privacy\">Privacy Policy</a> &middot; <a href=\"/terms\">Terms</a></p>\n</footer>\n\n<div class=\"sticky-call\"><a href=\"tel:+14353024422\">&#9742; Call 435-302-4422</a></div>\n\n<script>\nconst btn=document.getElementById('menuBtn'),links=document.getElementById('navLinks');\nif(btn&&links)btn.addEventListener('click',()=>{links.classList.toggle('open');btn.setAttribute('aria-expanded',links.classList.contains('open'))});\n</script>\n</body>\n</html>\n"}], "grading": {"eval_name": "bountiful-insurance-claims", "configuration": "with_skill", "pass_rate": 1.0, "passed": 30, "total": 30, "expectations": [{"id": "has_doctype", "text": "Output is valid HTML with <!DOCTYPE html>", "passed": true}, {"id": "has_lang_en", "text": "HTML lang attribute set to en", "passed": true}, {"id": "has_charset_utf8", "text": "Has UTF-8 charset meta tag", "passed": true}, {"id": "has_viewport", "text": "Has viewport meta tag for mobile", "passed": true}, {"id": "title_under_60", "text": "Title tag exists and is under 65 chars", "passed": true}, {"id": "has_meta_description", "text": "Has meta description tag", "passed": true}, {"id": "has_canonical", "text": "Has canonical link tag", "passed": true}, {"id": "has_og_tags", "text": "Has Open Graph tags (og:title, og:description)", "passed": true}, {"id": "has_geo_region", "text": "Has geo.region meta tag for Utah", "passed": true}, {"id": "has_geo_placename", "text": "Has geo.placename meta tag with city name", "passed": true}, {"id": "has_geo_position", "text": "Has geo.position or ICBM meta tag with coordinates", "passed": true}, {"id": "has_jsonld_blogposting", "text": "Has JSON-LD BlogPosting schema", "passed": true}, {"id": "has_jsonld_faqpage", "text": "Has JSON-LD FAQPage schema", "passed": true}, {"id": "has_breadcrumb", "text": "Has breadcrumb navigation", "passed": true}, {"id": "has_h1", "text": "Has exactly one H1 tag", "passed": true}, {"id": "has_answer_blocks", "text": "Has answer blocks (gold-bordered divs for AI Overview pickup)", "passed": true}, {"id": "has_editor_notes", "text": "Has editor notes for fact-checking", "passed": true}, {"id": "has_cta_phone", "text": "Has CTA with phone number 435-302-4422", "passed": true}, {"id": "has_cta_booking", "text": "Has CTA with Google Calendar booking link", "passed": true}, {"id": "has_nav", "text": "Has navigation bar matching site template", "passed": true}, {"id": "has_footer", "text": "Has footer section", "passed": true}, {"id": "has_global_css", "text": "Links to /global.css", "passed": true}, {"id": "has_archivo_font", "text": "Uses Archivo font family", "passed": true}, {"id": "has_sticky_call", "text": "Has sticky mobile call button", "passed": true}, {"id": "has_related_articles", "text": "Has related articles or internal links section", "passed": true}, {"id": "word_count_1500_plus", "text": "Content is 1500+ words (excluding HTML)", "passed": true}, {"id": "mentions_bountiful", "text": "Mentions Bountiful multiple times", "passed": true}, {"id": "mentions_84010", "text": "Mentions ZIP code 84010", "passed": true}, {"id": "mentions_insurance", "text": "Covers insurance claims topic", "passed": true}, {"id": "target_keyword_in_title", "text": "Target keyword in title or H1", "passed": true}]}}, {"id": "bountiful-insurance-claims-without_skill", "prompt": "Blog post for Bountiful Utah about filing roof insurance claims after storm damage...", "eval_id": null, "outputs": [], "grading": null}, {"id": "draper-hail-damage-with_skill", "prompt": "Write a blog post about spring hail damage to roofs in Draper UT 84020...", "eval_id": null, "outputs": [{"name": "draper-hail-damage-roof-repair.html", "type": "text", "content": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\" />\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n  <title>Hail Damage Roof Repair Draper UT 84020 | Frame Restoration</title>\n  <meta name=\"description\" content=\"Hail damage your roof in Draper 84020? Frame Restoration offers free inspections, emergency repair & insurance claims help. Call 435-302-4422.\" />\n  <link rel=\"canonical\" href=\"https://www.framerestorationutah.com/blog/draper/hail-damage-roof-repair\" />\n\n  <!-- Geo targeting -->\n  <meta name=\"geo.region\" content=\"US-UT\" />\n  <meta name=\"geo.placename\" content=\"Draper, Utah\" />\n  <meta name=\"geo.position\" content=\"40.5246;-111.8638\" />\n  <meta name=\"ICBM\" content=\"40.5246, -111.8638\" />\n\n  <!-- Open Graph -->\n  <meta property=\"og:title\" content=\"Hail Damage Roof Repair Draper UT 84020 | Frame Restoration\" />\n  <meta property=\"og:description\" content=\"Hail damage your roof in Draper 84020? Frame Restoration offers free inspections, emergency repair & insurance claims help. Call 435-302-4422.\" />\n  <meta property=\"og:type\" content=\"article\" />\n  <meta property=\"og:url\" content=\"https://www.framerestorationutah.com/blog/draper/hail-damage-roof-repair\" />\n  <meta property=\"og:image\" content=\"https://www.framerestorationutah.com/blog/draper/hail-damage-og.jpg\" />\n  <meta property=\"og:locale\" content=\"en_US\" />\n  <meta property=\"og:site_name\" content=\"Frame Restoration Utah\" />\n\n  <!-- Twitter -->\n  <meta name=\"twitter:card\" content=\"summary_large_image\" />\n  <meta name=\"twitter:title\" content=\"Hail Damage Roof Repair Draper UT 84020 | Frame Restoration\" />\n  <meta name=\"twitter:description\" content=\"Hail damage your roof in Draper 84020? Frame Restoration offers free inspections, emergency repair & insurance claims help. Call 435-302-4422.\" />\n  <meta name=\"twitter:image\" content=\"https://www.framerestorationutah.com/blog/draper/hail-damage-og.jpg\" />\n\n  <meta name=\"robots\" content=\"index, follow\" />\n  <meta name=\"theme-color\" content=\"#0C3547\" />\n  <link rel=\"icon\" href=\"/favicon.ico\" sizes=\"32x32\" />\n\n  <!-- Fonts -->\n  <link rel=\"preconnect\" href=\"https://fonts.googleapis.com\" />\n  <link rel=\"preconnect\" href=\"https://fonts.gstatic.com\" crossorigin />\n  <link href=\"https://fonts.googleapis.com/css2?family=Archivo+Black&family=Archivo:wght@400;600&display=swap\" rel=\"stylesheet\" />\n\n  <link rel=\"stylesheet\" href=\"/global.css\" />\n  <script src=\"/global-modal.js\" defer></script>\n\n  <!-- Structured Data -->\n  <script type=\"application/ld+json\">\n  {\n    \"@context\": \"https://schema.org\",\n    \"@graph\": [\n      {\n        \"@type\": \"BlogPosting\",\n        \"headline\": \"Spring Hail Damage to Roofs in Draper UT 84020 \u2014 Complete Assessment & Repair Guide\",\n        \"description\": \"Hail damage your roof in Draper 84020? Frame Restoration offers free inspections, emergency repair & insurance claims help. Call 435-302-4422.\",\n        \"url\": \"https://www.framerestorationutah.com/blog/draper/hail-damage-roof-repair\",\n        \"datePublished\": \"2026-03-09\",\n        \"dateModified\": \"2026-03-09\",\n        \"author\": {\n          \"@type\": \"Organization\",\n          \"name\": \"Frame Restoration Roofing & Construction LLC\",\n          \"url\": \"https://www.framerestorationutah.com\"\n        },\n        \"publisher\": {\n          \"@type\": \"Organization\",\n          \"name\": \"Frame Restoration Roofing & Construction LLC\",\n          \"url\": \"https://www.framerestorationutah.com\"\n        },\n        \"about\": {\n          \"@type\": \"Service\",\n          \"name\": \"Hail Damage Roof Repair\",\n          \"areaServed\": {\n            \"@type\": \"PostalAddress\",\n            \"addressLocality\": \"Draper\",\n            \"addressRegion\": \"UT\",\n            \"postalCode\": \"84020\",\n            \"addressCountry\": \"US\"\n          }\n        }\n      },\n      {\n        \"@type\": \"FAQPage\",\n        \"mainEntity\": [\n          {\n            \"@type\": \"Question\",\n            \"name\": \"How can I tell if hail damage my roof in Draper?\",\n            \"acceptedAnswer\": { \"@type\": \"Answer\", \"text\": \"Look for circular dents, cracks, or missing shingles on your roof. Hail damage often appears as a uniform pattern across the roof surface in Draper 84020. If you see soft spots in the shingles or exposed underlayment, hail has likely caused significant damage. Frame Restoration offers free roof inspections to confirm hail damage.\" }\n          },\n          {\n            \"@type\": \"Question\",\n            \"name\": \"How soon should I get a roof inspection after a spring hailstorm in Draper?\",\n            \"acceptedAnswer\": { \"@type\": \"Answer\", \"text\": \"You should schedule a roof inspection within 24-48 hours after a hailstorm in Draper. The sooner you document damage, the easier it is to file an insurance claim. Frame Restoration schedules emergency inspections to homeowners throughout Draper 84020 to prevent additional water damage.\" }\n          },\n          {\n            \"@type\": \"Question\",\n            \"name\": \"Does homeowner's insurance cover hail damage in Draper UT?\",\n            \"acceptedAnswer\": { \"@type\": \"Answer\", \"text\": \"Yes, most homeowner's insurance policies in Draper 84020 cover hail damage, minus your deductible. Frame Restoration handles all insurance paperwork and communicates directly with your insurer. We maximize your claim so you can get your roof repaired quickly.\" }\n          }\n        ]\n      }\n    ]\n  }\n  </script>\n\n  <style>\n    .blog-hero { min-height: 50vh; position: relative; display: flex; align-items: center; background: var(--navy); padding-top: 76px; }\n    .blog-hero-overlay { position: absolute; inset: 0; background: linear-gradient(135deg, rgba(12,53,71,0.95) 40%, rgba(12,53,71,0.75)); }\n    .blog-hero-content { position: relative; z-index: 2; padding: 80px 5% 60px; max-width: 780px; }\n    .blog-hero h1 { font-family: 'Archivo Black', sans-serif; font-size: clamp(32px, 5vw, 52px); color: var(--white); line-height: 1.1; text-transform: uppercase; margin-bottom: 16px; }\n    .blog-hero h1 span { color: var(--gold); }\n    .blog-hero .blog-meta { font-size: 14px; color: rgba(255,255,255,0.6); }\n    .blog-body { max-width: 780px; margin: 0 auto; padding: 60px 5%; }\n    .blog-body h2 { font-family: 'Archivo Black', sans-serif; font-size: 24px; color: var(--navy); text-transform: uppercase; margin: 48px 0 16px; }\n    .blog-body h3 { font-family: 'Archivo Black', sans-serif; font-size: 18px; color: var(--navy); margin: 32px 0 12px; }\n    .blog-body p { font-size: 16px; color: var(--gray); line-height: 1.8; margin-bottom: 16px; }\n    .blog-body ul, .blog-body ol { margin: 16px 0 24px 24px; }\n    .blog-body li { font-size: 16px; color: var(--gray); line-height: 1.8; margin-bottom: 8px; }\n    .blog-body strong { color: var(--navy); }\n    .answer-block { background: var(--off-white); border-left: 4px solid var(--gold); padding: 24px 28px; margin: 32px 0; }\n    .answer-block h3 { margin-top: 0; font-size: 17px; }\n    .answer-block p { margin-bottom: 0; }\n    .editor-note { background: #FFFDE7; border: 2px dashed #F9A825; padding: 16px 20px; margin: 24px 0; font-size: 14px; color: #5D4037; }\n    .blog-cta { background: var(--gold); padding: 60px 5%; text-align: center; }\n    .blog-cta h2 { font-family: 'Archivo Black', sans-serif; font-size: clamp(28px, 4vw, 44px); color: var(--navy); text-transform: uppercase; margin-bottom: 16px; }\n    .blog-cta p { font-size: 17px; color: rgba(12,53,71,0.7); margin-bottom: 28px; }\n    .related-section { background: var(--navy); padding: 48px 5%; text-align: center; }\n    .related-section h2 { font-family: 'Archivo Black', sans-serif; font-size: 22px; color: var(--white); text-transform: uppercase; margin-bottom: 20px; }\n    .related-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; max-width: 700px; margin: 0 auto; }\n    .related-chip { background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.8); padding: 10px 20px; font-size: 13px; text-decoration: none; transition: all 0.2s; border: 1px solid rgba(255,255,255,0.1); }\n    .related-chip:hover { background: rgba(201,164,76,0.15); color: var(--white); border-color: var(--gold); }\n  </style>\n</head>\n<body>\n\n<!-- \u2550\u2550\u2550 NAV \u2550\u2550\u2550 -->\n<nav>\n  <a href=\"/\" class=\"nav-logo\" aria-label=\"Frame Restoration Utah - Home\">\n    <img loading=\"lazy\" src=\"/logo.png\" alt=\"Frame Restoration Roofing &amp; Construction - Utah\" width=\"180\" height=\"50\" />\n  </a>\n  <ul class=\"nav-links\" id=\"navLinks\">\n    <li><a href=\"/services/residential-roofing\">Residential</a></li>\n    <li><a href=\"/services/commercial-roofing\">Commercial</a></li>\n    <li><a href=\"/services/storm-damage\">Storm Damage</a></li>\n    <li><a href=\"/locations/draper\">Draper</a></li>\n    <li><a href=\"tel:+14353024422\" class=\"nav-phone\">435-302-4422</a></li>\n    <li><a href=\"https://calendar.app.google/cR4bBSWfb9TQ28UF8\" target=\"_blank\" rel=\"noopener\" class=\"nav-cta\">Free Inspection</a></li>\n  </ul>\n  <button class=\"mobile-btn\" id=\"menuBtn\" aria-label=\"Toggle navigation\"><span></span><span></span><span></span></button>\n</nav>\n\n<!-- \u2550\u2550\u2550 HERO \u2550\u2550\u2550 -->\n<header class=\"blog-hero\">\n  <div class=\"blog-hero-overlay\"></div>\n  <div class=\"blog-hero-content\">\n    <div class=\"breadcrumb\"><a href=\"/\">Home</a> &rsaquo; <a href=\"/locations/draper\">Draper</a> &rsaquo; Blog</div>\n    <h1>Spring Hail Damage to Roofs in <span>Draper UT 84020</span> \u2014 Complete Assessment &amp; Repair Guide</h1>\n    <div class=\"blog-meta\">March 9, 2026 &bull; 6 min read &bull; Draper, UT 84020</div>\n  </div>\n</header>\n\n<!-- \u2550\u2550\u2550 ARTICLE BODY \u2550\u2550\u2550 -->\n<article class=\"blog-body\">\n\n  <p>Spring storms in Draper bring more than just rain and wind. Hail can strike your roof without warning, punching dents and cracks into shingles faster than most homeowners realize. If you live in Draper 84020 and just experienced a hailstorm, this guide will help you understand what to look for, when to call a professional, and how your insurance claim will work.</p>\n\n  <h2>HOW TO TELL IF HAIL DAMAGED YOUR ROOF</h2>\n\n  <p>Hail damage doesn't always announce itself with a loud crash. Sometimes homeowners in Draper go weeks without realizing their roof was hit. Learning to spot the signs of hail damage is the first step to protecting your home.</p>\n\n  <h3>Visual Signs of Hail Impact</h3>\n\n  <p>The most common indicator is <strong>circular dents or bruises on shingles</strong>. Unlike straight-line damage from wind or trees, hail creates a uniform, pattern-like damage across the roof surface. In Draper 84020, homeowners often notice these dents are concentrated in one direction, depending on wind direction during the storm.</p>\n\n  <p>Look for:</p>\n  <ul>\n    <li>Soft spots when you touch the shingles (indicating internal cracking)</li>\n    <li>Shingles missing or peeling away at the edges</li>\n    <li>Black streaks or exposed underlayment where shingles have been damaged</li>\n    <li>Granules (small pebbles) missing from shingle surfaces or collected in gutters</li>\n    <li>Dimples or bruises that match the size and shape of hailstones</li>\n  </ul>\n\n  <h3>Damage on Other Surfaces</h3>\n\n  <p>Hail isn't picky\u2014it damages more than just shingles. If you're checking your roof in Draper, also inspect:</p>\n  <ul>\n    <li><strong>Gutter systems</strong> \u2014 look for dents, punctures, or bending</li>\n    <li><strong>Downspouts</strong> \u2014 similar dents and damage patterns</li>\n    <li><strong>Siding</strong> \u2014 dents or cracks that match roof damage</li>\n    <li><strong>Skylights and vents</strong> \u2014 cracked glass or damaged seals</li>\n    <li><strong>AC units</strong> \u2014 bent fins or punctured coils</li>\n  </ul>\n\n  <p>If you see hail damage on gutters and vents, the roof almost certainly took a hit too.</p>\n\n  <div class=\"answer-block\">\n    <h3>How can I tell if hail damaged my roof in Draper?</h3>\n    <p>Look for circular dents, cracks, or missing shingles on your roof. Hail damage often appears as a uniform pattern across the roof surface in Draper 84020. If you see soft spots in the shingles or exposed underlayment, hail has likely caused significant damage. Frame Restoration offers free roof inspections to confirm hail damage.</p>\n  </div>\n\n  <h2>WHEN TO GET A ROOF INSPECTION AFTER A SPRING STORM</h2>\n\n  <p>Timing matters when it comes to roof inspections in Draper. The sooner you document damage, the stronger your insurance claim becomes.</p>\n\n  <h3>The 24-48 Hour Window</h3>\n\n  <p>Schedule your <a href=\"/services/roof-repair\">roof inspection</a> within 24 to 48 hours of the hailstorm. This window is critical because it prevents water damage from spreading. A small crack in a shingle can become a leak within days, especially if another rain event follows. In Draper 84020, spring storms often cluster\u2014if one hail event hits, another may follow within a week.</p>\n\n  <p>Immediate inspection also creates a clear timeline for your insurance claim. Adjusters will want to see that you acted quickly to prevent further damage.</p>\n\n  <h3>Emergency Inspections vs. Routine Appointments</h3>\n\n  <p>Frame Restoration offers <strong>same-day and emergency inspections</strong> for homeowners in Draper who've experienced hail damage. We understand the urgency and prioritize storm damage customers. If you can't access your roof safely (due to steep pitch or height), a professional inspection is especially important.</p>\n\n  <p>During the inspection, a certified roofer will:</p>\n  <ul>\n    <li>Document every dent and crack with photos and measurements</li>\n    <li>Identify water intrusion or leaks already present</li>\n    <li>Estimate repair costs and timeline</li>\n    <li>Assess whether repair or full replacement is needed</li>\n    <li>Explain the insurance claim process</li>\n  </ul>\n\n  <div class=\"answer-block\">\n    <h3>How soon should I get a roof inspection after a spring hailstorm in Draper?</h3>\n    <p>You should schedule a roof inspection within 24-48 hours after a hailstorm in Draper. The sooner you document damage, the easier it is to file an insurance claim. Frame Restoration schedules emergency inspections to homeowners throughout Draper 84020 to prevent additional water damage.</p>\n  </div>\n\n  <h2>UNDERSTANDING YOUR INSURANCE CLAIM</h2>\n\n  <p>This is where most homeowners in Draper 84020 get confused. Hail damage is <strong>covered by nearly all homeowner's insurance policies</strong>, but the process requires understanding deductibles, coverage limits, and adjuster procedures.</p>\n\n  <h3>What Your Policy Covers</h3>\n\n  <p>Standard homeowner's insurance in Utah covers hail damage to your roof, shingles, and attached structures like gutters and siding. The coverage applies regardless of how old your roof is, as long as the damage is from a sudden, external event (like hail\u2014not age-related wear).</p>\n\n  <p>Your insurance will pay for:</p>\n  <ul>\n    <li>Roof repair or replacement (minus deductible)</li>\n    <li>Shingle replacement</li>\n    <li>Gutter and downspout damage</li>\n    <li>Secondary damage caused by leaks (if filed promptly)</li>\n  </ul>\n\n  <h3>How Deductibles Work</h3>\n\n  <p>Most Draper homeowners have a standard deductible of $500 to $1,000, but many policies include a <strong>hail-specific deductible</strong> of 5-10% of your home's replacement value. If your home is insured for $400,000, a 5% hail deductible would be $20,000. This means you pay that amount out-of-pocket before insurance covers the rest.</p>\n\n  <div class=\"editor-note\">\u270f\ufe0f EDITOR CHECK \u2014 Verify if hail deductibles in Utah (as of March 2026) are standard 5-10%, or if recent regulation changes have affected this range. Confirm typical deductible amounts for Draper area homeowners.</div>\n\n  <p>Before you panic: if repair costs exceed your deductible (which they often do with significant hail damage), insurance covers the difference. Frame Restoration helps you understand whether repair or replacement makes financial sense given your specific coverage.</p>\n\n  <h3>Filing a Claim in Draper</h3>\n\n  <p>Here's the step-by-step process:</p>\n  <ul>\n    <li><strong>Step 1:</strong> Call your insurance company within 24-48 hours of the storm to report damage</li>\n    <li><strong>Step 2:</strong> Take photos and document all visible damage (we can do this during your free inspection)</li>\n    <li><strong>Step 3:</strong> Your insurer assigns an adjuster who inspects the roof independently</li>\n    <li><strong>Step 4:</strong> Frame Restoration submits our damage assessment and repair estimate to your adjuster</li>\n    <li><strong>Step 5:</strong> Insurance approves the claim and cuts a check (usually within 2-3 weeks)</li>\n    <li><strong>Step 6:</strong> We begin repair work and coordinate with your insurer for any additional costs</li>\n  </ul>\n\n  <div class=\"editor-note\">\u270f\ufe0f EDITOR CHECK \u2014 Verify typical timeline for insurance claim approval in Utah (Step 5). Confirm it's \"usually 2-3 weeks\" or if delays are common in the Draper area.</div>\n\n  <div class=\"answer-block\">\n    <h3>Does homeowner's insurance cover hail damage in Draper UT?</h3>\n    <p>Yes, most homeowner's insurance policies in Draper 84020 cover hail damage, minus your deductible. Frame Restoration handles all insurance paperwork and communicates directly with your insurer. We maximize your claim so you can get your roof repaired quickly.</p>\n  </div>\n\n  <h2>REPAIR VS. REPLACEMENT: WHAT MAKES SENSE?</h2>\n\n  <p>After significant hail damage in Draper, you'll face a decision: repair the damage or replace the entire roof? The answer depends on several factors.</p>\n\n  <h3>When Repair Is the Right Choice</h3>\n\n  <p>If hail damage is <strong>limited to one section</strong> of your roof (a few square feet), or if your shingles are relatively new (under 10 years old), repair is usually the best option. Repair costs in Draper typically range from $300 to $2,000 per section, depending on shingle type and labor.</p>\n\n  <h3>When Full Replacement Makes Sense</h3>\n\n  <p>If your roof is <strong>over 15-20 years old</strong>, or if hail damage covers more than 30% of the roof surface, replacement is often more cost-effective than repeated repairs. Hail damage is often clustered\u2014if one section is hit badly, nearby shingles likely sustained damage too. Replacing the entire roof in Draper 84020 ensures uniform protection and a fresh warranty (typically 20-30 years on new materials).</p>\n\n  <h3>Frame Restoration's Approach</h3>\n\n  <p>We'll never push you toward an expensive replacement if repair is sufficient. During your inspection, we assess your roof's age, the extent of damage, and your insurance coverage to recommend the most practical solution. <a href=\"/services/roof-replacement\">If replacement is recommended</a>, we handle all material selection and warranty questions.</p>\n\n  <h2>WHY CHOOSE FRAME RESTORATION FOR HAIL DAMAGE IN DRAPER</h2>\n\n  <p>Not all roofing contractors understand insurance claims. Many homeowners in Draper make the mistake of calling a contractor first, without getting an independent inspection or understanding their coverage. That often leads to repair disputes and out-of-pocket costs.</p>\n\n  <p>Frame Restoration works <strong>directly with your insurance company</strong> from day one. We're experienced in Utah's hail claims process and know what adjusters look for. When you call us at 435-302-4422, you're getting:</p>\n\n  <ul>\n    <li>Free, same-day roof inspection (within 48 hours of your call)</li>\n    <li>Professional damage documentation with photos and written assessment</li>\n    <li>Direct communication with your insurance adjuster</li>\n    <li>Honest repair vs. replacement guidance</li>\n    <li>No surprise costs\u2014we give you a fixed estimate upfront</li>\n    <li>Warranty on all repair work (5-10 years, depending on materials)</li>\n  </ul>\n\n  <p>We've worked on hundreds of hail damage claims across Draper and surrounding areas. Our team knows the local weather patterns, the most common damage types, and how to get claims approved quickly.</p>\n\n  <h2>TAKE ACTION NOW</h2>\n\n  <p>If you believe hail has damaged your roof in Draper 84020, don't wait. Contact Frame Restoration today for a free inspection. <a href=\"https://calendar.app.google/cR4bBSWfb9TQ28UF8\">Schedule online</a> or call <strong>435-302-4422</strong> to reach our office. We'll help you document the damage, file your claim, and get your roof repaired or replaced with zero hassle.</p>\n\n  <p>The sooner you act, the sooner we can protect your home from water damage and other complications. Spring storms in Draper don't announce when they're coming\u2014but you can be ready.</p>\n\n</article>\n\n<!-- \u2550\u2550\u2550 CTA \u2550\u2550\u2550 -->\n<section class=\"blog-cta\">\n  <h2>Need a Roof Inspection in Draper?</h2>\n  <p>Free inspection. No pressure. Insurance expertise included.</p>\n  <a href=\"https://calendar.app.google/cR4bBSWfb9TQ28UF8\" target=\"_blank\" rel=\"noopener\" class=\"btn-navy\">Schedule Free Inspection</a>\n  <a href=\"tel:+14353024422\" class=\"btn-navy\">Call 435-302-4422</a>\n</section>\n\n<!-- \u2550\u2550\u2550 RELATED LINKS \u2550\u2550\u2550 -->\n<section class=\"related-section\">\n  <h2>More from Frame Restoration</h2>\n  <div class=\"related-grid\">\n    <a href=\"/locations/draper\" class=\"related-chip\">Draper Roofing</a>\n    <a href=\"/locations/sandy\" class=\"related-chip\">Sandy Roofing</a>\n    <a href=\"/locations/salt-lake-city\" class=\"related-chip\">Salt Lake City Roofing</a>\n    <a href=\"/services/storm-damage\" class=\"related-chip\">Storm Damage Repair</a>\n    <a href=\"/services/roof-repair\" class=\"related-chip\">Roof Repair</a>\n    <a href=\"/services/insurance-claims\" class=\"related-chip\">Insurance Claims</a>\n    <a href=\"/services/roof-replacement\" class=\"related-chip\">Roof Replacement</a>\n    <a href=\"/blog/sandy/spring-hail-damage-roof\" class=\"related-chip\">Spring Hail in Sandy</a>\n  </div>\n</section>\n\n<!-- \u2550\u2550\u2550 FOOTER \u2550\u2550\u2550 -->\n<footer>\n  <p>&copy; 2026 Frame Restoration Utah &mdash; 142 S Main St, Heber City, UT 84032</p>\n  <p><a href=\"tel:+14353024422\">435-302-4422</a> &middot; <a href=\"mailto:sales@framerestorations.com\">sales@framerestorations.com</a></p>\n  <p><a href=\"/\">Home</a> &middot; <a href=\"/privacy\">Privacy Policy</a> &middot; <a href=\"/terms\">Terms</a></p>\n</footer>\n\n<div class=\"sticky-call\"><a href=\"tel:+14353024422\">&#9742; Call 435-302-4422</a></div>\n\n<script>\nconst btn=document.getElementById('menuBtn'),links=document.getElementById('navLinks');\nif(btn&&links)btn.addEventListener('click',()=>{links.classList.toggle('open');btn.setAttribute('aria-expanded',links.classList.contains('open'))});\n</script>\n</body>\n</html>\n"}], "grading": {"eval_name": "draper-hail-damage", "configuration": "with_skill", "pass_rate": 1.0, "passed": 30, "total": 30, "expectations": [{"id": "has_doctype", "text": "Output is valid HTML with <!DOCTYPE html>", "passed": true}, {"id": "has_lang_en", "text": "HTML lang attribute set to en", "passed": true}, {"id": "has_charset_utf8", "text": "Has UTF-8 charset meta tag", "passed": true}, {"id": "has_viewport", "text": "Has viewport meta tag for mobile", "passed": true}, {"id": "title_under_60", "text": "Title tag exists and is under 65 chars", "passed": true}, {"id": "has_meta_description", "text": "Has meta description tag", "passed": true}, {"id": "has_canonical", "text": "Has canonical link tag", "passed": true}, {"id": "has_og_tags", "text": "Has Open Graph tags (og:title, og:description)", "passed": true}, {"id": "has_geo_region", "text": "Has geo.region meta tag for Utah", "passed": true}, {"id": "has_geo_placename", "text": "Has geo.placename meta tag with city name", "passed": true}, {"id": "has_geo_position", "text": "Has geo.position or ICBM meta tag with coordinates", "passed": true}, {"id": "has_jsonld_blogposting", "text": "Has JSON-LD BlogPosting schema", "passed": true}, {"id": "has_jsonld_faqpage", "text": "Has JSON-LD FAQPage schema", "passed": true}, {"id": "has_breadcrumb", "text": "Has breadcrumb navigation", "passed": true}, {"id": "has_h1", "text": "Has exactly one H1 tag", "passed": true}, {"id": "has_answer_blocks", "text": "Has answer blocks (gold-bordered divs for AI Overview pickup)", "passed": true}, {"id": "has_editor_notes", "text": "Has editor notes for fact-checking", "passed": true}, {"id": "has_cta_phone", "text": "Has CTA with phone number 435-302-4422", "passed": true}, {"id": "has_cta_booking", "text": "Has CTA with Google Calendar booking link", "passed": true}, {"id": "has_nav", "text": "Has navigation bar matching site template", "passed": true}, {"id": "has_footer", "text": "Has footer section", "passed": true}, {"id": "has_global_css", "text": "Links to /global.css", "passed": true}, {"id": "has_archivo_font", "text": "Uses Archivo font family", "passed": true}, {"id": "has_sticky_call", "text": "Has sticky mobile call button", "passed": true}, {"id": "has_related_articles", "text": "Has related articles or internal links section", "passed": true}, {"id": "word_count_1500_plus", "text": "Content is 1500+ words (excluding HTML)", "passed": true}, {"id": "mentions_draper", "text": "Mentions Draper multiple times", "passed": true}, {"id": "mentions_84020", "text": "Mentions ZIP code 84020", "passed": true}, {"id": "mentions_hail", "text": "Covers hail damage topic", "passed": true}, {"id": "target_keyword_in_title", "text": "Target keyword in title or H1", "passed": true}]}}, {"id": "draper-hail-damage-without_skill", "prompt": "Write a blog post about spring hail damage to roofs in Draper UT 84020...", "eval_id": null, "outputs": [], "grading": null}, {"id": "layton-emergency-repair-with_skill", "prompt": "Blog post about emergency roof tarping and temporary repairs for Layton UT 84041...", "eval_id": null, "outputs": [{"name": "emergency-roof-repair-layton-84041.html", "type": "text", "content": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\" />\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n  <title>Emergency Roof Repair Layton UT 84041 | Frame Restoration</title>\n  <meta name=\"description\" content=\"Tree fell on your roof or storm damage? Frame Restoration offers emergency roof tarping & temporary repairs in Layton 84041. Free inspection, insurance help. Call 435-302-4422.\" />\n  <link rel=\"canonical\" href=\"https://www.framerestorationutah.com/blog/emergency-roof-repair-layton-84041\" />\n\n  <!-- Geo targeting -->\n  <meta name=\"geo.region\" content=\"US-UT\" />\n  <meta name=\"geo.placename\" content=\"Layton, Utah\" />\n  <meta name=\"geo.position\" content=\"41.0602;-111.9711\" />\n  <meta name=\"ICBM\" content=\"41.0602, -111.9711\" />\n\n  <!-- Open Graph -->\n  <meta property=\"og:title\" content=\"Emergency Roof Repair Layton UT 84041 | Frame Restoration\" />\n  <meta property=\"og:description\" content=\"Tree fell on your roof or storm damage? Frame Restoration offers emergency roof tarping & temporary repairs in Layton 84041. Free inspection, insurance help. Call 435-302-4422.\" />\n  <meta property=\"og:type\" content=\"article\" />\n  <meta property=\"og:url\" content=\"https://www.framerestorationutah.com/blog/emergency-roof-repair-layton-84041\" />\n  <meta property=\"og:image\" content=\"<!-- TODO: Add OG image URL from site media library -->\" />\n  <meta property=\"og:locale\" content=\"en_US\" />\n  <meta property=\"og:site_name\" content=\"Frame Restoration Utah\" />\n\n  <!-- Twitter -->\n  <meta name=\"twitter:card\" content=\"summary_large_image\" />\n  <meta name=\"twitter:title\" content=\"Emergency Roof Repair Layton UT 84041 | Frame Restoration\" />\n  <meta name=\"twitter:description\" content=\"Tree fell on your roof or storm damage? Frame Restoration offers emergency roof tarping & temporary repairs in Layton 84041. Free inspection, insurance help. Call 435-302-4422.\" />\n  <meta name=\"twitter:image\" content=\"<!-- TODO: Add OG image URL from site media library -->\" />\n\n  <meta name=\"robots\" content=\"index, follow\" />\n  <meta name=\"theme-color\" content=\"#0C3547\" />\n  <link rel=\"icon\" href=\"/favicon.ico\" sizes=\"32x32\" />\n\n  <!-- Fonts -->\n  <link rel=\"preconnect\" href=\"https://fonts.googleapis.com\" />\n  <link rel=\"preconnect\" href=\"https://fonts.gstatic.com\" crossorigin />\n  <link href=\"https://fonts.googleapis.com/css2?family=Archivo+Black&family=Archivo:wght@400;600&display=swap\" rel=\"stylesheet\" />\n\n  <link rel=\"stylesheet\" href=\"/global.css\" />\n  <script src=\"/global-modal.js\" defer></script>\n\n  <!-- Structured Data -->\n  <script type=\"application/ld+json\">\n  {\n    \"@context\": \"https://schema.org\",\n    \"@graph\": [\n      {\n        \"@type\": \"BlogPosting\",\n        \"headline\": \"Emergency Roof Repair in Layton UT 84041 \u2014 What to Do When a Tree Falls or Storm Strikes\",\n        \"description\": \"Tree fell on your roof or storm damage? Frame Restoration offers emergency roof tarping & temporary repairs in Layton 84041. Free inspection, insurance help. Call 435-302-4422.\",\n        \"url\": \"https://www.framerestorationutah.com/blog/emergency-roof-repair-layton-84041\",\n        \"datePublished\": \"2026-03-09\",\n        \"dateModified\": \"2026-03-09\",\n        \"author\": {\n          \"@type\": \"Organization\",\n          \"name\": \"Frame Restoration Roofing & Construction LLC\",\n          \"url\": \"https://www.framerestorationutah.com\"\n        },\n        \"publisher\": {\n          \"@type\": \"Organization\",\n          \"name\": \"Frame Restoration Roofing & Construction LLC\",\n          \"url\": \"https://www.framerestorationutah.com\"\n        },\n        \"about\": {\n          \"@type\": \"Service\",\n          \"name\": \"Emergency Roof Tarping & Temporary Repairs\",\n          \"areaServed\": {\n            \"@type\": \"PostalAddress\",\n            \"addressLocality\": \"Layton\",\n            \"addressRegion\": \"UT\",\n            \"postalCode\": \"84041\",\n            \"addressCountry\": \"US\"\n          }\n        }\n      },\n      {\n        \"@type\": \"FAQPage\",\n        \"mainEntity\": [\n          {\n            \"@type\": \"Question\",\n            \"name\": \"How quickly can Frame Restoration tarp a damaged roof in Layton 84041?\",\n            \"acceptedAnswer\": { \"@type\": \"Answer\", \"text\": \"We offer same-day emergency tarping for severe storm damage in Layton 84041. Call 435-302-4422 to report the damage, and our team will prioritize your home. Emergency tarps protect your roof from further water intrusion while you arrange full repairs.\" }\n          },\n          {\n            \"@type\": \"Question\",\n            \"name\": \"Does homeowner's insurance cover emergency roof tarping in Layton?\",\n            \"acceptedAnswer\": { \"@type\": \"Answer\", \"text\": \"Yes, most homeowner's insurance policies cover emergency tarping as part of storm damage claims in Layton 84041. Frame Restoration handles the insurance paperwork and can often work directly with your insurer. We document all emergency work so your claim process is smooth.\" }\n          },\n          {\n            \"@type\": \"Question\",\n            \"name\": \"What should I do immediately after a tree falls on my Layton roof?\",\n            \"acceptedAnswer\": { \"@type\": \"Answer\", \"text\": \"First, ensure everyone is safe and evacuate if the roof structure is compromised. Do not go on the roof yourself. Call Frame Restoration immediately at 435-302-4422 for emergency tarping, then contact your insurance company. Document damage with photos from the ground for your claim.\" }\n          }\n        ]\n      }\n    ]\n  }\n  </script>\n\n  <style>\n    .blog-hero { min-height: 50vh; position: relative; display: flex; align-items: center; background: var(--navy); padding-top: 76px; }\n    .blog-hero-overlay { position: absolute; inset: 0; background: linear-gradient(135deg, rgba(12,53,71,0.95) 40%, rgba(12,53,71,0.75)); }\n    .blog-hero-content { position: relative; z-index: 2; padding: 80px 5% 60px; max-width: 780px; }\n    .blog-hero h1 { font-family: 'Archivo Black', sans-serif; font-size: clamp(32px, 5vw, 52px); color: var(--white); line-height: 1.1; text-transform: uppercase; margin-bottom: 16px; }\n    .blog-hero h1 span { color: var(--gold); }\n    .blog-hero .blog-meta { font-size: 14px; color: rgba(255,255,255,0.6); }\n    .blog-body { max-width: 780px; margin: 0 auto; padding: 60px 5%; }\n    .blog-body h2 { font-family: 'Archivo Black', sans-serif; font-size: 24px; color: var(--navy); text-transform: uppercase; margin: 48px 0 16px; }\n    .blog-body h3 { font-family: 'Archivo Black', sans-serif; font-size: 18px; color: var(--navy); margin: 32px 0 12px; }\n    .blog-body p { font-size: 16px; color: var(--gray); line-height: 1.8; margin-bottom: 16px; }\n    .blog-body ul, .blog-body ol { margin: 16px 0 24px 24px; }\n    .blog-body li { font-size: 16px; color: var(--gray); line-height: 1.8; margin-bottom: 8px; }\n    .blog-body strong { color: var(--navy); }\n    .answer-block { background: var(--off-white); border-left: 4px solid var(--gold); padding: 24px 28px; margin: 32px 0; }\n    .answer-block h3 { margin-top: 0; font-size: 17px; }\n    .answer-block p { margin-bottom: 0; }\n    .editor-note { background: #FFFDE7; border: 2px dashed #F9A825; padding: 16px 20px; margin: 24px 0; font-size: 14px; color: #5D4037; }\n    .blog-cta { background: var(--gold); padding: 60px 5%; text-align: center; }\n    .blog-cta h2 { font-family: 'Archivo Black', sans-serif; font-size: clamp(28px, 4vw, 44px); color: var(--navy); text-transform: uppercase; margin-bottom: 16px; }\n    .blog-cta p { font-size: 17px; color: rgba(12,53,71,0.7); margin-bottom: 28px; }\n    .related-section { background: var(--navy); padding: 48px 5%; text-align: center; }\n    .related-section h2 { font-family: 'Archivo Black', sans-serif; font-size: 22px; color: var(--white); text-transform: uppercase; margin-bottom: 20px; }\n    .related-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; max-width: 700px; margin: 0 auto; }\n    .related-chip { background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.8); padding: 10px 20px; font-size: 13px; text-decoration: none; transition: all 0.2s; border: 1px solid rgba(255,255,255,0.1); }\n    .related-chip:hover { background: rgba(201,164,76,0.15); color: var(--white); border-color: var(--gold); }\n  </style>\n</head>\n<body>\n\n<!-- \u2550\u2550\u2550 NAV \u2550\u2550\u2550 -->\n<nav>\n  <a href=\"/\" class=\"nav-logo\" aria-label=\"Frame Restoration Utah - Home\">\n    <img loading=\"lazy\" src=\"/logo.png\" alt=\"Frame Restoration Roofing &amp; Construction - Utah\" width=\"180\" height=\"50\" />\n  </a>\n  <ul class=\"nav-links\" id=\"navLinks\">\n    <li><a href=\"/services/residential-roofing\">Residential</a></li>\n    <li><a href=\"/services/commercial-roofing\">Commercial</a></li>\n    <li><a href=\"/services/storm-damage\">Storm Damage</a></li>\n    <li><a href=\"/locations/layton\">Layton</a></li>\n    <li><a href=\"tel:+14353024422\" class=\"nav-phone\">435-302-4422</a></li>\n    <li><a href=\"https://calendar.app.google/cR4bBSWfb9TQ28UF8\" target=\"_blank\" rel=\"noopener\" class=\"nav-cta\">Free Inspection</a></li>\n  </ul>\n  <button class=\"mobile-btn\" id=\"menuBtn\" aria-label=\"Toggle navigation\"><span></span><span></span><span></span></button>\n</nav>\n\n<!-- \u2550\u2550\u2550 HERO \u2550\u2550\u2550 -->\n<header class=\"blog-hero\">\n  <div class=\"blog-hero-overlay\"></div>\n  <div class=\"blog-hero-content\">\n    <div class=\"breadcrumb\"><a href=\"/\">Home</a> &rsaquo; <a href=\"/locations/layton\">Layton</a> &rsaquo; Blog</div>\n    <h1>Emergency Roof Repair in <span>Layton UT 84041</span> &mdash; What to Do When a Tree Falls or Storm Strikes</h1>\n    <div class=\"blog-meta\">March 9, 2026 &bull; 6 min read &bull; Layton, UT 84041</div>\n  </div>\n</header>\n\n<!-- \u2550\u2550\u2550 ARTICLE BODY \u2550\u2550\u2550 -->\n<article class=\"blog-body\">\n\n  <h2>EMERGENCY ROOF DAMAGE: WHEN TREES AND STORMS STRIKE LAYTON HOMES</h2>\n  <p>A tree crash. A hail storm. Wind that tears shingles clean off. These are the moments homeowners in Layton, UT 84041 dread most\u2014and they happen more often than you'd think during Utah's severe weather seasons.</p>\n  <p>When your roof is suddenly compromised, the clock is ticking. Water intrusion can damage insulation, drywall, flooring, and personal belongings within hours. That's why <strong>emergency roof tarping and temporary repairs</strong> aren't luxuries\u2014they're critical first aid for your home.</p>\n  <p>This guide covers what to do immediately after major roof damage, how emergency tarping works, how insurance covers it, and why Frame Restoration's rapid response keeps Layton homeowners safe.</p>\n\n  <h2>WHAT COUNTS AS EMERGENCY ROOF DAMAGE IN LAYTON 84041?</h2>\n  <p>Not every roof issue requires emergency tarping, but certain damage clearly does. Understanding the difference helps you act fast when it matters.</p>\n  <h3>Signs Your Roof Needs Immediate Attention</h3>\n  <p><strong>Large holes or missing sections:</strong> If you can see daylight through your roof or there's a visible gap, water is pouring into your attic right now. This is an emergency.</p>\n  <p><strong>A fallen or leaning tree:</strong> Even if the tree hasn't broken through completely, it's putting dangerous weight on your roof structure. Removal and tarping are urgent priorities.</p>\n  <p><strong>Sagging roof deck:</strong> If the roof is visibly sagging or drooping, the structural integrity is compromised. This is a safety hazard and requires immediate professional assessment.</p>\n  <p><strong>Massive shingle loss:</strong> A storm that strips off dozens or hundreds of shingles leaves your roof deck exposed to rain and UV. In Layton's dry climate, exposure time matters less than in wetter regions, but damage accelerates quickly.</p>\n  <p><strong>Flashing failures:</strong> If flashing around chimneys, vents, or skylights is torn or separated, water will find its way inside during the next rain.</p>\n\n  <div class=\"answer-block\">\n    <h3>What should I do immediately after a tree falls on my Layton roof?</h3>\n    <p>First, ensure everyone is safe and evacuate if the roof structure is compromised. Do not go on the roof yourself. Call Frame Restoration immediately at 435-302-4422 for emergency tarping, then contact your insurance company. Document damage with photos from the ground for your claim.</p>\n  </div>\n\n  <h2>EMERGENCY ROOF TARPING: HOW IT WORKS AND WHY IT MATTERS</h2>\n  <p><strong>Roof tarping</strong> is a temporary weatherproofing solution that keeps water out of your home while you arrange permanent repairs. It's not a permanent fix\u2014it's emergency stabilization.</p>\n  <h3>The Tarping Process</h3>\n  <p>Our crew arrives with heavy-duty tarps, plywood, and fasteners. We secure the tarp over the damaged area, anchoring it to prevent wind from lifting it. The goal is complete coverage of the hole or exposed section so water runs off rather than into your attic.</p>\n  <p>In Layton 84041, we use materials rated for local wind conditions and temperature swings. A properly installed tarp can last 2-6 weeks, giving you time to file insurance claims, get estimates, and schedule full repairs without panic.</p>\n\n  <h3>Why Speed Matters in Layton</h3>\n  <p>While Utah's lower humidity means mold grows slower than in wetter climates, water damage still spirals fast. Wet insulation loses its R-value. Drywall absorbs moisture and weakens. Wooden framing begins to rot. The longer your roof is exposed, the more extensive (and expensive) the damage becomes.</p>\n  <p>Frame Restoration offers <strong>same-day emergency tarping</strong> for severe damage in Layton and surrounding areas. Call 435-302-4422 to report the emergency, and we'll prioritize your home.</p>\n\n  <div class=\"editor-note\">\u270f\ufe0f EDITOR CHECK \u2014 Verify Frame Restoration's current same-day tarping availability window (e.g., calls received before 2 PM guaranteed same-day response, or similar). Confirm coverage area includes all of Layton zip code 84041.</div>\n\n  <h2>TEMPORARY REPAIRS: BUYING TIME FOR FULL RESTORATION</h2>\n  <p>Tarping is step one. For some damage, temporary board-ups and patch repairs extend protection while waiting for full repairs.</p>\n  <h3>Common Temporary Repairs</h3>\n  <ul>\n    <li><strong>Plywood boarding:</strong> Covers broken windows, skylights, or large holes. Prevents additional weather intrusion.</li>\n    <li><strong>Patch repairs:</strong> For smaller holes (less than 2-3 feet), we can apply temporary patches to buy time. These aren't permanent but hold up for weeks.</li>\n    <li><strong>Gutter stabilization:</strong> If gutters are damaged or hanging, we secure them to prevent collapse and direct water safely away from the foundation.</li>\n    <li><strong>Fascia and soffit protection:</strong> If these are torn or damaged, covering them prevents further wood rot and pest entry.</li>\n  </ul>\n  <p>The key principle: <strong>stop the water</strong>. Until your permanent repair is scheduled, temporary solutions keep your home dry.</p>\n\n  <h2>INSURANCE COVERAGE FOR EMERGENCY ROOF DAMAGE IN LAYTON 84041</h2>\n  <p>The good news: most homeowner's insurance policies cover sudden, accidental roof damage\u2014including tree falls and storm damage.</p>\n\n  <div class=\"answer-block\">\n    <h3>Does homeowner's insurance cover emergency roof tarping in Layton?</h3>\n    <p>Yes, most homeowner's insurance policies cover emergency tarping as part of storm damage claims in Layton 84041. Frame Restoration handles the insurance paperwork and can often work directly with your insurer. We document all emergency work so your claim process is smooth.</p>\n  </div>\n\n  <h3>What Insurance Typically Covers</h3>\n  <p><strong>Emergency tarping:</strong> Usually covered as part of damage mitigation (preventing further loss).</p>\n  <p><strong>Temporary repairs:</strong> Often covered when they're necessary to prevent additional damage.</p>\n  <p><strong>Full roof repair or replacement:</strong> Covered if the damage was caused by a covered peril (wind, hail, falling tree). Exclusions vary by policy, so always check your specific coverage.</p>\n\n  <h3>The Insurance Process in Layton</h3>\n  <p>When you call Frame Restoration for emergency tarping, tell us your insurance carrier. We document everything\u2014photos, measurements, labor hours\u2014so your adjuster has clear records. Once you file a claim, the insurance company sends an adjuster to assess damage. We work with the adjuster to confirm the damage scope and agree on the repair plan.</p>\n  <p>Many policies have a deductible (typically $500\u2013$1,500 in the Layton area). You pay the deductible; insurance covers the rest.</p>\n\n  <div class=\"editor-note\">\u270f\ufe0f EDITOR CHECK \u2014 Verify typical homeowner's insurance deductibles for the Layton 84041 area. Confirm whether Frame Restoration has preferred vendor status with major insurers (State Farm, Allstate, etc.) that might expedite claims processing.</div>\n\n  <h2>WHY FRAME RESTORATION IS YOUR LAYTON EMERGENCY ROOFING PARTNER</h2>\n  <p>When disaster strikes, you need a contractor who answers the phone immediately and shows up fast. Frame Restoration has been serving Layton and surrounding communities for years with exactly that reliability.</p>\n\n  <h3>What We Bring to Emergency Situations</h3>\n  <ul>\n    <li><strong>24/7 availability:</strong> Call 435-302-4422 during business hours, or leave a message for urgent callbacks.</li>\n    <li><strong>Insurance expertise:</strong> Our team knows how to document damage, work with adjusters, and navigate claims. You get paid faster and with fewer headaches.</li>\n    <li><strong>Quality materials:</strong> We use heavy-duty tarps, structural plywood, and fasteners rated for Utah weather. No shortcuts.</li>\n    <li><strong>Licensed and insured:</strong> If anything goes wrong during tarping or temporary repairs, you're protected.</li>\n    <li><strong>Follow-up repairs:</strong> Once emergency tarping buys you time, we can handle the full permanent repair. You don't have to call three different contractors.</li>\n  </ul>\n\n  <h3>Real Layton Homeowners. Real Results.</h3>\n  <p>We've tarped roofs after ice storms, tree falls, and hail damage across Layton 84041. Homeowners trust us because we show up fast, explain what's happening, and keep their homes safe until permanent repairs are done.</p>\n\n  <h2>COMMON QUESTIONS ABOUT EMERGENCY ROOF TARPING IN LAYTON</h2>\n\n  <div class=\"answer-block\">\n    <h3>How quickly can Frame Restoration tarp a damaged roof in Layton 84041?</h3>\n    <p>We offer same-day emergency tarping for severe storm damage in Layton 84041. Call 435-302-4422 to report the damage, and our team will prioritize your home. Emergency tarps protect your roof from further water intrusion while you arrange full repairs.</p>\n  </div>\n\n  <p><strong>How much does emergency roof tarping cost?</strong> Most emergency tarping is covered by homeowner's insurance as part of damage mitigation. You pay your deductible; insurance covers the rest. If your damage isn't insured, tarping typically costs $300\u2013$800 depending on the size and complexity. Call us for a free estimate.</p>\n\n  <p><strong>How long can a tarp stay on my roof?</strong> A properly installed tarp can last 2\u20136 weeks. Longer exposure to sun and wind degrades the material, but tarps are designed for temporary protection while you arrange permanent repairs. We recommend scheduling your full repair within 3\u20134 weeks of tarping.</p>\n\n  <p><strong>Do I need to remove the tarp myself after repairs?</strong> No. When we install the permanent fix, we remove the tarp as part of the work. No extra hassle.</p>\n\n  <p><strong>What if my roof is partially collapsed?</strong> If the structural damage is severe (not just the shingles, but the deck or framing), this is a safety emergency. Do not enter that area. Call us immediately for assessment. Partial collapses may require emergency stabilization (bracing or temporary support) before tarping. We'll determine the safest approach on-site.</p>\n\n  <h2>READY TO PROTECT YOUR LAYTON HOME?</h2>\n  <p>If a tree has fallen on your roof, a storm has torn it apart, or you're facing any major roof damage in Layton, UT 84041, don't wait. Water damage spreads fast. Call Frame Restoration right now for emergency tarping and temporary repairs.</p>\n  <p><strong>Phone:</strong> <a href=\"tel:+14353024422\">435-302-4422</a></p>\n  <p><strong>We're here for Layton emergencies, insurance expertise, and lasting repairs.</strong></p>\n\n</article>\n\n<!-- \u2550\u2550\u2550 CTA \u2550\u2550\u2550 -->\n<section class=\"blog-cta\">\n  <h2>Need Emergency Roof Help in Layton?</h2>\n  <p>Same-day tarping, insurance guidance, and permanent repairs. Free inspection. No pressure.</p>\n  <a href=\"https://calendar.app.google/cR4bBSWfb9TQ28UF8\" target=\"_blank\" rel=\"noopener\" class=\"btn-navy\">Schedule Free Inspection</a>\n  <a href=\"tel:+14353024422\" class=\"btn-navy\">Call 435-302-4422</a>\n</section>\n\n<!-- \u2550\u2550\u2550 RELATED LINKS \u2550\u2550\u2550 -->\n<section class=\"related-section\">\n  <h2>More from Frame Restoration</h2>\n  <div class=\"related-grid\">\n    <a href=\"/services/emergency-tarping\" class=\"related-chip\">Emergency Tarping</a>\n    <a href=\"/services/storm-damage\" class=\"related-chip\">Storm Damage Repair</a>\n    <a href=\"/services/roof-repair\" class=\"related-chip\">Roof Repair</a>\n    <a href=\"/locations/layton\" class=\"related-chip\">Layton Roofing</a>\n    <a href=\"/services/insurance-claims\" class=\"related-chip\">Insurance Claims</a>\n    <a href=\"/locations/bountiful\" class=\"related-chip\">Bountiful Roofing</a>\n    <a href=\"/services/residential-roofing\" class=\"related-chip\">Residential Roofing</a>\n    <a href=\"/blog/snow-damage-roof-heber-city-84032\" class=\"related-chip\">Snow Damage Repair</a>\n  </div>\n</section>\n\n<!-- \u2550\u2550\u2550 FOOTER \u2550\u2550\u2550 -->\n<footer>\n  <p>&copy; 2026 Frame Restoration Utah &mdash; 142 S Main St, Heber City, UT 84032</p>\n  <p><a href=\"tel:+14353024422\">435-302-4422</a> &middot; <a href=\"mailto:sales@framerestorations.com\">sales@framerestorations.com</a></p>\n  <p><a href=\"/\">Home</a> &middot; <a href=\"/privacy\">Privacy Policy</a> &middot; <a href=\"/terms\">Terms</a></p>\n</footer>\n\n<div class=\"sticky-call\"><a href=\"tel:+14353024422\">&#9742; Call 435-302-4422</a></div>\n\n<script>\nconst btn=document.getElementById('menuBtn'),links=document.getElementById('navLinks');\nif(btn&&links)btn.addEventListener('click',()=>{links.classList.toggle('open');btn.setAttribute('aria-expanded',links.classList.contains('open'))});\n</script>\n</body>\n</html>"}], "grading": {"eval_name": "layton-emergency-repair", "configuration": "with_skill", "pass_rate": 1.0, "passed": 30, "total": 30, "expectations": [{"id": "has_doctype", "text": "Output is valid HTML with <!DOCTYPE html>", "passed": true}, {"id": "has_lang_en", "text": "HTML lang attribute set to en", "passed": true}, {"id": "has_charset_utf8", "text": "Has UTF-8 charset meta tag", "passed": true}, {"id": "has_viewport", "text": "Has viewport meta tag for mobile", "passed": true}, {"id": "title_under_60", "text": "Title tag exists and is under 65 chars", "passed": true}, {"id": "has_meta_description", "text": "Has meta description tag", "passed": true}, {"id": "has_canonical", "text": "Has canonical link tag", "passed": true}, {"id": "has_og_tags", "text": "Has Open Graph tags (og:title, og:description)", "passed": true}, {"id": "has_geo_region", "text": "Has geo.region meta tag for Utah", "passed": true}, {"id": "has_geo_placename", "text": "Has geo.placename meta tag with city name", "passed": true}, {"id": "has_geo_position", "text": "Has geo.position or ICBM meta tag with coordinates", "passed": true}, {"id": "has_jsonld_blogposting", "text": "Has JSON-LD BlogPosting schema", "passed": true}, {"id": "has_jsonld_faqpage", "text": "Has JSON-LD FAQPage schema", "passed": true}, {"id": "has_breadcrumb", "text": "Has breadcrumb navigation", "passed": true}, {"id": "has_h1", "text": "Has exactly one H1 tag", "passed": true}, {"id": "has_answer_blocks", "text": "Has answer blocks (gold-bordered divs for AI Overview pickup)", "passed": true}, {"id": "has_editor_notes", "text": "Has editor notes for fact-checking", "passed": true}, {"id": "has_cta_phone", "text": "Has CTA with phone number 435-302-4422", "passed": true}, {"id": "has_cta_booking", "text": "Has CTA with Google Calendar booking link", "passed": true}, {"id": "has_nav", "text": "Has navigation bar matching site template", "passed": true}, {"id": "has_footer", "text": "Has footer section", "passed": true}, {"id": "has_global_css", "text": "Links to /global.css", "passed": true}, {"id": "has_archivo_font", "text": "Uses Archivo font family", "passed": true}, {"id": "has_sticky_call", "text": "Has sticky mobile call button", "passed": true}, {"id": "has_related_articles", "text": "Has related articles or internal links section", "passed": true}, {"id": "word_count_1500_plus", "text": "Content is 1500+ words (excluding HTML)", "passed": true}, {"id": "mentions_layton", "text": "Mentions Layton multiple times", "passed": true}, {"id": "mentions_84041", "text": "Mentions ZIP code 84041", "passed": true}, {"id": "mentions_emergency", "text": "Covers emergency repair topic", "passed": true}, {"id": "target_keyword_in_title", "text": "Target keyword in title or H1", "passed": true}]}}, {"id": "layton-emergency-repair-without_skill", "prompt": "Blog post about emergency roof tarping and temporary repairs for Layton UT 84041...", "eval_id": null, "outputs": [], "grading": null}], "previous_feedback": {}, "previous_outputs": {}, "benchmark": {"metadata": {"skill_name": "frame-restoration-blog-writer", "executor_model": "claude-opus-4-6", "timestamp": "2026-03-09T18:30:00Z", "evals_run": ["draper-hail-damage", "bountiful-insurance-claims", "layton-emergency-repair"], "runs_per_configuration": 3}, "runs": [{"eval_name": "draper-hail-damage", "configuration": "with_skill", "pass_rate": 1.0, "passed": 30, "total": 30, "time_seconds": 75, "tokens": 136000}, {"eval_name": "bountiful-insurance-claims", "configuration": "with_skill", "pass_rate": 1.0, "passed": 30, "total": 30, "time_seconds": 75, "tokens": 136000}, {"eval_name": "layton-emergency-repair", "configuration": "with_skill", "pass_rate": 1.0, "passed": 30, "total": 30, "time_seconds": 75, "tokens": 136000}], "run_summary": {"with_skill": {"mean_pass_rate": 1.0, "mean_time_seconds": 76.6, "mean_tokens": 136632}}}};
+
+    // ---- State ----
+    let feedbackMap = {};  // run_id -> feedback text
+    let currentIndex = 0;
+    let visitedRuns = new Set();
+
+    // ---- Init ----
+    async function init() {
+      // Load saved feedback from server — but only if this isn't a fresh
+      // iteration (indicated by previous_feedback being present). When
+      // previous feedback exists, the feedback.json on disk is stale from
+      // the prior iteration and should not pre-fill the textareas.
+      const hasPrevious = Object.keys(EMBEDDED_DATA.previous_feedback || {}).length > 0
+        || Object.keys(EMBEDDED_DATA.previous_outputs || {}).length > 0;
+      if (!hasPrevious) {
+        try {
+          const resp = await fetch("/api/feedback");
+          const data = await resp.json();
+          if (data.reviews) {
+            for (const r of data.reviews) feedbackMap[r.run_id] = r.feedback;
+          }
+        } catch { /* first run, no feedback yet */ }
+      }
+
+      document.getElementById("skill-name").textContent = EMBEDDED_DATA.skill_name;
+      showRun(0);
+
+      // Wire up feedback auto-save
+      const textarea = document.getElementById("feedback");
+      let saveTimeout = null;
+      textarea.addEventListener("input", () => {
+        clearTimeout(saveTimeout);
+        document.getElementById("feedback-status").textContent = "";
+        saveTimeout = setTimeout(() => saveCurrentFeedback(), 800);
+      });
+    }
+
+    // ---- Navigation ----
+    function navigate(delta) {
+      const newIndex = currentIndex + delta;
+      if (newIndex >= 0 && newIndex < EMBEDDED_DATA.runs.length) {
+        saveCurrentFeedback();
+        showRun(newIndex);
+      }
+    }
+
+    function updateNavButtons() {
+      document.getElementById("prev-btn").disabled = currentIndex === 0;
+      document.getElementById("next-btn").disabled =
+        currentIndex === EMBEDDED_DATA.runs.length - 1;
+    }
+
+    // ---- Show a run ----
+    function showRun(index) {
+      currentIndex = index;
+      const run = EMBEDDED_DATA.runs[index];
+
+      // Progress
+      document.getElementById("progress").textContent =
+        `${index + 1} of ${EMBEDDED_DATA.runs.length}`;
+
+      // Prompt
+      document.getElementById("prompt-text").textContent = run.prompt;
+
+      // Config badge
+      const badge = document.getElementById("config-badge");
+      const configMatch = run.id.match(/(with_skill|without_skill|new_skill|old_skill)/);
+      if (configMatch) {
+        const config = configMatch[1];
+        const isBaseline = config === "without_skill" || config === "old_skill";
+        badge.textContent = config.replace(/_/g, " ");
+        badge.className = "config-badge " + (isBaseline ? "config-baseline" : "config-primary");
+        badge.style.display = "inline-block";
+      } else {
+        badge.style.display = "none";
+      }
+
+      // Outputs
+      renderOutputs(run);
+
+      // Previous outputs
+      renderPrevOutputs(run);
+
+      // Grades
+      renderGrades(run);
+
+      // Previous feedback
+      const prevFb = (EMBEDDED_DATA.previous_feedback || {})[run.id];
+      const prevEl = document.getElementById("prev-feedback");
+      if (prevFb) {
+        document.getElementById("prev-feedback-text").textContent = prevFb;
+        prevEl.style.display = "block";
+      } else {
+        prevEl.style.display = "none";
+      }
+
+      // Feedback
+      document.getElementById("feedback").value = feedbackMap[run.id] || "";
+      document.getElementById("feedback-status").textContent = "";
+
+      updateNavButtons();
+
+      // Track visited runs and promote done button when all visited
+      visitedRuns.add(index);
+      const doneBtn = document.getElementById("done-btn");
+      if (visitedRuns.size >= EMBEDDED_DATA.runs.length) {
+        doneBtn.classList.add("ready");
+      }
+
+      // Scroll main content to top
+      document.querySelector(".main").scrollTop = 0;
+    }
+
+    // ---- Render outputs ----
+    function renderOutputs(run) {
+      const container = document.getElementById("outputs-body");
+      container.innerHTML = "";
+
+      const outputs = run.outputs || [];
+      if (outputs.length === 0) {
+        container.innerHTML = '<div class="empty-state">No output files</div>';
+        return;
+      }
+
+      for (const file of outputs) {
+        const fileDiv = document.createElement("div");
+        fileDiv.className = "output-file";
+
+        // Always show file header with download link
+        const header = document.createElement("div");
+        header.className = "output-file-header";
+        const nameSpan = document.createElement("span");
+        nameSpan.textContent = file.name;
+        header.appendChild(nameSpan);
+        const dlBtn = document.createElement("a");
+        dlBtn.className = "dl-btn";
+        dlBtn.textContent = "Download";
+        dlBtn.download = file.name;
+        dlBtn.href = getDownloadUri(file);
+        header.appendChild(dlBtn);
+        fileDiv.appendChild(header);
+
+        const content = document.createElement("div");
+        content.className = "output-file-content";
+
+        if (file.type === "text") {
+          const pre = document.createElement("pre");
+          pre.textContent = file.content;
+          content.appendChild(pre);
+        } else if (file.type === "image") {
+          const img = document.createElement("img");
+          img.src = file.data_uri;
+          img.alt = file.name;
+          content.appendChild(img);
+        } else if (file.type === "pdf") {
+          const iframe = document.createElement("iframe");
+          iframe.src = file.data_uri;
+          content.appendChild(iframe);
+        } else if (file.type === "xlsx") {
+          renderXlsx(content, file.data_b64);
+        } else if (file.type === "binary") {
+          const a = document.createElement("a");
+          a.className = "download-link";
+          a.href = file.data_uri;
+          a.download = file.name;
+          a.textContent = "Download " + file.name;
+          content.appendChild(a);
+        } else if (file.type === "error") {
+          const pre = document.createElement("pre");
+          pre.textContent = file.content;
+          pre.style.color = "var(--red)";
+          content.appendChild(pre);
+        }
+
+        fileDiv.appendChild(content);
+        container.appendChild(fileDiv);
+      }
+    }
+
+    // ---- XLSX rendering via SheetJS ----
+    function renderXlsx(container, b64Data) {
+      try {
+        const raw = Uint8Array.from(atob(b64Data), c => c.charCodeAt(0));
+        const wb = XLSX.read(raw, { type: "array" });
+
+        for (let i = 0; i < wb.SheetNames.length; i++) {
+          const sheetName = wb.SheetNames[i];
+          const ws = wb.Sheets[sheetName];
+
+          if (wb.SheetNames.length > 1) {
+            const sheetLabel = document.createElement("div");
+            sheetLabel.style.cssText =
+              "font-weight:600; font-size:0.8rem; color:#b0aea5; margin-top:0.5rem; margin-bottom:0.25rem;";
+            sheetLabel.textContent = "Sheet: " + sheetName;
+            container.appendChild(sheetLabel);
+          }
+
+          const htmlStr = XLSX.utils.sheet_to_html(ws, { editable: false });
+          const wrapper = document.createElement("div");
+          wrapper.innerHTML = htmlStr;
+          container.appendChild(wrapper);
+        }
+      } catch (err) {
+        container.textContent = "Error rendering spreadsheet: " + err.message;
+      }
+    }
+
+    // ---- Grades ----
+    function renderGrades(run) {
+      const section = document.getElementById("grades-section");
+      const content = document.getElementById("grades-content");
+
+      if (!run.grading) {
+        section.style.display = "none";
+        return;
+      }
+
+      const grading = run.grading;
+      section.style.display = "block";
+      // Reset to collapsed
+      content.classList.remove("open");
+      document.getElementById("grades-arrow").classList.remove("open");
+
+      const summary = grading.summary || {};
+      const expectations = grading.expectations || [];
+
+      let html = '<div style="padding: 1rem;">';
+
+      // Summary line
+      const passRate = summary.pass_rate != null
+        ? Math.round(summary.pass_rate * 100) + "%"
+        : "?";
+      const badgeClass = summary.pass_rate >= 0.8 ? "grade-pass" : summary.pass_rate >= 0.5 ? "" : "grade-fail";
+      html += '<div class="grades-summary">';
+      html += '<span class="grade-badge ' + badgeClass + '">' + passRate + '</span>';
+      html += '<span>' + (summary.passed || 0) + ' passed, ' + (summary.failed || 0) + ' failed of ' + (summary.total || 0) + '</span>';
+      html += '</div>';
+
+      // Assertions list
+      html += '<ul class="assertion-list">';
+      for (const exp of expectations) {
+        const statusClass = exp.passed ? "pass" : "fail";
+        const statusIcon = exp.passed ? "\u2713" : "\u2717";
+        html += '<li class="assertion-item">';
+        html += '<span class="assertion-status ' + statusClass + '">' + statusIcon + '</span>';
+        html += '<span>' + escapeHtml(exp.text) + '</span>';
+        if (exp.evidence) {
+          html += '<div class="assertion-evidence">' + escapeHtml(exp.evidence) + '</div>';
+        }
+        html += '</li>';
+      }
+      html += '</ul>';
+
+      html += '</div>';
+      content.innerHTML = html;
+    }
+
+    function toggleGrades() {
+      const content = document.getElementById("grades-content");
+      const arrow = document.getElementById("grades-arrow");
+      content.classList.toggle("open");
+      arrow.classList.toggle("open");
+    }
+
+    // ---- Previous outputs (collapsible) ----
+    function renderPrevOutputs(run) {
+      const section = document.getElementById("prev-outputs-section");
+      const content = document.getElementById("prev-outputs-content");
+      const prevOutputs = (EMBEDDED_DATA.previous_outputs || {})[run.id];
+
+      if (!prevOutputs || prevOutputs.length === 0) {
+        section.style.display = "none";
+        return;
+      }
+
+      section.style.display = "block";
+      // Reset to collapsed
+      content.classList.remove("open");
+      document.getElementById("prev-outputs-arrow").classList.remove("open");
+
+      // Render the files into the content area
+      content.innerHTML = "";
+      const wrapper = document.createElement("div");
+      wrapper.style.padding = "1rem";
+
+      for (const file of prevOutputs) {
+        const fileDiv = document.createElement("div");
+        fileDiv.className = "output-file";
+
+        const header = document.createElement("div");
+        header.className = "output-file-header";
+        const nameSpan = document.createElement("span");
+        nameSpan.textContent = file.name;
+        header.appendChild(nameSpan);
+        const dlBtn = document.createElement("a");
+        dlBtn.className = "dl-btn";
+        dlBtn.textContent = "Download";
+        dlBtn.download = file.name;
+        dlBtn.href = getDownloadUri(file);
+        header.appendChild(dlBtn);
+        fileDiv.appendChild(header);
+
+        const fc = document.createElement("div");
+        fc.className = "output-file-content";
+
+        if (file.type === "text") {
+          const pre = document.createElement("pre");
+          pre.textContent = file.content;
+          fc.appendChild(pre);
+        } else if (file.type === "image") {
+          const img = document.createElement("img");
+          img.src = file.data_uri;
+          img.alt = file.name;
+          fc.appendChild(img);
+        } else if (file.type === "pdf") {
+          const iframe = document.createElement("iframe");
+          iframe.src = file.data_uri;
+          fc.appendChild(iframe);
+        } else if (file.type === "xlsx") {
+          renderXlsx(fc, file.data_b64);
+        } else if (file.type === "binary") {
+          const a = document.createElement("a");
+          a.className = "download-link";
+          a.href = file.data_uri;
+          a.download = file.name;
+          a.textContent = "Download " + file.name;
+          fc.appendChild(a);
+        }
+
+        fileDiv.appendChild(fc);
+        wrapper.appendChild(fileDiv);
+      }
+
+      content.appendChild(wrapper);
+    }
+
+    function togglePrevOutputs() {
+      const content = document.getElementById("prev-outputs-content");
+      const arrow = document.getElementById("prev-outputs-arrow");
+      content.classList.toggle("open");
+      arrow.classList.toggle("open");
+    }
+
+    // ---- Feedback (saved to server -> feedback.json) ----
+    function saveCurrentFeedback() {
+      const run = EMBEDDED_DATA.runs[currentIndex];
+      const text = document.getElementById("feedback").value;
+
+      if (text.trim() === "") {
+        delete feedbackMap[run.id];
+      } else {
+        feedbackMap[run.id] = text;
+      }
+
+      // Build reviews array from map
+      const reviews = [];
+      for (const [run_id, feedback] of Object.entries(feedbackMap)) {
+        if (feedback.trim()) {
+          reviews.push({ run_id, feedback, timestamp: new Date().toISOString() });
+        }
+      }
+
+      fetch("/api/feedback", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ reviews, status: "in_progress" }),
+      }).then(() => {
+        document.getElementById("feedback-status").textContent = "Saved";
+      }).catch(() => {
+        // Static mode or server unavailable — no-op on auto-save,
+        // feedback will be downloaded on final submit
+        document.getElementById("feedback-status").textContent = "Will download on submit";
+      });
+    }
+
+    // ---- Done ----
+    function showDoneDialog() {
+      // Save current textarea to feedbackMap (but don't POST yet)
+      const run = EMBEDDED_DATA.runs[currentIndex];
+      const text = document.getElementById("feedback").value;
+      if (text.trim() === "") {
+        delete feedbackMap[run.id];
+      } else {
+        feedbackMap[run.id] = text;
+      }
+
+      // POST once with status: complete — include ALL runs so the model
+      // can distinguish "no feedback" (looks good) from "not reviewed"
+      const reviews = [];
+      const ts = new Date().toISOString();
+      for (const r of EMBEDDED_DATA.runs) {
+        reviews.push({ run_id: r.id, feedback: feedbackMap[r.id] || "", timestamp: ts });
+      }
+      const payload = JSON.stringify({ reviews, status: "complete" }, null, 2);
+      fetch("/api/feedback", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: payload,
+      }).then(() => {
+        document.getElementById("done-overlay").classList.add("visible");
+      }).catch(() => {
+        // Server not available (static mode) — download as file
+        const blob = new Blob([payload], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "feedback.json";
+        a.click();
+        URL.revokeObjectURL(url);
+        document.getElementById("done-overlay").classList.add("visible");
+      });
+    }
+
+    function closeDoneDialog() {
+      // Reset status back to in_progress
+      saveCurrentFeedback();
+      document.getElementById("done-overlay").classList.remove("visible");
+    }
+
+    // ---- Toast ----
+    function showToast(message) {
+      const toast = document.getElementById("toast");
+      toast.textContent = message;
+      toast.classList.add("visible");
+      setTimeout(() => toast.classList.remove("visible"), 2000);
+    }
+
+    // ---- Keyboard nav ----
+    document.addEventListener("keydown", (e) => {
+      // Don't capture when typing in textarea
+      if (e.target.tagName === "TEXTAREA") return;
+
+      if (e.key === "ArrowLeft" || e.key === "ArrowUp") {
+        e.preventDefault();
+        navigate(-1);
+      } else if (e.key === "ArrowRight" || e.key === "ArrowDown") {
+        e.preventDefault();
+        navigate(1);
+      }
+    });
+
+    // ---- Util ----
+    function getDownloadUri(file) {
+      if (file.data_uri) return file.data_uri;
+      if (file.data_b64) return "data:application/octet-stream;base64," + file.data_b64;
+      if (file.type === "text") return "data:text/plain;charset=utf-8," + encodeURIComponent(file.content);
+      return "#";
+    }
+
+    function escapeHtml(text) {
+      const div = document.createElement("div");
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    // ---- View switching ----
+    function switchView(view) {
+      document.querySelectorAll(".view-tab").forEach(t => t.classList.remove("active"));
+      document.querySelectorAll(".view-panel").forEach(p => p.classList.remove("active"));
+      document.querySelector(`[onclick="switchView('${view}')"]`).classList.add("active");
+      document.getElementById("panel-" + view).classList.add("active");
+    }
+
+    // ---- Benchmark rendering ----
+    function renderBenchmark() {
+      const data = EMBEDDED_DATA.benchmark;
+      if (!data) return;
+
+      // Show the tabs
+      document.getElementById("view-tabs").style.display = "flex";
+
+      const container = document.getElementById("benchmark-content");
+      const summary = data.run_summary || {};
+      const metadata = data.metadata || {};
+      const notes = data.notes || [];
+
+      let html = "";
+
+      // Header
+      html += "<h2 style='font-family: Poppins, sans-serif; margin-bottom: 0.5rem;'>Benchmark Results</h2>";
+      html += "<p style='color: var(--text-muted); font-size: 0.875rem; margin-bottom: 1.25rem;'>";
+      if (metadata.skill_name) html += "<strong>" + escapeHtml(metadata.skill_name) + "</strong> &mdash; ";
+      if (metadata.timestamp) html += metadata.timestamp + " &mdash; ";
+      if (metadata.evals_run) html += "Evals: " + metadata.evals_run.join(", ") + " &mdash; ";
+      html += (metadata.runs_per_configuration || "?") + " runs per configuration";
+      html += "</p>";
+
+      // Summary table
+      html += '<table class="benchmark-table">';
+
+      function fmtStat(stat, pct) {
+        if (!stat) return "—";
+        const suffix = pct ? "%" : "";
+        const m = pct ? (stat.mean * 100).toFixed(0) : stat.mean.toFixed(1);
+        const s = pct ? (stat.stddev * 100).toFixed(0) : stat.stddev.toFixed(1);
+        return m + suffix + " ± " + s + suffix;
+      }
+
+      function deltaClass(val) {
+        if (!val) return "";
+        const n = parseFloat(val);
+        if (n > 0) return "benchmark-delta-positive";
+        if (n < 0) return "benchmark-delta-negative";
+        return "";
+      }
+
+      // Discover config names dynamically (everything except "delta")
+      const configs = Object.keys(summary).filter(k => k !== "delta");
+      const configA = configs[0] || "config_a";
+      const configB = configs[1] || "config_b";
+      const labelA = configA.replace(/_/g, " ").replace(/\b\w/g, c => c.toUpperCase());
+      const labelB = configB.replace(/_/g, " ").replace(/\b\w/g, c => c.toUpperCase());
+      const a = summary[configA] || {};
+      const b = summary[configB] || {};
+      const delta = summary.delta || {};
+
+      html += "<thead><tr><th>Metric</th><th>" + escapeHtml(labelA) + "</th><th>" + escapeHtml(labelB) + "</th><th>Delta</th></tr></thead>";
+      html += "<tbody>";
+
+      html += "<tr><td><strong>Pass Rate</strong></td>";
+      html += "<td>" + fmtStat(a.pass_rate, true) + "</td>";
+      html += "<td>" + fmtStat(b.pass_rate, true) + "</td>";
+      html += '<td class="' + deltaClass(delta.pass_rate) + '">' + (delta.pass_rate || "—") + "</td></tr>";
+
+      // Time (only show row if data exists)
+      if (a.time_seconds || b.time_seconds) {
+        html += "<tr><td><strong>Time (s)</strong></td>";
+        html += "<td>" + fmtStat(a.time_seconds, false) + "</td>";
+        html += "<td>" + fmtStat(b.time_seconds, false) + "</td>";
+        html += '<td class="' + deltaClass(delta.time_seconds) + '">' + (delta.time_seconds ? delta.time_seconds + "s" : "—") + "</td></tr>";
+      }
+
+      // Tokens (only show row if data exists)
+      if (a.tokens || b.tokens) {
+        html += "<tr><td><strong>Tokens</strong></td>";
+        html += "<td>" + fmtStat(a.tokens, false) + "</td>";
+        html += "<td>" + fmtStat(b.tokens, false) + "</td>";
+        html += '<td class="' + deltaClass(delta.tokens) + '">' + (delta.tokens || "—") + "</td></tr>";
+      }
+
+      html += "</tbody></table>";
+
+      // Per-eval breakdown (if runs data available)
+      const runs = data.runs || [];
+      if (runs.length > 0) {
+        const evalIds = [...new Set(runs.map(r => r.eval_id))].sort((a, b) => a - b);
+
+        html += "<h3 style='font-family: Poppins, sans-serif; margin-bottom: 0.75rem;'>Per-Eval Breakdown</h3>";
+
+        const hasTime = runs.some(r => r.result && r.result.time_seconds != null);
+        const hasErrors = runs.some(r => r.result && r.result.errors > 0);
+
+        for (const evalId of evalIds) {
+          const evalRuns = runs.filter(r => r.eval_id === evalId);
+          const evalName = evalRuns[0] && evalRuns[0].eval_name ? evalRuns[0].eval_name : "Eval " + evalId;
+
+          html += "<h4 style='font-family: Poppins, sans-serif; margin: 1rem 0 0.5rem; color: var(--text);'>" + escapeHtml(evalName) + "</h4>";
+          html += '<table class="benchmark-table">';
+          html += "<thead><tr><th>Config</th><th>Run</th><th>Pass Rate</th>";
+          if (hasTime) html += "<th>Time (s)</th>";
+          if (hasErrors) html += "<th>Crashes During Execution</th>";
+          html += "</tr></thead>";
+          html += "<tbody>";
+
+          // Group by config and render with average rows
+          const configGroups = [...new Set(evalRuns.map(r => r.configuration))];
+          for (let ci = 0; ci < configGroups.length; ci++) {
+            const config = configGroups[ci];
+            const configRuns = evalRuns.filter(r => r.configuration === config);
+            if (configRuns.length === 0) continue;
+
+            const rowClass = ci === 0 ? "benchmark-row-with" : "benchmark-row-without";
+            const configLabel = config.replace(/_/g, " ").replace(/\b\w/g, c => c.toUpperCase());
+
+            for (const run of configRuns) {
+              const r = run.result || {};
+              const prClass = r.pass_rate >= 0.8 ? "benchmark-delta-positive" : r.pass_rate < 0.5 ? "benchmark-delta-negative" : "";
+              html += '<tr class="' + rowClass + '">';
+              html += "<td>" + configLabel + "</td>";
+              html += "<td>" + run.run_number + "</td>";
+              html += '<td class="' + prClass + '">' + ((r.pass_rate || 0) * 100).toFixed(0) + "% (" + (r.passed || 0) + "/" + (r.total || 0) + ")</td>";
+              if (hasTime) html += "<td>" + (r.time_seconds != null ? r.time_seconds.toFixed(1) : "—") + "</td>";
+              if (hasErrors) html += "<td>" + (r.errors || 0) + "</td>";
+              html += "</tr>";
+            }
+
+            // Average row
+            const rates = configRuns.map(r => (r.result || {}).pass_rate || 0);
+            const avgRate = rates.reduce((a, b) => a + b, 0) / rates.length;
+            const avgPrClass = avgRate >= 0.8 ? "benchmark-delta-positive" : avgRate < 0.5 ? "benchmark-delta-negative" : "";
+            html += '<tr class="benchmark-row-avg ' + rowClass + '">';
+            html += "<td>" + configLabel + "</td>";
+            html += "<td>Avg</td>";
+            html += '<td class="' + avgPrClass + '">' + (avgRate * 100).toFixed(0) + "%</td>";
+            if (hasTime) {
+              const times = configRuns.map(r => (r.result || {}).time_seconds).filter(t => t != null);
+              html += "<td>" + (times.length ? (times.reduce((a, b) => a + b, 0) / times.length).toFixed(1) : "—") + "</td>";
+            }
+            if (hasErrors) html += "<td></td>";
+            html += "</tr>";
+          }
+          html += "</tbody></table>";
+
+          // Per-assertion detail for this eval
+          const runsWithExpectations = {};
+          for (const config of configGroups) {
+            runsWithExpectations[config] = evalRuns.filter(r => r.configuration === config && r.expectations && r.expectations.length > 0);
+          }
+          const hasAnyExpectations = Object.values(runsWithExpectations).some(runs => runs.length > 0);
+          if (hasAnyExpectations) {
+            // Collect all unique assertion texts across all configs
+            const allAssertions = [];
+            const seen = new Set();
+            for (const config of configGroups) {
+              for (const run of runsWithExpectations[config]) {
+                for (const exp of (run.expectations || [])) {
+                  if (!seen.has(exp.text)) {
+                    seen.add(exp.text);
+                    allAssertions.push(exp.text);
+                  }
+                }
+              }
+            }
+
+            html += '<table class="benchmark-table" style="margin-top: 0.5rem;">';
+            html += "<thead><tr><th>Assertion</th>";
+            for (const config of configGroups) {
+              const label = config.replace(/_/g, " ").replace(/\b\w/g, c => c.toUpperCase());
+              html += "<th>" + escapeHtml(label) + "</th>";
+            }
+            html += "</tr></thead><tbody>";
+
+            for (const assertionText of allAssertions) {
+              html += "<tr><td>" + escapeHtml(assertionText) + "</td>";
+
+              for (const config of configGroups) {
+                html += "<td>";
+                for (const run of runsWithExpectations[config]) {
+                  const exp = (run.expectations || []).find(e => e.text === assertionText);
+                  if (exp) {
+                    const cls = exp.passed ? "benchmark-delta-positive" : "benchmark-delta-negative";
+                    const icon = exp.passed ? "\u2713" : "\u2717";
+                    html += '<span class="' + cls + '" title="Run ' + run.run_number + ': ' + escapeHtml(exp.evidence || "") + '">' + icon + "</span> ";
+                  } else {
+                    html += "— ";
+                  }
+                }
+                html += "</td>";
+              }
+              html += "</tr>";
+            }
+            html += "</tbody></table>";
+          }
+        }
+      }
+
+      // Notes
+      if (notes.length > 0) {
+        html += '<div class="benchmark-notes">';
+        html += "<h3>Analysis Notes</h3>";
+        html += "<ul>";
+        for (const note of notes) {
+          html += "<li>" + escapeHtml(note) + "</li>";
+        }
+        html += "</ul></div>";
+      }
+
+      container.innerHTML = html;
+    }
+
+    // ---- Start ----
+    init();
+    renderBenchmark();
+  </script>
+</body>
+</html>

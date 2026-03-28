@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Frame Roofing Utah — Directory Submission Cheat Sheet</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f5f5f5; color: #1a1a1a; line-height: 1.6; }
+  .header { background: linear-gradient(135deg, #1a365d, #2d5a8e); color: white; padding: 32px 24px; text-align: center; }
+  .header h1 { font-size: 28px; margin-bottom: 8px; }
+  .header p { opacity: 0.85; font-size: 15px; }
+  .container { max-width: 900px; margin: 0 auto; padding: 24px; }
+
+  /* Copy-paste info box */
+  .nap-box { background: white; border: 2px solid #2d5a8e; border-radius: 12px; padding: 24px; margin-bottom: 32px; position: relative; }
+  .nap-box h2 { color: #1a365d; font-size: 20px; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+  .nap-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; border-radius: 8px; margin-bottom: 6px; background: #f0f4f8; }
+  .nap-label { font-weight: 600; color: #555; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px; min-width: 130px; }
+  .nap-value { font-size: 15px; font-weight: 500; flex: 1; }
+  .copy-btn { background: #2d5a8e; color: white; border: none; padding: 6px 14px; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: 600; transition: all 0.2s; }
+  .copy-btn:hover { background: #1a365d; }
+  .copy-btn.copied { background: #16a34a; }
+
+  /* Description boxes */
+  .desc-box { background: white; border-radius: 12px; padding: 24px; margin-bottom: 24px; border: 1px solid #e2e8f0; }
+  .desc-box h3 { color: #1a365d; margin-bottom: 12px; font-size: 16px; }
+  .desc-text { background: #f8fafc; padding: 14px; border-radius: 8px; font-size: 14px; line-height: 1.7; position: relative; border: 1px solid #e2e8f0; }
+
+  /* Directory cards */
+  .tier-header { font-size: 22px; color: #1a365d; margin: 32px 0 16px 0; padding-bottom: 8px; border-bottom: 3px solid #2d5a8e; }
+  .tier-desc { color: #666; font-size: 14px; margin-bottom: 16px; }
+  .dir-card { background: white; border-radius: 12px; padding: 20px; margin-bottom: 12px; border: 1px solid #e2e8f0; transition: all 0.2s; }
+  .dir-card:hover { border-color: #2d5a8e; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+  .dir-card.done { border-left: 4px solid #16a34a; opacity: 0.7; }
+  .dir-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+  .dir-name { font-size: 18px; font-weight: 700; }
+  .dir-badge { padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 700; text-transform: uppercase; }
+  .badge-done { background: #dcfce7; color: #16a34a; }
+  .badge-todo { background: #fef3c7; color: #b45309; }
+  .badge-priority { background: #fee2e2; color: #dc2626; }
+  .dir-url { color: #2d5a8e; text-decoration: none; font-size: 14px; font-weight: 500; }
+  .dir-url:hover { text-decoration: underline; }
+  .dir-steps { margin-top: 12px; padding: 12px; background: #f8fafc; border-radius: 8px; font-size: 14px; }
+  .dir-steps ol { padding-left: 20px; }
+  .dir-steps li { margin-bottom: 6px; }
+  .dir-time { color: #666; font-size: 13px; margin-top: 8px; }
+  .dir-note { color: #b45309; font-size: 13px; font-style: italic; margin-top: 6px; }
+
+  /* Categories section */
+  .cat-box { background: white; border-radius: 12px; padding: 24px; margin-bottom: 24px; border: 1px solid #e2e8f0; }
+  .cat-box h3 { color: #1a365d; margin-bottom: 12px; }
+  .cat-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+  .cat-tag { background: #f0f4f8; padding: 6px 14px; border-radius: 20px; font-size: 13px; font-weight: 500; cursor: pointer; border: 1px solid #e2e8f0; }
+  .cat-tag:hover { background: #2d5a8e; color: white; }
+
+  /* Progress tracker */
+  .progress-bar { background: #e2e8f0; border-radius: 20px; height: 24px; margin: 16px 0; overflow: hidden; position: relative; }
+  .progress-fill { background: linear-gradient(90deg, #16a34a, #22c55e); height: 100%; border-radius: 20px; transition: width 0.5s; display: flex; align-items: center; justify-content: center; color: white; font-size: 12px; font-weight: 700; }
+
+  @media print {
+    .copy-btn { display: none; }
+    .dir-card { break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Frame Roofing Utah — Directory Submission Cheat Sheet</h1>
+  <p>Copy-paste your way through all 35 directories. NAP consistency is critical for SEO.</p>
+</div>
+
+<div class="container">
+
+<!-- Progress -->
+<div style="margin-bottom: 24px;">
+  <div style="display: flex; justify-content: space-between; font-size: 14px; font-weight: 600; color: #555;">
+    <span>Progress</span>
+    <span id="progressText">3 of 38 complete</span>
+  </div>
+  <div class="progress-bar">
+    <div class="progress-fill" style="width: 8%;">8%</div>
+  </div>
+</div>
+
+<!-- NAP INFO - COPY PASTE -->
+<div class="nap-box">
+  <h2>Your NAP Info (copy-paste these exactly)</h2>
+
+  <div class="nap-row">
+    <span class="nap-label">Business Name</span>
+    <span class="nap-value" id="biz-name">Frame Restoration Utah LLC</span>
+    <button class="copy-btn" onclick="copyText('biz-name', this)">Copy</button>
+  </div>
+  <div class="nap-row">
+    <span class="nap-label">Address</span>
+    <span class="nap-value" id="address">142 S Main St, Heber City, UT 84032</span>
+    <button class="copy-btn" onclick="copyText('address', this)">Copy</button>
+  </div>
+  <div class="nap-row">
+    <span class="nap-label">Street</span>
+    <span class="nap-value" id="street">142 S Main St</span>
+    <button class="copy-btn" onclick="copyText('street', this)">Copy</button>
+  </div>
+  <div class="nap-row">
+    <span class="nap-label">City</span>
+    <span class="nap-value" id="city">Heber City</span>
+    <button class="copy-btn" onclick="copyText('city', this)">Copy</button>
+  </div>
+  <div class="nap-row">
+    <span class="nap-label">State / Zip</span>
+    <span class="nap-value" id="statezip">UT 84032</span>
+    <button class="copy-btn" onclick="copyText('statezip', this)">Copy</button>
+  </div>
+  <div class="nap-row">
+    <span class="nap-label">Phone</span>
+    <span class="nap-value" id="phone">(435) 302-4422</span>
+    <button class="copy-btn" onclick="copyText('phone', this)">Copy</button>
+  </div>
+  <div class="nap-row">
+    <span class="nap-label">Website</span>
+    <span class="nap-value" id="website">https://www.frameroofingutah.com</span>
+    <button class="copy-btn" onclick="copyText('website', this)">Copy</button>
+  </div>
+  <div class="nap-row">
+    <span class="nap-label">Email</span>
+    <span class="nap-value" id="email">landon@framerestorations.com</span>
+    <button class="copy-btn" onclick="copyText('email', this)">Copy</button>
+  </div>
+  <div class="nap-row">
+    <span class="nap-label">Owner</span>
+    <span class="nap-value" id="owner">Landon Yokers</span>
+    <button class="copy-btn" onclick="copyText('owner', this)">Copy</button>
+  </div>
+  <div class="nap-row">
+    <span class="nap-label">DOPL License #</span>
+    <span class="nap-value" id="dopl">14256097-5501</span>
+    <button class="copy-btn" onclick="copyText('dopl', this)">Copy</button>
+  </div>
+  <div class="nap-row">
+    <span class="nap-label">Entity #</span>
+    <span class="nap-value" id="entity">14602083-0160</span>
+    <button class="copy-btn" onclick="copyText('entity', this)">Copy</button>
+  </div>
+  <div class="nap-row">
+    <span class="nap-label">Insurance</span>
+    <span class="nap-value" id="insurance">Crum & Forster, $1M/$2M CGL, Policy BAS-62946-1</span>
+    <button class="copy-btn" onclick="copyText('insurance', this)">Copy</button>
+  </div>
+</div>
+
+<!-- BUSINESS DESCRIPTIONS -->
+<div class="desc-box">
+  <h3>Short Description (for directories with character limits)</h3>
+  <div class="desc-text" id="desc-short">
+    Licensed and insured roofing contractor serving Heber City, Park City, and the Wasatch Back. We specialize in roof replacements, storm damage repair, and free inspections. CertainTeed and Tamko certified. Call (435) 302-4422 for a free estimate.
+    <button class="copy-btn" style="position:absolute; top:10px; right:10px;" onclick="copyText('desc-short', this)">Copy</button>
+  </div>
+</div>
+
+<div class="desc-box">
+  <h3>Long Description (for directories that allow more detail)</h3>
+  <div class="desc-text" id="desc-long">
+    Frame Restoration Utah LLC is a licensed and insured roofing contractor based in Heber City, Utah. We provide expert roof replacements, storm damage repair, emergency leak repair, and comprehensive roof inspections throughout the Wasatch Back — including Park City, Midway, Kamas, Sandy, Draper, and the greater Salt Lake Valley. Owner Landon Yokers brings hands-on expertise and manufacturer certifications from both CertainTeed and Tamko, ensuring every roof meets the highest industry standards. We work directly with insurance companies on storm damage claims and offer free roof inspections to every homeowner. Whether you need a full reroof, hail damage assessment, or emergency repair, Frame Roofing Utah delivers quality craftsmanship backed by manufacturer warranties. Call (435) 302-4422 or visit www.frameroofingutah.com for your free estimate.
+    <button class="copy-btn" style="position:absolute; top:10px; right:10px;" onclick="copyText('desc-long', this)">Copy</button>
+  </div>
+</div>
+
+<!-- CATEGORIES -->
+<div class="cat-box">
+  <h3>Categories to Select (pick all that apply on each directory)</h3>
+  <div class="cat-tags">
+    <span class="cat-tag" onclick="copyThis(this)">Roofing Contractor</span>
+    <span class="cat-tag" onclick="copyThis(this)">Roofing</span>
+    <span class="cat-tag" onclick="copyThis(this)">Storm Damage Repair</span>
+    <span class="cat-tag" onclick="copyThis(this)">General Contractor</span>
+    <span class="cat-tag" onclick="copyThis(this)">Home Improvement</span>
+    <span class="cat-tag" onclick="copyThis(this)">Roof Repair</span>
+    <span class="cat-tag" onclick="copyThis(this)">Roof Replacement</span>
+    <span class="cat-tag" onclick="copyThis(this)">Roof Inspection</span>
+    <span class="cat-tag" onclick="copyThis(this)">Insurance Claims</span>
+    <span class="cat-tag" onclick="copyThis(this)">Construction</span>
+  </div>
+</div>
+
+<!-- SERVICE AREAS -->
+<div class="desc-box">
+  <h3>Service Areas (copy when directories ask)</h3>
+  <div class="desc-text" id="service-areas">
+    Heber City, Park City, Midway, Kamas, Francis, Coalville, Oakley, Woodland, Daniel, Charleston, Wallsburg, Sandy, Draper, South Jordan, Riverton, Lehi, American Fork, Orem, Provo, Salt Lake City
+    <button class="copy-btn" style="position:absolute; top:10px; right:10px;" onclick="copyText('service-areas', this)">Copy</button>
+  </div>
+</div>
+
+<!-- HOURS -->
+<div class="desc-box">
+  <h3>Business Hours</h3>
+  <div class="desc-text" id="hours">
+    Monday–Friday: 7:00 AM – 6:00 PM | Saturday: 8:00 AM – 2:00 PM | Sunday: Closed
+    <button class="copy-btn" style="position:absolute; top:10px; right:10px;" onclick="copyText('hours', this)">Copy</button>
+  </div>
+</div>
+
+<!-- ==================== DIRECTORY LISTINGS ==================== -->
+
+<h2 class="tier-header">TIER 1 — High-Priority National Directories</h2>
+<p class="tier-desc">These have the biggest SEO impact. Do these first.</p>
+
+<!-- GBP - DONE -->
+<div class="dir-card done">
+  <div class="dir-top">
+    <span class="dir-name">1. Google Business Profile</span>
+    <span class="dir-badge badge-done">DONE</span>
+  </div>
+  <a class="dir-url" href="https://business.google.com" target="_blank">business.google.com</a>
+  <p style="color:#16a34a; font-size:14px; margin-top:8px;">Verified. 5.0 stars, 19 reviews. Keep pushing for more reviews after every job.</p>
+</div>
+
+<!-- Yelp -->
+<div class="dir-card">
+  <div class="dir-top">
+    <span class="dir-name">2. Yelp</span>
+    <span class="dir-badge badge-priority">HIGH PRIORITY</span>
+  </div>
+  <a class="dir-url" href="https://biz.yelp.com/signup" target="_blank">biz.yelp.com/signup</a>
+  <div class="dir-steps">
+    <ol>
+      <li>Go to <strong>biz.yelp.com/signup</strong></li>
+      <li>Search for "Frame Restoration Utah LLC" — if it exists, claim it. If not, add new.</li>
+      <li>Fill in NAP info exactly as shown above</li>
+      <li>Select categories: <strong>Roofing, Storm Damage Repair</strong></li>
+      <li>Add the long description and upload photos</li>
+      <li>Verify via phone call to (435) 302-4422</li>
+    </ol>
+  </div>
+  <p class="dir-time">~10 minutes</p>
+  <p class="dir-note">Yelp will call the business number to verify. Landon needs to answer.</p>
+</div>
+
+<!-- BBB -->
+<div class="dir-card">
+  <div class="dir-top">
+    <span class="dir-name">3. Better Business Bureau (BBB)</span>
+    <span class="dir-badge badge-priority">HIGH PRIORITY</span>
+  </div>
+  <a class="dir-url" href="https://www.bbb.org/get-accredited" target="_blank">bbb.org/get-accredited</a>
+  <div class="dir-steps">
+    <ol>
+      <li>Go to <strong>bbb.org/get-accredited</strong></li>
+      <li>Click "Apply for BBB Accreditation"</li>
+      <li>Select Utah chapter</li>
+      <li>Fill in business info with NAP above</li>
+      <li>Provide DOPL license # and insurance info</li>
+      <li>Pay annual fee (typically $400-600/year for small contractors)</li>
+    </ol>
+  </div>
+  <p class="dir-time">~15 minutes + approval wait</p>
+  <p class="dir-note">Costs money but huge trust signal. BBB profiles rank well on Google.</p>
+</div>
+
+<!-- Angi -->
+<div class="dir-card">
+  <div class="dir-top">
+    <span class="dir-name">4. Angi (Angie's List)</span>
+    <span class="dir-badge badge-priority">HIGH PRIORITY</span>
+  </div>
+  <a class="dir-url" href="https://www.angi.com/pro/registration" target="_blank">angi.com/pro/registration</a>
+  <div class="dir-steps">
+    <ol>
+      <li>Go to <strong>angi.com/pro/registration</strong></li>
+      <li>Create a pro account with Landon's email</li>
+      <li>Fill in NAP info, select "Roofing" as primary service</li>
+      <li>Add license # and insurance details</li>
+      <li>Upload photos of completed work</li>
+      <li>Verify via phone or email</li>
+    </ol>
+  </div>
+  <p class="dir-time">~10 minutes</p>
+  <p class="dir-note">Free basic listing. Paid leads are optional (skip those for now).</p>
+</div>
+
+<!-- HomeAdvisor -->
+<div class="dir-card">
+  <div class="dir-top">
+    <span class="dir-name">5. HomeAdvisor</span>
+    <span class="dir-badge badge-todo">TODO</span>
+  </div>
+  <a class="dir-url" href="https://pro.homeadvisor.com" target="_blank">pro.homeadvisor.com</a>
+  <div class="dir-steps">
+    <ol>
+      <li>Go to <strong>pro.homeadvisor.com</strong></li>
+      <li>Click "Join Our Network"</li>
+      <li>Fill in NAP info exactly as above</li>
+      <li>HomeAdvisor is owned by Angi — profile may auto-link</li>
+    </ol>
+  </div>
+  <p class="dir-time">~10 minutes</p>
+  <p class="dir-note">Owned by Angi. Creates the listing which feeds into their network.</p>
+</div>
+
+<!-- Thumbtack -->
+<div class="dir-card">
+  <div class="dir-top">
+    <span class="dir-name">6. Thumbtack</span>
+    <span class="dir-badge badge-todo">TODO</span>
+  </div>
+  <a class="dir-url" href="https://www.thumbtack.com/pro" target="_blank">thumbtack.com/pro</a>
+  <div class="dir-steps">
+    <ol>
+      <li>Go to <strong>thumbtack.com/pro</strong></li>
+      <li>Sign up as a professional</li>
+      <li>Select "Roofing" as your service</li>
+      <li>Set service area to Heber City + surrounding areas</li>
+      <li>Fill in NAP, upload photos, add license info</li>
+    </ol>
+  </div>
+  <p class="dir-time">~10 minutes</p>
+  <p class="dir-note">Free profile. Paid leads optional — skip unless ROI makes sense.</p>
+</div>
+
+<!-- Facebook -->
+<div class="dir-card">
+  <div class="dir-top">
+    <span class="dir-name">7. Facebook Business Page</span>
+    <span class="dir-badge badge-priority">HIGH PRIORITY</span>
+  </div>
+  <a class="dir-url" href="https://www.facebook.com/pages/create" target="_blank">facebook.com/pages/create</a>
+  <div class="dir-steps">
+    <ol>
+      <li>Go to <strong>facebook.com/pages/create</strong></li>
+      <li>Page name: <strong>Frame Roofing Utah</strong> (consumer brand name)</li>
+      <li>Category: <strong>Roofing Service</strong></li>
+      <li>Add NAP info in the About section</li>
+      <li>Upload logo as profile pic, job photo as cover</li>
+      <li>Add website link and service description</li>
+      <li>Invite satisfied customers to leave reviews</li>
+    </ol>
+  </div>
+  <p class="dir-time">~15 minutes</p>
+  <p class="dir-note">Use "Frame Roofing Utah" as the page name (not the LLC name). This is consumer-facing.</p>
+</div>
+
+<!-- Apple Business Connect -->
+<div class="dir-card">
+  <div class="dir-top">
+    <span class="dir-name">8. Apple Business Connect</span>
+    <span class="dir-badge badge-todo">TODO</span>
+  </div>
+  <a class="dir-url" href="https://businessconnect.apple.com" target="_blank">businessconnect.apple.com</a>
+  <div class="dir-steps">
+    <ol>
+      <li>Go to <strong>businessconnect.apple.com</strong></li>
+      <li>Sign in with an Apple ID (create one if needed)</li>
+      <li>Search for "Frame Restoration Utah LLC" in Heber City</li>
+      <li>Claim the listing or add new business</li>
+      <li>Fill in NAP info, hours, categories</li>
+      <li>Verify via phone call to (435) 302-4422</li>
+    </ol>
+  </div>
+  <p class="dir-time">~10 minutes</p>
+  <p class="dir-note">Shows up in Apple Maps, Siri, and Safari. Huge for iPhone users.</p>
+</div>
+
+<!-- Bing Places -->
+<div class="dir-card">
+  <div class="dir-top">
+    <span class="dir-name">9. Bing Places</span>
+    <span class="dir-badge badge-todo">TODO</span>
+  </div>
+  <a class="dir-url" href="https://www.bingplaces.com" target="_blank">bingplaces.com</a>
+  <div class="dir-steps">
+    <ol>
+      <li>Go to <strong>bingplaces.com</strong></li>
+      <li>Sign in with a Microsoft account</li>
+      <li>Click "Import from Google Business Profile" (fastest method)</li>
+      <li>Sign into Google, select the Frame Restoration Utah listing</li>
+      <li>Review imported data, verify NAP matches</li>
+      <li>Submit — usually auto-verified from GBP</li>
+    </ol>
+  </div>
+  <p class="dir-time">~5 minutes</p>
+  <p class="dir-note">Easiest one — can import directly from GBP. Shows on Bing, Cortana, Edge.</p>
+</div>
+
+<!-- NextDoor -->
+<div class="dir-card">
+  <div class="dir-top">
+    <span class="dir-name">10. NextDoor Business</span>
+    <span class="dir-badge badge-todo">TODO</span>
+  </div>
+  <a class="dir-url" href="https://business.nextdoor.com" target="_blank">business.nextdoor.com</a>
+  <div class="dir-steps">
+    <ol>
+      <li>Go to <strong>business.nextdoor.com</strong></li>
+      <li>Click "Claim your free Business Page"</li>
+      <li>Enter business name and address</li>
+      <li>Fill in NAP info and description</li>
+      <li>Verify ownership</li>
+    </ol>
+  </div>
+  <p class="dir-time">~10 minutes</p>
+  <p class="dir-note">NextDoor is huge in Utah neighborhoods. Recommendations here drive real leads.</p>
+</div>
+
+<!-- TIER 2 -->
+<h2 class="tier-header">TIER 2 — Industry-Specific Directories</h2>
+<p class="tier-desc">Leverage existing certifications for free listings.</p>
+
+<div class="dir-card">
+  <div class="dir-top">
+    <span class="dir-name">11. CertainTeed Contractor Locator</span>
+    <span class="dir-badge badge-todo">TODO</span>
+  </div>
+  <a class="dir-url" href="https://www.certainteed.com/find-a-contractor" target="_blank">certainteed.com/find-a-contractor</a>
+  <div class="dir-steps">
+    <ol>
+      <li>Log into CertainTeed contractor portal</li>
+      <li>Verify that the business listing is active and NAP is correct</li>
+      <li>Add website URL if missing</li>
+    </ol>
+  </div>
+  <p class="dir-time">~5 minutes</p>
+  <p class="dir-note">Already certified — just verify the listing is live and accurate.</p>
+</div>
+
+<div class="dir-card">
+  <div class="dir-top">
+    <span class="dir-name">12. Tamko Contractor Locator</span>
+    <span class="dir-badge badge-todo">TODO</span>
+  </div>
+  <a class="dir-url" href="https://www.tamko.com" target="_blank">tamko.com</a>
+  <div class="dir-steps">
+    <ol>
+      <li>Log into Tamko contractor portal</li>
+      <li>Verify listing is active and NAP is correct</li>
+      <li>Add website URL if missing</li>
+    </ol>
+  </div>
+  <p class="dir-time">~5 minutes</p>
+</div>
+
+<!-- TIER 3 -->
+<h2 class="tier-header">TIER 3 — Utah & Regional Directories</h2>
+<p class="tier-desc">Local signals that tell Google you're a real Utah business.</p>
+
+<div class="dir-card done">
+  <div class="dir-top">
+    <span class="dir-name">16. Utah.gov Business Search</span>
+    <span class="dir-badge badge-done">DONE</span>
+  </div>
+  <p style="color:#16a34a; font-size:14px; margin-top:8px;">Entity #14602083-0160 registered.</p>
+</div>
+
+<div class="dir-card done">
+  <div class="dir-top">
+    <span class="dir-name">17. Utah DOPL License</span>
+    <span class="dir-badge badge-done">DONE</span>
+  </div>
+  <p style="color:#16a34a; font-size:14px; margin-top:8px;">License #14256097-5501 active.</p>
+</div>
+
+<div class="dir-card">
+  <div class="dir-top">
+    <span class="dir-name">18. Heber Valley Chamber of Commerce</span>
+    <span class="dir-badge badge-todo">TODO</span>
+  </div>
+  <a class="dir-url" href="https://www.hebervalleychamber.com" target="_blank">hebervalleychamber.com</a>
+  <div class="dir-steps">
+    <ol>
+      <li>Visit website or call to inquire about membership</li>
+      <li>Fill out membership application with NAP info</li>
+      <li>Pay annual dues (varies by chamber)</li>
+    </ol>
+  </div>
+  <p class="dir-note">Paid membership but strong local SEO signal + networking.</p>
+</div>
+
+<div class="dir-card">
+  <div class="dir-top">
+    <span class="dir-name">23. KSL Classifieds / Services</span>
+    <span class="dir-badge badge-todo">TODO</span>
+  </div>
+  <a class="dir-url" href="https://www.ksl.com/services" target="_blank">ksl.com/services</a>
+  <div class="dir-steps">
+    <ol>
+      <li>Go to ksl.com and create an account</li>
+      <li>List roofing services in the Services section</li>
+      <li>Add NAP info, photos, and description</li>
+    </ol>
+  </div>
+  <p class="dir-time">~10 minutes</p>
+  <p class="dir-note">KSL is the #1 classifieds site in Utah. Everyone uses it.</p>
+</div>
+
+<!-- TIER 4 -->
+<h2 class="tier-header">TIER 4 — Data Aggregators & General Directories</h2>
+<p class="tier-desc">These feed data to hundreds of smaller directories and GPS systems.</p>
+
+<div class="dir-card">
+  <div class="dir-top">
+    <span class="dir-name">25. Data Axle (Express Update)</span>
+    <span class="dir-badge badge-todo">TODO</span>
+  </div>
+  <a class="dir-url" href="https://www.expressupdate.com/search" target="_blank">expressupdate.com/search</a>
+  <div class="dir-steps">
+    <ol>
+      <li>Go to <strong>expressupdate.com/search</strong></li>
+      <li>Search for "Frame Restoration Utah" in Heber City</li>
+      <li>If found, claim and update. If not, add new listing.</li>
+      <li>Enter all NAP info exactly as shown above</li>
+    </ol>
+  </div>
+  <p class="dir-time">~5 minutes</p>
+  <p class="dir-note">Major aggregator — feeds data to hundreds of smaller sites and GPS devices.</p>
+</div>
+
+<div class="dir-card">
+  <div class="dir-top">
+    <span class="dir-name">26. Neustar / Localeze</span>
+    <span class="dir-badge badge-todo">TODO</span>
+  </div>
+  <a class="dir-url" href="https://www.neustarlocaleze.biz/directory/search" target="_blank">neustarlocaleze.biz</a>
+  <div class="dir-steps">
+    <ol>
+      <li>Search for existing listing</li>
+      <li>Claim or create new with exact NAP info</li>
+    </ol>
+  </div>
+  <p class="dir-time">~5 minutes</p>
+</div>
+
+<div class="dir-card">
+  <div class="dir-top">
+    <span class="dir-name">27. Foursquare</span>
+    <span class="dir-badge badge-todo">TODO</span>
+  </div>
+  <a class="dir-url" href="https://foursquare.com/add-place" target="_blank">foursquare.com/add-place</a>
+  <div class="dir-steps">
+    <ol>
+      <li>Create account or sign in</li>
+      <li>Add new place with NAP info</li>
+      <li>Select "Professional Services > Contractor" category</li>
+    </ol>
+  </div>
+  <p class="dir-time">~5 minutes</p>
+</div>
+
+<div class="dir-card">
+  <div class="dir-top">
+    <span class="dir-name">29. Yellow Pages (YP.com)</span>
+    <span class="dir-badge badge-todo">TODO</span>
+  </div>
+  <a class="dir-url" href="https://www.yp.com/free-listing" target="_blank">yp.com/free-listing</a>
+  <div class="dir-steps">
+    <ol>
+      <li>Go to <strong>yp.com/free-listing</strong></li>
+      <li>Enter business info with exact NAP</li>
+      <li>Select "Roofing Contractors" category</li>
+      <li>Verify via phone</li>
+    </ol>
+  </div>
+  <p class="dir-time">~5 minutes</p>
+</div>
+
+<div class="dir-card">
+  <div class="dir-top">
+    <span class="dir-name">31. Manta</span>
+    <span class="dir-badge badge-todo">TODO</span>
+  </div>
+  <a class="dir-url" href="https://www.manta.com/add-company" target="_blank">manta.com/add-company</a>
+  <div class="dir-steps">
+    <ol>
+      <li>Go to manta.com/add-company</li>
+      <li>Enter NAP info and business description</li>
+    </ol>
+  </div>
+  <p class="dir-time">~5 minutes</p>
+</div>
+
+<div class="dir-card">
+  <div class="dir-top">
+    <span class="dir-name">32. Hotfrog</span>
+    <span class="dir-badge badge-todo">TODO</span>
+  </div>
+  <a class="dir-url" href="https://www.hotfrog.com/addyourbusiness" target="_blank">hotfrog.com/addyourbusiness</a>
+  <div class="dir-steps">
+    <ol>
+      <li>Go to hotfrog.com and add your business</li>
+      <li>Enter NAP info and select categories</li>
+    </ol>
+  </div>
+  <p class="dir-time">~5 minutes</p>
+</div>
+
+<div class="dir-card">
+  <div class="dir-top">
+    <span class="dir-name">33. Brownbook</span>
+    <span class="dir-badge badge-todo">TODO</span>
+  </div>
+  <a class="dir-url" href="https://www.brownbook.net/add-company/" target="_blank">brownbook.net/add-company</a>
+  <div class="dir-steps">
+    <ol>
+      <li>Go to brownbook.net/add-company</li>
+      <li>Enter NAP info and business description</li>
+    </ol>
+  </div>
+  <p class="dir-time">~5 minutes</p>
+</div>
+
+<!-- IMPORTANT REMINDER -->
+<div style="background: #fef3c7; border: 2px solid #f59e0b; border-radius: 12px; padding: 24px; margin-top: 32px;">
+  <h3 style="color: #b45309; margin-bottom: 12px;">CRITICAL REMINDERS</h3>
+  <p style="margin-bottom: 8px;"><strong>1. NAP must be identical everywhere.</strong> Copy-paste from the fields above. Don't type from memory.</p>
+  <p style="margin-bottom: 8px;"><strong>2. Business name on directories = "Frame Restoration Utah LLC"</strong> (the legal LLC name).</p>
+  <p style="margin-bottom: 8px;"><strong>3. Website brand = "Frame Roofing Utah"</strong> — only use this on consumer-facing content (Facebook page name, website copy).</p>
+  <p style="margin-bottom: 8px;"><strong>4. Upload photos</strong> wherever possible — completed roofs, before/after, team photos.</p>
+  <p><strong>5. Don't pay for premium listings</strong> (except BBB if you decide to). Free listings are all you need for SEO.</p>
+</div>
+
+</div>
+
+<script>
+function copyText(id, btn) {
+  const el = document.getElementById(id);
+  const text = el.innerText || el.textContent;
+  // Remove the "Copy" button text if it's inside the element
+  const cleanText = text.replace(/\s*Copy\s*$/, '').trim();
+  navigator.clipboard.writeText(cleanText).then(() => {
+    btn.textContent = 'Copied!';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 1500);
+  });
+}
+
+function copyThis(el) {
+  navigator.clipboard.writeText(el.textContent).then(() => {
+    const orig = el.textContent;
+    el.textContent = 'Copied!';
+    el.style.background = '#16a34a';
+    el.style.color = 'white';
+    setTimeout(() => { el.textContent = orig; el.style.background = ''; el.style.color = ''; }, 1200);
+  });
+}
+</script>
+
+</body>
+</html>
