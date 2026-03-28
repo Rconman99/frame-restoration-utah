@@ -69,7 +69,7 @@
     '        </select>',
     '      </div>',
     '      <button type="submit" class="fr-modal-submit">Get My Free Roof Inspection</button>',
-    '      <p class="fr-modal-note">By submitting, you agree to a quick call or text. No spam.</p>',
+    '      <p class="fr-modal-note">By submitting, you consent to receive SMS/text messages and phone calls from Frame Roofing Utah regarding your inquiry. Msg &amp; data rates may apply. Reply STOP to opt out.</p>',
     '    </form>',
     '  </div>',
     '</div>'
@@ -146,10 +146,15 @@
       var prevErr = form.querySelector('.fr-modal-error');
       if (prevErr) prevErr.remove();
 
-      fetch(form.action, {
+      // Build JSON payload from form fields
+      var payload = {};
+      new FormData(form).forEach(function(v, k) { payload[k] = v; });
+      payload.source_page = window.location.pathname;
+
+      fetch(form.getAttribute('data-endpoint'), {
         method: 'POST',
-        body: new FormData(form),
-        headers: { 'Accept': 'application/json' }
+        body: JSON.stringify(payload),
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' }
       }).then(function(res) {
         if (res.ok) {
           body.innerHTML = [

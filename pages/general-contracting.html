@@ -16,10 +16,7 @@
   <meta name="robots" content="noindex, nofollow" />
   <meta name="theme-color" content="#0B4060" />
   <link rel="icon" href="/favicon.ico" sizes="32x32" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Archivo:wght@400;600&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/global.css">
+  <link rel="stylesheet" href="/global.css?v=20260324">
   <script src="/global-modal.js" defer></script>
 <script type="application/ld+json">
 {
@@ -55,7 +52,7 @@
   <ul class="nav-links" id="navLinks">
     <li><a href="/#services">Services</a></li>
     <li><a href="/blog">Blog</a></li>
-    <li><a href="/#gallery">Our Work</a></li>
+    <li><a href="/pages/gallery">Projects</a></li>
     <li><a href="/#areas">Service Areas</a></li>
     <li><a href="/#faq">FAQ</a></li>
     <li><a href="/#contact">Contact</a></li>
@@ -67,7 +64,7 @@
 
 <main>
 <section class="page-hero">
-  <div class="page-hero-img"><img src="/images/photos/frame-restoration-03.jpg" alt="Beautiful stone and wood Utah home with completed roof" width="1920" height="1080" loading="eager" /></div>
+  <div class="page-hero-img"><img src="/images/projects/heber-valley-drone-poster.webp" alt="Aerial view of Frame Roofing Utah contracting project in Heber Valley, Utah" width="1920" height="1080" loading="eager" /></div>
   <div class="page-hero-overlay"></div>
   <div class="page-hero-content">
     <div class="breadcrumb"><a href="/">Home</a> &rsaquo; <a href="/#services">Services</a> &rsaquo; General Contracting</div>
@@ -85,16 +82,16 @@
     <span class="section-label">General Contracting</span>
 
     <h2>Kitchen &amp; Bathroom Remodels</h2>
-    <p>Outdated kitchens and bathrooms are the most common renovation projects across Utah homes. Frame Restoration handles full gut remodels and targeted upgrades — cabinets, countertops, tile, plumbing, and electrical — with licensed crews and transparent pricing.</p>
+    <p>Outdated kitchens and bathrooms are the most common renovation projects across Utah homes. Frame Roofing Utah handles full gut remodels and targeted upgrades — cabinets, countertops, tile, plumbing, and electrical — with licensed crews and transparent pricing.</p>
 
     <h2>Home Additions &amp; Build-Outs</h2>
-    <p>Need more space? Frame Restoration builds room additions, basement finishes, and garage conversions that match your existing home's style and meet all Utah building codes. We manage permits, structural engineering, and inspections from start to finish.</p>
+    <p>Need more space? Frame Roofing Utah builds room additions, basement finishes, and garage conversions that match your existing home's style and meet all Utah building codes. We manage permits, structural engineering, and inspections from start to finish.</p>
 
     <h2>Siding, Decks &amp; Exterior Work</h2>
-    <p>Utah's freeze-thaw cycles and intense UV exposure are hard on exteriors. Frame Restoration installs and repairs vinyl siding, fiber cement, composite decking, fencing, and exterior trim — protecting your home's curb appeal and structural integrity.</p>
+    <p>Utah's freeze-thaw cycles and intense UV exposure are hard on exteriors. Frame Roofing Utah installs and repairs vinyl siding, fiber cement, composite decking, fencing, and exterior trim — protecting your home's curb appeal and structural integrity.</p>
 
     <h2>Full Home Renovations</h2>
-    <p>Whether you've purchased a fixer-upper or want to modernize an aging home, Frame Restoration coordinates full-scope renovations. One contractor, one point of contact, one timeline — from demo to final walkthrough.</p>
+    <p>Whether you've purchased a fixer-upper or want to modernize an aging home, Frame Roofing Utah coordinates full-scope renovations. One contractor, one point of contact, one timeline — from demo to final walkthrough.</p>
   </div>
 </section>
 
@@ -148,7 +145,7 @@
   <p>&copy; 2026 Frame Roofing Utah. All rights reserved. Licensed &amp; Insured in Utah.</p>
   <p><a href="/">Home</a> &middot; <a href="/privacy">Privacy Policy</a> &middot; <a href="/terms">Terms</a> &middot; <a href="tel:+14353024422">435-302-4422</a></p>
 </footer>
-<div class="sticky-call"><a href="tel:+14353024422">&#9742; Call 435-302-4422</a></div>
+<div class="sticky-call"><a href="tel:+14352928802">&#9742; Call 435-292-8802</a></div>
 <script>
 const btn=document.getElementById('menuBtn'),links=document.getElementById('navLinks');
 if(btn&&links)btn.addEventListener('click',()=>{links.classList.toggle('open');btn.setAttribute('aria-expanded',links.classList.contains('open'))});
@@ -185,5 +182,44 @@ if(btn&&links)btn.addEventListener('click',()=>{links.classList.toggle('open');b
   ]
 }
 </script>
+<script>
+  // PostHog Conversion Tracking — phone, email, form
+  (function(){
+    var city = (function(){
+      var m = window.location.pathname.match(/\/locations\/([^\/\.]+)/);
+      return m ? m[1].replace(/-/g,' ') : 'homepage';
+    })();
+    var page = window.location.pathname;
+
+    // Track phone clicks
+    document.querySelectorAll('a[href^="tel:"]').forEach(function(a){
+      a.addEventListener('click', function(){
+        if(window.posthog) posthog.capture('phone_click', {city: city, page: page, phone: a.href.replace('tel:','')});
+      });
+    });
+
+    // Track email clicks
+    document.querySelectorAll('a[href^="mailto:"]').forEach(function(a){
+      a.addEventListener('click', function(){
+        if(window.posthog) posthog.capture('email_click', {city: city, page: page, email: a.href.replace('mailto:','')});
+      });
+    });
+
+    // Track form submissions
+    var heroForm = document.getElementById('heroForm');
+    if(heroForm){
+      heroForm.addEventListener('submit', function(){
+        if(window.posthog) posthog.capture('form_submitted', {city: city, page: page, form: 'hero_inspection'});
+      });
+    }
+
+    // Track CTA button clicks (Free Inspection, Call buttons)
+    document.querySelectorAll('.btn-primary, .btn-secondary').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        if(window.posthog) posthog.capture('cta_click', {city: city, page: page, cta_text: btn.textContent.trim().substring(0,50)});
+      });
+    });
+  })();
+  </script>
 </body>
 </html>

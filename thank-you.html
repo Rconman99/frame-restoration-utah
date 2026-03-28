@@ -6,7 +6,6 @@
   <title>Thank You — Frame Roofing Utah</title>
   <meta name="description" content="Thank you for contacting Frame Roofing Utah. Our team will reach out shortly to schedule your free roof inspection.">
   <meta name="robots" content="noindex"/>
-  <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Archivo:wght@400;600&display=swap" rel="stylesheet"/>
   <style>
     *{margin:0;padding:0;box-sizing:border-box}
     body{font-family:'Archivo',sans-serif;background:#FAF9F5;color:#262626;display:flex;align-items:center;justify-content:center;min-height:100vh;text-align:center;padding:2rem}
@@ -21,6 +20,20 @@
   <link rel="icon" href="/favicon.ico" sizes="32x32" />
   <link rel="icon" href="/icon-192.png" type="image/png" sizes="192x192" />
   <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+  <script>
+    !function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.crossOrigin="anonymous",p.async=!0,p.src=s.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+".people (stub)"},o="init capture register register_once register_for_session unregister unregister_for_session getFeatureFlag getFeatureFlagPayload isFeatureEnabled reloadFeatureFlags updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures on onFeatureFlags onSessionId getSurveys getActiveMatchingSurveys renderSurvey canRenderSurvey identify setPersonProperties group resetGroups setPersonPropertiesForFlags resetPersonPropertiesForFlags setGroupPropertiesForFlags resetGroupPropertiesForFlags reset get_distinct_id getGroups get_session_id get_session_replay_url alias set_config startSessionRecording stopSessionRecording sessionRecordingStarted captureException loadToolbar get_property getSessionProperty createPersonProfile opt_in_capturing opt_out_capturing has_opted_in_capturing has_opted_out_capturing clear_opt_in_out_capturing debug getPageviewId".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
+    posthog.init('phc_BnECzlZ2OeDujli2dbqcgGODXlv2tYERbp40dTF7UBV',{api_host:'https://us.i.posthog.com', person_profiles: 'identified_only'})
+  </script>
+    <link rel="canonical" href="https://frameroofingutah.com/thank-you">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://frameroofingutah.com/thank-you">
+  <meta property="og:title" content="Thank You — Frame Roofing Utah">
+  <meta property="og:description" content="Thank you for contacting Frame Roofing Utah. Our team will reach out shortly to schedule your free roof inspection.">
+  <meta property="og:image" content="https://frameroofingutah.com/images/logo.png">
+  <meta property="og:site_name" content="Frame Roofing Utah">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Thank You — Frame Roofing Utah">
+  <meta name="twitter:description" content="Thank you for contacting Frame Roofing Utah. Our team will reach out shortly to schedule your free roof inspection.">
 </head>
 <body>
   <div class="card">
@@ -30,5 +43,44 @@
     <p>Need to talk now? Call <strong><a href="tel:+14353024422" style="color:#0B4060">435-302-4422</a></strong> — we answer.</p>
     <a href="/" class="btn">Back to Home</a>
   </div>
+<script>
+  // PostHog Conversion Tracking — phone, email, form
+  (function(){
+    var city = (function(){
+      var m = window.location.pathname.match(/\/locations\/([^\/\.]+)/);
+      return m ? m[1].replace(/-/g,' ') : 'homepage';
+    })();
+    var page = window.location.pathname;
+
+    // Track phone clicks
+    document.querySelectorAll('a[href^="tel:"]').forEach(function(a){
+      a.addEventListener('click', function(){
+        if(window.posthog) posthog.capture('phone_click', {city: city, page: page, phone: a.href.replace('tel:','')});
+      });
+    });
+
+    // Track email clicks
+    document.querySelectorAll('a[href^="mailto:"]').forEach(function(a){
+      a.addEventListener('click', function(){
+        if(window.posthog) posthog.capture('email_click', {city: city, page: page, email: a.href.replace('mailto:','')});
+      });
+    });
+
+    // Track form submissions
+    var heroForm = document.getElementById('heroForm');
+    if(heroForm){
+      heroForm.addEventListener('submit', function(){
+        if(window.posthog) posthog.capture('form_submitted', {city: city, page: page, form: 'hero_inspection'});
+      });
+    }
+
+    // Track CTA button clicks (Free Inspection, Call buttons)
+    document.querySelectorAll('.btn-primary, .btn-secondary').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        if(window.posthog) posthog.capture('cta_click', {city: city, page: page, cta_text: btn.textContent.trim().substring(0,50)});
+      });
+    });
+  })();
+  </script>
 </body>
 </html>

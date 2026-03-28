@@ -1,3 +1,26 @@
+/* ─── SELF-HOSTED FONTS ─── */
+@font-face {
+  font-family: 'Archivo';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/assets/fonts/archivo-regular.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Archivo';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('/assets/fonts/archivo-semibold.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Archivo Black';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/assets/fonts/archivo-black.woff2') format('woff2');
+}
+
 /* ═══════════════════════════════════════════════════════════════
    GLOBAL CSS — Frame Restoration Utah
    Shared across ALL pages (index, locations, services, blog)
@@ -145,6 +168,10 @@ footer a { color: var(--gold); text-decoration: none; }
   body { padding-bottom: 58px; }
   /* Subpage hero — better mobile sizing */
   .page-hero { min-height: 40vh; }
+  .page-hero-img { width: 100%; opacity: 0.25; }
+  .page-hero-img::before { background: linear-gradient(to bottom, var(--navy) 0%, rgba(11,64,96,0.5) 40%, transparent 70%); }
+  .page-hero-img img { opacity: 0.3; }
+  .page-hero-content { max-width: 100%; }
   .page-hero h1 { font-size: clamp(28px, 7vw, 48px); }
   .page-hero p { font-size: 16px; }
   .page-hero .hero-actions { flex-direction: column; }

@@ -16,10 +16,7 @@
   <meta name="robots" content="index, follow" />
   <meta name="theme-color" content="#0B4060" />
   <link rel="icon" href="/favicon.ico" sizes="32x32" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Archivo:wght@400;600&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/global.css">
+  <link rel="stylesheet" href="/global.css?v=20260324">
   <script src="/global-modal.js" defer></script>
 <script type="application/ld+json">
 {
@@ -55,7 +52,7 @@
   <ul class="nav-links" id="navLinks">
     <li><a href="/#services">Services</a></li>
     <li><a href="/blog">Blog</a></li>
-    <li><a href="/#gallery">Our Work</a></li>
+    <li><a href="/pages/gallery">Projects</a></li>
     <li><a href="/#areas">Service Areas</a></li>
     <li><a href="/#faq">FAQ</a></li>
     <li><a href="/#contact">Contact</a></li>
@@ -67,7 +64,7 @@
 
 <main>
 <section class="page-hero">
-  <div class="page-hero-img"><img src="/images/photos/frame-restoration-13.jpg" alt="Close-up of chimney flashing repair on Utah residential roof" width="1920" height="1080" loading="eager" /></div>
+  <div class="page-hero-img"><img src="/images/projects/cities/sandy-storm-damage-reroof-2025-nov.webp" alt="Professional roof repair on brick home by Frame Roofing Utah in Sandy, Utah" width="1440" height="1920" loading="eager" /></div>
   <div class="page-hero-overlay"></div>
   <div class="page-hero-content">
     <div class="breadcrumb"><a href="/">Home</a> &rsaquo; <a href="/#services">Services</a> &rsaquo; Roof Repair</div>
@@ -122,10 +119,10 @@
       <li>You are dealing with recurring leaks in different locations</li>
       <li>Your insurance has approved a full replacement claim</li>
     </ul>
-    <p>Frame Restoration gives you an honest assessment every time. If a $300 repair solves your problem, we will tell you that — we are not going to push a $15,000 replacement you do not need.</p>
+    <p>Frame Roofing Utah gives you an honest assessment every time. If a $300 repair solves your problem, we will tell you that — we are not going to push a $15,000 replacement you do not need.</p>
 
     <h2>Emergency Roof Repairs</h2>
-    <p>Some roof problems cannot wait for a scheduled appointment. If you have an active leak during a rainstorm, a tree branch through your roof, or wind damage exposing your deck to the elements, Frame Restoration offers emergency repair and tarping services 24/7.</p>
+    <p>Some roof problems cannot wait for a scheduled appointment. If you have an active leak during a rainstorm, a tree branch through your roof, or wind damage exposing your deck to the elements, Frame Roofing Utah offers emergency repair and tarping services rapid.</p>
     <p>Our emergency crews can typically be on-site the same day across the Wasatch Front to stop the immediate damage and protect your home while permanent repairs are scheduled. Emergency tarping and temporary repairs are almost always covered by your homeowner's insurance as mitigation measures.</p>
   </div>
 </section>
@@ -183,7 +180,7 @@
   <p>&copy; 2026 Frame Roofing Utah. All rights reserved. Licensed &amp; Insured in Utah.</p>
   <p><a href="/">Home</a> &middot; <a href="/privacy">Privacy Policy</a> &middot; <a href="/terms">Terms</a> &middot; <a href="tel:+14353024422">435-302-4422</a></p>
 </footer>
-<div class="sticky-call"><a href="tel:+14353024422">&#9742; Call 435-302-4422</a></div>
+<div class="sticky-call"><a href="tel:+14352928802">&#9742; Call 435-292-8802</a></div>
 <script>
 const btn=document.getElementById('menuBtn'),links=document.getElementById('navLinks');
 if(btn&&links)btn.addEventListener('click',()=>{links.classList.toggle('open');btn.setAttribute('aria-expanded',links.classList.contains('open'))});
@@ -220,5 +217,44 @@ if(btn&&links)btn.addEventListener('click',()=>{links.classList.toggle('open');b
   ]
 }
 </script>
+<script>
+  // PostHog Conversion Tracking — phone, email, form
+  (function(){
+    var city = (function(){
+      var m = window.location.pathname.match(/\/locations\/([^\/\.]+)/);
+      return m ? m[1].replace(/-/g,' ') : 'homepage';
+    })();
+    var page = window.location.pathname;
+
+    // Track phone clicks
+    document.querySelectorAll('a[href^="tel:"]').forEach(function(a){
+      a.addEventListener('click', function(){
+        if(window.posthog) posthog.capture('phone_click', {city: city, page: page, phone: a.href.replace('tel:','')});
+      });
+    });
+
+    // Track email clicks
+    document.querySelectorAll('a[href^="mailto:"]').forEach(function(a){
+      a.addEventListener('click', function(){
+        if(window.posthog) posthog.capture('email_click', {city: city, page: page, email: a.href.replace('mailto:','')});
+      });
+    });
+
+    // Track form submissions
+    var heroForm = document.getElementById('heroForm');
+    if(heroForm){
+      heroForm.addEventListener('submit', function(){
+        if(window.posthog) posthog.capture('form_submitted', {city: city, page: page, form: 'hero_inspection'});
+      });
+    }
+
+    // Track CTA button clicks (Free Inspection, Call buttons)
+    document.querySelectorAll('.btn-primary, .btn-secondary').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        if(window.posthog) posthog.capture('cta_click', {city: city, page: page, cta_text: btn.textContent.trim().substring(0,50)});
+      });
+    });
+  })();
+  </script>
 </body>
 </html>

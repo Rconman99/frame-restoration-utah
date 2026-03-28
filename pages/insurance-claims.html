@@ -16,10 +16,7 @@
   <meta name="robots" content="index, follow" />
   <meta name="theme-color" content="#0B4060" />
   <link rel="icon" href="/favicon.ico" sizes="32x32" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Archivo:wght@400;600&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/global.css">
+  <link rel="stylesheet" href="/global.css?v=20260324">
   <script src="/global-modal.js" defer></script>
 <script type="application/ld+json">
 {
@@ -55,7 +52,7 @@
   <ul class="nav-links" id="navLinks">
     <li><a href="/#services">Services</a></li>
     <li><a href="/blog">Blog</a></li>
-    <li><a href="/#gallery">Our Work</a></li>
+    <li><a href="/pages/gallery">Projects</a></li>
     <li><a href="/#areas">Service Areas</a></li>
     <li><a href="/#faq">FAQ</a></li>
     <li><a href="/#contact">Contact</a></li>
@@ -67,7 +64,7 @@
 
 <main>
 <section class="page-hero">
-  <div class="page-hero-img"><img src="/images/photos/frame-restoration-22.jpg" alt="Frame Restoration crew working on insurance claim roof replacement" width="1920" height="1080" loading="eager" /></div>
+  <div class="page-hero-img"><img src="/images/projects/cities/heber-city-storm-damage-reroof-2025.webp" alt="Insurance claim roof replacement with Frame Roofing Utah signage in Heber City, Utah" width="1440" height="1920" loading="eager" /></div>
   <div class="page-hero-overlay"></div>
   <div class="page-hero-content">
     <div class="breadcrumb"><a href="/">Home</a> &rsaquo; <a href="/#services">Services</a> &rsaquo; Insurance Claims</div>
@@ -97,7 +94,7 @@
     <p>The entire process can take anywhere from two weeks to several months depending on the complexity of the claim and how responsive your insurance company is.</p>
 
     <h2>What We Do for You</h2>
-    <p>Frame Restoration does not just fix roofs — we manage the entire insurance claim process so you do not have to. Here is exactly what we handle:</p>
+    <p>Frame Roofing Utah does not just fix roofs — we manage the entire insurance claim process so you do not have to. Here is exactly what we handle:</p>
     <ul>
       <li><strong>Free Damage Inspection:</strong> We inspect your roof before you file a claim so you know exactly what you are dealing with</li>
       <li><strong>Adjuster Meeting:</strong> We meet your insurance adjuster on the roof and walk the entire property together, ensuring every piece of damage is documented</li>
@@ -114,7 +111,7 @@
       <li><strong>Accepting the first offer:</strong> The adjuster's initial estimate rarely covers the full scope of work. Without a contractor reviewing it, you leave money on the table</li>
       <li><strong>Not having a contractor present:</strong> If your contractor is not on the roof when the adjuster inspects, critical damage gets missed</li>
       <li><strong>Depreciation holdback:</strong> Insurance pays in two checks — the first minus depreciation. Many homeowners do not know they can recover the second payment after work is completed</li>
-      <li><strong>Overhead and profit disputes:</strong> Some insurers try to deny legitimate contractor overhead and profit — Frame Restoration knows how to fight for what is owed</li>
+      <li><strong>Overhead and profit disputes:</strong> Some insurers try to deny legitimate contractor overhead and profit — Frame Roofing Utah knows how to fight for what is owed</li>
     </ul>
 
     <h2>Filing vs. Not Filing</h2>
@@ -176,7 +173,7 @@
   <p>&copy; 2026 Frame Roofing Utah. All rights reserved. Licensed &amp; Insured in Utah.</p>
   <p><a href="/">Home</a> &middot; <a href="/privacy">Privacy Policy</a> &middot; <a href="/terms">Terms</a> &middot; <a href="tel:+14353024422">435-302-4422</a></p>
 </footer>
-<div class="sticky-call"><a href="tel:+14353024422">&#9742; Call 435-302-4422</a></div>
+<div class="sticky-call"><a href="tel:+14352928802">&#9742; Call 435-292-8802</a></div>
 <script>
 const btn=document.getElementById('menuBtn'),links=document.getElementById('navLinks');
 if(btn&&links)btn.addEventListener('click',()=>{links.classList.toggle('open');btn.setAttribute('aria-expanded',links.classList.contains('open'))});
@@ -213,5 +210,44 @@ if(btn&&links)btn.addEventListener('click',()=>{links.classList.toggle('open');b
   ]
 }
 </script>
+<script>
+  // PostHog Conversion Tracking — phone, email, form
+  (function(){
+    var city = (function(){
+      var m = window.location.pathname.match(/\/locations\/([^\/\.]+)/);
+      return m ? m[1].replace(/-/g,' ') : 'homepage';
+    })();
+    var page = window.location.pathname;
+
+    // Track phone clicks
+    document.querySelectorAll('a[href^="tel:"]').forEach(function(a){
+      a.addEventListener('click', function(){
+        if(window.posthog) posthog.capture('phone_click', {city: city, page: page, phone: a.href.replace('tel:','')});
+      });
+    });
+
+    // Track email clicks
+    document.querySelectorAll('a[href^="mailto:"]').forEach(function(a){
+      a.addEventListener('click', function(){
+        if(window.posthog) posthog.capture('email_click', {city: city, page: page, email: a.href.replace('mailto:','')});
+      });
+    });
+
+    // Track form submissions
+    var heroForm = document.getElementById('heroForm');
+    if(heroForm){
+      heroForm.addEventListener('submit', function(){
+        if(window.posthog) posthog.capture('form_submitted', {city: city, page: page, form: 'hero_inspection'});
+      });
+    }
+
+    // Track CTA button clicks (Free Inspection, Call buttons)
+    document.querySelectorAll('.btn-primary, .btn-secondary').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        if(window.posthog) posthog.capture('cta_click', {city: city, page: page, cta_text: btn.textContent.trim().substring(0,50)});
+      });
+    });
+  })();
+  </script>
 </body>
 </html>

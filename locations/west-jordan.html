@@ -41,21 +41,16 @@
   "geo": {
     "@type": "GeoCoordinates",
     "latitude": 40.6097,
-    "longitude": -111.9391
+    "longitude": -111.939
   },
-  "areaServed": [
-        {
-          "@type": "City",
-          "name": "West Jordan",
-          "containedInPlace": {
-            "@type": "State",
-            "name": "Utah"
-          }
-        },
-        {"@type": "PostalAddress", "postalCode": "84081", "addressRegion": "UT"},
-        {"@type": "PostalAddress", "postalCode": "84084", "addressRegion": "UT"},
-        {"@type": "PostalAddress", "postalCode": "84088", "addressRegion": "UT"}
-      ],
+  "areaServed": {
+    "@type": "City",
+    "name": "West Jordan",
+    "containedInPlace": {
+      "@type": "State",
+      "name": "Utah"
+    }
+  },
   "parentOrganization": {
     "@type": "Organization",
     "name": "Frame Roofing Utah",
@@ -85,7 +80,7 @@
   "mainEntity": [
     {
       "@type": "Question",
-      "name": "Do you offer free roof inspections in West Jordan?",
+      "name": "When do West Jordan homes typically need reroofing?",
       "acceptedAnswer": {
         "@type": "Answer",
         "text": "Yes \u2014 Frame Roofing Utah provides 100% free, no-obligation roof inspections throughout West Jordan and Salt Lake County. There is no cost and no pressure. Call 435-302-4422 or schedule online and a licensed Utah roofing specialist will come to you, typically within 24-48 hours."
@@ -93,15 +88,15 @@
     },
     {
       "@type": "Question",
-      "name": "Does Frame Restoration handle insurance claims for West Jordan homeowners?",
+      "name": "Is West Jordan prone to hail damage?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Yes. We specialize in storm damage insurance claims throughout Salt Lake County including West Jordan. We document all hail, wind, and storm damage, coordinate directly with your adjuster from most major Utah carriers, and help ensure you receive the full payout your policy allows. We've helped homeowners across the Wasatch Front recover full claim value when initial adjuster assessments underestimated the damage."
+        "text": "Yes. Storms develop over the Oquirrh Mountains and sweep across the south valley with concentrated force. West Jordan sees multiple significant hail events per year from May through September. We recommend a free inspection after any storm — hidden damage can shorten your roof's life by years."
       }
     },
     {
       "@type": "Question",
-      "name": "When is hail season in West Jordan, Utah?",
+      "name": "Does Frame Roofing Utah handle insurance claims in West Jordan?",
       "acceptedAnswer": {
         "@type": "Answer",
         "text": "West Jordan typically sees its most active hail and storm season from late spring through summer. Storms often develop over the Wasatch Range and move across Salt Lake County rapidly. After any significant storm, Frame Restoration recommends a free inspection \u2014 hail damage that looks minor from the ground can significantly shorten your roof's lifespan if left unaddressed."
@@ -117,11 +112,36 @@
     },
     {
       "@type": "Question",
-      "name": "Is Frame Restoration licensed and insured in West Jordan, Utah?",
+      "name": "Is Frame Roofing Utah licensed in Salt Lake County?",
       "acceptedAnswer": {
         "@type": "Answer",
         "text": "Yes. Frame Roofing Utah is fully licensed and insured to perform roofing and restoration work throughout Utah, including West Jordan and all of Salt Lake County. We hold an A+ rating with the BBB and NRCA membership earned since 2014. We carry full general liability insurance and workers' compensation on every job."
       }
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "https://www.frameroofingutah.com/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Service Areas",
+      "item": "https://www.frameroofingutah.com/#areas"
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": "West Jordan"
     }
   ]
 }
@@ -135,7 +155,7 @@
   <ul class="nav-links" id="navLinks">
     <li><a href="/#services">Services</a></li>
     <li><a href="/blog">Blog</a></li>
-    <li><a href="/#gallery">Our Work</a></li>
+    <li><a href="/pages/gallery">Projects</a></li>
     <li><a href="/#areas">Service Areas</a></li>
     <li><a href="/#faq">FAQ</a></li>
     <li><a href="/#contact">Contact</a></li>
@@ -147,7 +167,7 @@
 
 <main>
 <section class="page-hero">
-  <div class="page-hero-img"><img src="/images/photos/frame-restoration-23.jpg" alt="Professional roofing services by Frame Restoration in West Jordan Utah" width="1920" height="1080" loading="eager" /></div>
+  <div class="page-hero-img"><img src="/images/photos/frame-restoration-08.webp" alt="Professional roofing services by Frame Roofing Utah in West Jordan Utah" width="1920" height="1080" loading="eager" /></div>
   <div class="page-hero-overlay"></div>
   <div class="page-hero-content">
     <div class="breadcrumb"><a href="/">Home</a> &rsaquo; <a href="/#areas">Service Areas</a> &rsaquo; West Jordan</div>
@@ -202,18 +222,13 @@
   </div>
 </section>
 
-<section style="padding: 60px 5%; background: var(--off-white);">
-  <div class="content-section" style="text-align: center;">
-    <span class="section-label">From Our Blog</span>
-    <h2 style="margin-top: 0;">Roofing Tips & Updates for West Jordan</h2>
-    <div style="max-width: 600px; margin: 24px auto 0;">
-      <a href="/blog/west-jordan/roof-leak-after-rainstorm" style="display: block; background: var(--white); border-top: 3px solid var(--gold); padding: 24px; text-decoration: none; transition: all 0.2s;">
-        <h3 style="font-family: 'Archivo Black', sans-serif; font-size: 18px; color: var(--navy); text-transform: uppercase; margin-bottom: 8px;">Roof Leaking After a Rainstorm in West Jordan? Here's What to Do</h3>
-        <p style="font-size: 14px; color: var(--gray); line-height: 1.7; margin: 0;">Read our latest guide &rarr;</p>
-      </a>
+
+    <div class="related-articles" style="background:var(--off-white);border-radius:8px;padding:28px;margin:36px 0;">
+      <h3 style="font-family:'Archivo Black',sans-serif;font-size:17px;color:var(--navy);margin:0 0 16px;text-transform:uppercase;">Roofing Tips for West Jordan</h3>
+      <div style="display:grid;gap:10px;">
+      <a href="/blog/west-jordan/roof-leak-after-rainstorm" style="display:block;padding:14px 18px;background:white;border-radius:6px;text-decoration:none;color:var(--navy);font-weight:600;font-size:15px;border:1px solid var(--light-gray);transition:all 0.2s;">Why West Jordan Roofs Leak After Rainstorms — Causes by Home Age &amp; Professional Solutions</a>
+      </div>
     </div>
-  </div>
-</section>
 
 <section class="page-cta">
   <h2>Schedule Your West Jordan Roof Inspection</h2>
@@ -227,9 +242,9 @@
   <div class="nearby-grid">
     <a href="/locations/south-jordan" class="nearby-chip">South Jordan</a>
     <a href="/locations/taylorsville" class="nearby-chip">Taylorsville</a>
-    <a href="/locations/west-valley-city" class="nearby-chip">West Valley City</a>
     <a href="/locations/riverton" class="nearby-chip">Riverton</a>
     <a href="/locations/herriman" class="nearby-chip">Herriman</a>
+    <a href="/locations/kearns" class="nearby-chip">Kearns</a>
   </div>
 </section>
 
@@ -239,7 +254,7 @@
     
     <details style="border:1px solid #e2e8f0;border-radius:8px;margin-bottom:0.75rem;overflow:hidden;" open>
       <summary style="padding:1rem 1.25rem;font-weight:700;color:#0B4060;cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center;background:#fff;">
-        Do you offer free roof inspections in West Jordan?
+        When do West Jordan homes typically need reroofing?
         <span style="font-size:1.25rem;flex-shrink:0;margin-left:1rem;">+</span>
       </summary>
       <div style="padding:1rem 1.25rem;background:#fff;border-top:1px solid #e2e8f0;color:#374151;line-height:1.6;">
@@ -248,20 +263,20 @@
     </details>
     <details style="border:1px solid #e2e8f0;border-radius:8px;margin-bottom:0.75rem;overflow:hidden;">
       <summary style="padding:1rem 1.25rem;font-weight:700;color:#0B4060;cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center;background:#fff;">
-        Does Frame Restoration handle insurance claims for West Jordan homeowners?
+        Is West Jordan prone to hail damage?
         <span style="font-size:1.25rem;flex-shrink:0;margin-left:1rem;">+</span>
       </summary>
       <div style="padding:1rem 1.25rem;background:#fff;border-top:1px solid #e2e8f0;color:#374151;line-height:1.6;">
-        Yes. We specialize in storm damage insurance claims throughout Salt Lake County including West Jordan. We document all hail, wind, and storm damage, coordinate directly with your adjuster from most major Utah carriers, and help ensure you receive the full payout your policy allows. We've helped homeowners across the Wasatch Front recover full claim value when initial adjuster assessments underestimated the damage.
+        Yes. Storms develop over the Oquirrh Mountains and sweep across the south valley with concentrated force. West Jordan sees multiple significant hail events per year from May through September. We recommend a free inspection after any storm — hidden damage can shorten your roof's life by years.
       </div>
     </details>
     <details style="border:1px solid #e2e8f0;border-radius:8px;margin-bottom:0.75rem;overflow:hidden;">
       <summary style="padding:1rem 1.25rem;font-weight:700;color:#0B4060;cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center;background:#fff;">
-        When is hail season in West Jordan, Utah?
+        Does Frame Roofing Utah handle insurance claims in West Jordan?
         <span style="font-size:1.25rem;flex-shrink:0;margin-left:1rem;">+</span>
       </summary>
       <div style="padding:1rem 1.25rem;background:#fff;border-top:1px solid #e2e8f0;color:#374151;line-height:1.6;">
-        West Jordan typically sees its most active hail and storm season from late spring through summer. Storms often develop over the Wasatch Range and move across Salt Lake County rapidly. After any significant storm, Frame Restoration recommends a free inspection — hail damage that looks minor from the ground can significantly shorten your roof's lifespan if left unaddressed.
+        Yes. We specialize in storm damage claims throughout Salt Lake County including West Jordan. We document all damage with detailed photography, coordinate with your adjuster, and fight for the full payout your policy allows.
       </div>
     </details>
     <details style="border:1px solid #e2e8f0;border-radius:8px;margin-bottom:0.75rem;overflow:hidden;">
@@ -270,12 +285,12 @@
         <span style="font-size:1.25rem;flex-shrink:0;margin-left:1rem;">+</span>
       </summary>
       <div style="padding:1rem 1.25rem;background:#fff;border-top:1px solid #e2e8f0;color:#374151;line-height:1.6;">
-        Roof replacement costs in West Jordan typically range from $8,000 to $22,000 for a standard residential home, depending on square footage, pitch, material choice, and current damage. Frame Restoration provides free written estimates with no obligation. If your roof was damaged by hail or wind, insurance may cover all or most of the replacement cost — we handle the claim process at no extra charge.
+        Residential roof replacements in West Jordan typically range from $8,000 to $22,000 depending on home size and material choice. Many homeowners pay little to nothing when storm damage is covered by insurance. Free estimates, no obligation.
       </div>
     </details>
     <details style="border:1px solid #e2e8f0;border-radius:8px;margin-bottom:0.75rem;overflow:hidden;">
       <summary style="padding:1rem 1.25rem;font-weight:700;color:#0B4060;cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center;background:#fff;">
-        Is Frame Restoration licensed and insured in West Jordan, Utah?
+        Is Frame Roofing Utah licensed in Salt Lake County?
         <span style="font-size:1.25rem;flex-shrink:0;margin-left:1rem;">+</span>
       </summary>
       <div style="padding:1rem 1.25rem;background:#fff;border-top:1px solid #e2e8f0;color:#374151;line-height:1.6;">
@@ -290,7 +305,7 @@
   <p>&copy; 2026 Frame Roofing Utah. All rights reserved. Licensed &amp; Insured in Utah.</p>
   <p><a href="/">Home</a> &middot; <a href="/privacy">Privacy Policy</a> &middot; <a href="/terms">Terms</a> &middot; <a href="tel:+14353024422">435-302-4422</a></p>
 </footer>
-<div class="sticky-call"><a href="tel:+14353024422">&#9742; Call 435-302-4422</a></div>
+<div class="sticky-call"><a href="tel:+14352928802">&#9742; Call 435-292-8802</a></div>
 <script>
 const btn=document.getElementById('menuBtn'),links=document.getElementById('navLinks');
 if(btn&&links)btn.addEventListener('click',()=>{links.classList.toggle('open');btn.setAttribute('aria-expanded',links.classList.contains('open'))});

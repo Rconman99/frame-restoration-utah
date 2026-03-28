@@ -16,10 +16,7 @@
   <meta name="robots" content="noindex, nofollow" />
   <meta name="theme-color" content="#0B4060" />
   <link rel="icon" href="/favicon.ico" sizes="32x32" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Archivo:wght@400;600&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/global.css">
+  <link rel="stylesheet" href="/global.css?v=20260324">
   <script src="/global-modal.js" defer></script>
 <script type="application/ld+json">
 {
@@ -55,7 +52,7 @@
   <ul class="nav-links" id="navLinks">
     <li><a href="/#services">Services</a></li>
     <li><a href="/blog">Blog</a></li>
-    <li><a href="/#gallery">Our Work</a></li>
+    <li><a href="/pages/gallery">Projects</a></li>
     <li><a href="/#areas">Service Areas</a></li>
     <li><a href="/#faq">FAQ</a></li>
     <li><a href="/#contact">Contact</a></li>
@@ -67,7 +64,7 @@
 
 <main>
 <section class="page-hero">
-  <div class="page-hero-img"><img src="/images/photos/frame-restoration-14.jpg" alt="Roofing crew repairing storm-damaged roof in Utah" width="1920" height="1080" loading="eager" /></div>
+  <div class="page-hero-img"><img src="/images/projects/cities/wallsburg-storm-damage-reroof-2026.webp" alt="Storm damage reroof on upscale timber-frame property by Frame Roofing Utah in Utah" width="1440" height="1920" loading="eager" /></div>
   <div class="page-hero-overlay"></div>
   <div class="page-hero-content">
     <div class="breadcrumb"><a href="/">Home</a> &rsaquo; <a href="/#services">Services</a> &rsaquo; Storm Damage</div>
@@ -85,7 +82,7 @@
     <span class="section-label">Storm Damage</span>
 
     <h2>Hail Damage Repair</h2>
-    <p>Utah sits in the heart of the Wasatch Front hail belt, where summer storms routinely produce golf-ball-sized hail that destroys shingles, dents gutters, and cracks ridge caps. Frame Restoration specializes in identifying hail damage that untrained eyes miss — the subtle bruising and granule loss that insurance adjusters look for during inspections.</p>
+    <p>Utah sits in the heart of the Wasatch Front hail belt, where summer storms routinely produce golf-ball-sized hail that destroys shingles, dents gutters, and cracks ridge caps. Frame Roofing Utah specializes in identifying hail damage that untrained eyes miss — the subtle bruising and granule loss that insurance adjusters look for during inspections.</p>
     <p>After a hailstorm, time matters. Most insurance policies require you to file a claim within one year of the damage date, and waiting too long can mean a denied claim. We provide free hail damage assessments and handle the entire insurance process so you get the full coverage you deserve.</p>
 
     <h2>Wind & Snow Damage</h2>
@@ -93,7 +90,7 @@
     <p>Whether it is wind-lifted shingles, crushed vents from snow weight, or ice dam leaks dripping through your ceiling, our crews know exactly how to assess and repair these Utah-specific problems quickly and permanently.</p>
 
     <h2>Emergency Storm Response</h2>
-    <p>Storms do not wait for business hours, and neither do we. Frame Restoration offers 24/7 emergency storm response across the entire Wasatch Front. When a storm tears through your neighborhood, our team can be on-site the same day to tarp exposed areas, prevent further water intrusion, and start documenting damage for your insurance claim.</p>
+    <p>Storms do not wait for business hours, and neither do we. Frame Roofing Utah offers rapid emergency storm response across the entire Wasatch Front. When a storm tears through your neighborhood, our team can be on-site the same day to tarp exposed areas, prevent further water intrusion, and start documenting damage for your insurance claim.</p>
     <ul>
       <li>Same-day emergency tarping to stop active leaks</li>
       <li>Full photo and video documentation for insurance</li>
@@ -161,7 +158,7 @@
   <p>&copy; 2026 Frame Roofing Utah. All rights reserved. Licensed &amp; Insured in Utah.</p>
   <p><a href="/">Home</a> &middot; <a href="/privacy">Privacy Policy</a> &middot; <a href="/terms">Terms</a> &middot; <a href="tel:+14353024422">435-302-4422</a></p>
 </footer>
-<div class="sticky-call"><a href="tel:+14353024422">&#9742; Call 435-302-4422</a></div>
+<div class="sticky-call"><a href="tel:+14352928802">&#9742; Call 435-292-8802</a></div>
 <script>
 const btn=document.getElementById('menuBtn'),links=document.getElementById('navLinks');
 if(btn&&links)btn.addEventListener('click',()=>{links.classList.toggle('open');btn.setAttribute('aria-expanded',links.classList.contains('open'))});
@@ -198,5 +195,44 @@ if(btn&&links)btn.addEventListener('click',()=>{links.classList.toggle('open');b
   ]
 }
 </script>
+<script>
+  // PostHog Conversion Tracking — phone, email, form
+  (function(){
+    var city = (function(){
+      var m = window.location.pathname.match(/\/locations\/([^\/\.]+)/);
+      return m ? m[1].replace(/-/g,' ') : 'homepage';
+    })();
+    var page = window.location.pathname;
+
+    // Track phone clicks
+    document.querySelectorAll('a[href^="tel:"]').forEach(function(a){
+      a.addEventListener('click', function(){
+        if(window.posthog) posthog.capture('phone_click', {city: city, page: page, phone: a.href.replace('tel:','')});
+      });
+    });
+
+    // Track email clicks
+    document.querySelectorAll('a[href^="mailto:"]').forEach(function(a){
+      a.addEventListener('click', function(){
+        if(window.posthog) posthog.capture('email_click', {city: city, page: page, email: a.href.replace('mailto:','')});
+      });
+    });
+
+    // Track form submissions
+    var heroForm = document.getElementById('heroForm');
+    if(heroForm){
+      heroForm.addEventListener('submit', function(){
+        if(window.posthog) posthog.capture('form_submitted', {city: city, page: page, form: 'hero_inspection'});
+      });
+    }
+
+    // Track CTA button clicks (Free Inspection, Call buttons)
+    document.querySelectorAll('.btn-primary, .btn-secondary').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        if(window.posthog) posthog.capture('cta_click', {city: city, page: page, cta_text: btn.textContent.trim().substring(0,50)});
+      });
+    });
+  })();
+  </script>
 </body>
 </html>
