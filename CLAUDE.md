@@ -1,5 +1,5 @@
 # Frame Roofing Utah — Claude Master Context
-> Last updated: 2026-03-28 | Auto-refreshed via Cowork scheduled task
+> Last updated: 2026-03-29 | Auto-refreshed via Cowork scheduled task
 
 ---
 
@@ -63,9 +63,11 @@
 ## SITE STRUCTURE (107+ HTML pages)
 
 - `/` — Homepage (index.html), H1: "The Gold Standard In Utah Roofing"
-- `/pages/` — 12 service pages (residential-roofing, commercial-roofing, roof-repair, roof-replacement, storm-damage, storm-damage-restoration [redirects to storm-damage], emergency-tarping, gutters, solar-installation, insurance-claims, general-contracting, water-fire-flood-restoration)
-- `/locations/` — 44 location pages (all Utah cities along the Wasatch Front)
-- `/blog/` — Blog index + ~24 posts in city subdirectories (heber-city/5, salt-lake-city/4, park-city/3, sandy/2, plus 1 each in bountiful, draper, herriman, layton, lehi, murray, orem, provo, west-jordan, west-valley-city)
+- `/pages/` — 13 service pages (residential-roofing, commercial-roofing, roof-repair, roof-replacement, storm-damage, storm-damage-restoration [redirects to storm-damage], emergency-tarping, gutters, solar-installation, insurance-claims, general-contracting, water-fire-flood-restoration, gallery)
+- `/locations/` — 45 location pages (all Utah cities along the Wasatch Front)
+- `/blog/` — Blog index + 34 posts total:
+  - `/blog/utah/` — 10 statewide SEO posts (roof-replacement-cost, emergency-roof-repair, how-long-does-roof-last, how-to-choose-a-roofer, best-roofing-materials, signs-you-need-new-roof, utah-hail-season, utah-roof-insurance-claims, utah-roof-maintenance-checklist, utah-roof-ventilation-guide)
+  - City subdirectories: heber-city/5, salt-lake-city/4, park-city/3, sandy/2, plus 1 each in bountiful, draper, herriman, layton, lehi, murray, orem, provo, west-jordan, west-valley-city (~24 city posts)
 - `/projects/` — 1 case study (heber-valley-roof)
 - `/archive/` — Old docs, sub-location service pages, eval files
 - `/images/` — Photos, OG image, brand source files (/brand-source/, /projects/cities/, /services/)
@@ -182,6 +184,10 @@
 ---
 
 ## SESSION LOG
+
+### 2026-03-29
+- Auto-refresh: No new commits or file changes since 2026-03-28
+- Corrected CLAUDE.md inaccuracies: location count 44→45, added /blog/utah/ (10 statewide posts), added gallery.html to pages list
 
 ### 2026-03-28
 - Fixed Yelp URL in index.html footer (/biz/frame-restoration-utah → /biz/frame-restoration-heber-city)
