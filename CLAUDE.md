@@ -60,17 +60,18 @@
 
 ---
 
-## SITE STRUCTURE (107+ HTML pages)
+## SITE STRUCTURE (115 HTML pages, 102 sitemap URLs)
 
 - `/` — Homepage (index.html), H1: "The Gold Standard In Utah Roofing"
-- `/pages/` — 13 service pages (residential-roofing, commercial-roofing, roof-repair, roof-replacement, storm-damage, storm-damage-restoration [redirects to storm-damage], emergency-tarping, gutters, solar-installation, insurance-claims, general-contracting, water-fire-flood-restoration, gallery)
+- `/about.html` — Root-level About page (redirects or mirrors pages/about)
+- `/pages/` — 14 pages (residential-roofing, commercial-roofing, roof-repair, roof-replacement, storm-damage, storm-damage-restoration [redirects to storm-damage], emergency-tarping, gutters, solar-installation, insurance-claims, general-contracting, water-fire-flood-restoration, gallery, **about** [NEW — owner bio, headshot, E-E-A-T signals])
 - `/locations/` — 45 location pages (all Utah cities along the Wasatch Front)
 - `/blog/` — Blog index + 34 posts total:
   - `/blog/utah/` — 10 statewide SEO posts (roof-replacement-cost, emergency-roof-repair, how-long-does-roof-last, how-to-choose-a-roofer, best-roofing-materials, signs-you-need-new-roof, utah-hail-season, utah-roof-insurance-claims, utah-roof-maintenance-checklist, utah-roof-ventilation-guide)
   - City subdirectories: heber-city/5, salt-lake-city/4, park-city/3, sandy/2, plus 1 each in bountiful, draper, herriman, layton, lehi, murray, orem, provo, west-jordan, west-valley-city (~24 city posts)
 - `/projects/` — 1 case study (heber-valley-roof)
 - `/archive/` — Old docs, sub-location service pages, eval files
-- `/images/` — Photos, OG image, brand source files (/brand-source/, /projects/cities/, /services/)
+- `/images/` — Photos, OG image, brand source files (/brand-source/, /projects/cities/, /services/), landon-yokers-headshot.jpg (About page)
 - `/assets/` — Hero video/poster, gutters video
 
 ### Key Files
@@ -195,7 +196,12 @@
 
 ## SESSION LOG
 
-### 2026-03-30
+### 2026-03-30 (afternoon)
+- Added About Us page (`pages/about.html`) with Landon Yokers owner bio, headshot (`images/landon-yokers-headshot.jpg`), and E-E-A-T trust signals
+- Also created root-level `about.html`
+- Site now has 115 HTML files, 102 sitemap URLs
+
+### 2026-03-30 (morning)
 - Landon completed 301 domain forwarding: framerestorationutah.com + www → frameroofingutah.com (permanent, path forwarding enabled)
 - Updated robots.txt with AI crawler directives (GPTBot, ClaudeBot, PerplexityBot, Google-Extended) and blocked bad bots (Bytespider, AhrefsBot)
 - GSC audit: 19 indexed, 89 not indexed. Performance: 10 clicks, 587 impressions, 1.7% CTR, avg pos 23.2
