@@ -1,5 +1,5 @@
 # Frame Roofing Utah — Claude Master Context
-> Last updated: 2026-03-29 | Auto-refreshed via Cowork scheduled task
+> Last updated: 2026-03-30 | Auto-refreshed via Cowork scheduled task
 
 ---
 
@@ -86,6 +86,16 @@
 
 ## SEO STATUS (as of 2026-03-28)
 
+### Google Search Console (Baseline 2026-03-30)
+- **Property:** https://www.frameroofingutah.com/ (verified, ryanconwell99@gmail.com)
+- **Performance (first 10 days):** 10 clicks, 587 impressions, 1.7% CTR, avg position 23.2
+- **Indexed pages:** 19
+- **Not indexed:** 89 (88 "Discovered - currently not indexed", 1 redirect error on storm-damage — FIXED 2026-03-30)
+- **Sitemap:** Submitted 2026-03-26, 101 pages discovered, status: Success
+- **Indexing requests submitted (2026-03-30):** roof-repair, residential-roofing, roof-replacement, commercial-roofing, insurance-claims, gutters, emergency-tarping, solar-installation (8 total, hit daily quota)
+- **Still need indexing requests:** general-contracting, water-fire-flood-restoration, storm-damage (after fix deploys), plus ~40 location pages
+- **Pages missing from sitemap:** insurance-claims, emergency-tarping (need to add)
+
 ### Completed
 - Meta descriptions on ALL 44 location pages, 12 service pages, blog pages
 - Canonical tags (self-referencing) on ALL pages
@@ -156,7 +166,7 @@
 3. Google Sheet lead tracker — Apps Script webhook
 4. Direct email (replace Formspree with Resend/SendGrid)
 5. ~~301 redirects framerestorationutah.com → frameroofingutah.com~~ ✅ DONE (Landon set up domain forwarding 2026-03-30)
-6. Google Search Console verification + sitemap for frameroofingutah.com
+6. ~~Google Search Console verification + sitemap for frameroofingutah.com~~ ✅ DONE (verified, sitemap submitted, indexing requests started 2026-03-30)
 7. Update Google Business Profile with new URL
 
 ### Short-term
@@ -187,6 +197,11 @@
 
 ### 2026-03-30
 - Landon completed 301 domain forwarding: framerestorationutah.com + www → frameroofingutah.com (permanent, path forwarding enabled)
+- Updated robots.txt with AI crawler directives (GPTBot, ClaudeBot, PerplexityBot, Google-Extended) and blocked bad bots (Bytespider, AhrefsBot)
+- GSC audit: 19 indexed, 89 not indexed. Performance: 10 clicks, 587 impressions, 1.7% CTR, avg pos 23.2
+- Submitted indexing requests for 8 service pages (roof-repair, residential-roofing, roof-replacement, commercial-roofing, insurance-claims, gutters, emergency-tarping, solar-installation)
+- Found and fixed redirect loop in vercel.json: /pages/storm-damage ↔ /pages/storm-damage-restoration was an infinite loop. Removed the wrong-direction rule.
+- Discovered insurance-claims and emergency-tarping pages missing from sitemap
 
 ### 2026-03-29
 - Auto-refresh: No new commits or file changes since 2026-03-28
