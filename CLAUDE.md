@@ -33,7 +33,7 @@
 
 ### Important Domain Notes
 - frameroofingutah.com = PRODUCTION (Landon's Vercel)
-- framerestorationutah.com = OLD/SANDBOX (Ryan's Vercel) — needs 301 redirects to frameroofingutah.com
+- framerestorationutah.com = OLD/SANDBOX (Ryan's Vercel) — 301 domain forwarding to frameroofingutah.com ACTIVE (set up 2026-03-30 by Landon, path forwarding enabled)
 - framerestorations.com = TEXAS Squarespace site (Landon's other market, Frisco TX) — causes SEO brand confusion. We do NOT control this.
 - All canonical URLs, OG tags, and schema in the codebase reference www.frameroofingutah.com
 
@@ -155,7 +155,7 @@
 2. Build speed-to-lead AI bot — Twilio + Claude API + Supabase
 3. Google Sheet lead tracker — Apps Script webhook
 4. Direct email (replace Formspree with Resend/SendGrid)
-5. 301 redirects framerestorationutah.com → frameroofingutah.com
+5. ~~301 redirects framerestorationutah.com → frameroofingutah.com~~ ✅ DONE (Landon set up domain forwarding 2026-03-30)
 6. Google Search Console verification + sitemap for frameroofingutah.com
 7. Update Google Business Profile with new URL
 
@@ -184,6 +184,9 @@
 ---
 
 ## SESSION LOG
+
+### 2026-03-30
+- Landon completed 301 domain forwarding: framerestorationutah.com + www → frameroofingutah.com (permanent, path forwarding enabled)
 
 ### 2026-03-29
 - Auto-refresh: No new commits or file changes since 2026-03-28

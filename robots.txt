@@ -1,9 +1,35 @@
+# Frame Roofing Utah — robots.txt
+# Last updated: 2026-03-30
+
 User-agent: *
 Allow: /
 Disallow: /thank-you
 Disallow: /privacy
 Disallow: /terms
 Disallow: /hero
-Disallow: /services
+Disallow: /archive
+
+# AI Crawlers — Allow (GEO/AI search visibility)
+User-agent: GPTBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+# Block bad bots
+User-agent: Bytespider
+Disallow: /
+
+User-agent: AhrefsBot
+Disallow: /
 
 Sitemap: https://www.frameroofingutah.com/sitemap.xml
