@@ -1,5 +1,5 @@
 # Frame Roofing Utah — Claude Master Context
-> Last updated: 2026-03-30 | Auto-refreshed via Cowork scheduled task
+> Last updated: 2026-04-01 | Auto-refreshed via Cowork scheduled task
 
 ---
 
@@ -195,6 +195,10 @@
 ---
 
 ## SESSION LOG
+
+### 2026-04-01
+- Phone number standardized to 435-302-4422 across all 103 HTML pages (index, locations, blog, services, archive, projects, legal pages)
+- Ensures consistent NAP (Name, Address, Phone) for local SEO signals
 
 ### 2026-03-30 (afternoon)
 - Added About Us page (`pages/about.html`) with Landon Yokers owner bio, headshot (`images/landon-yokers-headshot.jpg`), and E-E-A-T trust signals
