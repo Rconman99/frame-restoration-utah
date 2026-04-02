@@ -3,10 +3,36 @@
 
 ---
 
+## ⛔ CRITICAL RULES — READ BEFORE ANY EDIT
+
+### DO NOT add false trust claims. These are NOT true:
+- **BBB A+ Rated** — Frame Roofing does NOT have a BBB rating. Never add this.
+- **NRCA Member** — Frame Roofing is NOT an NRCA member. Never add this.
+- **GAF Master Elite / OC Preferred** — Not verified. Do not claim.
+- Any certification, membership, or accreditation that hasn't been confirmed by Ryan or Landon.
+
+### These ARE true and can be used:
+- Licensed & Insured in Utah
+- Free Roof Inspections
+- 24/7 Storm Response
+- Financing Available
+- 10-Year Workmanship Warranty
+
+### Phone number: ONE number everywhere
+- **435-302-4422** is the ONLY phone number on the website (Landon's direct)
+- Do NOT use 435-292-8802 (Twilio tracking number — texts are blocked by carriers)
+- If creating any new page, template, or content: use 435-302-4422
+
+### Before generating or editing ANY page:
+1. Read this CLAUDE.md first
+2. Do NOT invent certifications, awards, or memberships
+3. Do NOT re-add things that were previously removed
+4. If unsure whether a claim is true, ASK — don't guess
+
 ## PEOPLE
 
 - **Ryan Conwell** (ryanconwell99@gmail.com) — manages site, SEO, gets 10% commission on leads. Intermediate vibe coder using Claude Code, Cowork, Antigravity, and Google models. Also an Enterprise Platform AE at his day job.
-- **Landon Yokers** (landon@framerestorations.com) — business owner. Wants leads via email + SMS to (801) 410-3280 (Verizon). Phone is personal number — business Twilio number is 435-292-8802.
+- **Landon Yokers** (landon@framerestorations.com) — business owner. Wants leads via email + SMS to 435-302-4422 (his direct number, Verizon).
 - **Business:** Frame Restoration Utah LLC, DBA Frame Roofing Utah
 - **Address:** 142 S Main St, Heber City, UT 84032
 - **Business phone:** 435-302-4422
@@ -128,13 +154,13 @@
 ## LEAD PIPELINE (Supabase)
 
 - **Project:** frame-roofing-utah (ID: hdcflshhomzildwqlmwh, region: us-west-1)
-- **Edge function:** `handle-lead` v2 — receives JSON form submissions, saves to DB, forwards to Formspree
+- **Edge function:** `handle-lead` v5 — receives JSON form submissions, saves to DB, emails via Formspree, sends SMS via Verizon gateway + Twilio (parallel)
 - **DB table:** `leads` (id, created_at, name, email, phone, address, service, message, source_page, status, job_value, commission auto-calc 10%)
 - **Supabase anon key:** eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhkY2Zsc2hob216aWxkd3FsbXdoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM4ODQzNzcsImV4cCI6MjA4OTQ2MDM3N30.GO5CU5dRBfeoC5ZEl2U143cTXbKdV5ZUhq4ucwBICoI
 - **Edge function URL:** https://hdcflshhomzildwqlmwh.supabase.co/functions/v1/handle-lead
 - **Formspree (backup):** meeroaqa (account: ryanconwell99@gmail.com)
 - **Email:** Working via Formspree → Ryan. Needs change to send directly to landon@framerestorations.com CC ryanconwell99@gmail.com
-- **SMS:** NOT WORKING — Verizon gateway blocked. Needs Twilio setup.
+- **SMS:** WORKING — sends via Verizon email-to-SMS gateway (4353024422@vtext.com) as primary + Twilio as secondary. Twilio outbound still blocked by 10DLC (error 30034) but Verizon gateway delivers.
 - **Google Sheet:** NOT YET SET UP — env var ready, needs Google Apps Script webhook
 
 ---
