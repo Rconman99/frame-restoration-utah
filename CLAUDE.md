@@ -6,7 +6,7 @@
 ## ⛔ CRITICAL RULES — READ BEFORE ANY EDIT
 
 ### DO NOT add false trust claims. These are NOT true:
-- **BBB A+ Rated** — Frame Roofing does NOT have a BBB rating. Never add this.
+- ~~**BBB A+ Rated**~~ — NOW CONFIRMED. BBB accreditation approved 2026-04-07. A+ BBB badge on site is accurate.
 - **NRCA Member** — Frame Roofing is NOT an NRCA member. Never add this.
 - **GAF Master Elite / OC Preferred** — Not verified. Do not claim.
 - Any certification, membership, or accreditation that hasn't been confirmed by Ryan or Landon.
@@ -17,6 +17,8 @@
 - 24/7 Storm Response
 - Financing Available
 - 10-Year Workmanship Warranty
+- BBB Accredited (confirmed by Landon 2026-04-07)
+- A+ BBB Rating
 
 ### Phone number: ONE number everywhere
 - **435-302-4422** is the ONLY phone number on the website (Landon's direct)
@@ -221,6 +223,13 @@
 ---
 
 ## SESSION LOG
+
+### 2026-04-07
+- BBB accreditation confirmed by Landon — removed from false claims list, added to confirmed list
+- Updated Facebook link in footer: old /framerestorationutah → new /61572258054303 (Landon's new FB page)
+- Apple Maps Business Connect rejected listing — service-area business without storefront, not actionable
+- Landon now communicates primarily on Twilio number +14353024422 (not personal +18014103280)
+- Landon Message Agent skill built and scheduled (every 15 min) — auto-processes Landon's iMessages
 
 ### 2026-04-01
 - Phone number standardized to 435-302-4422 across all 103 HTML pages (index, locations, blog, services, archive, projects, legal pages) — ensures consistent NAP for local SEO signals
