@@ -1,0 +1,25 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write|edit_block|write_file",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "FILE=$(jq -r '.tool_input.file_path // .tool_input.path // empty' 2>/dev/null); if [ -n \"$FILE\" ] && echo \"$FILE\" | grep -qE '\\.html$'; then echo \"HTML file edited: $FILE\" >> /tmp/landon-agent-edits.log; if command -v tidy >/dev/null 2>&1; then tidy -eq \"$FILE\" 2>&1 | head -5; fi; fi"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "prompt",
+            "prompt": "Before stopping, verify: 1) Was state.json updated with the current timestamp? 2) Was activity-log.md appended with this run's actions? 3) If there were errors, was last_error set in state.json? 4) If you asked Landon a follow-up question, did you add it to pending_actions? If any of these are missing, complete them now before stopping."
+          }
+        ]
+      }
+    ]
+  }
+}
