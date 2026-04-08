@@ -1,5 +1,5 @@
 # Frame Roofing Utah — Claude Master Context
-> Last updated: 2026-04-02 | Auto-refreshed via Cowork scheduled task
+> Last updated: 2026-04-07 | Auto-refreshed via Cowork scheduled task
 
 ---
 
@@ -224,12 +224,32 @@
 
 ## SESSION LOG
 
-### 2026-04-07
+### 2026-04-07 (evening) — Location Rewrite + Agent v2.2
+- **All 44 location pages rewritten** with unique city-specific content (weather patterns, neighborhoods, housing stock, elevation, roofing challenges) — eliminates thin content / duplicate content SEO penalty risk
+- **BBB A+ badge added to homepage trust bar** (SVG star icon, linked to correct BBB profile 90056184)
+- Fixed broken BBB image tag the scheduled agent had left on the live page
+- Corrected BBB URL across trust bar AND schema sameAs (both now profile 90056184)
+- **Landon Message Agent upgraded to v2.2** — SKILL.md now 578 lines, 10/10 readiness on all 9 classification categories:
+  - certification: SVG icon bank (8 icons), exact trust-item HTML, schema update, Lighthouse post-deploy
+  - photos: iMessage extraction, sips auto-resize, Ollama alt-text, exact gallery HTML for both pages, fixed-grid warning
+  - service_change: full 14-page inventory, exact service-card HTML, remove=escalate, Lighthouse verify
+  - testimonial: copy-paste HTML template with star SVGs, reviewCount update, content verification
+  - directory_update: curl HTTP pre-check, exact sameAs format, footer pattern, schema validation
+  - repo_or_code: default=escalate, diagnostic toolkit (Formspree test, Lighthouse mobile, Playwright screenshots, git revert)
+  - question: quick-reference cheat sheet (15 items)
+  - excitement_or_status: soft follow-up awareness for potential content
+  - general: Google Calendar MCP for scheduling
+- **Global Post-Deploy Verification Protocol** added: HTTP 200 check → content grep → Lighthouse a11y+SEO ≥ 0.9 → auto-revert if dropped
+- Agent SKILL.md location: `/Users/agenticmac/.claude/skills/landon-message-agent/SKILL.md`
+
+### 2026-04-07 (earlier)
 - BBB accreditation confirmed by Landon — removed from false claims list, added to confirmed list
 - Updated Facebook link in footer: old /framerestorationutah → new /61572258054303 (Landon's new FB page)
 - Apple Maps Business Connect rejected listing — service-area business without storefront, not actionable
 - Landon now communicates primarily on Twilio number +14353024422 (not personal +18014103280)
 - Landon Message Agent skill built and scheduled (every 15 min) — auto-processes Landon's iMessages
+- Privacy & Terms pages updated with SMS/texting compliance for 10DLC
+- 10DLC campaign resubmitted (expect 1-5 business days)
 
 ### 2026-04-01
 - Phone number standardized to 435-302-4422 across all 103 HTML pages (index, locations, blog, services, archive, projects, legal pages) — ensures consistent NAP for local SEO signals
