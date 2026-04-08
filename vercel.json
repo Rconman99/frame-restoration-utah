@@ -66,6 +66,18 @@
   ],
   "redirects": [
     {
+      "source": "/:path(.*)",
+      "has": [{ "type": "host", "value": "framerestorationutah.com" }],
+      "destination": "https://www.frameroofingutah.com/:path*",
+      "permanent": true
+    },
+    {
+      "source": "/:path(.*)",
+      "has": [{ "type": "host", "value": "www.framerestorationutah.com" }],
+      "destination": "https://www.frameroofingutah.com/:path*",
+      "permanent": true
+    },
+    {
       "source": "/pages/storm-damage-restoration",
       "destination": "/pages/storm-damage",
       "permanent": true
