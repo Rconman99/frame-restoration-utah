@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Frame Roofing Utah — SEO & Lead Tracker</title>
+<meta name="robots" content="noindex, nofollow">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+:root {
+  --navy:#1a2332;--gold:#c8a951;--dark:#0d1117;--card:#161b22;
+  --border:#30363d;--text:#e6edf3;--muted:#8b949e;--green:#3fb950;
+  --red:#f85149;--blue:#58a6ff;--orange:#d29922;--purple:#bc8cff;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;
+  background:var(--dark);color:var(--text);line-height:1.5}
+.container{max-width:1200px;margin:0 auto;padding:24px}
+.header{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;
+  padding:24px 0;border-bottom:1px solid var(--border);margin-bottom:24px}
+.header h1{font-size:24px;font-weight:700}
+.header h1 span{color:var(--gold)}
+.header .meta{color:var(--muted);font-size:14px;text-align:right}
+.header .period{color:var(--blue);font-weight:600}
+</style>
+<style>
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:28px}
+.kpi-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px;text-align:center}
+.kpi-card .value{font-size:32px;font-weight:700;color:var(--gold)}
+.kpi-card .label{font-size:12px;color:var(--muted);margin-top:4px;text-transform:uppercase;letter-spacing:.5px}
+.kpi-card.green .value{color:var(--green)}
+.kpi-card.blue .value{color:var(--blue)}
+.kpi-card.purple .value{color:var(--purple)}
+.section{margin-bottom:28px}
+.section-title{font-size:18px;font-weight:600;margin-bottom:14px;padding-bottom:8px;
+  border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px}
+.badge{font-size:11px;padding:2px 8px;border-radius:12px;font-weight:600;text-transform:uppercase;letter-spacing:.5px}
+.badge-green{background:rgba(63,185,80,.15);color:var(--green)}
+.badge-red{background:rgba(248,81,73,.15);color:var(--red)}
+.badge-blue{background:rgba(88,166,255,.15);color:var(--blue)}
+.badge-gold{background:rgba(200,169,81,.15);color:var(--gold)}
+.chart-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px}
+.chart-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px}
+.chart-card h3{font-size:14px;color:var(--muted);margin-bottom:12px}
+.chart-card canvas{max-height:280px}
+table{width:100%;border-collapse:collapse}
+th,td{padding:10px 12px;text-align:left;border-bottom:1px solid var(--border);font-size:14px}
+th{color:var(--muted);font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.5px}
+tr:hover td{background:rgba(88,166,255,.04)}
+.num{text-align:right;font-variant-numeric:tabular-nums}
+</style>
+<style>
+.loc-grid{display:flex;flex-wrap:wrap;gap:6px}
+.loc-chip{padding:4px 10px;border-radius:6px;font-size:12px;font-weight:500;border:1px solid var(--border)}
+.loc-hot{background:rgba(63,185,80,.2);border-color:var(--green);color:var(--green)}
+.loc-warm{background:rgba(210,153,34,.15);border-color:var(--orange);color:var(--orange)}
+.loc-cold{background:rgba(248,81,73,.08);border-color:rgba(248,81,73,.3);color:var(--muted)}
+.insight-box{background:linear-gradient(135deg,rgba(200,169,81,.08),rgba(88,166,255,.08));
+  border:1px solid var(--gold);border-radius:12px;padding:20px;margin-bottom:16px}
+.insight-box h3{color:var(--gold);margin-bottom:8px;font-size:16px}
+.insight-box p{color:var(--text);font-size:14px;margin-bottom:6px}
+.insight-box .action{color:var(--blue);font-weight:600}
+.loading{text-align:center;padding:60px;color:var(--muted);font-size:18px}
+.loading .spinner{display:inline-block;width:24px;height:24px;border:3px solid var(--border);
+  border-top-color:var(--gold);border-radius:50%;animation:spin 1s linear infinite;margin-right:12px;vertical-align:middle}
+@keyframes spin{to{transform:rotate(360deg)}}
+.period-toggle{display:flex;gap:8px;margin-bottom:20px}
+.period-btn{background:var(--card);border:1px solid var(--border);color:var(--muted);
+  padding:6px 16px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:500}
+.period-btn.active{background:var(--gold);color:var(--dark);border-color:var(--gold)}
+.refresh-btn{background:var(--card);border:1px solid var(--border);color:var(--blue);
+  padding:6px 14px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:500}
+.refresh-btn:hover{background:var(--blue);color:var(--dark)}
+.footer{text-align:center;color:var(--muted);font-size:12px;padding:24px 0;border-top:1px solid var(--border);margin-top:28px}
+@media(max-width:768px){.chart-grid{grid-template-columns:1fr}.kpi-grid{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <div>
+      <h1>Frame Roofing <span>Utah</span></h1>
+      <div style="color:var(--muted);font-size:14px;">SEO & Lead Attribution Tracker</div>
+    </div>
+    <div class="meta">
+      <div>Live Data &middot; <span id="reportDate"></span></div>
+      <div class="period" id="reportPeriod">Last 30 Days</div>
+      <div style="margin-top:6px;display:flex;gap:8px;justify-content:flex-end">
+        <button class="refresh-btn" onclick="loadReport(currentDays)">&#x21bb; Refresh</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="period-toggle">
+    <button class="period-btn active" data-days="7" onclick="switchPeriod(7,this)">7 Days</button>
+    <button class="period-btn" data-days="14" onclick="switchPeriod(14,this)">14 Days</button>
+    <button class="period-btn" data-days="30" onclick="switchPeriod(30,this)">30 Days</button>
+    <button class="period-btn" data-days="90" onclick="switchPeriod(90,this)">90 Days</button>
+  </div>
+
+  <div id="content">
+    <div class="loading"><span class="spinner"></span> Loading live data...</div>
+  </div>
+
+  <div class="footer">
+    Frame Roofing Utah &mdash; Live SEO Tracker &middot; Powered by PostHog + Supabase<br>
+    Built by Ryan Conwell &middot; <a href="https://us.posthog.com/project/333074/dashboard/1454051" target="_blank" style="color:var(--blue);text-decoration:none">Open PostHog Dashboard &nearr;</a>
+  </div>
+</div>
+<script>
+const API = "https://hdcflshhomzildwqlmwh.supabase.co/functions/v1/weekly-report";
+const KEY = "frame-roofing-2026";
+let currentDays = 7;
+let pieChart = null, barChart = null;
+
+function switchPeriod(days, btn) {
+  currentDays = days;
+  document.querySelectorAll('.period-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('reportPeriod').textContent = `Last ${days} Days`;
+  loadReport(days);
+}
+
+async function loadReport(days) {
+  const el = document.getElementById('content');
+  el.innerHTML = '<div class="loading"><span class="spinner"></span> Loading live data...</div>';
+  try {
+    const res = await fetch(`${API}?key=${KEY}&days=${days}`);
+    const D = await res.json();
+    if (D.error) throw new Error(D.error);
+    document.getElementById('reportDate').textContent = new Date(D.generated_at).toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});
+    render(D);
+  } catch(e) {
+    el.innerHTML = `<div class="loading" style="color:var(--red)">Error loading data: ${e.message}</div>`;
+  }
+}
+</script>
+<script>
+function render(D) {
+  const S = D.summary;
+  const gap = D.gap_summary;
+  const el = document.getElementById('content');
+
+  // Build all HTML
+  let html = '';
+
+  // KPI Cards
+  const kpis = [
+    {v:S.total_pageviews,l:"Pageviews",c:""},
+    {v:S.google_organic,l:"Google Organic",c:"green"},
+    {v:S.total_leads,l:"Form Leads",c:"blue"},
+    {v:S.total_calls,l:"Inbound Calls",c:"blue"},
+    {v:S.total_call_minutes+"m",l:"Call Minutes",c:"purple"},
+    {v:S.conversion_rate_pct+"%",l:"Conversion Rate",c:""},
+    {v:gap.locations_with_traffic+"/"+gap.total_locations,l:"Locations Active",c:"green"},
+    {v:"$"+S.total_job_value,l:"Revenue Tracked",c:""}
+  ];
+  html += '<div class="kpi-grid">';
+  kpis.forEach(k => {
+    html += `<div class="kpi-card ${k.c}"><div class="value">${k.v}</div><div class="label">${k.l}</div></div>`;
+  });
+  html += '</div>';
+</script>
+<script>
+function render2(html, D) {
+  const S = D.summary;
+  const TB = D.traffic_breakdown;
+
+  // Charts
+  html += '<div class="chart-grid">';
+  html += '<div class="chart-card"><h3>Traffic by Section</h3><canvas id="pieC"></canvas></div>';
+  html += '<div class="chart-card"><h3>Traffic Sources</h3><canvas id="barC"></canvas></div>';
+  html += '</div>';
+
+  // Top Pages
+  html += '<div class="section"><div class="section-title">Top Pages <span class="badge badge-blue">by pageviews</span></div>';
+  html += '<div class="chart-card"><table><thead><tr><th>Page</th><th class="num">Views</th><th class="num">%</th></tr></thead><tbody>';
+  (D.top_pages || []).forEach(p => {
+    const pct = S.total_pageviews > 0 ? (p.views/S.total_pageviews*100).toFixed(1) : "0";
+    const name = p.path === "/" ? "Homepage" : p.path.replace(/^\//,"").replace(/\//g," / ");
+    html += `<tr><td>${name}</td><td class="num">${p.views}</td><td class="num">${pct}%</td></tr>`;
+  });
+  if (!D.top_pages || D.top_pages.length === 0) {
+    html += '<tr><td colspan="3" style="color:var(--muted);text-align:center">No pageview data yet — PostHog tracking was recently fixed</td></tr>';
+  }
+  html += '</tbody></table></div></div>';
+
+  return html;
+}
+</script>
+<script>
+function render3(html, D) {
+  const gap = D.gap_summary;
+
+  // Location Heat Map
+  html += `<div class="section"><div class="section-title">Location Pages <span class="badge badge-gold">${gap.coverage_pct}% coverage</span></div>`;
+  html += '<div class="chart-card"><h3>Coverage Heat Map — green = 5+ views, orange = 2-4, gray = 0</h3><div class="loc-grid">';
+  (D.location_performance || []).forEach(l => {
+    const cls = l.views >= 5 ? "loc-hot" : l.views >= 2 ? "loc-warm" : "loc-cold";
+    html += `<span class="loc-chip ${cls}">${l.location.replace(/-/g," ")} (${l.views})</span>`;
+  });
+  (D.location_gaps || []).forEach(l => {
+    html += `<span class="loc-chip loc-cold">${l.replace(/-/g," ")}</span>`;
+  });
+  html += '</div></div></div>';
+
+  // Leads & Calls
+  html += '<div class="section"><div class="section-title">Leads & Calls <span class="badge badge-green">conversion pipeline</span></div>';
+  html += '<div class="chart-grid">';
+
+  // Leads table
+  html += '<div class="chart-card"><h3>Recent Leads</h3><table><thead><tr><th>Name</th><th>Service</th><th>Source</th><th>Date</th></tr></thead><tbody>';
+  const realLeads = (D.leads || []).filter(l => !l.name.includes("TEST"));
+  if (realLeads.length) {
+    realLeads.forEach(l => {
+      const d = new Date(l.created_at).toLocaleDateString('en-US',{month:'short',day:'numeric'});
+      html += `<tr><td>${l.name}</td><td>${l.service||""}</td><td>${l.source_page||""}</td><td>${d}</td></tr>`;
+    });
+  } else {
+    html += '<tr><td colspan="4" style="color:var(--muted);text-align:center">No leads this period</td></tr>';
+  }
+  html += '</tbody></table></div>';
+  return html;
+}
+</script>
+<script>
+function render4(html, D) {
+  // Calls table
+  html += '<div class="chart-card"><h3>Recent Calls</h3><table><thead><tr><th>From</th><th>City</th><th>Duration</th><th>Date</th></tr></thead><tbody>';
+  const calls = (D.calls || []);
+  if (calls.length) {
+    calls.forEach(c => {
+      const d = new Date(c.created_at).toLocaleDateString('en-US',{month:'short',day:'numeric'});
+      const dur = c.duration_seconds ? c.duration_seconds + "s" : "—";
+      html += `<tr><td>${c.from_number}</td><td>${c.city||"Unknown"}</td><td>${dur}</td><td>${d}</td></tr>`;
+    });
+  } else {
+    html += '<tr><td colspan="4" style="color:var(--muted);text-align:center">No calls this period</td></tr>';
+  }
+  html += '</tbody></table></div></div></div>';
+
+  // Insights
+  html += '<div class="section"><div class="section-title">Insights & Recommendations</div>';
+  const S = D.summary;
+  const gap = D.gap_summary;
+
+  if (S.google_organic > 0) {
+    html += insight("Google is finding you",
+      `${S.google_organic} visits from Google organic. Pages are indexed and ranking. This compounds as content ages and backlinks grow.`,
+      "Keep publishing blog content + build backlinks to accelerate.");
+  } else {
+    html += insight("Google organic is at zero",
+      "No Google organic traffic yet. Pages are indexed but not ranking high enough to drive clicks.",
+      "Focus on backlink acquisition and Google Business Profile optimization.");
+  }
+  return html;
+}
+</script>
+<script>
+function render5(html, D) {
+  const gap = D.gap_summary;
+  if (gap.locations_no_traffic > 20) {
+    const big = (D.location_gaps||[]).filter(l =>
+      ["sandy","provo","orem","ogden","lehi","west-valley-city","murray","riverton","south-jordan","taylorsville"].includes(l));
+    html += insight(`${gap.locations_no_traffic} location pages have zero traffic`,
+      `Only ${gap.coverage_pct}% of ${gap.total_locations} location pages getting visits. Big cities with no traffic: ${big.map(l=>l.replace(/-/g," ")).join(", ")}.`,
+      "Create blog posts targeting these cities + add internal links from service pages.");
+  }
+
+  if (D.location_performance && D.location_performance.length > 0) {
+    const top = D.location_performance[0];
+    html += insight(`${top.location.replace(/-/g," ")} is your top location`,
+      `${top.location.replace(/-/g," ")} leads with ${top.views} views. Focus content and backlinks here to build a local authority cluster.`,
+      "Write neighborhood-specific blog posts for this area, get Google reviews mentioning these cities.");
+  }
+
+  if (D.summary.total_job_value === 0) {
+    html += insight("Start tracking job values to prove ROI",
+      "No job values logged yet. Once leads are marked completed with dollar amounts, this tracker shows your exact 10% commission earned from SEO.",
+      "When a lead converts, update the lead record in Supabase with job_value and commission.");
+  }
+
+  html += '</div>';
+  return html;
+}
+
+function insight(title, text, action) {
+  return `<div class="insight-box"><h3>${title}</h3><p>${text}</p><p class="action">&rarr; ${action}</p></div>`;
+}
+</script>
+<script>
+// Main render orchestrator — ties all render functions together
+function renderFull(D) {
+  const el = document.getElementById('content');
+  let html = '';
+
+  // Call render() to build KPI cards
+  // (render() sets html via the closure above, let's inline it here)
+  const S = D.summary;
+  const gap = D.gap_summary || {locations_with_traffic:0,total_locations:59,coverage_pct:0,locations_no_traffic:59};
+  const kpis = [
+    {v:S.total_pageviews||0,l:"Pageviews",c:""},
+    {v:S.google_organic||0,l:"Google Organic",c:"green"},
+    {v:S.total_leads||0,l:"Form Leads",c:"blue"},
+    {v:S.total_calls||0,l:"Inbound Calls",c:"blue"},
+    {v:(S.total_call_minutes||0)+"m",l:"Call Minutes",c:"purple"},
+    {v:(S.conversion_rate_pct||0)+"%",l:"Conversion Rate",c:""},
+    {v:(gap.locations_with_traffic||0)+"/"+(gap.total_locations||59),l:"Locations Active",c:"green"},
+    {v:"$"+(S.total_job_value||0),l:"Revenue Tracked",c:""}
+  ];
+  html += '<div class="kpi-grid">';
+  kpis.forEach(k => { html += `<div class="kpi-card ${k.c}"><div class="value">${k.v}</div><div class="label">${k.l}</div></div>`; });
+  html += '</div>';
+
+  html = render2(html, D);
+  html = render3(html, D);
+  html = render4(html, D);
+  html = render5(html, D);
+
+  el.innerHTML = html;
+  buildCharts(D);
+}
+</script>
+<script>
+function buildCharts(D) {
+  const TB = D.traffic_breakdown || {};
+  const TS = D.traffic_sources || {};
+
+  // Destroy old charts
+  if (pieChart) pieChart.destroy();
+  if (barChart) barChart.destroy();
+
+  const pieEl = document.getElementById('pieC');
+  const barEl = document.getElementById('barC');
+
+  if (pieEl) {
+    const labels = Object.keys(TB).length ? Object.keys(TB).map(k => k.charAt(0).toUpperCase()+k.slice(1)) : ["No data"];
+    const vals = Object.keys(TB).length ? Object.values(TB) : [1];
+    pieChart = new Chart(pieEl, {
+      type:"doughnut",
+      data:{labels, datasets:[{data:vals,
+        backgroundColor:["#c8a951","#3fb950","#58a6ff","#bc8cff","#d29922","#8b949e"],borderWidth:0}]},
+      options:{responsive:true,plugins:{legend:{position:"bottom",labels:{color:"#8b949e",padding:12,font:{size:12}}}}}
+    });
+  }
+
+  if (barEl) {
+    const srcLabels = Object.keys(TS).length ? Object.keys(TS).map(s => s==="$direct"?"Direct":s.replace("www.","")) : ["No data"];
+    const srcVals = Object.keys(TS).length ? Object.values(TS) : [0];
+    barChart = new Chart(barEl, {
+      type:"bar",
+      data:{labels:srcLabels, datasets:[{data:srcVals,
+        backgroundColor:["#58a6ff","#3fb950","#c8a951","#bc8cff","#d29922","#8b949e","#f85149","#e6edf3"],
+        borderRadius:6,borderSkipped:false}]},
+      options:{responsive:true,indexAxis:"y",plugins:{legend:{display:false}},
+        scales:{x:{grid:{color:"rgba(48,54,61,.5)"},ticks:{color:"#8b949e"}},
+                y:{grid:{display:false},ticks:{color:"#e6edf3",font:{size:12}}}}}
+    });
+  }
+}
+
+// Override render() to use renderFull
+window.render = renderFull;
+
+// Load on page ready
+loadReport(currentDays);
+</script>
+</body>
+</html>
