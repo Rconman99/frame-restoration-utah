@@ -51,17 +51,17 @@ tr:hover td{background:rgba(88,166,255,.04)}.num{text-align:right;font-variant-n
 <body>
 <div class="ctr">
 <div class="hdr"><div><h1>Frame Roofing <span>Utah</span></h1><div style="color:var(--muted);font-size:14px">SEO & Lead Attribution Tracker</div></div>
-<div class="meta"><div>Live Data &middot; <span id="rDate"></span></div><div class="period" id="rPeriod">Last 7 Days</div>
+<div class="meta"><div>Live Data &middot; <span id="rDate"></span></div><div class="period" id="rPeriod">Last 30 Days</div>
 <div style="margin-top:6px"><button class="rb" onclick="go(curD)">&#x21bb; Refresh</button></div></div></div>
 <div style="display:flex;gap:8px;margin-bottom:20px">
-<button class="pb act" onclick="sw(7,this)">7 Days</button><button class="pb" onclick="sw(14,this)">14 Days</button>
-<button class="pb" onclick="sw(30,this)">30 Days</button><button class="pb" onclick="sw(90,this)">90 Days</button></div>
+<button class="pb" onclick="sw(7,this)">7 Days</button><button class="pb" onclick="sw(14,this)">14 Days</button>
+<button class="pb act" onclick="sw(30,this)">30 Days</button><button class="pb" onclick="sw(90,this)">90 Days</button></div>
 <div id="ct"><div class="ld"><span class="sp"></span> Loading live data...</div></div>
 <div class="ft">Frame Roofing Utah &mdash; Live SEO Tracker &middot; Powered by PostHog + Supabase<br>
 Built by Ryan Conwell &middot; <a href="https://us.posthog.com/project/333074/dashboard/1454051" target="_blank" style="color:var(--blue);text-decoration:none">PostHog Dashboard &nearr;</a></div>
 </div>
 <script>
-var API="https://hdcflshhomzildwqlmwh.supabase.co/functions/v1/weekly-report",KEY="frame-roofing-2026",curD=7,pC=null,bC=null;
+var API="https://hdcflshhomzildwqlmwh.supabase.co/functions/v1/weekly-report",KEY="frame-roofing-2026",curD=30,pC=null,bC=null;
 function sw(d,btn){curD=d;document.querySelectorAll('.pb').forEach(function(b){b.classList.remove('act')});btn.classList.add('act');document.getElementById('rPeriod').textContent='Last '+d+' Days';go(d);}
 async function go(days){var el=document.getElementById('ct');el.innerHTML='<div class="ld"><span class="sp"></span> Loading live data...</div>';
 try{var r=await fetch(API+'?key='+KEY+'&days='+days);var D=await r.json();if(D.error)throw new Error(D.error);
