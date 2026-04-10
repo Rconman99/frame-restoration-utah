@@ -257,6 +257,10 @@
 <script type="application/ld+json">
 {"@context": "https://schema.org", "@type": "HowTo", "name": "How to Choose Roofing Materials for Salt Lake City's Climate", "step": [{"@type": "HowToStep", "name": "Understand Salt Lake City's climate challenges", "text": "SLC roofs face intense UV at 4,300+ feet, freeze-thaw cycles, summer hail, winter snow loads, and occasional high winds from canyon drafts."}, {"@type": "HowToStep", "name": "Evaluate asphalt shingle options", "text": "Architectural shingles are the most popular choice. Look for Class 4 impact ratings and 130+ mph wind ratings for Salt Lake City conditions."}, {"@type": "HowToStep", "name": "Consider metal roofing benefits", "text": "Metal roofs reflect UV radiation, shed snow easily, and last 40-60 years. They cost more upfront but require less maintenance long-term."}, {"@type": "HowToStep", "name": "Assess tile and slate alternatives", "text": "Concrete tile and synthetic slate offer excellent longevity and fire resistance but require reinforced roof framing due to their weight."}, {"@type": "HowToStep", "name": "Factor in energy efficiency", "text": "Light-colored or reflective roofing materials reduce cooling costs during Salt Lake City's hot summers. Look for Energy Star rated products."}, {"@type": "HowToStep", "name": "Match material to your home style", "text": "Colonial and traditional homes suit architectural shingles. Modern homes look great with metal. Mediterranean styles pair well with tile."}]}
 </script>
+<script>
+    !function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.crossOrigin="anonymous",p.async=!0,p.src=s.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+".people (stub)"},o="init capture register register_once register_for_session unregister unregister_for_session getFeatureFlag getFeatureFlagPayload isFeatureEnabled reloadFeatureFlags updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures on onFeatureFlags onSessionId getSurveys getActiveMatchingSurveys renderSurvey canRenderSurvey identify setPersonProperties group resetGroups setPersonPropertiesForFlags resetPersonPropertiesForFlags setGroupPropertiesForFlags resetGroupPropertiesForFlags reset get_distinct_id getGroups get_session_id get_session_replay_url alias set_config startSessionRecording stopSessionRecording sessionRecordingStarted captureException loadToolbar get_property getSessionProperty createPersonProfile opt_in_capturing opt_out_capturing has_opted_in_capturing has_opted_out_capturing clear_opt_in_out_capturing debug getPageviewId".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
+    posthog.init('phc_BnECzlZ2OeDujli2dbqcgGODXlv2tYERbp40dTF7UBV',{api_host:'https://us.i.posthog.com', person_profiles: 'identified_only'})
+</script>
 </head>
 <body>
   <nav>
@@ -436,5 +440,34 @@ const btn=document.getElementById('menuBtn'),links=document.getElementById('navL
 if(btn&&links)btn.addEventListener('click',()=>{links.classList.toggle('open');btn.setAttribute('aria-expanded',links.classList.contains('open'))});
   </script>
   <script src="/global-modal.js" defer></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  var page = location.pathname;
+  // Track phone clicks
+  document.querySelectorAll('a[href^="tel:"]').forEach(function(a) {
+    a.addEventListener('click', function() {
+      if(window.posthog) posthog.capture('phone_click', {page: page, phone: a.href.replace('tel:','')});
+    });
+  });
+  // Track email clicks
+  document.querySelectorAll('a[href^="mailto:"]').forEach(function(a) {
+    a.addEventListener('click', function() {
+      if(window.posthog) posthog.capture('email_click', {page: page, email: a.href.replace('mailto:','')});
+    });
+  });
+  // Track CTA clicks
+  document.querySelectorAll('.btn-gold, .btn-navy, .blog-cta a, [class*="cta"] a').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      if(window.posthog) posthog.capture('cta_click', {page: page, cta_text: btn.textContent.trim().substring(0,50)});
+    });
+  });
+  // Track form submissions
+  document.querySelectorAll('form').forEach(function(f) {
+    f.addEventListener('submit', function() {
+      if(window.posthog) posthog.capture('form_submitted', {page: page, form: f.id || f.action || 'unknown'});
+    });
+  });
+});
+</script>
 </body>
 </html>

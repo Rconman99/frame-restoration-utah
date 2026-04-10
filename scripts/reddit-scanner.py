@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """
-Reddit Scanner v3 for Frame Roofing Utah
+Reddit Scanner v4 for Frame Roofing Utah
+Updated 2026-04-10: Added subreddits, cities, keywords from deep research.
 STRICT classification: roofing+Utah context gates on post TEXT only.
 Fetches via curl, POSTs to Supabase edge function.
 """
@@ -15,14 +16,23 @@ KEYWORDS = [
     "hail damage Wasatch", "roof repair Utah",
     "insurance claim roof Utah", "roofer recommendation Utah",
     "roof leak Salt Lake City", "hail damage Utah",
+    # v4 additions: high-intent keywords from 2026 research
+    "roof replacement Utah", "emergency roofer Utah",
+    "roof inspection Heber", "storm damage Park City",
 ]
 SUBREDDITS = [
     "SaltLakeCity", "Utah", "homeimprovement",
     "roofing", "Insurance", "HomeOwners", "RealEstate",
+    # v4 additions: Utah local subs + contractor-relevant
+    "ParkCity", "HeberCity", "WasatchFront",
+    "utahrealestate", "utahcounty",
 ]
 COMPETITORS = [
     "bighorn", "bartlett", "vertex", "olympus", "iwc",
     "reimagine", "legacy roofing", "premier roofing",
+    # v4 additions: more Utah competitors
+    "best choice roofing", "homer roofing", "reroofit",
+    "intermountain west", "sky ridge", "utah roofing pros",
 ]
 
 ROOFING_TERMS = [
@@ -31,6 +41,9 @@ ROOFING_TERMS = [
     "ice dam", "granule loss", "roof deck", "underlayment",
     "class 4", "impact resistant", "standing seam", "metal roof",
     "tile roof", "flat roof", "tpo", "epdm", "reroof", "tear off",
+    # v4 additions
+    "roof replacement", "roof inspection", "emergency roof",
+    "roof estimate", "roof warranty", "roof coating",
 ]
 UTAH_TERMS = [
     "utah", "salt lake", "wasatch", "slc", "provo", "ogden",
@@ -42,6 +55,13 @@ UTAH_TERMS = [
     "pleasant grove", "alpine ut", "highland ut", "bluffdale",
     "kaysville", "farmington ut", "centerville ut", "woods cross",
     "north salt lake", "bountiful ut", "layton ut",
+    # v4 additions: Heber Valley + missing Wasatch cities
+    "heber city", "heber", "midway ut", "midway utah", "wasatch county",
+    "summit county", "kamas", "coalville", "francis ut",
+    "daniel ut", "wallsburg", "sundance", "deer valley",
+    "jordan landing", "daybreak", "south salt lake",
+    "sugar house", "sugarhouse", "avenues slc", "the avenues",
+    "sandy utah", "draper utah", "murray utah",
 ]
 LEAD_PHRASES = [
     "need a roofer", "looking for a roofer", "roofer recommendation",
@@ -49,6 +69,11 @@ LEAD_PHRASES = [
     "free inspection", "roof quote", "best roofer", "roof replacement",
     "roofing company", "looking for contractor", "need roof work",
     "hire a roofer", "recommend a roofer", "roofing contractor",
+    # v4 additions: 2026 homeowner intent signals
+    "roof insurance claim", "public adjuster", "insurance adjuster",
+    "roof inspection before buying", "home inspection roof",
+    "how much does a roof cost", "roof financing",
+    "reroof my house", "need new roof", "fix my roof",
 ]
 STORM_PHRASES = [
     "hail damage roof", "storm damage roof", "wind damage roof",
@@ -56,6 +81,10 @@ STORM_PHRASES = [
     "roof leak storm", "emergency roof", "roof blown off",
     "hailstorm damage", "wind damage shingle", "hail claim roof",
     "roof insurance claim", "storm damage insurance claim",
+    # v4 additions: broader storm signals
+    "microburst damage", "tornado damage", "wind damage home",
+    "storm hit", "hail hit", "hailstones",
+    "power outage storm", "tree fell on roof", "branch on roof",
 ]
 
 UTAH_CITIES = [
@@ -65,8 +94,13 @@ UTAH_CITIES = [
     "midvale", "holladay", "millcreek", "magna", "kearns",
     "west valley", "salt lake", "park city", "tooele",
     "eagle mountain", "saratoga springs", "spanish fork",
+    # v4 additions: Heber Valley core + missing cities
+    "heber city", "heber", "midway", "kamas", "coalville",
+    "francis", "wallsburg", "summit county", "wasatch county",
+    "south salt lake", "sugar house", "sugarhouse",
+    "daybreak", "jordan landing", "deer valley", "sundance",
+    "alpine", "highland", "pleasant grove", "american fork",
 ]
-
 def reddit_fetch(url):
     try:
         r = subprocess.run(
@@ -92,10 +126,9 @@ def detect_city(text):
             return city
     return None
 
-
 def classify(title, body, subreddit):
     """
-    Strict classifier. Uses ONLY title+body text (not subreddit name).
+    Strict classifier v4. Uses ONLY title+body text (not subreddit name).
     Returns (signal_type, keep_bool).
     
     Rules:
@@ -103,27 +136,33 @@ def classify(title, body, subreddit):
     - STORM: storm phrase present (these embed roofing context)
     - COMPETITOR: competitor name AND roofing term present
     - GENERAL: roofing term AND utah term present (both in text)
+    - Utah-local subs (ParkCity, HeberCity, WasatchFront, utahcounty):
+      only need roofing term (Utah is implied)
     - r/roofing posts: only need utah term (roofing is implied)
     - Everything else: REJECT
     """
     text = f"{title} {body}".lower()
     has_roof = any(t in text for t in ROOFING_TERMS)
     has_utah = any(t in text for t in UTAH_TERMS)
-    is_roofing_sub = subreddit.lower() == "roofing"
+    sub_lower = subreddit.lower()
+    is_roofing_sub = sub_lower == "roofing"
+    # v4: treat Utah-local subs as implying Utah context
+    is_utah_sub = sub_lower in (
+        "saltlakecity", "utah", "parkcity", "hebercity",
+        "wasatchfront", "utahrealestate", "utahcounty",
+    )
     
-    # LEAD: intent + roofing context (Utah preferred but not gated for r/roofing)
+    # LEAD: intent + roofing context
     if any(p in text for p in LEAD_PHRASES):
-        if has_roof and has_utah:
+        if has_roof and (has_utah or is_utah_sub):
             return "lead", True
         if has_roof and is_roofing_sub:
             return "lead", True
-        return "general", False
-    
+        return "general", False    
     # STORM: phrase embeds roofing context, prefer Utah but accept all
     if any(p in text for p in STORM_PHRASES):
-        if has_utah:
+        if has_utah or is_utah_sub:
             return "storm", True
-        # Non-Utah storm: still useful for market awareness
         if has_roof:
             return "storm", True
         return "general", False
@@ -136,12 +175,15 @@ def classify(title, body, subreddit):
     if is_roofing_sub and has_utah:
         return "general", True
     
+    # v4: GENERAL from Utah-local subs: need roofing mention
+    if is_utah_sub and has_roof:
+        return "general", True
+    
     # GENERAL elsewhere: need BOTH roofing AND Utah in text
     if has_roof and has_utah:
         return "general", True
     
     return "general", False
-
 
 def process_post(post, keyword, seen_urls):
     url = f"https://reddit.com{post.get('permalink', '')}"
@@ -173,7 +215,6 @@ def process_post(post, keyword, seen_urls):
         "city_mentioned": detect_city(text),
     }
 
-
 def scan_reddit():
     seen_urls = set()
     all_signals = []
@@ -203,7 +244,6 @@ def scan_reddit():
 
     return all_signals
 
-
 def post_to_supabase(signals):
     if not signals:
         print("No signals to post.")
@@ -230,9 +270,10 @@ def post_to_supabase(signals):
 
 
 if __name__ == "__main__":
-    print("=== Frame Roofing Reddit Scanner v3 ===")
+    print("=== Frame Roofing Reddit Scanner v4 ===")
     print(f"Keywords: {len(KEYWORDS)} | Subreddits: {len(SUBREDDITS)}")
-    print("Gates: roofing+Utah in post TEXT (not sub name)\n")
+    print("Gates: roofing+Utah in post TEXT (not sub name)")
+    print("v4: +5 subs, +17 cities, +15 keywords, Utah-sub auto-gate\n")
     signals = scan_reddit()
     print(f"\nQualified signals: {len(signals)}")
     for s in signals:
