@@ -62,7 +62,7 @@ Global Post-Deploy Verification Protocol: HTTP 200 → content grep → Lighthou
 - **Memory files:** `~/.auto-memory/` (project_frame_roofing.md, project_landon_agent.md)
 
 ## Mac Tools Available
-Ollama (llama3.1, qwen2.5, codellama, deepseek-coder, mistral-small), Docker (Playwright image), Lighthouse CLI (npx), Node.js, Python3, ffmpeg, sips, curl, jq, Vercel CLI, Git
+Ollama 0.20.5 (qwen3:8b, qwen2.5-coder:14b, llama3.1:8b, mistral-small3.1), MLX-LM 0.31.2, Docker (Playwright image), Lighthouse CLI (npx), Node.js, Python3, ffmpeg, sips, curl, jq, Vercel CLI, Git
 
 ## Critical Reminders
 - **Desktop Commander for ALL file edits** — sandbox Read tool returns metadata-only for Mac files
