@@ -3,27 +3,29 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="robots" content="noindex, nofollow">
-<title>Frame Roofing — Directory Blitz Tool v3</title>
+<title>Frame Roofing — Directory Blitz Tool v4</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#0a0f1a;color:#e2e8f0;padding:16px 24px;line-height:1.5;max-width:900px;margin:0 auto}
-h1{font-size:22px;color:#f8fafc;margin-bottom:2px}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#0a0f1a;color:#e2e8f0;padding:16px 24px;line-height:1.5}
+h1{font-size:24px;color:#f8fafc;margin-bottom:2px}
 .sub{color:#94a3b8;font-size:13px;margin-bottom:16px}
 .progress-wrap{background:#1e293b;border-radius:10px;padding:12px 16px;margin-bottom:16px;display:flex;align-items:center;gap:14px}
 .progress-bar{flex:1;background:#334155;border-radius:8px;height:20px;overflow:hidden}
 .progress-fill{background:linear-gradient(90deg,#10b981,#34d399);height:100%;border-radius:8px;transition:width 0.4s}
 .progress-text{font-size:18px;font-weight:700;color:#10b981;white-space:nowrap}
+.blitz-date{color:#64748b;font-size:11px;margin-bottom:12px}
 </style>
 </head>
 <body>
-<h1>🔥 Frame Roofing — Directory Blitz Tool</h1>
-<p class="sub">Click any field to copy it. Expand each directory for step-by-step instructions. Check off as you go — progress saves automatically.</p><div class="progress-wrap">
+<h1>🔥 Frame Roofing — Directory Blitz Tool v4</h1>
+<p class="sub">Click a field to copy it. Check off each directory as you go. Progress saves automatically.</p>
+<p class="blitz-date">Last blitz run: April 12, 2026 — 19 directories attempted</p>
+<div class="progress-wrap">
   <div class="progress-bar"><div class="progress-fill" id="pbar" style="width:0%"></div></div>
   <div class="progress-text" id="ptxt">0 / 0</div>
 </div>
 <style>
-.nap{background:#1e293b;border:2px solid #f59e0b;border-radius:10px;padding:14px 18px;margin-bottom:16px;display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:8px}
+.nap{background:#1e293b;border:2px solid #f59e0b;border-radius:10px;padding:14px 18px;margin-bottom:16px;display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:8px}
 .nap-item{display:flex;align-items:center;gap:8px;cursor:pointer;padding:6px 10px;border-radius:6px;transition:background 0.15s}
 .nap-item:hover{background:#334155}
 .nap-item .label{font-size:11px;color:#94a3b8;text-transform:uppercase;min-width:70px}
@@ -34,384 +36,173 @@ h1{font-size:22px;color:#f8fafc;margin-bottom:2px}
 .desc-box:hover{background:#253348}
 .desc-box p{font-size:12px;color:#cbd5e1;line-height:1.5}
 .desc-box .tag{position:absolute;top:8px;right:10px;font-size:10px;color:#94a3b8;background:#334155;padding:2px 8px;border-radius:4px}
-</style><style>
+</style>
+<style>
 .dirs{display:flex;flex-direction:column;gap:8px}
-.dir{background:#1e293b;border-radius:10px;overflow:hidden;border-left:4px solid #3b82f6;transition:opacity 0.3s}
+.dir{background:#1e293b;border-radius:10px;padding:14px 18px;border-left:4px solid #3b82f6;display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:14px;transition:opacity 0.3s}
 .dir.done{border-left-color:#10b981;opacity:0.5}
 .dir.done .dir-name{text-decoration:line-through}
-.dir-header{padding:14px 18px;display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:14px;cursor:pointer}
 .dir input[type=checkbox]{width:22px;height:22px;accent-color:#10b981;cursor:pointer}
 .dir-info{display:flex;flex-direction:column;gap:2px}
 .dir-name{font-size:15px;font-weight:700;color:#f8fafc}
 .dir-meta{font-size:11px;color:#94a3b8}
 .dir-meta .da{background:#334155;padding:1px 6px;border-radius:3px;margin-right:6px}
-.dir-meta .time{color:#6ee7b7;margin-left:6px}
+.dir-why{font-size:11px;color:#a78bfa;font-style:italic;margin-top:2px}
 .dir-actions{display:flex;gap:6px;flex-shrink:0}
 .btn{padding:6px 14px;border-radius:6px;border:none;font-size:12px;font-weight:600;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:4px;transition:filter 0.15s}
 .btn:hover{filter:brightness(1.15)}
 .btn-go{background:#3b82f6;color:#fff}
-.btn-expand{background:#334155;color:#94a3b8;font-size:18px;line-height:1;padding:4px 10px}
 .btn-done-already{background:#064e3b;color:#6ee7b7;pointer-events:none}
-</style><style>
-.dir-steps{display:none;background:#0f172a;padding:0 18px 14px 56px;border-top:1px solid #334155}
-.dir-steps.open{display:block}
-.dir-steps ol{padding-left:18px;margin:10px 0 0}
-.dir-steps li{font-size:13px;color:#cbd5e1;margin-bottom:8px;line-height:1.5}
-.dir-steps li strong{color:#f59e0b}
-.dir-steps .tip{background:#1a1a2e;border:1px solid #3b82f6;border-radius:6px;padding:8px 12px;margin-top:8px;font-size:12px;color:#93c5fd}
-.dir-steps .tip::before{content:'💡 ';font-size:14px}
 .tier-label{font-size:13px;font-weight:700;color:#f59e0b;padding:10px 0 4px;border-bottom:1px solid #1e293b;margin:8px 0}
-.tier-label.t1b{color:#8b5cf6}.tier-label.t1{color:#10b981}.tier-label.t2{color:#3b82f6}.tier-label.t3{color:#06b6d4}.tier-label.t4{color:#64748b}.tier-label.t5{color:#f472b6}
-</style><div class="nap" id="nap">
+.tier-label.t1b{color:#8b5cf6}.tier-label.t1{color:#f59e0b}.tier-label.t2{color:#3b82f6}.tier-label.t3{color:#06b6d4}.tier-label.t4{color:#64748b}.tier-label.t5{color:#f472b6}
+.badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:700;text-transform:uppercase;margin-left:6px;vertical-align:middle}
+.badge-captcha{background:#92400e;color:#fbbf24}
+.badge-success{background:#064e3b;color:#6ee7b7}
+.badge-action{background:#7c2d12;color:#fb923c}
+.badge-dead{background:#1e293b;color:#64748b}
+.badge-landon{background:#4c1d95;color:#c4b5fd}
+.badge-oauth{background:#1e3a5f;color:#7dd3fc}
+.badge-paywall{background:#3f3f46;color:#a1a1aa}
+</style>
+<div class="nap" id="nap">
   <div class="nap-item" onclick="copyField(this,'Frame Restoration Utah LLC')"><span class="label">Name</span><span class="val">Frame Restoration Utah LLC</span></div>
   <div class="nap-item" onclick="copyField(this,'142 S Main St')"><span class="label">Address</span><span class="val">142 S Main St</span></div>
   <div class="nap-item" onclick="copyField(this,'Heber City')"><span class="label">City</span><span class="val">Heber City</span></div>
   <div class="nap-item" onclick="copyField(this,'UT')"><span class="label">State</span><span class="val">UT</span></div>
   <div class="nap-item" onclick="copyField(this,'84032')"><span class="label">Zip</span><span class="val">84032</span></div>
   <div class="nap-item" onclick="copyField(this,'(435) 302-4422')"><span class="label">Phone</span><span class="val">(435) 302-4422</span></div>
-  <div class="nap-item" onclick="copyField(this,'4353024422')"><span class="label">Phone raw</span><span class="val">4353024422</span></div>
   <div class="nap-item" onclick="copyField(this,'https://www.frameroofingutah.com')"><span class="label">Website</span><span class="val">https://www.frameroofingutah.com</span></div>
   <div class="nap-item" onclick="copyField(this,'landon@framerestorations.com')"><span class="label">Email</span><span class="val">landon@framerestorations.com</span></div>
   <div class="nap-item" onclick="copyField(this,'Landon Yokers')"><span class="label">Owner</span><span class="val">Landon Yokers</span></div>
-  <div class="nap-item" onclick="copyField(this,'#14256097-5501')"><span class="label">License #</span><span class="val">#14256097-5501</span></div>
+  <div class="nap-item" onclick="copyField(this,'#14256097-5501')"><span class="label">License</span><span class="val">#14256097-5501</span></div>
   <div class="nap-item" onclick="copyField(this,'Roofing Contractor')"><span class="label">Category</span><span class="val">Roofing Contractor</span></div>
-</div><div class="desc-box" onclick="copyField(this,'Frame Restoration Utah LLC is a licensed, insured roofing contractor serving the Wasatch Front and Heber Valley. Specializing in storm damage repair, roof replacements, and inspections. CertainTeed and Tamko certified. BBB A+ accredited. Free estimates: (435) 302-4422.')">
-  <span class="tag">click to copy</span>
-  <p><strong>Business Description:</strong> Frame Restoration Utah LLC is a licensed, insured roofing contractor serving the Wasatch Front and Heber Valley. Specializing in storm damage repair, roof replacements, and inspections. CertainTeed and Tamko certified. BBB A+ accredited. Free estimates: (435) 302-4422.</p>
 </div>
-<div class="dirs" id="dirs"></div><script>
+<div class="desc-box" onclick="copyField(this,'Frame Restoration Utah LLC is a licensed, insured roofing contractor serving the Wasatch Front and Heber Valley. Specializing in storm damage repair, roof replacements, and inspections. CertainTeed and Tamko certified. BBB A+ accredited. Free estimates.')">
+  <span class="tag">click to copy</span>
+  <p><strong>Business Description:</strong> Frame Restoration Utah LLC is a licensed, insured roofing contractor serving the Wasatch Front and Heber Valley. Specializing in storm damage repair, roof replacements, and inspections. CertainTeed and Tamko certified. BBB A+ accredited. Free estimates.</p>
+</div>
+
+<div class="dirs" id="dirs"></div>
+<script>
 const DIRS = [
-  {tier:"🟣 PRIORITY 1 — Data Aggregators (these cascade to 40-70+ directories EACH)",tc:"t1b",items:[
-    {name:"Data Axle (Express Update)",da:70,time:"~15 min",url:"https://local-listings.data-axle.com/search",done:false,
-     steps:[
-       "Go to the link and search for <strong>Frame Restoration Utah LLC</strong> to confirm we're not listed.",
-       "Click <strong>'Add Your Business'</strong> or <strong>'Claim This Listing'</strong>.",
-       "Fill in ALL fields using the copy buttons above — Name, Address, City, State, Zip, Phone, Website, Email.",
-       "Select category: <strong>Roofing Contractor</strong>. Add secondary: <strong>Storm Damage Repair</strong>.",
-       "Paste the business description in any 'About' field.",
-       "Submit and verify via phone or postcard (they'll call the business number)."
-     ],
-     tip:"If the website form doesn't work, call (888) 274-5478 directly. This one submission cascades to 70+ directories over 4-8 weeks — it's the single highest-ROI thing on this list."},
-    {name:"Neustar / Localeze",da:68,time:"~15 min",url:"https://www.neustarlocaleze.biz/directory/add-your-business",done:false,
-     steps:[
-       "Click the link → <strong>'Add Your Business'</strong>.",
-       "Create an account with <strong>landon@framerestorations.com</strong>.",
-       "Fill out the business profile — use the copy buttons above for every field.",
-       "Category: <strong>Roofing Contractors</strong>.",
-       "Paste business description.",
-       "Submit. Verification is usually by phone."
-     ],
-     tip:"This is the #2 aggregator. Between Data Axle + Neustar, you'll auto-populate MapQuest, Superpages, YP.com, and dozens more over the next 4-8 weeks."}
-  ]},  {tier:"🟢 PRIORITY 2 — High-DA Free Listings (biggest SEO impact)",tc:"t1",items:[
-    {name:"Foursquare",da:91,time:"~10 min",url:"https://foursquare.com/venue/claim",done:false,
-     steps:[
-       "Click the link → <strong>'Add a Place'</strong> or <strong>'Claim Your Business'</strong>.",
-       "Search for Frame Restoration Utah LLC first — if it exists, claim it instead of creating new.",
-       "If not found, create new: fill in Name, Address, City, State, Zip, Phone.",
-       "Category: <strong>Roofing Contractor</strong> or <strong>Home Service</strong>.",
-       "Add website URL and business description.",
-       "Verify via phone call to (435) 302-4422."
-     ],
-     tip:"DA 91 and feeds data to Apple Maps. This is a high-authority backlink."},
-    {name:"Houzz",da:90,time:"~15 min",url:"https://www.houzz.com/getStartedPro",done:false,
-     steps:[
-       "Click link → <strong>'Join as a Professional'</strong>.",
-       "Create account with <strong>landon@framerestorations.com</strong>.",
-       "Business type: <strong>Roofing</strong>. Location: <strong>Heber City, UT</strong>.",
-       "Fill in ALL NAP fields using the copy buttons above.",
-       "Upload <strong>5-10 project photos</strong> (before/after roof jobs work great).",
-       "Paste the business description in the About section.",
-       "Add service areas: Heber City, Park City, Midway, Wasatch County, Summit County, Salt Lake County."
-     ],
-     tip:"40M+ homeowners use Houzz. Project photos are key here — the more photos, the more leads."},    {name:"Yellow Pages (YP.com)",da:82,time:"~5 min",url:"https://www.yp.com",done:false,
-     steps:[
-       "Go to yp.com → click <strong>'Get Your Free Listing'</strong> (usually top right or footer).",
-       "Search for Frame Restoration Utah LLC first to make sure we're not listed.",
-       "Click <strong>'Add Your Business'</strong>.",
-       "Fill in Name, Address, Phone, Website using copy buttons.",
-       "Category: <strong>Roofing Contractors</strong>.",
-       "Add business description and hours (Mon-Sat 7am-7pm).",
-       "Submit — they may try to upsell paid ads, just stick with the free listing."
-     ],
-     tip:"DA 82. Will also auto-populate from Data Axle eventually, but submitting directly is faster and ensures accuracy."},
-    {name:"HomeAdvisor",da:80,time:"~10 min",url:"https://pro.homeadvisor.com",done:false,
-     steps:[
-       "⚠️ <strong>Wait until Angi profile is finalized</strong> — HomeAdvisor is owned by Angi.",
-       "Once Angi is live, go to pro.homeadvisor.com → <strong>'Join Our Network'</strong>.",
-       "Fill in business info — all NAP fields using copy buttons.",
-       "Trade type: <strong>Roofing</strong>. Sub-types: Storm Damage, Roof Replacement, Roof Repair.",
-       "Service area: set 30-mile radius from Heber City 84032.",
-       "They will call to verify and may pitch lead-gen packages — the basic free listing is fine to start."
-     ],
-     tip:"DA 80. Hold off on this one until Angi ($288 paid) is fully set up since they share a backend."}
-  ]},  {tier:"🔵 PRIORITY 3 — Industry + Utah Specific",tc:"t2",items:[
-    {name:"KSL Classifieds",da:75,time:"~10 min",url:"https://www.ksl.com/services",done:false,
-     steps:[
-       "Go to ksl.com → click <strong>'Services'</strong> or <strong>'Classifieds'</strong>.",
-       "Create a KSL account with <strong>landon@framerestorations.com</strong> if you don't have one.",
-       "Post a service listing under <strong>Home & Garden → Roofing</strong>.",
-       "Title: <strong>Frame Restoration Utah LLC — Licensed Roofing Contractor</strong>.",
-       "Paste the business description. Add phone, website, and service areas.",
-       "Upload 3-5 project photos.",
-       "Post the listing — KSL free listings last 30 days, set a reminder to renew."
-     ],
-     tip:"Every homeowner in Utah checks KSL. This is the #1 local marketplace — huge visibility."},
-    {name:"Porch.com",da:72,time:"~10 min",url:"https://pro.porch.com/join",done:false,
-     steps:[
-       "Click link → <strong>'Join as a Pro'</strong>.",
-       "Create account with <strong>landon@framerestorations.com</strong>.",
-       "Business type: <strong>Roofing Contractor</strong>.",
-       "Fill in all NAP fields using copy buttons.",
-       "Add license number: <strong>#14256097-5501</strong>.",
-       "Set service area: Heber City + 30 mile radius.",
-       "Upload project photos and paste business description."
-     ],
-     tip:"Free home services directory. Porch partners with Lowe's — decent lead source."},    {name:"Deseret News Directory",da:70,time:"~5 min",url:"https://www.deseretnews.com",done:false,
-     steps:[
-       "Search for their business directory or classifieds section.",
-       "Look for <strong>'Add Your Business'</strong> or <strong>'Business Listings'</strong>.",
-       "Fill in NAP info using copy buttons.",
-       "Category: <strong>Roofing / Home Services</strong>.",
-       "If no free directory exists, skip — the paid options aren't worth it at this stage."
-     ],
-     tip:"DA 70 Utah-specific backlink. If they only offer paid listings, move on — we'll get more value elsewhere."},
-    {name:"CertainTeed Locator",da:62,time:"~5 min (phone call)",url:"https://www.certainteed.com/find-a-pro",done:false,
-     steps:[
-       "⚠️ <strong>Don't use the website</strong> — the search tool is broken (confirmed 4/10).",
-       "Call your <strong>CertainTeed sales rep</strong> directly.",
-       "Tell them: 'I'm a CertainTeed Certified contractor and I need my listing activated on Find a Pro.'",
-       "Give them: Company name, address, phone, website, certification details.",
-       "Ask them to confirm when the listing is live."
-     ],
-     tip:"Already certified — just need the rep to flip the switch. The website search tool wasn't rendering results when we checked."},
-    {name:"Tamko Locator",da:55,time:"~5 min (phone call)",url:"https://www.tamko.com",done:false,
-     steps:[
-       "Log into your <strong>Tamko Pro portal</strong> or call your Tamko rep.",
-       "Verify your contractor profile is active and visible on their locator.",
-       "Make sure NAP matches exactly — Name, Address, Phone, Website.",
-       "If not listed, ask rep to add you to the contractor locator."
-     ],
-     tip:"Already Tamko certified — just verify the listing is live and accurate."},    {name:"BuildZoom",da:60,time:"~10 min",url:"https://www.buildzoom.com",done:false,
-     steps:[
-       "Go to buildzoom.com → search for <strong>Frame Restoration Utah LLC</strong>.",
-       "If a profile exists (auto-pulled from license data), click <strong>'Claim This Profile'</strong>.",
-       "If not, click <strong>'Add Your Business'</strong>.",
-       "Create account with <strong>landon@framerestorations.com</strong>.",
-       "Fill in NAP fields, add license #14256097-5501.",
-       "Upload project photos and paste business description.",
-       "Verify via email or phone."
-     ],
-     tip:"BuildZoom pulls license data from state databases. Claiming the profile adds your contact info and photos on top of the verified license."},
-    {name:"Contractor Connection",da:50,time:"~15 min",url:"https://www.contractorconnection.com",done:false,
-     steps:[
-       "Go to contractorconnection.com → look for <strong>'Join Our Network'</strong> or <strong>'Become a Contractor'</strong>.",
-       "Fill out the application — Name, Address, License, Insurance info.",
-       "Insurance: <strong>Crum & Forster, $1M/$2M CGL, Policy BAS-62946-1</strong>.",
-       "License: <strong>#14256097-5501</strong>.",
-       "They vet contractors before listing — expect a follow-up call.",
-       "This is an insurance-referred network, so jobs come with guaranteed payment."
-     ],
-     tip:"Storm damage goldmine — insurance companies use this network to find contractors. Worth the application effort."},    {name:"Heber Valley Chamber of Commerce",da:40,time:"~10 min + follow-up",url:"https://www.hebervalleychamber.com",done:false,
-     steps:[
-       "Go to hebervalleychamber.com → find <strong>'Join'</strong> or <strong>'Membership'</strong>.",
-       "Look at membership tiers — basic is usually <strong>$200-400/year</strong>.",
-       "Fill out the membership application with all NAP info.",
-       "They'll send an invoice or payment link.",
-       "Once approved, your listing goes live on their member directory.",
-       "Attend a mixer or two — good for local networking."
-     ],
-     tip:"LOCAL authority signal for SEO. Chamber backlinks tell Google you're a real, established local business. Worth the annual fee."},
-    {name:"Salt Lake Chamber",da:60,time:"~10 min + follow-up",url:"https://www.slchamber.com",done:false,
-     steps:[
-       "Go to slchamber.com → <strong>'Membership'</strong> → <strong>'Join'</strong>.",
-       "Choose the appropriate tier for a small business.",
-       "Fill out application with NAP info.",
-       "This covers the SLC metro service area.",
-       "Pay membership fee and wait for listing activation."
-     ],
-     tip:"DA 60 backlink covering the Salt Lake metro area. Good for service area SEO beyond Heber Valley."},
-    {name:"Park City Chamber",da:55,time:"~10 min + follow-up",url:"https://www.visitparkcity.com",done:false,
-     steps:[
-       "Go to visitparkcity.com → look for <strong>'Business Directory'</strong> or <strong>'Chamber Membership'</strong>.",
-       "Apply for associate or business membership.",
-       "Fill in NAP info.",
-       "This covers Summit County service area.",
-       "Pay membership and wait for directory listing."
-     ],
-     tip:"Summit County coverage. Park City homeowners have money and hail damage — good market."}
-  ]},  {tier:"⬜ PRIORITY 4 — General Directories (build citation volume)",tc:"t4",items:[
-    {name:"Manta",da:74,time:"~5 min",url:"https://www.manta.com/claim",done:false,
-     steps:[
-       "Go to manta.com → <strong>'Claim Your Free Listing'</strong> (or search for the business first).",
-       "Create account with <strong>landon@framerestorations.com</strong>.",
-       "Fill in NAP fields — Name, Address, Phone, Website.",
-       "Category: <strong>Roofing Contractors</strong>.",
-       "Paste business description.",
-       "Skip any paid upsells — free listing is all you need."
-     ],
-     tip:"DA 74. Quick and easy free listing. Don't pay for upgrades."},
-    {name:"ChamberofCommerce.com",da:65,time:"~5 min",url:"https://www.chamberofcommerce.com",done:false,
-     steps:[
-       "Go to chamberofcommerce.com → <strong>'Add Your Business'</strong> (this is NOT an actual chamber — just a directory site).",
-       "Fill in NAP info using copy buttons.",
-       "Category: <strong>Roofing Contractors</strong>.",
-       "Location: <strong>Heber City, UT</strong>.",
-       "Submit the free listing."
-     ],
-     tip:"Not a real chamber of commerce — just a national directory. Free listing, decent DA 65 backlink."},
-    {name:"Brownbook.net",da:50,time:"~5 min",url:"https://www.brownbook.net/add-business",done:false,
-     steps:[
-       "Go to brownbook.net/add-business.",
-       "⚠️ <strong>Step 1 is already filled in</strong> — Claude pre-filled Name, Address, Phone, Category, and Country.",
-       "Click <strong>'Next'</strong> to go to Step 2.",
-       "Create an account — email + password + your name.",
-       "Check the Terms checkbox.",
-       "Complete the CAPTCHA.",
-       "Submit."
-     ],
-     tip:"Most of the work is done — Claude filled in Step 1. Just need to create the account and do the CAPTCHA."},    {name:"eLocal",da:55,time:"~5 min",url:"https://www.elocal.com",done:false,
-     steps:[
-       "Go to elocal.com → look for <strong>'List Your Business'</strong> or <strong>'Get Listed'</strong>.",
-       "Fill in NAP fields using copy buttons.",
-       "Category: <strong>Roofing</strong>.",
-       "Service area: <strong>Heber City, UT</strong> + surrounding areas.",
-       "Submit the free listing."
-     ],
-     tip:"Home services focused directory. Quick free listing."},
-    {name:"Hotfrog",da:55,time:"~5 min",url:"https://www.hotfrog.com",done:false,
-     steps:[
-       "Go to hotfrog.com → <strong>'Add Your Business'</strong>.",
-       "Create account with <strong>landon@framerestorations.com</strong>.",
-       "Fill in all NAP fields.",
-       "Category: <strong>Roofing Contractors</strong>.",
-       "Paste business description.",
-       "Upload a logo or project photo if they allow it.",
-       "Submit."
-     ],
-     tip:"Free international directory. Quick submission."},
-    {name:"Cylex",da:50,time:"~5 min",url:"https://www.cylex.us.com",done:false,
-     steps:[
-       "Go to cylex.us.com → <strong>'Add Company'</strong>.",
-       "Fill in business name, address, phone, website.",
-       "Category: <strong>Roofing</strong>.",
-       "Add business description and hours.",
-       "Create account to manage the listing.",
-       "Submit."
-     ],
-     tip:"Free listing, decent DA. Takes about 5 minutes."}
-  ]},  {tier:"🩷 PRIORITY 5 — Review Platforms",tc:"t5",items:[
-    {name:"Trustpilot",da:93,time:"~10 min",url:"https://business.trustpilot.com",done:false,
-     steps:[
-       "Go to business.trustpilot.com → <strong>'Get Started Free'</strong>.",
-       "Create a business account with <strong>landon@framerestorations.com</strong>.",
-       "Claim your business page — search for Frame Restoration Utah LLC.",
-       "Fill in business details, logo, description.",
-       "Once live, you can invite customers to leave reviews.",
-       "Add the Trustpilot widget to the website later for social proof."
-     ],
-     tip:"DA 93. Free business page. Great for building review diversity beyond Google/Yelp."},
-    {name:"Birdeye",da:65,time:"~10 min",url:"https://birdeye.com",done:false,
-     steps:[
-       "Go to birdeye.com → <strong>'Get a Demo'</strong> or <strong>'Start Free'</strong>.",
-       "This is a review management platform — they may require a sales call.",
-       "If free tier exists, set up with NAP info.",
-       "If paid only, evaluate whether the review management features are worth it.",
-       "Alternative: just focus on Google, Yelp, and Trustpilot reviews for now."
-     ],
-     tip:"Review management platform. Free tier may be limited. Skip if they require a sales call — not urgent."},
-    {name:"GuildQuality",da:50,time:"~10 min",url:"https://www.guildquality.com",done:false,
-     steps:[
-       "Go to guildquality.com → <strong>'Get Started'</strong> or <strong>'Request a Demo'</strong>.",
-       "This is construction-specific — surveys your customers after jobs.",
-       "Sign up and connect your customer list.",
-       "They send satisfaction surveys and publish results on your profile.",
-       "Good for showing verified customer satisfaction to prospects."
-     ],
-     tip:"Construction-specific review platform. Sends surveys to your customers automatically. Good credibility builder."}
-  ]},  {tier:"✅ ALREADY DONE",tc:"t5",items:[
-    {name:"Google Business Profile",da:98,url:"",why:"5.0 stars, 19 reviews",done:true,steps:[]},
-    {name:"Yelp",da:93,url:"",why:"Listing claimed",done:true,steps:[]},
-    {name:"Bing Places",da:94,url:"",why:"Imported from GBP",done:true,steps:[]},
-    {name:"Apple Business Connect",da:100,url:"",why:"Listing claimed",done:true,steps:[]},
-    {name:"BBB",da:86,url:"",why:"A+ accredited",done:true,steps:[]},
-    {name:"Facebook Business",da:96,url:"",why:"Page created",done:true,steps:[]},
-    {name:"Thumbtack",da:78,url:"",why:"Pro profile created",done:true,steps:[]},
-    {name:"Nextdoor Business",da:90,url:"",why:"Heber City area claimed",done:true,steps:[]},
-    {name:"Instagram Business",da:96,url:"",why:"Profile active",done:true,steps:[]},
-    {name:"Utah.gov Business Search",da:85,url:"",why:"Entity registered",done:true,steps:[]},
-    {name:"Utah DOPL License",da:80,url:"",why:"License active",done:true,steps:[]},
-    {name:"Angi",da:78,url:"",why:"Paid $288, waiting on sales rep",done:true,steps:[]}
+  {tier:"⚡ BLITZ COMPLETE — NEEDS YOUR ACTION (click CAPTCHA / submit)",tc:"t1",items:[
+    {name:"Brownbook.net",da:50,url:"https://www.brownbook.net/add-business",why:"Form fully filled. Go click the reCAPTCHA and submit.",status:"captcha",done:false},
+    {name:"Cylex",da:50,url:"https://www.cylex.us.com/register-company",why:"Form fully filled. Go click the reCAPTCHA and submit.",status:"captcha",done:false},
+    {name:"Manta",da:74,url:"https://www.manta.com/member/register",why:"Form fully filled. Go click the reCAPTCHA and submit.",status:"captcha",done:false},
+    {name:"Trustpilot",da:70,url:"https://www.trustpilot.com",why:"Form mostly filled. Go click the reCAPTCHA and submit.",status:"captcha",done:false},
+    {name:"Contractor Connection",da:50,url:"https://home.contractorconnection.com/potential-contractors/potential-contractorscontact-us/",why:"Insurance referral network. Form filled — just click Submit.",status:"action",done:false}
+  ]},
+  {tier:"📧 NEEDS EMAIL VERIFICATION (check landon@framerestorations.com)",tc:"t1",items:[
+    {name:"Hotfrog",da:55,url:"https://admin.hotfrog.com/login/register",why:"Account created! Check email for verification link to go live.",status:"success",done:false},
+    {name:"Houzz",da:90,url:"https://www.houzz.com",why:"Account created! Check email for verification link. Upload project photos.",status:"success",done:false},
+    {name:"Foursquare",da:91,url:"https://foursquare.com/venue/claim",why:"Email prefilled. Check email for login code, then finish claim.",status:"action",done:false}
+  ]},
+  {tier:"🔐 NEEDS LOGIN / OAUTH / REVIEW",tc:"t2",items:[
+    {name:"Birdeye",da:65,url:"https://reviews.birdeye.com/add-your-business/",why:"Form filled. Requires Google or Facebook OAuth login to submit.",status:"oauth",done:false},
+    {name:"BuildZoom",da:60,url:"https://www.buildzoom.com/profile-setup/referral-agreement",why:"Profile 5/8 steps done. STOP: Step 6 is a referral fee agreement — Landon must review before signing.",status:"action",done:false}
+  ]},
+  {tier:"🟣 LANDON MUST HANDLE PERSONALLY (messaged him 4/12)",tc:"t3",items:[
+    {name:"CertainTeed Locator",da:62,url:"https://www.certainteed.com/find-a-pro",why:"Manufacturer directory — needs Landon's CertainTeed contractor login.",status:"landon",done:false},
+    {name:"Tamko Locator",da:55,url:"https://www.tamko.com",why:"Manufacturer directory — needs Landon's Tamko contractor credentials.",status:"landon",done:false},
+    {name:"Salt Lake Chamber",da:60,url:"https://www.slchamber.com",why:"Requires paid membership. ~$200-400/yr.",status:"landon",done:false},
+    {name:"Park City Chamber",da:55,url:"https://www.visitparkcity.com",why:"Requires paid membership. Summit County coverage.",status:"landon",done:false},
+    {name:"Heber Valley Chamber",da:40,url:"https://www.hebervalleychamber.com",why:"Requires paid membership. LOCAL authority signal. ~$200-400/yr.",status:"landon",done:false},
+    {name:"GuildQuality",da:45,url:"https://www.guildquality.com",why:"Requires contractor account setup with survey integration.",status:"landon",done:false}
+  ]},
+  {tier:"❌ DEAD ENDS — No Action Needed",tc:"t4",items:[
+    {name:"eLocal",da:55,url:"",why:"Paywall — no free listing available.",status:"dead",done:true},
+    {name:"Yellow Pages (YP.com)",da:82,url:"",why:"Paywall — no free listing available.",status:"dead",done:true},
+    {name:"Porch.com",da:72,url:"",why:"No free listing option. Paid leads only.",status:"dead",done:true},
+    {name:"Angi",da:78,url:"",why:"Already exists — paid $288, profile live.",status:"dead",done:true},
+    {name:"KSL Classifieds",da:75,url:"",why:"Directory broken/defunct. Service listings removed.",status:"dead",done:true},
+    {name:"ChamberOfCommerce.com",da:65,url:"",why:"No self-service add. Aggregator only — pulls from other sources.",status:"dead",done:true},
+    {name:"Deseret News Directory",da:70,url:"",why:"No directory exists. Subdomain returns error.",status:"dead",done:true},
+    {name:"Data Axle (Express Update)",da:70,url:"",why:"Business not in database. Searched by name, phone, and address — no match. Claim-only portal.",status:"dead",done:true},
+    {name:"Neustar / Localeze",da:68,url:"",why:"Acquired by Data Axle. Redirects to same portal. Same result.",status:"dead",done:true}
+  ]},
+  {tier:"ALREADY DONE ✅",tc:"t5",items:[
+    {name:"Google Business Profile",da:98,url:"",why:"5.0 stars, 19 reviews",done:true},
+    {name:"Yelp",da:93,url:"",why:"Listing claimed",done:true},
+    {name:"Bing Places",da:94,url:"",why:"Imported from GBP",done:true},
+    {name:"Apple Business Connect",da:100,url:"",why:"Listing claimed",done:true},
+    {name:"BBB",da:86,url:"",why:"A+ accredited",done:true},
+    {name:"Facebook Business",da:96,url:"",why:"Page created",done:true},
+    {name:"Thumbtack",da:78,url:"",why:"Pro profile created",done:true},
+    {name:"Nextdoor Business",da:90,url:"",why:"Heber City area claimed",done:true},
+    {name:"Instagram Business",da:96,url:"",why:"Profile active",done:true},
+    {name:"Utah.gov Business Search",da:85,url:"",why:"Entity registered",done:true},
+    {name:"Utah DOPL License",da:80,url:"",why:"License active",done:true}
   ]}
 ];
-const STORAGE_KEY = 'frame-roofing-blitz-v3';
-function loadState(){try{return JSON.parse(localStorage.getItem(STORAGE_KEY))||{}}catch(e){return{}}}
-function saveState(s){localStorage.setItem(STORAGE_KEY,JSON.stringify(s))}
+const STORAGE_KEY = 'frame-roofing-blitz-v4';
 
-function render(){
-  const container=document.getElementById('dirs');
-  const state=loadState();
-  container.innerHTML='';
-  let total=0,completed=0;
+function loadState() {
+  try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; } catch(e) { return {}; }
+}
+function saveState(state) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+}
 
-  DIRS.forEach(tier=>{
-    const label=document.createElement('div');
-    label.className='tier-label '+(tier.tc||'');
-    label.textContent=tier.tier;
+function badgeHTML(status) {
+  const map = {
+    captcha: '<span class="badge badge-captcha">CAPTCHA — click &amp; submit</span>',
+    success: '<span class="badge badge-success">SUCCESS — verify email</span>',
+    action:  '<span class="badge badge-action">NEEDS YOUR ACTION</span>',
+    oauth:   '<span class="badge badge-oauth">NEEDS OAUTH LOGIN</span>',
+    landon:  '<span class="badge badge-landon">LANDON ONLY</span>',
+    dead:    '<span class="badge badge-dead">DEAD END</span>',
+    paywall: '<span class="badge badge-paywall">PAYWALL</span>'
+  };
+  return map[status] || '';
+}
+
+function render() {
+  const container = document.getElementById('dirs');
+  const state = loadState();
+  container.innerHTML = '';
+  let total = 0, completed = 0;
+  DIRS.forEach(tier => {
+    const label = document.createElement('div');
+    label.className = 'tier-label ' + (tier.tc || '');
+    label.textContent = tier.tier;
     container.appendChild(label);
 
-    tier.items.forEach(item=>{
+    tier.items.forEach(item => {
       total++;
-      const key=item.name.replace(/\s+/g,'_').toLowerCase();
-      const isDone=item.done||state[key];
-      if(isDone)completed++;
-      const div=document.createElement('div');
-      div.className='dir'+(isDone?' done':'');
-      const hasSteps=item.steps&&item.steps.length>0;
-      const stepsId='steps-'+key;      div.innerHTML=`
-        <div class="dir-header" onclick="${hasSteps?`toggleSteps('${stepsId}')`:''}">
-          <input type="checkbox" ${isDone?'checked disabled':''} onchange="event.stopPropagation();toggleDir('${key}',this.checked)">
-          <div class="dir-info">
-            <div class="dir-name">${item.name}</div>
-            <div class="dir-meta"><span class="da">DA ${item.da}</span>${item.time?'<span class="time">⏱ '+item.time+'</span>':''}${item.why?' — '+item.why:''}</div>
-          </div>
-          <div class="dir-actions">
-            ${isDone?'<span class="btn btn-done-already">✓ Done</span>':
-              (item.url?`<a class="btn btn-go" href="${item.url}" target="_blank" rel="noopener" onclick="event.stopPropagation()">Open →</a>`:'')+
-              (hasSteps?'<span class="btn btn-expand" id="arrow-'+stepsId+'">▼</span>':'')}
-          </div>
+      const key = item.name.replace(/\s+/g,'_').toLowerCase();
+      const isDone = item.done || state[key];
+      if (isDone) completed++;
+      const div = document.createElement('div');
+      div.className = 'dir' + (isDone ? ' done' : '');
+      div.innerHTML = `
+        <input type="checkbox" ${isDone ? 'checked' : ''} ${item.done ? 'disabled' : ''} onchange="toggleDir('${key}',this.checked)">
+        <div class="dir-info">
+          <div class="dir-name">${item.name} ${badgeHTML(item.status || '')}</div>
+          <div class="dir-meta"><span class="da">DA ${item.da}</span>${item.why}</div>
         </div>
-        ${hasSteps?`<div class="dir-steps" id="${stepsId}">
-          <ol>${item.steps.map(s=>'<li>'+s+'</li>').join('')}</ol>
-          ${item.tip?'<div class="tip">'+item.tip+'</div>':''}
-        </div>`:''}`;
+        <div class="dir-actions">
+          ${item.done && !item.url ? '<span class="btn btn-done-already">✓ Done</span>' :
+            item.url ? `<a class="btn btn-go" href="${item.url}" target="_blank" rel="noopener">Open →</a>` : ''}
+        </div>`;
       container.appendChild(div);
     });
   });
 
-  const pct=total>0?Math.round((completed/total)*100):0;
-  document.getElementById('pbar').style.width=pct+'%';
-  document.getElementById('ptxt').textContent=completed+' / '+total+' done';
+  const pct = total > 0 ? Math.round((completed / total) * 100) : 0;
+  document.getElementById('pbar').style.width = pct + '%';
+  document.getElementById('ptxt').textContent = completed + ' / ' + total + ' done';
 }
-function toggleDir(key,checked){
-  const state=loadState();
-  state[key]=checked;
+function toggleDir(key, checked) {
+  const state = loadState();
+  state[key] = checked;
   saveState(state);
   render();
 }
 
-function toggleSteps(id){
-  const el=document.getElementById(id);
-  const arrow=document.getElementById('arrow-'+id);
-  if(el){
-    el.classList.toggle('open');
-    if(arrow)arrow.textContent=el.classList.contains('open')?'▲':'▼';
-  }
-}
-
-function copyField(el,text){
-  navigator.clipboard.writeText(text).then(()=>{
+function copyField(el, text) {
+  navigator.clipboard.writeText(text).then(() => {
     el.classList.add('copied');
-    setTimeout(()=>el.classList.remove('copied'),1200);
+    setTimeout(() => el.classList.remove('copied'), 1200);
   });
 }
 
