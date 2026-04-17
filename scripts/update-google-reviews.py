@@ -137,28 +137,25 @@ def main() -> int:
     file_count = current_file_count()
 
     print(f"SerpAPI: {place['name']} — {place['count']} reviews, {place['rating']} stars")
-    print(f"Current in index.html: reviewCount={file_count}")
+    print(f"Current in index.html (schema): reviewCount={file_count}")
 
-    if file_count == place["count"]:
-        # Also check rating; if rating drifted (e.g. 5.0 → 4.9) we still want to update
-        current_text = (ROOT / "index.html").read_text(encoding="utf-8")
-        rating_match = re.search(
-            r'"@type":\s*"AggregateRating"[\s\S]{0,200}?"ratingValue":\s*"([^"]+)"',
-            current_text,
-        )
-        current_rating = float(rating_match.group(1)) if rating_match else None
-        if current_rating == place["rating"]:
-            print("No change needed.")
-            write_audit({"count": place["count"], "rating": place["rating"], "changed": False})
-            return 2
-
+    # Always run the replacements on every target. update_file() compares before/after
+    # and returns True only if something actually changed. This self-heals partial-drift
+    # states where one reference (e.g. hero subtitle) lagged a previous manual edit of
+    # the schema — exactly the race condition that occurred on 2026-04-17.
     changed_files = []
     for path in TARGETS:
         if update_file(path, place["count"], place["rating"], dry_run):
             changed_files.append(str(path.relative_to(ROOT)))
 
+    if not changed_files:
+        print("No change needed — all references already in sync.")
+        if not dry_run:
+            write_audit({"count": place["count"], "rating": place["rating"], "changed": False})
+        return 2
+
     verb = "Would update" if dry_run else "Updated"
-    print(f"{verb}: {', '.join(changed_files) if changed_files else '(no files)'}")
+    print(f"{verb}: {', '.join(changed_files)}")
 
     if not dry_run:
         write_audit({
@@ -168,7 +165,7 @@ def main() -> int:
             "files": changed_files,
             "changed": True,
         })
-    return 0 if changed_files else 2
+    return 0
 
 
 if __name__ == "__main__":
