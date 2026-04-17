@@ -1114,12 +1114,19 @@
         <!-- Great Salt Lake shape (stylized, NW) -->
         <path d="M 20,70 Q 120,55 220,80 Q 260,110 230,150 Q 170,175 90,165 Q 30,140 20,70 Z" fill="#BCCCD4" opacity="0.7"/>
         <text x="120" y="125" fill="#486679" font-size="11" font-family="Archivo, sans-serif" font-weight="600" letter-spacing="1" text-anchor="middle">GREAT SALT LAKE</text>
-        <!-- Wasatch Mountain ridge (east) -->
-        <path d="M 900,520 L 900,0 L 720,0 L 705,40 L 720,75 L 695,115 L 715,155 L 680,200 L 710,240 L 685,285 L 720,325 L 690,370 L 715,420 L 685,470 L 720,520 Z" fill="url(#sm-mtn)"/>
-        <!-- Small mountain jags overlaid (texture) -->
-        <path d="M 720,75 L 740,55 L 760,90 L 780,60 L 800,100 L 820,70 L 840,105 L 860,80 L 880,115 L 900,90 L 900,75 Z" fill="#061F30" opacity="0.35"/>
-        <path d="M 680,200 L 705,175 L 725,210 L 750,180 L 775,215 L 800,190 L 825,225 L 850,195 L 875,230 L 900,200 L 900,195 Z" fill="#061F30" opacity="0.3"/>
-        <path d="M 690,370 L 715,340 L 740,378 L 770,348 L 795,385 L 820,355 L 845,390 L 875,360 L 900,395 L 900,370 Z" fill="#061F30" opacity="0.3"/>
+        <!-- ─── Wasatch Mountain range — 3 parallax silhouette layers (atmospheric perspective) ─── -->
+        <!-- Far range: distant, pale, long soft curves. Cool blue recedes. -->
+        <path d="M 605,520 L 605,205 C 635,175 665,198 702,165 C 738,132 775,168 812,135 C 848,105 878,130 900,118 L 900,520 Z"
+              fill="#6A89A5" opacity="0.32"/>
+        <!-- Mid range: clearer peaks, navy medium -->
+        <path d="M 635,520 L 635,275 C 660,245 685,260 708,240 C 735,210 762,185 790,215 C 815,180 842,205 865,185 C 885,170 898,195 900,188 L 900,520 Z"
+              fill="#0B4060" opacity="0.6"/>
+        <!-- Front range: nearest, deep navy, defined Wasatch peaks -->
+        <path d="M 665,520 L 665,340 C 680,315 695,305 710,318 C 723,290 738,305 752,295 C 768,262 788,232 808,258 C 825,222 848,202 865,240 C 878,258 892,275 900,285 L 900,520 Z"
+              fill="#082D44"/>
+        <!-- Subtle snow-cap highlights on two tallest peaks -->
+        <path d="M 752,295 Q 760,272 768,278 M 808,258 Q 816,232 824,238"
+              stroke="#FAF9F5" stroke-width="1.5" fill="none" opacity="0.45" stroke-linecap="round"/>
         <!-- Wasatch label (positioned south of HQ to avoid collision) -->
         <text x="830" y="475" fill="#E1B969" font-size="12" font-family="Archivo Black, sans-serif" letter-spacing="4" text-anchor="middle" opacity="0.75" transform="rotate(90 830 475)">WASATCH RANGE</text>
         <!-- Service area boundary (gold dashed oval) -->
