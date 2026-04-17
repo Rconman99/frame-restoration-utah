@@ -1,5 +1,5 @@
 # Frame Roofing Utah — Claude Master Context
-> Last updated: 2026-04-07 | Auto-refreshed via Cowork scheduled task
+> Last updated: 2026-04-17 | Auto-refreshed via Cowork scheduled task
 
 ---
 
@@ -88,23 +88,27 @@
 
 ---
 
-## SITE STRUCTURE (115 HTML pages, 102 sitemap URLs)
+## SITE STRUCTURE (~120+ HTML pages, 124 sitemap URLs as of 2026-04-12)
 
-- `/` — Homepage (index.html), H1: "The Gold Standard In Utah Roofing"
+- `/` — Homepage (index.html), H1: "Mountain-Grade Roofing, Valley-Wide" (rebrand 2026-04-17; previously "The Gold Standard In Utah Roofing")
 - `/about.html` — Root-level About page (redirects or mirrors pages/about)
 - `/pages/` — 14 pages (residential-roofing, commercial-roofing, roof-repair, roof-replacement, storm-damage, storm-damage-restoration [redirects to storm-damage], emergency-tarping, gutters, solar-installation, insurance-claims, general-contracting, water-fire-flood-restoration, gallery, **about** [NEW — owner bio, headshot, E-E-A-T signals])
 - `/locations/` — 45 location pages (all Utah cities along the Wasatch Front)
-- `/blog/` — Blog index + 34 posts total:
+- `/blog/` — Blog index + 40 posts total (6 new posts added 2026-04-10, all have HowTo JSON-LD schema as of 2026-04-10):
   - `/blog/utah/` — 10 statewide SEO posts (roof-replacement-cost, emergency-roof-repair, how-long-does-roof-last, how-to-choose-a-roofer, best-roofing-materials, signs-you-need-new-roof, utah-hail-season, utah-roof-insurance-claims, utah-roof-maintenance-checklist, utah-roof-ventilation-guide)
   - City subdirectories: heber-city/5, salt-lake-city/4, park-city/3, sandy/2, plus 1 each in bountiful, draper, herriman, layton, lehi, murray, orem, provo, west-jordan, west-valley-city (~24 city posts)
 - `/projects/` — 1 case study (heber-valley-roof)
+- `/seo-report/` — Live SEO & Lead Attribution Tracker (PIN-gated, multi-user admin panel, 30-day default view, Chart.js rendering)
+- `/review/` — Review landing page + `review-request` edge function (automated post-job review collection)
+- `backlink-playbook.html` — 12 backlink acquisition opportunities with step-by-step instructions
+- `directory-blitz-tool.html` — Directory blitz tool v4 with full blitz results (Angi marked Already Done 2026-04-13)
 - `/archive/` — Old docs, sub-location service pages, eval files
 - `/images/` — Photos, OG image, brand source files (/brand-source/, /projects/cities/, /services/), landon-yokers-headshot.jpg (About page)
 - `/assets/` — Hero video/poster, gutters video
 
 ### Key Files
 - `vercel.json` — Redirects (storm-damage-restoration → storm-damage, /:city/storm-damage-restoration → /:city/storm-damage, /home → /)
-- `sitemap.xml` — 150+ URLs
+- `sitemap.xml` — 124 URLs (updated 2026-04-12, added 17 missing pages)
 - `robots.txt` — Allows AI crawlers (GPTBot, Claude, Perplexity), blocks Bytespider
 - `llms.txt` — AI/LLM optimization file
 - `directory-tracker.html` — Interactive React-based directory tracker (38 directories)
@@ -126,18 +130,30 @@
 - **Pages missing from sitemap:** insurance-claims, emergency-tarping (need to add)
 
 ### Completed
-- Meta descriptions on ALL 44 location pages, 12 service pages, blog pages
+- Meta descriptions on ALL 45 location pages, 12 service pages, blog pages
 - Canonical tags (self-referencing) on ALL pages
 - Open Graph + Twitter card tags on ALL pages
-- Schema markup: RoofingContractor, FAQPage, HowTo, BlogPosting, BreadcrumbList, AggregateRating
-- Homepage H1 optimized: "The Gold Standard In Utah Roofing"
+- Schema markup: RoofingContractor, FAQPage, HowTo, BlogPosting, BreadcrumbList, AggregateRating, Article
+- Homepage H1 rebranded 2026-04-17: "Mountain-Grade Roofing, Valley-Wide"
 - Storm-damage / storm-damage-restoration consolidated (301 redirect + canonical)
 - Duplicate blog URLs cleaned from sitemap
 - Yelp footer link corrected to /biz/frame-restoration-heber-city
-- Directory tracker: Yelp marked as Done
+- Directory tracker: Yelp marked as Done; Angi marked Done 2026-04-13
 - robots.txt with AI crawler allowances
-- llms.txt for LLM optimization
-- Full rebrand from "Frame Restoration Utah" to "Frame Roofing Utah"
+- llms.txt upgraded 2026-04-17 for AEO: 10 passage-citable Q&A, 45 service areas by county, verified-credentials-only
+- Full rebrand from "Frame Restoration Utah" to "Frame Roofing Utah" (site-wide re-swept 2026-04-08)
+- WebP conversion site-wide (88 images converted 2026-04-12, earlier 24 compressed 2026-04-07)
+- IndexNow integration for bulk URL indexing (2026-04-12)
+- HowTo JSON-LD on all 39 blog posts (2026-04-10)
+- Author bios + comparison tables + digitalSourceType on blog + service pages (2026-04-08)
+- FAQ schemas expanded 5→12 city-specific per location page (2026-04-08)
+- Internal crosslinks: blog→location and location→location on all 45 location pages (2026-04-10)
+- PostHog analytics wired on 107 pages + click tracking on 47 (2026-04-10)
+- Live SEO & Lead Attribution Tracker launched with PIN gate + multi-user admin (2026-04-10)
+- Review landing page + automated review-request edge function (2026-04-10)
+- 301 redirects for old domain framerestorationutah.com → www.frameroofingutah.com (2026-04-07)
+- HSTS header + PostHog reverse proxy (2026-04-08)
+- A11y pass: aria-label roles, heading order, select label, sr-only class (2026-04-07)
 
 ### Competitors
 - roofingutah.com — exact-match domain, 54 Google reviews
@@ -187,23 +203,26 @@
 
 ---
 
-## PRIORITY TODO (as of 2026-03-28)
+## PRIORITY TODO (as of 2026-04-17)
 
 ### Immediate
-1. Set up Twilio — Utah phone number, wire into edge function for lead SMS
+1. Set up Twilio — Utah phone number, wire into edge function for lead SMS (10DLC consent checkbox now in place 2026-04-17, error 30923 resolved)
 2. Build speed-to-lead AI bot — Twilio + Claude API + Supabase
 3. Google Sheet lead tracker — Apps Script webhook
 4. Direct email (replace Formspree with Resend/SendGrid)
-5. ~~301 redirects framerestorationutah.com → frameroofingutah.com~~ ✅ DONE (Landon set up domain forwarding 2026-03-30)
-6. ~~Google Search Console verification + sitemap for frameroofingutah.com~~ ✅ DONE (verified, sitemap submitted, indexing requests started 2026-03-30)
+5. ~~301 redirects framerestorationutah.com → frameroofingutah.com~~ ✅ DONE (Landon domain forwarding 2026-03-30; in-code 301s also added 2026-04-07)
+6. ~~Google Search Console verification + sitemap for frameroofingutah.com~~ ✅ DONE
 7. Update Google Business Profile with new URL
+8. Reddit-scanner: response parsing hardened 2026-04-17 (HTTP status, empty body, retry, typed errors) — monitor reliability
 
 ### Short-term
-8. Self-host fonts (Archivo Black + Archivo)
-9. Convert images to WebP
-10. Add author bios + publication dates to blog posts
-11. Directory submissions (Angi, HomeAdvisor, Thumbtack, local chambers)
-12. Get updated logo from designer ("Frame Roofing" not "Frame Restoration")
+9. Self-host fonts (Archivo Black + Archivo)
+10. ~~Convert images to WebP~~ ✅ DONE (88 images converted 2026-04-12 + 24 compressed 2026-04-07)
+11. ~~Add author bios + publication dates to blog posts~~ ✅ DONE (2026-04-08)
+12. Directory submissions (HomeAdvisor, Thumbtack, local chambers) — Angi + Yelp already done
+13. Get updated logo from designer ("Frame Roofing" not "Frame Restoration")
+14. ~~IndexNow integration~~ ✅ DONE (2026-04-12)
+15. ~~HowTo schema coverage on blog~~ ✅ DONE (all 39 posts, 2026-04-10)
 
 ### Medium-term
 13. Weather-triggered blog automation (NWS API, architecture in FRAMEROOFINGUTAH-BUILD-PLAN.md)
@@ -214,7 +233,7 @@
 
 ## GIT WORKFLOW
 
-- All work in `/Users/agenticmac/projects/tradeworker-site/frame-restoration-utah/`
+- All work in `/Users/agenticmac/projects/frame-restoration-utah/` (NOT tradeworker-site/frame-restoration-utah — that is a stale obsolete copy)
 - Push to `main` auto-deploys to BOTH Vercel accounts
 - Commit format: descriptive message + `Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>`
 - Watch for `.git/index.lock` — delete before committing if stale
@@ -223,6 +242,45 @@
 ---
 
 ## SESSION LOG
+
+### 2026-04-17 — H1 Rebrand + AEO llms.txt + 10DLC Consent + Reddit Scanner Hardening
+- **Homepage H1 rebranded:** "The Gold Standard In Utah Roofing" → **"Mountain-Grade Roofing, Valley-Wide"** (positions Frame Roofing for both mountain-country Heber/Park City AND Wasatch Front valley markets)
+- **llms.txt upgraded for AEO (Answer Engine Optimization):** 10 passage-citable Q&A blocks, 45 service areas categorized by county, verified-credentials-only policy (no BBB/certs not confirmed)
+- **10DLC fix (error 30923):** Added optional SMS consent checkbox to lead form + linked consent text to privacy/terms policies (required for Twilio A2P 10DLC carrier compliance)
+- **Reddit-scanner edge function hardened:** robust response parsing — HTTP status checks, empty body handling, retry logic, typed error returns
+
+### 2026-04-12/13 — Performance + IndexNow + Sitemap Cleanup + Directory Blitz v4
+- **Converted 88 images to WebP** and updated all HTML references (major perf win on LCP for location + service pages)
+- **IndexNow integration** for bulk URL indexing (pushes updated URLs to Bing/Yandex/IndexNow-compatible engines immediately on publish)
+- **Sitemap expanded 107 → 124 URLs** — added 17 missing pages Google couldn't discover
+- **Directory blitz tool v4** with full blitz results; Angi moved to "Already Done" on 2026-04-13
+
+### 2026-04-10 — Content + Schema + Analytics + Review Pipeline
+- **6 new blog posts** added (5 long-tail SEO posts + spring roof inspection checklist) — blog count 34 → 40
+- **HowTo JSON-LD schema complete across all 39 blog posts** (11 added earlier, gap closed today)
+- **Blog↔Location crosslinks:** added internal blog links + city crosslinks to all 45 location pages, internal location links into 9 blog posts
+- **Live SEO & Lead Attribution Tracker page launched** — Chart.js dashboards, Supabase-backed, default 30-day view
+- **PIN login gate + multi-user admin panel** for SEO report (blocks public access, per-user credentials)
+- **PostHog tracking rolled out:** init snippet on 107 pages, click event tracking on 47; CSP updated to allow us-assets.i.posthog.com + Chart.js CDN + Supabase edge function
+- **Review landing page + `review-request` edge function** deployed for automated post-job review collection
+- **Backlink acquisition playbook** (12 opportunities with step-by-step instructions) + **directory blitz tool v3**
+
+### 2026-04-08 — Brand Sweep + FAQ/Schema Expansion + Security
+- **Site-wide brand fix:** "Frame Restoration" → "Frame Roofing Utah" on all public pages (catches from earlier rebrand)
+- **FAQ schemas expanded 5 → 12 city-specific per location page**, Article schema + direct-answer blocks added to all 45 location pages
+- **Author bios, digitalSourceType, comparison tables** added to blog + service pages
+- **Removed deprecated HowTo schema** from 4 blog posts that didn't fit the pattern
+- **HSTS header added + PostHog reverse proxy** configured
+- Sitemap lastmod bumped to 2026-04-08 for Google re-crawl
+- Internal cross-links added between 6 priority cities + service pages
+
+### 2026-04-07 (late evening) — SEO + A11y + Perf Sweep
+- **HowTo schemas, CSP header, fixed broken JSON-LD** across site
+- Fixed WebSite schema trailing comma + trimmed meta descriptions to 143 chars
+- **301 redirects for old domain** (framerestorationutah.com → www.frameroofingutah.com) added in code
+- **Perf + a11y:** compressed 24 images (-6.8MB), fixed aria-label roles, heading order, select label, added sr-only class
+- BBB URL corrected to profile 90056184 (badge + schema sameAs both fixed)
+- **SEO upgrade:** schema areaServed with 20 cities, social sameAs profiles, initial WebP conversion, Claude Code hooks for agent quality gates
 
 ### 2026-04-07 (evening) — Location Rewrite + Agent v2.2
 - **All 44 location pages rewritten** with unique city-specific content (weather patterns, neighborhoods, housing stock, elevation, roofing challenges) — eliminates thin content / duplicate content SEO penalty risk
