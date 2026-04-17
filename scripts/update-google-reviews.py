@@ -1,13 +1,14 @@
 #!/usr/bin/env python3
 """Update Google review count + rating across the site.
 
-Hits the Google Places API for the current review total and average rating,
-then regex-updates every live reference in index.html and pages/about.html.
-Safe to run locally or in GitHub Actions.
+Hits SerpAPI's Google Maps engine to pull Frame Roofing Utah's current
+review count and rating, then regex-updates every live reference in
+index.html and pages/about.html.
 
 Environment:
-  GOOGLE_PLACES_API_KEY  (required) — from Google Cloud Console, Places API enabled
-  GOOGLE_PLACE_ID        (required) — Frame Roofing Utah's Place ID
+  SERPAPI_KEY       (required) — SerpAPI private key
+  SERPAPI_DATA_ID   (optional) — Google Maps data_id override; defaults to
+                                 Frame's: 0x874df59069be3e09:0x756332595f702acc
 
 Exit codes:
   0 = files updated (changed count or rating)
@@ -27,6 +28,9 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 AUDIT_LOG = ROOT / "data" / "google-reviews.json"
 
+# Frame Roofing Utah's stable Google Maps data_id — more reliable than text search.
+DEFAULT_DATA_ID = "0x874df59069be3e09:0x756332595f702acc"
+
 # Files that contain live-user-facing review references.
 TARGETS = [
     ROOT / "index.html",
@@ -35,29 +39,39 @@ TARGETS = [
 
 
 def fetch_place() -> dict:
-    """Call Google Places API (Place Details) for review count + rating."""
-    api_key = os.environ.get("GOOGLE_PLACES_API_KEY")
-    place_id = os.environ.get("GOOGLE_PLACE_ID")
-    if not api_key or not place_id:
-        raise SystemExit("ERROR: set GOOGLE_PLACES_API_KEY and GOOGLE_PLACE_ID")
+    """Call SerpAPI's Google Maps engine for review count + rating."""
+    api_key = os.environ.get("SERPAPI_KEY")
+    data_id = os.environ.get("SERPAPI_DATA_ID", DEFAULT_DATA_ID)
+    if not api_key:
+        raise SystemExit("ERROR: set SERPAPI_KEY")
 
+    # SerpAPI requires `q` even when data_id is provided; data_id pins the result
+    # to Frame specifically, so the query string is just a search hint.
     params = urllib.parse.urlencode({
-        "place_id": place_id,
-        "fields": "user_ratings_total,rating,name",
-        "key": api_key,
+        "engine": "google_maps",
+        "q": "Frame Roofing Utah Heber City",
+        "data_id": data_id,
+        "api_key": api_key,
     })
-    url = f"https://maps.googleapis.com/maps/api/place/details/json?{params}"
+    url = f"https://serpapi.com/search.json?{params}"
     with urllib.request.urlopen(url, timeout=15) as resp:
         data = json.loads(resp.read())
 
-    if data.get("status") != "OK":
-        raise SystemExit(f"ERROR: Places API status={data.get('status')} msg={data.get('error_message')}")
+    if "error" in data:
+        raise SystemExit(f"ERROR: SerpAPI: {data['error']}")
 
-    r = data["result"]
+    place = data.get("place_results") or {}
+    if not place:
+        locals_ = data.get("local_results") or []
+        place = locals_[0] if locals_ else {}
+    if not place or "reviews" not in place:
+        raise SystemExit(f"ERROR: no place data returned for data_id={data_id}")
+
     return {
-        "name": r.get("name", ""),
-        "count": int(r["user_ratings_total"]),
-        "rating": float(r["rating"]),
+        "name": place.get("title", ""),
+        "count": int(place["reviews"]),
+        "rating": float(place["rating"]),
+        "place_id": place.get("place_id", ""),
     }
 
 
@@ -122,7 +136,7 @@ def main() -> int:
     place = fetch_place()
     file_count = current_file_count()
 
-    print(f"Google Places: {place['name']} — {place['count']} reviews, {place['rating']} stars")
+    print(f"SerpAPI: {place['name']} — {place['count']} reviews, {place['rating']} stars")
     print(f"Current in index.html: reviewCount={file_count}")
 
     if file_count == place["count"]:
