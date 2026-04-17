@@ -309,6 +309,7 @@
     .hero-form .form-row { margin-bottom: 14px; }
     .hero-form .form-row.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
     .hero-form input, .hero-form select { width: 100%; padding: 12px 14px; border-radius: 3px; border: 2px solid var(--light-gray); font-size: 15px; font-family: 'Archivo', sans-serif; color: var(--dark); background: var(--white); transition: border-color 0.2s; -webkit-appearance: none; }
+    .hero-form input[type="checkbox"], .form-group input[type="checkbox"] { width: auto !important; padding: 0 !important; border: 1px solid #888 !important; -webkit-appearance: checkbox !important; appearance: checkbox !important; flex-shrink: 0; }
     .hero-form input:focus, .hero-form select:focus { border-color: var(--navy); outline: none; box-shadow: 0 0 0 3px rgba(11,64,96,0.1); }
     .hero-form input::placeholder { color: #999; font-family: 'Archivo', sans-serif; }
     .hero-submit { width: 100%; margin-top: 6px; cursor: pointer; min-height: 48px; padding: 14px 24px; font-size: 14px; letter-spacing: 1.2px; animation: none; box-shadow: 0 4px 16px rgba(225,185,105,0.3); border-radius: 3px; }
@@ -688,8 +689,8 @@
             </select>
           </div>
           <label class="form-consent" style="display:flex;align-items:flex-start;gap:10px;margin:14px 0 8px;font-size:13px;line-height:1.5;color:#2a2a2a;cursor:pointer;width:100%;box-sizing:border-box;">
-            <input type="checkbox" name="sms_consent" value="yes" style="margin-top:3px;flex-shrink:0;" />
-            <span style="flex:1;min-width:0;">(Optional) Yes, I agree to receive SMS/text messages from Frame Roofing Utah about my inquiry. Msg &amp; data rates may apply. Reply STOP to opt out. Consent is not required to submit this form.</span>
+            <input type="checkbox" name="sms_consent" value="yes" style="width:auto;margin-top:3px;flex-shrink:0;-webkit-appearance:checkbox;appearance:checkbox;padding:0;border:1px solid #888;" />
+            <span style="flex:1;min-width:0;display:block;">(Optional) Yes, I agree to receive SMS/text messages from Frame Roofing Utah about my inquiry. Msg &amp; data rates may apply. Reply STOP to opt out. Consent is not required to submit this form.</span>
           </label>
           <button type="submit" class="btn-primary hero-submit">Get My Free Roof Inspection</button>
           <p class="form-note">Frame Roofing Utah will contact you about your inquiry by phone and/or email. By submitting, you agree to our <a href="/privacy" style="color:inherit;text-decoration:underline">Privacy Policy</a> &amp; <a href="/terms" style="color:inherit;text-decoration:underline">Terms</a>.</p>
@@ -1143,8 +1144,8 @@
         <div class="form-group"><label for="city">City / ZIP Code</label><input type="text" id="city" name="city" placeholder="e.g. West Jordan, UT 84084" required /></div>
         <div class="form-group"><label for="message">Additional Details (optional)</label><textarea id="message" name="message" placeholder="Tell us about your project..."></textarea></div>
         <label class="form-consent" style="display:flex;align-items:flex-start;gap:10px;margin:14px 0 8px;font-size:13px;line-height:1.5;color:var(--gray);cursor:pointer;width:100%;box-sizing:border-box;">
-          <input type="checkbox" name="sms_consent" value="yes" style="margin-top:3px;flex-shrink:0;" />
-          <span style="flex:1;min-width:0;">(Optional) Yes, I agree to receive SMS/text messages from Frame Roofing Utah about my inquiry. Msg &amp; data rates may apply. Reply STOP to opt out. Consent is not required to submit this form.</span>
+          <input type="checkbox" name="sms_consent" value="yes" style="width:auto;margin-top:3px;flex-shrink:0;-webkit-appearance:checkbox;appearance:checkbox;padding:0;border:1px solid #888;" />
+          <span style="flex:1;min-width:0;display:block;">(Optional) Yes, I agree to receive SMS/text messages from Frame Roofing Utah about my inquiry. Msg &amp; data rates may apply. Reply STOP to opt out. Consent is not required to submit this form.</span>
         </label>
         <div style="display:flex;align-items:center;gap:10px;margin:4px 0 12px;font-size:12px;color:var(--gray);">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0B4060" stroke-width="2.5" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
