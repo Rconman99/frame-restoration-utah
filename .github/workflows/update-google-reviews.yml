@@ -1,0 +1,48 @@
+name: Update Google Reviews
+
+on:
+  schedule:
+    # Twice a month: 1st and 15th at 13:17 UTC = 07:17 Denver time
+    - cron: '17 13 1,15 * *'
+  workflow_dispatch:
+    # Manual trigger from GitHub Actions tab — run anytime from the UI
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Run review scraper
+        id: scrape
+        env:
+          GOOGLE_PLACES_API_KEY: ${{ secrets.GOOGLE_PLACES_API_KEY }}
+          GOOGLE_PLACE_ID: ${{ secrets.GOOGLE_PLACE_ID }}
+        run: |
+          set +e
+          python3 scripts/update-google-reviews.py
+          echo "exit_code=$?" >> "$GITHUB_OUTPUT"
+
+      - name: Commit and push if changed
+        if: steps.scrape.outputs.exit_code == '0'
+        run: |
+          git config user.name "Review Bot"
+          git config user.email "review-bot@frameroofingutah.com"
+          # Pull the new count out of the audit log for the commit message
+          COUNT=$(python3 -c "import json; print(json.load(open('data/google-reviews.json'))[-1]['count'])")
+          git add index.html pages/about.html data/google-reviews.json
+          git commit -m "chore: google reviews → ${COUNT}" \
+            -m "Auto-updated via scripts/update-google-reviews.py"
+          git push
+
+      - name: Fail if script errored
+        if: steps.scrape.outputs.exit_code == '1'
+        run: |
+          echo "Google Places API call failed — check GOOGLE_PLACES_API_KEY and GOOGLE_PLACE_ID secrets"
+          exit 1
