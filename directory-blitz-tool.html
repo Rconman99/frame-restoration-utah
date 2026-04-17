@@ -20,6 +20,118 @@ h1{font-size:24px;color:#f8fafc;margin-bottom:2px}
 <h1>🔥 Frame Roofing — Directory Blitz Tool v4</h1>
 <p class="sub">Click a field to copy it. Check off each directory as you go. Progress saves automatically.</p>
 <p class="blitz-date">Last blitz run: April 12–13, 2026 — 19 directories attempted</p>
+
+<!-- LANDON TODO LIST — top-of-page priority asks -->
+<style>
+.landon-todo{background:linear-gradient(135deg,#7f1d1d 0%,#991b1b 100%);border:3px solid #dc2626;border-radius:12px;padding:18px 22px;margin:8px 0 22px;box-shadow:0 8px 28px rgba(220,38,38,0.35)}
+.landon-todo h2{color:#fff;font-size:22px;margin-bottom:4px;display:flex;align-items:center;gap:10px;letter-spacing:0.3px}
+.landon-todo .sub-heading{color:#fecaca;font-size:12px;margin-bottom:14px;font-weight:700;letter-spacing:0.6px;text-transform:uppercase}
+.todo-progress{display:flex;align-items:center;gap:10px;margin-bottom:14px;padding:8px 12px;background:rgba(0,0,0,0.35);border-radius:6px}
+.todo-progress-bar{flex:1;background:#450a0a;border-radius:6px;height:14px;overflow:hidden}
+.todo-progress-fill{background:linear-gradient(90deg,#f59e0b,#fbbf24);height:100%;border-radius:6px;transition:width 0.4s}
+.todo-progress-text{font-size:12px;font-weight:700;color:#fef3c7;white-space:nowrap}
+.todo-item{background:rgba(0,0,0,0.35);border-radius:8px;padding:12px 14px;margin-bottom:8px;display:flex;align-items:flex-start;gap:12px;border-left:4px solid #fbbf24;transition:opacity 0.3s}
+.todo-item.p2{border-left-color:#60a5fa}
+.todo-item.p3{border-left-color:#a78bfa}
+.todo-item.done{opacity:0.45}
+.todo-item.done .todo-title{text-decoration:line-through}
+.todo-item input[type=checkbox]{width:22px;height:22px;accent-color:#10b981;cursor:pointer;flex-shrink:0;margin-top:2px}
+.todo-info{flex:1;min-width:0}
+.todo-priority{display:inline-block;background:#fbbf24;color:#111;font-size:10px;font-weight:800;padding:2px 8px;border-radius:4px;letter-spacing:0.4px;margin-right:8px;vertical-align:middle}
+.todo-item.p2 .todo-priority{background:#60a5fa;color:#0f172a}
+.todo-item.p3 .todo-priority{background:#a78bfa;color:#1e1b4b}
+.todo-title{color:#fff;font-size:15px;font-weight:700;display:inline;vertical-align:middle}
+.todo-why{color:#fed7aa;font-size:12.5px;margin-top:5px;line-height:1.5}
+.todo-why strong{color:#fde68a}
+</style>
+<div class="landon-todo">
+  <h2>🚨 Hey Landon — What We Need From You</h2>
+  <div class="sub-heading">Top Priorities · Knocks out the last website gaps + a DNS block</div>
+  <div class="todo-progress">
+    <div class="todo-progress-bar"><div class="todo-progress-fill" id="todo-pbar" style="width:0%"></div></div>
+    <div class="todo-progress-text" id="todo-ptxt">0 / 5 done</div>
+  </div>
+
+  <div class="todo-item p1" id="todo-gutter-photo">
+    <input type="checkbox" onchange="toggleTodo('gutter-photo',this.checked)">
+    <div class="todo-info">
+      <span class="todo-priority">Priority 1</span>
+      <span class="todo-title">📸 Text Ryan 1 close-up gutter install photo</span>
+      <div class="todo-why">Any real gutter job — a section being installed, a finished house with new seamless gutters, or a before/after. Right now the Gutters tile on the homepage is a drone shot with zero gutters visible. <strong>Without this, the gutter service looks fake.</strong></div>
+    </div>
+  </div>
+
+  <div class="todo-item p1" id="todo-solar-photo">
+    <input type="checkbox" onchange="toggleTodo('solar-photo',this.checked)">
+    <div class="todo-info">
+      <span class="todo-priority">Priority 1</span>
+      <span class="todo-title">📸 Text Ryan 1 solar install photo</span>
+      <div class="todo-why">Same deal — need a real shot showing solar panels on a roof or a panel install in progress. Current tile just shows two guys in a driveway. <strong>Makes the solar service believable on the homepage.</strong></div>
+    </div>
+  </div>
+
+  <div class="todo-item p2" id="todo-godaddy-dns">
+    <input type="checkbox" onchange="toggleTodo('godaddy-dns',this.checked)">
+    <div class="todo-info">
+      <span class="todo-priority">Priority 2</span>
+      <span class="todo-title">🌐 GoDaddy DNS — switch framerestorationutah.com to Vercel</span>
+      <div class="todo-why">Log into GoDaddy → pick <em>framerestorationutah.com</em> → DNS → change the A record to <strong>216.198.79.1</strong> (remove the GoDaddy forwarding IPs). This makes the old domain redirect properly to frameroofingutah.com. Ryan can screen-share with you — takes 2 min.</div>
+    </div>
+  </div>
+
+  <div class="todo-item p3" id="todo-certainteed">
+    <input type="checkbox" onchange="toggleTodo('certainteed',this.checked)">
+    <div class="todo-info">
+      <span class="todo-priority">Priority 3</span>
+      <span class="todo-title">🔐 Send Ryan your CertainTeed + Tamko contractor logins</span>
+      <div class="todo-why">These are manufacturer directories — getting listed on CertainTeed "Find a Pro" and Tamko's locator is a huge Google trust signal. Ryan just needs the logins to submit the listings. See "LANDON MUST HANDLE PERSONALLY" section below.</div>
+    </div>
+  </div>
+
+  <div class="todo-item p3" id="todo-buildzoom">
+    <input type="checkbox" onchange="toggleTodo('buildzoom',this.checked)">
+    <div class="todo-info">
+      <span class="todo-priority">Priority 3</span>
+      <span class="todo-title">📝 Review BuildZoom step 6 (referral fee agreement)</span>
+      <div class="todo-why">Profile is 5/8 steps done. Step 6 is a referral-fee contract — Ryan paused so you can read it before signing. ~2 min to approve or decline.</div>
+    </div>
+  </div>
+</div>
+<script>
+(function(){
+  const KEY='frame-landon-todos-v1';
+  const ITEMS=['gutter-photo','solar-photo','godaddy-dns','certainteed','buildzoom'];
+  function getState(){try{return JSON.parse(localStorage.getItem(KEY))||{};}catch(e){return{};}}
+  function setState(s){localStorage.setItem(KEY,JSON.stringify(s));}
+  function updateProgress(){
+    const s=getState();
+    const done=ITEMS.filter(k=>s[k]).length;
+    const pct=Math.round((done/ITEMS.length)*100);
+    const pbar=document.getElementById('todo-pbar');
+    const ptxt=document.getElementById('todo-ptxt');
+    if(pbar) pbar.style.width=pct+'%';
+    if(ptxt) ptxt.textContent=done+' / '+ITEMS.length+' done';
+  }
+  window.toggleTodo=function(key,checked){
+    const s=getState();s[key]=checked;setState(s);
+    const el=document.getElementById('todo-'+key);
+    if(el) el.classList.toggle('done',checked);
+    updateProgress();
+  };
+  // Restore state on page load
+  const s=getState();
+  ITEMS.forEach(k=>{
+    const el=document.getElementById('todo-'+k);
+    if(el && s[k]){
+      el.classList.add('done');
+      const cb=el.querySelector('input[type=checkbox]');
+      if(cb) cb.checked=true;
+    }
+  });
+  updateProgress();
+})();
+</script>
+
 <div class="progress-wrap">
   <div class="progress-bar"><div class="progress-fill" id="pbar" style="width:0%"></div></div>
   <div class="progress-text" id="ptxt">0 / 0</div>
