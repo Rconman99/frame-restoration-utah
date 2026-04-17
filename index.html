@@ -1828,20 +1828,45 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 
-  // Lazy-load when the map scrolls into view — protects Lighthouse / mobile data.
-  // Fallback: if IntersectionObserver is unavailable, load immediately.
+  // Lazy-load the map with three triggers for maximum reliability:
+  // 1) IntersectionObserver (fires when map is ~400px away — main path, Lighthouse-friendly)
+  // 2) First scroll event (safety net if IO misses)
+  // 3) 4-second timeout after page load (guaranteed render for non-scrolling users)
+  var triggered = false;
+  function triggerOnce() {
+    if (triggered) return;
+    triggered = true;
+    loadMapbox(initMap);
+  }
+
   if ('IntersectionObserver' in window) {
     var io = new IntersectionObserver(function(entries, observer){
       entries.forEach(function(entry){
         if (entry.isIntersecting) {
-          loadMapbox(initMap);
           observer.disconnect();
+          triggerOnce();
         }
       });
-    }, { rootMargin: '200px 0px' });
+    }, { rootMargin: '400px 0px' });
     io.observe(mapEl);
+  }
+
+  // Safety net #1: trigger on first user scroll (once)
+  function scrollTrigger() {
+    window.removeEventListener('scroll', scrollTrigger);
+    // Only trigger if map element is near the viewport, otherwise wait for IO
+    var rect = mapEl.getBoundingClientRect();
+    if (rect.top < window.innerHeight + 800 && rect.bottom > -400) {
+      triggerOnce();
+    }
+  }
+  window.addEventListener('scroll', scrollTrigger, { passive: true });
+
+  // Safety net #2: timeout fallback so the map always renders eventually
+  if (document.readyState === 'complete') {
+    setTimeout(triggerOnce, 4000);
   } else {
-    loadMapbox(initMap);
+    window.addEventListener('load', function(){ setTimeout(triggerOnce, 4000); });
   }
 })();
 </script>
