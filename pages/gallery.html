@@ -79,6 +79,149 @@
   </div>
 </section>
 
+<!-- ═══════════ BEFORE / AFTER SLIDER SECTION ═══════════ -->
+<section class="ba-section" aria-labelledby="ba-heading" style="padding:80px 5% 60px;background:#fff;border-bottom:1px solid rgba(11,64,96,0.12);">
+  <div style="max-width:1200px;margin:0 auto;">
+    <div style="text-align:center;max-width:700px;margin:0 auto 48px;">
+      <div style="color:#C99A3E;font-family:'Archivo Black',sans-serif;font-size:0.75rem;letter-spacing:3px;text-transform:uppercase;margin-bottom:14px;">Before &amp; After</div>
+      <h2 id="ba-heading" style="font-family:'Archivo Black',sans-serif;color:#082D44;font-size:clamp(1.8rem,4vw,2.6rem);line-height:1.1;text-transform:uppercase;margin:0 0 16px;">Drag to Reveal the Transformation</h2>
+      <p style="color:#555;font-size:1.05rem;line-height:1.65;margin:0;">Real Wasatch Front projects &mdash; from storm-damaged to mountain-grade. Drag the gold slider to reveal the finished work.</p>
+    </div>
+
+    <div class="ba-stack" style="display:grid;grid-template-columns:1fr;gap:40px;">
+      <!-- PAIR 1: Storm-damaged → Restored -->
+      <article class="ba-card" data-ba-pair>
+        <div class="ba-slider" aria-label="Before and after: Sandy storm-damaged roof to new architectural shingle installation">
+          <img class="ba-img ba-after" src="/images/projects/cities/sandy-storm-damage-reroof-1.webp" alt="After: New architectural shingle roof in Sandy, Utah" loading="lazy" />
+          <div class="ba-before-wrap"><img class="ba-img ba-before" src="/images/projects/cities/sandy-storm-damage-reroof-2.webp" alt="Before: Storm-damaged shingles in Sandy, Utah" loading="lazy" /></div>
+          <div class="ba-badge ba-badge-before">Before</div>
+          <div class="ba-badge ba-badge-after">After</div>
+          <div class="ba-handle" aria-hidden="true"><span></span></div>
+        </div>
+        <div class="ba-meta">
+          <div class="ba-meta-row"><span class="ba-label">Location</span><span class="ba-value">Sandy, UT</span></div>
+          <div class="ba-meta-row"><span class="ba-label">Scope</span><span class="ba-value">Hail + wind storm damage, full reroof</span></div>
+          <div class="ba-meta-row"><span class="ba-label">Materials</span><span class="ba-value">Architectural asphalt shingle, Class 4 impact-rated</span></div>
+          <div class="ba-meta-row"><span class="ba-label">Completed</span><span class="ba-value">Nov 2025</span></div>
+        </div>
+      </article>
+
+      <!-- PAIR 2: Aged → Modern residential -->
+      <article class="ba-card" data-ba-pair>
+        <div class="ba-slider" aria-label="Before and after: Heber City storm damage to residential reroof">
+          <img class="ba-img ba-after" src="/images/projects/cities/heber-city-residential-reroof-2026.webp" alt="After: New residential roof in Heber City" loading="lazy" />
+          <div class="ba-before-wrap"><img class="ba-img ba-before" src="/images/projects/cities/heber-city-storm-damage-reroof.webp" alt="Before: Storm-damaged roof in Heber City" loading="lazy" /></div>
+          <div class="ba-badge ba-badge-before">Before</div>
+          <div class="ba-badge ba-badge-after">After</div>
+          <div class="ba-handle" aria-hidden="true"><span></span></div>
+        </div>
+        <div class="ba-meta">
+          <div class="ba-meta-row"><span class="ba-label">Location</span><span class="ba-value">Heber City, UT</span></div>
+          <div class="ba-meta-row"><span class="ba-label">Scope</span><span class="ba-value">Full residential reroof after storm damage</span></div>
+          <div class="ba-meta-row"><span class="ba-label">Materials</span><span class="ba-value">Architectural shingle, synthetic underlayment, ice-and-water shield</span></div>
+          <div class="ba-meta-row"><span class="ba-label">Completed</span><span class="ba-value">2026</span></div>
+        </div>
+      </article>
+
+      <!-- PAIR 3: Commercial upgrade -->
+      <article class="ba-card" data-ba-pair>
+        <div class="ba-slider" aria-label="Before and after: Millcreek commercial reroof">
+          <img class="ba-img ba-after" src="/images/projects/cities/millcreek-commercial-reroof-2025.webp" alt="After: Completed commercial roof in Millcreek" loading="lazy" />
+          <div class="ba-before-wrap"><img class="ba-img ba-before" src="/images/projects/cities/millcreek-commercial-reroof.webp" alt="Before: Aging commercial roof in Millcreek" loading="lazy" /></div>
+          <div class="ba-badge ba-badge-before">Before</div>
+          <div class="ba-badge ba-badge-after">After</div>
+          <div class="ba-handle" aria-hidden="true"><span></span></div>
+        </div>
+        <div class="ba-meta">
+          <div class="ba-meta-row"><span class="ba-label">Location</span><span class="ba-value">Millcreek, UT</span></div>
+          <div class="ba-meta-row"><span class="ba-label">Scope</span><span class="ba-value">Commercial flat roof replacement</span></div>
+          <div class="ba-meta-row"><span class="ba-label">Materials</span><span class="ba-value">TPO single-ply membrane, tapered insulation</span></div>
+          <div class="ba-meta-row"><span class="ba-label">Completed</span><span class="ba-value">2025</span></div>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<style>
+.ba-card { background:#FAF9F5; border:1px solid rgba(11,64,96,0.12); border-radius:2px; overflow:hidden; }
+.ba-slider {
+  position:relative; width:100%; aspect-ratio: 16 / 9;
+  overflow:hidden; cursor:ew-resize; user-select:none;
+  background:#0B4060;
+  touch-action: none;
+}
+.ba-img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block; pointer-events:none; }
+.ba-before-wrap { position:absolute; inset:0; width:50%; overflow:hidden; pointer-events:none; border-right:3px solid #E1B969; }
+.ba-before-wrap .ba-img { width: 200%; max-width:none; }
+.ba-badge {
+  position:absolute; top:16px; z-index:3;
+  font-family:'Archivo Black',sans-serif; font-size:0.72rem;
+  letter-spacing:2px; text-transform:uppercase;
+  padding:6px 12px; color:#082D44; background:#E1B969;
+  pointer-events:none;
+}
+.ba-badge-before { left:16px; }
+.ba-badge-after  { right:16px; }
+.ba-handle {
+  position:absolute; top:0; bottom:0; left:50%; width:3px; background:#E1B969;
+  transform:translateX(-50%); z-index:2; pointer-events:none;
+}
+.ba-handle span {
+  position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
+  width:44px; height:44px; border-radius:50%; background:#E1B969;
+  box-shadow:0 4px 14px rgba(0,0,0,0.25); display:flex; align-items:center; justify-content:center;
+}
+.ba-handle span::before, .ba-handle span::after {
+  content:''; width:0; height:0; border-top:6px solid transparent; border-bottom:6px solid transparent;
+}
+.ba-handle span::before { border-right:8px solid #082D44; margin-right:4px; }
+.ba-handle span::after  { border-left:8px solid #082D44; margin-left:4px; }
+.ba-meta { padding:20px 24px; display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:14px 28px; }
+.ba-meta-row { display:flex; flex-direction:column; }
+.ba-meta-row .ba-label { font-family:'Archivo Black',sans-serif; color:#C99A3E; font-size:0.68rem; letter-spacing:2px; text-transform:uppercase; margin-bottom:4px; }
+.ba-meta-row .ba-value { color:#1A1A1A; font-size:0.95rem; line-height:1.4; }
+@media (max-width:640px) { .ba-slider { aspect-ratio: 4 / 3; } .ba-handle span { width:52px; height:52px; } }
+</style>
+
+<script>
+(function(){
+  function initSlider(card){
+    var slider = card.querySelector('.ba-slider');
+    var wrap = card.querySelector('.ba-before-wrap');
+    var handle = card.querySelector('.ba-handle');
+    var beforeImg = wrap.querySelector('.ba-img');
+    if(!slider || !wrap || !handle) return;
+    var pos = 50; // percent
+    function setPos(p){
+      p = Math.max(0, Math.min(100, p));
+      pos = p;
+      wrap.style.width = p + '%';
+      handle.style.left = p + '%';
+      if(beforeImg){ beforeImg.style.width = (100 / (p/100)) + '%'; }
+    }
+    setPos(50);
+    function move(clientX){
+      var rect = slider.getBoundingClientRect();
+      var p = ((clientX - rect.left) / rect.width) * 100;
+      setPos(p);
+    }
+    var dragging = false;
+    slider.addEventListener('mousedown', function(e){ dragging = true; move(e.clientX); });
+    window.addEventListener('mousemove', function(e){ if(dragging) move(e.clientX); });
+    window.addEventListener('mouseup', function(){ dragging = false; });
+    slider.addEventListener('touchstart', function(e){ if(e.touches[0]) move(e.touches[0].clientX); }, {passive:true});
+    slider.addEventListener('touchmove',  function(e){ if(e.touches[0]) move(e.touches[0].clientX); }, {passive:true});
+    // PostHog
+    slider.addEventListener('mouseup', function(){
+      if(window.posthog) window.posthog.capture('before_after_interact', { page: location.pathname, position: Math.round(pos) });
+    });
+  }
+  document.querySelectorAll('.ba-card').forEach(initSlider);
+})();
+</script>
+<!-- ═══════════ /BEFORE / AFTER ═══════════ -->
+
 <section style="padding:40px 5%;max-width:1200px;margin:auto;">
   <div class="gallery-filters" style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin-bottom:32px;">
     <button class="gallery-filter active" data-filter="all" style="padding:10px 24px;border-radius:6px;border:2px solid var(--navy);background:var(--navy);color:#fff;font-family:'Archivo',sans-serif;font-weight:600;cursor:pointer;transition:.2s;">All Projects</button>
