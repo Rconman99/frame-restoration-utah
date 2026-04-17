@@ -206,3 +206,82 @@ footer a { color: var(--gold); text-decoration: none; }
   .btn-primary:active { transform: translateY(-1px); }
   .btn-navy:active { transform: translateY(-1px); }
 }
+
+
+/* ═══════════════════════════════════════════════════════════════════
+   SERVICE PAGE REDESIGN v2 (2026-04-17)
+   ─────────────────────────────────────────────────────────────────
+   Applies Frame Roofing design system (navy/gold/cream, Archivo Black,
+   sharp 2px corners, flat sections) to all service detail pages by
+   overriding the legacy inline-styled blocks: .howto-section, .faq-section,
+   .related-articles, .content-section, .page-cta variants.
+   Uses !important to beat per-element inline styles without editing 12 pages.
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* ─── Content section uplift — gold kicker + Archivo Black H2s ─── */
+.content-section { max-width: 880px; margin: 0 auto; padding: 0 20px; }
+.content-section > .section-label { display: inline-block; font-family: 'Archivo Black', sans-serif; font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: var(--gold); padding-bottom: 8px; border-bottom: 2px solid var(--gold); margin-bottom: 28px; }
+.content-section h2 { font-family: 'Archivo Black', sans-serif; text-transform: uppercase; letter-spacing: 0.5px; color: var(--navy); font-size: clamp(22px, 3vw, 32px); line-height: 1.2; margin-top: 44px; margin-bottom: 16px; position: relative; padding-left: 16px; border-left: 3px solid var(--gold); }
+.content-section h2:first-of-type { margin-top: 0; }
+.content-section p { font-size: 16px; color: #2a3a44; line-height: 1.75; }
+
+/* ─── How-to / process section — sharp corners, flat cream cards ─── */
+.howto-section { background: var(--off-white) !important; padding: 80px 5% !important; }
+.howto-section > div { max-width: 880px !important; }
+.howto-section h2 { font-family: 'Archivo Black', sans-serif !important; text-transform: uppercase !important; letter-spacing: 0.5px !important; color: var(--navy) !important; font-size: clamp(24px, 3.5vw, 34px) !important; margin-bottom: 40px !important; position: relative; }
+.howto-section h2::after { content: ''; display: block; width: 56px; height: 3px; background: var(--gold); margin: 16px auto 0; }
+.howto-section > div > div { background: var(--white) !important; border: 1px solid var(--light-gray) !important; border-left: 3px solid var(--gold) !important; border-radius: 0 !important; box-shadow: none !important; padding: 24px 28px !important; margin-bottom: 16px !important; }
+.howto-section h3 { font-family: 'Archivo Black', sans-serif !important; text-transform: uppercase !important; letter-spacing: 1px !important; font-size: 14px !important; color: var(--navy) !important; display: flex; align-items: center; gap: 14px; margin-bottom: 10px !important; }
+.howto-section h3 span { background: var(--navy) !important; color: var(--gold) !important; width: 32px !important; height: 32px !important; border-radius: 0 !important; line-height: 32px !important; font-family: 'Archivo Black', sans-serif; font-size: 14px !important; margin-right: 0 !important; flex-shrink: 0; text-align: center; }
+.howto-section p { font-size: 15px !important; color: #384552 !important; line-height: 1.7 !important; margin-left: 0 !important; }
+
+/* ─── FAQ section — navy deep flat cards, gold accent ─── */
+.faq-section { background: var(--navy-deep, #082D44) !important; padding: 80px 5% !important; }
+.faq-section > div { max-width: 880px !important; }
+.faq-section h2 { font-family: 'Archivo Black', sans-serif !important; text-transform: uppercase !important; color: var(--white) !important; font-size: clamp(24px, 3.5vw, 34px) !important; margin-bottom: 40px !important; letter-spacing: 0.5px; }
+.faq-section h2::after { content: ''; display: block; width: 56px; height: 3px; background: var(--gold); margin: 16px auto 0; }
+.faq-section > div > div { background: rgba(255,255,255,0.04) !important; border: 1px solid rgba(225,185,105,0.18) !important; border-left: 3px solid var(--gold) !important; border-radius: 0 !important; box-shadow: none !important; padding: 22px 26px !important; margin-bottom: 12px !important; transition: background 0.2s ease, border-color 0.2s ease; }
+.faq-section > div > div:hover { background: rgba(255,255,255,0.07) !important; border-color: var(--gold) !important; }
+.faq-section h3 { font-family: 'Archivo Black', sans-serif !important; text-transform: uppercase !important; letter-spacing: 0.8px !important; font-size: 14px !important; color: var(--gold) !important; margin-bottom: 10px !important; }
+.faq-section p { font-size: 15px !important; color: rgba(255,255,255,0.82) !important; line-height: 1.7 !important; }
+
+/* ─── Related blog articles — flat, sharp, tight ─── */
+.related-articles { background: var(--off-white) !important; border-radius: 0 !important; padding: 56px 5% !important; margin: 0 !important; }
+.related-articles h3 { font-family: 'Archivo Black', sans-serif !important; text-transform: uppercase !important; letter-spacing: 2px !important; font-size: 13px !important; color: var(--gold) !important; margin-bottom: 20px !important; text-align: center; padding-top: 4px; }
+.related-articles > div { max-width: 1000px; margin: 0 auto; }
+.related-articles > div > a { background: var(--white) !important; border: 1px solid var(--light-gray) !important; border-top: 3px solid var(--gold) !important; border-radius: 0 !important; padding: 20px !important; color: var(--navy) !important; font-family: 'Archivo Black', sans-serif !important; text-transform: uppercase !important; letter-spacing: 1px !important; font-size: 13px !important; font-weight: normal !important; transition: border-color 0.2s ease, transform 0.2s ease !important; box-shadow: none !important; }
+.related-articles > div > a:hover { border-color: var(--gold) !important; border-top-color: var(--navy) !important; transform: translateY(-2px); box-shadow: 4px 4px 0 var(--navy) !important; }
+
+/* ─── "Other Services We Offer" grid — reset inline nav-chip styling ─── */
+section > .content-section[style*="text-align"] + div,
+.content-section > div[style*="flex-wrap"] { margin-top: 24px !important; }
+.content-section a[style*="background: var(--navy)"],
+section a[style*="font-family: 'Archivo Black'"][style*="text-transform: uppercase"] { border-radius: 0 !important; border: 2px solid var(--navy) !important; transition: all 0.2s ease !important; letter-spacing: 2px !important; font-size: 12px !important; padding: 14px 22px !important; min-height: 52px !important; }
+.content-section a[style*="background: var(--navy)"]:hover { background: var(--gold) !important; color: var(--navy) !important; border-color: var(--gold) !important; transform: translateY(-2px); box-shadow: 4px 4px 0 var(--navy); }
+
+/* ─── Page CTA — gold band refinement ─── */
+.page-cta { background: var(--gold) !important; border-top: 4px solid var(--navy); border-bottom: 4px solid var(--navy); }
+.page-cta h2 { letter-spacing: 0.5px; }
+.page-cta .btn-navy { border-radius: 0 !important; border: 2px solid var(--navy) !important; background: var(--navy) !important; color: var(--gold) !important; font-family: 'Archivo Black', sans-serif !important; letter-spacing: 2px !important; font-size: 13px !important; padding: 14px 28px !important; text-transform: uppercase; transition: all 0.2s ease; }
+.page-cta .btn-navy + .btn-navy { margin-left: 12px; }
+.page-cta .btn-navy:hover { background: var(--navy-deep, #082D44) !important; transform: translateY(-2px); box-shadow: 4px 4px 0 var(--navy-deep, #082D44); }
+
+/* ─── Breadcrumb in hero — gold accent ─── */
+.page-hero .breadcrumb { font-family: 'Archivo, sans-serif'; font-size: 12px; letter-spacing: 2px; text-transform: uppercase; color: var(--gold); margin-bottom: 18px; }
+.page-hero .breadcrumb a { color: rgba(225,185,105,0.7); text-decoration: none; transition: color 0.2s ease; }
+.page-hero .breadcrumb a:hover { color: var(--gold); }
+
+/* ─── Nearby section chips tighten ─── */
+.nearby-chip { border-radius: 0 !important; border: 2px solid rgba(225,185,105,0.3) !important; font-family: 'Archivo Black', sans-serif; text-transform: uppercase; letter-spacing: 1.5px; font-size: 12px; padding: 12px 20px; background: rgba(255,255,255,0.02); color: rgba(255,255,255,0.85); transition: all 0.2s ease; }
+.nearby-chip:hover { border-color: var(--gold) !important; background: rgba(225,185,105,0.08) !important; color: var(--gold) !important; transform: translateY(-2px); }
+
+/* ─── Sharp-corner default reset for all inline border-radius on service pages ─── */
+main [style*="border-radius"] { border-radius: 0 !important; }
+
+/* ─── Mobile tweaks ─── */
+@media (max-width: 700px) {
+  .content-section h2 { padding-left: 12px; font-size: 22px; }
+  .howto-section, .faq-section { padding: 60px 5% !important; }
+  .howto-section > div > div, .faq-section > div > div { padding: 20px !important; }
+  .page-cta .btn-navy + .btn-navy { margin-left: 0; margin-top: 12px; }
+}
