@@ -33,7 +33,10 @@
     '.fr-modal-success h2{font-family:"Archivo Black",sans-serif;color:#0C3547;font-size:22px;text-transform:uppercase;margin-bottom:8px}',
     '.fr-modal-success p{color:#4A5464;font-size:15px;line-height:1.6}',
     '.fr-modal-success a{display:inline-block;margin-top:16px;color:#0C3547;font-family:"Archivo Black",sans-serif;font-size:14px;text-transform:uppercase;letter-spacing:1px;text-decoration:none}',
-    '@media(max-width:600px){.fr-modal{max-width:100%;max-height:100vh;border-radius:0;min-height:100vh;display:flex;flex-direction:column;justify-content:center}.fr-modal-body{padding:32px 20px}}'
+    '@media(max-width:600px){.fr-modal{max-width:100%;max-height:100vh;border-radius:0;min-height:100vh;display:flex;flex-direction:column;justify-content:center}.fr-modal-body{padding:32px 20px}}',
+    /* ─── Mobile dual sticky bar (Call | Free Inspection) ─── */
+    '.sticky-call.sticky-dual{display:none}',
+    '@media(max-width:900px){.sticky-call.sticky-dual{display:flex!important;align-items:stretch}.sticky-call.sticky-dual a{flex:1 1 50%;min-width:0;min-height:56px;display:flex;align-items:center;justify-content:center;gap:8px;padding:14px 8px;font-family:"Archivo Black",sans-serif;font-size:14px;font-weight:700;letter-spacing:1px;text-decoration:none;text-transform:uppercase;white-space:nowrap}.sticky-call.sticky-dual .sticky-call-side{background:#0B4060;color:#E1B969}.sticky-call.sticky-dual .sticky-cta-side{background:#E1B969;color:#0B4060;border-left:2px solid #0B4060;cursor:pointer}.sticky-call.sticky-dual .sticky-cta-side:active{background:#d4a84f}}'
   ].join('\n');
   document.head.appendChild(css);
 
@@ -135,6 +138,28 @@
     }
   }
   attachTriggers();
+
+  // ─── Upgrade mobile sticky bar: Call | Free Inspection ───
+  function upgradeStickyBar() {
+    var bar = document.querySelector('.sticky-call');
+    if (!bar || bar.getAttribute('data-upgraded') === '1') return;
+    var existingCall = bar.querySelector('a[href^="tel:"]');
+    if (!existingCall) return;
+    bar.setAttribute('data-upgraded', '1');
+    bar.classList.add('sticky-dual');
+    existingCall.classList.add('sticky-call-side');
+    existingCall.innerHTML = '&#9742; Call';
+    existingCall.setAttribute('aria-label', 'Call 435-302-4422');
+
+    var cta = document.createElement('a');
+    cta.href = '#';
+    cta.className = 'sticky-cta-side free-inspection-trigger';
+    cta.setAttribute('aria-label', 'Get free roof inspection');
+    cta.innerHTML = 'Free Inspection &rsaquo;';
+    cta.addEventListener('click', function(e) { e.preventDefault(); openModal(); });
+    bar.appendChild(cta);
+  }
+  upgradeStickyBar();
 
   // ─── Form Submit ───
   var form = document.getElementById('frModalForm');
