@@ -520,6 +520,37 @@
     .area-chip { background: rgba(255,255,255,0.04); padding: 14px 20px; color: rgba(255,255,255,0.75); font-size: 14px; display: flex; align-items: center; gap: 10px; transition: all 0.2s; text-decoration: none; }
     .area-chip::before { content: ''; width: 5px; height: 5px; background: var(--gold); border-radius: 50%; flex-shrink: 0; }
     .area-chip:hover { background: rgba(225,185,105,0.1); color: var(--white); }
+
+    /* ─── SERVICE AREA MAP ─── */
+    .service-map { max-width: 1180px; margin: 0 auto 56px; padding: 0; }
+    .service-map-wrap { position: relative; background: var(--navy-deep); border: 2px solid var(--gold); padding: 0; overflow: hidden; }
+    .service-map-wrap svg { display: block; width: 100%; height: auto; }
+    .sm-city { cursor: pointer; transition: transform 0.15s ease; }
+    .sm-city:hover, .sm-city:focus { outline: none; }
+    .sm-city-dot { transition: all 0.2s ease; }
+    .sm-city:hover .sm-city-dot, .sm-city:focus .sm-city-dot { fill: #FAF9F5; }
+    .sm-city:hover .sm-city-halo, .sm-city:focus .sm-city-halo { opacity: 0.45; r: 18; }
+    .sm-city-halo { fill: #E1B969; opacity: 0; transition: all 0.2s ease; }
+    .sm-city-label { font-family: 'Archivo, sans-serif'; font-size: 11px; font-weight: 600; fill: #FAF9F5; pointer-events: none; opacity: 0.85; text-shadow: 0 0 4px #082D44; }
+    .sm-city:hover .sm-city-label, .sm-city:focus .sm-city-label { opacity: 1; fill: #E1B969; }
+    .sm-hq-pin { fill: #E1B969; }
+    .sm-hq-ring { fill: none; stroke: #E1B969; stroke-width: 2; opacity: 0.6; animation: smPulse 2.4s ease-out infinite; }
+    @keyframes smPulse { 0% { r: 12; opacity: 0.6; } 100% { r: 32; opacity: 0; } }
+    .service-map-tip { position: absolute; pointer-events: none; background: var(--cream); color: var(--navy-deep); border: 2px solid var(--gold); padding: 12px 16px; min-width: 180px; font-family: 'Archivo, sans-serif'; opacity: 0; transition: opacity 0.15s ease; z-index: 3; transform: translate(-50%, calc(-100% - 14px)); box-shadow: 4px 4px 0 var(--navy-deep); }
+    .service-map-tip[data-visible="1"] { opacity: 1; }
+    .service-map-tip .smt-name { font-family: 'Archivo Black', sans-serif; font-size: 14px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--navy-deep); margin-bottom: 4px; }
+    .service-map-tip .smt-meta { font-size: 12px; color: var(--gray); line-height: 1.5; }
+    .service-map-tip .smt-cta { font-family: 'Archivo Black', sans-serif; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--navy); margin-top: 6px; padding-top: 6px; border-top: 1px solid rgba(11,64,96,0.2); }
+    .service-map-caption { display: flex; justify-content: center; gap: 32px; flex-wrap: wrap; padding: 20px 16px 4px; font-family: 'Archivo, sans-serif'; font-size: 12px; color: rgba(255,255,255,0.7); text-transform: uppercase; letter-spacing: 1.5px; }
+    .smc-legend { display: flex; align-items: center; gap: 8px; }
+    .smc-dot { width: 10px; height: 10px; display: inline-block; border-radius: 50%; }
+    .smc-dot-hq { background: #E1B969; box-shadow: 0 0 0 3px rgba(225,185,105,0.3); }
+    .smc-dot-core { background: #E1B969; }
+    .smc-dot-ext { background: rgba(225,185,105,0.45); }
+    @media (max-width: 700px) {
+      .service-map-caption { gap: 16px; font-size: 10px; }
+      .sm-city-label { font-size: 13px; }
+    }
     
 
     /* ─── CTA BANNER ─── */
@@ -1020,6 +1051,54 @@
     <h2 class="section-title">Serving the Full Salt Lake<br />Valley &amp; Wasatch Front</h2>
     <p class="section-sub">From Santaquin in the south to Layton in the north — and east into the Wasatch Back. 40+ Utah communities covered.</p>
   </div>
+
+  <!-- ─── INTERACTIVE SERVICE AREA MAP ─── -->
+  <figure class="service-map reveal" aria-labelledby="service-map-caption">
+    <div class="service-map-wrap">
+      <svg id="service-map-svg" viewBox="0 0 900 520" role="img" aria-label="Interactive map of Frame Roofing Utah's service area across the Wasatch Front and Wasatch Back. Click any city to view local roofing services." xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="sm-mtn" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#082D44"/>
+            <stop offset="100%" stop-color="#0B4060"/>
+          </linearGradient>
+          <linearGradient id="sm-valley" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#FAF9F5"/>
+            <stop offset="100%" stop-color="#F0EDE3"/>
+          </linearGradient>
+        </defs>
+        <!-- Valley floor -->
+        <rect x="0" y="0" width="900" height="520" fill="url(#sm-valley)"/>
+        <!-- Great Salt Lake shape (stylized, NW) -->
+        <path d="M 20,70 Q 120,55 220,80 Q 260,110 230,150 Q 170,175 90,165 Q 30,140 20,70 Z" fill="#BCCCD4" opacity="0.7"/>
+        <text x="120" y="125" fill="#486679" font-size="11" font-family="Archivo, sans-serif" font-weight="600" letter-spacing="1" text-anchor="middle">GREAT SALT LAKE</text>
+        <!-- Wasatch Mountain ridge (east) -->
+        <path d="M 900,520 L 900,0 L 720,0 L 705,40 L 720,75 L 695,115 L 715,155 L 680,200 L 710,240 L 685,285 L 720,325 L 690,370 L 715,420 L 685,470 L 720,520 Z" fill="url(#sm-mtn)"/>
+        <!-- Small mountain jags overlaid (texture) -->
+        <path d="M 720,75 L 740,55 L 760,90 L 780,60 L 800,100 L 820,70 L 840,105 L 860,80 L 880,115 L 900,90 L 900,75 Z" fill="#061F30" opacity="0.35"/>
+        <path d="M 680,200 L 705,175 L 725,210 L 750,180 L 775,215 L 800,190 L 825,225 L 850,195 L 875,230 L 900,200 L 900,195 Z" fill="#061F30" opacity="0.3"/>
+        <path d="M 690,370 L 715,340 L 740,378 L 770,348 L 795,385 L 820,355 L 845,390 L 875,360 L 900,395 L 900,370 Z" fill="#061F30" opacity="0.3"/>
+        <!-- Wasatch label -->
+        <text x="800" y="265" fill="#E1B969" font-size="13" font-family="Archivo Black, sans-serif" letter-spacing="4" text-anchor="middle" opacity="0.85" transform="rotate(90 800 265)">WASATCH RANGE</text>
+        <!-- Service area boundary (gold dashed oval) -->
+        <ellipse cx="420" cy="300" rx="330" ry="180" fill="none" stroke="#E1B969" stroke-width="2" stroke-dasharray="8 6" opacity="0.5"/>
+        <!-- City markers (data-driven positions) -->
+        <g id="sm-cities"></g>
+        <!-- HQ pin overlay (rendered last so it sits on top) -->
+        <g id="sm-hq"></g>
+      </svg>
+      <!-- Floating tooltip -->
+      <div id="service-map-tip" class="service-map-tip" role="tooltip" aria-hidden="true">
+        <div class="smt-name"></div>
+        <div class="smt-meta"></div>
+        <div class="smt-cta">View local services ›</div>
+      </div>
+    </div>
+    <figcaption id="service-map-caption" class="service-map-caption">
+      <span class="smc-legend"><span class="smc-dot smc-dot-hq"></span> HQ — Heber City</span>
+      <span class="smc-legend"><span class="smc-dot smc-dot-core"></span> Core service markets</span>
+      <span class="smc-legend"><span class="smc-dot smc-dot-ext"></span> Extended coverage</span>
+    </figcaption>
+  </figure>
 
   <div class="county-group reveal">
     <p class="county-label">Davis County — North Wasatch Front</p>
@@ -1554,6 +1633,176 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   });
 });
+</script>
+
+<!-- ─── SERVICE AREA MAP — interactive city markers with tooltips ─── -->
+<script>
+(function(){
+  var svg = document.getElementById('service-map-svg');
+  if (!svg) return;
+  var citiesG = document.getElementById('sm-cities');
+  var hqG = document.getElementById('sm-hq');
+  var tip = document.getElementById('service-map-tip');
+  var tipName = tip.querySelector('.smt-name');
+  var tipMeta = tip.querySelector('.smt-meta');
+
+  // Positions are approximate on 900x520 viewBox. HQ is Heber City (east, Wasatch Back).
+  // Core = tier-1 markets (large dots), Ext = tier-2 supporting cities (smaller dots).
+  var CITIES = [
+    // Wasatch Back (east of mountains)
+    {slug:'heber-city', name:'Heber City', x:820, y:330, tier:'hq',   blurb:'Headquarters · Wasatch Back HQ'},
+    {slug:'park-city',  name:'Park City',  x:760, y:250, tier:'core', blurb:'Wasatch Back · Mountain-grade roofing'},
+    {slug:'midway',     name:'Midway',     x:800, y:355, tier:'ext',  blurb:'Heber Valley'},
+
+    // Salt Lake Valley (central)
+    {slug:'salt-lake-city',    name:'Salt Lake City',    x:345, y:230, tier:'core', blurb:'Capital city · full-service roofing'},
+    {slug:'millcreek',         name:'Millcreek',         x:385, y:270, tier:'core', blurb:'East bench · residential & commercial'},
+    {slug:'sandy',             name:'Sandy',             x:420, y:340, tier:'core', blurb:'Featured market · 5-star reviews'},
+    {slug:'draper',            name:'Draper',            x:445, y:385, tier:'core', blurb:'South valley · premium residential'},
+    {slug:'west-jordan',       name:'West Jordan',       x:335, y:355, tier:'ext',  blurb:'West Salt Lake County'},
+    {slug:'south-jordan',      name:'South Jordan',      x:365, y:385, tier:'ext',  blurb:'Daybreak & Sugar House'},
+    {slug:'cottonwood-heights',name:'Cottonwood Heights',x:450, y:305, tier:'ext',  blurb:'East bench foothills'},
+    {slug:'west-valley-city',  name:'West Valley',       x:300, y:285, tier:'ext',  blurb:'West Salt Lake'},
+    {slug:'murray',            name:'Murray',            x:365, y:300, tier:'ext',  blurb:'Central valley'},
+    {slug:'holladay',          name:'Holladay',          x:420, y:290, tier:'ext',  blurb:'East bench'},
+
+    // North (Davis County)
+    {slug:'bountiful', name:'Bountiful', x:320, y:165, tier:'ext', blurb:'Davis County south'},
+    {slug:'layton',    name:'Layton',    x:290, y:100, tier:'core',blurb:'North Davis County'},
+    {slug:'kaysville', name:'Kaysville', x:295, y:135, tier:'ext', blurb:'Davis County mid'},
+
+    // South (Utah County)
+    {slug:'lehi',        name:'Lehi',        x:425, y:435, tier:'core',blurb:'Silicon Slopes'},
+    {slug:'orem',        name:'Orem',        x:490, y:470, tier:'ext', blurb:'Utah Valley'},
+    {slug:'provo',       name:'Provo',       x:520, y:495, tier:'core',blurb:'Utah Valley HQ'},
+    {slug:'spanish-fork',name:'Spanish Fork',x:580, y:500, tier:'ext', blurb:'South Utah Valley'}
+  ];
+
+  var TIER = {
+    hq:   {r: 9,  labelDy: -16, fill: '#E1B969'},
+    core: {r: 7,  labelDy: -13, fill: '#E1B969'},
+    ext:  {r: 5,  labelDy: -11, fill: 'rgba(225,185,105,0.55)'}
+  };
+
+  var SVGNS = 'http://www.w3.org/2000/svg';
+
+  CITIES.forEach(function(c){
+    if (c.tier === 'hq') return; // HQ rendered separately (pulsing ring)
+    var t = TIER[c.tier];
+    var a = document.createElementNS(SVGNS, 'a');
+    a.setAttributeNS('http://www.w3.org/1999/xlink', 'href', '/locations/' + c.slug);
+    a.setAttribute('href', '/locations/' + c.slug);
+    a.setAttribute('class', 'sm-city');
+    a.setAttribute('tabindex', '0');
+    a.setAttribute('data-slug', c.slug);
+    a.setAttribute('data-name', c.name);
+    a.setAttribute('data-blurb', c.blurb);
+    a.setAttribute('aria-label', c.name + ' — ' + c.blurb);
+
+    var halo = document.createElementNS(SVGNS, 'circle');
+    halo.setAttribute('cx', c.x); halo.setAttribute('cy', c.y);
+    halo.setAttribute('r', '12'); halo.setAttribute('class', 'sm-city-halo');
+    a.appendChild(halo);
+
+    var dot = document.createElementNS(SVGNS, 'circle');
+    dot.setAttribute('cx', c.x); dot.setAttribute('cy', c.y);
+    dot.setAttribute('r', t.r); dot.setAttribute('class', 'sm-city-dot');
+    dot.setAttribute('fill', t.fill);
+    dot.setAttribute('stroke', '#082D44'); dot.setAttribute('stroke-width', '1.5');
+    a.appendChild(dot);
+
+    var label = document.createElementNS(SVGNS, 'text');
+    label.setAttribute('x', c.x); label.setAttribute('y', c.y + t.labelDy);
+    label.setAttribute('text-anchor', 'middle');
+    label.setAttribute('class', 'sm-city-label');
+    label.textContent = c.name;
+    a.appendChild(label);
+
+    citiesG.appendChild(a);
+  });
+
+  // HQ — pulsing ring + pin
+  var hq = CITIES.find(function(c){ return c.tier === 'hq'; });
+  if (hq) {
+    var hqLink = document.createElementNS(SVGNS, 'a');
+    hqLink.setAttribute('href', '/locations/' + hq.slug);
+    hqLink.setAttribute('class', 'sm-city');
+    hqLink.setAttribute('tabindex', '0');
+    hqLink.setAttribute('data-slug', hq.slug);
+    hqLink.setAttribute('data-name', hq.name);
+    hqLink.setAttribute('data-blurb', hq.blurb);
+    hqLink.setAttribute('aria-label', hq.name + ' — ' + hq.blurb);
+
+    var ring = document.createElementNS(SVGNS, 'circle');
+    ring.setAttribute('cx', hq.x); ring.setAttribute('cy', hq.y);
+    ring.setAttribute('r', '12'); ring.setAttribute('class', 'sm-hq-ring');
+    hqLink.appendChild(ring);
+
+    var pin = document.createElementNS(SVGNS, 'circle');
+    pin.setAttribute('cx', hq.x); pin.setAttribute('cy', hq.y);
+    pin.setAttribute('r', '10'); pin.setAttribute('class', 'sm-city-dot sm-hq-pin');
+    pin.setAttribute('stroke', '#082D44'); pin.setAttribute('stroke-width', '2');
+    hqLink.appendChild(pin);
+
+    var hqLabel = document.createElementNS(SVGNS, 'text');
+    hqLabel.setAttribute('x', hq.x); hqLabel.setAttribute('y', hq.y - 20);
+    hqLabel.setAttribute('text-anchor', 'middle');
+    hqLabel.setAttribute('class', 'sm-city-label');
+    hqLabel.setAttribute('font-family', 'Archivo Black, sans-serif');
+    hqLabel.setAttribute('font-size', '12');
+    hqLabel.setAttribute('fill', '#E1B969');
+    hqLabel.textContent = 'HQ · ' + hq.name;
+    hqLink.appendChild(hqLabel);
+
+    hqG.appendChild(hqLink);
+  }
+
+  // Tooltip behavior
+  function showTip(target) {
+    var name = target.getAttribute('data-name');
+    var blurb = target.getAttribute('data-blurb');
+    if (!name) return;
+    tipName.textContent = name;
+    tipMeta.textContent = blurb || '';
+    var svgRect = svg.getBoundingClientRect();
+    var wrapRect = svg.parentNode.getBoundingClientRect();
+    // Find the dot's center in screen coords from its cx/cy attrs on the svg viewBox
+    var dot = target.querySelector('.sm-city-dot');
+    if (!dot) return;
+    var cx = parseFloat(dot.getAttribute('cx'));
+    var cy = parseFloat(dot.getAttribute('cy'));
+    var xRatio = cx / 900;
+    var yRatio = cy / 520;
+    var pxX = xRatio * svgRect.width;
+    var pxY = yRatio * svgRect.height;
+    tip.style.left = (svgRect.left - wrapRect.left + pxX) + 'px';
+    tip.style.top = (svgRect.top - wrapRect.top + pxY) + 'px';
+    tip.setAttribute('data-visible', '1');
+    tip.setAttribute('aria-hidden', 'false');
+  }
+  function hideTip(){ tip.setAttribute('data-visible', '0'); tip.setAttribute('aria-hidden', 'true'); }
+
+  svg.addEventListener('mouseover', function(e){
+    var city = e.target.closest('.sm-city');
+    if (city) showTip(city);
+  });
+  svg.addEventListener('mouseout', function(e){
+    var city = e.target.closest('.sm-city');
+    if (city && !svg.contains(e.relatedTarget)) hideTip();
+  });
+  svg.addEventListener('focusin', function(e){
+    var city = e.target.closest('.sm-city');
+    if (city) showTip(city);
+  });
+  svg.addEventListener('focusout', hideTip);
+
+  // PostHog event on click
+  svg.addEventListener('click', function(e){
+    var city = e.target.closest('.sm-city');
+    if (!city) return;
+    if (window.posthog) posthog.capture('service_map_city_click', {slug: city.getAttribute('data-slug'), name: city.getAttribute('data-name')});
+  });
+})();
 </script>
 
 <!-- ─── LIVE REVIEW CAROUSEL — fetches /reviews.json (updated 1st/15th by update-google-reviews.py) ─── -->
