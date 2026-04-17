@@ -527,20 +527,58 @@
     .service-map-wrap svg { display: block; width: 100%; height: auto; }
     .sm-city { cursor: pointer; transition: transform 0.15s ease; }
     .sm-city:hover, .sm-city:focus { outline: none; }
-    .sm-city-dot { transition: all 0.2s ease; }
-    .sm-city:hover .sm-city-dot, .sm-city:focus .sm-city-dot { fill: #FAF9F5; }
-    .sm-city:hover .sm-city-halo, .sm-city:focus .sm-city-halo { opacity: 0.45; r: 18; }
+    .sm-city-dot { transition: all 0.2s ease; transform-origin: center; transform-box: fill-box; }
+    .sm-city:hover .sm-city-dot, .sm-city:focus .sm-city-dot { transform: scale(1.25); }
+    .sm-city:hover .sm-city-halo, .sm-city:focus .sm-city-halo { opacity: 0.55; r: 18; }
     .sm-city-halo { fill: #E1B969; opacity: 0; transition: all 0.2s ease; }
-    .sm-city-label { font-family: 'Archivo, sans-serif'; font-size: 11px; font-weight: 600; fill: #FAF9F5; pointer-events: none; opacity: 0.85; text-shadow: 0 0 4px #082D44; }
-    .sm-city:hover .sm-city-label, .sm-city:focus .sm-city-label { opacity: 1; fill: #E1B969; }
+    /* Label halo via paint-order — crisp legibility over any background */
+    .sm-city-label {
+      font-family: 'Archivo', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      fill: #082D44;
+      stroke: #FAF9F5;
+      stroke-width: 3px;
+      stroke-linejoin: round;
+      paint-order: stroke fill;
+      pointer-events: none;
+      transition: opacity 0.2s ease, fill 0.2s ease;
+    }
+    .sm-city:hover .sm-city-label, .sm-city:focus .sm-city-label { fill: #0B4060; }
+    /* HQ label uses gold fill + navy halo (sits over navy mountains) */
+    .sm-hq-label {
+      font-family: 'Archivo Black', sans-serif;
+      font-size: 12px;
+      letter-spacing: 1px;
+      fill: #E1B969;
+      stroke: #082D44;
+      stroke-width: 3.5px;
+      stroke-linejoin: round;
+      paint-order: stroke fill;
+      pointer-events: none;
+    }
+    /* Progressive disclosure — extended-tier labels reveal on hover/focus */
+    .sm-city[data-tier="ext"] .sm-city-label { opacity: 0; }
+    .sm-city[data-tier="ext"]:hover .sm-city-label,
+    .sm-city[data-tier="ext"]:focus .sm-city-label { opacity: 1; }
     .sm-hq-pin { fill: #E1B969; }
     .sm-hq-ring { fill: none; stroke: #E1B969; stroke-width: 2; opacity: 0.6; animation: smPulse 2.4s ease-out infinite; }
     @keyframes smPulse { 0% { r: 12; opacity: 0.6; } 100% { r: 32; opacity: 0; } }
-    .service-map-tip { position: absolute; pointer-events: none; background: var(--cream); color: var(--navy-deep); border: 2px solid var(--gold); padding: 12px 16px; min-width: 180px; font-family: 'Archivo, sans-serif'; opacity: 0; transition: opacity 0.15s ease; z-index: 3; transform: translate(-50%, calc(-100% - 14px)); box-shadow: 4px 4px 0 var(--navy-deep); }
-    .service-map-tip[data-visible="1"] { opacity: 1; }
-    .service-map-tip .smt-name { font-family: 'Archivo Black', sans-serif; font-size: 14px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--navy-deep); margin-bottom: 4px; }
-    .service-map-tip .smt-meta { font-size: 12px; color: var(--gray); line-height: 1.5; }
-    .service-map-tip .smt-cta { font-family: 'Archivo Black', sans-serif; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--navy); margin-top: 6px; padding-top: 6px; border-top: 1px solid rgba(11,64,96,0.2); }
+    /* Tippy Frame Roofing theme — replaces the old custom tooltip */
+    .tippy-box[data-theme~='frame'] {
+      background: #FAF9F5;
+      color: #082D44;
+      border: 2px solid #E1B969;
+      border-radius: 0;
+      box-shadow: 4px 4px 0 #082D44;
+      font-family: 'Archivo', sans-serif;
+      padding: 2px 0;
+    }
+    .tippy-box[data-theme~='frame'] .tippy-content { padding: 12px 16px; }
+    .tippy-box[data-theme~='frame'] .tippy-arrow { color: #E1B969; }
+    .tippy-box[data-theme~='frame'] .tmt-name { font-family: 'Archivo Black', sans-serif; font-size: 14px; text-transform: uppercase; letter-spacing: 1.5px; color: #082D44; margin-bottom: 4px; line-height: 1.1; }
+    .tippy-box[data-theme~='frame'] .tmt-meta { font-size: 12px; color: #5C6770; line-height: 1.5; margin-bottom: 8px; }
+    .tippy-box[data-theme~='frame'] .tmt-cta { font-family: 'Archivo Black', sans-serif; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: #0B4060; padding-top: 8px; border-top: 1px solid rgba(11,64,96,0.2); }
     .service-map-caption { display: flex; justify-content: center; gap: 32px; flex-wrap: wrap; padding: 20px 16px 4px; font-family: 'Archivo, sans-serif'; font-size: 12px; color: rgba(255,255,255,0.7); text-transform: uppercase; letter-spacing: 1.5px; }
     .smc-legend { display: flex; align-items: center; gap: 8px; }
     .smc-dot { width: 10px; height: 10px; display: inline-block; border-radius: 50%; }
@@ -675,6 +713,11 @@
     !function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.crossOrigin="anonymous",p.async=!0,p.src=s.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+".people (stub)"},o="init capture register register_once register_for_session unregister unregister_for_session getFeatureFlag getFeatureFlagPayload isFeatureEnabled reloadFeatureFlags updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures on onFeatureFlags onSessionId getSurveys getActiveMatchingSurveys renderSurvey canRenderSurvey identify setPersonProperties group resetGroups setPersonPropertiesForFlags resetPersonPropertiesForFlags setGroupPropertiesForFlags resetGroupPropertiesForFlags reset get_distinct_id getGroups get_session_id get_session_replay_url alias set_config startSessionRecording stopSessionRecording sessionRecordingStarted captureException loadToolbar get_property getSessionProperty createPersonProfile opt_in_capturing opt_out_capturing has_opted_in_capturing has_opted_out_capturing clear_opt_in_out_capturing debug getPageviewId".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
     posthog.init('phc_BnECzlZ2OeDujli2dbqcgGODXlv2tYERbp40dTF7UBV',{api_host:'https://us.i.posthog.com', person_profiles: 'identified_only'})
 </script>
+  <!-- Tippy.js for service-map tooltips (SVG-aware, auto-flip, a11y) -->
+  <link rel="stylesheet" href="https://unpkg.com/tippy.js@6/dist/tippy.css">
+  <link rel="stylesheet" href="https://unpkg.com/tippy.js@6/animations/shift-away-subtle.css">
+  <script src="https://unpkg.com/@popperjs/core@2" defer></script>
+  <script src="https://unpkg.com/tippy.js@6" defer></script>
 </head>
 <body>
 
@@ -1077,8 +1120,8 @@
         <path d="M 720,75 L 740,55 L 760,90 L 780,60 L 800,100 L 820,70 L 840,105 L 860,80 L 880,115 L 900,90 L 900,75 Z" fill="#061F30" opacity="0.35"/>
         <path d="M 680,200 L 705,175 L 725,210 L 750,180 L 775,215 L 800,190 L 825,225 L 850,195 L 875,230 L 900,200 L 900,195 Z" fill="#061F30" opacity="0.3"/>
         <path d="M 690,370 L 715,340 L 740,378 L 770,348 L 795,385 L 820,355 L 845,390 L 875,360 L 900,395 L 900,370 Z" fill="#061F30" opacity="0.3"/>
-        <!-- Wasatch label -->
-        <text x="800" y="265" fill="#E1B969" font-size="13" font-family="Archivo Black, sans-serif" letter-spacing="4" text-anchor="middle" opacity="0.85" transform="rotate(90 800 265)">WASATCH RANGE</text>
+        <!-- Wasatch label (positioned south of HQ to avoid collision) -->
+        <text x="830" y="475" fill="#E1B969" font-size="12" font-family="Archivo Black, sans-serif" letter-spacing="4" text-anchor="middle" opacity="0.75" transform="rotate(90 830 475)">WASATCH RANGE</text>
         <!-- Service area boundary (gold dashed oval) -->
         <ellipse cx="420" cy="300" rx="330" ry="180" fill="none" stroke="#E1B969" stroke-width="2" stroke-dasharray="8 6" opacity="0.5"/>
         <!-- City markers (data-driven positions) -->
@@ -1086,12 +1129,6 @@
         <!-- HQ pin overlay (rendered last so it sits on top) -->
         <g id="sm-hq"></g>
       </svg>
-      <!-- Floating tooltip -->
-      <div id="service-map-tip" class="service-map-tip" role="tooltip" aria-hidden="true">
-        <div class="smt-name"></div>
-        <div class="smt-meta"></div>
-        <div class="smt-cta">View local services ›</div>
-      </div>
     </div>
     <figcaption id="service-map-caption" class="service-map-caption">
       <span class="smc-legend"><span class="smc-dot smc-dot-hq"></span> HQ — Heber City</span>
@@ -1679,9 +1716,9 @@ document.addEventListener('DOMContentLoaded', function() {
   ];
 
   var TIER = {
-    hq:   {r: 9,  labelDy: -16, fill: '#E1B969'},
-    core: {r: 7,  labelDy: -13, fill: '#E1B969'},
-    ext:  {r: 5,  labelDy: -11, fill: 'rgba(225,185,105,0.55)'}
+    hq:   {r: 9,  labelDy: -16, fill: '#E1B969', stroke: '#082D44', sw: 2},
+    core: {r: 7,  labelDy: -13, fill: '#E1B969', stroke: '#FAF9F5', sw: 1.5},
+    ext:  {r: 5,  labelDy: -11, fill: 'rgba(225,185,105,0.85)', stroke: 'transparent', sw: 0}
   };
 
   var SVGNS = 'http://www.w3.org/2000/svg';
@@ -1697,6 +1734,7 @@ document.addEventListener('DOMContentLoaded', function() {
     a.setAttribute('data-slug', c.slug);
     a.setAttribute('data-name', c.name);
     a.setAttribute('data-blurb', c.blurb);
+    a.setAttribute('data-tier', c.tier);
     a.setAttribute('aria-label', c.name + ' — ' + c.blurb);
 
     var halo = document.createElementNS(SVGNS, 'circle');
@@ -1708,7 +1746,7 @@ document.addEventListener('DOMContentLoaded', function() {
     dot.setAttribute('cx', c.x); dot.setAttribute('cy', c.y);
     dot.setAttribute('r', t.r); dot.setAttribute('class', 'sm-city-dot');
     dot.setAttribute('fill', t.fill);
-    dot.setAttribute('stroke', '#082D44'); dot.setAttribute('stroke-width', '1.5');
+    if (t.sw > 0) { dot.setAttribute('stroke', t.stroke); dot.setAttribute('stroke-width', t.sw); }
     a.appendChild(dot);
 
     var label = document.createElementNS(SVGNS, 'text');
@@ -1731,6 +1769,7 @@ document.addEventListener('DOMContentLoaded', function() {
     hqLink.setAttribute('data-slug', hq.slug);
     hqLink.setAttribute('data-name', hq.name);
     hqLink.setAttribute('data-blurb', hq.blurb);
+    hqLink.setAttribute('data-tier', 'hq');
     hqLink.setAttribute('aria-label', hq.name + ' — ' + hq.blurb);
 
     var ring = document.createElementNS(SVGNS, 'circle');
@@ -1747,56 +1786,41 @@ document.addEventListener('DOMContentLoaded', function() {
     var hqLabel = document.createElementNS(SVGNS, 'text');
     hqLabel.setAttribute('x', hq.x); hqLabel.setAttribute('y', hq.y - 20);
     hqLabel.setAttribute('text-anchor', 'middle');
-    hqLabel.setAttribute('class', 'sm-city-label');
-    hqLabel.setAttribute('font-family', 'Archivo Black, sans-serif');
-    hqLabel.setAttribute('font-size', '12');
-    hqLabel.setAttribute('fill', '#E1B969');
+    hqLabel.setAttribute('class', 'sm-hq-label');
     hqLabel.textContent = 'HQ · ' + hq.name;
     hqLink.appendChild(hqLabel);
 
     hqG.appendChild(hqLink);
   }
 
-  // Tooltip behavior
-  function showTip(target) {
-    var name = target.getAttribute('data-name');
-    var blurb = target.getAttribute('data-blurb');
-    if (!name) return;
-    tipName.textContent = name;
-    tipMeta.textContent = blurb || '';
-    var svgRect = svg.getBoundingClientRect();
-    var wrapRect = svg.parentNode.getBoundingClientRect();
-    // Find the dot's center in screen coords from its cx/cy attrs on the svg viewBox
-    var dot = target.querySelector('.sm-city-dot');
-    if (!dot) return;
-    var cx = parseFloat(dot.getAttribute('cx'));
-    var cy = parseFloat(dot.getAttribute('cy'));
-    var xRatio = cx / 900;
-    var yRatio = cy / 520;
-    var pxX = xRatio * svgRect.width;
-    var pxY = yRatio * svgRect.height;
-    tip.style.left = (svgRect.left - wrapRect.left + pxX) + 'px';
-    tip.style.top = (svgRect.top - wrapRect.top + pxY) + 'px';
-    tip.setAttribute('data-visible', '1');
-    tip.setAttribute('aria-hidden', 'false');
+  // Tippy.js tooltips — Frame Roofing theme, auto-flip at viewport edges
+  function initTippy() {
+    if (!window.tippy) { return false; }
+    tippy(svg.querySelectorAll('.sm-city'), {
+      theme: 'frame',
+      allowHTML: true,
+      placement: 'top',
+      arrow: true,
+      offset: [0, 10],
+      maxWidth: 240,
+      animation: 'shift-away-subtle',
+      touch: ['hold', 400],
+      content: function(ref) {
+        var name = ref.getAttribute('data-name') || '';
+        var blurb = ref.getAttribute('data-blurb') || '';
+        return '<div class="tmt-name">' + name + '</div>' +
+               (blurb ? '<div class="tmt-meta">' + blurb + '</div>' : '') +
+               '<div class="tmt-cta">View local services ›</div>';
+      }
+    });
+    return true;
   }
-  function hideTip(){ tip.setAttribute('data-visible', '0'); tip.setAttribute('aria-hidden', 'true'); }
+  if (!initTippy()) {
+    // Tippy script may load after this IIFE — retry once after window.load
+    window.addEventListener('load', initTippy, { once: true });
+  }
 
-  svg.addEventListener('mouseover', function(e){
-    var city = e.target.closest('.sm-city');
-    if (city) showTip(city);
-  });
-  svg.addEventListener('mouseout', function(e){
-    var city = e.target.closest('.sm-city');
-    if (city && !svg.contains(e.relatedTarget)) hideTip();
-  });
-  svg.addEventListener('focusin', function(e){
-    var city = e.target.closest('.sm-city');
-    if (city) showTip(city);
-  });
-  svg.addEventListener('focusout', hideTip);
-
-  // PostHog event on click
+  // PostHog event on click (tracks even if Tippy isn't loaded)
   svg.addEventListener('click', function(e){
     var city = e.target.closest('.sm-city');
     if (!city) return;
