@@ -70,16 +70,12 @@ h1{font-size:24px;color:#f8fafc;margin-bottom:2px}
     </div>
   </div>
 
-  <div class="todo-item p2" id="todo-godaddy-dns">
-    <input type="checkbox" onchange="toggleTodo('godaddy-dns',this.checked)">
+  <div class="todo-item p2 done" id="todo-godaddy-dns">
+    <input type="checkbox" checked disabled>
     <div class="todo-info">
-      <span class="todo-priority">Priority 2</span>
-      <span class="todo-title">🌐 GoDaddy DNS — switch framerestorationutah.com to Vercel</span>
-      <div class="todo-why">3 ways to knock this out — pick whichever is easiest for you:<br>
-      <strong>A.</strong> Add Ryan as a <em>GoDaddy delegate</em> (Account Settings → Delegate Access → Invite ryanconwell99@gmail.com, "Products &amp; Domains"). Zero password sharing — Ryan does the DNS edit and the delegate access can be revoked anytime. <strong>← Easiest.</strong><br>
-      <strong>B.</strong> Screen-share with Ryan for 2 min — you log in, he tells you where to click.<br>
-      <strong>C.</strong> Do it solo: GoDaddy → <em>framerestorationutah.com</em> → DNS → change the A record to <strong>216.198.79.1</strong> (remove the GoDaddy forwarding IPs).<br>
-      Any of the 3 makes the old domain redirect properly to frameroofingutah.com.</div>
+      <span class="todo-priority" style="background:#16a34a;color:#fff;">✅ Done 4/17/26</span>
+      <span class="todo-title"><s>🌐 GoDaddy DNS — framerestorationutah.com redirect</s></span>
+      <div class="todo-why">Verified live: <code>framerestorationutah.com</code> now 301-redirects cleanly to <code>www.frameroofingutah.com</code>. DNS A record is on <strong>216.198.79.1</strong>, Vercel is handling the redirect. No action needed from you.</div>
     </div>
   </div>
 
@@ -104,7 +100,7 @@ h1{font-size:24px;color:#f8fafc;margin-bottom:2px}
 <script>
 (function(){
   const KEY='frame-landon-todos-v1';
-  const ITEMS=['gutter-photo','solar-photo','godaddy-dns','certainteed','buildzoom'];
+  const ITEMS=['gutter-photo','solar-photo','certainteed','buildzoom'];
   function getState(){try{return JSON.parse(localStorage.getItem(KEY))||{};}catch(e){return{};}}
   function setState(s){localStorage.setItem(KEY,JSON.stringify(s));}
   function updateProgress(){
@@ -247,22 +243,19 @@ h1{font-size:24px;color:#f8fafc;margin-bottom:2px}
     </div>
   </div>
 
-  <div class="solo-item p4" id="solo-godaddy-workaround">
-    <input type="checkbox" onchange="toggleSolo('godaddy-workaround',this.checked)">
+  <div class="solo-item done" id="solo-godaddy-workaround">
+    <input type="checkbox" checked disabled>
     <div class="solo-info">
-      <span class="solo-priority">Alt Route</span>
-      <span class="solo-title">🔀 GoDaddy workaround — don't wait on Landon</span>
-      <div class="solo-why">Three self-serve paths if Landon stalls on the DNS:<br>
-      <strong>A.</strong> Ask him to add ryanconwell99@gmail.com as a GoDaddy <em>delegate</em> (30 sec click, no password shared).<br>
-      <strong>B.</strong> Transfer the domain to Cloudflare — Ryan owns DNS forever after. Landon just reads Ryan a 6-char EPP auth code once.<br>
-      <strong>C.</strong> Buy a fresh sandbox domain Ryan owns outright and point the vercel.json redirect chain there. Old domain just dies — Google already indexed the new site.</div>
+      <span class="solo-priority" style="background:#16a34a;color:#fff;">✅ Done 4/17/26</span>
+      <span class="solo-title"><s>🔀 GoDaddy workaround</s> — solved</span>
+      <div class="solo-why">Logged into GoDaddy, DNS was already correct (@ and www → 216.198.79.1). framerestorationutah.com redirect verified working. Zero workaround needed.</div>
     </div>
   </div>
 </div>
 <script>
 (function(){
   const KEY='frame-solo-todos-v1';
-  const ITEMS=['blog-posts','location-pages','service-schema','directories-solo','llms-txt','insurance-outreach','reddit-tune','lighthouse','sitemap-extra','godaddy-workaround'];
+  const ITEMS=['blog-posts','location-pages','service-schema','directories-solo','llms-txt','insurance-outreach','reddit-tune','lighthouse','sitemap-extra'];
   function getState(){try{return JSON.parse(localStorage.getItem(KEY))||{};}catch(e){return{};}}
   function setState(s){localStorage.setItem(KEY,JSON.stringify(s));}
   function updateProgress(){
