@@ -75,7 +75,11 @@ h1{font-size:24px;color:#f8fafc;margin-bottom:2px}
     <div class="todo-info">
       <span class="todo-priority">Priority 2</span>
       <span class="todo-title">🌐 GoDaddy DNS — switch framerestorationutah.com to Vercel</span>
-      <div class="todo-why">Log into GoDaddy → pick <em>framerestorationutah.com</em> → DNS → change the A record to <strong>216.198.79.1</strong> (remove the GoDaddy forwarding IPs). This makes the old domain redirect properly to frameroofingutah.com. Ryan can screen-share with you — takes 2 min.</div>
+      <div class="todo-why">3 ways to knock this out — pick whichever is easiest for you:<br>
+      <strong>A.</strong> Add Ryan as a <em>GoDaddy delegate</em> (Account Settings → Delegate Access → Invite ryanconwell99@gmail.com, "Products &amp; Domains"). Zero password sharing — Ryan does the DNS edit and the delegate access can be revoked anytime. <strong>← Easiest.</strong><br>
+      <strong>B.</strong> Screen-share with Ryan for 2 min — you log in, he tells you where to click.<br>
+      <strong>C.</strong> Do it solo: GoDaddy → <em>framerestorationutah.com</em> → DNS → change the A record to <strong>216.198.79.1</strong> (remove the GoDaddy forwarding IPs).<br>
+      Any of the 3 makes the old domain redirect properly to frameroofingutah.com.</div>
     </div>
   </div>
 
@@ -122,6 +126,163 @@ h1{font-size:24px;color:#f8fafc;margin-bottom:2px}
   const s=getState();
   ITEMS.forEach(k=>{
     const el=document.getElementById('todo-'+k);
+    if(el && s[k]){
+      el.classList.add('done');
+      const cb=el.querySelector('input[type=checkbox]');
+      if(cb) cb.checked=true;
+    }
+  });
+  updateProgress();
+})();
+</script>
+
+<!-- SOLO TODO — what we can ship without waiting on Landon -->
+<style>
+.solo-todo{background:linear-gradient(135deg,#064e3b 0%,#065f46 100%);border:3px solid #10b981;border-radius:12px;padding:18px 22px;margin:0 0 22px;box-shadow:0 8px 28px rgba(16,185,129,0.25)}
+.solo-todo h2{color:#fff;font-size:20px;margin-bottom:4px;display:flex;align-items:center;gap:10px;letter-spacing:0.3px}
+.solo-todo .sub-heading{color:#a7f3d0;font-size:12px;margin-bottom:14px;font-weight:700;letter-spacing:0.6px;text-transform:uppercase}
+.solo-item{background:rgba(0,0,0,0.30);border-radius:8px;padding:12px 14px;margin-bottom:8px;display:flex;align-items:flex-start;gap:12px;border-left:4px solid #34d399;transition:opacity 0.3s}
+.solo-item.p2{border-left-color:#60a5fa}
+.solo-item.p3{border-left-color:#a78bfa}
+.solo-item.p4{border-left-color:#fb923c}
+.solo-item.done{opacity:0.45}
+.solo-item.done .solo-title{text-decoration:line-through}
+.solo-item input[type=checkbox]{width:22px;height:22px;accent-color:#fbbf24;cursor:pointer;flex-shrink:0;margin-top:2px}
+.solo-info{flex:1;min-width:0}
+.solo-priority{display:inline-block;background:#34d399;color:#064e3b;font-size:10px;font-weight:800;padding:2px 8px;border-radius:4px;letter-spacing:0.4px;margin-right:8px;vertical-align:middle}
+.solo-item.p2 .solo-priority{background:#60a5fa;color:#0f172a}
+.solo-item.p3 .solo-priority{background:#a78bfa;color:#1e1b4b}
+.solo-item.p4 .solo-priority{background:#fb923c;color:#431407}
+.solo-title{color:#fff;font-size:15px;font-weight:700;display:inline;vertical-align:middle}
+.solo-why{color:#d1fae5;font-size:12.5px;margin-top:5px;line-height:1.5}
+.solo-why strong{color:#fde68a}
+.solo-why em{color:#fbbf24;font-style:normal;font-weight:600}
+</style>
+<div class="solo-todo">
+  <h2>⚡ What Ryan Can Ship Without Landon</h2>
+  <div class="sub-heading">No-blocker work · keep shipping while he sends photos</div>
+  <div class="todo-progress">
+    <div class="todo-progress-bar"><div class="todo-progress-fill" id="solo-pbar" style="width:0%"></div></div>
+    <div class="todo-progress-text" id="solo-ptxt">0 / 10 done</div>
+  </div>
+
+  <div class="solo-item p1" id="solo-blog-posts">
+    <input type="checkbox" onchange="toggleSolo('blog-posts',this.checked)">
+    <div class="solo-info">
+      <span class="solo-priority">Priority 1</span>
+      <span class="solo-title">✍️ Ship 3 more local SEO blog posts</span>
+      <div class="solo-why">High-intent targets: <em>"hail damage insurance claim Utah step-by-step"</em>, <em>"asphalt vs metal roof Utah winters"</em>, <em>"how to read a roof estimate (scam red flags)"</em>. Each one ranks for a specific storm-damaged customer question. All content, no Landon input needed.</div>
+    </div>
+  </div>
+
+  <div class="solo-item p1" id="solo-location-pages">
+    <input type="checkbox" onchange="toggleSolo('location-pages',this.checked)">
+    <div class="solo-info">
+      <span class="solo-priority">Priority 1</span>
+      <span class="solo-title">📍 Add 10 more location pages</span>
+      <div class="solo-why">Still missing high-population Utah cities: Eagle Mountain, Lehi, Orem, Pleasant Grove, Spanish Fork, Bluffdale, Herriman, Riverton, Cottonwood Heights, Bountiful. Each page = a local rank entry point. Reuse location-page template.</div>
+    </div>
+  </div>
+
+  <div class="solo-item p1" id="solo-service-schema">
+    <input type="checkbox" onchange="toggleSolo('service-schema',this.checked)">
+    <div class="solo-info">
+      <span class="solo-priority">Priority 1</span>
+      <span class="solo-title">🏷️ Add Service schema to all 6 homepage tiles</span>
+      <div class="solo-why">Each service (Residential, Storm, Commercial, Restoration, Gutters, Solar) gets its own JSON-LD Service node tied to Frame Restoration Utah LLC. Helps Google show service-specific rich results. ~15 min job.</div>
+    </div>
+  </div>
+
+  <div class="solo-item p1" id="solo-directories-solo">
+    <input type="checkbox" onchange="toggleSolo('directories-solo',this.checked)">
+    <div class="solo-info">
+      <span class="solo-priority">Priority 1</span>
+      <span class="solo-title">📋 Knock out the 11 directory submissions Ryan can do solo</span>
+      <div class="solo-why">Every "BLITZ COMPLETE — CAPTCHA" + "NEEDS EMAIL VERIFICATION" + "OAUTH" item below just needs Ryan to click submit / click email / sign in w/ Google. Zero Landon input. Drives the 11 → 22 done number.</div>
+    </div>
+  </div>
+
+  <div class="solo-item p2" id="solo-llms-txt">
+    <input type="checkbox" onchange="toggleSolo('llms-txt',this.checked)">
+    <div class="solo-info">
+      <span class="solo-priority">Priority 2</span>
+      <span class="solo-title">🤖 Expand llms.txt with 10 more Q&A blocks</span>
+      <div class="solo-why">AI search engines (ChatGPT, Perplexity, Claude) cite llms.txt. Add: <em>"average hail damage claim payout UT"</em>, <em>"when is roofing season in Utah"</em>, <em>"do insurance companies cover full replacement"</em>, etc. Pure Ryan task.</div>
+    </div>
+  </div>
+
+  <div class="solo-item p2" id="solo-insurance-outreach">
+    <input type="checkbox" onchange="toggleSolo('insurance-outreach',this.checked)">
+    <div class="solo-info">
+      <span class="solo-priority">Priority 2</span>
+      <span class="solo-title">📧 Cold outreach list: 50 SLC/Heber insurance agents</span>
+      <div class="solo-why">State Farm, Allstate, Farmers, USAA, American Family agents in SL County + Wasatch County. Pitch: "Roofer who doesn't over-claim, preferred vendor for your customers." Referral partnerships = recurring leads with no ad spend. Use sales:draft-outreach skill.</div>
+    </div>
+  </div>
+
+  <div class="solo-item p2" id="solo-reddit-tune">
+    <input type="checkbox" onchange="toggleSolo('reddit-tune',this.checked)">
+    <div class="solo-info">
+      <span class="solo-priority">Priority 2</span>
+      <span class="solo-title">🔁 Tune Reddit monitor for higher-signal storm alerts</span>
+      <div class="solo-why">Current 8 keywords + 7 subs. Add weather-event-specific triggers: "wind damage", "missing shingles", "leak after rain", "insurance denied roof". Also scan r/Utah, r/Sandy, r/HeberCity more aggressively.</div>
+    </div>
+  </div>
+
+  <div class="solo-item p3" id="solo-lighthouse">
+    <input type="checkbox" onchange="toggleSolo('lighthouse',this.checked)">
+    <div class="solo-info">
+      <span class="solo-priority">Priority 3</span>
+      <span class="solo-title">⚡ Lighthouse optimization pass — target 100/100/100/100</span>
+      <div class="solo-why">Currently 96/100/96/92. Perf gap is mostly image format + font preload. SEO is already 100. Get to 4x100 for bragging rights on the homepage trust bar.</div>
+    </div>
+  </div>
+
+  <div class="solo-item p3" id="solo-sitemap-extra">
+    <input type="checkbox" onchange="toggleSolo('sitemap-extra',this.checked)">
+    <div class="solo-info">
+      <span class="solo-priority">Priority 3</span>
+      <span class="solo-title">🗺️ Submit sitemap to Seznam + Naver + Yandex</span>
+      <div class="solo-why">Bing + Google + IndexNow already covered. These three catch stragglers (especially Yandex for AI training signals). 5 min of form submissions.</div>
+    </div>
+  </div>
+
+  <div class="solo-item p4" id="solo-godaddy-workaround">
+    <input type="checkbox" onchange="toggleSolo('godaddy-workaround',this.checked)">
+    <div class="solo-info">
+      <span class="solo-priority">Alt Route</span>
+      <span class="solo-title">🔀 GoDaddy workaround — don't wait on Landon</span>
+      <div class="solo-why">Three self-serve paths if Landon stalls on the DNS:<br>
+      <strong>A.</strong> Ask him to add ryanconwell99@gmail.com as a GoDaddy <em>delegate</em> (30 sec click, no password shared).<br>
+      <strong>B.</strong> Transfer the domain to Cloudflare — Ryan owns DNS forever after. Landon just reads Ryan a 6-char EPP auth code once.<br>
+      <strong>C.</strong> Buy a fresh sandbox domain Ryan owns outright and point the vercel.json redirect chain there. Old domain just dies — Google already indexed the new site.</div>
+    </div>
+  </div>
+</div>
+<script>
+(function(){
+  const KEY='frame-solo-todos-v1';
+  const ITEMS=['blog-posts','location-pages','service-schema','directories-solo','llms-txt','insurance-outreach','reddit-tune','lighthouse','sitemap-extra','godaddy-workaround'];
+  function getState(){try{return JSON.parse(localStorage.getItem(KEY))||{};}catch(e){return{};}}
+  function setState(s){localStorage.setItem(KEY,JSON.stringify(s));}
+  function updateProgress(){
+    const s=getState();
+    const done=ITEMS.filter(k=>s[k]).length;
+    const pct=Math.round((done/ITEMS.length)*100);
+    const pbar=document.getElementById('solo-pbar');
+    const ptxt=document.getElementById('solo-ptxt');
+    if(pbar) pbar.style.width=pct+'%';
+    if(ptxt) ptxt.textContent=done+' / '+ITEMS.length+' done';
+  }
+  window.toggleSolo=function(key,checked){
+    const s=getState();s[key]=checked;setState(s);
+    const el=document.getElementById('solo-'+key);
+    if(el) el.classList.toggle('done',checked);
+    updateProgress();
+  };
+  const s=getState();
+  ITEMS.forEach(k=>{
+    const el=document.getElementById('solo-'+k);
     if(el && s[k]){
       el.classList.add('done');
       const cb=el.querySelector('input[type=checkbox]');
