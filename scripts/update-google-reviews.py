@@ -27,9 +27,13 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 AUDIT_LOG = ROOT / "data" / "google-reviews.json"
+REVIEWS_JSON = ROOT / "reviews.json"  # consumed by homepage carousel (/reviews.json)
 
 # Frame Roofing Utah's stable Google Maps data_id — more reliable than text search.
 DEFAULT_DATA_ID = "0x874df59069be3e09:0x756332595f702acc"
+
+# How many individual reviews to include in /reviews.json for the homepage carousel.
+REVIEWS_FEED_LIMIT = 8
 
 # Files that contain live-user-facing review references.
 TARGETS = [
@@ -73,6 +77,96 @@ def fetch_place() -> dict:
         "rating": float(place["rating"]),
         "place_id": place.get("place_id", ""),
     }
+
+
+def fetch_reviews(limit: int = REVIEWS_FEED_LIMIT) -> list[dict]:
+    """Call SerpAPI's google_maps_reviews engine for actual review text.
+
+    Returns a list of {author, rating, text, date, city} dicts. Returns an
+    empty list on any failure — the caller is responsible for preserving
+    the existing reviews.json if the feed comes back empty.
+    """
+    api_key = os.environ.get("SERPAPI_KEY")
+    data_id = os.environ.get("SERPAPI_DATA_ID", DEFAULT_DATA_ID)
+    if not api_key:
+        return []
+
+    params = urllib.parse.urlencode({
+        "engine": "google_maps_reviews",
+        "data_id": data_id,
+        "hl": "en",
+        "sort_by": "newestFirst",
+        "api_key": api_key,
+    })
+    url = f"https://serpapi.com/search.json?{params}"
+    try:
+        with urllib.request.urlopen(url, timeout=20) as resp:
+            data = json.loads(resp.read())
+    except (urllib.error.URLError, TimeoutError, json.JSONDecodeError) as exc:
+        print(f"WARN: could not fetch reviews feed: {exc}")
+        return []
+
+    if "error" in data:
+        print(f"WARN: SerpAPI reviews error: {data['error']}")
+        return []
+
+    raw = data.get("reviews") or []
+    out: list[dict] = []
+    for r in raw[:limit]:
+        # SerpAPI returns `snippet` (or sometimes `extracted_snippet.original`) for the
+        # review text. ISO date lives under `iso_date` or `date`.
+        text = r.get("snippet") or (r.get("extracted_snippet") or {}).get("original") or ""
+        if not text or not text.strip():
+            continue  # skip reviews with no text (star-only reviews)
+        user = r.get("user") or {}
+        author = user.get("name") or r.get("user_name") or r.get("author") or "Google Reviewer"
+        date = r.get("iso_date") or r.get("date") or ""
+        # Try to detect city from the review text if present. SerpAPI doesn't expose
+        # reviewer location. Leave blank otherwise — carousel renders "Google Review".
+        out.append({
+            "author": author,
+            "city": "",
+            "rating": int(r.get("rating") or 5),
+            "date": str(date)[:10] if date else "",
+            "text": text.strip(),
+        })
+    return out
+
+
+def write_reviews_json(place: dict, reviews: list[dict]) -> bool:
+    """Write /reviews.json consumed by the homepage carousel.
+
+    If `reviews` is empty (SerpAPI returned nothing), preserves the existing
+    file's `reviews` array but refreshes the aggregate + timestamp. Returns
+    True if the file was actually rewritten.
+    """
+    existing: dict = {}
+    if REVIEWS_JSON.exists():
+        try:
+            existing = json.loads(REVIEWS_JSON.read_text())
+        except json.JSONDecodeError:
+            existing = {}
+
+    final_reviews = reviews if reviews else existing.get("reviews", [])
+
+    payload = {
+        "source": "google",
+        "place_name": place.get("name") or existing.get("place_name") or "Frame Restoration Utah",
+        "data_id": os.environ.get("SERPAPI_DATA_ID", DEFAULT_DATA_ID),
+        "aggregate": {
+            "rating": place["rating"],
+            "review_count": place["count"],
+        },
+        "updated_at": datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ"),
+        "updater": "scripts/update-google-reviews.py",
+        "reviews": final_reviews,
+    }
+
+    new_text = json.dumps(payload, indent=2, ensure_ascii=False) + "\n"
+    if REVIEWS_JSON.exists() and REVIEWS_JSON.read_text(encoding="utf-8") == new_text:
+        return False
+    REVIEWS_JSON.write_text(new_text, encoding="utf-8")
+    return True
 
 
 def update_file(path: Path, count: int, rating: float, dry_run: bool) -> bool:
@@ -147,6 +241,15 @@ def main() -> int:
     for path in TARGETS:
         if update_file(path, place["count"], place["rating"], dry_run):
             changed_files.append(str(path.relative_to(ROOT)))
+
+    # Refresh /reviews.json for the homepage carousel. Pulls fresh review text from
+    # SerpAPI's google_maps_reviews engine. If that call fails (quota, network, etc.),
+    # write_reviews_json() falls back to preserving the existing reviews array while
+    # still refreshing the aggregate counts — never leaves the site without data.
+    reviews_feed = fetch_reviews()
+    print(f"SerpAPI reviews feed: {len(reviews_feed)} reviews pulled")
+    if not dry_run and write_reviews_json(place, reviews_feed):
+        changed_files.append(str(REVIEWS_JSON.relative_to(ROOT)))
 
     if not changed_files:
         print("No change needed — all references already in sync.")

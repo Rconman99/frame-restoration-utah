@@ -477,6 +477,38 @@
     .testimonial-author { font-family: 'Archivo Black', sans-serif; font-size: 14px; color: var(--navy); text-transform: uppercase; letter-spacing: 1px; }
     .testimonial-city { font-size: 13px; color: var(--gray); margin-top: 2px; }
 
+    /* ─── LIVE REVIEW CAROUSEL ─── */
+    .reviews-carousel { position: relative; max-width: 1180px; margin: 0 auto; padding: 0 48px; }
+    .reviews-carousel[data-ready="0"] { opacity: 0; }
+    .reviews-carousel[data-ready="1"] { opacity: 1; transition: opacity 0.4s ease; }
+    .rc-viewport { overflow: hidden; }
+    .rc-track { display: flex; transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1); will-change: transform; }
+    .rc-slide { flex: 0 0 calc(33.333% - 16px); margin-right: 24px; background: var(--off-white); border: 1px solid var(--light-gray); border-top: 3px solid var(--gold); padding: 32px; display: flex; flex-direction: column; min-height: 320px; }
+    .rc-slide:last-child { margin-right: 0; }
+    .rc-stars { display: flex; gap: 4px; margin-bottom: 16px; }
+    .rc-stars svg { width: 18px; height: 18px; fill: var(--gold); }
+    .rc-text { font-size: 15px; color: var(--dark); line-height: 1.7; margin-bottom: 20px; font-style: italic; flex: 1; }
+    .rc-author { font-family: 'Archivo Black', sans-serif; font-size: 14px; color: var(--navy); text-transform: uppercase; letter-spacing: 1px; }
+    .rc-city { font-size: 13px; color: var(--gray); margin-top: 2px; }
+    .rc-arrow { position: absolute; top: 50%; transform: translateY(-50%); width: 40px; height: 40px; background: var(--navy); color: var(--gold); border: 2px solid var(--navy); font-family: 'Archivo Black', sans-serif; font-size: 22px; line-height: 1; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; padding-bottom: 4px; z-index: 2; }
+    .rc-arrow:hover { background: var(--gold); color: var(--navy); border-color: var(--gold); }
+    .rc-arrow:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
+    .rc-prev { left: 0; }
+    .rc-next { right: 0; }
+    .rc-dots { display: flex; justify-content: center; gap: 8px; margin-top: 28px; }
+    .rc-dot { width: 10px; height: 10px; background: var(--light-gray); border: none; padding: 0; cursor: pointer; transition: all 0.2s; }
+    .rc-dot[aria-current="true"] { background: var(--gold); transform: scale(1.3); }
+    .rc-dot:focus-visible { outline: 2px solid var(--navy); outline-offset: 2px; }
+    @media (max-width: 900px) {
+      .reviews-carousel { padding: 0 40px; }
+      .rc-slide { flex: 0 0 calc(50% - 12px); margin-right: 24px; }
+    }
+    @media (max-width: 600px) {
+      .reviews-carousel { padding: 0 36px; }
+      .rc-slide { flex: 0 0 100%; margin-right: 0; min-height: 280px; padding: 24px; }
+      .rc-arrow { width: 32px; height: 32px; font-size: 18px; }
+    }
+
     /* ─── AREAS — Full Wasatch Front ─── */
     #areas { background: var(--navy); }
     #areas .section-title { color: var(--white); }
@@ -911,13 +943,26 @@
   </div>
 </section>
 
-<!-- ─── TESTIMONIALS ─── -->
+<!-- ─── TESTIMONIALS (LIVE REVIEW CAROUSEL) ─── -->
 <section id="testimonials">
   <div class="testimonials-header reveal">
     <span class="section-label">What Utah Homeowners Say</span>
     <h2 class="section-title">Real Reviews.<br />Real Results.</h2>
-    <p class="section-sub">From the Salt Lake Valley to the Wasatch Back — hear from Utah homeowners who trusted Frame Roofing Utah.</p>
+    <p class="section-sub" id="reviews-live-sub">From the Salt Lake Valley to the Wasatch Back — hear from Utah homeowners who trusted Frame Roofing Utah.</p>
   </div>
+
+  <!-- LIVE CAROUSEL: auto-populated from /reviews.json (scraped by scripts/update-google-reviews.py on 1st/15th cron) -->
+  <div id="reviews-carousel" class="reviews-carousel reveal" data-ready="0">
+    <button class="rc-arrow rc-prev" type="button" aria-label="Previous reviews">‹</button>
+    <div class="rc-viewport">
+      <div class="rc-track" id="rc-track"></div>
+    </div>
+    <button class="rc-arrow rc-next" type="button" aria-label="Next reviews">›</button>
+    <div class="rc-dots" id="rc-dots" role="tablist" aria-label="Review pagination"></div>
+  </div>
+
+  <!-- STATIC FALLBACK: rendered if JS disabled or /reviews.json fails. Matches JSON seed. -->
+  <noscript>
   <div class="testimonials-grid">
     <div class="testimonial-card reveal">
       <div class="testimonial-stars" role="img" aria-label="5 out of 5 stars"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></div>
@@ -956,6 +1001,7 @@
       <div class="testimonial-city">Millcreek &middot; Google Review</div>
     </div>
   </div>
+  </noscript>
 
   <!-- Google Reviews Widget — replace PLACE_ID with Frame Roofing Utah's Google Place ID once available -->
   <div id="google-reviews-widget" style="max-width:1100px;margin:48px auto 0;text-align:center;" class="reveal">
@@ -1508,6 +1554,151 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   });
 });
+</script>
+
+<!-- ─── LIVE REVIEW CAROUSEL — fetches /reviews.json (updated 1st/15th by update-google-reviews.py) ─── -->
+<script>
+(function(){
+  var root = document.getElementById('reviews-carousel');
+  if (!root) return;
+  var track = document.getElementById('rc-track');
+  var dotsEl = document.getElementById('rc-dots');
+  var prevBtn = root.querySelector('.rc-prev');
+  var nextBtn = root.querySelector('.rc-next');
+  var subEl = document.getElementById('reviews-live-sub');
+
+  var STAR_SVG = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>';
+
+  function esc(s){ return String(s||'').replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+
+  function perPage(){
+    if (window.matchMedia('(max-width: 600px)').matches) return 1;
+    if (window.matchMedia('(max-width: 900px)').matches) return 2;
+    return 3;
+  }
+
+  function render(reviews, aggregate){
+    if (!reviews || !reviews.length) { root.style.display = 'none'; return; }
+    track.innerHTML = reviews.map(function(r){
+      var stars = Array(Math.max(1, Math.min(5, r.rating||5))).fill(STAR_SVG).join('');
+      var cityLine = r.city ? esc(r.city) + ' · Google Review' : 'Google Review';
+      return (
+        '<article class="rc-slide">' +
+          '<div class="rc-stars" role="img" aria-label="' + (r.rating||5) + ' out of 5 stars">' + stars + '</div>' +
+          '<p class="rc-text">"' + esc(r.text) + '"</p>' +
+          '<div class="rc-author">' + esc(r.author) + '</div>' +
+          '<div class="rc-city">' + cityLine + '</div>' +
+        '</article>'
+      );
+    }).join('');
+
+    if (aggregate && aggregate.review_count && subEl) {
+      subEl.innerHTML = 'From the Salt Lake Valley to the Wasatch Back — <strong>' + aggregate.review_count + ' five-star reviews</strong> from Utah homeowners who trusted Frame Roofing Utah.';
+    }
+
+    initCarousel(reviews.length);
+  }
+
+  function initCarousel(count){
+    var pp = perPage();
+    var pages = Math.max(1, Math.ceil(count / pp));
+    var page = 0;
+    var autoTimer = null;
+    var paused = false;
+
+    // Build dots
+    dotsEl.innerHTML = '';
+    for (var i = 0; i < pages; i++) {
+      var d = document.createElement('button');
+      d.className = 'rc-dot';
+      d.type = 'button';
+      d.setAttribute('role', 'tab');
+      d.setAttribute('aria-label', 'Page ' + (i+1) + ' of ' + pages);
+      (function(idx){ d.addEventListener('click', function(){ goTo(idx); restart(); }); })(i);
+      dotsEl.appendChild(d);
+    }
+
+    function slideWidth(){
+      var first = track.querySelector('.rc-slide');
+      if (!first) return 0;
+      var style = window.getComputedStyle(first);
+      return first.getBoundingClientRect().width + parseFloat(style.marginRight || '0');
+    }
+
+    function apply(){
+      var offset = page * pp * slideWidth();
+      track.style.transform = 'translateX(-' + offset + 'px)';
+      Array.prototype.forEach.call(dotsEl.children, function(d, i){
+        d.setAttribute('aria-current', i === page ? 'true' : 'false');
+      });
+    }
+
+    function goTo(idx){ page = (idx + pages) % pages; apply(); }
+    function next(){ goTo(page + 1); }
+    function prev(){ goTo(page - 1); }
+
+    function start(){
+      if (pages < 2) return;
+      autoTimer = setInterval(function(){ if (!paused) next(); }, 6500);
+    }
+    function stop(){ if (autoTimer) clearInterval(autoTimer); autoTimer = null; }
+    function restart(){ stop(); start(); }
+
+    prevBtn.onclick = function(){ prev(); restart(); if (window.posthog) posthog.capture('reviews_nav', {dir: 'prev'}); };
+    nextBtn.onclick = function(){ next(); restart(); if (window.posthog) posthog.capture('reviews_nav', {dir: 'next'}); };
+    root.addEventListener('mouseenter', function(){ paused = true; });
+    root.addEventListener('mouseleave', function(){ paused = false; });
+    root.addEventListener('focusin', function(){ paused = true; });
+    root.addEventListener('focusout', function(){ paused = false; });
+
+    // Resize handler — recompute per-page and reset
+    var rAFid;
+    window.addEventListener('resize', function(){
+      cancelAnimationFrame(rAFid);
+      rAFid = requestAnimationFrame(function(){
+        var newPp = perPage();
+        if (newPp !== pp) {
+          pp = newPp;
+          pages = Math.max(1, Math.ceil(count / pp));
+          page = Math.min(page, pages - 1);
+          // Rebuild dots
+          dotsEl.innerHTML = '';
+          for (var j = 0; j < pages; j++) {
+            (function(jj){
+              var dd = document.createElement('button');
+              dd.className = 'rc-dot'; dd.type = 'button';
+              dd.setAttribute('role', 'tab');
+              dd.setAttribute('aria-label', 'Page ' + (jj+1) + ' of ' + pages);
+              dd.addEventListener('click', function(){ goTo(jj); restart(); });
+              dotsEl.appendChild(dd);
+            })(j);
+          }
+        }
+        apply();
+      });
+    });
+
+    apply();
+    root.setAttribute('data-ready', '1');
+    start();
+  }
+
+  fetch('/reviews.json', {cache: 'no-cache'})
+    .then(function(r){ if (!r.ok) throw new Error('reviews.json ' + r.status); return r.json(); })
+    .then(function(data){ render(data.reviews, data.aggregate); })
+    .catch(function(err){
+      // If fetch fails, show noscript fallback by toggling display
+      console.warn('[reviews] fetch failed, falling back to static grid:', err);
+      root.style.display = 'none';
+      var ns = document.querySelector('#testimonials noscript');
+      if (ns && ns.nextElementSibling === null) {
+        // noscript content is not rendered when JS is on — manually inject its HTML
+        var container = document.createElement('div');
+        container.innerHTML = ns.textContent || ns.innerHTML;
+        root.parentNode.insertBefore(container.firstElementChild || container, root.nextSibling);
+      }
+    });
+})();
 </script>
 </body>
 </html>
