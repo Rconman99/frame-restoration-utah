@@ -4,10 +4,10 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>About Frame Roofing Utah | Meet Owner Landon Yokers</title>
-  <meta name="description" content="Meet Landon Yokers, owner of Frame Roofing Utah — licensed, insured, and serving 40+ communities along the Wasatch Front. Learn our story, values, and commitment to gold-standard craftsmanship." />
+  <meta name="description" content="Meet Landon Yokers, owner of Frame Roofing Utah — licensed, insured, and serving 40+ communities along the Wasatch Front. Owner on every job. 5.0-star rated." />
   <link rel="canonical" href="https://www.frameroofingutah.com/pages/about" />
   <meta property="og:title" content="About Frame Roofing Utah | Meet Owner Landon Yokers" />
-  <meta property="og:description" content="Meet Landon Yokers, owner of Frame Roofing Utah — licensed, insured, and serving 40+ communities along the Wasatch Front." />
+  <meta property="og:description" content="Meet Landon Yokers, owner of Frame Roofing Utah — licensed, insured, serving 40+ communities along the Wasatch Front." />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://www.frameroofingutah.com/pages/about" />
   <meta property="og:image" content="https://www.frameroofingutah.com/images/landon-yokers-headshot.webp" />
@@ -18,7 +18,7 @@
   <meta name="geo.region" content="US-UT" />
   <meta name="geo.placename" content="Heber City, Utah" />
   <link rel="icon" href="/favicon.ico" sizes="32x32" />
-  <link rel="stylesheet" href="/global.css?v=20260324">
+  <link rel="stylesheet" href="/global.css?v=20260417">
   <script src="/global-modal.js" defer></script>
 <script type="application/ld+json">
 {
@@ -39,10 +39,7 @@
       "name": "Landon Yokers",
       "jobTitle": "Owner",
       "image": "https://www.frameroofingutah.com/images/landon-yokers-headshot.webp",
-      "worksFor": {
-        "@type": "RoofingContractor",
-        "name": "Frame Roofing Utah"
-      }
+      "worksFor": { "@type": "RoofingContractor", "name": "Frame Roofing Utah" }
     },
     "address": {
       "@type": "PostalAddress",
@@ -52,36 +49,18 @@
       "postalCode": "84032",
       "addressCountry": "US"
     },
-    "geo": {
-      "@type": "GeoCoordinates",
-      "latitude": 40.5069,
-      "longitude": -111.4130
-    },
-    "areaServed": {
-      "@type": "State",
-      "name": "Utah"
-    },
+    "geo": { "@type": "GeoCoordinates", "latitude": 40.5069, "longitude": -111.4130 },
+    "areaServed": { "@type": "State", "name": "Utah" },
     "aggregateRating": {
       "@type": "AggregateRating",
-      "ratingValue": "4.9",
+      "ratingValue": "5.0",
       "reviewCount": "20",
       "bestRating": "5"
     },
-    "numberOfEmployees": {
-      "@type": "QuantitativeValue",
-      "value": "10+"
-    },
+    "numberOfEmployees": { "@type": "QuantitativeValue", "value": "10+" },
     "knowsAbout": [
-      "Residential Roofing",
-      "Commercial Roofing",
-      "Storm Damage Restoration",
-      "Insurance Claims",
-      "Roof Replacement",
-      "Roof Repair",
-      "Gutters",
-      "Solar Installation",
-      "Emergency Tarping",
-      "General Contracting"
+      "Residential Roofing","Commercial Roofing","Storm Damage Restoration","Insurance Claims",
+      "Roof Replacement","Roof Repair","Gutters","Solar Installation","Emergency Tarping","General Contracting"
     ]
   }
 }
@@ -91,188 +70,151 @@
   "@context": "https://schema.org",
   "@type": "BreadcrumbList",
   "itemListElement": [
-    {
-      "@type": "ListItem",
-      "position": 1,
-      "name": "Home",
-      "item": "https://www.frameroofingutah.com/"
-    },
-    {
-      "@type": "ListItem",
-      "position": 2,
-      "name": "About Us"
-    }
+    { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.frameroofingutah.com/" },
+    { "@type": "ListItem", "position": 2, "name": "About Us" }
   ]
 }
 </script>
 <style>
+:root {
+  --navy: #0B4060;
+  --navy-deep: #082D44;
+  --gold: #E1B969;
+  --gold-dark: #C99A3E;
+  --cream: #FAF9F5;
+  --ink: #1A1A1A;
+  --muted: #555;
+  --line: rgba(11,64,96,0.12);
+}
 .about-hero {
   position: relative;
-  background: linear-gradient(135deg, #0B4060 0%, #0d2e42 100%);
+  background: var(--navy-deep);
   color: #fff;
-  padding: 100px 5% 80px;
-  text-align: center;
+  padding: 120px 5% 90px;
   overflow: hidden;
+  border-bottom: 4px solid var(--gold);
 }
 .about-hero::before {
   content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background: url('/images/photos/frame-restoration-02.webp') center/cover no-repeat;
-  opacity: 0.15;
+  position: absolute; inset: 0;
+  background: url('/images/heber-valley-crew-wide.webp') center/cover no-repeat;
+  opacity: 0.28;
+  filter: grayscale(30%);
 }
-.about-hero .breadcrumb { position: relative; z-index: 1; margin-bottom: 16px; }
-.about-hero .breadcrumb a { color: #E1B969; text-decoration: none; }
+.about-hero::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(180deg, rgba(8,45,68,0.75) 0%, rgba(11,64,96,0.92) 100%);
+}
+.about-hero > * { position: relative; z-index: 2; }
+.hero-inner { max-width: 1100px; margin: 0 auto; }
+.hero-kicker {
+  display: inline-block; background: var(--gold); color: var(--navy-deep);
+  font-family: 'Archivo Black', sans-serif; font-size: 0.72rem;
+  letter-spacing: 3px; text-transform: uppercase;
+  padding: 8px 16px; margin-bottom: 22px;
+}
+.about-hero .breadcrumb { font-size: 0.85rem; margin-bottom: 14px; opacity: 0.8; }
+.about-hero .breadcrumb a { color: var(--gold); text-decoration: none; }
 .about-hero .breadcrumb a:hover { text-decoration: underline; }
-.about-hero h1 { position: relative; z-index: 1; font-family: 'Archivo Black', sans-serif; font-size: clamp(2rem, 5vw, 3.2rem); margin: 0 0 16px; line-height: 1.15; }
-.about-hero h1 span { color: #E1B969; }
-.about-hero p { position: relative; z-index: 1; font-size: 1.15rem; max-width: 700px; margin: 0 auto; opacity: 0.9; line-height: 1.6; }
-
-.owner-section {
-  display: flex;
-  gap: 50px;
-  align-items: flex-start;
-  max-width: 1000px;
-  margin: 0 auto;
-  padding: 70px 5%;
-  flex-wrap: wrap;
-}
-.owner-photo {
-  flex: 0 0 320px;
-  text-align: center;
-}
-.owner-photo img {
-  width: 300px;
-  height: 380px;
-  object-fit: cover;
-  object-position: top;
-  border-radius: 12px;
-  box-shadow: 0 8px 30px rgba(0,0,0,0.12);
-  border: 4px solid #E1B969;
-}
-.owner-photo .owner-name {
+.about-hero h1 {
   font-family: 'Archivo Black', sans-serif;
-  font-size: 1.3rem;
-  color: #0B4060;
-  margin: 16px 0 4px;
+  font-size: clamp(2.2rem, 5.5vw, 3.8rem);
+  line-height: 1.08; margin: 0 0 20px;
+  text-transform: uppercase; letter-spacing: -0.5px;
 }
-.owner-photo .owner-title {
-  color: #666;
-  font-size: 0.95rem;
+.about-hero h1 .accent { color: var(--gold); }
+.about-hero .lede { font-size: 1.15rem; max-width: 680px; line-height: 1.65; opacity: 0.92; margin: 0 0 36px; }
+.hero-stats {
+  display: flex; flex-wrap: wrap; gap: 0;
+  border-top: 2px solid rgba(225,185,105,0.3);
+  border-bottom: 2px solid rgba(225,185,105,0.3);
+  margin-top: 30px;
 }
-.owner-bio {
-  flex: 1;
-  min-width: 280px;
+.hero-stat { flex: 1 1 180px; padding: 22px 20px; border-right: 2px solid rgba(225,185,105,0.3); }
+.hero-stat:last-child { border-right: none; }
+.hero-stat .num { font-family: 'Archivo Black', sans-serif; color: var(--gold); font-size: 1.8rem; line-height: 1; margin-bottom: 4px; }
+.hero-stat .lbl { font-size: 0.78rem; letter-spacing: 2px; text-transform: uppercase; opacity: 0.85; }
+</style>
+<style>
+.owner-section { background: #fff; padding: 100px 5%; }
+.owner-wrap { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: 360px 1fr; gap: 60px; align-items: start; }
+.owner-photo-block { position: relative; }
+.owner-photo-block img {
+  width: 100%; max-width: 360px; height: 460px;
+  object-fit: cover; object-position: top center;
+  border-radius: 2px; display: block;
+  border: 3px solid var(--gold);
+  box-shadow: 12px 12px 0 var(--navy-deep);
 }
+.owner-caption {
+  background: var(--navy-deep); color: #fff;
+  padding: 16px 20px; margin-top: 16px;
+  border-left: 4px solid var(--gold);
+}
+.owner-caption .name { font-family: 'Archivo Black', sans-serif; font-size: 1.15rem; text-transform: uppercase; letter-spacing: 0.5px; }
+.owner-caption .title { color: var(--gold); font-size: 0.78rem; letter-spacing: 2px; text-transform: uppercase; margin-top: 4px; }
+.owner-bio .kicker { color: var(--gold-dark); font-family: 'Archivo Black', sans-serif; font-size: 0.75rem; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 14px; }
 .owner-bio h2 {
-  font-family: 'Archivo Black', sans-serif;
-  color: #0B4060;
-  font-size: 1.6rem;
-  margin: 0 0 16px;
-  line-height: 1.3;
+  font-family: 'Archivo Black', sans-serif; color: var(--navy-deep);
+  font-size: clamp(1.7rem, 3vw, 2.3rem); line-height: 1.15;
+  text-transform: uppercase; margin: 0 0 24px; letter-spacing: -0.3px;
 }
-.owner-bio p {
-  color: #444;
-  line-height: 1.8;
-  font-size: 1.05rem;
-  margin-bottom: 16px;
+.owner-bio h2 .accent { color: var(--gold-dark); }
+.owner-bio p { color: var(--muted); line-height: 1.75; font-size: 1.02rem; margin: 0 0 18px; }
+.owner-bio p strong { color: var(--ink); }
+.landon-quote { margin-top: 34px; padding: 28px 32px; background: var(--cream); border-left: 4px solid var(--gold); position: relative; }
+.landon-quote .quote-mark {
+  position: absolute; top: -10px; left: 18px;
+  background: var(--gold); color: var(--navy-deep);
+  font-family: 'Archivo Black', sans-serif; font-size: 0.7rem;
+  letter-spacing: 2px; padding: 4px 10px; text-transform: uppercase;
 }
-
-.values-section {
-  background: #FAF9F5;
-  padding: 70px 5%;
+.landon-quote blockquote { font-family: 'Archivo Black', sans-serif; font-size: 1.15rem; color: var(--navy-deep); line-height: 1.5; margin: 0; font-style: italic; }
+.landon-quote cite { display: block; margin-top: 14px; font-style: normal; font-size: 0.78rem; letter-spacing: 2px; text-transform: uppercase; color: var(--gold-dark); }
+@media (max-width: 860px) {
+  .owner-wrap { grid-template-columns: 1fr; gap: 40px; }
+  .owner-photo-block { max-width: 320px; margin: 0 auto; }
+  .owner-photo-block img { box-shadow: 8px 8px 0 var(--navy-deep); }
 }
-.values-section h2 {
-  font-family: 'Archivo Black', sans-serif;
-  color: #0B4060;
-  text-align: center;
-  font-size: 1.8rem;
-  margin-bottom: 50px;
-}
-.values-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 30px;
-  max-width: 1000px;
-  margin: 0 auto;
-}
-.value-card {
-  background: #fff;
-  padding: 30px;
-  border-radius: 12px;
-  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
-  border-top: 4px solid #E1B969;
-}
-.value-card h3 {
-  font-family: 'Archivo Black', sans-serif;
-  color: #0B4060;
-  font-size: 1.15rem;
-  margin: 0 0 12px;
-}
-.value-card p {
-  color: #555;
-  line-height: 1.7;
-  font-size: 0.95rem;
-  margin: 0;
-}
-
-.trust-badges {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
-  justify-content: center;
-  padding: 50px 5%;
-  max-width: 900px;
-  margin: 0 auto;
-}
-.trust-badge {
-  background: #0B4060;
-  color: #fff;
-  padding: 16px 28px;
-  border-radius: 8px;
-  font-family: 'Archivo Black', sans-serif;
-  font-size: 0.9rem;
-  text-align: center;
-  white-space: nowrap;
-}
-.trust-badge span {
-  display: block;
-  color: #E1B969;
-  font-size: 1.5rem;
-  margin-bottom: 4px;
-}
-
-.cta-section {
-  background: linear-gradient(135deg, #0B4060 0%, #0d2e42 100%);
-  color: #fff;
-  text-align: center;
-  padding: 70px 5%;
-}
-.cta-section h2 {
-  font-family: 'Archivo Black', sans-serif;
-  font-size: clamp(1.5rem, 3.5vw, 2.2rem);
-  margin: 0 0 16px;
-}
-.cta-section p {
-  font-size: 1.1rem;
-  opacity: 0.9;
-  margin-bottom: 30px;
-  max-width: 600px;
-  margin-left: auto;
-  margin-right: auto;
-}
-.cta-section .hero-actions {
-  display: flex;
-  gap: 16px;
-  justify-content: center;
-  flex-wrap: wrap;
-}
-
-@media (max-width: 700px) {
-  .owner-section { flex-direction: column; align-items: center; text-align: center; gap: 30px; padding: 50px 5%; }
-  .owner-photo { flex: none; }
-  .owner-bio h2 { text-align: center; }
-}
+</style>
+<style>
+.values-section { background: var(--cream); padding: 100px 5%; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+.values-head { text-align: center; max-width: 720px; margin: 0 auto 60px; }
+.values-head .kicker { color: var(--gold-dark); font-family: 'Archivo Black', sans-serif; font-size: 0.75rem; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 14px; }
+.values-head h2 { font-family: 'Archivo Black', sans-serif; color: var(--navy-deep); font-size: clamp(1.8rem, 4vw, 2.6rem); line-height: 1.1; text-transform: uppercase; margin: 0 0 16px; }
+.values-head p { color: var(--muted); font-size: 1.05rem; line-height: 1.65; margin: 0; }
+.values-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; max-width: 1100px; margin: 0 auto; }
+.value-card { background: #fff; padding: 32px 28px; border-radius: 2px; border-top: 3px solid var(--gold); box-shadow: 0 1px 0 var(--line); transition: transform .2s ease, box-shadow .2s ease; }
+.value-card:hover { transform: translateY(-3px); box-shadow: 0 12px 24px rgba(11,64,96,0.10); }
+.value-card .v-num { font-family: 'Archivo Black', sans-serif; color: var(--gold-dark); font-size: 0.72rem; letter-spacing: 2px; margin-bottom: 10px; }
+.value-card h3 { font-family: 'Archivo Black', sans-serif; color: var(--navy-deep); font-size: 1.1rem; line-height: 1.25; text-transform: uppercase; margin: 0 0 12px; letter-spacing: -0.2px; }
+.value-card p { color: var(--muted); line-height: 1.7; font-size: 0.96rem; margin: 0; }
+.trust-strip { background: var(--navy-deep); padding: 60px 5%; color: #fff; }
+.trust-grid { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0; border-top: 2px solid rgba(225,185,105,0.3); border-bottom: 2px solid rgba(225,185,105,0.3); }
+.trust-pill { padding: 28px 20px; text-align: center; border-right: 2px solid rgba(225,185,105,0.3); }
+.trust-pill:last-child { border-right: none; }
+.trust-pill .big { font-family: 'Archivo Black', sans-serif; color: var(--gold); font-size: 2rem; line-height: 1; margin-bottom: 8px; }
+.trust-pill .lbl { font-size: 0.78rem; letter-spacing: 2px; text-transform: uppercase; opacity: 0.9; }
+@media (max-width: 760px) { .trust-pill { border-right: none; border-bottom: 2px solid rgba(225,185,105,0.3); } .trust-pill:last-child { border-bottom: none; } }
+.letter-section { background: #fff; padding: 100px 5%; }
+.letter-wrap { max-width: 820px; margin: 0 auto; background: var(--cream); padding: 60px 50px; border-left: 4px solid var(--gold); position: relative; }
+.letter-wrap .kicker { color: var(--gold-dark); font-family: 'Archivo Black', sans-serif; font-size: 0.75rem; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 18px; }
+.letter-wrap h2 { font-family: 'Archivo Black', sans-serif; color: var(--navy-deep); font-size: clamp(1.5rem, 3vw, 2rem); line-height: 1.2; text-transform: uppercase; margin: 0 0 24px; }
+.letter-wrap p { color: var(--ink); line-height: 1.8; font-size: 1.05rem; margin: 0 0 18px; }
+.letter-signature { margin-top: 30px; padding-top: 22px; border-top: 2px solid rgba(11,64,96,0.15); }
+.letter-signature .sig { font-family: 'Archivo Black', sans-serif; color: var(--navy-deep); font-size: 1.2rem; margin-bottom: 4px; letter-spacing: -0.3px; }
+.letter-signature .sig-title { color: var(--gold-dark); font-size: 0.78rem; letter-spacing: 2px; text-transform: uppercase; }
+@media (max-width: 600px) { .letter-wrap { padding: 40px 28px; } }
+.cta-band { background: var(--gold); color: var(--navy-deep); padding: 80px 5%; text-align: center; border-top: 4px solid var(--navy-deep); border-bottom: 4px solid var(--navy-deep); }
+.cta-band .kicker { font-family: 'Archivo Black', sans-serif; font-size: 0.75rem; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 14px; color: var(--navy-deep); opacity: 0.75; }
+.cta-band h2 { font-family: 'Archivo Black', sans-serif; font-size: clamp(1.8rem, 4vw, 2.6rem); line-height: 1.1; text-transform: uppercase; margin: 0 0 18px; letter-spacing: -0.3px; }
+.cta-band p { font-size: 1.1rem; max-width: 620px; margin: 0 auto 32px; line-height: 1.6; }
+.cta-band .actions { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+.cta-band .btn-primary { background: var(--navy-deep); color: #fff; padding: 16px 34px; font-family: 'Archivo Black', sans-serif; font-size: 0.9rem; letter-spacing: 1.5px; text-transform: uppercase; text-decoration: none; border-radius: 2px; border: 2px solid var(--navy-deep); transition: all .2s ease; }
+.cta-band .btn-primary:hover { background: #000; border-color: #000; }
+.cta-band .btn-secondary { background: transparent; color: var(--navy-deep); padding: 16px 34px; font-family: 'Archivo Black', sans-serif; font-size: 0.9rem; letter-spacing: 1.5px; text-transform: uppercase; text-decoration: none; border-radius: 2px; border: 2px solid var(--navy-deep); transition: all .2s ease; }
+.cta-band .btn-secondary:hover { background: var(--navy-deep); color: #fff; }
 </style>
 <script>
     !function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.crossOrigin="anonymous",p.async=!0,p.src=s.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+".people (stub)"},o="init capture register register_once register_for_session unregister unregister_for_session getFeatureFlag getFeatureFlagPayload isFeatureEnabled reloadFeatureFlags updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures on onFeatureFlags onSessionId getSurveys getActiveMatchingSurveys renderSurvey canRenderSurvey identify setPersonProperties group resetGroups setPersonPropertiesForFlags resetPersonPropertiesForFlags setGroupPropertiesForFlags resetGroupPropertiesForFlags reset get_distinct_id getGroups get_session_id get_session_replay_url alias set_config startSessionRecording stopSessionRecording sessionRecordingStarted captureException loadToolbar get_property getSessionProperty createPersonProfile opt_in_capturing opt_out_capturing has_opted_in_capturing has_opted_out_capturing clear_opt_in_out_capturing debug getPageviewId".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
@@ -300,66 +242,113 @@
 <main>
 
 <section class="about-hero">
-  <div class="breadcrumb"><a href="/">Home</a> &rsaquo; About Us</div>
-  <h1>Mountain-Grade Roofing. <span>Valley-Wide.</span></h1>
-  <p>Locally owned and personally run by Landon Yokers. Family-built in Heber City, trusted across 45 Wasatch Front communities from Park City to Provo.</p>
+  <div class="hero-inner">
+    <div class="breadcrumb"><a href="/">Home</a> &rsaquo; About Us</div>
+    <div class="hero-kicker">Owner-Operated &bull; Heber City, UT</div>
+    <h1>Mountain-Grade Roofing.<br><span class="accent">Valley-Wide.</span></h1>
+    <p class="lede">Locally owned and personally run by Landon Yokers. Family-built in Heber City, trusted across 40+ Wasatch Front communities from Park City to Provo. The owner is on every job &mdash; every time.</p>
+    <div class="hero-stats">
+      <div class="hero-stat"><div class="num">5.0&#9733;</div><div class="lbl">20 Google Reviews</div></div>
+      <div class="hero-stat"><div class="num">A+</div><div class="lbl">BBB Accredited</div></div>
+      <div class="hero-stat"><div class="num">40+</div><div class="lbl">Utah Communities</div></div>
+      <div class="hero-stat"><div class="num">10yr</div><div class="lbl">Workmanship Warranty</div></div>
+    </div>
+  </div>
 </section>
 
 <section class="owner-section">
-  <div class="owner-photo">
-    <img src="/images/landon-yokers-headshot.webp" alt="Landon Yokers, Owner of Frame Roofing Utah, in company polo" width="600" height="760" loading="eager" />
-    <div class="owner-name">Landon Yokers</div>
-    <div class="owner-title">Owner &amp; Founder</div>
-  </div>
-  <div class="owner-bio">
-    <h2>Built on Integrity. Driven by Craftsmanship.</h2>
-    <p>Landon Yokers founded Frame Roofing Utah with a simple belief: homeowners deserve a roofing contractor who treats every project like it's his own home. That means premium materials, meticulous installation, and honest communication from the first call to the final walkthrough.</p>
-    <p>Based in Heber City and serving the entire Wasatch Front, Landon and his crew have earned a reputation for showing up on time, doing the work right, and standing behind every roof they install. Whether it's a full residential reroof in Sandy, storm damage restoration in Salt Lake City, or a commercial project in Lehi — the standard is the same.</p>
-    <p>Frame Roofing is fully licensed and insured in the state of Utah. Every project comes with a 10-year workmanship warranty, and Landon personally oversees quality on every job site. When you call Frame Roofing, you're not getting a call center — you're getting the owner.</p>
+  <div class="owner-wrap">
+    <div class="owner-photo-block">
+      <img src="/images/landon-yokers-headshot.webp" alt="Landon Yokers, Owner of Frame Roofing Utah, in company polo" width="600" height="760" loading="eager" />
+      <div class="owner-caption">
+        <div class="name">Landon Yokers</div>
+        <div class="title">Owner &amp; Founder</div>
+      </div>
+    </div>
+    <div class="owner-bio">
+      <div class="kicker">Meet The Owner</div>
+      <h2>Built on integrity.<br><span class="accent">Driven by craftsmanship.</span></h2>
+      <p>Landon Yokers founded Frame Roofing Utah with a simple belief: homeowners deserve a roofing contractor who treats every project like it's his own home. That means <strong>premium materials, meticulous installation, and honest communication</strong> &mdash; from the first call to the final walkthrough.</p>
+      <p>Based in Heber City and serving the entire Wasatch Front, Landon and his crew have earned a reputation for showing up on time, doing the work right, and standing behind every roof they install. Whether it's a full residential reroof in Sandy, storm damage restoration in Salt Lake City, or a commercial project in Lehi &mdash; the standard is the same.</p>
+      <p>Frame Roofing is <strong>fully licensed and insured</strong> in the state of Utah. Every project comes with a 10-year workmanship warranty, and Landon personally oversees quality on every job site. When you call Frame Roofing, you're not getting a call center &mdash; you're getting the owner.</p>
+
+      <div class="landon-quote">
+        <span class="quote-mark">From Landon</span>
+        <blockquote>&ldquo;If I wouldn't put it on my own house, it's not going on yours. That's the whole standard &mdash; mountain-grade, every time.&rdquo;</blockquote>
+        <cite>&mdash; Landon Yokers, Owner</cite>
+      </div>
+    </div>
   </div>
 </section>
 
 <section class="values-section">
-  <h2>What Sets Frame Roofing Apart</h2>
+  <div class="values-head">
+    <div class="kicker">Why Homeowners Choose Frame</div>
+    <h2>Six Standards.<br>Zero Shortcuts.</h2>
+    <p>We built Frame Roofing around the things that actually matter to homeowners &mdash; accountability, material quality, insurance expertise, and a clean job site every single day.</p>
+  </div>
   <div class="values-grid">
     <div class="value-card">
+      <div class="v-num">01</div>
       <h3>Owner On Every Job</h3>
-      <p>Landon personally oversees every project. No middlemen, no miscommunication — direct accountability from start to finish. When you hire Frame Roofing, the owner is on site.</p>
+      <p>Landon personally oversees every project. No middlemen, no miscommunication &mdash; direct accountability from start to finish. When you hire Frame Roofing, the owner is on site.</p>
     </div>
     <div class="value-card">
+      <div class="v-num">02</div>
       <h3>Premium Materials Only</h3>
-      <p>We install top-tier architectural shingles, standing seam metal, and designer options. No builder-grade shortcuts. Every material is selected for Utah's extreme climate — hail, UV, snow load, and freeze-thaw cycles.</p>
+      <p>Top-tier architectural shingles, standing seam metal, and designer options. No builder-grade shortcuts. Every material is chosen for Utah's extreme climate &mdash; hail, UV, snow load, and freeze-thaw cycles.</p>
     </div>
     <div class="value-card">
+      <div class="v-num">03</div>
       <h3>Insurance Claim Experts</h3>
-      <p>Navigating a roof insurance claim shouldn't be a headache. We handle the entire process — damage documentation, adjuster coordination, supplement filing, and installation — so you can focus on your family.</p>
+      <p>Navigating a roof insurance claim shouldn't be a headache. We handle the entire process &mdash; damage documentation, adjuster coordination, supplement filing, installation &mdash; so you can focus on your family.</p>
     </div>
     <div class="value-card">
+      <div class="v-num">04</div>
       <h3>A Frictionless Experience</h3>
-      <p>From the free inspection to the final walkthrough, our process is designed to be easy and stress-free. Transparent pricing, clear timelines, daily updates, and a clean job site every single day.</p>
+      <p>Transparent pricing, clear timelines, daily updates, and a clean job site every single day. From free inspection to final walkthrough, our process is designed to be easy and stress-free.</p>
     </div>
     <div class="value-card">
+      <div class="v-num">05</div>
       <h3>Local Utah Crew</h3>
       <p>No out-of-state storm chasers. Our crew lives and works along the Wasatch Front. We know the building codes, HOA requirements, and climate demands of every community we serve.</p>
     </div>
     <div class="value-card">
+      <div class="v-num">06</div>
       <h3>10-Year Workmanship Warranty</h3>
-      <p>We stand behind every roof we install. Our 10-year workmanship warranty means if anything goes wrong due to installation, we'll be back to make it right — no questions asked.</p>
+      <p>We stand behind every roof we install. Our 10-year workmanship warranty means if anything goes wrong due to installation, we'll be back to make it right &mdash; no questions asked.</p>
     </div>
   </div>
 </section>
 
-<div class="trust-badges">
-  <div class="trust-badge"><span>40+</span>Utah Communities Served</div>
-  <div class="trust-badge"><span>4.9&#9733;</span>Google Rating</div>
-  <div class="trust-badge"><span>10yr</span>Workmanship Warranty</div>
-  <div class="trust-badge"><span>100%</span>Licensed &amp; Insured</div>
-</div>
+<section class="trust-strip">
+  <div class="trust-grid">
+    <div class="trust-pill"><div class="big">5.0&#9733;</div><div class="lbl">20 Google Reviews</div></div>
+    <div class="trust-pill"><div class="big">A+</div><div class="lbl">BBB Accredited</div></div>
+    <div class="trust-pill"><div class="big">10yr</div><div class="lbl">Workmanship Warranty</div></div>
+    <div class="trust-pill"><div class="big">100%</div><div class="lbl">Licensed &amp; Insured</div></div>
+  </div>
+</section>
 
-<section class="cta-section">
-  <h2>Ready for mountain-grade work on your roof?</h2>
-  <p>Book a free roof inspection with Landon and his crew. No pressure, no obligation — just honest answers about the condition of your roof.</p>
-  <div class="hero-actions">
+<section class="letter-section">
+  <div class="letter-wrap">
+    <div class="kicker">A Note From Landon</div>
+    <h2>Why I Started Frame Roofing.</h2>
+    <p>I grew up around construction and spent years watching good homeowners get pushed around by national roofing companies &mdash; high-pressure sales, shortcuts on materials, and nobody to call when something goes wrong a year later.</p>
+    <p>Utah deserves better. That's why Frame Roofing is built the way it is: I'm on every job, we only install materials I'd put on my own house, and we stand behind our work with a real 10-year warranty &mdash; not fine print.</p>
+    <p>If you've got a storm-damaged roof, an insurance claim that needs pushing through, or you're just doing your homework on a reroof &mdash; call me directly. No call center, no sales rep. Just me and a ladder.</p>
+    <div class="letter-signature">
+      <div class="sig">Landon Yokers</div>
+      <div class="sig-title">Owner &amp; Founder, Frame Roofing Utah</div>
+    </div>
+  </div>
+</section>
+
+<section class="cta-band">
+  <div class="kicker">Ready When You Are</div>
+  <h2>Let's get you a mountain-grade roof.</h2>
+  <p>Book a free roof inspection with Landon and his crew. No pressure, no obligation &mdash; just honest answers about the condition of your roof.</p>
+  <div class="actions">
     <a href="https://calendar.app.google/cR4bBSWfb9TQ28UF8" target="_blank" rel="noopener nofollow" class="btn-primary">Book Free Inspection</a>
     <a href="tel:+14353024422" class="btn-secondary">Call 435-302-4422</a>
   </div>
@@ -379,7 +368,6 @@ const btn=document.getElementById('menuBtn'),links=document.getElementById('navL
 if(btn&&links)btn.addEventListener('click',()=>{links.classList.toggle('open');btn.setAttribute('aria-expanded',links.classList.contains('open'))});
 </script>
 <script>
-  // PostHog Conversion Tracking
   (function(){
     var page = window.location.pathname;
     document.querySelectorAll('a[href^="tel:"]').forEach(function(a){
