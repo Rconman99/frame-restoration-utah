@@ -249,14 +249,31 @@ def post_to_supabase(signals):
         print("No signals to post.")
         return None
     payload = json.dumps(signals)
+    # -w writes HTTP status after body; --max-time prevents cold-start hangs; retry once on fail
     r = subprocess.run(
-        ["curl", "-s", "-X", "POST", SUPABASE_ENDPOINT,
-         "-H", "Content-Type: application/json", "-d", payload],
-        capture_output=True, text=True, timeout=30
+        ["curl", "-sS", "-X", "POST", SUPABASE_ENDPOINT,
+         "-H", "Content-Type: application/json",
+         "-w", "\n__HTTP_STATUS__:%{http_code}",
+         "--max-time", "45", "--retry", "1", "--retry-delay", "3",
+         "-d", payload],
+        capture_output=True, text=True, timeout=90
     )
+    stdout = r.stdout or ""
+    status = "000"
+    body = stdout
+    if "__HTTP_STATUS__:" in stdout:
+        body, _, tail = stdout.rpartition("__HTTP_STATUS__:")
+        status = tail.strip()
+        body = body.rstrip()
+    print(f"\n=== Supabase Response === (HTTP {status})")
+    if r.returncode != 0:
+        print(f"[ERR] curl exit {r.returncode}: {r.stderr.strip()[:300]}")
+        return None
+    if not body.strip():
+        print(f"[ERR] empty response body (HTTP {status})")
+        return None
     try:
-        resp = json.loads(r.stdout)
-        print(f"\n=== Supabase Response ===")
+        resp = json.loads(body)
         print(f"Inserted: {resp.get('inserted', 0)}")
         print(f"Duplicates: {resp.get('duplicates', 0)}")
         print(f"Alerts sent: {resp.get('alerts_sent', 0)}")
@@ -264,8 +281,13 @@ def post_to_supabase(signals):
         if resp.get("errors"):
             print(f"Errors: {resp['errors']}")
         return resp
+    except json.JSONDecodeError as e:
+        print(f"[ERR] JSON parse failed at line {e.lineno} col {e.colno}: {e.msg}")
+        print(f"Body preview: {body[:300]}")
+        return None
     except Exception as e:
-        print(f"[ERR] {e}\n{r.stdout[:300]}")
+        print(f"[ERR] {type(e).__name__}: {e}")
+        print(f"Body preview: {body[:300]}")
         return None
 
 
