@@ -1686,19 +1686,19 @@ document.addEventListener('DOMContentLoaded', function() {
     // Wasatch Back (east of mountains)
     {slug:'heber-city', name:'Heber City', x:820, y:330, tier:'hq',   blurb:'Headquarters · Wasatch Back HQ'},
     {slug:'park-city',  name:'Park City',  x:760, y:250, tier:'core', blurb:'Wasatch Back · Mountain-grade roofing'},
-    {slug:'midway',     name:'Midway',     x:800, y:355, tier:'ext',  blurb:'Heber Valley'},
+    {slug:'midway',     name:'Midway',     x:800, y:355, tier:'ext',  blurb:'Heber Valley', anchor:'bottom'},
 
     // Salt Lake Valley (central)
     {slug:'salt-lake-city',    name:'Salt Lake City',    x:345, y:230, tier:'core', blurb:'Capital city · full-service roofing'},
     {slug:'millcreek',         name:'Millcreek',         x:385, y:270, tier:'core', blurb:'East bench · residential & commercial'},
     {slug:'sandy',             name:'Sandy',             x:420, y:340, tier:'core', blurb:'Featured market · 5-star reviews'},
     {slug:'draper',            name:'Draper',            x:445, y:385, tier:'core', blurb:'South valley · premium residential'},
-    {slug:'west-jordan',       name:'West Jordan',       x:335, y:355, tier:'ext',  blurb:'West Salt Lake County'},
-    {slug:'south-jordan',      name:'South Jordan',      x:365, y:385, tier:'ext',  blurb:'Daybreak & Sugar House'},
-    {slug:'cottonwood-heights',name:'Cottonwood Heights',x:450, y:305, tier:'ext',  blurb:'East bench foothills'},
-    {slug:'west-valley-city',  name:'West Valley',       x:300, y:285, tier:'ext',  blurb:'West Salt Lake'},
-    {slug:'murray',            name:'Murray',            x:365, y:300, tier:'ext',  blurb:'Central valley'},
-    {slug:'holladay',          name:'Holladay',          x:420, y:290, tier:'ext',  blurb:'East bench'},
+    {slug:'west-jordan',       name:'West Jordan',       x:335, y:355, tier:'ext',  blurb:'West Salt Lake County',  anchor:'left'},
+    {slug:'south-jordan',      name:'South Jordan',      x:365, y:385, tier:'ext',  blurb:'Daybreak & Sugar House', anchor:'bottom'},
+    {slug:'cottonwood-heights',name:'Cottonwood Heights',x:450, y:305, tier:'ext',  blurb:'East bench foothills',   anchor:'right'},
+    {slug:'west-valley-city',  name:'West Valley',       x:300, y:285, tier:'ext',  blurb:'West Salt Lake',         anchor:'left'},
+    {slug:'murray',            name:'Murray',            x:365, y:300, tier:'ext',  blurb:'Central valley',         anchor:'bottom'},
+    {slug:'holladay',          name:'Holladay',          x:420, y:290, tier:'ext',  blurb:'East bench',             anchor:'left'},
 
     // North (Davis County)
     {slug:'bountiful', name:'Bountiful', x:320, y:165, tier:'ext', blurb:'Davis County south'},
@@ -1746,9 +1746,19 @@ document.addEventListener('DOMContentLoaded', function() {
     if (t.sw > 0) { dot.setAttribute('stroke', t.stroke); dot.setAttribute('stroke-width', t.sw); }
     a.appendChild(dot);
 
+    // Label placement — 'anchor' field lets us route labels around dot/label collisions
+    // 'top' (default) — above dot, centered
+    // 'bottom'        — below dot, centered
+    // 'left'          — left of dot, right-aligned
+    // 'right'         — right of dot, left-aligned
     var label = document.createElementNS(SVGNS, 'text');
-    label.setAttribute('x', c.x); label.setAttribute('y', c.y + t.labelDy);
-    label.setAttribute('text-anchor', 'middle');
+    var anchor = c.anchor || 'top';
+    var labelX = c.x, labelY = c.y + t.labelDy, textAnchor = 'middle';
+    if (anchor === 'bottom')     { labelY = c.y - t.labelDy + 8; }
+    else if (anchor === 'left')  { labelX = c.x - t.r - 4; labelY = c.y + 4; textAnchor = 'end'; }
+    else if (anchor === 'right') { labelX = c.x + t.r + 4; labelY = c.y + 4; textAnchor = 'start'; }
+    label.setAttribute('x', labelX); label.setAttribute('y', labelY);
+    label.setAttribute('text-anchor', textAnchor);
     label.setAttribute('class', 'sm-city-label');
     label.textContent = c.name;
     a.appendChild(label);
