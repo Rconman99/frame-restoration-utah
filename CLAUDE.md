@@ -1,5 +1,5 @@
 # Frame Roofing Utah — Claude Master Context
-> Last updated: 2026-04-17 | Auto-refreshed via Cowork scheduled task
+> Last updated: 2026-04-19 | Auto-refreshed via Cowork scheduled task
 
 ---
 
@@ -242,6 +242,21 @@
 ---
 
 ## SESSION LOG
+
+### 2026-04-17 (late) — Mapbox Service Map + Design System Sweep + Live Review Carousel + Auto Review Count
+- **Interactive Mapbox GL JS 3D Wasatch Front service-area map** replaced the original SVG map (CSP updated to allow api.mapbox.com + tiles + events + worker blobs; bulletproof lazy-load with scroll + timeout fallbacks; 3 parallax silhouette mountain layers; self-hosted Tippy + Popper; per-city labelAnchor collision avoidance; tier dots + paint-order halos + progressive disclosure)
+- **12 service pages redesigned** via global CSS overrides (no HTML changes needed — design system applied globally)
+- **About/Meet Landon page redesigned** to match Frame Roofing design system
+- **Before/after drag slider** in gallery (3 project pairs; fix later to ensure pairs are same-roof)
+- **Live review carousel** reading `/reviews.json` on homepage
+- **Review scraper switched from Google Places → SerpAPI**, made self-healing; auto-updates Google review count twice monthly
+- **Review count bumped 19 → 20** in schema + hero CTA + hero subtitle (synced by self-healing scraper)
+- **Dual sticky mobile CTA:** Call | Free Inspection (upgraded from single-button sticky call bar)
+- **Replaced 14 stock images with real Landon job photos**; fixed og:image logo paths
+- **Re-crop + relabel service tiles** for optimal visualization
+- **Directory blitz tool:** added top-of-page "What We Need From You" todo block for Landon + solo-todo + GoDaddy delegate workaround; GoDaddy DNS item marked done
+- **Fixed SMS consent label:** overflow on narrow viewports + broken label on hero + lead forms
+- **Removed GitHub Action**, switching to Claude scheduled trigger for automation
 
 ### 2026-04-17 — H1 Rebrand + AEO llms.txt + 10DLC Consent + Reddit Scanner Hardening
 - **Homepage H1 rebranded:** "The Gold Standard In Utah Roofing" → **"Mountain-Grade Roofing, Valley-Wide"** (positions Frame Roofing for both mountain-country Heber/Park City AND Wasatch Front valley markets)
