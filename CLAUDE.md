@@ -1,5 +1,5 @@
 # Frame Roofing Utah — Claude Master Context
-> Last updated: 2026-04-19 | Auto-refreshed via Cowork scheduled task
+> Last updated: 2026-04-20 | Auto-refreshed via Cowork scheduled task
 
 ---
 
@@ -88,15 +88,15 @@
 
 ---
 
-## SITE STRUCTURE (~120+ HTML pages, 124 sitemap URLs as of 2026-04-12)
+## SITE STRUCTURE (~120+ HTML pages, 126 sitemap URLs as of 2026-04-20)
 
-- `/` — Homepage (index.html), H1: "Mountain-Grade Roofing, Valley-Wide" (rebrand 2026-04-17; previously "The Gold Standard In Utah Roofing")
+- `/` — Homepage (index.html), H1: "Mountain-Grade Roofing, Valley-Wide" (rebrand 2026-04-17; previously "The Gold Standard In Utah Roofing"). Structure (top → bottom): Hero → **#watch-in-action 60s Heber Valley reroof showcase (added 2026-04-20, click-to-play MP4+WebM, VideoObject JSON-LD)** → Gallery → Video Showcase (drone loop) → Trust Bar → …
 - `/about.html` — Root-level About page (redirects or mirrors pages/about)
 - `/pages/` — 14 pages (residential-roofing, commercial-roofing, roof-repair, roof-replacement, storm-damage, storm-damage-restoration [redirects to storm-damage], emergency-tarping, gutters, solar-installation, insurance-claims, general-contracting, water-fire-flood-restoration, gallery, **about** [NEW — owner bio, headshot, E-E-A-T signals])
 - `/locations/` — 45 location pages (all Utah cities along the Wasatch Front)
-- `/blog/` — Blog index + 40 posts total (6 new posts added 2026-04-10, all have HowTo JSON-LD schema as of 2026-04-10):
-  - `/blog/utah/` — 10 statewide SEO posts (roof-replacement-cost, emergency-roof-repair, how-long-does-roof-last, how-to-choose-a-roofer, best-roofing-materials, signs-you-need-new-roof, utah-hail-season, utah-roof-insurance-claims, utah-roof-maintenance-checklist, utah-roof-ventilation-guide)
-  - City subdirectories: heber-city/5, salt-lake-city/4, park-city/3, sandy/2, plus 1 each in bountiful, draper, herriman, layton, lehi, murray, orem, provo, west-jordan, west-valley-city (~24 city posts)
+- `/blog/` — Blog index + 42 posts total (2 new posts added 2026-04-20 — April 2026 Wasatch storm checklist + Davis County wind damage guide; all have HowTo JSON-LD schema):
+  - `/blog/utah/` — 11 statewide SEO posts (roof-replacement-cost, emergency-roof-repair, how-long-does-roof-last, how-to-choose-a-roofer, best-roofing-materials, signs-you-need-new-roof, utah-hail-season, utah-roof-insurance-claims, utah-roof-maintenance-checklist, utah-roof-ventilation-guide, **april-2026-wasatch-storm-roof-checklist** [NEW])
+  - City subdirectories: heber-city/5, salt-lake-city/4, park-city/3, sandy/2, **bountiful/2** (added davis-county-wind-damage-guide 2026-04-20), plus 1 each in draper, herriman, layton, lehi, murray, orem, provo, west-jordan, west-valley-city (~25 city posts)
 - `/projects/` — 1 case study (heber-valley-roof)
 - `/seo-report/` — Live SEO & Lead Attribution Tracker (PIN-gated, multi-user admin panel, 30-day default view, Chart.js rendering)
 - `/review/` — Review landing page + `review-request` edge function (automated post-job review collection)
@@ -108,7 +108,7 @@
 
 ### Key Files
 - `vercel.json` — Redirects (storm-damage-restoration → storm-damage, /:city/storm-damage-restoration → /:city/storm-damage, /home → /)
-- `sitemap.xml` — 124 URLs (updated 2026-04-12, added 17 missing pages)
+- `sitemap.xml` — 126 URLs (updated 2026-04-20, added 2 new blog posts; prior update 2026-04-12 added 17 missing pages)
 - `robots.txt` — Allows AI crawlers (GPTBot, Claude, Perplexity), blocks Bytespider
 - `llms.txt` — AI/LLM optimization file
 - `directory-tracker.html` — Interactive React-based directory tracker (38 directories)
@@ -242,6 +242,20 @@
 ---
 
 ## SESSION LOG
+
+### 2026-04-20 — Homepage Video Showcase + 2 SEO/AEO Blog Posts
+- **#watch-in-action homepage section** added directly after hero (above the fold) — 60-second Heber Valley reroof showcase
+  - Click-to-play with poster image (preload=none) to keep LCP clean
+  - Dual source: MP4 (H.264, faststart) + WebM (VP9) for broad browser support
+  - VideoObject JSON-LD schema for Google video rich results
+  - Existing Gallery, Video Showcase (drone loop), and Trust Bar sections untouched
+  - Assets added: `/assets/videos/frame-restoration-showcase.mp4` (11.7 MB), `.webm` (10.6 MB), poster `.jpg`
+- **2 new blog posts (42 total, +2 sitemap URLs → 126):**
+  - `/blog/utah/april-2026-wasatch-storm-roof-checklist.html` — post-storm 7-point inspection checklist after the April 2 Wasatch Front storm; Article + HowTo + FAQ schema; TL;DR answer box optimized for AI Overviews / extractive snippets; targets Salt Lake / Davis / Weber / Utah County post-storm searches
+  - `/blog/bountiful/davis-county-wind-damage-guide.html` — Davis County wind-corridor geography + roof construction specs; targets Bountiful, Centerville, Farmington, Kaysville local SEO; Article + FAQ schema with city-specific areaServed; historical wind-event data card; Class H asphalt + standing seam recommendations
+  - Blog index features both posts at top of grid; sitemap lastmod bumped 2026-04-20
+- **Series plan:** 4 more posts scheduled (drought/snowpack, wildfire, hail season, city-specific)
+- **Untracked in repo (FYI, not committed):** DieselEye HTML project files in `images/projects/`, test/helper scripts (blitz-test-brownbook.js, convert-webp.sh, directory-blitz.py, directory-blitz-prompt.md), node_modules/, package.json/lock, 2 contact screenshots
 
 ### 2026-04-17 (late) — Mapbox Service Map + Design System Sweep + Live Review Carousel + Auto Review Count
 - **Interactive Mapbox GL JS 3D Wasatch Front service-area map** replaced the original SVG map (CSP updated to allow api.mapbox.com + tiles + events + worker blobs; bulletproof lazy-load with scroll + timeout fallbacks; 3 parallax silhouette mountain layers; self-hosted Tippy + Popper; per-city labelAnchor collision avoidance; tier dots + paint-order halos + progressive disclosure)
