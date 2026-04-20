@@ -247,7 +247,7 @@
 - **Interactive Mapbox GL JS 3D Wasatch Front service-area map** replaced the original SVG map (CSP updated to allow api.mapbox.com + tiles + events + worker blobs; bulletproof lazy-load with scroll + timeout fallbacks; 3 parallax silhouette mountain layers; self-hosted Tippy + Popper; per-city labelAnchor collision avoidance; tier dots + paint-order halos + progressive disclosure)
 - **12 service pages redesigned** via global CSS overrides (no HTML changes needed — design system applied globally)
 - **About/Meet Landon page redesigned** to match Frame Roofing design system
-- **Before/after drag slider** in gallery (3 project pairs; fix later to ensure pairs are same-roof)
+- **Before/after drag slider** in gallery (3 project pairs) — added then **pulled same day (commit 2861f0b)** because the before/after pairs were not same-roof; reinstate once true same-roof pairs are sourced
 - **Live review carousel** reading `/reviews.json` on homepage
 - **Review scraper switched from Google Places → SerpAPI**, made self-healing; auto-updates Google review count twice monthly
 - **Review count bumped 19 → 20** in schema + hero CTA + hero subtitle (synced by self-healing scraper)
