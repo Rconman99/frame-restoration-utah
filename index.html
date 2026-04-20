@@ -267,6 +267,28 @@
   }
   </script>
 
+  <!-- VideoObject Schema — homepage brand story video -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "VideoObject",
+    "name": "Frame Roofing Utah — Heber Valley Luxury Reroof Showcase",
+    "description": "Watch a real Frame Roofing Utah crew complete a luxury reroof in Heber Valley — tear-off, underlayment, and the finished mountain-grade roof filmed on location with drone aerials.",
+    "thumbnailUrl": "https://www.frameroofingutah.com/assets/videos/frame-restoration-showcase-poster.jpg",
+    "uploadDate": "2026-04-20",
+    "duration": "PT1M",
+    "contentUrl": "https://www.frameroofingutah.com/assets/videos/frame-restoration-showcase.mp4",
+    "publisher": {
+      "@type": "Organization",
+      "name": "Frame Roofing Utah",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://www.frameroofingutah.com/logo.png"
+      }
+    }
+  }
+  </script>
+
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -463,6 +485,24 @@
     @media (max-width: 768px) {
       .video-grid { grid-template-columns: 1fr; gap: 32px; text-align: center; }
       .video-headline h2 { font-size: 22px; }
+    }
+
+    /* ─── WATCH-IN-ACTION SECTION ─── */
+    #watch-in-action { background: var(--navy); color: var(--white); padding: 80px 5%; position: relative; }
+    #watch-in-action .watch-inner { max-width: 1100px; margin: 0 auto; text-align: center; }
+    #watch-in-action .section-label { color: var(--gold); display: inline-block; margin-bottom: 14px; }
+    #watch-in-action .section-title { color: var(--white); font-family: 'Archivo Black', sans-serif; font-size: clamp(28px, 4vw, 44px); text-transform: uppercase; line-height: 1.15; margin-bottom: 14px; }
+    #watch-in-action .section-title .gold { color: var(--gold); }
+    #watch-in-action .section-sub { color: rgba(255,255,255,0.78); max-width: 680px; margin: 0 auto 32px; font-size: 16px; line-height: 1.6; }
+    .watch-player { position: relative; max-width: 960px; margin: 0 auto; border-radius: 10px; overflow: hidden; box-shadow: 0 24px 70px rgba(0,0,0,0.55), 0 0 0 1px rgba(225,185,105,0.35); aspect-ratio: 16 / 9; background: #000; }
+    .watch-player video { width: 100%; height: 100%; display: block; object-fit: cover; background: #000; }
+    .watch-meta { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 10px 22px; margin-top: 22px; font-size: 13px; color: rgba(255,255,255,0.65); letter-spacing: 1px; text-transform: uppercase; font-family: 'Archivo', sans-serif; }
+    .watch-meta span { display: inline-flex; align-items: center; gap: 8px; }
+    .watch-meta span::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--gold); }
+    .watch-cta { margin-top: 32px; }
+    @media (max-width: 640px) {
+      #watch-in-action { padding: 56px 5%; }
+      .watch-player { border-radius: 6px; }
     }
 
     /* ─── TESTIMONIALS ─── */
@@ -828,6 +868,35 @@
   </div>
 </section>
 <!-- ───── HERO END ───── -->
+
+<!-- ─── WATCH FRAME IN ACTION (60s brand story video — above the fold) ─── -->
+<section id="watch-in-action" aria-label="Watch Frame Roofing Utah in action">
+  <div class="watch-inner reveal">
+    <span class="section-label">Watch Us Work</span>
+    <h2 class="section-title">Real Crews. Real Roofs.<br><span class="gold">Real Utah Mountains.</span></h2>
+    <p class="section-sub">One minute on a Heber Valley luxury reroof — from tear-off to the finished mountain-grade roof, filmed exactly as it happened. No stock footage. No stand-ins. Just our crew.</p>
+    <div class="watch-player">
+      <video
+        controls
+        playsinline
+        preload="none"
+        poster="/assets/videos/frame-restoration-showcase-poster.jpg"
+        aria-label="Frame Roofing Utah crew replacing a luxury stone home's roof in Heber Valley with mountain and drone footage">
+        <source src="/assets/videos/frame-restoration-showcase.webm" type="video/webm" />
+        <source src="/assets/videos/frame-restoration-showcase.mp4" type="video/mp4" />
+        Your browser does not support HTML5 video. <a href="/assets/videos/frame-restoration-showcase.mp4" style="color:var(--gold)">Download the video</a> instead.
+      </video>
+    </div>
+    <div class="watch-meta" aria-hidden="true">
+      <span>Filmed in Heber Valley, UT</span>
+      <span>60-Second Showcase</span>
+      <span>Real Frame Roofing Crew</span>
+    </div>
+    <div class="watch-cta">
+      <a href="#home" class="btn-primary btn-arrow">Get My Free Roof Inspection</a>
+    </div>
+  </div>
+</section>
 
 <!-- ─── TRUST BAR ─── -->
 <div class="trust-bar" role="list" aria-label="Trust signals — Utah Roofing Contractor">
