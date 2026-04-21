@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DieselEye — Go-To-Market & Business Plan</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Instrument+Sans:wght@400;500;600&display=swap');
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root { --bg: #080b0f; --surface: #0e1318; --panel: #141a22; --border: #1e2732; --text: #d4dde8; --muted: #4a5a6a; --accent: #00d4ff; --success: #00e676; --warning: #ffb020; --danger: #ff4444; --purple: #a855f7; --pink: #ec4899; }
+  body { background: var(--bg); color: var(--text); font-family: 'Instrument Sans', system-ui, sans-serif; line-height: 1.65; padding: 2rem; max-width: 1100px; margin: 0 auto; }
+  h1 { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 2.4rem; color: var(--accent); margin-bottom: 0.25rem; }
+  h2 { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1.5rem; color: var(--text); margin: 2.5rem 0 1rem; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; }
+  h3 { font-family: 'Syne', sans-serif; font-weight: 600; font-size: 1.1rem; color: var(--accent); margin: 1.5rem 0 0.5rem; }
+  .subtitle { font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; color: var(--muted); letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 2rem; }
+  .box { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; margin: 1rem 0; }
+  .box p { font-size: 0.9rem; margin-bottom: 0.75rem; }
+  .box p:last-child { margin-bottom: 0; }
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; margin: 1rem 0; }
+  .card:hover { border-color: var(--accent); }
+  .card-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1.05rem; color: var(--text); display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem; }
+  .card-title .emoji { font-size: 1.3rem; }
+  .badge { display: inline-block; font-family: 'JetBrains Mono', monospace; font-size: 0.55rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; padding: 0.15rem 0.45rem; border-radius: 4px; margin-left: auto; }
+  .badge-free { background: rgba(0,230,118,0.15); color: var(--success); }
+  .badge-low { background: rgba(0,212,255,0.15); color: var(--accent); }
+  .badge-med { background: rgba(255,176,32,0.15); color: var(--warning); }
+  .badge-high { background: rgba(255,68,68,0.15); color: var(--danger); }
+  .badge-critical { background: rgba(168,85,247,0.15); color: var(--purple); }
+  .mono { font-family: 'JetBrains Mono', monospace; }
+  .muted { color: var(--muted); }
+  .accent { color: var(--accent); }
+  .success { color: var(--success); }
+  .warning { color: var(--warning); }
+  .danger { color: var(--danger); }
+  .phase-bar { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.2rem; padding: 0.75rem 1rem; border-radius: 8px; margin: 2rem 0 1rem; display: flex; align-items: center; gap: 0.75rem; }
+  .pb-1 { background: linear-gradient(135deg, rgba(0,230,118,0.1), transparent); border-left: 3px solid var(--success); }
+  .pb-2 { background: linear-gradient(135deg, rgba(0,212,255,0.1), transparent); border-left: 3px solid var(--accent); }
+  .pb-3 { background: linear-gradient(135deg, rgba(255,176,32,0.1), transparent); border-left: 3px solid var(--warning); }
+  .pb-4 { background: linear-gradient(135deg, rgba(168,85,247,0.1), transparent); border-left: 3px solid var(--purple); }
+  .pb-5 { background: linear-gradient(135deg, rgba(236,72,153,0.1), transparent); border-left: 3px solid var(--pink); }
+  .timeline { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: var(--muted); margin-left: auto; }
+  .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1rem; margin: 1rem 0; }
+  .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 0.75rem; margin: 1rem 0; }
+  .stat-card { background: var(--panel); border: 1px solid var(--border); border-radius: 10px; padding: 1.25rem; text-align: center; }
+  .stat-num { font-family: 'Syne', sans-serif; font-size: 2rem; font-weight: 800; }
+  .stat-label { font-family: 'JetBrains Mono', monospace; font-size: 0.6rem; color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; margin-top: 0.25rem; }
+  .checklist { list-style: none; margin: 0.75rem 0; padding: 0; }
+  .checklist li { padding: 0.4rem 0; font-size: 0.85rem; display: flex; align-items: flex-start; gap: 0.5rem; }
+  .checklist li::before { content: ''; width: 14px; height: 14px; border: 1.5px solid var(--border); border-radius: 3px; flex-shrink: 0; margin-top: 3px; }
+  table { width: 100%; border-collapse: collapse; font-size: 0.8rem; margin: 1rem 0; }
+  th { font-family: 'JetBrains Mono', monospace; font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); text-align: left; padding: 0.6rem; border-bottom: 1px solid var(--border); }
+  td { padding: 0.6rem; border-bottom: 1px solid var(--border); vertical-align: top; }
+  .highlight-box { background: linear-gradient(135deg, rgba(0,212,255,0.08), rgba(0,230,118,0.08)); border: 1px solid var(--accent); border-radius: 12px; padding: 2rem; margin: 2rem 0; text-align: center; }
+  .highlight-box h2 { border: none; margin: 0 0 0.75rem; color: var(--accent); }
+  .week-header { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; color: var(--accent); letter-spacing: 0.1em; text-transform: uppercase; margin-top: 1.5rem; margin-bottom: 0.5rem; padding-bottom: 0.25rem; border-bottom: 1px dashed var(--border); }
+  .footer { text-align: center; padding: 2rem 0; font-family: 'JetBrains Mono', monospace; font-size: 0.6rem; color: var(--muted); letter-spacing: 0.15em; }
+</style>
+</head>
+<body>
+
+<h1>DieselEye GTM &amp; Business Plan</h1>
+<div class="subtitle">Solo Founder Playbook — From Code to Customers</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<h2>1. Where We Are Right Now</h2>
+
+<div class="box">
+<p><strong>The app is REAL.</strong> 12 commits, 48 source files, 40 TypeScript modules, 8 Netlify Functions. Auth, real-time Supabase data, Web Bluetooth BLE, Claude AI Trail Advisor, DTC scanner, performance panel, 7 gauges, regen predictor, anomaly detection, PWA with service worker, offline caching, PostHog analytics. This is not a prototype — it's a product that needs testing, polish, and distribution.</p>
+</div>
+
+<div class="grid-3">
+  <div class="stat-card"><div class="stat-num success">48</div><div class="stat-label">Source Files</div></div>
+  <div class="stat-card"><div class="stat-num accent">7</div><div class="stat-label">Live Gauges</div></div>
+  <div class="stat-card"><div class="stat-num" style="color:var(--warning);">8</div><div class="stat-label">AI Functions</div></div>
+  <div class="stat-card"><div class="stat-num" style="color:var(--purple);">30</div><div class="stat-label">EcoDiesel DTCs</div></div>
+  <div class="stat-card"><div class="stat-num" style="color:var(--pink);">4</div><div class="stat-label">Tabs (Dash/Advisor/History/Settings)</div></div>
+  <div class="stat-card"><div class="stat-num success">1</div><div class="stat-label">BLE Adapter Tested (Vgate vLinker MC+)</div></div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<h2>2. The Market</h2>
+
+<div class="box">
+<p><strong>Primary TAM (Jeep EcoDiesel):</strong> ~1% diesel take rate on 200k+ annual Wrangler/Gladiator sales (2020-2023) = estimated 30,000-50,000 JL/JT EcoDiesels on the road. Add RAM 1500 EcoDiesels (2014-2023, far more volume — 8,000 sold in the first 72 hours alone when launched) and the TAM for the 3.0L EcoDiesel platform is likely <strong>250,000-400,000 vehicles</strong>.</p>
+<p><strong>Expansion TAM:</strong> Ford Power Stroke, Chevy Duramax, Sprinter vans = 5M+ diesel trucks/vans in the US. The architecture is engine-agnostic — each new engine is a system prompt + PID config, not a rewrite.</p>
+<p><strong>The whitespace:</strong> No product combines diesel-native OBD2 monitoring + AI diagnostics + community + predictive maintenance. Banks iDash is a dumb screen ($490-$800). JSCAN is a code reader ($25). Torque Pro is a generic app ($5). None of them have AI, none have network effects, none understand your specific engine.</p>
+</div>
+
+<div class="grid-2">
+  <div class="stat-card"><div class="stat-num accent">$0</div><div class="stat-label">Competitors with AI + Community + OBD2</div></div>
+  <div class="stat-card"><div class="stat-num success">250K+</div><div class="stat-label">EcoDiesel 3.0L Vehicles on Road</div></div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<h2>3. Pre-Launch — Test, Polish, Prepare (Weeks 1-4)</h2>
+
+<div class="phase-bar pb-1">
+  Week 1-2: Test Locally + Fix Everything
+  <span class="timeline">YOU + YOUR JEEP</span>
+</div>
+
+<div class="card">
+  <div class="card-title"><span class="emoji">&#x1F527;</span> Hardware Testing Checklist</div>
+  <ul class="checklist">
+    <li>Buy Vgate vLinker MC+ BLE adapter (~$30 Amazon) if you don't have one</li>
+    <li>Pair with your 2020-2023 EcoDiesel Wrangler/Gladiator via Web Bluetooth</li>
+    <li>Verify all 7 core PIDs read correctly: DPF%, EGT, boost, DEF%, coolant, trans temp, voltage</li>
+    <li>Test enhanced PIDs (Mode 22) — do they return data or NO DATA? Document which need SGW bypass</li>
+    <li>Test DTC scan (Mode 03) — read any stored codes</li>
+    <li>Drive 30 min highway to trigger passive regen — verify regen predictor detects it</li>
+    <li>Drive with trailer to test trans temp under load</li>
+    <li>Test the AI Trail Advisor with your real data — ask it questions about your readings</li>
+    <li>Test offline mode — disconnect phone from wifi/cell, verify cached data still shows</li>
+    <li>Record a 2-minute demo video from the driver's seat showing live gauges</li>
+  </ul>
+</div>
+
+<div class="card">
+  <div class="card-title"><span class="emoji">&#x1F4F1;</span> Mobile Testing Checklist</div>
+  <ul class="checklist">
+    <li>Test on iPhone Safari (primary target — most Jeep owners use iPhone)</li>
+    <li>Test on Chrome Android</li>
+    <li>Test on Desktop Chrome</li>
+    <li>Install as PWA on iPhone — verify standalone mode works</li>
+    <li>Install as PWA on Android — verify standalone mode works</li>
+    <li>Run Lighthouse audit — target: Performance >90, PWA passing, Accessibility >90</li>
+    <li>Test at 375px, 390px, 414px viewport widths</li>
+    <li>Verify all touch targets are 44px+ minimum</li>
+    <li>Test in direct sunlight (the use case! — gauges readable outside?)</li>
+  </ul>
+</div>
+
+<div class="card">
+  <div class="card-title"><span class="emoji">&#x1F41B;</span> Bug Bash &amp; Polish</div>
+  <ul class="checklist">
+    <li>Fix PerformancePanel.tsx Lucide icon typing (if not already — verify with <span class="mono">npx tsc --noEmit</span>)</li>
+    <li>Test auth flow end-to-end: signup → email confirm → login → demo mode</li>
+    <li>Verify PostHog events fire correctly (check PostHog dashboard)</li>
+    <li>Test data export (CSV + JSON) — do files download correctly on iOS Safari?</li>
+    <li>Stress test: leave app running for 1 hour — memory leaks? Battery drain?</li>
+    <li>Verify the simulator mode is compelling enough for demo users</li>
+    <li>Add proper error states for every loading/error condition</li>
+    <li>Review all copy — spelling, grammar, tone (industrial, not corporate)</li>
+  </ul>
+</div>
+
+<div class="phase-bar pb-2">
+  Week 3-4: Deploy + Set Up Business
+  <span class="timeline">GOING LIVE</span>
+</div>
+
+<div class="card">
+  <div class="card-title"><span class="emoji">&#x1F310;</span> Deploy to Production</div>
+  <ul class="checklist">
+    <li>Push to GitHub → Netlify auto-deploys from <span class="mono">netlify.toml</span></li>
+    <li>Verify build succeeds on Netlify (check build logs)</li>
+    <li>Buy domain: <strong>dieseleye.app</strong> (or .io, .dev) — check availability</li>
+    <li>Configure custom domain on Netlify (free SSL included)</li>
+    <li>Set Supabase environment variables in Netlify dashboard (VITE_SUPABASE_URL, VITE_SUPABASE_ANON_KEY)</li>
+    <li>Set ANTHROPIC_API_KEY in Netlify environment for serverless functions</li>
+    <li>Set POSTHOG_API_KEY in Netlify environment</li>
+    <li>Test production site end-to-end: auth → dashboard → AI → history → settings</li>
+    <li>Verify PWA install works from production domain</li>
+    <li>Run Lighthouse on production URL — screenshot the scores</li>
+  </ul>
+</div>
+
+<div class="card">
+  <div class="card-title"><span class="emoji">&#x1F3E2;</span> Business Setup (Solo Founder)</div>
+  <ul class="checklist">
+    <li>Form LLC — "DieselEye LLC" (your state, ~$100-200 filing fee). You can publish as individual on app stores to start, but LLC protects you personally.</li>
+    <li>Open business bank account (Mercury or Relay — free, online, startup-friendly)</li>
+    <li>Apple Developer Account — $99/year (individual is fine to start, upgrade to org later)</li>
+    <li>Google Play Developer Account — $25 one-time fee</li>
+    <li>Stripe account — connect to Netlify Functions for subscription billing</li>
+    <li>Set up business email: ryan@dieseleye.app (Google Workspace $6/mo or Zoho free)</li>
+    <li>Create social accounts: @DieselEye on Instagram, YouTube, TikTok, X</li>
+  </ul>
+  <p style="font-size: 0.8rem; color: var(--muted); margin-top: 0.75rem;"><strong>Startup cost:</strong> ~$350 total (LLC + Apple Dev + Google Play + domain). Netlify free tier handles the first 125k function calls/month. Supabase free tier handles the first 500MB + 50k auth users.</p>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<h2>4. App Store Distribution Strategy</h2>
+
+<div class="box">
+<p><strong>Three-channel distribution:</strong> Web PWA first (immediate), Google Play second (1 week), Apple App Store third (2-3 weeks). The web PWA is the primary product — the app store listings are discovery channels, not the product itself.</p>
+</div>
+
+<div class="card">
+  <div class="card-title"><span class="emoji">&#x1F310;</span> Channel 1: Web PWA (dieseleye.app) <span class="badge badge-free">FREE — LIVE DAY 1</span></div>
+  <p style="font-size: 0.85rem;">Already built. Users visit dieseleye.app → install as PWA → works like a native app. Web Bluetooth works on Chrome Android. On iOS Safari, BLE is limited — users get the full dashboard experience but need the native wrapper for BLE. This is fine for demo mode and simulator.</p>
+  <p style="font-size: 0.8rem; color: var(--muted);">No app store fees. No review process. Update instantly. This is your primary product forever.</p>
+</div>
+
+<div class="card">
+  <div class="card-title"><span class="emoji">&#x1F4E6;</span> Channel 2: Google Play Store (TWA) <span class="badge badge-low">$25 ONE-TIME</span></div>
+  <p style="font-size: 0.85rem;"><strong>Method:</strong> Use PWABuilder or Bubblewrap to wrap the PWA as a Trusted Web Activity (TWA). This uses Chrome's engine — identical to the web experience. Web Bluetooth works natively on Android Chrome.</p>
+  <p style="font-size: 0.85rem;"><strong>Steps:</strong> Run PWABuilder (pwabuilder.com) → enter dieseleye.app → generate Android package → upload to Google Play Console → review takes hours, not days.</p>
+  <p style="font-size: 0.85rem;"><strong>Listing optimization:</strong> Title: "DieselEye — EcoDiesel Engine Monitor" / Category: Auto & Vehicles / Screenshots of live gauges on Android phone / Keywords: OBD2, diesel, DPF, EGT, Jeep, EcoDiesel, engine monitor</p>
+</div>
+
+<div class="card">
+  <div class="card-title"><span class="emoji">&#x1F34E;</span> Channel 3: Apple App Store (Capacitor) <span class="badge badge-med">$99/YEAR</span></div>
+  <p style="font-size: 0.85rem;"><strong>Method:</strong> Wrap with Capacitor (capacitorjs.com). This gives you a native iOS shell with access to the <span class="mono">@capacitor-community/bluetooth-le</span> plugin — solving the Web Bluetooth limitation on iOS Safari. This is the KEY reason to have an App Store build.</p>
+  <p style="font-size: 0.85rem;"><strong>Steps:</strong> <span class="mono">npm install @capacitor/core @capacitor/cli</span> → <span class="mono">npx cap init</span> → <span class="mono">npx cap add ios</span> → configure BLE plugin → build in Xcode → submit to App Store.</p>
+  <p style="font-size: 0.85rem;"><strong>Apple Review Tips:</strong> Don't submit a thin PWA wrapper — Apple rejects those (Guideline 4.2). The Capacitor build with native BLE integration adds genuine native functionality. Include the BLE connection flow, offline caching, and AI chat as differentiators from "just a website."</p>
+  <p style="font-size: 0.85rem; color: var(--warning);"><strong>Risk:</strong> Apple review takes 1-7 days per submission. Budget 2-3 rounds of review. Add NSBluetoothAlwaysUsageDescription to Info.plist. Test on real iPhone device (BLE doesn't work in simulator).</p>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<h2>5. Subscription &amp; Monetization (Stripe + Netlify)</h2>
+
+<div class="box">
+<p><strong>Free tier is generous.</strong> Give away enough to get hooked. Gate the features that create the most value. Solo founders in micro-SaaS average $29-$199/month pricing. We're in the $9.99-$19.99 sweet spot — less than one tank of diesel per year.</p>
+</div>
+
+<table>
+<tr>
+  <th>Tier</th>
+  <th>Price</th>
+  <th>Includes</th>
+  <th>Purpose</th>
+</tr>
+<tr>
+  <td style="color:var(--success); font-weight: 600;">Free</td>
+  <td class="mono">$0</td>
+  <td>5 core gauges (DPF, EGT, boost, DEF, coolant), basic alerts, 24h history, demo mode, community read-only</td>
+  <td>Top of funnel. Get users on the app. Let them see the value.</td>
+</tr>
+<tr>
+  <td style="color:var(--accent); font-weight: 600;">Pro</td>
+  <td class="mono">$9.99/mo<br>$99/yr</td>
+  <td>All 7 gauges + performance panel, Trail Advisor AI chat, DTC scanner, regen predictor, unlimited history, CSV/JSON export, maintenance reminders, drive score</td>
+  <td>The core product. AI access is the killer upgrade. Most users land here.</td>
+</tr>
+<tr>
+  <td style="color:var(--purple); font-weight: 600;">Pro+</td>
+  <td class="mono">$19.99/mo<br>$199/yr</td>
+  <td>Everything in Pro + predictive maintenance AI, tow mode, trail mode + GPS, mod impact tracker, geofence anti-theft, fleet intelligence, vehicle health reports, priority support</td>
+  <td>Power users, tuners, heavy towers. The "I need everything" tier.</td>
+</tr>
+</table>
+
+<div class="card">
+  <div class="card-title"><span class="emoji">&#x1F4B3;</span> Stripe Implementation</div>
+  <p style="font-size: 0.85rem;">Create Stripe Products + Prices → Build <span class="mono">netlify/functions/create-checkout.ts</span> to create Stripe Checkout Sessions → Build <span class="mono">netlify/functions/webhook-stripe.ts</span> to handle subscription events → Store subscription status in Supabase <span class="mono">user_subscriptions</span> table → Gate features in the frontend based on <span class="mono">subscription_tier</span>. Stripe handles all payment processing, invoicing, tax calculation, and cancellation. You never touch credit card data.</p>
+  <p style="font-size: 0.8rem; color: var(--muted);">Stripe fee: 2.9% + $0.30 per transaction. On a $99/year plan, that's $3.17 — you keep $95.83.</p>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<h2>6. Go-To-Market — The Solo Founder Playbook</h2>
+
+<div class="box">
+<p><strong>The strategy:</strong> You don't have a marketing budget. You have something better — a real product that solves a real problem for a hyper-specific community. The EcoDiesel community is small, vocal, and concentrated in 3-4 forums. You can personally reach most of them.</p>
+</div>
+
+<div class="phase-bar pb-3">
+  Launch Week: Seed the Forums (Cost: $0)
+  <span class="timeline">WEEK 5</span>
+</div>
+
+<div class="card">
+  <div class="card-title"><span class="emoji">&#x1F4DD;</span> Forum Seeding Strategy</div>
+  <p style="font-size: 0.85rem;">These are your people. They're already talking about DPF regens, DEF levels, and trans temp. You show up with a free tool that solves their problems.</p>
+
+  <div class="week-header">Target Forums (in priority order)</div>
+  <table>
+  <tr><th>Forum</th><th>Strategy</th><th>Post Type</th></tr>
+  <tr>
+    <td><strong>JLwranglerforums.com</strong><br><span class="muted mono" style="font-size:0.65rem;">200k+ members</span></td>
+    <td>Post in EcoDiesel subforum. Be a member first — answer questions for a week, THEN share DieselEye.</td>
+    <td>"I built a free DPF/EGT monitor for our EcoDiesels — looking for beta testers" + demo video from your Jeep</td>
+  </tr>
+  <tr>
+    <td><strong>dieseljeeps.com</strong><br><span class="muted mono" style="font-size:0.65rem;">EcoDiesel-specific</span></td>
+    <td>This is the most targeted forum. Post a build thread showing DieselEye development.</td>
+    <td>"DieselEye — real-time DPF, EGT, boost, DEF monitoring with AI diagnostics. Free beta."</td>
+  </tr>
+  <tr>
+    <td><strong>jeepgladiatorforum.com</strong><br><span class="muted mono" style="font-size:0.65rem;">Gladiator focus</span></td>
+    <td>EcoDiesel subforum. Gladiator owners tow more = higher value customer for tow mode.</td>
+    <td>"Monitor your Gladiator EcoDiesel's engine health while towing — free app"</td>
+  </tr>
+  <tr>
+    <td><strong>ram1500diesel.com</strong><br><span class="muted mono" style="font-size:0.65rem;">RAM EcoDiesel</span></td>
+    <td>Same 3.0L engine. When we expand to RAM (Phase 5 roadmap), seed here early.</td>
+    <td>"Same VM Motori engine, same app — EcoDiesel monitor coming to RAM"</td>
+  </tr>
+  <tr>
+    <td><strong>r/JeepWrangler</strong><br><span class="muted mono" style="font-size:0.65rem;">Reddit</span></td>
+    <td>Post in r/JeepWrangler and r/ecodiesel (if it exists). Reddit rewards genuine products.</td>
+    <td>Show real-world demo video. Be transparent: "solo dev, built this for my own Jeep"</td>
+  </tr>
+  </table>
+
+  <p style="font-size: 0.8rem; color: var(--warning); margin-top: 0.75rem;"><strong>Rules:</strong> Never spam. Be a member first. Share value before asking for anything. Offer free beta access. Reply to every comment. This is relationship-building, not marketing.</p>
+</div>
+
+<div class="phase-bar pb-2">
+  Months 1-3: Content Engine (Cost: $0)
+  <span class="timeline">WEEKS 5-16</span>
+</div>
+
+<div class="card">
+  <div class="card-title"><span class="emoji">&#x1F3AC;</span> YouTube Strategy</div>
+  <p style="font-size: 0.85rem;">Create a DieselEye YouTube channel. You don't need production quality — you need authenticity. Film from your Jeep, your garage, your phone. The EcoDiesel community is starved for diesel-specific content.</p>
+
+  <div class="week-header">Content Calendar (first 12 videos)</div>
+  <table>
+  <tr><th>#</th><th>Title</th><th>Hook</th></tr>
+  <tr><td>1</td><td>I Built an AI Engine Monitor for My EcoDiesel</td><td>Launch video. Show the app on your dash. Record a highway drive with live gauges.</td></tr>
+  <tr><td>2</td><td>What Your DPF% Actually Means (EcoDiesel)</td><td>Educational. Explain regen cycles with DieselEye showing real data.</td></tr>
+  <tr><td>3</td><td>EcoDiesel EGT Explained — When to Worry</td><td>Show real EGT during regen vs normal driving. Trail Advisor explaining each.</td></tr>
+  <tr><td>4</td><td>Banks Derringer Install — Before/After Data</td><td>If you have one (or find a local owner). Show mod impact tracker.</td></tr>
+  <tr><td>5</td><td>Towing with EcoDiesel — Watch the Trans Temp!</td><td>Tow something. Show trans temp climbing. DieselEye alerts.</td></tr>
+  <tr><td>6</td><td>5 DTC Codes Every EcoDiesel Owner Should Know</td><td>Educational. Use DTCPanel to explain P0401, P2463, etc.</td></tr>
+  <tr><td>7</td><td>EcoDiesel Oil Dilution — How to Detect It</td><td>Explain the regen interruption cycle. DieselEye detects it.</td></tr>
+  <tr><td>8</td><td>DieselEye vs Banks iDash — Do You Need Both?</td><td>Comparison. "iDash shows numbers, DieselEye explains them."</td></tr>
+  <tr><td>9</td><td>How I Saved $12,000 with a $10/mo App</td><td>CP4.2 early detection story. Even hypothetical — the math is real.</td></tr>
+  <tr><td>10</td><td>PPE Intercooler — Real Data from 30 EcoDiesels</td><td>Community data (once Hive Mind exists). The power of collective data.</td></tr>
+  <tr><td>11</td><td>Off-Road with DieselEye — Trail Mode Demo</td><td>Trail GPS + engine telemetry overlay. Film an actual trail run.</td></tr>
+  <tr><td>12</td><td>EcoDiesel Maintenance Schedule — What the Dealer Won't Tell You</td><td>Oil dilution, early oil changes, trans fluid. Maintenance Brain feature.</td></tr>
+  </table>
+
+  <p style="font-size: 0.8rem; color: var(--muted); margin-top: 0.75rem;">Post 1 video/week. Cross-post clips to TikTok, Instagram Reels, YouTube Shorts. Every video ends with "Download DieselEye free at dieseleye.app"</p>
+</div>
+
+<div class="card">
+  <div class="card-title"><span class="emoji">&#x1F91D;</span> Influencer Outreach (Jeep YouTubers)</div>
+  <p style="font-size: 0.85rem;">Target Jeep Gladiator/Wrangler YouTubers who already cover EcoDiesel content. Offer free Pro+ access + an affiliate code (they earn $5 per signup). These are small creators (10k-100k subs) who actually respond to DMs.</p>
+
+  <div class="week-header">Target Creators</div>
+  <table>
+  <tr><th>Creator</th><th>Why</th><th>Approach</th></tr>
+  <tr><td>Dirt Road Cred</td><td>Gladiator builds/mods — exactly our audience</td><td>DM: "Built an engine monitor for EcoDiesels. Free Pro+ for a review."</td></tr>
+  <tr><td>Arkansas Offroad (50k+ subs)</td><td>Overlanding + gear reviews</td><td>Trail Mode demo partnership</td></tr>
+  <tr><td>The Hourless Life</td><td>Overlanding lifestyle — matches the "Jeep Life" angle</td><td>Long-form collab: "monitoring your engine on a cross-country trip"</td></tr>
+  <tr><td>Eddie &amp; Cindy (TrailRecon)</td><td>Massive Jeep influence, tech/trail focus</td><td>Send a demo, offer early access</td></tr>
+  <tr><td>Banks Power (official channel)</td><td>They have 200k+ subs and sell to our exact customer</td><td>"DieselEye + Banks Derringer" integration video</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <div class="card-title"><span class="emoji">&#x1F4E7;</span> JSCAN Partnership Play</div>
+  <p style="font-size: 0.85rem;">JSCAN is NOT a competitor — it's a distribution channel. Every JSCAN user already has an OBD2 adapter and is comfortable with OBD2 apps. Position: "Use JSCAN to unlock your Jeep. Use DieselEye to protect it." Reach out to the JSCAN team for a cross-promotion or integration mention.</p>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<h2>7. Growth Milestones &amp; Unit Economics</h2>
+
+<table>
+<tr>
+  <th>Milestone</th>
+  <th>Users</th>
+  <th>Paid (est. 15% conv.)</th>
+  <th>MRR</th>
+  <th>ARR</th>
+  <th>Unlocks</th>
+</tr>
+<tr>
+  <td class="accent">Beta Launch</td>
+  <td>50</td>
+  <td>0 (all free)</td>
+  <td>$0</td>
+  <td>$0</td>
+  <td>Real user feedback, bug reports, testimonials</td>
+</tr>
+<tr>
+  <td class="accent">Public Launch</td>
+  <td>200</td>
+  <td>30</td>
+  <td>$300</td>
+  <td>$3,600</td>
+  <td>Stripe revenue flowing, first paid users</td>
+</tr>
+<tr>
+  <td class="success">Traction</td>
+  <td>500</td>
+  <td>75</td>
+  <td>$750</td>
+  <td>$9,000</td>
+  <td>Hive Mind becomes viable (500+ data points)</td>
+</tr>
+<tr>
+  <td class="success">Ramen Profitable</td>
+  <td>1,000</td>
+  <td>150</td>
+  <td>$1,500</td>
+  <td>$18,000</td>
+  <td>Covers all costs. Real business.</td>
+</tr>
+<tr>
+  <td style="color:var(--warning);">Growth</td>
+  <td>2,500</td>
+  <td>375</td>
+  <td>$4,500</td>
+  <td>$54,000</td>
+  <td>Add affiliate revenue. Consider RAM expansion.</td>
+</tr>
+<tr>
+  <td style="color:var(--purple);">Scale</td>
+  <td>5,000</td>
+  <td>750</td>
+  <td>$9,000</td>
+  <td>$108,000</td>
+  <td>Full-time business. Hire help. Multi-engine.</td>
+</tr>
+<tr>
+  <td style="color:var(--pink);">Escape Velocity</td>
+  <td>10,000</td>
+  <td>1,500</td>
+  <td>$18,000+</td>
+  <td>$216,000+</td>
+  <td>+ affiliate ($30-50K) + shop referrals. Total: $250K+</td>
+</tr>
+</table>
+
+<div class="box">
+<p><strong>Cost structure at 1,000 users:</strong> Netlify Pro ($19/mo) + Supabase Pro ($25/mo) + Anthropic API (~$50/mo at 1k users) + domain ($12/yr) + Apple Dev ($99/yr) = <strong>~$100/month</strong>. At $1,500 MRR, that's 93% margin. Solo SaaS margins are insane.</p>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<h2>8. The 90-Day Execution Plan</h2>
+
+<div class="phase-bar pb-1">
+  Weeks 1-2: Test &amp; Fix
+  <span class="timeline">APR 11-25</span>
+</div>
+<div class="card">
+<ul class="checklist">
+  <li>Hardware test with real Vgate vLinker MC+ on your EcoDiesel</li>
+  <li>Fix all bugs found during real-world testing</li>
+  <li>Polish simulator mode to be demo-worthy</li>
+  <li>Record 3-5 demo videos (phone footage from the driver's seat is perfect)</li>
+  <li>Run Lighthouse audit — fix anything below 90</li>
+</ul>
+</div>
+
+<div class="phase-bar pb-2">
+  Weeks 3-4: Deploy &amp; Set Up Business
+  <span class="timeline">APR 25 - MAY 9</span>
+</div>
+<div class="card">
+<ul class="checklist">
+  <li>Deploy to Netlify + custom domain</li>
+  <li>File LLC</li>
+  <li>Set up Stripe products/prices + subscription webhooks</li>
+  <li>Apple Developer + Google Play accounts</li>
+  <li>Submit to Google Play (TWA via PWABuilder)</li>
+  <li>Start Capacitor iOS build + submit to Apple</li>
+  <li>Create social media accounts + landing page</li>
+</ul>
+</div>
+
+<div class="phase-bar pb-3">
+  Weeks 5-6: Beta Launch
+  <span class="timeline">MAY 9-23</span>
+</div>
+<div class="card">
+<ul class="checklist">
+  <li>Post on JLwranglerforums, dieseljeeps.com, jeepgladiatorforum — "looking for 50 beta testers"</li>
+  <li>Offer free Pro access for 90 days to all beta users</li>
+  <li>Post first YouTube video (launch announcement)</li>
+  <li>DM 10 Jeep YouTubers with free Pro+ access</li>
+  <li>Respond to EVERY piece of feedback within 24 hours</li>
+  <li>Fix bugs as they come in (users WILL find things you missed)</li>
+  <li>Start collecting testimonials and screenshots from real users</li>
+</ul>
+</div>
+
+<div class="phase-bar pb-4">
+  Weeks 7-10: Public Launch &amp; Content
+  <span class="timeline">MAY 23 - JUN 20</span>
+</div>
+<div class="card">
+<ul class="checklist">
+  <li>Launch Stripe subscriptions — free tier + paid tiers go live</li>
+  <li>Post "DieselEye is live" announcement across all forums</li>
+  <li>Publish 1 YouTube video per week (content calendar above)</li>
+  <li>Cross-post clips to TikTok, Instagram Reels, YouTube Shorts</li>
+  <li>Reach out to Banks Power for a collab/integration</li>
+  <li>Target: 200 signups, 30 paid subscribers by end of Week 10</li>
+</ul>
+</div>
+
+<div class="phase-bar pb-5">
+  Weeks 11-13: Iterate &amp; Expand
+  <span class="timeline">JUN 20 - JUL 11</span>
+</div>
+<div class="card">
+<ul class="checklist">
+  <li>Analyze PostHog data — what features are used most? Where do users drop off?</li>
+  <li>Build the top-requested feature from user feedback</li>
+  <li>Start building fuel economy intelligence (Feature 1 from NEXTLEVEL-BUILD.md)</li>
+  <li>Create "DieselEye Certified" badge program for diesel shops</li>
+  <li>Set up affiliate links for Banks, PPE, MBRP, S&B products</li>
+  <li>Target: 500 signups, 75 paid subscribers by end of Week 13</li>
+</ul>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<h2>9. Operational Costs — Real Numbers</h2>
+
+<table>
+<tr><th>Item</th><th>Cost</th><th>When</th></tr>
+<tr><td>LLC filing</td><td>$100-200</td><td>One-time</td></tr>
+<tr><td>Domain (dieseleye.app)</td><td>$12-15/yr</td><td>Annual</td></tr>
+<tr><td>Apple Developer Account</td><td>$99/yr</td><td>Annual</td></tr>
+<tr><td>Google Play Account</td><td>$25</td><td>One-time</td></tr>
+<tr><td>Vgate vLinker MC+ (testing)</td><td>$30</td><td>One-time</td></tr>
+<tr><td>Netlify (free → Pro at scale)</td><td>$0 → $19/mo</td><td>Monthly</td></tr>
+<tr><td>Supabase (free → Pro at scale)</td><td>$0 → $25/mo</td><td>Monthly</td></tr>
+<tr><td>Anthropic API (Claude calls)</td><td>~$0.02/diagnosis</td><td>Per use</td></tr>
+<tr><td>PostHog (free tier: 1M events/mo)</td><td>$0</td><td>Monthly</td></tr>
+<tr><td>Stripe (payment processing)</td><td>2.9% + $0.30/txn</td><td>Per transaction</td></tr>
+<tr><td><strong>Total startup cost</strong></td><td colspan="2" style="color:var(--success);"><strong>~$350-500</strong></td></tr>
+<tr><td><strong>Monthly burn (first 6 months)</strong></td><td colspan="2" style="color:var(--success);"><strong>~$10-30/mo</strong> (API usage only)</td></tr>
+</table>
+
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<h2>10. Risk Mitigation</h2>
+
+<div class="grid-2">
+  <div class="card">
+    <div class="card-title"><span class="emoji">&#x26A0;</span> Apple Rejection <span class="badge badge-med">MEDIUM</span></div>
+    <p style="font-size: 0.8rem;">Apple may reject the Capacitor wrapper as "not enough native functionality." <strong>Mitigation:</strong> The BLE integration via @capacitor-community/bluetooth-le IS native. Add native push notifications via Capacitor. Include a privacy nutrition label. Budget 2-3 review cycles.</p>
+  </div>
+  <div class="card">
+    <div class="card-title"><span class="emoji">&#x26A0;</span> Small Market <span class="badge badge-low">LOW</span></div>
+    <p style="font-size: 0.8rem;">~30-50K JL/JT EcoDiesels is small. <strong>Mitigation:</strong> Expand to RAM 1500 EcoDiesel (250K+ vehicles) in Phase 5. Same engine, same PIDs, same AI. Then Power Stroke, Duramax. The architecture is engine-agnostic by design.</p>
+  </div>
+  <div class="card">
+    <div class="card-title"><span class="emoji">&#x26A0;</span> Banks Makes an App <span class="badge badge-med">MEDIUM</span></div>
+    <p style="font-size: 0.8rem;">Banks Power could build a companion app. <strong>Mitigation:</strong> Our moat is the AI + community network effect. Banks doesn't have fleet data, anomaly detection, or Hive Mind. Position as complementary: "Works great WITH your Banks Derringer."</p>
+  </div>
+  <div class="card">
+    <div class="card-title"><span class="emoji">&#x26A0;</span> Solo Founder Burnout <span class="badge badge-high">HIGH</span></div>
+    <p style="font-size: 0.8rem;">You're running sales AND building DieselEye. <strong>Mitigation:</strong> Vibe-code with Claude Code. Automate everything possible. Set hard time limits (10 hrs/week on DieselEye). Don't over-commit to features. Ship small, ship often. Revenue from your AE job funds the runway.</p>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+
+<div class="highlight-box">
+  <h2>The Bottom Line</h2>
+  <p style="font-size: 1rem; max-width: 700px; margin: 0 auto;">DieselEye is a <strong>~$350 startup</strong> that can reach <strong>$18K ARR at 1,000 users</strong> and <strong>$250K+ ARR at 10,000 users</strong>. The market is small but hyper-targeted. The product is already built. The community is concentrated in 4 forums you can reach for free. You don't need a marketing budget — you need 50 beta testers and 12 YouTube videos. Everything else compounds from there.</p>
+</div>
+
+<div class="footer">
+  DIESELEYE GTM & BUSINESS PLAN — APRIL 2026 — SOLO FOUNDER PLAYBOOK — CONFIDENTIAL
+</div>
+
+</body>
+</html>

@@ -1,0 +1,918 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DieselEye — Marketing, Auto-Posting &amp; Funding Sprint Plan</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@300;400;500&family=Instrument+Sans:wght@300;400;500;600&display=swap');
+
+  :root {
+    --bg: #080b0f;
+    --surface: #0e1318;
+    --panel: #141a22;
+    --border: #1e2732;
+    --text: #d4dde8;
+    --muted: #4a5a6a;
+    --accent: #00d4ff;
+    --success: #00e676;
+    --warning: #ffb020;
+    --danger: #ff4444;
+    --purple: #a855f7;
+    --pink: #ec4899;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Instrument Sans', sans-serif;
+    line-height: 1.7;
+    padding: 0;
+  }
+
+  .hero {
+    background: linear-gradient(135deg, #0a1628 0%, #080b0f 50%, #0d1520 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 60px 40px;
+    text-align: center;
+  }
+
+  .hero h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: 2.8rem;
+    font-weight: 800;
+    color: var(--accent);
+    margin-bottom: 12px;
+  }
+
+  .hero .subtitle {
+    font-size: 1.2rem;
+    color: var(--muted);
+    max-width: 700px;
+    margin: 0 auto;
+  }
+
+  .hero .stats-row {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    margin-top: 30px;
+    flex-wrap: wrap;
+  }
+
+  .hero .stat {
+    text-align: center;
+  }
+
+  .hero .stat-value {
+    font-family: 'Syne', sans-serif;
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--accent);
+  }
+
+  .hero .stat-label {
+    font-size: 0.8rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 40px 30px;
+  }
+
+  h2 {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid var(--border);
+  }
+
+  h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: var(--text);
+    margin: 25px 0 12px 0;
+  }
+
+  h4 {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: var(--warning);
+    margin: 18px 0 8px 0;
+  }
+
+  p { margin-bottom: 14px; color: #b8c5d4; }
+
+  .section {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 30px;
+    margin-bottom: 30px;
+  }
+
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+    margin: 20px 0;
+  }
+
+  .card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 22px;
+  }
+
+  .card-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 1.05rem;
+    margin-bottom: 8px;
+  }
+
+  .card p { font-size: 0.92rem; color: var(--muted); margin-bottom: 8px; }
+
+  .badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-right: 6px;
+    margin-bottom: 4px;
+  }
+
+  .badge-free { background: rgba(0, 230, 118, 0.15); color: var(--success); }
+  .badge-low { background: rgba(0, 212, 255, 0.15); color: var(--accent); }
+  .badge-priority { background: rgba(255, 176, 32, 0.15); color: var(--warning); }
+  .badge-revenue { background: rgba(168, 85, 247, 0.15); color: var(--purple); }
+  .badge-critical { background: rgba(255, 68, 68, 0.15); color: var(--danger); }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0;
+    font-size: 0.9rem;
+  }
+
+  th {
+    background: var(--panel);
+    color: var(--accent);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 12px 14px;
+    text-align: left;
+    border-bottom: 2px solid var(--border);
+  }
+
+  td {
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--border);
+    color: #b8c5d4;
+  }
+
+  tr:hover { background: rgba(0, 212, 255, 0.03); }
+
+  .checklist { list-style: none; padding: 0; }
+  .checklist li {
+    padding: 8px 0 8px 30px;
+    position: relative;
+    border-bottom: 1px solid rgba(30, 39, 50, 0.5);
+    font-size: 0.92rem;
+  }
+  .checklist li::before {
+    content: '○';
+    position: absolute;
+    left: 4px;
+    color: var(--accent);
+    font-size: 1rem;
+  }
+
+  .code-block {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 18px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.82rem;
+    color: var(--accent);
+    overflow-x: auto;
+    margin: 12px 0;
+    white-space: pre-wrap;
+  }
+
+  .timeline {
+    border-left: 3px solid var(--accent);
+    margin: 20px 0 20px 20px;
+    padding-left: 25px;
+  }
+
+  .timeline-item {
+    position: relative;
+    margin-bottom: 28px;
+  }
+
+  .timeline-item::before {
+    content: '';
+    position: absolute;
+    left: -33px;
+    top: 6px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--accent);
+    border: 3px solid var(--bg);
+  }
+
+  .timeline-week {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.78rem;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .callout {
+    background: rgba(0, 212, 255, 0.08);
+    border-left: 4px solid var(--accent);
+    padding: 16px 20px;
+    border-radius: 0 8px 8px 0;
+    margin: 16px 0;
+  }
+
+  .callout-warning {
+    background: rgba(255, 176, 32, 0.08);
+    border-left-color: var(--warning);
+  }
+
+  .callout-revenue {
+    background: rgba(168, 85, 247, 0.08);
+    border-left-color: var(--purple);
+  }
+
+  .toc {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px 30px;
+    margin-bottom: 30px;
+  }
+
+  .toc-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 12px;
+  }
+
+  .toc ol { padding-left: 20px; }
+  .toc li { padding: 4px 0; }
+  .toc a { color: var(--text); text-decoration: none; }
+  .toc a:hover { color: var(--accent); }
+
+  .split { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  @media (max-width: 768px) {
+    .split { grid-template-columns: 1fr; }
+    .hero h1 { font-size: 2rem; }
+    .hero .stats-row { gap: 20px; }
+    .card-grid { grid-template-columns: 1fr; }
+  }
+
+  .highlight { color: var(--accent); font-weight: 600; }
+  .warn { color: var(--warning); }
+  .money { color: var(--success); font-family: 'JetBrains Mono', monospace; }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <h1>DieselEye Marketing + Funding Sprint</h1>
+  <p class="subtitle">Website best practices, auto-posting engine, and the funding playbook to go from $0 to revenue — all executable solo.</p>
+  <div class="stats-row">
+    <div class="stat">
+      <div class="stat-value">62</div>
+      <div class="stat-label">Source Files</div>
+    </div>
+    <div class="stat">
+      <div class="stat-value">~9K</div>
+      <div class="stat-label">Lines of TS</div>
+    </div>
+    <div class="stat">
+      <div class="stat-value">6/8</div>
+      <div class="stat-label">Features Shipped</div>
+    </div>
+    <div class="stat">
+      <div class="stat-value">$0</div>
+      <div class="stat-label">Current Revenue</div>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+
+<!-- TABLE OF CONTENTS -->
+<div class="toc">
+  <div class="toc-title">Plan Sections</div>
+  <ol>
+    <li><a href="#audit">Current State Audit (What We Have)</a></li>
+    <li><a href="#domain">Domain &amp; URL Strategy</a></li>
+    <li><a href="#seo">SEO &amp; Landing Page Playbook</a></li>
+    <li><a href="#autopost">Auto-Posting Engine</a></li>
+    <li><a href="#forums">Forum Seeding Strategy</a></li>
+    <li><a href="#youtube">YouTube Content Machine</a></li>
+    <li><a href="#producthunt">Product Hunt + Launch Directories</a></li>
+    <li><a href="#funding">Funding Sprint — $0 to Revenue</a></li>
+    <li><a href="#automation">The Solo Founder Automation Stack</a></li>
+    <li><a href="#timeline">12-Week Execution Timeline</a></li>
+    <li><a href="#metrics">Success Metrics &amp; KPIs</a></li>
+  </ol>
+</div>
+
+<!-- SECTION 1: CURRENT STATE AUDIT -->
+<div class="section" id="audit">
+  <h2>1. Current State Audit</h2>
+  <p>Before building marketing, here's exactly what the repo has (and what's missing) based on the 30-day git history and file audit.</p>
+
+  <h3>What We Have (Strengths)</h3>
+  <table>
+    <tr><th>Asset</th><th>Status</th><th>Notes</th></tr>
+    <tr><td>PWA with service worker</td><td style="color:var(--success)">BUILT</td><td>16 precached entries, 1.1MB, installable</td></tr>
+    <tr><td>Netlify deploy config</td><td style="color:var(--success)">BUILT</td><td>netlify.toml with security headers, CSP, caching</td></tr>
+    <tr><td>Apple PWA meta tags</td><td style="color:var(--success)">BUILT</td><td>apple-mobile-web-app-capable, status-bar-style</td></tr>
+    <tr><td>PWA icons</td><td style="color:var(--success)">BUILT</td><td>192x192, 512x512, apple-touch-icon, favicon.svg</td></tr>
+    <tr><td>PostHog analytics</td><td style="color:var(--success)">WIRED</td><td>Initialized before render, events on all interactions</td></tr>
+    <tr><td>Cookie consent</td><td style="color:var(--success)">BUILT</td><td>GDPR-compliant consent component</td></tr>
+    <tr><td>17 commits</td><td style="color:var(--success)">SOLID</td><td>Clean git history, features 1-6 of NEXTLEVEL shipped</td></tr>
+  </table>
+
+  <h3>What's Missing (Critical Gaps for Marketing)</h3>
+  <table>
+    <tr><th>Gap</th><th>Priority</th><th>Impact</th></tr>
+    <tr><td>No Open Graph / Twitter Card meta tags</td><td style="color:var(--danger)">P0</td><td>Shared links look bare — no image, no description</td></tr>
+    <tr><td>No robots.txt</td><td style="color:var(--danger)">P0</td><td>Search engines may crawl inefficiently or miss pages</td></tr>
+    <tr><td>No sitemap.xml</td><td style="color:var(--danger)">P0</td><td>Google can't discover all app routes</td></tr>
+    <tr><td>No canonical URL set</td><td style="color:var(--warning)">P1</td><td>Netlify subdomain creates duplicate content</td></tr>
+    <tr><td>No custom domain</td><td style="color:var(--warning)">P1</td><td>Still on .netlify.app — no brand presence</td></tr>
+    <tr><td>No landing page (marketing site)</td><td style="color:var(--warning)">P1</td><td>App loads straight to auth — no marketing funnel</td></tr>
+    <tr><td>No email capture / waitlist</td><td style="color:var(--danger)">P0</td><td>Zero way to build a pre-launch list</td></tr>
+    <tr><td>No social sharing OG image</td><td style="color:var(--warning)">P1</td><td>Shared links have no visual hook</td></tr>
+    <tr><td>No structured data (JSON-LD)</td><td style="color:var(--muted)">P2</td><td>No rich search results (app, product, FAQ)</td></tr>
+    <tr><td>Description meta tag too generic</td><td style="color:var(--warning)">P1</td><td>Currently: "Real-time diesel engine health monitoring"</td></tr>
+  </table>
+</div>
+
+<!-- SECTION 2: DOMAIN STRATEGY -->
+<div class="section" id="domain">
+  <h2>2. Domain &amp; URL Strategy</h2>
+
+  <h3>Domain Recommendation</h3>
+  <p>The CLAUDE.md mentions <span class="highlight">dieseleye.app</span> as the target domain. Web search shows no existing product using this name — the namespace is clear.</p>
+
+  <table>
+    <tr><th>Domain</th><th>Best For</th><th>Recommendation</th></tr>
+    <tr><td><strong>dieseleye.app</strong></td><td>Tech/app products, Google-managed TLD</td><td style="color:var(--success)">PRIMARY — register this</td></tr>
+    <tr><td>dieseleye.com</td><td>Traditional credibility, resale value</td><td style="color:var(--accent)">GRAB IF AVAILABLE — redirect to .app</td></tr>
+    <tr><td>dieseleye.io</td><td>Developer/tech audience</td><td style="color:var(--muted)">Skip — .app is better for consumer product</td></tr>
+    <tr><td>getdieseleye.com</td><td>Fallback if .com taken</td><td style="color:var(--muted)">Only if dieseleye.com unavailable</td></tr>
+  </table>
+
+  <div class="callout">
+    <strong>Action:</strong> Register dieseleye.app immediately (~$14/yr on Google Domains or Namecheap). The .app TLD enforces HTTPS, which is already how Netlify serves your site. Add it as a custom domain in Netlify settings → Domain management.
+  </div>
+
+  <h3>URL Structure for SEO</h3>
+  <div class="code-block">dieseleye.app/                    → Landing page (marketing)
+dieseleye.app/app                 → The actual dashboard (behind auth)
+dieseleye.app/features            → Feature breakdown page
+dieseleye.app/pricing             → Pricing tiers (Free/Pro/Fleet)
+dieseleye.app/blog                → SEO content hub
+dieseleye.app/blog/dpf-regen-guide → Long-tail content
+dieseleye.app/download            → App store links + PWA install
+dieseleye.app/demo                → Demo mode (no auth required)</div>
+
+  <div class="callout-warning callout">
+    <strong>Current Problem:</strong> Your SPA serves everything from <code>/</code> via the catch-all redirect <code>/* → /index.html</code>. This is fine for the app, but SEO needs static pre-rendered pages. Solution: Add a <code>/public/landing/</code> folder with static HTML pages that Netlify serves BEFORE the SPA redirect catches them.
+  </div>
+</div>
+
+<!-- SECTION 3: SEO & LANDING PAGE -->
+<div class="section" id="seo">
+  <h2>3. SEO &amp; Landing Page Playbook</h2>
+
+  <h3>Step 1: Fix the Basics (30 minutes)</h3>
+  <p>These go in <code>index.html</code> and <code>public/</code>:</p>
+
+  <h4>Open Graph + Twitter Cards</h4>
+  <div class="code-block">&lt;!-- Add to index.html &lt;head&gt; --&gt;
+&lt;meta property="og:title" content="DieselEye — Diesel Health Monitor with AI" /&gt;
+&lt;meta property="og:description" content="Real-time DPF, EGT, boost, DEF &amp; coolant monitoring for your EcoDiesel. AI-powered diagnostics. Push alerts to your phone." /&gt;
+&lt;meta property="og:image" content="https://dieseleye.app/og-image.png" /&gt;
+&lt;meta property="og:url" content="https://dieseleye.app" /&gt;
+&lt;meta property="og:type" content="website" /&gt;
+&lt;meta name="twitter:card" content="summary_large_image" /&gt;
+&lt;meta name="twitter:title" content="DieselEye — Diesel Health Monitor" /&gt;
+&lt;meta name="twitter:description" content="The only diesel monitor that tells you what to do, not just what's happening." /&gt;
+&lt;meta name="twitter:image" content="https://dieseleye.app/og-image.png" /&gt;
+&lt;link rel="canonical" href="https://dieseleye.app" /&gt;</div>
+
+  <h4>robots.txt (add to public/)</h4>
+  <div class="code-block">User-agent: *
+Allow: /
+Disallow: /app
+Disallow: /api/
+Sitemap: https://dieseleye.app/sitemap.xml</div>
+
+  <h4>sitemap.xml (add to public/)</h4>
+  <div class="code-block">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;urlset xmlns="http://www.sitemapns.org/schemas/sitemap/0.9"&gt;
+  &lt;url&gt;&lt;loc&gt;https://dieseleye.app/&lt;/loc&gt;&lt;priority&gt;1.0&lt;/priority&gt;&lt;/url&gt;
+  &lt;url&gt;&lt;loc&gt;https://dieseleye.app/features&lt;/loc&gt;&lt;priority&gt;0.8&lt;/priority&gt;&lt;/url&gt;
+  &lt;url&gt;&lt;loc&gt;https://dieseleye.app/pricing&lt;/loc&gt;&lt;priority&gt;0.8&lt;/priority&gt;&lt;/url&gt;
+  &lt;url&gt;&lt;loc&gt;https://dieseleye.app/download&lt;/loc&gt;&lt;priority&gt;0.7&lt;/priority&gt;&lt;/url&gt;
+  &lt;url&gt;&lt;loc&gt;https://dieseleye.app/demo&lt;/loc&gt;&lt;priority&gt;0.7&lt;/priority&gt;&lt;/url&gt;
+  &lt;url&gt;&lt;loc&gt;https://dieseleye.app/blog&lt;/loc&gt;&lt;priority&gt;0.6&lt;/priority&gt;&lt;/url&gt;
+&lt;/urlset&gt;</div>
+
+  <h4>Netlify Redirect Fix</h4>
+  <div class="code-block"># Add ABOVE the catch-all in netlify.toml:
+[[redirects]]
+  from = "/robots.txt"
+  to = "/robots.txt"
+  status = 200
+
+[[redirects]]
+  from = "/sitemap.xml"
+  to = "/sitemap.xml"
+  status = 200
+
+# EXISTING catch-all stays last:
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200</div>
+
+  <h3>Step 2: Keyword Targets</h3>
+  <p>For niche SaaS, target long-tail keywords with KD (keyword difficulty) under 20. These EcoDiesel terms have virtually zero competition:</p>
+
+  <table>
+    <tr><th>Keyword</th><th>Search Intent</th><th>Content Type</th><th>Est. Monthly</th></tr>
+    <tr><td>ecodiesel dpf regeneration</td><td>Informational</td><td>Blog post</td><td>500-1K</td></tr>
+    <tr><td>jeep wrangler diesel monitor</td><td>Commercial</td><td>Landing page</td><td>200-500</td></tr>
+    <tr><td>ecodiesel obd2 app</td><td>Commercial</td><td>Landing page</td><td>100-300</td></tr>
+    <tr><td>dpf load percentage meaning</td><td>Informational</td><td>Blog post</td><td>300-800</td></tr>
+    <tr><td>ecodiesel egt normal range</td><td>Informational</td><td>Blog post</td><td>200-500</td></tr>
+    <tr><td>jeep 3.0 diesel problems</td><td>Informational</td><td>Blog post</td><td>1K-3K</td></tr>
+    <tr><td>ecodiesel def fluid level</td><td>Informational</td><td>Blog post</td><td>200-500</td></tr>
+    <tr><td>banks idash vs obd2 app</td><td>Comparison</td><td>Blog post</td><td>50-200</td></tr>
+    <tr><td>ecodiesel maintenance schedule</td><td>Informational</td><td>Blog post</td><td>500-1K</td></tr>
+    <tr><td>cp4.2 fuel pump failure symptoms</td><td>Informational</td><td>Blog post</td><td>500-1K</td></tr>
+  </table>
+
+  <h3>Step 3: Landing Page (Pre-Auth Marketing Page)</h3>
+  <p>Currently the app loads straight to AuthGate. You need a marketing landing page that visitors see FIRST, with a clear conversion funnel:</p>
+
+  <div class="card-grid">
+    <div class="card">
+      <div class="card-title" style="color:var(--accent)">Hero Section</div>
+      <p>"The only diesel monitor that tells you what to do."</p>
+      <p>Animated gauge demo (your existing RadialGauge component) + CTA: "Try Demo Free" / "Get Early Access"</p>
+    </div>
+    <div class="card">
+      <div class="card-title" style="color:var(--accent)">Social Proof Strip</div>
+      <p>"Built for the 3.0L EcoDiesel community" + forum logos + "Join 500+ EcoDiesel owners" (once you have the numbers)</p>
+    </div>
+    <div class="card">
+      <div class="card-title" style="color:var(--accent)">Feature Grid</div>
+      <p>5 gauge icons with one-liners: DPF monitoring, AI diagnostics, regen prediction, push alerts, maintenance brain</p>
+    </div>
+    <div class="card">
+      <div class="card-title" style="color:var(--accent)">Competitor Comparison</div>
+      <p>Table: DieselEye vs Banks iDash vs JSCAN vs Torque Pro. Check marks showing AI, phone alerts, cloud history</p>
+    </div>
+    <div class="card">
+      <div class="card-title" style="color:var(--accent)">Pricing Section</div>
+      <p>Free / Pro $9.99/mo / Fleet $19.99/mo. "Start free, upgrade when you're hooked."</p>
+    </div>
+    <div class="card">
+      <div class="card-title" style="color:var(--accent)">Email Capture</div>
+      <p>"Get launch pricing + beta access." Simple email form → Mailchimp/SendFox free tier list.</p>
+    </div>
+  </div>
+</div>
+
+<!-- SECTION 4: AUTO-POSTING ENGINE -->
+<div class="section" id="autopost">
+  <h2>4. Auto-Posting Engine</h2>
+  <p>As a solo founder with a day job, you need content running on autopilot. Here's the stack and strategy:</p>
+
+  <h3>Recommended Tool Stack</h3>
+  <table>
+    <tr><th>Tool</th><th>Cost</th><th>What It Does</th><th>Why This One</th></tr>
+    <tr><td><strong>Buffer</strong></td><td>Free (3 channels) or $6/mo/channel</td><td>Schedule posts to X, LinkedIn, Facebook, Instagram</td><td>Simplest UI, perfect for solo. Free tier covers launch.</td></tr>
+    <tr><td><strong>SocialBee</strong></td><td>$29/mo</td><td>Category-based evergreen queue</td><td>Set it and forget it — recycles your best content automatically. UPGRADE TO THIS after Buffer free tier fills up.</td></tr>
+    <tr><td><strong>Blog2Social</strong></td><td>Free / $7/mo</td><td>Auto-shares blog posts to all platforms</td><td>Publish a blog post → auto-posts to 10+ networks. Perfect for SEO blog content.</td></tr>
+    <tr><td><strong>SendFox</strong></td><td>$49 lifetime (AppSumo)</td><td>Email marketing / newsletter</td><td>Lifetime deal, no monthly cost. Build your email list here.</td></tr>
+    <tr><td><strong>Zapier</strong></td><td>Free (100 tasks/mo)</td><td>Connects everything</td><td>New blog post → tweet + LinkedIn + email newsletter. Automate the chain.</td></tr>
+  </table>
+
+  <h3>The Content Recycling System</h3>
+  <div class="callout">
+    <strong>The 1-to-10 Rule:</strong> Every piece of content you create should be repurposed into 10 posts across platforms. One blog post about DPF regeneration becomes: 1 long-form blog, 1 YouTube video, 3 tweet threads, 2 LinkedIn posts, 1 Reddit post, 1 forum thread, 1 email newsletter.
+  </div>
+
+  <h4>Content Categories (for SocialBee Queue)</h4>
+  <table>
+    <tr><th>Category</th><th>Frequency</th><th>Examples</th></tr>
+    <tr><td><span class="badge badge-priority">Educational</span></td><td>3x/week</td><td>"What does your DPF% actually mean?", "EGT ranges explained", "When to worry about oil dilution"</td></tr>
+    <tr><td><span class="badge badge-low">Product</span></td><td>2x/week</td><td>Feature highlights, screenshot/video of gauges, AI advisor in action</td></tr>
+    <tr><td><span class="badge badge-revenue">Social Proof</span></td><td>1x/week</td><td>User testimonials, forum screenshots, beta feedback</td></tr>
+    <tr><td><span class="badge badge-free">Community</span></td><td>2x/week</td><td>Trail photos, EcoDiesel tips, "what mods are you running?", polls</td></tr>
+    <tr><td><span class="badge badge-critical">Urgency/Fear</span></td><td>1x/week</td><td>"This is what happens when you ignore DPF warnings", CP4.2 failure stories</td></tr>
+  </table>
+
+  <h4>Auto-Post Workflow</h4>
+  <div class="code-block">SUNDAY: Batch-write 9 posts for the week (use Claude to draft)
+  ↓
+BUFFER FREE TIER: Schedule to X (Mon/Wed/Fri), LinkedIn (Tue/Thu), Facebook (Sat)
+  ↓
+BLOG2SOCIAL: Auto-shares blog posts when published (if blog is set up)
+  ↓
+ZAPIER: New blog post → SendFox newsletter → Buffer re-share in 7 days
+  ↓
+MONTHLY: Review PostHog + Buffer analytics → double down on what works</div>
+
+  <h3>Platform-Specific Posting Strategy</h3>
+  <div class="card-grid">
+    <div class="card">
+      <div class="card-title" style="color:var(--accent)">X (Twitter)</div>
+      <p>3x/week. Short, punchy. Use thread format for educational content. Always include a screenshot of the gauge dashboard. Tag @bankspowerofficial, @jscan, @jeep when relevant.</p>
+      <p><span class="badge badge-free">Free</span></p>
+    </div>
+    <div class="card">
+      <div class="card-title" style="color:var(--accent)">LinkedIn</div>
+      <p>2x/week. Founder journey posts perform best. "I'm building a diesel monitor with AI and here's what I learned about OBD2 protocols." Professional audience = potential B2B fleet leads.</p>
+      <p><span class="badge badge-free">Free</span></p>
+    </div>
+    <div class="card">
+      <div class="card-title" style="color:var(--accent)">Reddit</div>
+      <p>r/Jeep (580K), r/JeepWrangler (95K), r/ecodiesel, r/Diesel, r/SideProject. DO NOT auto-post. Manual, authentic engagement only. Answer questions, link app when relevant.</p>
+      <p><span class="badge badge-free">Free</span> <span class="badge badge-priority">Manual</span></p>
+    </div>
+    <div class="card">
+      <div class="card-title" style="color:var(--accent)">Instagram/TikTok</div>
+      <p>1-2x/week. Short video clips of gauges animating, install process, trail runs with dashboard overlay. Reels get 3-5x reach vs static posts.</p>
+      <p><span class="badge badge-free">Free</span></p>
+    </div>
+  </div>
+</div>
+
+<!-- SECTION 5: FORUM SEEDING -->
+<div class="section" id="forums">
+  <h2>5. Forum Seeding Strategy</h2>
+
+  <div class="callout-warning callout">
+    <strong>The #1 Rule:</strong> Forum marketing relies on organic engagement — answering questions, offering expertise in a non-pushy way, building credibility over time. Spam gets you banned and poisons your brand. These are small, tight-knit communities where reputation matters.
+  </div>
+
+  <h3>Target Forums (Ranked by Priority)</h3>
+  <table>
+    <tr><th>Forum</th><th>Members</th><th>Why</th><th>Strategy</th></tr>
+    <tr><td><strong>JLwranglerforums.com</strong></td><td>200K+</td><td>Biggest JL community, OBD2-savvy</td><td>Create account NOW. Answer 20+ questions before ever mentioning DieselEye.</td></tr>
+    <tr><td><strong>dieseljeeps.com</strong></td><td>15K+</td><td>100% diesel Jeep focused</td><td>Perfect niche fit. Start a build thread about your EcoDiesel setup.</td></tr>
+    <tr><td><strong>jeepgladiatorforum.com</strong></td><td>50K+</td><td>JT owners, many EcoDiesel</td><td>Same approach — establish expertise first.</td></tr>
+    <tr><td><strong>ram1500diesel.com</strong></td><td>30K+</td><td>RAM EcoDiesel community</td><td>Expansion market. DieselEye works on these too.</td></tr>
+    <tr><td><strong>Reddit r/Jeep</strong></td><td>580K</td><td>Massive reach, younger audience</td><td>Answer questions in comments. Share builds. Never hard-sell.</td></tr>
+    <tr><td><strong>cumminsforum.com</strong></td><td>500K+</td><td>Future expansion (Cummins diesels)</td><td>Lurk and learn. Phase 4+ when multi-diesel support is built.</td></tr>
+  </table>
+
+  <h3>The 30-Day Forum Seeding Playbook</h3>
+  <div class="timeline">
+    <div class="timeline-item">
+      <div class="timeline-week">Days 1-7: Establish Presence</div>
+      <p>Create accounts on all 4 Jeep forums. Complete profile (avatar, location, vehicle info — "2021 JL EcoDiesel"). Read the rules. Introduce yourself in the New Members section. <strong>Do not mention DieselEye yet.</strong></p>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-week">Days 8-14: Add Value</div>
+      <p>Answer 3-5 questions per day about EcoDiesel topics you know (DPF regens, EGT ranges, maintenance schedules, CP4.2 concerns). Share genuine knowledge. Build reputation. Earn "helpful" reactions.</p>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-week">Days 15-21: Soft Introduction</div>
+      <p>Start a thread: "Building an EcoDiesel health monitoring app — looking for beta testers." Frame as community project. Ask for input on features. This isn't selling — it's co-creating with the community.</p>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-week">Days 22-30: Beta Launch</div>
+      <p>Share the demo link. Ask for feedback. Offer free Pro access to first 50 forum members who sign up. Post screenshots of real data from YOUR vehicle. Authenticity wins everything.</p>
+    </div>
+  </div>
+
+  <h3>Forum Content Templates</h3>
+  <div class="card-grid">
+    <div class="card">
+      <div class="card-title" style="color:var(--warning)">The Helper Post</div>
+      <p>"Saw your question about DPF load percentages. Here's what the numbers actually mean: 0-40% is normal cruising, 40-75% means a regen is coming soon, 75%+ means one is overdue. If you're seeing 85%+ consistently, your regen cycle might be getting interrupted..."</p>
+    </div>
+    <div class="card">
+      <div class="card-title" style="color:var(--warning)">The Builder Post</div>
+      <p>"Hey all — I've been working on a monitoring app specifically for our 3.0L EcoDiesels. It reads DPF%, EGT, boost, DEF, and coolant via BLE OBD2 and has an AI that explains what the numbers mean. Still in beta but looking for folks to try it out. Free for forum members."</p>
+    </div>
+  </div>
+</div>
+
+<!-- SECTION 6: YOUTUBE -->
+<div class="section" id="youtube">
+  <h2>6. YouTube Content Machine</h2>
+  <p>Automotive content on YouTube has strong RPM ($4-8 CPM) and the EcoDiesel niche has almost zero quality content about monitoring tools.</p>
+
+  <h3>Channel Setup</h3>
+  <table>
+    <tr><th>Element</th><th>Recommendation</th></tr>
+    <tr><td>Channel Name</td><td><strong>DieselEye</strong> (brand consistency)</td></tr>
+    <tr><td>Tagline</td><td>"Know your diesel. Protect your engine."</td></tr>
+    <tr><td>Banner</td><td>Dark industrial style, cyan accent, gauge graphics</td></tr>
+    <tr><td>Posting Cadence</td><td>1 video/week minimum (batch-record on weekends)</td></tr>
+    <tr><td>Video Length</td><td>5-12 minutes (sweet spot for watch time + ads)</td></tr>
+    <tr><td>Shorts</td><td>2-3/week — gauge animations, quick tips, before/after</td></tr>
+  </table>
+
+  <h3>First 12 Videos (Content Calendar)</h3>
+  <table>
+    <tr><th>#</th><th>Title</th><th>Type</th><th>SEO Target</th></tr>
+    <tr><td>1</td><td>"What Your EcoDiesel DPF% Actually Means"</td><td>Educational</td><td>ecodiesel dpf regeneration</td></tr>
+    <tr><td>2</td><td>"I Built an AI Diesel Monitor — Here's What It Does"</td><td>Product demo</td><td>diesel engine monitor app</td></tr>
+    <tr><td>3</td><td>"EcoDiesel EGT Ranges Explained (When to Worry)"</td><td>Educational</td><td>ecodiesel egt normal range</td></tr>
+    <tr><td>4</td><td>"Banks iDash vs DieselEye — Real Comparison"</td><td>Comparison</td><td>banks idash alternative</td></tr>
+    <tr><td>5</td><td>"How to Connect a BLE OBD2 Adapter to Your Jeep"</td><td>Tutorial</td><td>obd2 bluetooth jeep wrangler</td></tr>
+    <tr><td>6</td><td>"CP4.2 Fuel Pump Failure — Early Warning Signs"</td><td>Educational</td><td>cp4.2 failure symptoms ecodiesel</td></tr>
+    <tr><td>7</td><td>"My EcoDiesel Maintenance Schedule (With AI Reminders)"</td><td>Product demo</td><td>ecodiesel maintenance schedule</td></tr>
+    <tr><td>8</td><td>"DieselEye Trail Mode — Off-Road with Engine Data"</td><td>Product demo</td><td>jeep trail monitoring</td></tr>
+    <tr><td>9</td><td>"Before/After: Banks Derringer Impact on My EcoDiesel"</td><td>Mod review</td><td>banks derringer review ecodiesel</td></tr>
+    <tr><td>10</td><td>"Why Your DEF Light Keeps Coming On"</td><td>Educational</td><td>ecodiesel def light</td></tr>
+    <tr><td>11</td><td>"Towing with an EcoDiesel — What to Watch"</td><td>Educational</td><td>ecodiesel towing monitor</td></tr>
+    <tr><td>12</td><td>"Building a $10/mo Business Monitoring Diesels"</td><td>Founder story</td><td>solo founder saas journey</td></tr>
+  </table>
+
+  <h3>YouTube Shorts Ideas (Quick Wins)</h3>
+  <ul class="checklist">
+    <li>30-second gauge animation loop with dramatic music</li>
+    <li>"POV: Your DPF hits 90%" — dashboard alert going off</li>
+    <li>Before/after mod install with live metric changes</li>
+    <li>"Things your diesel is trying to tell you" — metric explainers</li>
+    <li>Trail mode GPS recording timelapse</li>
+  </ul>
+</div>
+
+<!-- SECTION 7: PRODUCT HUNT -->
+<div class="section" id="producthunt">
+  <h2>7. Product Hunt + Launch Directories</h2>
+
+  <div class="callout">
+    <strong>Reality check:</strong> Product Hunt rewards specificity. "A better OBD2 app" will flop. "AI-powered diesel health monitoring that predicts DPF regeneration cycles and explains what your engine is doing in plain English" — that wins in the niche. Prep 6-8 weeks before launch day.
+  </div>
+
+  <h3>Product Hunt Launch Checklist</h3>
+  <ul class="checklist">
+    <li>Create Product Hunt maker account 4+ weeks before launch</li>
+    <li>Build upvoter list: 200-300 people (email list, forum members, friends)</li>
+    <li>Prep launch assets: tagline, description, 5 screenshots, 1 demo video (60-90s)</li>
+    <li>Write the "first comment" (maker's comment explaining the story)</li>
+    <li>Schedule for Tuesday-Thursday, post at 12:01 AM PT</li>
+    <li>Send email blast to list at 8 AM PT ("We're live on Product Hunt!")</li>
+    <li>Cross-post to all forums, Reddit, X, LinkedIn throughout the day</li>
+    <li>Respond to every comment within 30 minutes</li>
+  </ul>
+
+  <h3>Other Launch Directories</h3>
+  <table>
+    <tr><th>Platform</th><th>Cost</th><th>Audience</th><th>When</th></tr>
+    <tr><td>Product Hunt</td><td>Free</td><td>Early adopters, tech</td><td>Main launch day</td></tr>
+    <tr><td>Hacker News (Show HN)</td><td>Free</td><td>Developers, tech founders</td><td>Same week as PH</td></tr>
+    <tr><td>BetaList</td><td>Free / $129 fast-track</td><td>Beta testers</td><td>2 weeks before PH</td></tr>
+    <tr><td>Indie Hackers</td><td>Free</td><td>Solo founders</td><td>Day after PH</td></tr>
+    <tr><td>AlternativeTo</td><td>Free</td><td>Tool shoppers</td><td>Week of launch</td></tr>
+    <tr><td>SaaSHub</td><td>Free</td><td>SaaS discovery</td><td>Week of launch</td></tr>
+    <tr><td>AppSumo (marketplace)</td><td>Revenue share (70/30)</td><td>Deal hunters</td><td>2-4 weeks after PH</td></tr>
+  </table>
+</div>
+
+<!-- SECTION 8: FUNDING SPRINT -->
+<div class="section" id="funding">
+  <h2>8. Funding Sprint — $0 to Revenue</h2>
+  <p>No VCs. No investors. Bootstrap from pre-sales to sustainable MRR.</p>
+
+  <h3>Revenue Waterfall</h3>
+  <div class="timeline">
+    <div class="timeline-item">
+      <div class="timeline-week">Phase A: Pre-Sales (Week 1-4)</div>
+      <p><strong>Lifetime Deal pre-sale:</strong> $39-49 early bird price for lifetime Pro access. Sell through landing page email capture + forum beta threads. Target: <span class="money">50-100 sales = $2K-$5K</span></p>
+      <p>Tools: Gumroad or LemonSqueezy (instant setup, handles tax). No Stripe integration needed yet.</p>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-week">Phase B: Product Hunt + Beta (Week 5-8)</div>
+      <p><strong>Lifetime Deal at $79-99:</strong> Price goes up from early bird. Product Hunt drives traffic. Target: <span class="money">100-200 sales = $8K-$20K</span></p>
+      <p>This covers: domain ($14), hosting (free Netlify tier), tools ($100-200), and creates 6+ months of runway for marketing spend.</p>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-week">Phase C: AppSumo Blitz (Week 9-12)</div>
+      <p><strong>AppSumo Marketplace deal:</strong> Offer Pro lifetime at $49-69 (AppSumo takes 30%). Volume play — 200-500 redemptions. Target: <span class="money">$7K-$24K net</span></p>
+      <p>Secondary benefit: 200-500 users providing feedback, reviews, and social proof for the subscription model.</p>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-week">Phase D: Subscription Model (Week 12+)</div>
+      <p><strong>Switch to recurring:</strong> LTD window closes. New users pay $9.99/mo Pro or $19.99/mo Fleet. Stripe + Netlify Functions (already in your build plan).</p>
+      <p>Target: <span class="money">100 subscribers = $1K MRR → $12K ARR</span> within 6 months of subscription launch.</p>
+    </div>
+  </div>
+
+  <h3>Revenue Projections (Conservative)</h3>
+  <table>
+    <tr><th>Source</th><th>Timeline</th><th>Revenue</th><th>Users</th></tr>
+    <tr><td>Pre-sale LTD (early bird)</td><td>Weeks 1-4</td><td class="money">$2K-$5K</td><td>50-100</td></tr>
+    <tr><td>Product Hunt + direct LTD</td><td>Weeks 5-8</td><td class="money">$8K-$20K</td><td>100-200</td></tr>
+    <tr><td>AppSumo marketplace</td><td>Weeks 9-12</td><td class="money">$7K-$24K</td><td>200-500</td></tr>
+    <tr><td>Subscriptions (MRR)</td><td>Month 4+</td><td class="money">$1K-$3K/mo</td><td>100-300</td></tr>
+    <tr><td><strong>Total Year 1</strong></td><td></td><td class="money"><strong>$29K-$85K</strong></td><td><strong>450-1,100</strong></td></tr>
+  </table>
+
+  <div class="callout-revenue callout">
+    <strong>The math that matters:</strong> At $9.99/mo Pro pricing, you only need <strong>834 subscribers</strong> to hit <span class="money">$100K ARR</span>. With 250K+ EcoDiesel vehicles on the road, that's 0.3% market penetration. Very achievable with organic community marketing.
+  </div>
+
+  <h3>Non-Dilutive Funding Options</h3>
+  <table>
+    <tr><th>Source</th><th>Amount</th><th>When to Apply</th><th>Notes</th></tr>
+    <tr><td>AWS Activate</td><td>$5K-$100K in credits</td><td>Now</td><td>Hosting credits reduce burn to near-zero</td></tr>
+    <tr><td>Stripe Atlas</td><td>LLC formation + $5K credits</td><td>Now</td><td>Legal entity + payment processing in one</td></tr>
+    <tr><td>Netlify Pro credit</td><td>Free Pro tier for startups</td><td>Now</td><td>Apply through Netlify startup program</td></tr>
+    <tr><td>Founderpath / Capchase</td><td>$10K-$250K</td><td>When MRR hits $3K</td><td>Revenue-based financing, 4-8% revenue share</td></tr>
+    <tr><td>Kickstarter (hardware)</td><td>$30K-$75K</td><td>Phase 4 (hardware)</td><td>Fund the ESP32 + OLED hardware module production</td></tr>
+  </table>
+</div>
+
+<!-- SECTION 9: AUTOMATION STACK -->
+<div class="section" id="automation">
+  <h2>9. The Solo Founder Automation Stack</h2>
+  <p>Total monthly cost to run everything: <span class="money">$0-$35/mo</span> at launch.</p>
+
+  <table>
+    <tr><th>Function</th><th>Tool</th><th>Cost</th><th>Why</th></tr>
+    <tr><td>Social scheduling</td><td>Buffer (free tier)</td><td>$0</td><td>3 channels, plenty for launch</td></tr>
+    <tr><td>Email list</td><td>SendFox (LTD)</td><td>$49 one-time</td><td>Unlimited emails, lifetime deal on AppSumo</td></tr>
+    <tr><td>Landing page</td><td>Build in-app (React)</td><td>$0</td><td>You already have the components</td></tr>
+    <tr><td>Payments</td><td>Gumroad (pre-sales) → Stripe (subscriptions)</td><td>5-10% per txn</td><td>Gumroad for quick LTD setup, Stripe for recurring</td></tr>
+    <tr><td>Analytics</td><td>PostHog (free tier)</td><td>$0</td><td>Already wired in — 1M events/mo free</td></tr>
+    <tr><td>Hosting</td><td>Netlify (free tier)</td><td>$0</td><td>100GB bandwidth, 300 build mins/mo</td></tr>
+    <tr><td>Database</td><td>Supabase (free tier)</td><td>$0</td><td>500MB DB, 1GB storage, 50K MAU</td></tr>
+    <tr><td>Domain</td><td>dieseleye.app</td><td>$14/yr</td><td>~$1.17/mo</td></tr>
+    <tr><td>Automation</td><td>Zapier (free tier)</td><td>$0</td><td>100 tasks/mo — blog → social → email</td></tr>
+    <tr><td>Content drafting</td><td>Claude (existing)</td><td>$0</td><td>Draft all posts, emails, blog content with AI</td></tr>
+    <tr><td><strong>TOTAL</strong></td><td></td><td class="money"><strong>~$15/mo + $49 one-time</strong></td><td></td></tr>
+  </table>
+</div>
+
+<!-- SECTION 10: TIMELINE -->
+<div class="section" id="timeline">
+  <h2>10. 12-Week Execution Timeline</h2>
+
+  <div class="timeline">
+    <div class="timeline-item">
+      <div class="timeline-week">Weeks 1-2: Foundation</div>
+      <ul class="checklist">
+        <li>Register dieseleye.app domain, connect to Netlify</li>
+        <li>Add OG tags, robots.txt, sitemap.xml, canonical URL to repo</li>
+        <li>Build landing page with email capture (before auth gate)</li>
+        <li>Create accounts: Buffer, SendFox, Gumroad, Product Hunt, all forums</li>
+        <li>Set up pre-sale on Gumroad ($39 early bird LTD)</li>
+        <li>Start forum accounts (JLwranglerforums, dieseljeeps, Reddit)</li>
+        <li>Create YouTube channel with banner and first video draft</li>
+      </ul>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-week">Weeks 3-4: Content + Community</div>
+      <ul class="checklist">
+        <li>Publish first 2 blog posts (DPF guide + EGT ranges)</li>
+        <li>Upload YouTube video #1 and #2</li>
+        <li>Answer 20+ forum questions (build reputation, no selling)</li>
+        <li>Schedule 2 weeks of Buffer posts (educational + product teasers)</li>
+        <li>Send first email to pre-sale list (build anticipation)</li>
+        <li>Create OG image / social sharing graphic for DieselEye</li>
+        <li>Apply for AWS Activate, Netlify startup program</li>
+      </ul>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-week">Weeks 5-6: Soft Launch</div>
+      <ul class="checklist">
+        <li>Post "looking for beta testers" on all forums</li>
+        <li>Offer free Pro to first 50 forum signups</li>
+        <li>Publish YouTube videos #3 and #4 (including Banks comparison)</li>
+        <li>Start Product Hunt upvoter list building (email your users)</li>
+        <li>Submit to BetaList ($129 fast-track if budget allows)</li>
+        <li>Raise LTD price to $79 (early bird window closes)</li>
+        <li>Write Product Hunt launch assets (tagline, screenshots, video)</li>
+      </ul>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-week">Weeks 7-8: Product Hunt Launch</div>
+      <ul class="checklist">
+        <li>Launch on Product Hunt (Tuesday-Thursday, 12:01 AM PT)</li>
+        <li>Same day: Show HN post, Indie Hackers post, all forum cross-posts</li>
+        <li>Email blast to entire list at 8 AM PT</li>
+        <li>Respond to every PH comment within 30 minutes</li>
+        <li>YouTube video: "We launched on Product Hunt" (behind the scenes)</li>
+        <li>Submit to AlternativeTo, SaaSHub</li>
+        <li>Collect and share all launch day metrics</li>
+      </ul>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-week">Weeks 9-10: AppSumo + Scale</div>
+      <ul class="checklist">
+        <li>Submit AppSumo marketplace listing (allow 1-2 week approval)</li>
+        <li>Contact YouTube influencers (Dirt Road Cred, Arkansas Offroad) — offer free hardware + LTD code</li>
+        <li>Publish blog posts #3-5 (maintenance schedule, CP4.2, comparison)</li>
+        <li>Launch LTD at $99 (final price before subscription-only)</li>
+        <li>Start Google Play TWA submission (PWABuilder)</li>
+        <li>Begin Capacitor iOS build (if not already started)</li>
+      </ul>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-week">Weeks 11-12: Subscription Transition</div>
+      <ul class="checklist">
+        <li>Close LTD window ("Last chance for lifetime access")</li>
+        <li>Launch Stripe subscription billing (Free / Pro $9.99 / Fleet $19.99)</li>
+        <li>Announce subscription model to email list + forums</li>
+        <li>YouTube videos #6-8</li>
+        <li>Review all metrics: email list size, conversion rates, MRR, PostHog data</li>
+        <li>Plan month 4+ based on what's working</li>
+        <li>If MRR > $3K: apply for Founderpath revenue-based financing</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- SECTION 11: METRICS -->
+<div class="section" id="metrics">
+  <h2>11. Success Metrics &amp; KPIs</h2>
+
+  <h3>Weekly Dashboard (Track Every Sunday)</h3>
+  <table>
+    <tr><th>Metric</th><th>Week 4 Target</th><th>Week 8 Target</th><th>Week 12 Target</th></tr>
+    <tr><td>Email list size</td><td>200</td><td>500</td><td>1,000</td></tr>
+    <tr><td>Pre-sale / LTD revenue</td><td class="money">$2,000</td><td class="money">$15,000</td><td class="money">$30,000</td></tr>
+    <tr><td>Active users (PostHog)</td><td>50</td><td>200</td><td>500</td></tr>
+    <tr><td>Forum posts / replies</td><td>40</td><td>100</td><td>200</td></tr>
+    <tr><td>YouTube subscribers</td><td>50</td><td>200</td><td>500</td></tr>
+    <tr><td>YouTube views (total)</td><td>1,000</td><td>5,000</td><td>15,000</td></tr>
+    <tr><td>Product Hunt ranking</td><td>—</td><td>Top 10 niche</td><td>—</td></tr>
+    <tr><td>MRR (subscriptions)</td><td>—</td><td>—</td><td class="money">$1,000</td></tr>
+    <tr><td>CAC (cost per customer)</td><td>&lt;$5</td><td>&lt;$15</td><td>&lt;$30</td></tr>
+  </table>
+
+  <h3>The One Number That Matters Most</h3>
+  <div class="callout-revenue callout">
+    <strong>Email list size.</strong> Everything else follows from the list. Pre-sales convert from the list. Product Hunt upvotes come from the list. AppSumo momentum comes from existing users. Forum credibility comes from being a real user who also builds. The list is the engine. Target: <strong>1,000 emails before subscription launch.</strong>
+  </div>
+
+  <h3>Monthly Cost at Each Stage</h3>
+  <table>
+    <tr><th>Stage</th><th>Monthly Cost</th><th>Revenue Needed to Break Even</th></tr>
+    <tr><td>Pre-launch (weeks 1-4)</td><td class="money">~$15/mo</td><td>2 LTD sales/mo</td></tr>
+    <tr><td>Launch (weeks 5-8)</td><td class="money">~$50/mo</td><td>5 LTD sales/mo</td></tr>
+    <tr><td>Growth (weeks 9-12)</td><td class="money">~$100/mo</td><td>10 subscribers</td></tr>
+    <tr><td>Scale (month 4+)</td><td class="money">~$200/mo</td><td>20 subscribers</td></tr>
+  </table>
+</div>
+
+<!-- FOOTER -->
+<div style="text-align:center; padding: 40px; color: var(--muted); font-size: 0.85rem; border-top: 1px solid var(--border);">
+  <p style="color:var(--accent); font-family:'Syne',sans-serif; font-weight:700; font-size:1.2rem; margin-bottom:8px;">DieselEye</p>
+  <p>Marketing, Auto-Posting &amp; Funding Sprint Plan</p>
+  <p>Generated April 11, 2026 — Based on 30-day repo audit + market research</p>
+  <p style="margin-top:12px; font-family:'JetBrains Mono',monospace; font-size:0.75rem; color:var(--muted);">
+    62 source files | ~9,000 lines TS | 17 commits | 6/8 NEXTLEVEL features shipped
+  </p>
+</div>
+
+</div>
+</body>
+</html>

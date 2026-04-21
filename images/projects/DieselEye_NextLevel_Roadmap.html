@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DieselEye — Next Level Roadmap</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Instrument+Sans:wght@400;500;600&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg: #080b0f;
+    --surface: #0e1318;
+    --panel: #141a22;
+    --border: #1e2732;
+    --text: #d4dde8;
+    --muted: #4a5a6a;
+    --accent: #00d4ff;
+    --success: #00e676;
+    --warning: #ffb020;
+    --danger: #ff4444;
+    --purple: #a855f7;
+    --pink: #ec4899;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Instrument Sans', system-ui, sans-serif;
+    line-height: 1.6;
+    padding: 2rem;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  h1 { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 2.4rem; color: var(--accent); margin-bottom: 0.25rem; }
+  h2 { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1.5rem; color: var(--text); margin: 2.5rem 0 1rem; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; }
+  h3 { font-family: 'Syne', sans-serif; font-weight: 600; font-size: 1.15rem; color: var(--accent); margin: 1.5rem 0 0.5rem; }
+  h4 { font-family: 'JetBrains Mono', monospace; font-weight: 600; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); margin: 1rem 0 0.25rem; }
+
+  .subtitle { font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; color: var(--muted); letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 2rem; }
+
+  .summary-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+  }
+
+  .summary-box p { font-size: 0.95rem; color: var(--text); margin-bottom: 0.75rem; }
+  .summary-box p:last-child { margin-bottom: 0; }
+
+  .what-we-have {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 0.75rem;
+    margin: 1rem 0;
+  }
+  .have-item {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--success);
+  }
+  .have-item span { color: var(--muted); display: block; font-size: 0.65rem; margin-top: 0.25rem; }
+
+  .feature-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin: 1rem 0;
+    transition: border-color 0.2s;
+  }
+  .feature-card:hover { border-color: var(--accent); }
+
+  .feature-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  .feature-title .emoji { font-size: 1.4rem; }
+
+  .badge {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.6rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    margin-left: auto;
+  }
+  .badge-revenue { background: rgba(0, 230, 118, 0.15); color: var(--success); }
+  .badge-sticky { background: rgba(168, 85, 247, 0.15); color: var(--purple); }
+  .badge-moat { background: rgba(0, 212, 255, 0.15); color: var(--accent); }
+  .badge-viral { background: rgba(236, 72, 153, 0.15); color: var(--pink); }
+  .badge-safety { background: rgba(255, 176, 32, 0.15); color: var(--warning); }
+
+  .feature-desc { font-size: 0.9rem; color: var(--text); margin: 0.75rem 0; }
+  .feature-why { font-size: 0.8rem; color: var(--muted); font-style: italic; margin: 0.5rem 0; }
+
+  .tech-stack {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-top: 0.75rem;
+  }
+  .tech-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.6rem;
+    color: var(--accent);
+    background: rgba(0, 212, 255, 0.08);
+    border: 1px solid rgba(0, 212, 255, 0.2);
+    padding: 0.15rem 0.5rem;
+    border-radius: 4px;
+  }
+
+  .acv-line {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--success);
+    margin-top: 0.5rem;
+  }
+
+  .phase-header {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 1.3rem;
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    margin: 2rem 0 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  .phase-2 { background: linear-gradient(135deg, rgba(0,212,255,0.1), rgba(0,212,255,0.02)); border-left: 3px solid var(--accent); }
+  .phase-3 { background: linear-gradient(135deg, rgba(168,85,247,0.1), rgba(168,85,247,0.02)); border-left: 3px solid var(--purple); }
+  .phase-4 { background: linear-gradient(135deg, rgba(0,230,118,0.1), rgba(0,230,118,0.02)); border-left: 3px solid var(--success); }
+  .phase-5 { background: linear-gradient(135deg, rgba(236,72,153,0.1), rgba(236,72,153,0.02)); border-left: 3px solid var(--pink); }
+
+  .phase-timeline { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: var(--muted); margin-left: auto; letter-spacing: 0.05em; }
+
+  .monetization-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1rem;
+    margin: 1rem 0;
+  }
+  .money-card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.25rem;
+  }
+  .money-card h4 { color: var(--success); margin-bottom: 0.5rem; }
+  .money-amount { font-family: 'Syne', sans-serif; font-size: 1.8rem; font-weight: 800; color: var(--success); }
+  .money-label { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: var(--muted); }
+
+  .bottom-line {
+    background: linear-gradient(135deg, rgba(0,212,255,0.08), rgba(0,230,118,0.08));
+    border: 1px solid var(--accent);
+    border-radius: 12px;
+    padding: 2rem;
+    margin: 2rem 0;
+    text-align: center;
+  }
+  .bottom-line h2 { border: none; margin: 0 0 1rem; color: var(--accent); }
+  .bottom-line p { font-size: 1rem; max-width: 700px; margin: 0 auto; }
+
+  .table-wrap { overflow-x: auto; margin: 1rem 0; }
+  table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+  th { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); text-align: left; padding: 0.75rem; border-bottom: 1px solid var(--border); }
+  td { padding: 0.75rem; border-bottom: 1px solid var(--border); vertical-align: top; }
+  tr:hover td { background: rgba(0,212,255,0.03); }
+</style>
+</head>
+<body>
+
+<h1>DieselEye Next Level</h1>
+<div class="subtitle">Beyond Monitoring &mdash; What Else Can Our Tech Do?</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<h2>What We Already Have (The Foundation)</h2>
+
+<div class="summary-box">
+<p>Before dreaming big, here's an honest inventory of every capability already built and shipping in the codebase. This is the platform other features build on.</p>
+</div>
+
+<div class="what-we-have">
+  <div class="have-item">7 Live OBD2 Gauges<span>DPF, EGT, Boost, DEF, Coolant, Trans Temp, Voltage</span></div>
+  <div class="have-item">6 Performance PIDs<span>FRP, IAT, CAC, VGT, Exhaust Pressure, Oil Temp</span></div>
+  <div class="have-item">Web Bluetooth BLE<span>ELM327 via Vgate vLinker MC+</span></div>
+  <div class="have-item">Claude AI Engine<span>Trail Advisor chat + anomaly detection</span></div>
+  <div class="have-item">DPF Regen Predictor<span>Linear regression on soot load history</span></div>
+  <div class="have-item">DTC Scanner<span>Mode 03/07/04 — 30 EcoDiesel codes</span></div>
+  <div class="have-item">Supabase Realtime<span>Live PID streaming + auth + Postgres</span></div>
+  <div class="have-item">Performance Panel<span>Tuning metrics + intercooler efficiency</span></div>
+  <div class="have-item">Anomaly Correlations<span>8 patterns (regen, tow, oil dilution, etc.)</span></div>
+  <div class="have-item">History + Export<span>Recharts graphs + CSV/JSON download</span></div>
+  <div class="have-item">PWA + Offline<span>Installable, service worker, offline cache</span></div>
+  <div class="have-item">PostHog Analytics<span>Every interaction tracked from line 1</span></div>
+</div>
+
+<div class="summary-box">
+<p><strong>The insight:</strong> We have a live data pipeline (BLE &rarr; ELM327 &rarr; OBD2 &rarr; Supabase &rarr; Claude AI) that no competitor has. We read the engine, store the history, and have an AI that understands what the readings mean. That pipeline is a <em>platform</em>, not just a monitor. Here's what we build on top of it.</p>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<h2>The Big Ideas — Thinking Outside the Gauge</h2>
+
+<!-- ────────── PHASE 2: INTELLIGENCE LAYER ────────── -->
+<div class="phase-header phase-2">
+  Phase 2 — Intelligence Layer
+  <span class="phase-timeline">Q3 2026</span>
+</div>
+
+<div class="feature-card">
+  <div class="feature-title">
+    <span class="emoji">&#x1F9E0;</span>
+    Predictive Maintenance AI
+    <span class="badge badge-moat">MOAT</span>
+  </div>
+  <div class="feature-desc">
+    After 2-4 weeks of baseline data, the AI learns YOUR engine's normal patterns. Then it predicts failures before they happen: CP4.2 fuel pump degradation (by tracking fuel rail pressure decay over weeks), VGT actuator sticking (by detecting boost response lag), DEF heater failure (by correlating DEF consumption rate vs. ambient temp), and oil dilution risk (by counting interrupted regen cycles).
+  </div>
+  <div class="feature-why">"Your fuel rail pressure has dropped 8% over the last 3 weeks. Based on 12,000 EcoDiesel data points, this pattern precedes CP4.2 pump failure 73% of the time. Schedule a dealer inspection."</div>
+  <div class="tech-stack">
+    <span class="tech-tag">Supabase time-series</span>
+    <span class="tech-tag">Claude AI</span>
+    <span class="tech-tag">Linear regression</span>
+    <span class="tech-tag">Edge functions</span>
+  </div>
+  <div class="acv-line">$$ — Prevents $8,000-$12,000 CP4.2 catastrophic failure</div>
+</div>
+
+<div class="feature-card">
+  <div class="feature-title">
+    <span class="emoji">&#x26FD;</span>
+    Fuel Economy Intelligence
+    <span class="badge badge-revenue">REVENUE</span>
+  </div>
+  <div class="feature-desc">
+    Calculate real-time MPG from OBD2 injector data (fuel flow rate + vehicle speed). Track fuel cost per trip using the OilPriceAPI for live diesel prices. Show a "cost per mile" dashboard. Compare fuel economy across driving modes: city, highway, towing, off-road. Show the actual MPG impact of mods (before/after intercooler upgrade, tune install, etc.). Monthly fuel reports with spend trends.
+  </div>
+  <div class="feature-why">EcoDiesel owners chose diesel FOR fuel economy. Tracking it is table stakes — but nobody does it with AI context. "Your MPG dropped 12% since the last oil change. Based on your DPF pattern, oil dilution may be reducing combustion efficiency."</div>
+  <div class="tech-stack">
+    <span class="tech-tag">OBD2 PID 015E (fuel rate)</span>
+    <span class="tech-tag">OilPriceAPI</span>
+    <span class="tech-tag">Supabase</span>
+    <span class="tech-tag">Recharts</span>
+  </div>
+  <div class="acv-line">$$ — Fuel savings justify subscription</div>
+</div>
+
+<div class="feature-card">
+  <div class="feature-title">
+    <span class="emoji">&#x1F50C;</span>
+    Mod Impact Tracker
+    <span class="badge badge-sticky">STICKY</span>
+  </div>
+  <div class="feature-desc">
+    Let owners tag when they install a mod (Banks Derringer, PPE intercooler, cold air intake, exhaust, GDE tune). DieselEye automatically captures a "before" baseline and measures the "after" impact across every metric: boost response, EGT delta, intercooler efficiency, fuel economy, trans temp under load. Generates a shareable "mod report card" comparing your numbers to the community average for that mod.
+  </div>
+  <div class="feature-why">Every EcoDiesel owner who buys a $500+ mod wants to know "did it actually do anything?" Right now they guess. We MEASURE it — and that makes us the app they never uninstall.</div>
+  <div class="tech-stack">
+    <span class="tech-tag">Before/after snapshots</span>
+    <span class="tech-tag">Statistical comparison</span>
+    <span class="tech-tag">Shareable cards</span>
+  </div>
+  <div class="acv-line">$$ — Affiliate revenue on mod recommendations</div>
+</div>
+
+<!-- ────────── PHASE 3: JEEP LIFE FEATURES ────────── -->
+<div class="phase-header phase-3">
+  Phase 3 — Jeep Life Features
+  <span class="phase-timeline">Q4 2026</span>
+</div>
+
+<div class="feature-card">
+  <div class="feature-title">
+    <span class="emoji">&#x1F3D5;</span>
+    Trail Mode + Off-Road Dashboard
+    <span class="badge badge-sticky">STICKY</span>
+  </div>
+  <div class="feature-desc">
+    A purpose-built off-road overlay: GPS trail recording with waypoints, live inclinometer (pitch/roll from device sensors), altitude tracking, engine stress score in real-time. Shows which metrics matter on the trail: trans temp (rock crawling heats the 948TE fast), coolant (slow speeds = less airflow), boost (low RPM torque demands), and voltage (winch draws massive amps). Auto-saves trail sessions with full engine telemetry — not just where you went, but how hard it was on your engine.
+  </div>
+  <div class="feature-why">No OBD2 app combines engine telemetry with trail GPS. Trails Offroad tracks your position. We track what your engine went through at every point on the trail. "At mile 3.2, your trans temp hit 128°C during the rock garden."</div>
+  <div class="tech-stack">
+    <span class="tech-tag">Geolocation API</span>
+    <span class="tech-tag">DeviceOrientation API</span>
+    <span class="tech-tag">Supabase PostGIS</span>
+    <span class="tech-tag">Mapbox GL</span>
+  </div>
+</div>
+
+<div class="feature-card">
+  <div class="feature-title">
+    <span class="emoji">&#x1F69B;</span>
+    Tow Mode + Trailer Weight Estimation
+    <span class="badge badge-safety">SAFETY</span>
+  </div>
+  <div class="feature-desc">
+    Inspired by CURT BetterWeigh's OBD2 approach: use torque converter slip (available via OBD2 PID) + phone accelerometer to estimate gross combined vehicle weight and approximate tongue weight. When tow mode is active, the dashboard shifts to show the metrics that matter: trans temp (the #1 towing killer on 948TE), EGT (sustained load), coolant, oil temp, and voltage. Grade-aware alerts: "You're on a 6% grade at 9,200 lbs GCVW — trans temp is climbing. Consider downshifting."
+  </div>
+  <div class="feature-why">CURT BetterWeigh is $130 and dumb. We do weight estimation + AI-powered tow coaching for the cost of an app subscription. Every EcoDiesel Gladiator owner tows — this is a killer differentiator.</div>
+  <div class="tech-stack">
+    <span class="tech-tag">Accelerometer API</span>
+    <span class="tech-tag">OBD2 torque data</span>
+    <span class="tech-tag">Newton's 2nd Law calc</span>
+    <span class="tech-tag">Grade detection</span>
+  </div>
+</div>
+
+<div class="feature-card">
+  <div class="feature-title">
+    <span class="emoji">&#x1F6E1;</span>
+    Maintenance Brain
+    <span class="badge badge-revenue">REVENUE</span>
+  </div>
+  <div class="feature-desc">
+    Auto-track mileage from OBD2 PID 01A6 (odometer). Smart maintenance reminders based on actual driving patterns, not just mileage: "You've done 4,200 miles of mostly city driving since your last oil change — 73% of those miles had interrupted DPF regens. Check for oil dilution and change early." Track DEF consumption rate and predict when you'll need to refill. Log maintenance events (oil change, DEF fill, filter swap) and build a complete service history that follows the vehicle.
+  </div>
+  <div class="feature-why">$70 EcoDiesel oil filters + $30 DEF refills add up. Smart scheduling based on actual driving conditions (not just "every 10k miles") saves money and prevents damage. Plus: a complete digital service history increases resale value.</div>
+  <div class="tech-stack">
+    <span class="tech-tag">OBD2 PID 01A6 (odometer)</span>
+    <span class="tech-tag">Push notifications</span>
+    <span class="tech-tag">Service log DB</span>
+    <span class="tech-tag">DEF rate calc</span>
+  </div>
+  <div class="acv-line">$$ — Partner with diesel oil/filter brands for in-app purchases</div>
+</div>
+
+<div class="feature-card">
+  <div class="feature-title">
+    <span class="emoji">&#x1F3AF;</span>
+    Drive Score + Insurance Mode
+    <span class="badge badge-revenue">REVENUE</span>
+  </div>
+  <div class="feature-desc">
+    Score every trip on: smooth acceleration, gentle braking, cornering G-force, idle time, and engine stress events. Build a "driver profile" over time. Insurance companies offer 10-25% discounts for telematics data — DieselEye can generate a verifiable driving report that owners share with insurers for lower premiums. Gamify it: daily/weekly scores, streaks, personal bests.
+  </div>
+  <div class="feature-why">Usage-based insurance is a $126B market by 2027. We already have the OBD2 data + phone sensors. The report generation is a Netlify Function away. Revenue play: partner with insurers, take a referral fee for every policy that uses DieselEye data.</div>
+  <div class="tech-stack">
+    <span class="tech-tag">Accelerometer</span>
+    <span class="tech-tag">OBD2 speed/RPM</span>
+    <span class="tech-tag">Scoring algorithm</span>
+    <span class="tech-tag">PDF report gen</span>
+  </div>
+  <div class="acv-line">$$$$ — Insurance referral partnerships</div>
+</div>
+
+<!-- ────────── PHASE 4: COMMUNITY + NETWORK ────────── -->
+<div class="phase-header phase-4">
+  Phase 4 — Community + Network Effects
+  <span class="phase-timeline">Q1 2027</span>
+</div>
+
+<div class="feature-card">
+  <div class="feature-title">
+    <span class="emoji">&#x1F310;</span>
+    EcoDiesel Hive Mind (Anonymous Fleet Intelligence)
+    <span class="badge badge-moat">MOAT</span>
+  </div>
+  <div class="feature-desc">
+    With user consent, anonymized engine telemetry from every DieselEye user feeds a collective intelligence model. When YOUR engine shows a pattern, the AI cross-references it against every other EcoDiesel in the fleet: "147 other EcoDiesel owners saw this same fuel rail pressure pattern. 89 of them had CP4.2 pump failure within 60 days. Schedule service now." The more users, the smarter every user's AI gets. This is the network effect that makes DieselEye impossible to compete with.
+  </div>
+  <div class="feature-why">Banks iDash has zero network effects — your data goes nowhere. With 500 DieselEye users, we have more real-world EcoDiesel telemetry than any dealer network. At 5,000 users, we're the world's largest EcoDiesel diagnostic dataset.</div>
+  <div class="tech-stack">
+    <span class="tech-tag">Supabase aggregation</span>
+    <span class="tech-tag">Differential privacy</span>
+    <span class="tech-tag">Claude embeddings</span>
+    <span class="tech-tag">Anomaly clustering</span>
+  </div>
+  <div class="acv-line">$$$$ — Data is the moat. This is the moat.</div>
+</div>
+
+<div class="feature-card">
+  <div class="feature-title">
+    <span class="emoji">&#x1F4AC;</span>
+    Community Feed + Mod Garage
+    <span class="badge badge-viral">VIRAL</span>
+  </div>
+  <div class="feature-desc">
+    A social feed inside DieselEye where owners share: mod report cards (auto-generated from the Mod Impact Tracker), trail sessions with engine telemetry overlays, DTC stories ("I got P2463, here's what fixed it"), towing setups with weight + engine data, and before/after dyno-style comparisons. Think "Strava for diesel engines." The Mod Garage is a curated database of every popular EcoDiesel mod with real user data: average boost gain, average MPG change, avg installation cost, user ratings.
+  </div>
+  <div class="feature-why">JLWranglerForums has 200k members. DieselJeeps.com has thousands. They're all posting anecdotes. We turn anecdotes into DATA. "The Banks Derringer gives an average +4.2 PSI boost across 312 DieselEye users, with a 7% MPG improvement on highway."</div>
+  <div class="tech-stack">
+    <span class="tech-tag">Supabase social schema</span>
+    <span class="tech-tag">Image upload (R2)</span>
+    <span class="tech-tag">Feed algorithm</span>
+    <span class="tech-tag">Mod database</span>
+  </div>
+  <div class="acv-line">$$$ — Affiliate revenue + brand sponsorships</div>
+</div>
+
+<div class="feature-card">
+  <div class="feature-title">
+    <span class="emoji">&#x1F3C6;</span>
+    Challenges + Gamification
+    <span class="badge badge-viral">VIRAL</span>
+  </div>
+  <div class="feature-desc">
+    Weekly/monthly challenges: "Hypermiler Challenge" (best MPG over 100 miles), "Trail King" (hardest trail with engine telemetry), "Regen Master" (fewest interrupted regens this month), "Tow Pro" (heaviest tow with cleanest engine metrics). Leaderboards, badges, achievements. Share results to Instagram/forums. This is the gamification that research shows drives data sharing AND retention.
+  </div>
+  <div class="feature-why">McKinsey research shows gamification is the #1 motivator for users to share vehicle data. Challenges create daily engagement. Leaderboards create competition. Competition creates word-of-mouth. This is how we grow without a marketing budget.</div>
+  <div class="tech-stack">
+    <span class="tech-tag">Challenge engine</span>
+    <span class="tech-tag">Leaderboard DB</span>
+    <span class="tech-tag">Share cards (Canvas API)</span>
+    <span class="tech-tag">Push notifications</span>
+  </div>
+</div>
+
+<div class="feature-card">
+  <div class="feature-title">
+    <span class="emoji">&#x1F4CD;</span>
+    Geofencing + Anti-Theft
+    <span class="badge badge-safety">SAFETY</span>
+  </div>
+  <div class="feature-desc">
+    Set a virtual boundary around your home, work, or trail parking lot. If the vehicle's OBD2 adapter reports ignition-on outside the geofence, push alert to your phone immediately. Track voltage drops that indicate battery disconnect (common theft prep). Log all engine starts with GPS location + timestamp. "Your Jeep started at 2:37 AM, 4.2 miles from home. Tap to view location."
+  </div>
+  <div class="feature-why">Jeep Wranglers are the #1 most stolen vehicle in America. Every Wrangler owner worries about theft. A $15/month subscription that alerts you when your Jeep moves is a no-brainer.</div>
+  <div class="tech-stack">
+    <span class="tech-tag">Geofencing API</span>
+    <span class="tech-tag">Background BLE</span>
+    <span class="tech-tag">Web Push API</span>
+    <span class="tech-tag">Supabase realtime</span>
+  </div>
+  <div class="acv-line">$$$ — Premium subscription feature</div>
+</div>
+
+<!-- ────────── PHASE 5: PLATFORM + MONEY ────────── -->
+<div class="phase-header phase-5">
+  Phase 5 — Platform + Monetization
+  <span class="phase-timeline">Q2 2027</span>
+</div>
+
+<div class="feature-card">
+  <div class="feature-title">
+    <span class="emoji">&#x1F4B0;</span>
+    DieselEye Marketplace
+    <span class="badge badge-revenue">REVENUE</span>
+  </div>
+  <div class="feature-desc">
+    In-app marketplace for EcoDiesel parts with data-backed recommendations. "Based on your intercooler efficiency of 47%, upgrading to a PPE intercooler would improve it to ~75%. 312 DieselEye users made this upgrade. Here's the best price." Affiliate links to Amazon, Banks Power, PPE, S&B, MBRP. Revenue: 4-8% commission on every sale. The AI recommends, the data proves it, the marketplace sells it.
+  </div>
+  <div class="feature-why">A Banks Derringer is $900. A PPE intercooler is $650. An MBRP exhaust is $500. At 5% commission and 1,000 active users buying 1 mod/year, that's $25K-50K/year in affiliate revenue alone. The data makes the recommendation trustworthy — that's the unfair advantage.</div>
+  <div class="tech-stack">
+    <span class="tech-tag">Affiliate APIs</span>
+    <span class="tech-tag">Recommendation engine</span>
+    <span class="tech-tag">Data-backed suggestions</span>
+  </div>
+  <div class="acv-line">$$$$ — 5% commission on $500-1500 parts</div>
+</div>
+
+<div class="feature-card">
+  <div class="feature-title">
+    <span class="emoji">&#x1F527;</span>
+    Dealer/Shop Connect
+    <span class="badge badge-revenue">REVENUE</span>
+  </div>
+  <div class="feature-desc">
+    When the AI detects something needs professional attention, offer a "Find a Shop" button. Partner with diesel-specialized shops and dealers who pay for referrals. The owner shares their DieselEye telemetry with the shop BEFORE they arrive — the mechanic sees the trend data, DTC history, and AI analysis. Faster diagnosis, no "let me drive it for a day" guessing. Premium shops get a "DieselEye Certified" badge.
+  </div>
+  <div class="feature-why">The average diesel repair bill is $800-$2,000. A $50-100 referral fee from shops is trivial for them but scales to real revenue for us. Plus: shops that see our data will RECOMMEND DieselEye to their customers. Channel flywheel.</div>
+  <div class="tech-stack">
+    <span class="tech-tag">Shop directory DB</span>
+    <span class="tech-tag">Shareable reports</span>
+    <span class="tech-tag">Referral tracking</span>
+    <span class="tech-tag">Appointment booking</span>
+  </div>
+  <div class="acv-line">$$$ — $50-100 per repair referral</div>
+</div>
+
+<div class="feature-card">
+  <div class="feature-title">
+    <span class="emoji">&#x1F4CA;</span>
+    Vehicle Value + Resale Intelligence
+    <span class="badge badge-sticky">STICKY</span>
+  </div>
+  <div class="feature-desc">
+    A complete, verifiable engine health history makes the vehicle worth MORE at resale. Generate a "DieselEye Vehicle Health Report" that shows: total engine hours, regen history (healthy pattern), no catastrophic events, full maintenance log, all mods documented with data. Think Carfax, but for ENGINE HEALTH specifically. Buyers trust data over "runs great, no issues."
+  </div>
+  <div class="feature-why">A 2021 EcoDiesel Wrangler with documented engine health sells for $2,000-3,000 more than one without. That ROI alone justifies years of DieselEye subscription. And the BUYER installs DieselEye to keep the history going — new customer acquired at zero CAC.</div>
+  <div class="tech-stack">
+    <span class="tech-tag">Report generator</span>
+    <span class="tech-tag">QR verification</span>
+    <span class="tech-tag">Blockchain-optional attestation</span>
+  </div>
+  <div class="acv-line">$$$ — $29 per vehicle health report for resale</div>
+</div>
+
+<div class="feature-card">
+  <div class="feature-title">
+    <span class="emoji">&#x1F680;</span>
+    Expand Beyond EcoDiesel
+    <span class="badge badge-moat">MOAT</span>
+  </div>
+  <div class="feature-desc">
+    The core architecture — BLE &rarr; OBD2 &rarr; AI analysis &rarr; community — is engine-agnostic. Expand to: RAM 1500 EcoDiesel (same VM Motori engine, massive market), Ford Power Stroke (6.7L, huge towing community), Chevy Duramax (LM2/L5P, overlanding crowd growing), Sprinter Van diesels (van life community = large, vocal, mod-happy). Each engine gets its own AI system prompt, PID map, and community. Same platform, new revenue streams.
+  </div>
+  <div class="feature-why">The TAM for "EcoDiesel Jeep owners" is ~150k vehicles. The TAM for "diesel truck/van owners who modify their vehicles" is 5M+. The architecture is built to scale — each new engine is a system prompt + PID config, not a rewrite.</div>
+  <div class="tech-stack">
+    <span class="tech-tag">Multi-vehicle Supabase schema</span>
+    <span class="tech-tag">Engine profile configs</span>
+    <span class="tech-tag">Dynamic PID maps</span>
+  </div>
+  <div class="acv-line">$$$$$ — 30x TAM expansion</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<h2>Revenue Architecture</h2>
+
+<div class="monetization-grid">
+  <div class="money-card">
+    <h4>FREE TIER</h4>
+    <div class="money-amount">$0</div>
+    <div class="money-label" style="margin-top: 0.5rem;">5 gauges, basic alerts, 24h history, community read-only. Enough to get hooked.</div>
+  </div>
+  <div class="money-card">
+    <h4>PRO — $9.99/mo</h4>
+    <div class="money-amount">$120/yr</div>
+    <div class="money-label" style="margin-top: 0.5rem;">All 7 gauges + perf panel, Trail Advisor AI, regen predictor, DTC scanner, unlimited history, CSV/JSON export, maintenance brain, drive score.</div>
+  </div>
+  <div class="money-card">
+    <h4>PRO+ — $19.99/mo</h4>
+    <div class="money-amount">$240/yr</div>
+    <div class="money-label" style="margin-top: 0.5rem;">Everything in Pro + predictive maintenance AI, tow mode, trail mode, mod impact tracker, geofence alerts, Hive Mind fleet intelligence, vehicle health reports.</div>
+  </div>
+  <div class="money-card">
+    <h4>AFFILIATE + REFERRAL</h4>
+    <div class="money-amount">$25-50K</div>
+    <div class="money-label" style="margin-top: 0.5rem;">Annual estimate at 1,000 users. Parts affiliate (5%), shop referrals ($50-100/repair), insurance referral fees.</div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<h2>Priority Matrix — What to Build Next</h2>
+
+<div class="table-wrap">
+<table>
+<tr>
+  <th>Feature</th>
+  <th>Impact</th>
+  <th>Effort</th>
+  <th>Revenue</th>
+  <th>Moat</th>
+  <th>Build Order</th>
+</tr>
+<tr>
+  <td>Fuel Economy Intelligence</td>
+  <td style="color: var(--success);">High</td>
+  <td style="color: var(--success);">Low (1 PID + API)</td>
+  <td style="color: var(--warning);">Medium</td>
+  <td style="color: var(--warning);">Medium</td>
+  <td style="color: var(--accent); font-family: 'JetBrains Mono', monospace; font-weight: 600;">NEXT</td>
+</tr>
+<tr>
+  <td>Maintenance Brain</td>
+  <td style="color: var(--success);">High</td>
+  <td style="color: var(--success);">Low (odometer PID + DB)</td>
+  <td style="color: var(--success);">High</td>
+  <td style="color: var(--warning);">Medium</td>
+  <td style="color: var(--accent); font-family: 'JetBrains Mono', monospace; font-weight: 600;">NEXT</td>
+</tr>
+<tr>
+  <td>Mod Impact Tracker</td>
+  <td style="color: var(--success);">High</td>
+  <td style="color: var(--warning);">Medium</td>
+  <td style="color: var(--success);">High (affiliate)</td>
+  <td style="color: var(--success);">High</td>
+  <td style="color: var(--accent); font-family: 'JetBrains Mono', monospace; font-weight: 600;">NEXT</td>
+</tr>
+<tr>
+  <td>Predictive Maintenance AI</td>
+  <td style="color: var(--success);">Highest</td>
+  <td style="color: var(--warning);">Medium (needs data)</td>
+  <td style="color: var(--success);">High</td>
+  <td style="color: var(--success);">Highest</td>
+  <td style="font-family: 'JetBrains Mono', monospace;">Phase 2</td>
+</tr>
+<tr>
+  <td>Tow Mode</td>
+  <td style="color: var(--success);">High</td>
+  <td style="color: var(--warning);">Medium</td>
+  <td style="color: var(--warning);">Medium</td>
+  <td style="color: var(--success);">High</td>
+  <td style="font-family: 'JetBrains Mono', monospace;">Phase 3</td>
+</tr>
+<tr>
+  <td>Trail Mode</td>
+  <td style="color: var(--success);">High</td>
+  <td style="color: var(--warning);">Medium (Mapbox)</td>
+  <td style="color: var(--muted);">Low</td>
+  <td style="color: var(--success);">High</td>
+  <td style="font-family: 'JetBrains Mono', monospace;">Phase 3</td>
+</tr>
+<tr>
+  <td>Drive Score</td>
+  <td style="color: var(--warning);">Medium</td>
+  <td style="color: var(--success);">Low</td>
+  <td style="color: var(--success);">High (insurance)</td>
+  <td style="color: var(--warning);">Medium</td>
+  <td style="font-family: 'JetBrains Mono', monospace;">Phase 3</td>
+</tr>
+<tr>
+  <td>Geofence Anti-Theft</td>
+  <td style="color: var(--success);">High</td>
+  <td style="color: var(--warning);">Medium</td>
+  <td style="color: var(--success);">High (premium)</td>
+  <td style="color: var(--warning);">Medium</td>
+  <td style="font-family: 'JetBrains Mono', monospace;">Phase 4</td>
+</tr>
+<tr>
+  <td>EcoDiesel Hive Mind</td>
+  <td style="color: var(--success);">Highest</td>
+  <td style="color: var(--danger);">High (500+ users)</td>
+  <td style="color: var(--success);">Highest</td>
+  <td style="color: var(--success);">Highest</td>
+  <td style="font-family: 'JetBrains Mono', monospace;">Phase 4</td>
+</tr>
+<tr>
+  <td>Community Feed</td>
+  <td style="color: var(--warning);">Medium</td>
+  <td style="color: var(--danger);">High</td>
+  <td style="color: var(--warning);">Medium</td>
+  <td style="color: var(--success);">High</td>
+  <td style="font-family: 'JetBrains Mono', monospace;">Phase 4</td>
+</tr>
+<tr>
+  <td>Marketplace</td>
+  <td style="color: var(--warning);">Medium</td>
+  <td style="color: var(--warning);">Medium</td>
+  <td style="color: var(--success);">Highest</td>
+  <td style="color: var(--warning);">Medium</td>
+  <td style="font-family: 'JetBrains Mono', monospace;">Phase 5</td>
+</tr>
+<tr>
+  <td>Multi-Engine Expansion</td>
+  <td style="color: var(--success);">Highest</td>
+  <td style="color: var(--warning);">Medium</td>
+  <td style="color: var(--success);">Highest</td>
+  <td style="color: var(--success);">Highest</td>
+  <td style="font-family: 'JetBrains Mono', monospace;">Phase 5</td>
+</tr>
+</table>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<h2>The Flywheel</h2>
+
+<div class="summary-box">
+<p><strong>More users &rarr; More engine data &rarr; Smarter AI predictions &rarr; Better mod recommendations &rarr; More value for each user &rarr; More word-of-mouth &rarr; More users.</strong></p>
+<p>This is the network effect. Banks iDash can never build it — their data stays on a screen in your Jeep and goes nowhere. Torque Pro can never build it — they're a generic app with zero diesel intelligence. JSCAN can never build it — they're a code reader, not a platform.</p>
+<p>DieselEye is the only product that can become smarter for every user as the user base grows. That's not a feature — that's a moat.</p>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<div class="bottom-line">
+  <h2>The One-Liner</h2>
+  <p>DieselEye isn't a gauge app. It's a <strong>diesel intelligence platform</strong> — it monitors, predicts, teaches, connects, and sells. The gauges are the hook. The AI is the product. The community is the moat. The marketplace is the revenue.</p>
+</div>
+
+<div style="text-align: center; padding: 2rem 0; font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: var(--muted); letter-spacing: 0.15em;">
+  DIESELEYE NEXT LEVEL ROADMAP — APRIL 2026 — CONFIDENTIAL
+</div>
+
+</body>
+</html>
