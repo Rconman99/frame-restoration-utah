@@ -144,6 +144,8 @@
 - **2026-04-22 audit fix:** Removed two `EDITOR CHECK` placeholder paragraphs that had shipped to production on blog/park-city/ice-dam-winter-roof-damage.html (rest of blog grep-swept clean)
 - **2026-04-22 audit fix:** Standardized "24/7 emergency response" copy across homepage FAQ/schema and services.html (was inconsistent — some "rapid," some "24/7")
 - **2026-04-22 audit fix:** Deleted privacy-policy.html and terms-of-service.html duplicates; added 301 redirects in vercel.json; fixed privacy.html/terms.html canonicals to use www subdomain; removed robots Disallow on /privacy + /terms
+- **2026-04-22 (afternoon) audit follow-up:** Hail cluster hub-spoke internal linking — 8 city posts (bountiful, draper, herriman, lehi, ogden, provo, riverton, sandy) now link up to the Utah hail pillar via "Statewide context" callout; pillar links down to all 8 cities via spoke block. Eliminates pillar-vs-city cannibalization without sacrificing long-tail city traffic.
+- **2026-04-22 (afternoon) brand-safe review sync:** Hardened `update-google-reviews.py` — brand-leak filter drops bare "Frame Restoration" reviewers, city metadata preserved on author merge, empty-result fallback to existing feed. Aggregate verified against GBP data_id: 20 reviews / 5.0 stars.
 - **2026-04-22 perf:** Removed double-loading Google Fonts <link> (self-hosted WOFF2 already wired in global.css — kills render-blocking + double FOUT); changed drone-loop video preload from "metadata" → "none" (13 MB clip was loading eagerly on mobile); added width/height to 6 service-card imgs (CLS fix)
 - Homepage H1 rebranded 2026-04-17: "Mountain-Grade Roofing, Valley-Wide"
 - Storm-damage / storm-damage-restoration consolidated (301 redirect + canonical)
@@ -254,6 +256,18 @@
 
 ## SESSION LOG
 
+### 2026-04-22 (afternoon) — Close Audit Follow-Ups: Hail Hub-Spoke + Brand-Safe Review Sync + reviews.json Unblock
+Cleared the two "Not auto-fixed" items from the morning audit, plus a second `.vercelignore` booby-trap that surfaced same day.
+- **Hail/storm cluster cannibalization resolved (commit b51894f):** The Utah hail pillar (`blog/utah/utah-hail-season-roof-guide-2026`) was competing with 8 city-level hail/storm posts for statewide queries. Fixed via **hub-spoke internal linking** (not canonicalization — city posts keep their long-tail traffic, pillar becomes authority):
+  - Added "Statewide context" callout (`aside.pillar-callout`) at the top of 8 city posts: bountiful, draper, herriman, lehi, ogden, provo, riverton, sandy — each links to the pillar with city-specific "stay here for..." framing
+  - Added "City-Specific Hail & Storm Guides" spoke block to the pillar linking all 8 cities (above the Service Areas H2)
+  - Idempotent markers (`pillar-callout`, `city-guide-spokes`) — safe to re-run
+- **reviews.json / GBP verification complete (commit b51894f):** Ran `scripts/update-google-reviews.py` against live SerpAPI pinned to the GBP data_id. Aggregate verified: **20 reviews, 5.0 stars (unchanged)**. Pulled 8 fresh snippets — 2 filtered because they used the old "Frame Restoration" brand wording (would have undone the morning's brand-leak lockdown).
+  - **Script hardening:** new `_has_brand_leak()` drops bare "Frame Restoration" (allows "Frame Restoration Utah" LLC name); new `_merge_reviews()` preserves `city` metadata from prior curated feed when SerpAPI returns a known author; guardrail falls back to existing feed if filter nukes all fresh reviews
+  - index.html schema `ratingValue` normalized "5" → "5.0"
+- **.vercelignore booby-trap #2 (commit 565d920, incident 2026-04-22b):** Audit sweep had lumped `reviews.json` into "Data files not meant for public serving" — but index.html **fetches /reviews.json at runtime** to populate the live carousel. Carousel was sitting invisible (data-ready=0 → opacity:0) for JS-enabled visitors. Fix: removed from ignore list; added explicit entry to warning header; broadened the check from "is this shared with a customer" → "is this **fetched by the site** OR shared with a customer" (same root cause as the morning's seo-report.html incident).
+- **Still open (minor):** 4 new-reviewer cities (Arikka Von, LeeAndra Jones, Yonghong Xu, Arianne Kaspar) render as "Google Review" until we backfill cities manually or SerpAPI starts exposing reviewer location.
+
 ### 2026-04-22 (hotfix) — Unblock seo-report.html + .vercelignore guardrail
 - **Production 404 on /seo-report fixed:** The morning's audit commit (28f0dfa) had swept `seo-report.html` into `.vercelignore` as "internal", but it's the PIN-gated live SEO & lead tracker shared with Landon. Removed from ignore list; Vercel redeployed it (commit 30bad68).
 - **Guardrail added:** 13-line warning header prepended to `.vercelignore` listing customer-facing HTML deliverables that must NEVER be ignored (seo-report.html, directory-blitz-tool.html, backlink-playbook.html, directory-tracker.html, review/, etc.). Prevents future audit-cleanup passes from re-blocking shared tools (commit b01847a).
@@ -266,9 +280,9 @@
 - **Schema + AEO pass:** Added FAQPage JSON-LD + visible Quick Answer passages to 4 service pages (roof-replacement, storm-damage, insurance-claims, residential-roofing). Added AggregateRating (20 reviews, 5.0 stars) to all 45 location pages. Added SpeakableSpecification to homepage FAQPage. Backfilled dateModified on two 2026 posts that still showed 2026-03-27. Added visible "Last updated" stamp under H1 on 87 blog + location pages. Fixed malformed stray parentOrganization block on west-valley-city.html.
 - **Performance:** Removed double-loading Google Fonts <link> (self-hosted WOFF2 already wired in global.css — kills render-blocking + double FOUT). Changed drone-loop video preload from "metadata" → "none" (13 MB clip was loading eagerly on mobile). Added width/height to 6 service-card imgs (CLS fix on lazy-load).
 - **Dedup + hygiene:** Standardized "24/7 emergency response" across homepage FAQ/schema + services.html. Deleted privacy-policy.html and terms-of-service.html duplicates; added 301 redirects to /privacy and /terms in vercel.json. Fixed privacy.html/terms.html canonicals to use www subdomain. Removed Disallow /privacy + /terms from robots.txt (they're already noindex via meta). Regenerated sitemap.xml: **126 URLs → 105**, pruned dupes, removed robots-disallowed paths and Vercel-redirected routes, fixed missing trailing slash on root.
-- **Not auto-fixed (need Ryan's call):**
-  - 8-post hail/storm city cluster likely cannibalizes the Utah-wide pillar — options are canonicalize or rewrite strictly local
-  - reviews.json entries need 1:1 verification against the pinned GBP data_id before we can trust self-hosted Review schema on index
+- **Not auto-fixed (resolved afternoon of 2026-04-22 in commit b51894f):**
+  - ~~8-post hail/storm city cluster cannibalizes the Utah-wide pillar~~ ✅ Fixed via hub-spoke internal linking (see 2026-04-22 afternoon log)
+  - ~~reviews.json entries need 1:1 verification against the pinned GBP data_id~~ ✅ Verified 20 reviews / 5.0 stars; script hardened with brand-leak filter + fallback
 
 ### 2026-04-21 — Homepage Video Quality Bump + Untracked Repo Cleanup
 - **Showcase video upscaled** 1024x576 → 1920x1080 (music kept bit-perfect)
