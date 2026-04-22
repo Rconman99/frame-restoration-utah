@@ -254,6 +254,10 @@
 
 ## SESSION LOG
 
+### 2026-04-22 (hotfix) — Unblock seo-report.html + .vercelignore guardrail
+- **Production 404 on /seo-report fixed:** The morning's audit commit (28f0dfa) had swept `seo-report.html` into `.vercelignore` as "internal", but it's the PIN-gated live SEO & lead tracker shared with Landon. Removed from ignore list; Vercel redeployed it (commit 30bad68).
+- **Guardrail added:** 13-line warning header prepended to `.vercelignore` listing customer-facing HTML deliverables that must NEVER be ignored (seo-report.html, directory-blitz-tool.html, backlink-playbook.html, directory-tracker.html, review/, etc.). Prevents future audit-cleanup passes from re-blocking shared tools (commit b01847a).
+
 ### 2026-04-22 — Full Audit Fix: Brand-Leak Lockdown + AEO/Schema Pass + Perf
 **101 files changed.** Fixes surfaced by the 2026-04-22 full site + ops audit.
 - **Texas-brand entity leak lockdown (critical):** Google was cross-resolving Frame Roofing Utah into Landon's unrelated framerestorations.com (Frisco TX). Replaced sales@framerestorations.com → info@framerestorationutah.com across index, legal pages, and 10 blog posts. Removed parentOrganization block from index LocalBusiness schema (it's a DBA, not a subsidiary). Deleted broken "Part of Frame Roofing Utah" Texas-domain footer link. Changed about page foundingLocation schema from Dallas-Fort Worth → Heber City; rewrote "Our Story" H2 + lede around Heber City origin. Dropped "same standards from DFW" copy from services.html source fragment. Narrowed homepage services sub from "all of Utah" → "Wasatch Front + Heber Valley".
