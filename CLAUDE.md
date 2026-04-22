@@ -1,5 +1,5 @@
 # Frame Roofing Utah — Claude Master Context
-> Last updated: 2026-04-20 | Auto-refreshed via Cowork scheduled task
+> Last updated: 2026-04-22 | Auto-refreshed via Cowork scheduled task
 
 ---
 
@@ -39,7 +39,7 @@
 - **Address:** 142 S Main St, Heber City, UT 84032
 - **Business phone:** 435-302-4422
 - **Hours:** Mon–Sat 8AM–6PM
-- **Email:** info@framerestorationutah.com
+- **Email:** info@framerestorationutah.com (NEVER use sales@framerestorations.com — that's the Texas DBA, swept out 2026-04-22 to stop Google from cross-resolving the brand into Frisco TX)
 - **Company entity (Vercel billing):** Acme Inc.
 
 ---
@@ -88,7 +88,7 @@
 
 ---
 
-## SITE STRUCTURE (~120+ HTML pages, 126 sitemap URLs as of 2026-04-20)
+## SITE STRUCTURE (~120+ HTML pages, 105 sitemap URLs as of 2026-04-22 — pruned from 126 during audit fix; removed dupes, robots-disallowed paths, Vercel-redirected routes)
 
 - `/` — Homepage (index.html), H1: "Mountain-Grade Roofing, Valley-Wide" (rebrand 2026-04-17; previously "The Gold Standard In Utah Roofing"). Structure (top → bottom): Hero → **#watch-in-action 60s Heber Valley reroof showcase (added 2026-04-20, click-to-play MP4+WebM, VideoObject JSON-LD)** → Gallery → Video Showcase (drone loop) → Trust Bar → …
 - `/about.html` — Root-level About page (redirects or mirrors pages/about)
@@ -98,6 +98,7 @@
   - `/blog/utah/` — 11 statewide SEO posts (roof-replacement-cost, emergency-roof-repair, how-long-does-roof-last, how-to-choose-a-roofer, best-roofing-materials, signs-you-need-new-roof, utah-hail-season, utah-roof-insurance-claims, utah-roof-maintenance-checklist, utah-roof-ventilation-guide, **april-2026-wasatch-storm-roof-checklist** [NEW])
   - City subdirectories: heber-city/5, salt-lake-city/4, park-city/3, sandy/2, **bountiful/2** (added davis-county-wind-damage-guide 2026-04-20), plus 1 each in draper, herriman, layton, lehi, murray, orem, provo, west-jordan, west-valley-city (~25 city posts)
 - `/projects/` — 1 case study (heber-valley-roof)
+- `pages/gallery.html` — Now leads with **FEATURED IN-PROGRESS PROJECT** section (Heber Valley custom reroof): aerial panorama hero + 3-up grid + drone flyover video player; 4 new residential cards added at top of filtered grid (added 2026-04-20)
 - `/seo-report/` — Live SEO & Lead Attribution Tracker (PIN-gated, multi-user admin panel, 30-day default view, Chart.js rendering)
 - `/review/` — Review landing page + `review-request` edge function (automated post-job review collection)
 - `backlink-playbook.html` — 12 backlink acquisition opportunities with step-by-step instructions
@@ -107,13 +108,14 @@
 - `/assets/` — Hero video/poster, gutters video
 
 ### Key Files
-- `vercel.json` — Redirects (storm-damage-restoration → storm-damage, /:city/storm-damage-restoration → /:city/storm-damage, /home → /)
-- `sitemap.xml` — 126 URLs (updated 2026-04-20, added 2 new blog posts; prior update 2026-04-12 added 17 missing pages)
-- `robots.txt` — Allows AI crawlers (GPTBot, Claude, Perplexity), blocks Bytespider
+- `vercel.json` — Redirects (storm-damage-restoration → storm-damage, /:city/storm-damage-restoration → /:city/storm-damage, /home → /, **NEW 2026-04-22:** /privacy-policy → /privacy, /terms-of-service → /terms after duplicate page deletion)
+- `.vercelignore` — **NEW 2026-04-22.** Blocks deploying CLAUDE.md (contains Supabase anon key + internal rules), *.md strategy docs, *.py scripts, drive-photos.zip (8.5 MB customer photos), archive/, tmp-*/, internal audit/scratch HTML files
+- `sitemap.xml` — 105 URLs (regenerated 2026-04-22 — pruned dupes, removed robots-disallowed paths and Vercel-redirected routes, fixed root trailing slash; was 126 → 105)
+- `robots.txt` — Allows AI crawlers (GPTBot, Claude, Perplexity), blocks Bytespider. **2026-04-22:** Removed Disallow for /privacy and /terms (already noindex via meta — let Google crawl + honor noindex cleanly)
 - `llms.txt` — AI/LLM optimization file
 - `directory-tracker.html` — Interactive React-based directory tracker (38 directories)
 - `global-modal.js` — Booking form modal → Supabase edge function
-- `global.css` — Shared styles
+- `global.css` — Shared styles (self-hosted Archivo Black + Archivo WOFF2 already wired here — duplicate Google Fonts <link> removed from index 2026-04-22)
 
 ---
 
@@ -133,7 +135,16 @@
 - Meta descriptions on ALL 45 location pages, 12 service pages, blog pages
 - Canonical tags (self-referencing) on ALL pages
 - Open Graph + Twitter card tags on ALL pages
-- Schema markup: RoofingContractor, FAQPage, HowTo, BlogPosting, BreadcrumbList, AggregateRating, Article
+- Schema markup: RoofingContractor, FAQPage, HowTo, BlogPosting, BreadcrumbList, AggregateRating, Article, **SpeakableSpecification (homepage FAQPage, added 2026-04-22 for AEO + voice assistants)**
+- **2026-04-22 audit fix:** Texas-brand entity leak lockdown — purged sales@framerestorations.com from index/legal/10 blog posts, removed parentOrganization block from LocalBusiness schema, deleted broken "Part of Frame Roofing Utah" Texas-domain footer link, changed about page foundingLocation from Dallas-Fort Worth → Heber City, narrowed homepage services sub from "all of Utah" → "Wasatch Front + Heber Valley"
+- **2026-04-22 audit fix:** FAQPage JSON-LD + visible Quick Answer passages added to 4 service pages (roof-replacement, storm-damage, insurance-claims, residential-roofing)
+- **2026-04-22 audit fix:** AggregateRating (20 reviews, 5.0 stars) added to all 45 location pages (was previously only on homepage + about)
+- **2026-04-22 audit fix:** Visible "Last updated" stamp under H1 on 87 blog + location pages (freshness signal visible to readers, not just in schema)
+- **2026-04-22 audit fix:** Backfilled dateModified on two 2026 posts that still showed 2026-03-27; fixed malformed parentOrganization block on west-valley-city.html
+- **2026-04-22 audit fix:** Removed two `EDITOR CHECK` placeholder paragraphs that had shipped to production on blog/park-city/ice-dam-winter-roof-damage.html (rest of blog grep-swept clean)
+- **2026-04-22 audit fix:** Standardized "24/7 emergency response" copy across homepage FAQ/schema and services.html (was inconsistent — some "rapid," some "24/7")
+- **2026-04-22 audit fix:** Deleted privacy-policy.html and terms-of-service.html duplicates; added 301 redirects in vercel.json; fixed privacy.html/terms.html canonicals to use www subdomain; removed robots Disallow on /privacy + /terms
+- **2026-04-22 perf:** Removed double-loading Google Fonts <link> (self-hosted WOFF2 already wired in global.css — kills render-blocking + double FOUT); changed drone-loop video preload from "metadata" → "none" (13 MB clip was loading eagerly on mobile); added width/height to 6 service-card imgs (CLS fix)
 - Homepage H1 rebranded 2026-04-17: "Mountain-Grade Roofing, Valley-Wide"
 - Storm-damage / storm-damage-restoration consolidated (301 redirect + canonical)
 - Duplicate blog URLs cleaned from sitemap
@@ -216,7 +227,7 @@
 8. Reddit-scanner: response parsing hardened 2026-04-17 (HTTP status, empty body, retry, typed errors) — monitor reliability
 
 ### Short-term
-9. Self-host fonts (Archivo Black + Archivo)
+9. ~~Self-host fonts (Archivo Black + Archivo)~~ ✅ DONE (already wired in global.css; double-loading Google Fonts <link> removed 2026-04-22)
 10. ~~Convert images to WebP~~ ✅ DONE (88 images converted 2026-04-12 + 24 compressed 2026-04-07)
 11. ~~Add author bios + publication dates to blog posts~~ ✅ DONE (2026-04-08)
 12. Directory submissions (HomeAdvisor, Thumbtack, local chambers) — Angi + Yelp already done
@@ -242,6 +253,27 @@
 ---
 
 ## SESSION LOG
+
+### 2026-04-22 — Full Audit Fix: Brand-Leak Lockdown + AEO/Schema Pass + Perf
+**101 files changed.** Fixes surfaced by the 2026-04-22 full site + ops audit.
+- **Texas-brand entity leak lockdown (critical):** Google was cross-resolving Frame Roofing Utah into Landon's unrelated framerestorations.com (Frisco TX). Replaced sales@framerestorations.com → info@framerestorationutah.com across index, legal pages, and 10 blog posts. Removed parentOrganization block from index LocalBusiness schema (it's a DBA, not a subsidiary). Deleted broken "Part of Frame Roofing Utah" Texas-domain footer link. Changed about page foundingLocation schema from Dallas-Fort Worth → Heber City; rewrote "Our Story" H2 + lede around Heber City origin. Dropped "same standards from DFW" copy from services.html source fragment. Narrowed homepage services sub from "all of Utah" → "Wasatch Front + Heber Valley".
+- **Stop deploying internal files (critical):** New `.vercelignore` blocks CLAUDE.md (contains Supabase anon key + rules), *.md strategy docs, *.py scripts, drive-photos.zip (8.5 MB customer photos), archive/, tmp-*/, internal audit/scratch HTML files.
+- **Content leakage:** Removed two `EDITOR CHECK` placeholder paragraphs that had shipped to production on blog/park-city/ice-dam-winter-roof-damage.html. Grep-swept rest of blog — clean.
+- **Schema + AEO pass:** Added FAQPage JSON-LD + visible Quick Answer passages to 4 service pages (roof-replacement, storm-damage, insurance-claims, residential-roofing). Added AggregateRating (20 reviews, 5.0 stars) to all 45 location pages. Added SpeakableSpecification to homepage FAQPage. Backfilled dateModified on two 2026 posts that still showed 2026-03-27. Added visible "Last updated" stamp under H1 on 87 blog + location pages. Fixed malformed stray parentOrganization block on west-valley-city.html.
+- **Performance:** Removed double-loading Google Fonts <link> (self-hosted WOFF2 already wired in global.css — kills render-blocking + double FOUT). Changed drone-loop video preload from "metadata" → "none" (13 MB clip was loading eagerly on mobile). Added width/height to 6 service-card imgs (CLS fix on lazy-load).
+- **Dedup + hygiene:** Standardized "24/7 emergency response" across homepage FAQ/schema + services.html. Deleted privacy-policy.html and terms-of-service.html duplicates; added 301 redirects to /privacy and /terms in vercel.json. Fixed privacy.html/terms.html canonicals to use www subdomain. Removed Disallow /privacy + /terms from robots.txt (they're already noindex via meta). Regenerated sitemap.xml: **126 URLs → 105**, pruned dupes, removed robots-disallowed paths and Vercel-redirected routes, fixed missing trailing slash on root.
+- **Not auto-fixed (need Ryan's call):**
+  - 8-post hail/storm city cluster likely cannibalizes the Utah-wide pillar — options are canonicalize or rewrite strictly local
+  - reviews.json entries need 1:1 verification against the pinned GBP data_id before we can trust self-hosted Review schema on index
+
+### 2026-04-21 — Homepage Video Quality Bump + Untracked Repo Cleanup
+- **Showcase video upscaled** 1024x576 → 1920x1080 (music kept bit-perfect)
+- `drone-footage.mp4` replaced with stabilized + color-graded version; new `drone-footage-clip2.mp4` added as second drone asset; posters regenerated from new sources
+- **Committed previously-untracked April work:** SEO directory blitz scripts, DieselEye GTM HTMLs in images/projects, contact photos. Also updated `.gitignore` to exclude node_modules, __pycache__, tmp-*.
+
+### 2026-04-20 (late) — Heber Valley Drone Job + Blog Hero Photo Rotation
+- **Heber Valley custom reroof drone capture (in-progress job):** 4 drone photos (panorama, aerial-1, aerial-2, front-view) at 3 responsive sizes each (WebP + JPG fallback) + drone flyover video (MP4 + WebM + poster). Gallery now leads with FEATURED IN-PROGRESS PROJECT section; 4 new residential cards added at top of filtered grid. heber-city.html hero, og:image, and Article schema image all swapped to new aerial panorama. Labeled "in progress" — post-completion shots follow once job closes; photo-authenticity policy preserved (no fabricated before/afters).
+- **Blog hero photo rotation (42 unique images, zero duplicates):** sandy-storm-damage-reroof-2025-oct had been repeating across 3 posts; heber-city-residential-reroof-2026 + frame-restoration-18 each duplicated; 6 posts had no hero image at all. Swapped to unique shots + added heroes to the 6 bare posts (ogden/wind-damage, riverton/hail-inspection, utah/commercial-roofing, utah/gutter-installation, utah/roof-financing, utah/spring-inspection). The mountain-grade-roofing-materials post now showcases the new Wasatch-Back drone aerial.
 
 ### 2026-04-20 — Homepage Video Showcase + 2 SEO/AEO Blog Posts
 - **#watch-in-action homepage section** added directly after hero (above the fold) — 60-second Heber Valley reroof showcase
