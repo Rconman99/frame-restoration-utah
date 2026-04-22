@@ -78,7 +78,7 @@
     "image": "/images/photos/frame-restoration-02.webp",
     "url": "https://www.frameroofingutah.com/",
     "telephone": "+14353024422",
-    "email": "sales@framerestorations.com",
+    "email": "info@framerestorationutah.com",
     "address": {
       "@type": "PostalAddress",
       "streetAddress": "142 S Main St",
@@ -141,11 +141,6 @@
       "areaServed": "UT",
       "availableLanguage": "English"
     },
-    "parentOrganization": {
-      "@type": "Organization",
-      "name": "Frame Roofing Utah",
-      "url": "https://www.framerestorations.com/"
-    },
     "sameAs": [
       "https://www.facebook.com/61572258054303",
       "https://www.instagram.com/frameroofingutah",
@@ -187,6 +182,10 @@
   {
     "@context": "https://schema.org",
     "@type": "FAQPage",
+    "speakable": {
+      "@type": "SpeakableSpecification",
+      "cssSelector": [".faq-a", ".hero-sub", ".section-sub"]
+    },
     "mainEntity": [
       {
         "@type": "Question",
@@ -241,7 +240,7 @@
         "name": "Do you do emergency storm damage repair in Utah?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Yes. We provide rapid emergency response for storm, hail, wind, and snow damage across the Wasatch Front. Call 435-302-4422 for urgent roof tarping, leak mitigation, and damage assessment."
+          "text": "Yes. Frame Roofing Utah provides 24/7 emergency response for storm, hail, wind, and snow damage across the Wasatch Front and Heber Valley. Call 435-302-4422 for urgent roof tarping, leak mitigation, and damage assessment."
         }
       }
     ]
@@ -289,11 +288,8 @@
   }
   </script>
 
-  <!-- Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Archivo:wght@400;600&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/global.css?v=20260417b">
+  <!-- Fonts: self-hosted via global.css @font-face (removed Google Fonts link to kill render-blocking + double-FOUT) -->
+  <link rel="stylesheet" href="/global.css?v=20260422a">
 
   <style>
     /* ─── INDEX-SPECIFIC STYLES ─── */
@@ -913,12 +909,12 @@
   <div class="services-header reveal">
     <span class="section-label">What We Do</span>
     <h2 class="section-title">Full-Service Roofing &amp;<br />Restoration in Utah</h2>
-    <p class="section-sub">From <strong>premium reroofs</strong> to emergency repairs — uncompromising standards, beautiful craftsmanship, and a frictionless experience across all of Utah.</p>
+    <p class="section-sub">From <strong>premium reroofs</strong> to emergency repairs — uncompromising mountain-grade standards, beautiful craftsmanship, and a frictionless experience across the Wasatch Front and Heber Valley.</p>
   </div>
   <div class="services-grid">
     <a href="/pages/residential-roofing" class="service-card-link">
       <div class="service-card reveal">
-        <img src="/images/services/residential.webp" alt="Completed residential reroof in Holladay Utah with Wasatch mountain backdrop" class="service-card-img" loading="lazy" />
+        <img src="/images/services/residential.webp" alt="Completed residential reroof in Holladay Utah with Wasatch mountain backdrop" class="service-card-img" width="1200" height="680" loading="lazy" />
         <span class="service-card-caption"><svg viewBox="0 0 24 24" fill="#E1B969" aria-hidden="true"><path d="M12 2C7.58 2 4 5.58 4 10c0 5.25 7 12 8 12s8-6.75 8-12c0-4.42-3.58-8-8-8zm0 11a3 3 0 110-6 3 3 0 010 6z"/></svg>Holladay, UT · 11/11/25</span>
         <div class="service-card-body">
           <div class="service-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="#E1B969" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>
@@ -929,7 +925,7 @@
     </a>
     <a href="/pages/storm-damage-restoration" class="service-card-link">
       <div class="service-card reveal">
-        <img src="/images/services/storm-damage.webp" alt="Storm damage roof tear-off in South Jordan Utah with material delivery in progress" class="service-card-img" loading="lazy" />
+        <img src="/images/services/storm-damage.webp" alt="Storm damage roof tear-off in South Jordan Utah with material delivery in progress" class="service-card-img" width="1200" height="680" loading="lazy" />
         <span class="service-card-caption"><svg viewBox="0 0 24 24" fill="#E1B969" aria-hidden="true"><path d="M12 2C7.58 2 4 5.58 4 10c0 5.25 7 12 8 12s8-6.75 8-12c0-4.42-3.58-8-8-8zm0 11a3 3 0 110-6 3 3 0 010 6z"/></svg>South Jordan, UT · 11/16/26</span>
         <div class="service-card-body">
           <div class="service-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="#E1B969" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
@@ -940,7 +936,7 @@
     </a>
     <a href="/pages/commercial-roofing" class="service-card-link">
       <div class="service-card reveal">
-        <img src="/images/services/commercial.webp" alt="Commercial multifamily reroof in Millcreek Utah with crew on site" class="service-card-img" loading="lazy" />
+        <img src="/images/services/commercial.webp" alt="Commercial multifamily reroof in Millcreek Utah with crew on site" class="service-card-img" width="600" height="340" loading="lazy" />
         <span class="service-card-caption"><svg viewBox="0 0 24 24" fill="#E1B969" aria-hidden="true"><path d="M12 2C7.58 2 4 5.58 4 10c0 5.25 7 12 8 12s8-6.75 8-12c0-4.42-3.58-8-8-8zm0 11a3 3 0 110-6 3 3 0 010 6z"/></svg>Millcreek, UT · 09/22/25</span>
         <div class="service-card-body">
           <div class="service-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="#E1B969" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/></svg></div>
@@ -951,7 +947,7 @@
     </a>
     <a href="/pages/gutters" class="service-card-link">
       <div class="service-card reveal">
-        <img src="/images/services/gutters.webp" alt="Completed roof with clean gutter lines and premium shingles" class="service-card-img" loading="lazy" />
+        <img src="/images/services/gutters.webp" alt="Completed roof with clean gutter lines and premium shingles" class="service-card-img" width="600" height="340" loading="lazy" />
         <div class="service-card-body">
           <div class="service-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="#E1B969" stroke-width="2"><path d="M12 2.69l5.66 5.66a8 8 0 11-11.31 0z"/></svg></div>
           <h3>Gutters &amp; Gutter Guards</h3>
@@ -961,7 +957,7 @@
     </a>
     <a href="/pages/water-fire-flood-restoration" class="service-card-link">
       <div class="service-card reveal">
-        <img src="/images/services/restoration.webp" alt="Frame Roofing crew performing active roof restoration and tear-off in Salt Lake City Utah" class="service-card-img" loading="lazy" />
+        <img src="/images/services/restoration.webp" alt="Frame Roofing crew performing active roof restoration and tear-off in Salt Lake City Utah" class="service-card-img" width="1200" height="680" loading="lazy" />
         <span class="service-card-caption"><svg viewBox="0 0 24 24" fill="#E1B969" aria-hidden="true"><path d="M12 2C7.58 2 4 5.58 4 10c0 5.25 7 12 8 12s8-6.75 8-12c0-4.42-3.58-8-8-8zm0 11a3 3 0 110-6 3 3 0 010 6z"/></svg>Salt Lake City, UT · 11/24/26</span>
         <div class="service-card-body">
           <div class="service-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="#E1B969" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg></div>
@@ -972,7 +968,7 @@
     </a>
     <a href="/pages/solar-installation" class="service-card-link">
       <div class="service-card reveal">
-        <img src="/images/services/solar.webp" alt="Clean roof surface ready for solar panel installation with Utah mountains" class="service-card-img" loading="lazy" />
+        <img src="/images/services/solar.webp" alt="Clean roof surface ready for solar panel installation with Utah mountains" class="service-card-img" width="600" height="340" loading="lazy" />
         <div class="service-card-body">
           <div class="service-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="#E1B969" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg></div>
           <h3>Solar Installation</h3>
@@ -1073,7 +1069,7 @@
   </div>
   <div class="video-grid">
     <div class="video-player reveal">
-      <video autoplay muted loop playsinline preload="metadata" poster="/images/projects/heber-valley-drone-poster.webp">
+      <video autoplay muted loop playsinline preload="none" poster="/images/projects/heber-valley-drone-poster.webp">
         <source src="/assets/drone-footage.mp4" type="video/mp4" />
         Your browser does not support the video tag.
       </video>
@@ -1338,7 +1334,7 @@
     </div>
     <div class="faq-item">
       <div class="faq-q" role="button" tabindex="0" aria-expanded="false">Do you handle emergency storm damage in Utah?<span class="faq-toggle" aria-hidden="true">+</span></div>
-      <div class="faq-a">Yes. We provide rapid emergency response for storm, hail, wind, and snow damage across the Wasatch Front. Call 435-302-4422 for urgent roof tarping, leak mitigation, and damage assessment.</div>
+      <div class="faq-a">Yes. Frame Roofing Utah provides 24/7 emergency response for storm, hail, wind, and snow damage across the Wasatch Front and Heber Valley. Call 435-302-4422 for urgent roof tarping, leak mitigation, and damage assessment.</div>
     </div>
   </div>
 </section>
@@ -1360,7 +1356,7 @@
         </div>
         <div class="contact-detail">
           <div class="contact-detail-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="#E1B969" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div>
-          <div><h3>Email</h3><a href="mailto:sales@framerestorations.com">sales@framerestorations.com</a></div>
+          <div><h3>Email</h3><a href="mailto:info@framerestorationutah.com">info@framerestorationutah.com</a></div>
         </div>
         <div class="contact-detail">
           <div class="contact-detail-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="#E1B969" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
@@ -1462,9 +1458,8 @@
       <h4>Contact</h4>
       <ul>
         <li><a href="tel:+14353024422">435-302-4422</a></li>
-        <li><a href="mailto:sales@framerestorations.com">sales@framerestorations.com</a></li>
+        <li><a href="mailto:info@framerestorationutah.com">info@framerestorationutah.com</a></li>
         <li><a href="#contact">142 S Main St, Heber City UT</a></li>
-        <li><a href="https://www.framerestorations.com/" target="_blank" rel="noopener">Frame Roofing Utah →</a></li>
       </ul>
     </div>
   </div>
@@ -1473,8 +1468,7 @@
     <span>
       <a href="/privacy">Privacy Policy</a> &nbsp;|&nbsp;
       <a href="/terms">Terms of Service</a> &nbsp;|&nbsp;
-      <a href="/sitemap.xml">Sitemap</a> &nbsp;|&nbsp;
-      Part of <a href="https://www.framerestorations.com/" target="_blank" rel="noopener nofollow">Frame Roofing Utah</a> — Proudly Serving Utah
+      <a href="/sitemap.xml">Sitemap</a>
     </span>
   </div>
 </footer>

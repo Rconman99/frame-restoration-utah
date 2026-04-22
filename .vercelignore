@@ -1,0 +1,57 @@
+# Internal strategy / memory / AI context — never deploy
+CLAUDE.md
+CONTINUE-FROM-HERE.md
+README.md
+SEO-BRUTAL-AUDIT-*.md
+FRAMEROOFINGUTAH-BUILD-PLAN.md
+seo-alt-text-captions.md
+directory-blitz-prompt.md
+*.md
+
+# Build / deploy artifacts from another tool (not this static site)
+package.json
+package-lock.json
+node_modules/
+
+# Python scripts — dev-only
+*.py
+*.pyc
+__pycache__/
+
+# Archived assets & internal audit HTMLs
+archive/
+scripts/
+images-stock-backup/
+tmp-*/
+assets/_backup-pre-enhancement-*/
+
+# Internal-only HTML (audits, scratch redesigns, cheat sheets, trackers)
+index-redesign.html
+hero.html
+Frame-Roofing-SEO-Audit-*.html
+Frame-Roofing-GEO-Audit-*.html
+Frame-Roofing-SEO-Automation-Playbook.html
+Frame-Roofing-Directory-Cheat-Sheet*.html
+Landon-Action-Items-*.html
+seo-audit-*.html
+seo-report.html
+backlink-playbook.html
+directory-blitz-tool.html
+directory-tracker.html
+google-maps-pins.html
+eval-review.html
+
+# Office docs + zips + raw photo exports
+*.zip
+*.docx
+*.xlsx
+*.pptx
+*.pdf
+drive-photos.zip
+drive_contact.jpg
+iphone_contact.jpg
+
+# Data files not meant for public serving
+reviews.json
+.DS_Store
+*.swp
