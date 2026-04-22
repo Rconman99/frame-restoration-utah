@@ -133,6 +133,46 @@ def fetch_reviews(limit: int = REVIEWS_FEED_LIMIT) -> list[dict]:
     return out
 
 
+# Substrings that trigger a brand-leak filter on review text. The audit on
+# 2026-04-22 purged the old Frisco-TX "Frame Restoration" brand from every
+# page on the site; we must NOT let a customer review re-introduce it on the
+# homepage carousel. Reviews mentioning the old brand are dropped from the
+# feed (aggregate count/rating from GBP is still the truth).
+BRAND_LEAK_PHRASES = ("Frame Restoration ", "Frame Restoration.", "Frame Restoration,")
+
+
+def _has_brand_leak(text: str) -> bool:
+    """True if the review text references the old 'Frame Restoration' brand."""
+    if not text:
+        return False
+    # Allow the legal LLC name 'Frame Restoration Utah' — only filter the bare
+    # 'Frame Restoration' form that confuses Google with the Frisco TX entity.
+    return any(p in text and "Frame Restoration Utah" not in text for p in BRAND_LEAK_PHRASES)
+
+
+def _merge_reviews(fresh: list[dict], existing_reviews: list[dict]) -> list[dict]:
+    """Filter brand-leak and fill `city` from the prior hand-curated file.
+
+    Google / SerpAPI does not return reviewer location, so city is populated by
+    lookup against the existing reviews.json (which was curated with cities the
+    first time). Unknown authors get an empty city, which the carousel renders
+    as just 'Google Review'.
+    """
+    city_map = {
+        r.get("author", ""): r.get("city", "")
+        for r in existing_reviews
+        if r.get("author")
+    }
+    out: list[dict] = []
+    for r in fresh:
+        if _has_brand_leak(r.get("text", "")):
+            print(f"  filtered (brand-leak): {r.get('author', 'unknown')}")
+            continue
+        city = r.get("city") or city_map.get(r.get("author", ""), "")
+        out.append({**r, "city": city})
+    return out
+
+
 def write_reviews_json(place: dict, reviews: list[dict]) -> bool:
     """Write /reviews.json consumed by the homepage carousel.
 
@@ -147,7 +187,17 @@ def write_reviews_json(place: dict, reviews: list[dict]) -> bool:
         except json.JSONDecodeError:
             existing = {}
 
-    final_reviews = reviews if reviews else existing.get("reviews", [])
+    existing_reviews = existing.get("reviews", [])
+    if reviews:
+        final_reviews = _merge_reviews(reviews, existing_reviews)
+        # Guardrail: if the filter nuked everything (shouldn't happen), fall
+        # back to the existing curated feed rather than shipping an empty
+        # carousel. Aggregate from GBP still updates.
+        if not final_reviews:
+            print("WARN: all fresh reviews filtered — keeping existing feed")
+            final_reviews = existing_reviews
+    else:
+        final_reviews = existing_reviews
 
     payload = {
         "source": "google",
