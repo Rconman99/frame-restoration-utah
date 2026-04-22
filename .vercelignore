@@ -3,12 +3,19 @@
 # -----------------------------------------------------------------------------
 #   seo-report.html      → PIN-gated live tracker shared with Landon. Public URL
 #                          is https://www.frameroofingutah.com/seo-report
-#                          (Incident 2026-04-22: audit sweep blocked this and
+#                          (Incident 2026-04-22a: audit sweep blocked this and
 #                          took the page down. Fix was commit 30bad68.)
+#   reviews.json         → Live Google-reviews feed fetched by the homepage
+#                          carousel (see index.html: fetch('/reviews.json')).
+#                          Updated on 1st/15th by scripts/update-google-reviews.py.
+#                          (Incident 2026-04-22b: audit sweep blocked it as a
+#                          "data file" and killed the live review carousel.
+#                          Fix was commit b51894f follow-up.)
 #   index.html, service pages, /locations/*, /blog/*, /projects/*
 #                        → Core site. Never ignore.
 # If you're doing an audit / cleanup pass and thinking about adding a file here,
-# ask first: is this shared with a customer, lead, or partner? If yes, LEAVE IT.
+# ask first: is this fetched by the site or shared with a customer, lead, or
+# partner? If yes, LEAVE IT.
 # =============================================================================
 
 # Internal strategy / memory / AI context — never deploy
@@ -64,6 +71,7 @@ drive_contact.jpg
 iphone_contact.jpg
 
 # Data files not meant for public serving
-reviews.json
+# NOTE: reviews.json is REMOVED from this list — it's the live feed the homepage
+# carousel fetches. See the "DO NOT ADD" header at the top of this file.
 .DS_Store
 *.swp
