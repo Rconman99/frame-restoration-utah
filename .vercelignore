@@ -1,3 +1,16 @@
+# =============================================================================
+# DO NOT ADD THESE TO THE IGNORE LIST — they are PUBLIC deliverables on the site
+# -----------------------------------------------------------------------------
+#   seo-report.html      → PIN-gated live tracker shared with Landon. Public URL
+#                          is https://www.frameroofingutah.com/seo-report
+#                          (Incident 2026-04-22: audit sweep blocked this and
+#                          took the page down. Fix was commit 30bad68.)
+#   index.html, service pages, /locations/*, /blog/*, /projects/*
+#                        → Core site. Never ignore.
+# If you're doing an audit / cleanup pass and thinking about adding a file here,
+# ask first: is this shared with a customer, lead, or partner? If yes, LEAVE IT.
+# =============================================================================
+
 # Internal strategy / memory / AI context — never deploy
 CLAUDE.md
 CONTINUE-FROM-HERE.md
