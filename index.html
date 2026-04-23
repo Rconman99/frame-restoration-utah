@@ -517,13 +517,18 @@
     .reviews-carousel { position: relative; max-width: 1180px; margin: 0 auto; padding: 0 48px; }
     .reviews-carousel[data-ready="0"] { opacity: 0; }
     .reviews-carousel[data-ready="1"] { opacity: 1; transition: opacity 0.4s ease; }
-    .rc-viewport { overflow: hidden; }
+    .rc-viewport { overflow: hidden; touch-action: pan-y; }
     .rc-track { display: flex; transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1); will-change: transform; }
+    .rc-track.rc-dragging { transition: none; }
     .rc-slide { flex: 0 0 calc(33.333% - 16px); margin-right: 24px; background: var(--off-white); border: 1px solid var(--light-gray); border-top: 3px solid var(--gold); padding: 32px; display: flex; flex-direction: column; min-height: 320px; }
     .rc-slide:last-child { margin-right: 0; }
     .rc-stars { display: flex; gap: 4px; margin-bottom: 16px; }
     .rc-stars svg { width: 18px; height: 18px; fill: var(--gold); }
     .rc-text { font-size: 15px; color: var(--dark); line-height: 1.7; margin-bottom: 20px; font-style: italic; flex: 1; }
+    /* Mobile: clamp very long review bodies so the card doesn't stretch to 500px */
+    @media (max-width: 600px) {
+      .rc-text { display: -webkit-box; -webkit-line-clamp: 7; line-clamp: 7; -webkit-box-orient: vertical; overflow: hidden; }
+    }
     .rc-author { font-family: 'Archivo Black', sans-serif; font-size: 14px; color: var(--navy); text-transform: uppercase; letter-spacing: 1px; }
     .rc-city { font-size: 13px; color: var(--gray); margin-top: 2px; }
     .rc-arrow { position: absolute; top: 50%; transform: translateY(-50%); width: 40px; height: 40px; background: var(--navy); color: var(--gold); border: 2px solid var(--navy); font-family: 'Archivo Black', sans-serif; font-size: 22px; line-height: 1; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; padding-bottom: 4px; z-index: 2; }
@@ -540,9 +545,13 @@
       .rc-slide { flex: 0 0 calc(50% - 12px); margin-right: 24px; }
     }
     @media (max-width: 600px) {
-      .reviews-carousel { padding: 0 36px; }
-      .rc-slide { flex: 0 0 100%; margin-right: 0; min-height: 280px; padding: 24px; }
-      .rc-arrow { width: 32px; height: 32px; font-size: 18px; }
+      /* Remove arrow-column padding — swipe is the primary nav on mobile */
+      .reviews-carousel { padding: 0 16px; }
+      /* Let cards size to content; no min-height = short reviews stay short */
+      .rc-slide { flex: 0 0 100%; margin-right: 0; min-height: 0; padding: 24px; }
+      /* Hide the arrows on mobile — redundant with swipe, and they were under
+         the 44px touch minimum at 32×32. Dots still provide tap-to-page. */
+      .rc-arrow { display: none; }
     }
 
     /* ─── AREAS — Full Wasatch Front ─── */
@@ -2026,6 +2035,35 @@ document.addEventListener('DOMContentLoaded', function() {
     root.addEventListener('mouseleave', function(){ paused = false; });
     root.addEventListener('focusin', function(){ paused = true; });
     root.addEventListener('focusout', function(){ paused = false; });
+
+    // Touch / swipe navigation — primary interaction on mobile.
+    // Threshold: 40px horizontal travel, and more horizontal than vertical
+    // (so vertical scrolling through the page still works).
+    var touchStartX = 0, touchStartY = 0, touchActive = false;
+    var viewport = root.querySelector('.rc-viewport') || track.parentElement;
+    viewport.addEventListener('touchstart', function(e){
+      if (e.touches.length !== 1) return;
+      touchStartX = e.touches[0].clientX;
+      touchStartY = e.touches[0].clientY;
+      touchActive = true;
+      paused = true;
+    }, { passive: true });
+    viewport.addEventListener('touchend', function(e){
+      if (!touchActive) return;
+      touchActive = false;
+      paused = false;
+      var t = e.changedTouches[0];
+      var dx = t.clientX - touchStartX;
+      var dy = t.clientY - touchStartY;
+      if (Math.abs(dx) < 40 || Math.abs(dx) < Math.abs(dy)) return;
+      if (dx < 0) { next(); } else { prev(); }
+      restart();
+      if (window.posthog) posthog.capture('reviews_nav', {dir: dx < 0 ? 'swipe_next' : 'swipe_prev'});
+    }, { passive: true });
+    viewport.addEventListener('touchcancel', function(){
+      touchActive = false;
+      paused = false;
+    }, { passive: true });
 
     // Resize handler — recompute per-page and reset
     var rAFid;
