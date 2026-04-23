@@ -178,7 +178,7 @@ footer a { color: var(--gold); text-decoration: none; }
   .page-hero .hero-actions a { width: 100%; text-align: center; justify-content: center; min-height: 52px; }
   /* Content section mobile */
   .content-section h2 { font-size: 22px; margin-top: 36px; }
-  .content-section p { font-size: 15px; }
+  .content-section p { font-size: 16px; }
   /* Service mini cards — full width on mobile */
   .services-mini { grid-template-columns: 1fr; }
   /* Nearby chips — better touch targets */
@@ -217,6 +217,20 @@ footer a { color: var(--gold); text-decoration: none; }
    .related-articles, .content-section, .page-cta variants.
    Uses !important to beat per-element inline styles without editing 12 pages.
    ═══════════════════════════════════════════════════════════════════ */
+
+/* ─── "Last updated" stamp — readable inside dark heroes on blog + location pages ─── */
+/* Inline style on .last-updated uses #6B7280 which disappears on navy. Force a high-contrast
+   white-ish in any dark hero context; let light-area placements use the inline color. */
+.blog-hero .last-updated,
+.blog-hero .last-updated time,
+.page-hero .last-updated,
+.page-hero .last-updated time,
+.location-hero .last-updated,
+.location-hero .last-updated time,
+.blog-hero-content .last-updated,
+.blog-hero-content .last-updated time {
+  color: rgba(255, 255, 255, 0.82) !important;
+}
 
 /* ─── Content section uplift — gold kicker + Archivo Black H2s ─── */
 .content-section { max-width: 880px; margin: 0 auto; padding: 0 20px; }
