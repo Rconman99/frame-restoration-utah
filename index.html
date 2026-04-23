@@ -852,8 +852,8 @@
               <option value="other">Something Else</option>
             </select>
           </div>
-          <label class="form-consent" style="display:flex;align-items:flex-start;gap:10px;margin:14px 0 8px;font-size:13px;line-height:1.5;color:#2a2a2a;cursor:pointer;width:100%;box-sizing:border-box;">
-            <input type="checkbox" name="sms_consent" value="yes" style="width:auto;margin-top:3px;flex-shrink:0;-webkit-appearance:checkbox;appearance:checkbox;padding:0;border:1px solid #888;" />
+          <label class="form-consent" style="display:flex;align-items:flex-start;gap:12px;margin:14px 0 8px;padding:10px 0;min-height:44px;font-size:14px;line-height:1.5;color:#2a2a2a;cursor:pointer;width:100%;box-sizing:border-box;">
+            <input type="checkbox" name="sms_consent" value="yes" style="width:22px;height:22px;margin-top:2px;flex-shrink:0;-webkit-appearance:checkbox;appearance:checkbox;padding:0;border:1px solid #888;cursor:pointer;" />
             <span style="flex:1;min-width:0;display:block;">(Optional) Yes, I agree to receive SMS/text messages from Frame Roofing Utah about my inquiry. Msg &amp; data rates may apply. Reply STOP to opt out. Consent is not required to submit this form.</span>
           </label>
           <button type="submit" class="btn-primary hero-submit">Get My Free Roof Inspection</button>
@@ -1389,8 +1389,8 @@
         </div>
         <div class="form-group"><label for="city">City / ZIP Code</label><input type="text" id="city" name="city" placeholder="e.g. West Jordan, UT 84084" required /></div>
         <div class="form-group"><label for="message">Additional Details (optional)</label><textarea id="message" name="message" placeholder="Tell us about your project..."></textarea></div>
-        <label class="form-consent" style="display:flex;align-items:flex-start;gap:10px;margin:14px 0 8px;font-size:13px;line-height:1.5;color:var(--gray);cursor:pointer;width:100%;box-sizing:border-box;">
-          <input type="checkbox" name="sms_consent" value="yes" style="width:auto;margin-top:3px;flex-shrink:0;-webkit-appearance:checkbox;appearance:checkbox;padding:0;border:1px solid #888;" />
+        <label class="form-consent" style="display:flex;align-items:flex-start;gap:12px;margin:14px 0 8px;padding:10px 0;min-height:44px;font-size:14px;line-height:1.5;color:var(--gray);cursor:pointer;width:100%;box-sizing:border-box;">
+          <input type="checkbox" name="sms_consent" value="yes" style="width:22px;height:22px;margin-top:2px;flex-shrink:0;-webkit-appearance:checkbox;appearance:checkbox;padding:0;border:1px solid #888;cursor:pointer;" />
           <span style="flex:1;min-width:0;display:block;">(Optional) Yes, I agree to receive SMS/text messages from Frame Roofing Utah about my inquiry. Msg &amp; data rates may apply. Reply STOP to opt out. Consent is not required to submit this form.</span>
         </label>
         <div style="display:flex;align-items:center;gap:10px;margin:4px 0 12px;font-size:12px;color:var(--gray);">
@@ -1489,19 +1489,21 @@
   // Wait for DOM ready — replaces broken defer on inline script
   document.addEventListener('DOMContentLoaded', function() {
 
-    // Mobile nav toggle
+    // Mobile nav toggle (null-safe — script runs on pages without these IDs)
     var menuBtn = document.getElementById('menuBtn');
     var navLinks = document.getElementById('navLinks');
-    menuBtn.addEventListener('click', function() {
-      var isOpen = navLinks.classList.toggle('open');
-      menuBtn.setAttribute('aria-expanded', String(isOpen));
-    });
-    navLinks.querySelectorAll('a').forEach(function(a) {
-      a.addEventListener('click', function() {
-        navLinks.classList.remove('open');
-        menuBtn.setAttribute('aria-expanded', 'false');
+    if (menuBtn && navLinks) {
+      menuBtn.addEventListener('click', function() {
+        var isOpen = navLinks.classList.toggle('open');
+        menuBtn.setAttribute('aria-expanded', String(isOpen));
       });
-    });
+      navLinks.querySelectorAll('a').forEach(function(a) {
+        a.addEventListener('click', function() {
+          navLinks.classList.remove('open');
+          menuBtn.setAttribute('aria-expanded', 'false');
+        });
+      });
+    }
 
     // Scroll reveal — add js-ready FIRST so CSS hides elements, then observe
     document.documentElement.classList.add('js-ready');
@@ -1891,10 +1893,14 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 
-  // Lazy-load the map with three triggers for maximum reliability:
-  // 1) IntersectionObserver (fires when map is ~400px away — main path, Lighthouse-friendly)
+  // Lazy-load the map with two triggers:
+  // 1) IntersectionObserver (main path — fires when map is ~400px away)
   // 2) First scroll event (safety net if IO misses)
-  // 3) 4-second timeout after page load (guaranteed render for non-scrolling users)
+  // NOTE: 4-second timeout fallback removed 2026-04-22 — it was firing during
+  // Lighthouse audits on non-scrolling viewports and killing the perf score by
+  // loading Mapbox (7s main-thread script eval) into initial-load measurement.
+  // Real users who scroll still get the map via IO + scroll trigger. Non-scrolling
+  // users never see below-the-fold content so never need the map.
   var triggered = false;
   function triggerOnce() {
     if (triggered) return;
@@ -1914,23 +1920,15 @@ document.addEventListener('DOMContentLoaded', function() {
     io.observe(mapEl);
   }
 
-  // Safety net #1: trigger on first user scroll (once)
+  // Safety net: trigger on first user scroll (once)
   function scrollTrigger() {
     window.removeEventListener('scroll', scrollTrigger);
-    // Only trigger if map element is near the viewport, otherwise wait for IO
     var rect = mapEl.getBoundingClientRect();
     if (rect.top < window.innerHeight + 800 && rect.bottom > -400) {
       triggerOnce();
     }
   }
   window.addEventListener('scroll', scrollTrigger, { passive: true });
-
-  // Safety net #2: timeout fallback so the map always renders eventually
-  if (document.readyState === 'complete') {
-    setTimeout(triggerOnce, 4000);
-  } else {
-    window.addEventListener('load', function(){ setTimeout(triggerOnce, 4000); });
-  }
 })();
 </script>
 
