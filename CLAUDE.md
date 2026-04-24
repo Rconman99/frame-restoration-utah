@@ -1,5 +1,5 @@
 # Frame Roofing Utah — Claude Master Context
-> Last updated: 2026-04-22 | Auto-refreshed via Cowork scheduled task
+> Last updated: 2026-04-24 | Auto-refreshed via Cowork scheduled task
 
 ---
 
@@ -20,10 +20,16 @@
 - BBB Accredited (confirmed by Landon 2026-04-07)
 - A+ BBB Rating
 
-### Phone number: ONE number everywhere
-- **435-302-4422** is the ONLY phone number on the website (Landon's direct)
-- Do NOT use 435-292-8802 (Twilio tracking number — texts are blocked by carriers)
-- If creating any new page, template, or content: use 435-302-4422
+### Phone numbers: TWO numbers with distinct roles (updated 2026-04-24 for 10DLC CTA verification)
+- **CALL / VOICE → 435-302-4422** (Landon's direct Verizon line)
+  - All `tel:` links, "Call us" CTAs, hero buttons, sticky mobile call bar, Contact → Phone card, email signatures, GBP, footer "Call:" line
+  - Primary NAP number — keep consistent across site, schema (telephone), GBP, directories
+- **TEXT / SMS → 435-292-8802** (Twilio A2P 10DLC registered sending number — **PUBLISHED on site as of commit 30b0215, 2026-04-24**)
+  - This is the number Twilio sends outbound SMS from once 10DLC is live
+  - Required to be published on site + consent copy + privacy + terms for **TCR (The Campaign Registry) CTA verification** — carriers (T-Mobile/AT&T) reject campaigns that don't disclose the sending number
+  - Appears in: `sms:` links (footer "Text:" line, Contact → Text card on index), SMS consent checkbox copy on hero + contact + modal forms, privacy.html §SMS, terms.html §SMS
+  - Do NOT use 435-292-8802 in `tel:` links or as the general business phone — it's sending-only
+- **When in doubt:** Call = 302-4422, Text = 292-8802. Never swap them.
 
 ### Before generating or editing ANY page:
 1. Read this CLAUDE.md first
@@ -256,6 +262,20 @@
 ---
 
 ## SESSION LOG
+
+### 2026-04-24 — 10DLC Fix: Publish Twilio Sending Number (435-292-8802) on Site + Forms + Privacy + Terms
+Single commit (30b0215) to satisfy **TCR (The Campaign Registry) CTA verification** for A2P 10DLC. Carriers (T-Mobile / AT&T) were rejecting the campaign because the sending number wasn't disclosed on the website or in the consent flow. Fix: publish 435-292-8802 everywhere SMS-related, keep 435-302-4422 as the voice number.
+- **index.html:**
+  - Hero form + contact form — SMS consent checkbox copy expanded: names the sending number "(sent from +1 435-292-8802)", enumerates message types (appointment confirmations, inspection scheduling, project updates, service follow-ups), adds "Msg frequency varies (up to 5/month)" and "Reply STOP to opt out, HELP for help"
+  - Contact section — new **Text** contact card added next to Phone card with `sms:+14352928802` link + inline microcopy "SMS from Frame Roofing Utah. Msg & data rates may apply. Reply STOP to opt out."
+  - Footer — split single phone line into two lines: "Call: 435-302-4422" (tel:) + "Text: 435-292-8802" (sms:)
+- **global-modal.js** — booking modal's SMS consent copy upgraded to match the expanded version (sending number + frequency + STOP/HELP)
+- **privacy.html §SMS/Text Messaging** — names "+1 (435) 292-8802" as the sending number; adds "inspection scheduling" to the message-type list
+- **terms.html §SMS/Text Messaging** — same: names the sending number explicitly + expanded message types
+- **data/google-reviews.json** — refreshed (23-line diff from routine scraper run)
+- **screenshots/mobile-audit/** — 9 new mobile-audit captures + diagnostics.json committed (home / heber-city / roof-replacement / blog-storm above-the-fold + full + nav-open variants)
+- **CLAUDE.md rule updated** — the old "ONE number everywhere, never use 435-292-8802" rule is obsolete. Replaced with role-separation: Call=302-4422 (tel:), Text=292-8802 (sms:). See CRITICAL RULES section.
+- **What this unblocks:** TCR CTA verification → Twilio campaign activation → Twilio outbound SMS delivery (currently blocked by 10DLC error 30034). Verizon email-to-SMS gateway remains the working fallback in the meantime.
 
 ### 2026-04-22 (evening) — Mobile Polish: 3-Tier Pass + Swipe-Driven Reviews Carousel
 Four focused commits cleaning up the mobile experience after the morning audit + afternoon hub-spoke work. No new features — just fixing what was already there but broken on phones.
