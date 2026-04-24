@@ -73,7 +73,7 @@
     '      </div>',
     '      <label class="fr-modal-consent" style="display:flex;align-items:flex-start;gap:10px;margin:14px 0 8px;font-size:13px;line-height:1.5;color:#2a2a2a;cursor:pointer;">',
     '        <input type="checkbox" name="sms_consent" value="yes" style="margin-top:3px;flex-shrink:0;" />',
-    '        <span>(Optional) Yes, I agree to receive SMS/text messages from Frame Roofing Utah about my inquiry. Msg &amp; data rates may apply. Reply STOP to opt out. Consent is not required to submit this form.</span>',
+    '        <span>(Optional) Yes, I agree to receive SMS/text messages from Frame Roofing Utah (sent from +1 435-292-8802) about my inquiry, including appointment confirmations, inspection scheduling, project updates, and service follow-ups. Msg frequency varies (up to 5/month). Msg &amp; data rates may apply. Reply STOP to opt out, HELP for help. Consent is not required to submit this form.</span>',
     '      </label>',
     '      <button type="submit" class="fr-modal-submit">Get My Free Roof Inspection</button>',
     '      <p class="fr-modal-note">Frame Roofing Utah will contact you about your inquiry by phone and/or email. See our <a href="/privacy" style="color:inherit;text-decoration:underline">Privacy Policy</a> &amp; <a href="/terms" style="color:inherit;text-decoration:underline">Terms</a>.</p>',
