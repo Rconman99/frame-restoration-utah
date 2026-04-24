@@ -11,6 +11,15 @@
 #                          (Incident 2026-04-22b: audit sweep blocked it as a
 #                          "data file" and killed the live review carousel.
 #                          Fix was commit b51894f follow-up.)
+#   directory-blitz-tool.html
+#                        → Landon-shared deliverable (v4 blitz tool with his
+#                          "What We Need From You" todo block). Public URL:
+#                          https://www.frameroofingutah.com/directory-blitz-tool
+#                          (Incident 2026-04-24: same audit-sweep pattern —
+#                          swept into "Internal-only HTML" and 404'd the tool
+#                          Landon was actively working through. Third time this
+#                          class of bug has shipped. If a file isn't a private
+#                          strategy doc, assume it's public until proven otherwise.)
 #   index.html, service pages, /locations/*, /blog/*, /projects/*
 #                        → Core site. Never ignore.
 # If you're doing an audit / cleanup pass and thinking about adding a file here,
@@ -54,9 +63,6 @@ Frame-Roofing-SEO-Automation-Playbook.html
 Frame-Roofing-Directory-Cheat-Sheet*.html
 Landon-Action-Items-*.html
 seo-audit-*.html
-backlink-playbook.html
-directory-blitz-tool.html
-directory-tracker.html
 google-maps-pins.html
 eval-review.html
 
