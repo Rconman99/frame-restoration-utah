@@ -152,6 +152,7 @@
 - **2026-04-22 audit fix:** Deleted privacy-policy.html and terms-of-service.html duplicates; added 301 redirects in vercel.json; fixed privacy.html/terms.html canonicals to use www subdomain; removed robots Disallow on /privacy + /terms
 - **2026-04-22 (afternoon) audit follow-up:** Hail cluster hub-spoke internal linking — 8 city posts (bountiful, draper, herriman, lehi, ogden, provo, riverton, sandy) now link up to the Utah hail pillar via "Statewide context" callout; pillar links down to all 8 cities via spoke block. Eliminates pillar-vs-city cannibalization without sacrificing long-tail city traffic.
 - **2026-04-22 (afternoon) brand-safe review sync:** Hardened `update-google-reviews.py` — brand-leak filter drops bare "Frame Restoration" reviewers, city metadata preserved on author merge, empty-result fallback to existing feed. Aggregate verified against GBP data_id: 20 reviews / 5.0 stars.
+- **2026-04-27 perf:** Blog hero images switched from `loading="lazy"` → `loading="eager" fetchpriority="high"` across all 23 blog posts using the figure.blog-featured-image template. Hero was below the dark header but still in the initial viewport — lazy was deferring it past first paint and dragging LCP / showing a visible blank gap. Web-standard above/near-the-fold pattern restored.
 - **2026-04-22 perf:** Removed double-loading Google Fonts <link> (self-hosted WOFF2 already wired in global.css — kills render-blocking + double FOUT); changed drone-loop video preload from "metadata" → "none" (13 MB clip was loading eagerly on mobile); added width/height to 6 service-card imgs (CLS fix)
 - **2026-04-24 (afternoon) AEO gap closure:** Homepage hero `<p>` now leads with "Frame Roofing Utah is a family-owned, licensed roofing contractor based in Heber City" (definition pattern for AI direct-answer extraction); new `.quick-answer-strip` between hero and #watch-in-action carries visible "Last updated: April 24, 2026" stamp (87 blog/location pages already had it — homepage was the gap); `dateModified: 2026-04-24` added to index LocalBusiness JSON-LD (maintenance-layer was 0/2, now 2/2); "10-year" → "10 years" in hero so number matches AEO audit regex. llms.txt Texas-brand disambiguation rewritten to "not to be confused with … distinct from" phrasing (was "is a different business", bypassed entity-disambiguation heuristic). Perfect Stack audit: 76/B → 88/A- projected.
 - **2026-04-24 (afternoon) llms.txt A-grade polish:** Blog Library + Owner line converted from `- Title — url` → `- [Title](url)` markdown link format (0 → 11 markdown links) to match llmstxt.org spec; audit llms_txt_quality 2/5 → 5/5 projected. Expected overall: 88 → 91 (A-).
@@ -265,8 +266,8 @@
 
 ## SESSION LOG
 
-### 2026-04-27 — Blog Hero Image Uniqueness + Template Parity for how-to-choose-a-roofer
-Two commits closing residual blog image-collision gaps left over from the 2026-04-20 hero photo rotation pass.
+### 2026-04-27 — Blog Hero Image Uniqueness + Template Parity + Eager-Load LCP Fix
+Three commits closing residual blog image-collision gaps left over from the 2026-04-20 hero photo rotation pass and a follow-up perf fix for blog hero LCP.
 - **Reassign 3 duplicate blog hero images to unique real-Landon shots (commit a89192e):** Audit found 35/38 unique og:image entries across blog — three posts were still sharing hero photography. Fixes:
   - `blog/heber-city/reroofing-complete-guide.html` — `frame-restoration-08` → `heber-custom-reroof-aerial-1` (updated body `<img>`, og:image, and JSON-LD schema image — all 3 references aligned)
   - `blog/utah/how-to-choose-a-roofer-utah.html` — `frame-restoration-18` → `heber-valley-crew-rooftop` (og:image only at this commit)
@@ -276,6 +277,7 @@ Two commits closing residual blog image-collision gaps left over from the 2026-0
   - Added missing JSON-LD `BlogPosting.image` field (was absent from schema entirely)
   - Updated body hero `<img>` + alt text from `salt-lake-city-residential-reroof-2026` (which is now spring-roof-inspection-utah's hero — would have re-introduced a collision) → `heber-valley-crew-rooftop` to match og:image
   - All 3 image references now aligned (og:image + body img + JSON-LD image) — full template parity restored
+- **Eager-load blog hero images for faster LCP (commit 40b6073):** User-reported visible blank gap on first paint where blog hero images appeared missing. Root cause: `figure.blog-featured-image` heroes were marked `loading="lazy"` even though they sit just below the dark page header — still in the initial viewport on most devices. Lazy loading was deferring fetch past first paint and dragging LCP. Swapped `loading="lazy"` → `loading="eager" fetchpriority="high"` across all 23 blog posts using the template — web-standard pattern for above/near-the-fold heroes. **0 remaining lazy-loaded heroes** in the blog hero figure template. Affects 23 files (1 line each, +23/−23). Visible-on-paint blog heroes; cleaner LCP signal for Core Web Vitals.
 
 ### 2026-04-24 (afternoon) — AEO Audit Gap Closure + llms.txt Markdown Polish + .vercelignore Incident #3
 Three commits closing gaps surfaced by the 2026-04-24 Perfect Stack AEO audit (score 76/B → projected 91/A-) plus a repeat of the `.vercelignore` sweep booby-trap.
