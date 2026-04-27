@@ -1,5 +1,5 @@
 # Frame Roofing Utah — Claude Master Context
-> Last updated: 2026-04-24 (afternoon) | Auto-refreshed via Cowork scheduled task
+> Last updated: 2026-04-27 | Auto-refreshed via Cowork scheduled task
 
 ---
 
@@ -264,6 +264,18 @@
 ---
 
 ## SESSION LOG
+
+### 2026-04-27 — Blog Hero Image Uniqueness + Template Parity for how-to-choose-a-roofer
+Two commits closing residual blog image-collision gaps left over from the 2026-04-20 hero photo rotation pass.
+- **Reassign 3 duplicate blog hero images to unique real-Landon shots (commit a89192e):** Audit found 35/38 unique og:image entries across blog — three posts were still sharing hero photography. Fixes:
+  - `blog/heber-city/reroofing-complete-guide.html` — `frame-restoration-08` → `heber-custom-reroof-aerial-1` (updated body `<img>`, og:image, and JSON-LD schema image — all 3 references aligned)
+  - `blog/utah/how-to-choose-a-roofer-utah.html` — `frame-restoration-18` → `heber-valley-crew-rooftop` (og:image only at this commit)
+  - `blog/utah/spring-roof-inspection-utah.html` — `heber-city-residential-reroof-2026` → `salt-lake-city-residential-reroof-2026` (og:image + twitter:image)
+  - Result: **38/38 unique og:image entries**, all authentic real-Landon photography. Eliminates cross-post visual collision in social shares + Discover feed.
+- **Bring how-to-choose-a-roofer-utah to template parity (commit 4efcc14):** Follow-up on the prior commit. The post had an inconsistency the audit didn't catch on the first pass — body `<img>` and JSON-LD `image` field weren't aligned with the new og:image. Fixes:
+  - Added missing JSON-LD `BlogPosting.image` field (was absent from schema entirely)
+  - Updated body hero `<img>` + alt text from `salt-lake-city-residential-reroof-2026` (which is now spring-roof-inspection-utah's hero — would have re-introduced a collision) → `heber-valley-crew-rooftop` to match og:image
+  - All 3 image references now aligned (og:image + body img + JSON-LD image) — full template parity restored
 
 ### 2026-04-24 (afternoon) — AEO Audit Gap Closure + llms.txt Markdown Polish + .vercelignore Incident #3
 Three commits closing gaps surfaced by the 2026-04-24 Perfect Stack AEO audit (score 76/B → projected 91/A-) plus a repeat of the `.vercelignore` sweep booby-trap.
