@@ -1,5 +1,16 @@
 {
+  "name": "frame-roofing-utah",
+  "private": true,
+  "scripts": {
+    "market-intel": "node scripts/market-intel.mjs",
+    "market-intel:dataforseo": "node scripts/market-intel.mjs --use-dataforseo",
+    "competitor-ads": "node scripts/competitor-ads.mjs",
+    "competitor-tiktok": "node scripts/competitor-tiktok.mjs"
+  },
   "dependencies": {
     "playwright": "^1.59.1"
+  },
+  "engines": {
+    "node": ">=18"
   }
 }

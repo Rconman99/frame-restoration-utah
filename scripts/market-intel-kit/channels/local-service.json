@@ -1,0 +1,73 @@
+{
+  "vertical": "local-service",
+  "_comment": "Channel definitions + budget floors + factor sensitivities for local-service businesses. Sensitivities: how strongly each input factor bends each channel's score (positive amplifies, negative dampens). Calibrated from WordStream + WebFX 2026 + Frame Roofing Utah year-1 attribution data.",
+  "channels": [
+    {
+      "id": "googleSearch",
+      "name": "Google Ads (Search)",
+      "minMonthlyBudget": 1000,
+      "estimatedCpl": { "low": 124, "mid": 175, "high": 250 },
+      "sensitivity": { "demoFit": 1.0, "searchVolume": 1.3, "paidDensity": -0.8, "organicSat": 0.0, "season": 1.2, "budgetFloor": 1.0 }
+    },
+    {
+      "id": "googleLSA",
+      "name": "Google Local Services Ads",
+      "minMonthlyBudget": 500,
+      "estimatedCpl": { "low": 45, "mid": 90, "high": 130 },
+      "sensitivity": { "demoFit": 1.0, "searchVolume": 1.2, "paidDensity": -0.4, "organicSat": 0.0, "season": 1.3, "budgetFloor": 0.7 }
+    },
+    {
+      "id": "metaAds",
+      "name": "Meta (Facebook + Instagram)",
+      "minMonthlyBudget": 1000,
+      "estimatedCpl": { "low": 40, "mid": 65, "high": 115 },
+      "sensitivity": { "demoFit": 0.8, "searchVolume": 0.3, "paidDensity": 0.4, "organicSat": 0.3, "season": 1.0, "budgetFloor": 0.8 }
+    },
+    {
+      "id": "tiktokAds",
+      "name": "TikTok Ads",
+      "minMonthlyBudget": 3000,
+      "estimatedCpl": { "low": 60, "mid": 90, "high": 120 },
+      "sensitivity": { "demoFit": 0.5, "searchVolume": 0.1, "paidDensity": 0.2, "organicSat": 0.2, "season": 0.6, "budgetFloor": 0.4 }
+    },
+    {
+      "id": "youtubeAds",
+      "name": "YouTube Ads",
+      "minMonthlyBudget": 2000,
+      "estimatedCpl": { "low": 80, "mid": 150, "high": 250 },
+      "sensitivity": { "demoFit": 1.1, "searchVolume": 0.2, "paidDensity": 0.1, "organicSat": 0.0, "season": 0.8, "budgetFloor": 0.3 }
+    },
+    {
+      "id": "seoContent",
+      "name": "SEO + Content + GBP",
+      "minMonthlyBudget": 800,
+      "estimatedCpl": { "low": 30, "mid": 60, "high": 100, "_breakEvenMonth": 6 },
+      "sensitivity": { "demoFit": 0.9, "searchVolume": 1.4, "paidDensity": 0.6, "organicSat": -1.0, "season": 0.7, "budgetFloor": 1.0 }
+    },
+    {
+      "id": "directMail",
+      "name": "Direct Mail (EDDM, storm-trigger)",
+      "minMonthlyBudget": 1500,
+      "estimatedCpl": { "low": 40, "mid": 65, "high": 90 },
+      "sensitivity": { "demoFit": 0.7, "searchVolume": 0.0, "paidDensity": 0.5, "organicSat": 0.5, "season": 1.8, "budgetFloor": 0.5 }
+    }
+  ],
+  "factorWeights": {
+    "demoFit": 0.20,
+    "searchVolume": 0.25,
+    "paidDensity": 0.15,
+    "organicSat": 0.15,
+    "season": 0.15,
+    "budgetFloor": 0.10
+  },
+  "budgetTiers": {
+    "starter": { "min": 0, "max": 5000, "skipChannels": ["tiktokAds", "youtubeAds", "directMail"] },
+    "growth": { "min": 5000, "max": 25000, "skipChannels": [] },
+    "scale": { "min": 25000, "max": null, "skipChannels": [] }
+  },
+  "antiPatterns": [
+    "Door-to-door outreach is illegal under TX HB 2102 and creates legal exposure under §4102.163 (Lon Smith precedent). Never recommend D2D for TX roofing.",
+    "Cold-prospecting Meta lost money in Frame Utah year 1; only recommend Meta retargeting for budgets <$10K.",
+    "TikTok requires consistent creative output (≥2 reels/wk). Skip if the operator can't commit."
+  ]
+}
