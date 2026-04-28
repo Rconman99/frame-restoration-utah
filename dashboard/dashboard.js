@@ -117,16 +117,65 @@
     var el = document.getElementById('ct');
     el.innerHTML = '<div class="ld"><span class="sp"></span> Loading live data...</div>';
     try {
-      var r = await fetch(FAPI + '?key=' + KEY + '&pin=' + encodeURIComponent(PIN) + '&days=' + days);
-      if (r.status === 403) { doLogout(); return; }
-      var D = await r.json();
+      // Fetch current period + 2x period in parallel; derive prior by subtraction.
+      var [currentR, doubleR] = await Promise.all([
+        fetch(FAPI + '?key=' + KEY + '&pin=' + encodeURIComponent(PIN) + '&days=' + days),
+        fetch(FAPI + '?key=' + KEY + '&pin=' + encodeURIComponent(PIN) + '&days=' + (days * 2)),
+      ]);
+      if (currentR.status === 403) { doLogout(); return; }
+      var D = await currentR.json();
       if (D.error) throw new Error(D.error);
+      var D2 = doubleR.ok ? await doubleR.json() : null;
       if (D.user) CUR_USER = D.user;
       document.getElementById('rDate').textContent = new Date(D.generated_at).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
-      render(D);
+      var growth = computeGrowth(D, D2, days);
+      render(D, growth);
     } catch (e) {
       el.innerHTML = '<div class="ld" style="color:var(--red)">Error: ' + e.message + '</div>';
     }
+  }
+
+  // Compute per-metric and per-page growth vs prior period of same length.
+  // Prior-period totals derived by subtraction: current_2N - current_N = prior_N.
+  // Returns: { totals: {pageviews_pct, leads_pct, calls_pct}, pages: { path: pct } }
+  function computeGrowth(current, double, days) {
+    if (!current || !double) return null;
+    var cs = current.summary || {};
+    var ds = double.summary || {};
+    function pct(now, prior) {
+      if (prior == null || prior === 0) return now > 0 ? null : 0; // null = "NEW"
+      return Math.round(((now - prior) / prior) * 100);
+    }
+    var growth = {
+      days: days,
+      totals: {
+        pageviews: pct(cs.total_pageviews || 0, (ds.total_pageviews || 0) - (cs.total_pageviews || 0)),
+        leads:     pct(cs.total_leads || 0,     (ds.total_leads || 0) - (cs.total_leads || 0)),
+        calls:     pct(cs.total_calls || 0,     (ds.total_calls || 0) - (cs.total_calls || 0)),
+        organic:   pct(cs.google_organic || 0,  (ds.google_organic || 0) - (cs.google_organic || 0)),
+      },
+      pages: {},
+    };
+    // Per-page growth — index double.top_pages by path, derive prior per page.
+    var doubleByPath = {};
+    (double.top_pages || []).forEach(function (p) { doubleByPath[p.path] = p.views || 0; });
+    (current.top_pages || []).forEach(function (p) {
+      var doubleViews = doubleByPath[p.path] || 0;
+      var priorViews  = doubleViews - (p.views || 0);
+      growth.pages[p.path] = pct(p.views || 0, priorViews);
+    });
+    return growth;
+  }
+
+  // Format a growth percentage as a colored span. null = NEW (no prior data).
+  function fmtGrowth(g) {
+    if (g === undefined || g === null) {
+      return g === null ? '<span style="color:var(--blue)">NEW</span>' : '<span style="color:var(--muted)">—</span>';
+    }
+    if (g === 0) return '<span style="color:var(--muted)">0%</span>';
+    var color = g > 0 ? 'var(--green)' : 'var(--red)';
+    var sign = g > 0 ? '+' : '';
+    return '<span style="color:' + color + ';font-weight:600">' + sign + g + '%</span>';
   }
 
   // ─── Admin panel ─────────────────────────────────────────────────────
@@ -190,37 +239,48 @@
     return '<div class="ib"><h3>' + t + '</h3><p>' + tx + '</p><p class="a">&rarr; ' + a + '</p></div>';
   }
 
-  function render(D) {
+  function render(D, growth) {
     var S = D.summary || {};
     var G = D.gap_summary || { locations_with_traffic: 0, total_locations: 0, coverage_pct: 0, locations_no_traffic: 0 };
+    var gT = (growth && growth.totals) || {};
+    var growthLabel = growth ? ' <small style="font-size:.65em;font-weight:400;color:var(--muted)">vs prior ' + growth.days + 'd</small>' : '';
 
     var h = '<div class="kg">';
     [
-      { v: S.total_pageviews || 0, l: 'Pageviews', c: '' },
-      { v: S.google_organic || 0, l: 'Google Organic', c: 'g' },
-      { v: S.total_leads || 0, l: 'Form Leads', c: 'b' },
-      { v: S.total_calls || 0, l: 'Inbound Calls', c: 'b' },
+      { v: S.total_pageviews || 0, l: 'Pageviews', c: '', growth: gT.pageviews },
+      { v: S.google_organic || 0, l: 'Google Organic', c: 'g', growth: gT.organic },
+      { v: S.total_leads || 0, l: 'Form Leads', c: 'b', growth: gT.leads },
+      { v: S.total_calls || 0, l: 'Inbound Calls', c: 'b', growth: gT.calls },
       { v: (S.total_call_minutes || 0) + 'm', l: 'Call Minutes', c: 'p' },
       { v: (S.conversion_rate_pct || 0) + '%', l: 'Conversion Rate', c: '' },
       { v: (G.locations_with_traffic || 0) + '/' + (G.total_locations || 0), l: 'Locations Active', c: 'g' },
       { v: '$' + (S.total_job_value || 0), l: 'Revenue Tracked', c: '' }
     ].forEach(function (k) {
-      h += '<div class="kc ' + k.c + '"><div class="v">' + k.v + '</div><div class="l">' + k.l + '</div></div>';
+      var growthBadge = '';
+      if (k.growth !== undefined) {
+        growthBadge = '<div style="font-size:.78rem;margin-top:2px">' + fmtGrowth(k.growth) + growthLabel + '</div>';
+      }
+      h += '<div class="kc ' + k.c + '"><div class="v">' + k.v + '</div><div class="l">' + k.l + '</div>' + growthBadge + '</div>';
     });
     h += '</div>';
 
     h += '<div class="cg"><div class="cc"><h3>Traffic by Section</h3><canvas id="pieC"></canvas></div><div class="cc"><h3>Traffic Sources</h3><canvas id="barC"></canvas></div></div>';
 
-    h += '<div class="sec"><div class="st">Top Pages <span class="badge bb">by pageviews</span></div><div class="cc"><table><thead><tr><th>Page</th><th class="num">Views</th><th class="num">%</th></tr></thead><tbody>';
+    var growthHdr = growth ? '<th class="num">Growth (vs prior ' + growth.days + 'd)</th>' : '';
+    h += '<div class="sec"><div class="st">Top Pages <span class="badge bb">by pageviews</span></div><div class="cc"><table><thead><tr><th>Page</th><th class="num">Views</th><th class="num">%</th>' + growthHdr + '</tr></thead><tbody>';
     var tp = D.top_pages || [];
     if (tp.length) {
       tp.forEach(function (p) {
         var pct = S.total_pageviews > 0 ? (p.views / S.total_pageviews * 100).toFixed(1) : '0';
         var nm = p.path === '/' ? 'Homepage' : p.path.replace(/^\//, '').replace(/\//g, ' / ');
-        h += '<tr><td>' + nm + '</td><td class="num">' + p.views + '</td><td class="num">' + pct + '%</td></tr>';
+        var growthCell = '';
+        if (growth) {
+          growthCell = '<td class="num">' + fmtGrowth(growth.pages[p.path]) + '</td>';
+        }
+        h += '<tr><td>' + nm + '</td><td class="num">' + p.views + '</td><td class="num">' + pct + '%</td>' + growthCell + '</tr>';
       });
     } else {
-      h += '<tr><td colspan="3" style="color:var(--muted);text-align:center">Pageview data collecting</td></tr>';
+      h += '<tr><td colspan="' + (growth ? 4 : 3) + '" style="color:var(--muted);text-align:center">Pageview data collecting</td></tr>';
     }
     h += '</tbody></table></div></div>';
 
