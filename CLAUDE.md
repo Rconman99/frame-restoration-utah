@@ -254,6 +254,63 @@
 
 ---
 
+## 💰 MARKETING BUILD (Active April 2026)
+
+**Entry point for all marketing work:** [`data/MARKETING-BUILD-CONTEXT.md`](data/MARKETING-BUILD-CONTEXT.md)
+
+That file is the canonical "start here" for any agent (Cowork, Claude Code, future-you) working on Frame Utah marketing. It contains the active $15K/mo allocation, Wave 1 findings already integrated, Wave 2 fire commands, free actions today, KPI scoreboard, confidence scorecard, and full file index.
+
+### Quick reference
+
+**Active $15K/mo allocation (Wave 1 deltas applied):**
+- $7,500 — Tier-1 priority cities (Park City, Heber, Draper, Salt Lake, Cottonwood Heights, Midway)
+- $2,500 — Tier-2/3 volume layer (West Valley, Sandy, Bountiful, Lehi)
+- **$1,700 — Reviews acquisition** ⭐ (closes 20→60+ vs roofingutah.com's 54)
+- $1,300 — YouTube + TikTok organic + light boost (Heber drone reuse)
+- $700 — Content moat (narrowed scope after Wave 1)
+- $800 — Storm-trigger reserve (May-Sept hail/wind + Dec-Feb ice dam)
+- $500 / $0 — Yelp (decision pending — trial expired 2026-04-27)
+
+**Critical Wave 1 finding:** roofingutah.com has not published a blog post since 2024-05-31 (sitemap-verified). Frame Utah's content moat is essentially already built; the actual gap is reviews + GBP. Allocation reflects this.
+
+### Wired npm scripts (in `package.json`)
+
+| Command | Purpose | Cost (live mode) |
+|---|---|---|
+| `npm run market-intel` | Offline scoring of 45 cities (smoke test) | $0 |
+| `npm run market-intel:dataforseo` | Real per-city SERP + KW + paid-density | ~$0.30 / 45 cities |
+| `npm run competitor-ads` | SerpAPI scan on roofingutah.com + utahroofingcompany.com + reignroofing.com | ~$0.15 |
+| `npm run competitor-tiktok` | Apify TikTok scrape on UT competitor handles | ~$1.50 |
+
+All scripts dry-run when env vars (`SERPAPI_KEY`, `APIFY_TOKEN`, `DATAFORSEO_*`, `CENSUS_API_KEY`) are missing — they print queries + estimated spend, exit 0, no API calls.
+
+**Total Wave 2 spend:** ~$33 one-time across both Frame projects (UT + TX). Pending company CC.
+
+### Free actions (no CC needed — do these first)
+
+1. Pull Yelp 30-day dashboard → today's $510/mo decision
+2. Pull GSC last-30-days → refresh March-30 baseline
+3. Run `scripts/supabase-pipeline-query.sql` in Supabase SQL Editor → real per-city job-value + close-rate
+4. Pull PostHog form-submission count last 30 days
+5. Google Keyword Planner: Park City + Heber + Draper
+6. 15-min Birdeye / NiceJob / Podium pricing calls
+7. Send 5 manual review-requests via existing edge function
+8. Storm-trigger fire drill via iMessage to Landon
+
+### Key marketing files
+- `data/MARKETING-BUILD-CONTEXT.md` — **canonical entry point**
+- `data/market-intel-audit-2026-04-27.md` — full $15K deep-dive audit
+- `scripts/market-intel-kit/README.md` — bundled scoring + allocator kit docs
+- `scripts/supabase-pipeline-query.sql` — ready-to-paste SQL for Supabase
+- Cross-project research framework: `~/projects/frame-roofing-research-plan-to-A-grade-2026-04-27.md`
+- Cross-project Wave 2 punch-list: `~/projects/frame-roofing-wave-2-readiness-2026-04-27.md`
+
+### Operational separation reminder
+
+Frame TX (`framerestoration.com` singular) and Frame Utah (`frameroofingutah.com`) are independent operational entities. **Never share runtime state, scheduled triggers, Twilio numbers, or GBP listings between projects.** Cross-project research artifacts at `~/projects/frame-roofing-*.md` are documentation only — not a license to cross-trigger. See § "Operational Separation from Frame Utah (enforced 2026-04-27)" in this CLAUDE.md.
+
+---
+
 ## GIT WORKFLOW
 
 - All work in `/Users/agenticmac/projects/frame-restoration-utah/` (NOT tradeworker-site/frame-restoration-utah — that is a stale obsolete copy)
