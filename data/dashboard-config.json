@@ -1,0 +1,86 @@
+{
+  "client": {
+    "name": "Frame Roofing Utah",
+    "tagline": "SEO & Lead Attribution Tracker",
+    "domain": "frameroofingutah.com",
+    "footerLinks": [
+      {
+        "label": "PostHog Dashboard",
+        "url": "https://us.posthog.com/project/333074"
+      }
+    ]
+  },
+  "supabase": {
+    "projectId": "",
+    "url": "https://hdcflshhomzildwqlmwh.supabase.co",
+    "anonKey": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhkY2Zsc2hob216aWxkd3FsbXdoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDI3NjI3NjQsImV4cCI6MjA1ODMzODc2NH0.kWSlGEtBgPFOx5eq8MYGz3VDqhAdqQTdGVlQqdRuzXk"
+  },
+  "dashboard": {
+    "campaignKey": "frame-roofing-2026",
+    "defaultDays": 30,
+    "ranges": [
+      7,
+      14,
+      30,
+      90
+    ],
+    "url": "/dashboard/",
+    "branding": {
+      "primaryColor": "#0B4060",
+      "accentColor": "#c8a951",
+      "logoUrl": "/images/logo.png"
+    }
+  },
+  "dataSources": {
+    "supabase": {
+      "enabled": true,
+      "tables": [
+        "leads",
+        "calls",
+        "report_access"
+      ]
+    },
+    "gsc": {
+      "enabled": false
+    },
+    "googleAds": {
+      "enabled": false
+    },
+    "gbp": {
+      "enabled": false
+    },
+    "posthog": {
+      "enabled": false
+    },
+    "crux": {
+      "enabled": false
+    },
+    "callrail": {
+      "enabled": false
+    },
+    "serpapi": {
+      "enabled": false
+    },
+    "stripe": {
+      "enabled": false
+    }
+  },
+  "kpis": {
+    "preset": "local-service",
+    "vertical": "local-service",
+    "showRevenue": true,
+    "commissionPct": 10
+  },
+  "alerts": {
+    "leadSms": {
+      "enabled": false
+    },
+    "stormReactivity": {
+      "enabled": false
+    },
+    "weeklyAiSummary": {
+      "enabled": false
+    }
+  },
+  "builderAttribution": "Built by Ryan Conwell"
+}

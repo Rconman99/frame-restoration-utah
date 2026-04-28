@@ -1,0 +1,196 @@
+/**
+ * RCBuild-Kit Client Dashboard — base stylesheet
+ *
+ * Vendored from Frame Roofing Utah's seo-report.html (2026-04-27).
+ * Brand-accent color is injected inline in index.html via :root { --brand-accent: ... }.
+ *
+ * Color tokens — dark theme by default. Override --brand-accent per client;
+ * the rest of the palette stays fixed for visual consistency across clients.
+ */
+:root {
+  --bg: #0d1117;
+  --card: #161b22;
+  --border: #30363d;
+  --text: #e6edf3;
+  --muted: #8b949e;
+  --gold: var(--brand-accent, #c8a951);
+  --green: #3fb950;
+  --blue: #58a6ff;
+  --purple: #bc8cff;
+  --red: #f85149;
+  --orange: #d29922;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+}
+
+/* Login overlay */
+#loginOverlay {
+  position: fixed; top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: var(--bg);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 1000; flex-direction: column;
+}
+.login-box {
+  background: var(--card); border: 1px solid var(--border); border-radius: 16px;
+  padding: 48px 40px; max-width: 400px; width: 90%;
+  text-align: center; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+}
+.login-box h1 { font-size: 1.6rem; margin-bottom: 6px; color: var(--gold); }
+.login-box .sub { color: var(--muted); font-size: 0.9rem; margin-bottom: 28px; }
+.login-box input {
+  width: 100%; padding: 14px 16px; border: 1px solid var(--border); border-radius: 8px;
+  background: var(--bg); color: var(--text);
+  font-size: 1.1rem; text-align: center; letter-spacing: 4px;
+  outline: none; margin-bottom: 16px; transition: border 0.2s;
+}
+.login-box input:focus { border-color: var(--gold); }
+.login-box input::placeholder { letter-spacing: normal; color: var(--muted); }
+.login-btn {
+  width: 100%; padding: 14px; border: none; border-radius: 8px;
+  background: var(--gold); color: var(--bg);
+  font-size: 1rem; font-weight: 600; cursor: pointer; transition: opacity 0.2s;
+}
+.login-btn:hover { opacity: 0.85; }
+.login-err { color: var(--red); font-size: 0.85rem; margin-top: 12px; min-height: 20px; }
+.login-lock { font-size: 2.5rem; margin-bottom: 16px; }
+
+#reportWrap { display: none; }
+
+/* Header */
+.hdr {
+  padding: 20px 24px; border-bottom: 1px solid var(--border);
+  display: flex; justify-content: space-between; align-items: center;
+  flex-wrap: wrap; gap: 12px;
+}
+.hdr h1 { font-size: 1.4rem; color: var(--gold); }
+.meta { text-align: right; font-size: 0.85rem; color: var(--muted); }
+.period { font-size: 1rem; font-weight: 600; color: var(--text); }
+.user-bar { display: flex; align-items: center; gap: 8px; margin-top: 6px; justify-content: flex-end; }
+.user-name { color: var(--green); font-weight: 500; font-size: 0.85rem; }
+.user-role {
+  color: var(--muted); font-size: 0.75rem;
+  background: rgba(139, 148, 158, 0.15); padding: 2px 8px; border-radius: 10px;
+}
+
+/* Time-range toolbar */
+.tb {
+  display: flex; gap: 6px; padding: 12px 24px;
+  border-bottom: 1px solid var(--border);
+  flex-wrap: wrap; align-items: center;
+}
+.pb {
+  padding: 6px 16px; border: 1px solid var(--border); border-radius: 20px;
+  background: transparent; color: var(--muted); cursor: pointer;
+  font-size: 0.85rem; transition: all 0.2s;
+}
+.pb:hover { border-color: var(--gold); color: var(--text); }
+.pb.act { background: var(--gold); color: var(--bg); border-color: var(--gold); font-weight: 600; }
+
+.rb { padding: 6px 14px; border: 1px solid var(--border); border-radius: 20px;
+      background: transparent; color: var(--muted); cursor: pointer; font-size: 0.85rem; }
+.rb:hover { border-color: var(--green); color: var(--green); }
+
+.sm-btn { padding: 6px 14px; border: 1px solid var(--border); border-radius: 20px;
+          background: transparent; color: var(--muted); cursor: pointer; font-size: 0.85rem; }
+.sm-btn:hover { border-color: var(--blue); color: var(--blue); }
+.sm-btn.red:hover { border-color: var(--red); color: var(--red); }
+
+/* Content area */
+#ct { padding: 24px; }
+.ld { text-align: center; padding: 60px; color: var(--muted); font-size: 1.1rem; }
+.sp {
+  display: inline-block; width: 18px; height: 18px;
+  border: 2px solid var(--gold); border-top-color: transparent;
+  border-radius: 50%; animation: spin 1s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* KPI grid */
+.kg { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 14px; margin-bottom: 24px; }
+.kc { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 18px; text-align: center; }
+.kc .v { font-size: 2rem; font-weight: 700; }
+.kc .l { font-size: 0.8rem; color: var(--muted); margin-top: 4px; }
+.kc.g .v { color: var(--green); }
+.kc.b .v { color: var(--blue); }
+.kc.p .v { color: var(--purple); }
+
+/* Chart grid */
+.cg { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px; }
+@media (max-width: 768px) { .cg { grid-template-columns: 1fr; } }
+.cc { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 18px; }
+.cc h3 { font-size: 0.95rem; color: var(--muted); margin-bottom: 12px; }
+
+/* Tables */
+table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+th { text-align: left; color: var(--muted); font-weight: 500; padding: 8px 10px; border-bottom: 1px solid var(--border); }
+td { padding: 8px 10px; border-bottom: 1px solid rgba(48, 54, 61, 0.4); }
+.num { text-align: right; }
+
+/* Sections + badges */
+.sec { margin-bottom: 24px; }
+.st { font-size: 1.1rem; font-weight: 600; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+.badge { font-size: 0.75rem; padding: 2px 10px; border-radius: 10px; font-weight: 500; }
+.bg { background: rgba(63, 185, 80, 0.15); color: var(--green); }
+.bb { background: rgba(88, 166, 255, 0.15); color: var(--blue); }
+.bgo { background: rgba(210, 153, 34, 0.15); color: var(--orange); }
+
+/* Location chips */
+.lg { display: flex; flex-wrap: wrap; gap: 6px; }
+.lc { padding: 4px 10px; border-radius: 8px; font-size: 0.78rem; font-weight: 500; }
+.lh { background: rgba(63, 185, 80, 0.15); color: var(--green); }
+.lw { background: rgba(210, 153, 34, 0.15); color: var(--orange); }
+.ll { background: rgba(48, 54, 61, 0.5); color: var(--muted); }
+
+/* Insights */
+.ib { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 18px; margin-bottom: 12px; }
+.ib h3 { font-size: 1rem; margin-bottom: 6px; }
+.ib p { color: var(--muted); font-size: 0.9rem; line-height: 1.5; }
+.ib .a { color: var(--gold); font-weight: 500; margin-top: 6px; }
+
+footer { text-align: center; padding: 32px; color: var(--muted); font-size: 0.8rem; border-top: 1px solid var(--border); }
+footer a { color: var(--blue); text-decoration: none; }
+
+/* Admin modal */
+.modal-bg {
+  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 2000; display: none; align-items: center; justify-content: center;
+}
+.modal-bg.show { display: flex; }
+.modal {
+  background: var(--card); border: 1px solid var(--border); border-radius: 16px;
+  padding: 32px; max-width: 500px; width: 90%; max-height: 80vh; overflow-y: auto;
+}
+.modal h2 { font-size: 1.2rem; color: var(--gold); margin-bottom: 16px; }
+.modal .close-btn {
+  float: right; background: none; border: none; color: var(--muted);
+  font-size: 1.4rem; cursor: pointer;
+}
+.modal .close-btn:hover { color: var(--text); }
+.modal table { margin-bottom: 16px; }
+.modal td .status-on { color: var(--green); }
+.modal td .status-off { color: var(--red); }
+
+.add-row { display: flex; gap: 8px; margin-top: 12px; }
+.add-row input {
+  flex: 1; padding: 10px; border: 1px solid var(--border); border-radius: 8px;
+  background: var(--bg); color: var(--text); font-size: 0.9rem; outline: none;
+}
+.add-row input:focus { border-color: var(--gold); }
+.add-row button {
+  padding: 10px 20px; border: none; border-radius: 8px;
+  background: var(--gold); color: var(--bg);
+  font-weight: 600; cursor: pointer; font-size: 0.9rem; white-space: nowrap;
+}
+.add-row button:hover { opacity: 0.85; }
+
+.toggle-btn { padding: 4px 12px; border: 1px solid var(--border); border-radius: 6px; background: transparent; cursor: pointer; font-size: 0.8rem; }
+.toggle-btn.on { color: var(--green); border-color: var(--green); }
+.toggle-btn.off { color: var(--red); border-color: var(--red); }
