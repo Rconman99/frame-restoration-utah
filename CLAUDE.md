@@ -1,5 +1,5 @@
 # Frame Roofing Utah — Claude Master Context
-> Last updated: 2026-04-27 | Auto-refreshed via Cowork scheduled task
+> Last updated: 2026-04-27 (evening) | Auto-refreshed via Cowork scheduled task
 
 ---
 
@@ -105,7 +105,9 @@
   - City subdirectories: heber-city/5, salt-lake-city/4, park-city/3, sandy/2, **bountiful/2** (added davis-county-wind-damage-guide 2026-04-20), plus 1 each in draper, herriman, layton, lehi, murray, orem, provo, west-jordan, west-valley-city (~25 city posts)
 - `/projects/` — 1 case study (heber-valley-roof)
 - `pages/gallery.html` — Now leads with **FEATURED IN-PROGRESS PROJECT** section (Heber Valley custom reroof): aerial panorama hero + 3-up grid + drone flyover video player; 4 new residential cards added at top of filtered grid (added 2026-04-20)
-- `/seo-report/` — Live SEO & Lead Attribution Tracker (PIN-gated, multi-user admin panel, 30-day default view, Chart.js rendering)
+- `/seo-report/` — Live SEO & Lead Attribution Tracker (PIN-gated, multi-user admin panel, 30-day default view, Chart.js rendering). **2026-04-27:** Now ships alongside `/dashboard/` (productized successor) as fallback during ~7-day soak; planned 301 to /dashboard/ once verified.
+- `/dashboard/` — **NEW 2026-04-27.** Productized client-dashboard module vendored from RCBuild-Kit v0.8.0. Config-driven via `window.DASHBOARD_CONFIG` (reads `data/dashboard-config.json` for Supabase URL + anon key + campaign key + branding). Same edge function (`/functions/v1/weekly-report`), same PIN system, same Supabase tables — existing PINs continue to work. Files: `dashboard/index.html`, `dashboard/dashboard.css` (--brand-accent CSS var for white-label), `dashboard/dashboard.js` (PIN gate + KPI grid + charts + admin panel). Hotfix 801bc59: absolute paths for CSS/JS (Vercel cleanUrls+trailingSlash:false strips /dashboard/ → /dashboard, breaking relative path resolution).
+- `/scripts/` — **NEW 2026-04-27.** Wave 2 marketing-intel runners: `market-intel.mjs` + `market-intel-config.json` (45-city × 4-tier scoring), `market-intel-kit/` (bundled scoring + allocator + sources from RCBuild-Kit v0.7.0), `competitor-ads.mjs` (SerpAPI sweep), `competitor-tiktok.mjs` (Apify scraper), `supabase-pipeline-query.sql` (per-city job-value + close-rate from leads table). All dry-run when env vars missing. Vercelignored.
 - `/review/` — Review landing page + `review-request` edge function (automated post-job review collection)
 - `backlink-playbook.html` — 12 backlink acquisition opportunities with step-by-step instructions
 - `directory-blitz-tool.html` — Directory blitz tool v4 with full blitz results (Angi marked Already Done 2026-04-13)
@@ -322,6 +324,29 @@ Frame TX (`framerestoration.com` singular) and Frame Utah (`frameroofingutah.com
 ---
 
 ## SESSION LOG
+
+### 2026-04-27 (evening) — Dashboard Module + Marketing Build Context + Wave 2 Wiring + /dashboard/ Hotfix
+Two PRs merged via release branch `release/2026-04-27-dashboard-and-marketing` plus the immediate hotfix.
+- **PR #1 (commit bb48056):** `/dashboard/` productized module + marketing build context + Wave 2 marketing-intel wiring. **27 files changed, +5708/−1.**
+  - **`/dashboard/` module** — productized client-dashboard vendored from RCBuild-Kit v0.8.0, replaces standalone `seo-report.html` pattern with a parameterized template. Config-driven via `window.DASHBOARD_CONFIG` (reads `data/dashboard-config.json`). **Same edge function (`/functions/v1/weekly-report`), same PIN system, same Supabase tables — existing PINs continue to work.** Files added: `dashboard/index.html` (118), `dashboard/dashboard.css` (196, with `--brand-accent` CSS variable for white-label), `dashboard/dashboard.js` (353; identical UX to seo-report.html — PIN gate, KPI grid, charts, admin panel), `data/dashboard-config.json` (86, per-client install state).
+  - **Migration path:** `/seo-report.html` ships unchanged as fallback. After ~7-day soak verifying `/dashboard/` in production, plan 301 from `/seo-report.html` → `/dashboard/`.
+  - **`.vercelignore` cross-state leak guard** — added 15+ Texas-pattern globs (`Fort-Worth-*`, `Dallas-*`, `Frisco-*`, `Plano-*`, `McKinney-*`, `Allen-*`, `Prosper-*`, `Celina-*`, `Lewisville-*`, `Carrollton-*`, `Flower-Mound-*`, `Southlake-*`, `TX-*`, `Texas-*`, `DFW-*`) so TX content can never accidentally deploy on the Utah site. Mirrors the brand-boundary lockdown enforced 2026-04-22.
+  - **Marketing build context (canonical entry-point pattern):**
+    - `data/MARKETING-BUILD-CONTEXT.md` (308 lines) — single "start here" doc for any agent (Cowork, Claude Code, future-you) working on Frame Utah marketing. Contains active $15K/mo allocation, Wave 1 findings already integrated, Wave 2 fire commands, free actions today, KPI scoreboard, confidence scorecard, full file index.
+    - `data/market-intel-audit-2026-04-27.md` (252 lines) — full $15K/mo deep-dive audit: Tier-1-4 city ranking with EV math, channel ranking with Utah-specific CPL, Wave 1-3 confidence scorecard, KPI dashboard, open decisions.
+    - `DASHBOARD-SECURITY-CHECKLIST.md` (122 lines) — per-project security verification with active curl tests for RLS posture (vercelignored as `*.md`).
+  - **CLAUDE.md self-update (+57 lines):** new "💰 MARKETING BUILD (Active April 2026)" section between PRIORITY TODO and GIT WORKFLOW. Quick-reference allocation, Wave 1 finding (roofingutah.com content-DORMANT since 2024-05-31 → reviews acquisition is the actual gap, not content), npm scripts table, free actions, key files list, operational separation reminder pointing at MARKETING-BUILD-CONTEXT.md as canonical entry.
+  - **Wave 2 marketing-intel wiring (~$33 spend pending company CC):**
+    - `scripts/market-intel.mjs` + `scripts/market-intel-config.json` — 45 Wasatch Front + Heber Valley cities × 4 tiers, $15K growth tier
+    - `scripts/market-intel-kit/` — bundled scoring + allocator + sources from RCBuild-Kit v0.7.0 (kept in-repo so runner works without npm-link)
+    - `scripts/competitor-ads.mjs` — SerpAPI sweep on roofingutah.com + utahroofingcompany.com + reignroofing.com (~30 queries × $0.005 = ~$0.15)
+    - `scripts/competitor-tiktok.mjs` — Apify TikTok scraper for UT competitor handles (~5 profiles × $0.30 = ~$1.50)
+    - `scripts/supabase-pipeline-query.sql` — ready-to-paste SQL for real per-city job-value + close-rate from `leads` table (Tier C → A unlock)
+    - All scripts dry-run when env vars (`SERPAPI_KEY`, `APIFY_TOKEN`, `DATAFORSEO_*`, `CENSUS_API_KEY`) are missing — print queries + estimated spend, exit 0, no API calls.
+    - First-run output committed: `data/market-intel-report.md` (449), `data/market-intel-allocation.json` (2099) — offline mode all-neutral factors → all-LSA naive allocation; documents the concentration argument from the audit.
+  - **`package.json`:** 4 npm scripts wired — `npm run market-intel`, `market-intel:dataforseo`, `competitor-ads`, `competitor-tiktok`. `scripts/*` and `*.md` vercelignored; `data/market-intel-allocation.json` deploys but contains no PII (internal scoring snapshot only).
+  - **Side update:** `directory-tracker.html` — BuildZoom directory submission marked Live with profile URL (`https://www.buildzoom.com/contractor/frame-restoration-utah-llc`).
+- **PR #2 / hotfix (commit 801bc59):** Fix `/dashboard/` — use absolute paths for CSS + JS. **Bug:** Vercel's `cleanUrls` + `trailingSlash:false` combo redirects `/dashboard/` → `/dashboard` (no trailing slash). With relative paths, `dashboard.css` resolved to `/dashboard.css` (sibling, 404) instead of `/dashboard/dashboard.css` (child, the actual file). Cascade: `dashboard.js` never loaded → `window.__dashboard` undefined → form's `onsubmit` handler threw `TypeError` → form submitted natively → page reloaded with no auth attempted. User saw "PIN didn't work" because the JS path that would have called the edge function never executed. **Fix:** switch `<link>` / `<script>` tags to absolute paths so resolution doesn't depend on the request URL's trailing-slash state. Same fix applied upstream in RCBuild-Kit `core/client-dashboard/template/`.
 
 ### 2026-04-27 — Blog Hero Image Uniqueness + Template Parity + Eager-Load LCP Fix
 Three commits closing residual blog image-collision gaps left over from the 2026-04-20 hero photo rotation pass and a follow-up perf fix for blog hero LCP.
