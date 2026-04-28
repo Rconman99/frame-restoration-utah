@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>Frame Roofing Utah — SEO & Lead Attribution Tracker</title>
+
+  <!-- Brand-accent injection (build-time substitution) -->
+  <style>:root { --brand-accent: #c8a951; }</style>
+
+  <link rel="stylesheet" href="dashboard.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+
+  <!-- Per-client config (build-time substitution) -->
+  <script>
+    window.DASHBOARD_CONFIG = {
+      clientName:         "Frame Roofing Utah",
+      tagline:            "SEO & Lead Attribution Tracker",
+      supabaseUrl:        "https://hdcflshhomzildwqlmwh.supabase.co",
+      supabaseAnonKey:    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhkY2Zsc2hob216aWxkd3FsbXdoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDI3NjI3NjQsImV4cCI6MjA1ODMzODc2NH0.kWSlGEtBgPFOx5eq8MYGz3VDqhAdqQTdGVlQqdRuzXk",
+      campaignKey:        "frame-roofing-2026",
+      defaultDays:        30,
+      ranges:             [7,14,30,90],
+      footerLinks:        [{"label":"PostHog Dashboard","url":"https://us.posthog.com/project/333074"}],
+      builderAttribution: "Built by Ryan Conwell"
+    };
+  </script>
+</head>
+<body>
+
+<!-- Login overlay -->
+<div id="loginOverlay">
+  <div class="login-box">
+    <div class="login-lock">&#128274;</div>
+    <h1>Frame Roofing Utah</h1>
+    <p class="sub">SEO & Lead Attribution Tracker</p>
+    <form id="loginForm" onsubmit="return window.__dashboard.doLogin(event)">
+      <input type="password" id="pinInput" placeholder="Enter PIN" autocomplete="off" autofocus>
+      <button type="submit" class="login-btn">Unlock Report</button>
+    </form>
+    <div class="login-err" id="loginErr"></div>
+  </div>
+</div>
+
+<!-- Main report -->
+<div id="reportWrap">
+  <div class="hdr">
+    <div>
+      <h1>Frame Roofing Utah</h1>
+      <small>SEO & Lead Attribution Tracker</small>
+    </div>
+    <div class="meta">
+      <div>Live Data &middot; <span id="rDate"></span></div>
+      <div class="period" id="rPeriod">Last 30 Days</div>
+      <div class="user-bar">
+        <span class="user-name" id="userName"></span>
+        <span class="user-role" id="userRole"></span>
+      </div>
+      <div style="margin-top:6px">
+        <button class="rb" onclick="window.__dashboard.refresh()">&#x21bb; Refresh</button>
+        <button class="sm-btn" id="manageBtn" onclick="window.__dashboard.openAdmin()" style="display:none">Manage Users</button>
+        <button class="sm-btn red" onclick="window.__dashboard.doLogout()">Logout</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="tb" id="rangeBar">
+    <!-- Populated by inline init below using window.DASHBOARD_CONFIG.ranges -->
+  </div>
+
+  <div id="ct"></div>
+
+  <footer>
+    Frame Roofing Utah — Live Dashboard &middot; Powered by Supabase + Chart.js<br>
+    Built by Ryan Conwell &middot; <a href="https://us.posthog.com/project/333074" target="_blank">PostHog Dashboard &#8599;</a>
+  </footer>
+</div>
+
+<!-- Admin Modal -->
+<div class="modal-bg" id="adminModal">
+  <div class="modal">
+    <button class="close-btn" onclick="window.__dashboard.closeAdmin()">&times;</button>
+    <h2>Manage Report Access</h2>
+    <table id="accessTable">
+      <thead><tr><th>Name</th><th>PIN</th><th>Role</th><th>Status</th><th></th></tr></thead>
+      <tbody id="accessBody"></tbody>
+    </table>
+    <h3 style="font-size:.95rem;color:var(--muted);margin:16px 0 8px">Add New User</h3>
+    <div class="add-row">
+      <input type="text" id="newName" placeholder="Name">
+      <input type="text" id="newPin" placeholder="PIN code">
+      <button onclick="window.__dashboard.addUser()">Add</button>
+    </div>
+    <div id="adminMsg" style="color:var(--green);font-size:.85rem;margin-top:10px;min-height:20px"></div>
+  </div>
+</div>
+
+<!-- Build the time-range buttons from config.ranges -->
+<script>
+(function () {
+  var ranges = (window.DASHBOARD_CONFIG && window.DASHBOARD_CONFIG.ranges) || [7, 14, 30, 90];
+  var def    = (window.DASHBOARD_CONFIG && window.DASHBOARD_CONFIG.defaultDays) || 30;
+  var bar = document.getElementById('rangeBar');
+  ranges.forEach(function (d) {
+    var b = document.createElement('button');
+    b.className = 'pb' + (d === def ? ' act' : '');
+    b.textContent = d + ' Days';
+    b.onclick = function () { window.__dashboard.sw(d, b); };
+    bar.appendChild(b);
+  });
+})();
+</script>
+
+<script src="dashboard.js"></script>
+
+</body>
+</html>

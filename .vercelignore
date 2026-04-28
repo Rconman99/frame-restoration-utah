@@ -66,6 +66,26 @@ seo-audit-*.html
 google-maps-pins.html
 eval-review.html
 
+# Cross-state leak guard — these are TEXAS / DFW content, must NEVER deploy on
+# Frame Roofing UTAH. Honors the brand-boundary lockdown enforced 2026-04-22 +
+# 2026-04-27. If you see any of these files locally, they belong in
+# ~/projects/frame-restoration-texas/ not here.
+Fort-Worth-*.html
+Dallas-*.html
+DFW-*.html
+Frisco-*.html
+Plano-*.html
+McKinney-*.html
+Allen-*.html
+Prosper-*.html
+Celina-*.html
+Lewisville-*.html
+Carrollton-*.html
+Flower-Mound-*.html
+Southlake-*.html
+TX-*.html
+Texas-*.html
+
 # Office docs + zips + raw photo exports
 *.zip
 *.docx
