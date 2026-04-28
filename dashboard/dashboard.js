@@ -307,7 +307,7 @@
               borderWidth: 0
             }]
           },
-          options: { responsive: true, plugins: { legend: { position: 'bottom', labels: { color: '#8b949e', padding: 12, font: { size: 12 } } } } }
+          options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { color: '#8b949e', padding: 12, font: { size: 12 } } } } }
         });
       }
       var be = document.getElementById('barC');
@@ -326,7 +326,7 @@
             }]
           },
           options: {
-            responsive: true, indexAxis: 'y',
+            responsive: true, maintainAspectRatio: false, indexAxis: 'y',
             plugins: { legend: { display: false } },
             scales: {
               x: { grid: { color: 'rgba(48,54,61,.5)' }, ticks: { color: '#8b949e' } },
