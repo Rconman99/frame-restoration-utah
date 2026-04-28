@@ -126,6 +126,8 @@ body {
 @media (max-width: 768px) { .cg { grid-template-columns: 1fr; } }
 .cc { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 18px; }
 .cc h3 { font-size: 0.95rem; color: var(--muted); margin-bottom: 12px; }
+/* Cap canvas height so wide monitors don't get 1500px-tall doughnut charts */
+.cc canvas { max-height: 280px !important; width: 100% !important; height: auto !important; }
 
 /* Tables */
 table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
