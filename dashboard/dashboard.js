@@ -245,7 +245,10 @@
     var gT = (growth && growth.totals) || {};
     var growthLabel = growth ? ' <small style="font-size:.65em;font-weight:400;color:var(--muted)">vs prior ' + growth.days + 'd</small>' : '';
 
-    var h = '<div class="kg">';
+    // Storm Watch placeholder — populated async after NWS API fetch
+    var h = '<div id="stormWatch" class="sec"></div>';
+
+    h += '<div class="kg">';
     [
       { v: S.total_pageviews || 0, l: 'Pageviews', c: '', growth: gT.pageviews },
       { v: S.google_organic || 0, l: 'Google Organic', c: 'g', growth: gT.organic },
@@ -265,6 +268,51 @@
     h += '</div>';
 
     h += '<div class="cg"><div class="cc"><h3>Traffic by Section</h3><canvas id="pieC"></canvas></div><div class="cc"><h3>Traffic Sources</h3><canvas id="barC"></canvas></div></div>';
+
+    // ─── Biggest Movers section (driven by growth data) ───
+    if (growth && Object.keys(growth.pages).length > 0) {
+      var pageEntries = Object.entries(growth.pages).map(function (e) {
+        var path = e[0], g = e[1];
+        var page = (D.top_pages || []).find(function (p) { return p.path === path; });
+        var views = page ? page.views : 0;
+        var nm = path === '/' ? 'Homepage' : path.replace(/^\//, '').replace(/\//g, ' / ');
+        return { path: path, name: nm, views: views, growth: g };
+      });
+      var winners = pageEntries.filter(function (p) { return typeof p.growth === 'number' && p.growth > 0; })
+                               .sort(function (a, b) { return b.growth - a.growth; }).slice(0, 3);
+      var losers  = pageEntries.filter(function (p) { return typeof p.growth === 'number' && p.growth < 0; })
+                               .sort(function (a, b) { return a.growth - b.growth; }).slice(0, 3);
+      var freshes = pageEntries.filter(function (p) { return p.growth === null; }).slice(0, 3);
+
+      h += '<div class="sec"><div class="st">🚀 Biggest Movers <span class="badge bb">vs prior ' + growth.days + 'd</span></div>';
+      h += '<div class="cg" style="grid-template-columns:1fr 1fr 1fr">';
+
+      h += '<div class="cc"><h3 style="color:var(--green)">📈 Top Growers</h3>';
+      if (winners.length) {
+        winners.forEach(function (p) {
+          h += '<div style="margin-bottom:10px"><div style="font-size:.9rem">' + p.name + '</div><div style="font-size:.78rem;color:var(--muted)">' + p.views + ' views · ' + fmtGrowth(p.growth) + '</div></div>';
+        });
+      } else { h += '<div style="color:var(--muted);font-size:.85rem">No positive growth this period</div>'; }
+      h += '</div>';
+
+      h += '<div class="cc"><h3 style="color:var(--blue)">✨ Fresh Wins</h3>';
+      if (freshes.length) {
+        freshes.forEach(function (p) {
+          h += '<div style="margin-bottom:10px"><div style="font-size:.9rem">' + p.name + '</div><div style="font-size:.78rem;color:var(--muted)">' + p.views + ' views · NEW (no prior data)</div></div>';
+        });
+      } else { h += '<div style="color:var(--muted);font-size:.85rem">No new pages this period</div>'; }
+      h += '</div>';
+
+      h += '<div class="cc"><h3 style="color:var(--red)">📉 Needs Attention</h3>';
+      if (losers.length) {
+        losers.forEach(function (p) {
+          h += '<div style="margin-bottom:10px"><div style="font-size:.9rem">' + p.name + '</div><div style="font-size:.78rem;color:var(--muted)">' + p.views + ' views · ' + fmtGrowth(p.growth) + '</div></div>';
+        });
+      } else { h += '<div style="color:var(--muted);font-size:.85rem">No declining pages — nice work!</div>'; }
+      h += '</div>';
+
+      h += '</div></div>';
+    }
 
     var growthHdr = growth ? '<th class="num">Growth (vs prior ' + growth.days + 'd)</th>' : '';
     h += '<div class="sec"><div class="st">Top Pages <span class="badge bb">by pageviews</span></div><div class="cc"><table><thead><tr><th>Page</th><th class="num">Views</th><th class="num">%</th>' + growthHdr + '</tr></thead><tbody>';
@@ -347,6 +395,9 @@
 
     document.getElementById('ct').innerHTML = h;
 
+    // Storm Watch — fetch NWS API + render in placeholder. Async, non-blocking.
+    loadStormWatch();
+
     // Charts
     if (typeof Chart !== 'undefined') {
       var TB = D.traffic_breakdown || {}, TS = D.traffic_sources || {};
@@ -395,6 +446,67 @@
           }
         });
       }
+    }
+  }
+
+  // ─── Storm Watch (NWS API — free public, browser-CORS allowed) ───────
+  // Pulls active alerts for client's state. Highlights severe events that
+  // would trigger the marketing-intel storm-trigger reserve recommendation.
+  // Service area is read from CFG.dataSources.stormWatch.area (default: 'UT').
+  async function loadStormWatch() {
+    var el = document.getElementById('stormWatch');
+    if (!el) return;
+    var area = (CFG.dataSources && CFG.dataSources.stormWatch && CFG.dataSources.stormWatch.area) || 'UT';
+    try {
+      var r = await fetch('https://api.weather.gov/alerts/active?area=' + area, {
+        headers: { 'User-Agent': (CFG.client && CFG.client.domain) || 'client-dashboard' },
+      });
+      if (!r.ok) { el.innerHTML = ''; return; }
+      var d = await r.json();
+      var features = d.features || [];
+
+      // Filter to relevant severities (skip "Minor" + "Unknown" + most non-storm)
+      var relevant = features.filter(function (f) {
+        var p = f.properties || {};
+        var sev = p.severity || '';
+        var ev = (p.event || '').toLowerCase();
+        // Storm-driven roofing-relevant events:
+        var stormy = /storm|wind|hail|tornado|thunderstorm|hurricane|winter|blizzard|ice|snow|flood/.test(ev);
+        return stormy && (sev === 'Severe' || sev === 'Extreme' || sev === 'Moderate');
+      });
+
+      if (relevant.length === 0) {
+        el.innerHTML = '<div class="cc" style="border-left:3px solid var(--green)"><div style="display:flex;align-items:center;gap:10px"><span style="font-size:1.4rem">✅</span><div><div style="font-weight:600">No storm-driven alerts in service area (' + area + ')</div><div style="font-size:.85rem;color:var(--muted)">Storm-trigger reserve held; bid back to baseline.</div></div></div></div>';
+        return;
+      }
+
+      // Sort by severity (Extreme > Severe > Moderate)
+      var sevRank = { 'Extreme': 0, 'Severe': 1, 'Moderate': 2, 'Minor': 3, 'Unknown': 4 };
+      relevant.sort(function (a, b) { return (sevRank[a.properties.severity] || 9) - (sevRank[b.properties.severity] || 9); });
+
+      var topAlert = relevant[0].properties;
+      var color = topAlert.severity === 'Extreme' ? 'var(--red)' : topAlert.severity === 'Severe' ? 'var(--orange)' : 'var(--gold)';
+      var icon = /tornado|hurricane/.test(topAlert.event.toLowerCase()) ? '🌪️' :
+                 /hail|thunderstorm/.test(topAlert.event.toLowerCase()) ? '⛈️' :
+                 /wind/.test(topAlert.event.toLowerCase()) ? '💨' :
+                 /winter|blizzard|snow|ice/.test(topAlert.event.toLowerCase()) ? '❄️' :
+                 /flood/.test(topAlert.event.toLowerCase()) ? '💧' : '⚠️';
+
+      var html = '<div class="cc" style="border-left:3px solid ' + color + '">';
+      html += '<div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">';
+      html += '<span style="font-size:1.6rem">' + icon + '</span>';
+      html += '<div style="flex:1">';
+      html += '<div style="font-weight:600;color:' + color + '">' + topAlert.event + ' — ' + topAlert.severity.toUpperCase() + '</div>';
+      html += '<div style="font-size:.85rem;color:var(--muted)">' + (topAlert.areaDesc || '').slice(0, 120) + '</div>';
+      html += '</div>';
+      html += '<div style="text-align:right;font-size:.78rem;color:var(--muted)">' + relevant.length + ' active</div>';
+      html += '</div>';
+      html += '<div style="font-size:.85rem;color:var(--text);margin-bottom:6px">' + (topAlert.headline || '').slice(0, 200) + '</div>';
+      html += '<div style="font-size:.78rem;color:var(--gold);font-weight:500">→ Storm-trigger reserve recommended: bid up Search +50%, deploy /storm-response landing page</div>';
+      html += '</div>';
+      el.innerHTML = html;
+    } catch (e) {
+      el.innerHTML = ''; // silent fail — don't break the dashboard
     }
   }
 
