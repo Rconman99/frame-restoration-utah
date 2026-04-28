@@ -314,6 +314,12 @@
       h += '</div></div>';
     }
 
+    // Site Health — 3 tiles loaded async (Reviews · Sitemap · CWV)
+    h += '<div class="sec"><div class="st">Site Health <span class="badge bb">SEO/AEO signals</span></div>';
+    h += '<div class="cg" style="grid-template-columns:1fr 1fr 1fr">';
+    h += '<div id="reviewsCard"></div><div id="sitemapCard"></div><div id="cwvCard"></div>';
+    h += '</div></div>';
+
     var growthHdr = growth ? '<th class="num">Growth (vs prior ' + growth.days + 'd)</th>' : '';
     h += '<div class="sec"><div class="st">Top Pages <span class="badge bb">by pageviews</span></div><div class="cc"><table><thead><tr><th>Page</th><th class="num">Views</th><th class="num">%</th>' + growthHdr + '</tr></thead><tbody>';
     var tp = D.top_pages || [];
@@ -397,6 +403,10 @@
 
     // Storm Watch — fetch NWS API + render in placeholder. Async, non-blocking.
     loadStormWatch();
+    // Phase 2 site-health tiles — all async, all silent-fail
+    loadReviews();
+    loadSitemap();
+    loadCWV();
 
     // Charts
     if (typeof Chart !== 'undefined') {
@@ -447,6 +457,174 @@
         });
       }
     }
+  }
+
+  // ─── Phase 2: Site Health tiles ──────────────────────────────────────
+  // Three async-loaded tiles that pull external SEO/AEO health signals.
+  // Each tile is independent and silent-fails so the dashboard keeps working.
+
+  async function loadReviews() {
+    var el = document.getElementById('reviewsCard');
+    if (!el) return;
+    var feed = (CFG.dataSources && CFG.dataSources.reviews) || {};
+    if (feed.enabled === false) { el.innerHTML = ''; return; }
+    var path = feed.feedPath || '/reviews.json';
+    var competitorTarget = feed.competitorTarget || null; // {name, count}
+    try {
+      var r = await fetch(path);
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      var d = await r.json();
+      var agg = d.aggregate || {};
+      var count = agg.review_count || 0;
+      var rating = agg.rating || 0;
+      var reviews = d.reviews || [];
+      var lastReview = reviews.length ? new Date(reviews[0].date) : null;
+      reviews.forEach(function (rv) {
+        if (rv.date) {
+          var rd = new Date(rv.date);
+          if (!lastReview || rd > lastReview) lastReview = rd;
+        }
+      });
+      var daysSince = lastReview ? Math.floor((Date.now() - lastReview.getTime()) / 86400000) : null;
+      var staleColor = daysSince == null ? 'var(--muted)' : daysSince > 30 ? 'var(--red)' : daysSince > 14 ? 'var(--orange)' : 'var(--green)';
+
+      var html = '<div class="cc"><h3>⭐ Reviews Velocity</h3>';
+      html += '<div style="display:flex;gap:16px;align-items:baseline">';
+      html += '<div style="font-size:1.8rem;font-weight:700">' + count + '</div>';
+      html += '<div style="font-size:.95rem;color:var(--gold)">' + rating.toFixed(1) + '★</div>';
+      html += '</div>';
+      if (daysSince != null) {
+        html += '<div style="font-size:.78rem;color:' + staleColor + ';margin-top:4px">Last review: ' + daysSince + ' day' + (daysSince === 1 ? '' : 's') + ' ago</div>';
+      }
+      if (competitorTarget) {
+        var gap = (competitorTarget.count || 0) - count;
+        var gapColor = gap > 0 ? 'var(--orange)' : 'var(--green)';
+        html += '<div style="font-size:.78rem;margin-top:6px;padding-top:6px;border-top:1px solid var(--border)">';
+        html += 'vs ' + (competitorTarget.name || 'competitor') + ': <span style="color:' + gapColor + ';font-weight:600">' + (gap > 0 ? 'gap ' + gap : 'lead +' + Math.abs(gap)) + '</span>';
+        html += '</div>';
+      }
+      html += '</div>';
+      el.innerHTML = html;
+    } catch (e) {
+      el.innerHTML = '<div class="cc"><h3>⭐ Reviews Velocity</h3><div style="color:var(--muted);font-size:.85rem">No review feed at ' + path + '</div></div>';
+    }
+  }
+
+  async function loadSitemap() {
+    var el = document.getElementById('sitemapCard');
+    if (!el) return;
+    var sm = (CFG.dataSources && CFG.dataSources.sitemap) || {};
+    if (sm.enabled === false) { el.innerHTML = ''; return; }
+    var url = sm.url || '/sitemap.xml';
+    try {
+      var r = await fetch(url);
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      var xml = await r.text();
+      var dates = (xml.match(/<lastmod>([^<]+)<\/lastmod>/g) || [])
+        .map(function (m) { return new Date(m.replace(/<\/?lastmod>/g, '')); })
+        .filter(function (d) { return !isNaN(d.getTime()); });
+      var totalPages = (xml.match(/<url>/g) || []).length;
+      if (!dates.length) throw new Error('no lastmod entries');
+      var newest = new Date(Math.max.apply(null, dates));
+      var oldest = new Date(Math.min.apply(null, dates));
+      var now = Date.now();
+      var d7  = dates.filter(function (d) { return now - d < 7  * 86400000; }).length;
+      var d30 = dates.filter(function (d) { return now - d < 30 * 86400000; }).length;
+      var d90 = dates.filter(function (d) { return now - d < 90 * 86400000; }).length;
+      var daysSinceNewest = Math.floor((now - newest.getTime()) / 86400000);
+      var freshColor = daysSinceNewest <= 14 ? 'var(--green)' : daysSinceNewest <= 60 ? 'var(--orange)' : 'var(--red)';
+
+      var html = '<div class="cc"><h3>📝 Content Freshness</h3>';
+      html += '<div style="display:flex;gap:16px;align-items:baseline">';
+      html += '<div style="font-size:1.8rem;font-weight:700">' + totalPages + '</div>';
+      html += '<div style="font-size:.78rem;color:var(--muted)">indexed pages</div>';
+      html += '</div>';
+      html += '<div style="font-size:.78rem;color:' + freshColor + ';margin-top:4px">Last update: ' + daysSinceNewest + ' day' + (daysSinceNewest === 1 ? '' : 's') + ' ago</div>';
+      html += '<div style="font-size:.78rem;margin-top:6px;padding-top:6px;border-top:1px solid var(--border);color:var(--muted)">';
+      html += 'Updated last: <span style="color:var(--text)">' + d7 + '/7d</span> · <span style="color:var(--text)">' + d30 + '/30d</span> · <span style="color:var(--text)">' + d90 + '/90d</span>';
+      html += '</div>';
+      html += '</div>';
+      el.innerHTML = html;
+    } catch (e) {
+      el.innerHTML = '<div class="cc"><h3>📝 Content Freshness</h3><div style="color:var(--muted);font-size:.85rem">Sitemap unavailable</div></div>';
+    }
+  }
+
+  async function loadCWV() {
+    var el = document.getElementById('cwvCard');
+    if (!el) return;
+    var psi = (CFG.dataSources && CFG.dataSources.psi) || {};
+    if (psi.enabled === false) { el.innerHTML = ''; return; }
+    var origin = psi.origin || ('https://' + (CFG.client && CFG.client.domain || ''));
+    var apiKey = psi.apiKey;
+
+    if (!apiKey) {
+      var html = '<div class="cc"><h3>⚡ Core Web Vitals</h3>';
+      html += '<div style="font-size:.85rem;color:var(--muted);line-height:1.5">Add a free PageSpeed Insights API key to <code style="background:var(--bg);padding:2px 6px;border-radius:4px">data/dashboard-config.json</code> → <code>dataSources.psi.apiKey</code> to enable LCP / CLS / INP tracking.</div>';
+      html += '<div style="font-size:.78rem;margin-top:8px"><a href="https://developers.google.com/speed/docs/insights/v5/get-started" target="_blank" style="color:var(--blue)">Get key →</a></div>';
+      html += '</div>';
+      el.innerHTML = html;
+      return;
+    }
+
+    // Cache 60 minutes
+    var cacheKey = 'cwv-' + origin;
+    var cached = sessionStorage.getItem(cacheKey);
+    if (cached) {
+      try {
+        var cd = JSON.parse(cached);
+        if (Date.now() - cd.fetchedAt < 60 * 60 * 1000) { renderCWV(el, cd, origin); return; }
+      } catch (e) {}
+    }
+
+    el.innerHTML = '<div class="cc"><h3>⚡ Core Web Vitals</h3><div style="color:var(--muted);font-size:.85rem"><span class="sp"></span> Loading from PageSpeed Insights…</div></div>';
+    try {
+      var url = 'https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url=' + encodeURIComponent(origin) + '&strategy=' + (psi.strategy || 'mobile') + '&key=' + apiKey;
+      var r = await fetch(url);
+      var d = await r.json();
+      if (d.error) throw new Error(d.error.message || 'PSI error');
+      var loadexp = (d.originLoadingExperience || d.loadingExperience || {}).metrics || {};
+      var lhPerf = ((d.lighthouseResult || {}).categories || {}).performance || {};
+      var data = {
+        lcp:  loadexp.LARGEST_CONTENTFUL_PAINT_MS,
+        cls:  loadexp.CUMULATIVE_LAYOUT_SHIFT_SCORE,
+        inp:  loadexp.INTERACTION_TO_NEXT_PAINT,
+        ttfb: loadexp.EXPERIMENTAL_TIME_TO_FIRST_BYTE,
+        labScore: lhPerf.score,
+        hasField: Object.keys(loadexp).length > 0,
+        fetchedAt: Date.now(),
+      };
+      sessionStorage.setItem(cacheKey, JSON.stringify(data));
+      renderCWV(el, data, origin);
+    } catch (e) {
+      el.innerHTML = '<div class="cc"><h3>⚡ Core Web Vitals</h3><div style="color:var(--muted);font-size:.85rem">PSI error: ' + e.message + '</div></div>';
+    }
+  }
+
+  function renderCWV(el, data, origin) {
+    var color = function (cat) {
+      return cat === 'FAST' ? 'var(--green)' : cat === 'AVERAGE' ? 'var(--orange)' : cat === 'SLOW' ? 'var(--red)' : 'var(--muted)';
+    };
+    var fmt = function (m, formatter) {
+      if (!m) return '<span style="color:var(--muted)">—</span>';
+      return '<span style="color:' + color(m.category) + ';font-weight:600">' + formatter(m.percentile) + '</span>';
+    };
+    var html = '<div class="cc"><h3>⚡ Core Web Vitals</h3>';
+    if (!data.hasField) {
+      html += '<div style="font-size:.85rem;color:var(--muted);margin-bottom:8px">Insufficient field data — site needs more traffic for CrUX inclusion (~28 days of meaningful traffic).</div>';
+    }
+    html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:.85rem">';
+    html += '<div>LCP: ' + fmt(data.lcp,  function (v) { return (v / 1000).toFixed(1) + 's'; }) + '</div>';
+    html += '<div>CLS: ' + fmt(data.cls,  function (v) { return (v / 100).toFixed(2); }) + '</div>';
+    html += '<div>INP: ' + fmt(data.inp,  function (v) { return v + 'ms'; }) + '</div>';
+    html += '<div>TTFB: ' + fmt(data.ttfb, function (v) { return v + 'ms'; }) + '</div>';
+    html += '</div>';
+    if (data.labScore != null) {
+      var lbColor = data.labScore > 0.9 ? 'var(--green)' : data.labScore > 0.5 ? 'var(--orange)' : 'var(--red)';
+      html += '<div style="font-size:.78rem;margin-top:8px;padding-top:6px;border-top:1px solid var(--border);color:var(--muted)">Lighthouse perf: <span style="color:' + lbColor + ';font-weight:600">' + Math.round(data.labScore * 100) + '/100</span></div>';
+    }
+    html += '</div>';
+    el.innerHTML = html;
   }
 
   // ─── Storm Watch (NWS API — free public, browser-CORS allowed) ───────
