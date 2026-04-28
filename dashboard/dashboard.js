@@ -1,4 +1,4 @@
-/* deploy-stamp: v0.11.1 frame-roofing-utah */
+/* deploy-stamp: v0.11.2 frame-roofing-utah — psi+dataSources wired */
 /**
  * RCBuild-Kit Client Dashboard — base script
  *

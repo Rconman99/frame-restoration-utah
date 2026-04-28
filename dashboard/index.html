@@ -17,13 +17,20 @@
     window.DASHBOARD_CONFIG = {
       clientName:         "Frame Roofing Utah",
       tagline:            "SEO & Lead Attribution Tracker",
+      client:             { name: "Frame Roofing Utah", domain: "frameroofingutah.com" },
       supabaseUrl:        "https://hdcflshhomzildwqlmwh.supabase.co",
       supabaseAnonKey:    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhkY2Zsc2hob216aWxkd3FsbXdoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDI3NjI3NjQsImV4cCI6MjA1ODMzODc2NH0.kWSlGEtBgPFOx5eq8MYGz3VDqhAdqQTdGVlQqdRuzXk",
       campaignKey:        "frame-roofing-2026",
       defaultDays:        30,
       ranges:             [7,30,60,90],
       footerLinks:        [{"label":"PostHog Dashboard","url":"https://us.posthog.com/project/333074"}],
-      builderAttribution: "Built by Ryan Conwell"
+      builderAttribution: "Built by Ryan Conwell",
+      dataSources: {
+        stormWatch: { enabled: true, area: "UT" },
+        reviews:    { enabled: true, feedPath: "/reviews.json", competitorTarget: { name: "roofingutah.com", count: 54 } },
+        sitemap:    { enabled: true, url: "/sitemap.xml" },
+        psi:        { enabled: true, origin: "https://www.frameroofingutah.com", strategy: "mobile", apiKey: "AIzaSyBcqIurJqIrnaf9V1adhN-UuSgvjcQjwgU" }
+      }
     };
   </script>
 </head>
