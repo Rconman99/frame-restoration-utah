@@ -45,6 +45,22 @@
       "area": "UT",
       "_comment": "NWS area code (state abbrev or zone ID). UT = entire Utah."
     },
+    "reviews": {
+      "enabled": true,
+      "feedPath": "/reviews.json",
+      "competitorTarget": { "name": "roofingutah.com", "count": 54 }
+    },
+    "sitemap": {
+      "enabled": true,
+      "url": "/sitemap.xml"
+    },
+    "psi": {
+      "enabled": true,
+      "origin": "https://www.frameroofingutah.com",
+      "strategy": "mobile",
+      "apiKey": "",
+      "_comment": "Free key from Google Cloud Console. Without it, tile shows configure-key prompt."
+    },
     "gsc": {
       "enabled": false
     },
