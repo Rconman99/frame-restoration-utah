@@ -1,5 +1,5 @@
 # Frame Roofing Utah — Claude Master Context
-> Last updated: 2026-04-28 (afternoon) | Auto-refreshed via Cowork scheduled task
+> Last updated: 2026-04-30 | Auto-refreshed via Cowork scheduled task
 
 ---
 
@@ -324,6 +324,16 @@ Frame TX (`framerestoration.com` singular) and Frame Utah (`frameroofingutah.com
 ---
 
 ## SESSION LOG
+
+### 2026-04-30 — 10DLC Brand-Alignment Fix: Registered Brand Name in SMS Consent + Privacy + Terms
+Single commit (1a15637) closing TCR campaign rejection **30927**: "opt-in consent named a different company than the registered brand 'Frame Restoration LLC'." The registered TCR brand for A2P 10DLC is **Frame Restoration LLC (DBA Frame Roofing Utah)** — but the SMS consent copy across forms, modal, and legal pages had been naming "Frame Roofing Utah" alone. Fix sweeps every SMS-consent surface to use the legally-registered brand string while leaving the consumer-facing "Frame Roofing Utah" brand in place everywhere else. **4 files changed** (`global-modal.js`, `index.html`, `privacy.html`, `terms.html` — 7 insertions, 7 deletions).
+- **Forms (3 places — index hero form, index contact form, global modal):** consent copy now reads "I agree to receive SMS/text messages from **Frame Restoration LLC (DBA Frame Roofing Utah)**, sent from +1 435-292-8802, about my inquiry — including appointment confirmations, inspection scheduling, project updates, and service follow-ups." Was "from Frame Roofing Utah (sent from +1 435-292-8802)". Restructured punctuation: parenthetical sending-number → comma-delimited, then em-dash before the message-types list — keeps the registered-brand clause reading cleanly.
+- **index.html Contact → Text card microcopy:** "SMS from **Frame Restoration LLC (DBA Frame Roofing Utah)**. Msg & data rates may apply…" (was "SMS from Frame Roofing Utah…").
+- **privacy.html §SMS/Text Messaging:** opener rewritten to "SMS/text messaging is a separate, optional service operated by **Frame Restoration LLC (DBA Frame Roofing Utah)**." Both subsequent "from Frame Roofing Utah" mentions in this section now read "from Frame Restoration LLC."
+- **terms.html §SMS/Text Messaging Terms:** same swap in the opener; **§Cost** also updated — "Frame Restoration LLC does not charge for text messages…" (was "Frame Roofing Utah does not charge…").
+- **What this unblocks:** TCR (The Campaign Registry) CTA verification → Twilio campaign approval → Twilio outbound SMS delivery. Continues the rejection-chain saga (30034 → 30923 → 30927). Verizon email-to-SMS gateway (4353024422@vtext.com) remains the working fallback in the meantime.
+- **Untouched intentionally:** marketing copy, hero H1, page titles, footer brand lines — those all keep "Frame Roofing Utah" since the TCR brand-alignment requirement only applies to the SMS-consent context. "Frame Restoration LLC" only appears in SMS-consent strings + SMS-related legal sections.
+- **Working-tree note (uncommitted as of refresh):** `pages/about.html` has a 2-line edit changing JSON-LD `legalName` and the footer copyright string from "Frame Roofing Utah LLC" → "Frame Restoration Utah LLC" — a related entity-name correction matching CLAUDE.md's PEOPLE section. Not yet committed. **Open question worth verifying with Landon/TCR docs:** the registered TCR brand is "Frame Restoration LLC" (no "Utah"), but the about.html JSON-LD/footer use "Frame Restoration Utah LLC" (with "Utah"). These may be two distinct strings (LLC filing name vs. TCR brand registration name) — confirm before committing about.html so the schema's `legalName` matches the actual Utah Secretary of State filing.
 
 ### 2026-04-28 (afternoon) — /dashboard/ Phase 2 Site Health Tiles + Silent-Webhook-Failure Recovery + PSI Wiring
 Three commits (#6, #7, #8) extending `/dashboard/` with SEO/AEO signals beyond Supabase data — and surfacing a Vercel deploy-trust gap in the process.
