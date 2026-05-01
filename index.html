@@ -842,26 +842,27 @@
       </div>
       <div class="hero-form-card" aria-label="Request a free roof inspection">
         <h2>Get Your Free Roof Inspection</h2>
-        <p>No pressure, no obligation. A specialist will call you within 15 minutes during business hours.</p>
+        <p>3 fields, 30 seconds. We'll call you back within 15 minutes during business hours.</p>
         <form id="heroForm" class="hero-form" data-endpoint="https://hdcflshhomzildwqlmwh.supabase.co/functions/v1/handle-lead">
           <div class="form-row"><input type="text" name="name" placeholder="Full Name" required autocomplete="name"></div>
           <div class="form-row"><input type="tel" name="phone" placeholder="Mobile Phone" required autocomplete="tel"></div>
-          <div class="form-row"><input type="email" name="email" placeholder="Email Address" required autocomplete="email"></div>
-          <div class="form-row two-col">
-            <input type="text" name="city" placeholder="City (e.g. Sandy)" required>
-            <input type="text" name="zip" placeholder="ZIP Code" required autocomplete="postal-code" inputmode="numeric" pattern="[0-9]{5}" maxlength="5">
-          </div>
-          <div class="form-row">
-            <label for="heroIssue" class="sr-only">What do you need?</label>
-            <select id="heroIssue" name="issue" required>
-              <option value="">What do you need?</option>
-              <option value="reroof">Reroof My Home</option>
-              <option value="leak">Active Roof Leak</option>
-              <option value="storm">Storm Damage</option>
-              <option value="gutters">Gutters &amp; Gutter Guards</option>
-              <option value="other">Something Else</option>
-            </select>
-          </div>
+          <div class="form-row"><input type="text" name="zip" placeholder="ZIP Code" required autocomplete="postal-code" inputmode="numeric" pattern="[0-9]{5}" maxlength="5"></div>
+          <details class="form-optional" style="margin:6px 0 4px;font-size:13px;color:#4A5464;">
+            <summary style="cursor:pointer;list-style:none;padding:6px 0;color:#0B4060;font-weight:600;">+ Add details (optional)</summary>
+            <div class="form-row" style="margin-top:8px"><input type="email" name="email" placeholder="Email Address (optional)" autocomplete="email"></div>
+            <div class="form-row"><input type="text" name="city" placeholder="City (optional)"></div>
+            <div class="form-row">
+              <label for="heroIssue" class="sr-only">What do you need?</label>
+              <select id="heroIssue" name="issue">
+                <option value="">What do you need? (optional)</option>
+                <option value="reroof">Reroof My Home</option>
+                <option value="leak">Active Roof Leak</option>
+                <option value="storm">Storm Damage</option>
+                <option value="gutters">Gutters &amp; Gutter Guards</option>
+                <option value="other">Something Else</option>
+              </select>
+            </div>
+          </details>
           <label class="form-consent" style="display:flex;align-items:flex-start;gap:12px;margin:14px 0 8px;padding:10px 0;min-height:44px;font-size:14px;line-height:1.5;color:#2a2a2a;cursor:pointer;width:100%;box-sizing:border-box;">
             <input type="checkbox" name="sms_consent" value="yes" style="width:22px;height:22px;margin-top:2px;flex-shrink:0;-webkit-appearance:checkbox;appearance:checkbox;padding:0;border:1px solid #888;cursor:pointer;" />
             <span style="flex:1;min-width:0;display:block;">(Optional) Yes, I agree to receive SMS/text messages from Frame Restoration LLC (DBA Frame Roofing Utah), sent from +1 435-292-8802, about my inquiry — including appointment confirmations, inspection scheduling, project updates, and service follow-ups. Msg frequency varies (up to 5/month). Msg &amp; data rates may apply. Reply STOP to opt out, HELP for help. Consent is not required to submit this form.</span>
@@ -1394,27 +1395,29 @@
       <!-- Contact Form — Supabase edge function -->
       <form class="contact-form" id="leadForm" data-endpoint="https://hdcflshhomzildwqlmwh.supabase.co/functions/v1/handle-lead">
         <h3>Request a Free Inspection</h3>
-        <div class="form-row">
-          <div class="form-group"><label for="fname">First Name</label><input type="text" id="fname" name="first_name" placeholder="John" required /></div>
-          <div class="form-group"><label for="lname">Last Name</label><input type="text" id="lname" name="last_name" placeholder="Smith" required /></div>
-        </div>
-        <div class="form-group"><label for="phone">Phone Number</label><input type="tel" id="phone" name="phone" placeholder="(435) 302-4422" required /></div>
-        <div class="form-group"><label for="email">Email Address</label><input type="email" id="email" name="email" placeholder="you@email.com" required /></div>
-        <div class="form-group">
-          <label for="service">Service Needed</label>
-          <select id="service" name="service" required>
-            <option value="">Select a service...</option>
-            <option>Residential Roofing</option>
-            <option>Commercial Roofing</option>
-            <option>Storm Damage / Insurance Claim</option>
-            <option>Water / Fire / Flood Restoration</option>
-            <option>Solar Installation</option>
-            <option>General Contracting</option>
-            <option>Other / Not Sure</option>
-          </select>
-        </div>
-        <div class="form-group"><label for="city">City / ZIP Code</label><input type="text" id="city" name="city" placeholder="e.g. West Jordan, UT 84084" required /></div>
-        <div class="form-group"><label for="message">Additional Details (optional)</label><textarea id="message" name="message" placeholder="Tell us about your project..."></textarea></div>
+        <p style="font-size:14px;color:var(--gray);margin:-6px 0 18px;">3 quick fields. We'll call you back within 15 minutes during business hours.</p>
+        <div class="form-group"><label for="fname">Full Name</label><input type="text" id="fname" name="first_name" placeholder="John Smith" required autocomplete="name" /></div>
+        <div class="form-group"><label for="phone">Phone Number</label><input type="tel" id="phone" name="phone" placeholder="(435) 302-4422" required autocomplete="tel" /></div>
+        <div class="form-group"><label for="city">ZIP Code</label><input type="text" id="city" name="city" placeholder="84032" required autocomplete="postal-code" inputmode="numeric" pattern="[0-9]{5}" maxlength="5" /></div>
+        <details class="form-optional" style="margin:8px 0 4px;font-size:14px;">
+          <summary style="cursor:pointer;list-style:none;padding:10px 0;color:#0B4060;font-weight:700;">+ Add details (optional — helps us prep)</summary>
+          <div class="form-group" style="margin-top:10px"><label for="lname" style="font-weight:500">Last Name <span style="color:var(--gray);font-weight:400;font-size:12px">(optional)</span></label><input type="text" id="lname" name="last_name" placeholder="Smith" autocomplete="family-name" /></div>
+          <div class="form-group"><label for="email" style="font-weight:500">Email Address <span style="color:var(--gray);font-weight:400;font-size:12px">(optional)</span></label><input type="email" id="email" name="email" placeholder="you@email.com" autocomplete="email" /></div>
+          <div class="form-group">
+            <label for="service" style="font-weight:500">Service Needed <span style="color:var(--gray);font-weight:400;font-size:12px">(optional)</span></label>
+            <select id="service" name="service">
+              <option value="">Select a service...</option>
+              <option>Residential Roofing</option>
+              <option>Commercial Roofing</option>
+              <option>Storm Damage / Insurance Claim</option>
+              <option>Water / Fire / Flood Restoration</option>
+              <option>Solar Installation</option>
+              <option>General Contracting</option>
+              <option>Other / Not Sure</option>
+            </select>
+          </div>
+          <div class="form-group"><label for="message" style="font-weight:500">Additional Details <span style="color:var(--gray);font-weight:400;font-size:12px">(optional)</span></label><textarea id="message" name="message" placeholder="Tell us about your project..."></textarea></div>
+        </details>
         <label class="form-consent" style="display:flex;align-items:flex-start;gap:12px;margin:14px 0 8px;padding:10px 0;min-height:44px;font-size:14px;line-height:1.5;color:var(--gray);cursor:pointer;width:100%;box-sizing:border-box;">
           <input type="checkbox" name="sms_consent" value="yes" style="width:22px;height:22px;margin-top:2px;flex-shrink:0;-webkit-appearance:checkbox;appearance:checkbox;padding:0;border:1px solid #888;cursor:pointer;" />
           <span style="flex:1;min-width:0;display:block;">(Optional) Yes, I agree to receive SMS/text messages from Frame Restoration LLC (DBA Frame Roofing Utah), sent from +1 435-292-8802, about my inquiry — including appointment confirmations, inspection scheduling, project updates, and service follow-ups. Msg frequency varies (up to 5/month). Msg &amp; data rates may apply. Reply STOP to opt out, HELP for help. Consent is not required to submit this form.</span>
