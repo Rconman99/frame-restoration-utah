@@ -47,10 +47,11 @@
   <div class="wrap">
     <div class="card">
       <div class="check"><svg viewBox="0 0 24 24" fill="none"><polyline points="20 6 9 17 4 12"/></svg></div>
-      <h1>Message Received!</h1>
-      <p>Thanks for reaching out to Frame Roofing Utah. Landon's team will be in touch within 24 hours — usually much faster.</p>
-      <p>Need to talk now? Call <strong><a href="tel:+14353024422" style="color:#0B4060">435-302-4422</a></strong> — we answer.</p>
-      <a href="/" class="btn">Back to Home</a>
+      <h1>Got it — we're on it.</h1>
+      <p style="margin-bottom:.5rem;">We'll call you within <strong style="color:#0B4060">15 minutes</strong> during business hours (Mon-Sat 8 AM – 6 PM). After hours, first thing in the morning.</p>
+      <p style="margin-bottom:1.5rem;color:#4A5464;font-size:14px;">Want to skip the wait? Call us right now — we answer real calls 7 days a week.</p>
+      <a href="tel:+14353024422" class="btn" id="callNowCta" style="font-size:1rem;padding:1rem 2rem;">📞 Call 435-302-4422</a>
+      <p style="margin-top:1rem;font-size:12px;color:#7A8694;"><a href="/" style="color:#7A8694;text-decoration:underline;">← Back to Frame Roofing Utah</a></p>
     </div>
 
     <div class="review-card">
@@ -104,6 +105,14 @@
     if(reviewCta){
       reviewCta.addEventListener('click', function(){
         if(window.posthog) posthog.capture('review_cta_click', {source: 'thank_you', city: city, page: page});
+      });
+    }
+
+    // Track post-submit Call Now CTA (the primary action on this page)
+    var callNowCta = document.getElementById('callNowCta');
+    if(callNowCta){
+      callNowCta.addEventListener('click', function(){
+        if(window.posthog) posthog.capture('post_lead_call_now', {city: city, page: page});
       });
     }
 
