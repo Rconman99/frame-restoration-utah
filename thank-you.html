@@ -9,13 +9,21 @@
   <style>
     *{margin:0;padding:0;box-sizing:border-box}
     body{font-family:'Archivo',sans-serif;background:#FAF9F5;color:#262626;display:flex;align-items:center;justify-content:center;min-height:100vh;text-align:center;padding:2rem}
-    .card{background:#fff;border-radius:4px;padding:3rem 2rem;max-width:520px;box-shadow:0 4px 32px rgba(11,64,96,.08)}
+    body{display:block;padding:3rem 1.5rem}
+    .wrap{max-width:520px;margin:0 auto;display:flex;flex-direction:column;gap:1.25rem;min-height:calc(100vh - 6rem);justify-content:center}
+    .card{background:#fff;border-radius:4px;padding:2.5rem 2rem;box-shadow:0 4px 32px rgba(11,64,96,.08)}
     .check{width:64px;height:64px;background:#0B4060;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 1.5rem}
     .check svg{stroke:#E1B969;width:32px;height:32px;stroke-width:2.5}
     h1{font-family:'Archivo Black',sans-serif;color:#0B4060;font-size:1.8rem;margin-bottom:.75rem}
-    p{color:#4A5464;line-height:1.6;margin-bottom:1.5rem}
+    h2{font-family:'Archivo Black',sans-serif;color:#0B4060;font-size:1.15rem;margin-bottom:.5rem}
+    p{color:#4A5464;line-height:1.6;margin-bottom:1.25rem}
     a.btn{display:inline-block;background:#E1B969;color:#0B4060;font-family:'Archivo Black',sans-serif;font-size:.9rem;letter-spacing:.5px;text-transform:uppercase;padding:.75rem 2rem;border-radius:2px;text-decoration:none}
     a.btn:hover{background:#E8C97F}
+    a.btn-outline{display:inline-block;background:transparent;color:#0B4060;border:2px solid #0B4060;font-family:'Archivo Black',sans-serif;font-size:.85rem;letter-spacing:.5px;text-transform:uppercase;padding:.7rem 1.5rem;border-radius:2px;text-decoration:none}
+    a.btn-outline:hover{background:#0B4060;color:#fff}
+    .review-card{background:#fff;border-radius:4px;padding:1.75rem 1.75rem;box-shadow:0 2px 16px rgba(11,64,96,.06);border-left:4px solid #E1B969}
+    .stars{color:#E1B969;font-size:1.1rem;letter-spacing:2px;margin-bottom:.4rem}
+    .review-meta{font-size:.75rem;color:#7A8694;text-transform:uppercase;letter-spacing:.5px;margin-bottom:.4rem}
   </style>
   <link rel="icon" href="/favicon.ico" sizes="32x32" />
   <link rel="icon" href="/icon-192.png" type="image/png" sizes="192x192" />
@@ -36,12 +44,22 @@
   <meta name="twitter:description" content="Thank you for contacting Frame Roofing Utah. Our team will reach out shortly to schedule your free roof inspection.">
 </head>
 <body>
-  <div class="card">
-    <div class="check"><svg viewBox="0 0 24 24" fill="none"><polyline points="20 6 9 17 4 12"/></svg></div>
-    <h1>Message Received!</h1>
-    <p>Thanks for reaching out to Frame Roofing Utah. Landon's team will be in touch within 24 hours — usually much faster.</p>
-    <p>Need to talk now? Call <strong><a href="tel:+14353024422" style="color:#0B4060">435-302-4422</a></strong> — we answer.</p>
-    <a href="/" class="btn">Back to Home</a>
+  <div class="wrap">
+    <div class="card">
+      <div class="check"><svg viewBox="0 0 24 24" fill="none"><polyline points="20 6 9 17 4 12"/></svg></div>
+      <h1>Message Received!</h1>
+      <p>Thanks for reaching out to Frame Roofing Utah. Landon's team will be in touch within 24 hours — usually much faster.</p>
+      <p>Need to talk now? Call <strong><a href="tel:+14353024422" style="color:#0B4060">435-302-4422</a></strong> — we answer.</p>
+      <a href="/" class="btn">Back to Home</a>
+    </div>
+
+    <div class="review-card">
+      <div class="review-meta">Past Frame Roofing customer?</div>
+      <div class="stars">★★★★★</div>
+      <h2>Help the next homeowner find a great roofer.</h2>
+      <p>If we've worked on your roof before, a 30-second Google review helps your neighbors find honest local roofing — and it means a lot to Landon.</p>
+      <a href="/review" class="btn-outline" id="reviewCta">Leave a Review →</a>
+    </div>
   </div>
 <script>
   // PostHog Conversion Tracking — phone, email, form
@@ -80,6 +98,17 @@
         if(window.posthog) posthog.capture('cta_click', {city: city, page: page, cta_text: btn.textContent.trim().substring(0,50)});
       });
     });
+
+    // Track review-card click on thank-you page (May 2026 review-velocity sprint)
+    var reviewCta = document.getElementById('reviewCta');
+    if(reviewCta){
+      reviewCta.addEventListener('click', function(){
+        if(window.posthog) posthog.capture('review_cta_click', {source: 'thank_you', city: city, page: page});
+      });
+    }
+
+    // Fire a single conversion event so the dashboard's lead-attribution funnel sees the success page hit
+    if(window.posthog) posthog.capture('lead_thank_you_view', {city: city, page: page});
   })();
   </script>
 </body>
