@@ -1,5 +1,5 @@
 # Frame Roofing Utah — Claude Master Context
-> Last updated: 2026-05-01 | Auto-refreshed via Cowork scheduled task
+> Last updated: 2026-05-04 | Auto-refreshed via Cowork scheduled task
 
 ---
 
@@ -124,6 +124,7 @@
 - `directory-tracker.html` — Interactive React-based directory tracker (38 directories)
 - `global-modal.js` — Booking form modal → Supabase edge function
 - `global.css` — Shared styles (self-hosted Archivo Black + Archivo WOFF2 already wired here — duplicate Google Fonts <link> removed from index 2026-04-22)
+- `data/audits/` — **NEW 2026-05-04.** Lighthouse audit drops from cross-project sessions. Current: `lighthouse-2026-05-04.md` (rendered summary) + paired `-mobile.json` / `-desktop.json` (raw, ~1 MB each). Currently untracked — open question: commit raw JSONs for trend tracking vs `.gitignore data/audits/lighthouse-*.json` and only commit summaries. See SESSION LOG 2026-05-04.
 
 ---
 
@@ -238,14 +239,15 @@
 ## PRIORITY TODO (as of 2026-04-17)
 
 ### Immediate
-1. Set up Twilio — Utah phone number, wire into edge function for lead SMS (10DLC consent checkbox now in place 2026-04-17, error 30923 resolved)
-2. Build speed-to-lead AI bot — Twilio + Claude API + Supabase
-3. Google Sheet lead tracker — Apps Script webhook
-4. Direct email (replace Formspree with Resend/SendGrid)
-5. ~~301 redirects framerestorationutah.com → frameroofingutah.com~~ ✅ DONE (Landon domain forwarding 2026-03-30; in-code 301s also added 2026-04-07)
-6. ~~Google Search Console verification + sitemap for frameroofingutah.com~~ ✅ DONE
-7. Update Google Business Profile with new URL
-8. Reddit-scanner: response parsing hardened 2026-04-17 (HTTP status, empty body, retry, typed errors) — monitor reliability
+1. **🆕 Ship Lighthouse audit fixes (from `data/audits/lighthouse-2026-05-04.md`)** as a single PR `perf: Lighthouse 70→92 mobile + 100/100/100/100 desktop`. Three fixes: (a) `index.html:1671` `document.addEventListener` TypeError null-check (−4 BP, 10 min), (b) hero imagery `srcset`+WebP/AVIF + `loading="lazy"` for 6.1 MB → ≤1.5 MB mobile page weight (LCP 7.8 s → <2.5 s, 1–2 hr), (c) PostHog `disable_surveys: true` (or no-surveys CDN variant) to drop 65 KB unused JS (5 min). Re-audit on Vercel preview before squash-merge. Decide on `data/audits/` commit policy (raw JSONs vs summaries-only) before push.
+2. Set up Twilio — Utah phone number, wire into edge function for lead SMS (10DLC consent checkbox now in place 2026-04-17, error 30923 resolved)
+3. Build speed-to-lead AI bot — Twilio + Claude API + Supabase
+4. Google Sheet lead tracker — Apps Script webhook
+5. Direct email (replace Formspree with Resend/SendGrid)
+6. ~~301 redirects framerestorationutah.com → frameroofingutah.com~~ ✅ DONE (Landon domain forwarding 2026-03-30; in-code 301s also added 2026-04-07)
+7. ~~Google Search Console verification + sitemap for frameroofingutah.com~~ ✅ DONE
+8. Update Google Business Profile with new URL
+9. Reddit-scanner: response parsing hardened 2026-04-17 (HTTP status, empty body, retry, typed errors) — monitor reliability
 
 ### Short-term
 9. ~~Self-host fonts (Archivo Black + Archivo)~~ ✅ DONE (already wired in global.css; double-loading Google Fonts <link> removed 2026-04-22)
@@ -333,6 +335,19 @@ Frame TX (`framerestoration.com` singular) and Frame Utah (`frameroofingutah.com
 ---
 
 ## SESSION LOG
+
+### 2026-05-04 — Lighthouse Audit Drop from Frame-TX Session (Live Site: 70/100/100/100 mobile · 93/100/96/100 desktop)
+No code commits today — but a meaningful artifact landed. A Lighthouse 13.1.0 audit of `https://www.frameroofingutah.com/` was dropped into `data/audits/` (untracked) by a Frame-TX session for the Utah dispatch lane to act on. Three new files (≈1.8 MB total): `lighthouse-2026-05-04-mobile.json`, `lighthouse-2026-05-04-desktop.json`, and a rendered summary `lighthouse-2026-05-04.md`. **The audit is NOT auto-applied** — per the dispatch hard rules in MEMORY (`feedback_frame_roofing_reviews.md`, `feedback_frame_brand_boundary.md`), all Utah HTML edits go through the Utah Cowork lane to avoid race conditions with parallel sessions.
+- **Scoreboard:** Desktop **93 / 100 / 96 / 100** (perf / a11y / best practices / SEO). Mobile **70 / 100 / 96 / 100**. A11y 100 + SEO 100 on both viewports — strong line item for Landon's value memo. Mobile perf + best-practices are the only gaps.
+- **Mobile CWV:** LCP **7.8 s** 🔴 (target < 2.5 s) — single biggest score-killer. CLS 0, TBT 0 ms, FCP 2.4 s, Speed Index 4.4 s. Mobile LCP > 2.5 s is what's blocking "Good" mobile CWV in GSC — a direct Google ranking signal for "roofer near me" queries.
+- **Three specific fixes recommended** to take Utah to 100/100/100/100:
+  1. **JS TypeError on every page load** (−4 BP both viewports). `errors-in-console` failing — `index.html:1671` calling `document.addEventListener(...)` where the LHS isn't an EventTarget. Fix: null-check the selector or fix the typo. Estimated 10 min. Flips BP 96 → 100.
+  2. **6.1 MB mobile page weight** (LCP 7.8 s → ≤ 2.5 s). 30 requests / 6 scripts / 3 stylesheets / 3 fonts. Likely culprits: hero/photo imagery shipped at desktop res to phones (no `srcset`), PNG/JPEG instead of WebP/AVIF (note: 88 images already converted 2026-04-12 — verify hero set is included), missing `loading="lazy"` below fold, missing `width`/`height` attributes. Estimated 1–2 hr. +15–20 mobile perf pts (70 → 85–90).
+  3. **PostHog shipping 65 KB unused JS** (−3–5 mobile perf). `posthog/static/array.js` 37.8 KB unused / `surveys.js` 27.0 KB unused (81%). Frame Utah doesn't use PostHog surveys. Fix: pass `disable_surveys: true` at init OR switch to the `array.no-surveys.min.js` CDN variant. Estimated 5 min. +3–5 mobile perf pts.
+- **Combined post-fix projection:** Desktop 98 / 100 / 100 / 100. Mobile 92 / 100 / 100 / 100. 100/100/100/100 is achievable if hero conversion gets total page weight to ≤ 1.5 MB (mobile perf 95+).
+- **Suggested next-session ship:** single PR titled `perf: Lighthouse 70→92 mobile + 100/100/100/100 desktop`. Re-audit on Vercel preview before squash-merge. Do NOT bundle with marketing content changes — keep it focused for clean rollback + clean lift attribution in the Friday weekly review.
+- **Open question to resolve before commit:** whether to commit the JSONs (~1 MB each, useful for trend tracking against future audits) or `.gitignore data/audits/lighthouse-*.json` and only commit rendered summaries. The audit MD recommends one of those two paths, not pushing the raw JSONs unreviewed.
+- **No commit made today** — refresh-only update to capture the audit context for the next Utah-lane session. Source code untouched since PR #14 (commit 818a0bd, 2026-05-01).
 
 ### 2026-05-01 — May Lead-Velocity Sprint Day 1: 6-PR Wave (Reviews / noindex Fix / Form CRO / Storm Hub-Spoke / Neighborhood Depth / FAQ AEO)
 Six PRs merged to main today (#9 → #14) executing the first wave of the May 2026 lead-velocity sprint (canonical plan: `data/30-day-lead-sprint-2026-05-01.md`, vercelignored). All shipped through normal squash-merge → main → Vercel auto-deploy. Mix of CRO, SEO unblocks, AEO, and topical-cluster depth — no edge-function or schema-breaking changes.
