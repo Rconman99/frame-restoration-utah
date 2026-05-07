@@ -53,6 +53,13 @@ scripts/
 images-stock-backup/
 tmp-*/
 assets/_backup-pre-enhancement-*/
+assets/_backup-2026-*/
+
+# Internal monitoring artifacts (AEO citation reports, action queues, trend
+# files). Read by scripts/aeo-citation-monitor.py for persistence across runs;
+# tracked in git for repo history but never deployed — this is competitive
+# analysis, not customer-facing content.
+data/aeo-citations/
 
 # Internal-only HTML (audits, scratch redesigns, cheat sheets, trackers)
 index-redesign.html
