@@ -41,10 +41,26 @@ MAX_SOURCE_EDITS = 3                    # Cap PRs at 3 source-page edits
 ANCHOR_MIN_WORDS = 3                    # No "click here"
 ANCHOR_MAX_WORDS = 12                   # No "this comprehensive guide..." stuffing
 RACE_GUARD_HOURS = 24                   # Skip files Cowork may be editing
-MIN_LLM_CONFIDENCE = 0.6                # Below this = skip the draft
+MIN_LLM_CONFIDENCE = 0.75               # Was 0.6 — bumped after first batch (PRs #18-#20)
+                                        # produced 3/8 borderline anchors. 0.75 cuts those.
 PARAGRAPH_MIN_CHARS = 100               # Skip tiny <p>
 PARAGRAPH_MAX_CHARS = 800               # Skip giant <p> (LLM context blows up)
 MAX_PARAGRAPH_SAMPLES = 5               # Show LLM 5 paragraphs at a time
+
+# Topicality check — anchor text must share at least one TOPIC word with the
+# target query. Filters generic anchors like "Salt Lake City" pointing at an
+# insurance page, or brand-mention anchors that don't telegraph the link's
+# subject. Stop words below are domain-common terms that don't count as topical.
+TOPICALITY_STOP_WORDS = {
+    "the", "a", "an", "in", "on", "at", "to", "for", "and", "or", "of", "is", "are",
+    "with", "from", "this", "that", "these", "those", "it", "its", "you", "your",
+    "my", "our", "their", "be", "been", "was", "were", "have", "has", "had",
+    "do", "does", "did", "will", "would", "should", "can", "could", "may", "might",
+    # Domain-common — too generic to count as topical signal in roofing copy
+    "utah", "roofing", "roofer", "roof", "best", "top", "good", "help",
+    "2026", "2025", "2024",
+}
+TOPICALITY_MIN_WORD_LEN = 4             # Skip 1-3 letter tokens — too noisy
 
 # Directories we NEVER edit
 EXCLUDED_DIR_PREFIXES = (
@@ -229,6 +245,22 @@ PARAGRAPHS:
 JSON:"""
 
 
+def _topic_overlap(target_query: str, anchor: str) -> int:
+    """Count topic words from target_query that appear (substring) in anchor.
+
+    'Topic words' = tokens of length >= TOPICALITY_MIN_WORD_LEN that aren't in
+    TOPICALITY_STOP_WORDS. Returns 0 = no overlap = generic anchor, reject.
+    """
+    q_tokens = {
+        w.lower() for w in re.findall(r"\w+", target_query)
+        if len(w) >= TOPICALITY_MIN_WORD_LEN and w.lower() not in TOPICALITY_STOP_WORDS
+    }
+    if not q_tokens:
+        return 999  # No topical query words — anything passes (rare edge case)
+    anchor_lower = anchor.lower()
+    return sum(1 for q in q_tokens if q in anchor_lower)
+
+
 def _extract_paragraphs(html: str) -> list[str]:
     body_match = re.search(r"<body[^>]*>(.*?)</body>", html, re.DOTALL | re.IGNORECASE)
     if not body_match:
@@ -282,6 +314,12 @@ def draft_insertion(oc, source: pathlib.Path, target_url: str, target_title: str
     chosen = sample[idx]
     if anchor not in chosen:
         # LLM hallucinated — anchor isn't actually in the paragraph
+        return None
+
+    # Topicality check — does the anchor share any topic word with the query?
+    # Catches "Salt Lake City" → insurance page, "Frame Roofing Utah" → storm,
+    # "Utah's freeze-thaw cycles" → cost guide. Generic anchors get rejected.
+    if _topic_overlap(target_query, anchor) == 0:
         return None
 
     new_paragraph = chosen.replace(anchor, f'<a href="{target_url}">{anchor}</a>', 1)
