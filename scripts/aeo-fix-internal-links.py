@@ -297,6 +297,10 @@ def draft_insertion(oc, source: pathlib.Path, target_url: str, target_title: str
 # ── Apply, branch, push, PR ───────────────────────────────────────────────
 
 def apply_edits(edits: list[dict], dry_run: bool) -> list[dict]:
+    """Validation pass — checks each edit can be applied without writing.
+    The actual filesystem write happens inside open_pr() on the feature branch
+    (so we don't pollute main's working tree).
+    """
     applied: list[dict] = []
     for edit in edits:
         path = ROOT / edit["source_file"]
@@ -308,14 +312,9 @@ def apply_edits(edits: list[dict], dry_run: bool) -> list[dict]:
         if dry_run:
             print(f"  [DRY] {edit['source_file']}: anchor={edit['anchor_text']!r} "
                   f"(confidence {edit['confidence']:.2f})")
-            applied.append(edit)
-            continue
-        new_text = text.replace(edit["original_paragraph"], edit["new_paragraph"], 1)
-        # Verify the edit actually changed something (str.replace returns same string if no match)
-        if new_text == text:
-            print(f"  ✗ {edit['source_file']}: replace didn't change anything", file=sys.stderr)
-            continue
-        path.write_text(new_text)
+        else:
+            print(f"  ✓ {edit['source_file']}: anchor={edit['anchor_text']!r} "
+                  f"(confidence {edit['confidence']:.2f})")
         applied.append(edit)
     return applied
 
@@ -343,18 +342,19 @@ def _ensure_label_exists(label: str) -> None:
 
 
 def open_pr(action: dict, edits: list[dict], target_url: str, issue_url: str) -> str | None:
-    """Create branch, commit, push, open PR. Returns PR URL or None."""
+    """Create branch, write edits on it, commit, push, open PR. Returns PR URL or None.
+
+    The filesystem write happens HERE, on the feature branch — apply_edits()
+    only validates, so main's working tree never gets polluted.
+    """
     branch = f"aeo-auto/{action['id']}"
 
-    # Stash anything else uncommitted
-    _git(["stash", "push", "-u", "-m", f"aeo-auto-{action['id']}-stash"], check=False)
     try:
         _git(["checkout", "main"])
         _git(["pull", "--rebase", "origin", "main"], check=False)
         _git(["checkout", "-B", branch])
 
-        # Re-apply our edits on the fresh branch (the stash protected them above)
-        # Apply now from the dict — don't trust filesystem state across branches
+        # Apply edits on the fresh branch (validation already passed in apply_edits)
         for edit in edits:
             path = ROOT / edit["source_file"]
             text = path.read_text()
@@ -426,9 +426,8 @@ def open_pr(action: dict, edits: list[dict], target_url: str, issue_url: str) ->
         return url if url.startswith("http") else None
 
     finally:
-        # Always return to main for safety
+        # Always return to main — feature branch's edits are saved in the commit
         _git(["checkout", "main"], check=False)
-        _git(["stash", "pop"], check=False)
 
 
 def comment_on_issue(issue_url: str, pr_url: str) -> None:
@@ -486,14 +485,18 @@ def main() -> int:
 
     # Branch already exists? (Idempotency: don't re-fix if a PR is already open)
     branch = f"aeo-auto/{action['id']}"
-    remote_branches = subprocess.run(
-        ["git", "ls-remote", "--heads", "origin", branch],
-        cwd=ROOT, capture_output=True, text=True, timeout=10,
-    )
-    if remote_branches.returncode == 0 and remote_branches.stdout.strip():
-        print(f"✗ Branch {branch} already exists on origin — PR likely open. Skipping.",
+    try:
+        remote_branches = subprocess.run(
+            ["git", "ls-remote", "--heads", "origin", branch],
+            cwd=ROOT, capture_output=True, text=True, timeout=30,
+        )
+        if remote_branches.returncode == 0 and remote_branches.stdout.strip():
+            print(f"✗ Branch {branch} already exists on origin — PR likely open. Skipping.",
+                  file=sys.stderr)
+            return 1
+    except subprocess.TimeoutExpired:
+        print("⚠ ls-remote timed out (GitHub flakiness) — assuming branch is new and continuing.",
               file=sys.stderr)
-        return 1
 
     print(f"→ Finding candidate source pages…")
     candidates = find_candidate_sources(target_file, target_query)
