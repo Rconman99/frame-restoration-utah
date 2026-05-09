@@ -87,6 +87,17 @@ MOUNTAIN_CITIES = {"park-city", "heber-city", "midway", "alpine"}
 METRO_CITIES = {"salt-lake-city", "west-valley-city", "ogden", "provo", "orem", "south-salt-lake"}
 # everything else = valley
 
+# Per-city blog-spoke saturation cap (2026-05-09 research).
+# 2026 local-SEO sentiment converged on "fewer/deeper, not more/thinner":
+#   - Caleb Ulku (200+ businesses, 2016-present): https://www.youtube.com/watch?v=EIFXxiunKoE
+#   - r/localseo "delete weak city pages instead of adding more": https://www.reddit.com/r/localseo/comments/1t6ogwk/
+#   - r/localseo internal-link gap killing map pack: https://www.reddit.com/r/localseo/comments/1t0hh12/
+# Beyond ~2 spokes per city, the marginal lift on add-another-blog drops below
+# the marginal lift on internal-link cleanup + location-page deepening.
+# Override via --include-saturated for cases where a 3rd spoke covers a genuinely
+# distinct service-intent (rare; manual judgment).
+MAX_SPOKES_PER_CITY = 2
+
 
 def city_kind(slug: str) -> str:
     if slug in MOUNTAIN_CITIES: return "mountain"
@@ -309,14 +320,26 @@ def score_target(
     gsc: dict,
     posthog_views: int,
     reddit: dict,
+    include_saturated: bool = False,
 ) -> dict:
     """Return scoring breakdown for a (city, service) target.
 
     v1 scoring: whitespace × tier × storm × aeo × freshness × revenue × demand-supply gap.
     Demand-supply is the killer multiplier — high Reddit demand + low PostHog supply = top priority.
+
+    v2 (2026-05-09): hard cap at MAX_SPOKES_PER_CITY. Beyond the cap, add-another-blog
+    has lower marginal lift than internal-link cleanup + location-page deepening.
     """
     if spoke_already_exists:
         return {"score": 0.0, "skip_reason": "spoke already exists"}
+
+    if blog_count >= MAX_SPOKES_PER_CITY and not include_saturated:
+        return {
+            "score": 0.0,
+            "skip_reason": f"city saturated ({blog_count} spokes ≥ cap {MAX_SPOKES_PER_CITY}). "
+                           "Improve existing spokes or deepen location page instead. "
+                           "Override with --include-saturated for distinct-intent exceptions.",
+        }
 
     # 1. Whitespace bias — fewer existing spokes = higher priority
     coverage_gap = 1.0 / (1.0 + blog_count)
@@ -426,6 +449,8 @@ def main():
     parser.add_argument("--feed-blog-draft", action="store_true", help="Print the blog:draft command for #1")
     parser.add_argument("--json", action="store_true", help="Emit JSON to stdout")
     parser.add_argument("--include-existing", action="store_true", help="Include rows where a spoke already exists (for audit)")
+    parser.add_argument("--include-saturated", action="store_true",
+                        help=f"Include cities at the {MAX_SPOKES_PER_CITY}-spoke saturation cap (use only for distinct-intent exceptions)")
     args = parser.parse_args()
 
     market = load_market_intel()
@@ -465,8 +490,10 @@ def main():
             scoring = score_target(
                 city_slug, city_data, service, blog_count, spoke_exists,
                 sitemap, gsc, posthog_views, reddit_data,
+                include_saturated=args.include_saturated,
             )
-            if scoring["score"] == 0 and not args.include_existing:
+            # Skip zero-score rows unless --include-existing or --include-saturated requested an audit
+            if scoring["score"] == 0 and not (args.include_existing or args.include_saturated):
                 continue
             targets.append({
                 "city_slug": city_slug,
