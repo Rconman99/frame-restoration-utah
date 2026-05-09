@@ -45,7 +45,7 @@
 - **Address:** 142 S Main St, Heber City, UT 84032
 - **Business phone:** 435-302-4422
 - **Hours:** Mon–Sat 8AM–6PM
-- **Email:** info@framerestorationutah.com (NEVER use sales@framerestorations.com — that's the Texas DBA, swept out 2026-04-22 to stop Google from cross-resolving the brand into Frisco TX)
+- **Email:** landon@framerestorations.com (Ryan override 2026-05-09 — info@framerestorationutah.com was never set up to receive mail, so leads were dying. Accepted Texas-brand cross-resolution risk in exchange for working inbox. NEVER use sales@framerestorations.com — that one was swept out 2026-04-22 for the same Frisco TX cross-resolution reason.)
 - **Company entity (Vercel billing):** Acme Inc.
 
 ---
