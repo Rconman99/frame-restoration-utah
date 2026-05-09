@@ -46,6 +46,13 @@ MIN_LLM_CONFIDENCE = 0.75               # Was 0.6 — bumped after first batch (
 PARAGRAPH_MIN_CHARS = 100               # Skip tiny <p>
 PARAGRAPH_MAX_CHARS = 800               # Skip giant <p> (LLM context blows up)
 MAX_PARAGRAPH_SAMPLES = 5               # Show LLM 5 paragraphs at a time
+MAX_LLM_CALLS = 8                       # Cap candidates evaluated per run.
+                                        # Why: 2026-05-07 saw a 46-min runaway on action
+                                        # aeo-ef3d8192 — looped through 23 candidates × 120s
+                                        # ollama timeout. Cap × per-call timeout = bounded.
+LLM_TIMEOUT_SEC = 30                    # Was implicit 120s. Anchor drafting is ~300 tokens
+                                        # JSON, returns in 5-15s normally; 30s is a generous
+                                        # ceiling that still bounds total runtime.
 
 # Topicality check — anchor text must share at least one TOPIC word with the
 # target query. Filters generic anchors like "Salt Lake City" pointing at an
@@ -262,21 +269,53 @@ def _topic_overlap(target_query: str, anchor: str) -> int:
 
 
 def _extract_paragraphs(html: str) -> list[str]:
+    """Pull paragraphs that are SAFE to wrap an <a> around.
+
+    Reject conditions (any one):
+      1. Paragraph already contains <a> (would create double-link)
+      2. Paragraph is INSIDE an open <a> ancestor (nested anchors are invalid HTML;
+         browsers split the outer anchor and wreck card layouts — caught after PR #22
+         broke the blog index Wasatch-storm card on 2026-05-09)
+      3. Length outside [PARAGRAPH_MIN_CHARS, PARAGRAPH_MAX_CHARS]
+    """
     body_match = re.search(r"<body[^>]*>(.*?)</body>", html, re.DOTALL | re.IGNORECASE)
     if not body_match:
         return []
     body = body_match.group(1)
     body = re.sub(r"<script[^>]*>.*?</script>", "", body, flags=re.DOTALL | re.IGNORECASE)
     body = re.sub(r"<style[^>]*>.*?</style>", "", body, flags=re.DOTALL | re.IGNORECASE)
-    raw = re.findall(r"<p[^>]*>(.*?)</p>", body, re.DOTALL | re.IGNORECASE)
+
+    # Walk the body with a stateful tag scanner that tracks anchor depth.
+    # Anything inside <a>...</a> is rejected — even if the <p> looks clean by itself.
     out = []
-    for p in raw:
-        clean = p.strip()
-        # Skip paragraphs already containing a link (don't double-link)
-        if "<a " in clean.lower():
+    pos = 0
+    anchor_depth = 0
+    tag_re = re.compile(r"<(/?)(\w+)([^>]*)>", re.IGNORECASE)
+    while pos < len(body):
+        m = tag_re.search(body, pos)
+        if not m:
+            break
+        is_close, tag, _attrs = m.group(1), m.group(2).lower(), m.group(3)
+        if tag == "a":
+            if is_close:
+                anchor_depth = max(0, anchor_depth - 1)
+            else:
+                anchor_depth += 1
+            pos = m.end()
             continue
-        if PARAGRAPH_MIN_CHARS <= len(clean) <= PARAGRAPH_MAX_CHARS:
-            out.append(clean)
+        if tag == "p" and not is_close:
+            # Find matching </p>
+            p_end = re.search(r"</p>", body[m.end():], re.IGNORECASE)
+            if not p_end:
+                pos = m.end()
+                continue
+            inner = body[m.end():m.end() + p_end.start()].strip()
+            if anchor_depth == 0 and "<a " not in inner.lower():
+                if PARAGRAPH_MIN_CHARS <= len(inner) <= PARAGRAPH_MAX_CHARS:
+                    out.append(inner)
+            pos = m.end() + p_end.end()
+            continue
+        pos = m.end()
     return out
 
 
@@ -294,7 +333,7 @@ def draft_insertion(oc, source: pathlib.Path, target_url: str, target_title: str
         target_url=target_url, target_title=target_title, target_query=target_query,
         n_paragraphs=len(sample), paragraphs=sample_block,
     )
-    result = oc.generate_json(prompt, max_tokens=300, model="mistral-nemo:12b")
+    result = oc.generate_json(prompt, max_tokens=300, model="mistral-nemo:12b", timeout=LLM_TIMEOUT_SEC)
     if not result:
         return None
     idx = result.get("paragraph_index", 0)
@@ -543,12 +582,17 @@ def main() -> int:
                  "all recently modified)")
     print(f"  {len(candidates)} candidates ranked by relevance")
 
-    print(f"→ Drafting insertions via mistral-nemo:12b (cap: {args.max_edits} files)…")
+    print(f"→ Drafting insertions via mistral-nemo:12b (cap: {args.max_edits} edits, max {MAX_LLM_CALLS} candidates)…")
     edits: list[dict] = []
+    attempts = 0
     for score, source in candidates:
         if len(edits) >= args.max_edits:
             break
-        print(f"  Trying {source.relative_to(ROOT)} (score {score})…")
+        if attempts >= MAX_LLM_CALLS:
+            print(f"  ⚠ Hit MAX_LLM_CALLS ({MAX_LLM_CALLS}) without filling {args.max_edits} edits — stopping.")
+            break
+        attempts += 1
+        print(f"  [{attempts}/{MAX_LLM_CALLS}] Trying {source.relative_to(ROOT)} (score {score})…")
         edit = draft_insertion(oc, source, target_url, target_title, target_query)
         if edit:
             print(f"    ✓ confidence {edit['confidence']:.2f}, anchor={edit['anchor_text']!r}")
@@ -559,7 +603,8 @@ def main() -> int:
     if not edits:
         log_run("aeo-fix-internal-links", status="no-edits",
                 runtime_sec=time.time() - started,
-                extra={"action_id": action["id"]})
+                extra={"action_id": action["id"], "candidates_tried": attempts,
+                       "candidates_total": len(candidates)})
         sys.exit("✗ No high-confidence edits drafted. Try a different action or run later.")
 
     print(f"\n→ Applying {len(edits)} edit(s){' (DRY RUN)' if args.dry_run else ''}…")
