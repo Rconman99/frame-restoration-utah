@@ -263,14 +263,23 @@ def render_html(manifest: dict, image_url: Optional[str], image_local_path: Opti
     city_label = "Utah" if city_slug == "utah" else city_slug.replace("-", " ").title()
     canonical = f"{SITE}/blog/{city_slug}/{slug}"
 
-    # Image: AI illustration (decorative) gets ImageObject schema, NEVER Photograph.
-    if image_url:
-        # Production deploy uses local path; OG/Twitter use absolute URL.
-        og_image = f"{SITE}{image_local_path}" if image_local_path else image_url
-        img_src = image_local_path or image_url
+    # Image source resolution:
+    #   --image-url + --image-local → AI illustration (Higgsfield); ImageObject schema
+    #   --image-local only          → real photo override; Photograph-style schema
+    #   neither                     → fallback to Heber drone poster (least specific, last resort)
+    if image_url and image_local_path:
+        og_image = f"{SITE}{image_local_path}"
+        img_src = image_local_path
+        is_ai = True
+    elif image_local_path:
+        og_image = f"{SITE}{image_local_path}"
+        img_src = image_local_path
+        is_ai = False
+    elif image_url:
+        og_image = image_url
+        img_src = image_url
         is_ai = True
     else:
-        # Fallback: existing real-Landon photo from /images/projects/cities/
         og_image = f"{SITE}/images/projects/cities/heber-valley-drone-poster.webp"
         img_src = "/images/projects/cities/heber-valley-drone-poster.webp"
         is_ai = False
@@ -291,7 +300,14 @@ def render_html(manifest: dict, image_url: Optional[str], image_local_path: Opti
     else:
         image_schema_block = f""",
       "image": "{og_image}" """
-        image_alt = "Frame Roofing Utah — Heber Valley aerial"
+        # Derive alt text from image filename + post context for real photos
+        if image_local_path:
+            stem = Path(image_local_path).stem
+            stem = re.sub(r"-\d{4}$", "", stem)  # strip -YYYY suffix
+            descriptor = stem.replace("-", " ").title()
+            image_alt = f"{descriptor} — {BUSINESS_NAME}"
+        else:
+            image_alt = f"{BUSINESS_NAME} — Wasatch Front roofing project"
         image_caption = ""
 
     # FAQ JSON-LD
