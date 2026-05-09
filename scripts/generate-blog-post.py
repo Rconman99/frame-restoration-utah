@@ -63,11 +63,31 @@ AUTHOR_NAME = "Landon Yokers"
 AUTHOR_TITLE = "Owner"
 POSTHOG_KEY = "phc_BnECzlZ2OeDujli2dbqcgGODXlv2tYERbp40dTF7UBV"
 
-VALID_CITY_SLUGS = {
-    "utah", "heber-city", "park-city", "salt-lake-city", "sandy", "draper",
-    "herriman", "lehi", "ogden", "provo", "riverton", "bountiful", "layton",
-    "murray", "orem", "west-jordan", "west-valley-city",
-}
+def _load_city_slugs() -> set[str]:
+    """Load city whitelist from market-intel-allocation.json (single source of truth).
+    Falls back to a small static list if the file is missing."""
+    p = ROOT / "data" / "market-intel-allocation.json"
+    slugs = {"utah"}  # always allow statewide posts
+    if p.exists():
+        try:
+            data = json.loads(p.read_text())
+            for entry in data.get("allocation", {}).get("byCity", []):
+                cid = entry.get("city", {}).get("id")
+                if cid:
+                    slugs.add(cid)
+        except (json.JSONDecodeError, KeyError):
+            pass
+    if len(slugs) < 5:
+        # Fallback if market-intel hasn't been generated
+        slugs.update({
+            "heber-city", "park-city", "salt-lake-city", "sandy", "draper",
+            "herriman", "lehi", "ogden", "provo", "riverton", "bountiful",
+            "layton", "murray", "orem", "west-jordan", "west-valley-city",
+        })
+    return slugs
+
+
+VALID_CITY_SLUGS = _load_city_slugs()
 
 VALID_INTERNAL_PATHS = [
     "/", "/pages/storm-damage", "/pages/roof-replacement", "/pages/insurance-claims",

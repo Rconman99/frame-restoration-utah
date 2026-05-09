@@ -6,6 +6,9 @@
     "market-intel:dataforseo": "node scripts/market-intel.mjs --use-dataforseo",
     "competitor-ads": "node scripts/competitor-ads.mjs",
     "competitor-tiktok": "node scripts/competitor-tiktok.mjs",
+    "blog:target": "python3 scripts/blog-target-prioritizer.py",
+    "blog:next": "python3 scripts/blog-target-prioritizer.py --feed-blog-draft",
+    "blog:traffic": "bash scripts/refresh-traffic-snapshot.sh",
     "blog:draft": "python3 scripts/generate-blog-post.py",
     "blog:render": "python3 scripts/generate-blog-post.py --render"
   },

@@ -10,3 +10,7 @@ assets/_backup-pre-enhancement-*/
 
 # Supabase CLI cache (machine-local, never commit)
 supabase/.temp/
+
+# Traffic + signal snapshots (refreshed via npm run blog:traffic; contain PII from leads table)
+data/traffic-snapshot.json
+data/reddit-signals-by-city.json
