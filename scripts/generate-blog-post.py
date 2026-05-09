@@ -130,8 +130,17 @@ OLLAMA_URL = os.environ.get("OLLAMA_URL", "http://localhost:11434")
 DEFAULT_MODEL = os.environ.get("OLLAMA_MODEL", "qwen3:8b")
 
 
-def call_ollama(prompt: str, model: str = DEFAULT_MODEL, num_predict: int = 6000) -> str:
-    """Call local Ollama. qwen3 needs ~400 tokens for thinking; budget generously."""
+def call_ollama(prompt: str, model: str = DEFAULT_MODEL, num_predict: int = 6000,
+                timeout: int = 900) -> str:
+    """Call local Ollama. qwen3 needs ~400 tokens for thinking; budget generously.
+
+    Default timeout 900s (15 min) — when running concurrent drafts on the same
+    model, Ollama queues by default (OLLAMA_NUM_PARALLEL=1) so the 2nd request
+    waits for the 1st to finish PLUS its own inference. The earlier 300s default
+    was tripping concurrent calls (CH + Murray drafts on 2026-05-09 — Murray
+    timed out after CH consumed ~2 min). Set OLLAMA_NUM_PARALLEL=2+ in the
+    Ollama daemon env to allow same-model concurrent inference.
+    """
     payload = json.dumps({
         "model": model,
         "prompt": prompt,
@@ -144,7 +153,7 @@ def call_ollama(prompt: str, model: str = DEFAULT_MODEL, num_predict: int = 6000
         headers={"Content-Type": "application/json"},
     )
     try:
-        with urllib.request.urlopen(req, timeout=300) as resp:
+        with urllib.request.urlopen(req, timeout=timeout) as resp:
             data = json.loads(resp.read().decode("utf-8"))
             return (data.get("response") or "").strip()
     except urllib.error.URLError as e:
