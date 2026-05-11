@@ -21,28 +21,29 @@ Original draft proposed a Midway-specific post #1. Per Ryan's correction: "midwa
 
 ---
 
-### Post #1 — Heber Valley Roof Buyer's Guide (umbrella — covers Heber, Midway, Wallsburg, Charleston, Daniel)
-**Slug:** `blog/heber-city/heber-valley-roof-buyers-guide-2026.html` (lives under heber-city to consolidate the Heber Valley authority cluster)
-**Working title:** "Heber Valley Roof Buyer's Guide 2026: What Premium Homes in Heber, Midway, Wallsburg & Soldier Hollow Actually Need"
-**Target keywords:** "heber valley roofer", "heber valley roof replacement", "midway utah roof replacement", "wallsburg utah roofer", "wasatch back roofing"
-**Hook:** One guide for the whole valley. Heber City, Midway, Wallsburg, Charleston, Daniel — same elevation (5,600+ ft), same snowload, same freeze-thaw cycles. Roof choices that work in Salt Lake fail in 4-6 years up here. This post is the definitive "what to put on a Heber Valley home" answer.
+### Post #1 — Heber Valley Roof Buyer's Guide (valley-branded, NOT Heber-City-anchored)
+**Slug:** `blog/heber-valley/heber-valley-roof-buyers-guide-2026.html` — lives in a NEW `/blog/heber-valley/` folder. Per Ryan 2026-05-11: "focus on the valley, so not heber" — the valley is the geographic brand; Heber City is one community in it, not the anchor.
+**Working title:** "Heber Valley Roof Buyer's Guide 2026: What Premium Homes at 5,600+ ft Actually Need"
+**Target keywords:** "heber valley roofer", "heber valley roof replacement", "wasatch back roofer", "5600 ft elevation roofing utah"
+**Secondary (specific cities mentioned for keyword coverage, but NOT in title):** midway utah roofer, wallsburg utah roofer, charleston utah roofer
+**Hook:** The valley sits at 5,600+ ft on the Wasatch Back. Same elevation, same snowload, same UV exposure across every community — Heber, Midway, Wallsburg, Charleston, Daniel. Roof choices that work in Salt Lake fail in 4-6 years up here. This is the definitive "what to put on a Heber Valley home" answer, regardless of which community you're in.
 **Sections:**
-1. What makes Heber Valley different from Salt Lake/Utah Valley roofs (elevation, snow accumulation, UV at altitude, wind exposure, freeze-thaw cycle count)
-2. Neighborhood-by-neighborhood realities:
-   - Heber City core (84032) — mixed era, mostly architectural-grade upgrades
+1. What makes the valley different (elevation, snow accumulation, altitude UV, wind exposure, freeze-thaw cycle count). Frame this as "the valley" — not "Heber City" — and not "Heber Valley including Heber City" either. The valley is the unit.
+2. Community character (each treated as one of several, no anchor):
    - Midway / Soldier Hollow / Memorial Hill (84049) — premium homes, HOA design rules, often shake or metal
    - Wallsburg (84082) — rural lots, longer wind exposure, larger roof areas
    - Charleston / Daniel — agricultural + estate properties, longer eaves, often barn-style accents
-3. Material decision matrix for the valley: Class 4 architectural shingle (when), standing-seam metal (when), shake-style architectural (when), premium synthetic shake (when)
+   - Heber (84032) — mixed era, mostly architectural-grade upgrades. Listed last and equal, NOT as the anchor.
+3. Material decision matrix for the valley: Class 4 architectural shingle, standing-seam metal, shake-style architectural, premium synthetic shake
 4. Snowload + ice-dam engineering specifics (ridge venting, ice/water shield extension, heat-tape zones)
 5. 2026 cost expectations across the valley (architectural $18-26K, premium architectural $24-32K, standing-seam metal $40-65K, designer shake $30-50K)
-6. Why Frame: Heber-based crew, HQ at 142 S Main, 10-yr workmanship warranty, financing
-7. Free inspection CTA across all five communities
-**Word count:** 2,200-2,800 (longer because it's the umbrella authority piece)
-**Hero photo:** `images/projects/heber-valley-roof-aerial.jpg` (Heber Valley aerial — represents whole valley) — grep og:image first to confirm not already used
+6. Why Frame: **Heber Valley-based crew** (NOT "Heber-based"), 10-yr workmanship warranty, financing
+7. Free inspection CTA across the whole valley — no city subordinated
+**Word count:** 2,200-2,800
+**Hero photo:** `images/projects/heber-valley-roof-aerial.jpg` (valley aerial — represents the whole valley, not one city) — grep og:image first to confirm not already used
 **Internal links to:** /locations/heber-city.html, /locations/midway.html, /locations/wallsburg.html, /blog/heber-city/mountain-grade-roofing-materials.html, /blog/heber-city/snow-damage-roof-heber-city-84032.html, /blog/heber-city/roof-ventilation-at-elevation.html, /blog/heber-city/reroofing-complete-guide.html, /pages/roof-replacement.html
-**CTA:** "Free roof inspection anywhere in the Heber Valley — Heber, Midway, Wallsburg, Charleston, Daniel. 435-302-4422"
-**Why this is the right post #1:** consolidates Frame's Heber Valley authority instead of fragmenting it. Ranks for every valley city's roofer query. Builds internal-link gravity toward the existing 5 Heber blog posts.
+**CTA:** "Free roof inspection anywhere in the Heber Valley — Midway, Wallsburg, Charleston, Daniel, Heber. 435-302-4422" (Heber listed last alphabetically, no anchor framing)
+**Folder strategy note:** new `/blog/heber-valley/` folder is the cluster home for valley-wide content going forward. The existing 5 posts under `/blog/heber-city/` stay where they are (already indexed; don't break URLs) but cross-link UP to the new valley hub. New valley content always goes in `/blog/heber-valley/`, not `/blog/heber-city/`.
 
 ---
 

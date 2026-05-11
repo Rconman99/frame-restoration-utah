@@ -26,14 +26,14 @@ Park City roofs aren't ordinary roofs. Steep pitches, shake-style shingles, stan
 
 ---
 
-## Post #3 — Heber Valley premium snowload angle (Heber + Midway + Wallsburg + Charleston + Daniel)
+## Post #3 — Heber Valley premium snowload angle (valley-branded, no city as anchor)
 
-**Target ZIPs:** 84032 Heber + 84049 Midway + 84082 Wallsburg + Charleston/Daniel
-**Why:** Per Ryan's 2026-05-11 directive, treat Heber Valley as ONE market — same elevation, same snowload, same crew radius. Frame is HQ'd at 142 S Main Heber. Local crew is a hard moat against SLC/Provo roofers who don't live the elevation. This post explicitly names the valley communities so it can rank for every city's roofer query.
+**Target ZIPs:** 84049 Midway + 84082 Wallsburg + 84032 Heber + Charleston + Daniel
+**Why:** Per Ryan's 2026-05-11 refinement, the VALLEY is the brand — not any single city. Same elevation, same snowload, same crew radius across every community in it. Frame is a Heber Valley-based crew, not a "Heber City" crew. This post leads with the valley identity, mentions the cities equally for keyword coverage.
 
-**Copy (335 chars):**
+**Copy (327 chars):**
 ```
-At 5,600+ feet, Heber Valley roofs — Heber, Midway, Wallsburg, Charleston, Daniel — face snowloads, freeze-thaw cycles, and altitude UV that flatten ordinary shingles in 8 years. Frame Restoration Utah engineers every reroof for the valley, and our crew lives here. 10-yr workmanship warranty, free inspection, financing. Call 435-302-4422.
+The Heber Valley sits at 5,600+ ft on the Wasatch Back. Snowloads, freeze-thaw cycles, and altitude UV flatten ordinary shingles in 8 years up here. Frame Restoration Utah engineers every reroof for the valley — Midway, Wallsburg, Charleston, Daniel, Heber — and our crew lives here. 10-yr warranty, free inspection, financing. 435-302-4422.
 ```
 
 **Photo:** `images/projects/heber-valley-crew-wide.jpg` (real crew on a real Heber job — trust signal)
@@ -106,3 +106,4 @@ Hail or wind damage on your roof? Don't fight the insurance company alone. We do
 - ❌ No text-only posts
 - ❌ No generic "we're great at roofs" copy — every post needs a specific angle
 - ❌ No Midway-only or Wallsburg-only posts (Ryan directive 2026-05-11) — Heber Valley is ONE market; name all valley cities in the same post for keyword coverage
+- ❌ No Heber-City-anchored framing — the **valley** is the geographic brand. Lead with "Heber Valley" not "Heber City"; list communities equally; never call Frame a "Heber-based" or "Heber City" crew (always "Heber Valley-based")
