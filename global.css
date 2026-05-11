@@ -280,6 +280,25 @@ section a[style*="font-family: 'Archivo Black'"][style*="text-transform: upperca
 .page-cta .btn-navy + .btn-navy { margin-left: 12px; }
 .page-cta .btn-navy:hover { background: var(--navy-deep, #082D44) !important; transform: translateY(-2px); box-shadow: 4px 4px 0 var(--navy-deep, #082D44); }
 
+/* ─── Mid-page CTA dark variant — between body content and the end-of-page .page-cta ─── */
+.page-cta.page-cta-inverted {
+  background: var(--navy) !important;
+  border-top-color: var(--gold);
+  border-bottom-color: var(--gold);
+}
+.page-cta.page-cta-inverted h2 { color: var(--off-white); }
+.page-cta.page-cta-inverted p { color: rgba(250, 249, 245, 0.85); }
+.page-cta.page-cta-inverted .btn-navy {
+  background: var(--gold) !important;
+  color: var(--navy) !important;
+  border: 2px solid var(--gold) !important;
+}
+.page-cta.page-cta-inverted .btn-navy:hover {
+  background: var(--gold-light) !important;
+  border-color: var(--gold-light) !important;
+  box-shadow: 4px 4px 0 var(--gold-light) !important;
+}
+
 /* ─── Breadcrumb in hero — gold accent ─── */
 .page-hero .breadcrumb { font-family: 'Archivo, sans-serif'; font-size: 12px; letter-spacing: 2px; text-transform: uppercase; color: var(--gold); margin-bottom: 18px; }
 .page-hero .breadcrumb a { color: rgba(225,185,105,0.7); text-decoration: none; transition: color 0.2s ease; }
