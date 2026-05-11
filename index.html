@@ -534,10 +534,11 @@
       #fresh-aerials .fa-photo-strip figure { aspect-ratio: 16 / 9; }
       #fresh-aerials .fa-feature-cap { flex-direction: column; gap: 6px; text-align: center; }
     }
-    /* Fade the dual sticky mobile CTA while the featured video owns the screen — keeps the visual clean.
-       Restores the bar the moment the user scrolls past the video. */
-    body.fa-video-active .sticky-call { opacity: 0; transform: translateY(100%); pointer-events: none; transition: opacity .25s ease, transform .25s ease; }
-    .sticky-call { transition: opacity .3s ease, transform .3s ease; }
+    /* While the featured video owns the screen, fade ONLY the "Free Inspection" half of the dual sticky bar.
+       The "Call" half stays fully visible so tap-to-call is always available — closes the CR gap
+       a separate floating-call FAB would have filled. Restores both halves when scrolled past. */
+    body.fa-video-active .sticky-call .sticky-cta-side { opacity: 0; pointer-events: none; transition: opacity .25s ease; }
+    .sticky-call .sticky-cta-side { transition: opacity .3s ease; }
 
     /* prefers-reduced-motion: don't autoplay the featured drone loop for users who opt out of motion */
     @media (prefers-reduced-motion: reduce) {
