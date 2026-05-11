@@ -165,6 +165,17 @@
   // ─── Form Submit ───
   var form = document.getElementById('frModalForm');
   if (form) {
+    // form_start event — fires once per session on first field focus.
+    // Mirrors the pattern on index.html heroForm + leadForm. Powers
+    // form-abandonment recovery (Phase 1 Supabase fn matches form_start
+    // events without a subsequent form_submit within 5 min).
+    form.addEventListener('focusin', function() {
+      if (form.dataset.formStarted === 'true') return;
+      form.dataset.formStarted = 'true';
+      if (window.posthog) {
+        posthog.capture('form_start', { form: 'modal_inspection', page: window.location.pathname });
+      }
+    });
     form.addEventListener('submit', function(e) {
       e.preventDefault();
       var btn = form.querySelector('.fr-modal-submit');
