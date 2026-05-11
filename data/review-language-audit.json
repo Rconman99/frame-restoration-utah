@@ -1,24 +1,25 @@
 {
-  "generated_at": "2026-05-11T15:13:42.335349Z",
-  "source": "reviews.json (carousel fallback)",
-  "reviews_analyzed": 6,
+  "generated_at": "2026-05-11T15:18:33.249930Z",
+  "source": "reviews-full.json (audit feed)",
+  "reviews_analyzed": 20,
   "coverage_threshold": 0.3,
   "stats": [
     {
       "attribute": "Response Speed",
-      "mentions": 1,
-      "total": 6,
-      "coverage": 0.167,
+      "mentions": 5,
+      "total": 20,
+      "coverage": 0.25,
       "is_gap": true,
       "example_authors": [
-        "Arikka Von"
+        "Arikka Von",
+        "Sam Thornton"
       ]
     },
     {
       "attribute": "Communication",
-      "mentions": 3,
-      "total": 6,
-      "coverage": 0.5,
+      "mentions": 8,
+      "total": 20,
+      "coverage": 0.4,
       "is_gap": false,
       "example_authors": [
         "Arikka Von",
@@ -27,9 +28,9 @@
     },
     {
       "attribute": "Honest Pricing",
-      "mentions": 3,
-      "total": 6,
-      "coverage": 0.5,
+      "mentions": 7,
+      "total": 20,
+      "coverage": 0.35,
       "is_gap": false,
       "example_authors": [
         "Coach Sis",
@@ -38,17 +39,20 @@
     },
     {
       "attribute": "Financing / Insurance",
-      "mentions": 0,
-      "total": 6,
-      "coverage": 0.0,
+      "mentions": 3,
+      "total": 20,
+      "coverage": 0.15,
       "is_gap": true,
-      "example_authors": []
+      "example_authors": [
+        "Sam Thornton",
+        "Sydney"
+      ]
     },
     {
       "attribute": "Quality of Work",
-      "mentions": 3,
-      "total": 6,
-      "coverage": 0.5,
+      "mentions": 11,
+      "total": 20,
+      "coverage": 0.55,
       "is_gap": false,
       "example_authors": [
         "Arikka Von",
@@ -57,25 +61,29 @@
     },
     {
       "attribute": "Cleanup",
-      "mentions": 0,
-      "total": 6,
-      "coverage": 0.0,
+      "mentions": 1,
+      "total": 20,
+      "coverage": 0.05,
       "is_gap": true,
-      "example_authors": []
+      "example_authors": [
+        "Chris Chatzis"
+      ]
     },
     {
       "attribute": "Warranty / Trust",
-      "mentions": 0,
-      "total": 6,
-      "coverage": 0.0,
+      "mentions": 1,
+      "total": 20,
+      "coverage": 0.05,
       "is_gap": true,
-      "example_authors": []
+      "example_authors": [
+        "Sam Thornton"
+      ]
     },
     {
-      "attribute": "Drone / Inspection",
+      "attribute": "Free Estimate / Inspection",
       "mentions": 1,
-      "total": 6,
-      "coverage": 0.167,
+      "total": 20,
+      "coverage": 0.05,
       "is_gap": true,
       "example_authors": [
         "Timothy Kaspar"
@@ -83,10 +91,10 @@
     },
     {
       "attribute": "Storm / Hail / Leak",
-      "mentions": 2,
-      "total": 6,
-      "coverage": 0.333,
-      "is_gap": false,
+      "mentions": 4,
+      "total": 20,
+      "coverage": 0.2,
+      "is_gap": true,
       "example_authors": [
         "Arianne Kaspar",
         "Timothy Kaspar"
@@ -94,33 +102,34 @@
     },
     {
       "attribute": "Crew / Team",
-      "mentions": 2,
-      "total": 6,
-      "coverage": 0.333,
+      "mentions": 7,
+      "total": 20,
+      "coverage": 0.35,
       "is_gap": false,
       "example_authors": [
         "Arikka Von",
-        "Timothy Kaspar"
+        "Marie Conroe"
       ]
     },
     {
       "attribute": "Recommend Again",
-      "mentions": 3,
-      "total": 6,
-      "coverage": 0.5,
+      "mentions": 9,
+      "total": 20,
+      "coverage": 0.45,
       "is_gap": false,
       "example_authors": [
         "LeeAndra Jones",
-        "Arianne Kaspar"
+        "Marie Conroe"
       ]
     }
   ],
   "gaps": [
-    "Financing / Insurance",
     "Cleanup",
     "Warranty / Trust",
-    "Response Speed",
-    "Drone / Inspection"
+    "Free Estimate / Inspection",
+    "Financing / Insurance",
+    "Storm / Hail / Leak",
+    "Response Speed"
   ],
-  "cta_template": "hey [name], thanks again for going with us on the roof. if you have 30 seconds for a google review it would mean the world. if you can mention the financing options, or how the crew cleaned up afterward, or the warranty / that we stand behind the work that helps a ton with how we show up online. no pressure \u2014 link here: [google review link]"
+  "cta_template": "hey [name], thanks again for going with us on the roof. if you have 30 seconds for a google review it would mean the world. if you can mention how the crew cleaned up afterward, or the warranty / that we stand behind the work, or the free estimate or inspection that helps a ton with how we show up online. no pressure \u2014 link here: [google review link]"
 }
