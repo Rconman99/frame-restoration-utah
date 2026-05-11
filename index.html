@@ -886,10 +886,11 @@
       </div>
       <div class="hero-form-card" aria-label="Request a free roof inspection">
         <h2>Get Your Free Roof Inspection</h2>
-        <p>3 fields, 30 seconds. We'll call you back within 15 minutes during business hours.</p>
+        <p>3 fields, 30 seconds (address optional). We'll call you back within 15 minutes during business hours.</p>
         <form id="heroForm" class="hero-form" data-endpoint="https://hdcflshhomzildwqlmwh.supabase.co/functions/v1/handle-lead">
           <div class="form-row"><input type="text" name="name" placeholder="Full Name" required autocomplete="name"></div>
           <div class="form-row"><input type="tel" name="phone" placeholder="Mobile Phone" required autocomplete="tel"></div>
+          <div class="form-row"><input type="text" name="address" placeholder="Street Address (optional)" autocomplete="street-address"></div>
           <div class="form-row"><input type="text" name="zip" placeholder="ZIP Code" required autocomplete="postal-code" inputmode="numeric" pattern="[0-9]{5}" maxlength="5"></div>
           <details class="form-optional" style="margin:6px 0 4px;font-size:13px;color:#4A5464;">
             <summary style="cursor:pointer;list-style:none;padding:6px 0;color:#0B4060;font-weight:600;">+ Add details (optional)</summary>
@@ -1531,9 +1532,10 @@
       <!-- Contact Form — Supabase edge function -->
       <form class="contact-form" id="leadForm" data-endpoint="https://hdcflshhomzildwqlmwh.supabase.co/functions/v1/handle-lead">
         <h3>Request a Free Inspection</h3>
-        <p style="font-size:14px;color:var(--gray);margin:-6px 0 18px;">3 quick fields. We'll call you back within 15 minutes during business hours.</p>
+        <p style="font-size:14px;color:var(--gray);margin:-6px 0 18px;">3 quick fields (address optional). We'll call you back within 15 minutes during business hours.</p>
         <div class="form-group"><label for="fname">Full Name</label><input type="text" id="fname" name="first_name" placeholder="John Smith" required autocomplete="name" /></div>
         <div class="form-group"><label for="phone">Phone Number</label><input type="tel" id="phone" name="phone" placeholder="(435) 302-4422" required autocomplete="tel" /></div>
+        <div class="form-group"><label for="address">Street Address <span style="color:var(--gray);font-weight:400;font-size:12px">(optional)</span></label><input type="text" id="address" name="address" placeholder="123 Main St, City" autocomplete="street-address" /></div>
         <div class="form-group"><label for="city">ZIP Code</label><input type="text" id="city" name="city" placeholder="84032" required autocomplete="postal-code" inputmode="numeric" pattern="[0-9]{5}" maxlength="5" /></div>
         <details class="form-optional" style="margin:8px 0 4px;font-size:14px;">
           <summary style="cursor:pointer;list-style:none;padding:10px 0;color:#0B4060;font-weight:700;">+ Add details (optional — helps us prep)</summary>

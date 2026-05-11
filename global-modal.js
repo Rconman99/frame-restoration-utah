@@ -56,6 +56,7 @@
     '    <form id="frModalForm" data-endpoint="https://hdcflshhomzildwqlmwh.supabase.co/functions/v1/handle-lead">',
     '      <div class="fr-modal-row"><input type="text" name="name" placeholder="Full Name" required autocomplete="name"></div>',
     '      <div class="fr-modal-row"><input type="tel" name="phone" placeholder="Mobile Phone" required autocomplete="tel"></div>',
+    '      <div class="fr-modal-row"><input type="text" name="address" placeholder="Street Address (optional)" autocomplete="street-address"></div>',
     '      <div class="fr-modal-row"><input type="text" name="zip" placeholder="ZIP Code" required autocomplete="postal-code" inputmode="numeric" pattern="[0-9]{5}" maxlength="5"></div>',
     '      <details class="fr-modal-optional" style="margin:6px 0 4px;font-size:13px;color:#4A5464;">',
     '        <summary style="cursor:pointer;list-style:none;padding:6px 0;color:#0B4060;font-weight:600;">+ Add details (optional)</summary>',
