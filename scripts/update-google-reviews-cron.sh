@@ -87,6 +87,7 @@ case "$exit_code" in
     git config user.name 'Review Bot'
     git config user.email 'review-bot@frameroofingutah.com'
     git add index.html pages/about.html data/google-reviews.json reviews.json \
+            data/reviews-full.json \
             data/review-language-audit.md data/review-language-audit.json 2>>"$LOG" || true
     if git diff --cached --quiet; then
       log "⚠ Script reported change but no files staged — skipping commit."

@@ -28,12 +28,18 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 AUDIT_LOG = ROOT / "data" / "google-reviews.json"
 REVIEWS_JSON = ROOT / "reviews.json"  # consumed by homepage carousel (/reviews.json)
+REVIEWS_FULL_JSON = ROOT / "data" / "reviews-full.json"  # audit-only, all reviews
 
 # Frame Roofing Utah's stable Google Maps data_id — more reliable than text search.
 DEFAULT_DATA_ID = "0x874df59069be3e09:0x756332595f702acc"
 
 # How many individual reviews to include in /reviews.json for the homepage carousel.
 REVIEWS_FEED_LIMIT = 8
+
+# Soft cap for the audit-only full feed. SerpAPI returns 10/page by default;
+# we paginate via next_page_token up to this many total reviews. 60 leaves
+# headroom for the next year of growth without ballooning API cost.
+REVIEWS_FULL_LIMIT = 60
 
 # Files that contain live-user-facing review references.
 TARGETS = [
@@ -131,6 +137,88 @@ def fetch_reviews(limit: int = REVIEWS_FEED_LIMIT) -> list[dict]:
             "text": text.strip(),
         })
     return out
+
+
+def fetch_all_reviews(limit: int = REVIEWS_FULL_LIMIT) -> list[dict]:
+    """Pull EVERY review (text or no text), paginating SerpAPI, for the audit
+    feed. Unlike fetch_reviews() this:
+      - Does not slice the result down to the carousel limit
+      - Does not filter empty-text (star-only) reviews — kept for audit count
+      - Does not apply the brand-leak filter — audit should see raw truth
+      - Paginates via next_page_token if SerpAPI returns one
+
+    Output is written to data/reviews-full.json. Failure is non-fatal — returns
+    [] and the caller preserves the existing file (or skips writing).
+    """
+    api_key = os.environ.get("SERPAPI_KEY")
+    data_id = os.environ.get("SERPAPI_DATA_ID", DEFAULT_DATA_ID)
+    if not api_key:
+        return []
+
+    out: list[dict] = []
+    next_page_token: str | None = None
+    pages_fetched = 0
+    while len(out) < limit and pages_fetched < 10:  # hard ceiling on pages
+        params = {
+            "engine": "google_maps_reviews",
+            "data_id": data_id,
+            "hl": "en",
+            "sort_by": "newestFirst",
+            "api_key": api_key,
+        }
+        if next_page_token:
+            params["next_page_token"] = next_page_token
+        url = f"https://serpapi.com/search.json?{urllib.parse.urlencode(params)}"
+        try:
+            with urllib.request.urlopen(url, timeout=20) as resp:
+                data = json.loads(resp.read())
+        except (urllib.error.URLError, TimeoutError, json.JSONDecodeError) as exc:
+            print(f"WARN: full-reviews fetch failed on page {pages_fetched + 1}: {exc}")
+            break
+        if "error" in data:
+            print(f"WARN: SerpAPI error on page {pages_fetched + 1}: {data['error']}")
+            break
+        raw = data.get("reviews") or []
+        for r in raw:
+            text = r.get("snippet") or (r.get("extracted_snippet") or {}).get("original") or ""
+            user = r.get("user") or {}
+            out.append({
+                "author": user.get("name") or r.get("user_name") or r.get("author") or "Google Reviewer",
+                "rating": int(r.get("rating") or 0),
+                "date": str(r.get("iso_date") or r.get("date") or "")[:10],
+                "text": (text or "").strip(),
+                "has_text": bool(text and text.strip()),
+            })
+        pages_fetched += 1
+        next_page_token = (data.get("serpapi_pagination") or {}).get("next_page_token")
+        if not next_page_token:
+            break
+    return out[:limit]
+
+
+def write_reviews_full_json(reviews: list[dict], place: dict) -> bool:
+    """Write data/reviews-full.json for the audit script. Preserves the prior
+    file if `reviews` is empty (the SerpAPI call failed)."""
+    REVIEWS_FULL_JSON.parent.mkdir(parents=True, exist_ok=True)
+    if not reviews and REVIEWS_FULL_JSON.exists():
+        return False
+    payload = {
+        "source": "google_maps_reviews",
+        "data_id": os.environ.get("SERPAPI_DATA_ID", DEFAULT_DATA_ID),
+        "aggregate": {
+            "rating": place.get("rating"),
+            "review_count": place.get("count"),
+        },
+        "fetched_at": datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ"),
+        "reviews_fetched": len(reviews),
+        "reviews_with_text": sum(1 for r in reviews if r.get("has_text")),
+        "reviews": reviews,
+    }
+    new_text = json.dumps(payload, indent=2, ensure_ascii=False) + "\n"
+    if REVIEWS_FULL_JSON.exists() and REVIEWS_FULL_JSON.read_text(encoding="utf-8") == new_text:
+        return False
+    REVIEWS_FULL_JSON.write_text(new_text, encoding="utf-8")
+    return True
 
 
 # Substrings that trigger a brand-leak filter on review text. The audit on
@@ -297,9 +385,18 @@ def main() -> int:
     # write_reviews_json() falls back to preserving the existing reviews array while
     # still refreshing the aggregate counts — never leaves the site without data.
     reviews_feed = fetch_reviews()
-    print(f"SerpAPI reviews feed: {len(reviews_feed)} reviews pulled")
+    print(f"SerpAPI reviews feed (carousel): {len(reviews_feed)} reviews pulled")
     if not dry_run and write_reviews_json(place, reviews_feed):
         changed_files.append(str(REVIEWS_JSON.relative_to(ROOT)))
+
+    # Refresh data/reviews-full.json for the language audit. Paginated, ALL reviews
+    # (text + star-only), no brand-leak filter — audit reads raw truth. Soft-cap at
+    # REVIEWS_FULL_LIMIT (60). Failure here is non-fatal: existing file preserved.
+    full_reviews = fetch_all_reviews()
+    print(f"SerpAPI full reviews (audit): {len(full_reviews)} pulled, "
+          f"{sum(1 for r in full_reviews if r.get('has_text'))} with text")
+    if not dry_run and write_reviews_full_json(full_reviews, place):
+        changed_files.append(str(REVIEWS_FULL_JSON.relative_to(ROOT)))
 
     if not changed_files:
         print("No change needed — all references already in sync.")
