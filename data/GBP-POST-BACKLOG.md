@@ -1,6 +1,6 @@
 # GBP Post Backlog — Frame Restoration Utah
 **Created:** 2026-05-11
-**Strategic focus:** Low-traffic + high-revenue ZIPs (Park City, Midway, Heber Valley, Cottonwood Heights, Holladay, Alpine, Highland). Every post must include a photo. Cadence: 1-2 posts/week.
+**Strategic focus:** Salt Lake Valley + surrounding premium ZIPs (Cottonwood Heights, Holladay, Millcreek, Sandy east bench, Draper east bench, SLC east bench). Per Ryan 2026-05-11: "the valley i mean salt lake city and the surrounding areas." Heber Valley and Park City are demoted out of this round — Frame already has visibility there. Every post must include a photo. Cadence: 1-2 posts/week.
 
 ---
 
@@ -10,46 +10,30 @@ See `GBP-POST-PUBLISH-READY-2026-05-11.md`. Top of queue. Publish this first.
 
 ---
 
-## Post #2 — Park City premium roofing angle (high revenue)
+## Post #2 — Cottonwood Heights premium reroof angle
 
-**Target ZIP:** 84060 / 84098
-**Why:** Park City roofs cost 1.5-2× standard residential due to steep pitches, metal/shake materials, snow accumulation, and HOA design rules. High ACV per job. Frame's GBP just got Park City re-added; need to seed visibility there.
+**Target ZIPs:** 84093 / 84121
+**Why:** Premium east-bench Cottonwood Heights homes built 1985-2000 are aging into their first major roof cycle. Tree-debris from Big Cottonwood Canyon snowmelt accelerates wear. Frame just added CH to GBP service area; needs visibility seed.
 
-**Copy (336 chars):**
+**Copy (325 chars):**
 ```
-Park City roofs aren't ordinary roofs. Steep pitches, shake-style shingles, standing-seam metal, and Wasatch snowloads that crush a basic build. Frame Restoration Utah specs every Park City reroof for the elevation and the HOA — and we handle insurance claims from hail to wind. Free inspection, financing available. Call 435-302-4422.
-```
-
-**Photo:** `images/projects/cities/heber-custom-reroof-aerial-2.jpg` (premium mountain home, premium roof — visual matches Park City buyer)
-
-**CTA Button:** Call → 435-302-4422
-
----
-
-## Post #3 — Heber Valley premium snowload angle (valley-branded, no city as anchor)
-
-**Target ZIPs:** 84049 Midway + 84082 Wallsburg + 84032 Heber + Charleston + Daniel
-**Why:** Per Ryan's 2026-05-11 refinement, the VALLEY is the brand — not any single city. Same elevation, same snowload, same crew radius across every community in it. Frame is a Heber Valley-based crew, not a "Heber City" crew. This post leads with the valley identity, mentions the cities equally for keyword coverage.
-
-**Copy (327 chars):**
-```
-The Heber Valley sits at 5,600+ ft on the Wasatch Back. Snowloads, freeze-thaw cycles, and altitude UV flatten ordinary shingles in 8 years up here. Frame Restoration Utah engineers every reroof for the valley — Midway, Wallsburg, Charleston, Daniel, Heber — and our crew lives here. 10-yr warranty, free inspection, financing. 435-302-4422.
+Cottonwood Heights homes built in the 90s are hitting end-of-life on their first roof. Big Cottonwood Canyon snowmelt + Mt. Olympus tree debris speed it up. Frame Restoration Utah upgrades you to architectural or standing-seam metal — insurance claims welcome, financing available. Free inspection. Call 435-302-4422.
 ```
 
-**Photo:** `images/projects/heber-valley-crew-wide.jpg` (real crew on a real Heber job — trust signal)
+**Photo:** Pick from `images/projects/cities/` — prefer a finished-roof shot (grep og:image use first)
 
 **CTA Button:** Call
 
 ---
 
-## Post #4 — Holladay / Cottonwood Heights premium SL Valley
+## Post #3 — Holladay premium reroof angle (architectural vs metal)
 
-**Target ZIP:** 84117 / 84121 / 84124 (Holladay) + 84093 (Cottonwood Heights)
-**Why:** Premium older neighborhoods, established homes, big HOA fee but no roof reserve — homeowners pay direct. Cottonwood Heights just added to the GBP service area; needs a content seed. Holladay is one of Frame's higher-traffic premium cities. ACV trends premium because of larger homes.
+**Target ZIPs:** 84117 / 84121 / 84124
+**Why:** Holladay around Mt. Olympus / Walker Lane is dense premium home stock. Most are ready for material upgrades — architectural vs metal is the decision. Existing GBP post covered storm damage only; this one covers planned reroofs (higher margin).
 
-**Copy (336 chars):**
+**Copy (310 chars):**
 ```
-Holladay and Cottonwood Heights homes were built right — but most of the original roofs are 25-30 years past their prime now. We've reroofed neighborhoods around Big Cottonwood Canyon, Mt. Olympus, and Walker Lane. Architectural shingles, metal, or standing-seam — spec'd for snowmelt and tree-debris. Free estimate, financing. 435-302-4422.
+Holladay's Mt. Olympus and Walker Lane homes deserve more than builder-grade shingles. Architectural Class 4 or standing-seam metal — both engineered for Wasatch snowmelt and the canopy debris that comes with mature trees. Frame Restoration Utah specs the right material for your home. Free estimate. 435-302-4422.
 ```
 
 **Photo:** `images/projects/cities/holladay-residential-reroof-2025.jpg` (real Holladay job)
@@ -58,32 +42,48 @@ Holladay and Cottonwood Heights homes were built right — but most of the origi
 
 ---
 
-## Post #5 — Alpine / Highland luxury Utah Valley (queue)
+## Post #4 — Salt Lake City East Bench / Historic Home Angle
 
-**Target ZIP:** 84004 (Alpine) / 84003 (Highland)
-**Why:** Booming luxury Utah Valley corridor, large lots, often custom-build homes that need premium materials. Low Frame visibility there currently.
+**Target ZIPs:** 84102 / 84103 / 84105 / 84108
+**Why:** Avenues, Federal Heights, Foothill, Sugarhouse, Yalecrest — historic homes with original or near-original roofs. Slate, tile, wood-shake replacements need historic-style matching. Frame has experience here (existing blog post on historic home reroofing). Premium-ACV jobs.
 
-**Copy (310 chars):**
+**Copy (335 chars):**
 ```
-Alpine and Highland homes are getting bigger every year — 6,000+ sqft, multi-pitch rooflines, and detailing that punishes a cheap roof. Frame Restoration Utah does the precision work — flashing on a complex hip, ridge venting at altitude, shake-style architectural shingles. Free inspection, financing. Call 435-302-4422.
+Salt Lake City east bench homes — Avenues, Federal Heights, Sugarhouse, Yalecrest — were built when slate, tile, and wood shake were standard. Modern replacement that respects the architecture takes a roofer who knows historic-district rules and decking-era sheathing. Frame Restoration Utah does. Free inspection. 435-302-4422.
 ```
 
-**Photo:** `images/projects/cities/heber-custom-reroof-front-view.jpg` (custom-home beauty shot)
+**Photo:** `images/projects/cities/salt-lake-city-residential-reroof-2026.jpg` (real SLC job)
 
 **CTA Button:** Call
 
 ---
 
-## Post #6 — Storm damage + insurance claim angle (evergreen, swap photo seasonally)
+## Post #5 — Sandy East Bench / Pepperwood / Granite
 
-**Why:** Insurance-claim work is high-revenue and recurring. Frame's "Insurance Claim Assistance" is a brand-new service in GBP (just added 2026-05-11). Needs visibility.
+**Target ZIPs:** 84092 / 84094
+**Why:** Sandy east bench (Pepperwood, Granite, Alta-foothill) is premium home stock with worst-of-both-worlds exposure: Wasatch canyon snowmelt + afternoon-sun UV. Ice-dam damage is common but hidden until failure. Frame should be the recommended roofer for this corridor.
 
-**Copy (282 chars):**
+**Copy (322 chars):**
 ```
-Hail or wind damage on your roof? Don't fight the insurance company alone. We document the damage, write the scope, meet your adjuster on-site, and rebuild it right — start to invoice. No upfront cost on covered claims. Heber, Park City, Salt Lake Valley, Utah Valley. Free inspection: 435-302-4422.
+Sandy east bench — Pepperwood, Granite, Alta-foothill — gets the worst of two worlds: Wasatch canyon snowmelt and afternoon-sun UV exposure. Hidden ice-dam damage surfaces 2-3 years before a roof actually fails. Frame Restoration Utah catches it early. Free roof inspection, financing available. Call 435-302-4422.
 ```
 
-**Photo:** `images/projects/cities/sandy-storm-damage-reroof-2025-oct.jpg` (real storm-damage job photo)
+**Photo:** `images/projects/cities/sandy-storm-damage-reroof-2025-oct.jpg` or `sandy-storm-damage-reroof-1.jpg`
+
+**CTA Button:** Call
+
+---
+
+## Post #6 — Insurance claim assistance (evergreen, swap photo seasonally)
+
+**Why:** Insurance-claim work is high-revenue and recurring. Frame's "Insurance Claim Assistance" is a brand-new service in GBP (just added 2026-05-11). Needs visibility — anchor to Salt Lake Valley hail patterns.
+
+**Copy (308 chars):**
+```
+Hail or wind damage on your Salt Lake Valley roof? Don't fight your insurance alone. Frame Restoration Utah documents the damage, writes the scope, meets your adjuster on-site, and rebuilds the roof — start to invoice. No upfront cost on covered claims. Cottonwood Heights, Holladay, Sandy, Draper, SLC. 435-302-4422.
+```
+
+**Photo:** `images/projects/cities/sandy-storm-damage-reroof-2025-oct.jpg` (real storm-damage job)
 
 **CTA Button:** Call
 
@@ -92,18 +92,18 @@ Hail or wind damage on your roof? Don't fight the insurance company alone. We do
 ## Cadence + tracking
 
 - Publish 1-2 posts/week
-- Rotate target ZIPs — don't run 3 Park City posts in a row
+- Rotate target ZIPs — don't run 3 Cottonwood Heights posts in a row
 - After each post, log it here with "published: YYYY-MM-DD" + 7-day view count if available
 - Re-run the AIO citation tracker monthly to see if these posts are lifting Frame's appearances in AI Overviews for the target ZIPs
 
 ## Rules
 
 - ✅ Every post has a real-Landon photo from `images/projects/`
-- ✅ Lead with the city name in the first sentence
+- ✅ Lead with the **Salt Lake Valley ZIP / neighborhood** in the first sentence
 - ✅ Include "Free inspection" or "financing" hook
 - ✅ Always 435-302-4422 (canonical phone)
 - ❌ No drone-inspection mentions (Landon directive 2026-05-11)
 - ❌ No text-only posts
 - ❌ No generic "we're great at roofs" copy — every post needs a specific angle
-- ❌ No Midway-only or Wallsburg-only posts (Ryan directive 2026-05-11) — Heber Valley is ONE market; name all valley cities in the same post for keyword coverage
-- ❌ No Heber-City-anchored framing — the **valley** is the geographic brand. Lead with "Heber Valley" not "Heber City"; list communities equally; never call Frame a "Heber-based" or "Heber City" crew (always "Heber Valley-based")
+- ❌ No Heber-Valley-only, Park-City-only, Utah-Valley-only, or Davis-County-only posts (Ryan directive 2026-05-11) — the focus is Salt Lake Valley + surrounding premium ZIPs. Frame already has visibility in Heber/Park City; spending budget there = diminishing returns.
+- ❌ No Heber-City-anchored framing (legacy rule from earlier today) — when those markets DO come up in copy, lead with the geographic feature (canyon, foothill, ZIP) not the city name
