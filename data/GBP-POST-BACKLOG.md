@@ -105,3 +105,4 @@ Hail or wind damage on your roof? Don't fight the insurance company alone. We do
 - ❌ No drone-inspection mentions (Landon directive 2026-05-11)
 - ❌ No text-only posts
 - ❌ No generic "we're great at roofs" copy — every post needs a specific angle
+- ❌ No Midway-only or Wallsburg-only posts (Ryan directive 2026-05-11) — Heber Valley is ONE market; name all valley cities in the same post for keyword coverage
