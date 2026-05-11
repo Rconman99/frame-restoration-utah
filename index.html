@@ -1594,6 +1594,16 @@
     // Hero form: AJAX submit with success/error states
     var heroForm = document.getElementById('heroForm');
     if (heroForm) {
+      // form_start event — fires once per session on first field focus.
+      // Powers form-abandonment recovery (Phase 1 Supabase fn matches form_start
+      // events without a subsequent form_submit within 5 min).
+      heroForm.addEventListener('focusin', function() {
+        if (heroForm.dataset.formStarted === 'true') return;
+        heroForm.dataset.formStarted = 'true';
+        if (window.posthog) {
+          posthog.capture('form_start', { form: 'hero_inspection', page: window.location.pathname });
+        }
+      });
       heroForm.addEventListener('submit', function(e) {
         e.preventDefault();
         var btn = heroForm.querySelector('.hero-submit');
@@ -1637,6 +1647,14 @@
     // Lead form (bottom of page): AJAX submit
     var leadForm = document.getElementById('leadForm');
     if (leadForm) {
+      // form_start event — same pattern as hero form (fires once per session)
+      leadForm.addEventListener('focusin', function() {
+        if (leadForm.dataset.formStarted === 'true') return;
+        leadForm.dataset.formStarted = 'true';
+        if (window.posthog) {
+          posthog.capture('form_start', { form: 'lead_form', page: window.location.pathname });
+        }
+      });
       leadForm.addEventListener('submit', function(e) {
         e.preventDefault();
         var btn = leadForm.querySelector('.form-submit');
