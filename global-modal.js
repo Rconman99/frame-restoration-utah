@@ -193,29 +193,30 @@
       payload.sms_consent = payload.sms_consent === 'yes';
       payload.source_page = window.location.pathname;
 
+      // Merge ad attribution (gclid/fbclid/utm_*) from /track-attribution.js
+      if (window.FrameAttribution) {
+        var attr = window.FrameAttribution.get();
+        for (var k in attr) {
+          if (Object.prototype.hasOwnProperty.call(attr, k)) payload[k] = attr[k];
+        }
+      }
+
       fetch(form.getAttribute('data-endpoint'), {
         method: 'POST',
         body: JSON.stringify(payload),
         headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' }
       }).then(function(res) {
         if (res.ok) {
-          body.innerHTML = [
-            '<div class="fr-modal-success">',
-            '  <svg viewBox="0 0 24 24" fill="none" stroke="#C9A44C" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M8 12l2.5 2.5L16 9"/></svg>',
-            '  <h2>Thanks!</h2>',
-            '  <p>We\'ll call you within 15 minutes<br>during business hours.</p>',
-            '  <a href="tel:+14353024422">Or call now: 435-302-4422</a>',
-            '</div>'
-          ].join('\n');
           if (window.dataLayer) window.dataLayer.push({ event: 'form_submit', form_name: 'modal_inspection' });
-        } else {
-          btn.disabled = false;
-          btn.textContent = 'Get My Free Roof Inspection';
-          var err = document.createElement('p');
-          err.className = 'fr-modal-error';
-          err.textContent = 'Something went wrong. Please try again or call 435-302-4422.';
-          btn.insertAdjacentElement('afterend', err);
+          window.location.href = '/thank-you?lead=success&form=modal';
+          return;
         }
+        btn.disabled = false;
+        btn.textContent = 'Get My Free Roof Inspection';
+        var err = document.createElement('p');
+        err.className = 'fr-modal-error';
+        err.textContent = 'Something went wrong. Please try again or call 435-302-4422.';
+        btn.insertAdjacentElement('afterend', err);
       }).catch(function() {
         btn.disabled = false;
         btn.textContent = 'Get My Free Roof Inspection';
