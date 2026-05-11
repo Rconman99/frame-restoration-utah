@@ -67,6 +67,12 @@ log "→ Running update-google-reviews.py"
 python3 scripts/update-google-reviews.py 2>>"$LOG"
 exit_code=$?
 
+# Run the language audit against the freshest review feed. Read-only on
+# reviews.json; safe to run regardless of update-google-reviews.py exit code.
+# Output files get staged below in the case-0 branch.
+log "→ Running review-language-audit.py"
+python3 scripts/review-language-audit.py 2>>"$LOG" || log "⚠ language audit failed (non-fatal)"
+
 # Estimated savings vs. the original Claude trigger that did script-orchestration
 # in-session: ~8K input + 1K output. If 0 changes today, slightly less.
 SAVED_TOKENS=9000
@@ -80,7 +86,8 @@ case "$exit_code" in
 
     git config user.name 'Review Bot'
     git config user.email 'review-bot@frameroofingutah.com'
-    git add index.html pages/about.html data/google-reviews.json reviews.json 2>>"$LOG" || true
+    git add index.html pages/about.html data/google-reviews.json reviews.json \
+            data/review-language-audit.md data/review-language-audit.json 2>>"$LOG" || true
     if git diff --cached --quiet; then
       log "⚠ Script reported change but no files staged — skipping commit."
       exit 0
