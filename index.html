@@ -51,7 +51,8 @@
 
   <!-- DNS prefetch for external resources -->
   <!-- Images now served locally from /images/photos/ -->
-  <link rel="dns-prefetch" href="//formspree.io" />
+  <link rel="dns-prefetch" href="//hdcflshhomzildwqlmwh.supabase.co" />
+  <link rel="dns-prefetch" href="//api.resend.com" />
   <link rel="dns-prefetch" href="//calendar.app.google" />
 
   <!-- GTM: Add Google Tag Manager snippet here after client setup -->
@@ -777,13 +778,14 @@
   <script src="/global-modal.js" defer></script>
 <script>
     !function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.crossOrigin="anonymous",p.async=!0,p.src=s.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+".people (stub)"},o="init capture register register_once register_for_session unregister unregister_for_session getFeatureFlag getFeatureFlagPayload isFeatureEnabled reloadFeatureFlags updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures on onFeatureFlags onSessionId getSurveys getActiveMatchingSurveys renderSurvey canRenderSurvey identify setPersonProperties group resetGroups setPersonPropertiesForFlags resetPersonPropertiesForFlags setGroupPropertiesForFlags resetGroupPropertiesForFlags reset get_distinct_id getGroups get_session_id get_session_replay_url alias set_config startSessionRecording stopSessionRecording sessionRecordingStarted captureException loadToolbar get_property getSessionProperty createPersonProfile opt_in_capturing opt_out_capturing has_opted_in_capturing has_opted_out_capturing clear_opt_in_out_capturing debug getPageviewId".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
-    posthog.init('phc_BnECzlZ2OeDujli2dbqcgGODXlv2tYERbp40dTF7UBV',{api_host:'https://us.i.posthog.com', person_profiles: 'identified_only'})
+    posthog.init('phc_BnECzlZ2OeDujli2dbqcgGODXlv2tYERbp40dTF7UBV',{api_host:'https://us.i.posthog.com', person_profiles: 'identified_only', disable_surveys: true})
 </script>
   <!-- Tippy.js for service-map tooltips (self-hosted · Tippy 6.3.7 + Popper 2.11.8) -->
   <link rel="stylesheet" href="/vendor/tippy.css">
   <link rel="stylesheet" href="/vendor/tippy-shift-away-subtle.css">
   <script src="/vendor/popper.min.js" defer></script>
   <script src="/vendor/tippy.min.js" defer></script>
+  <script src="/track-attribution.js" defer></script>
 </head>
 <body>
 
@@ -1589,7 +1591,6 @@
       heroForm.addEventListener('submit', function(e) {
         e.preventDefault();
         var btn = heroForm.querySelector('.hero-submit');
-        var formCard = heroForm.closest('.hero-form-card');
         btn.disabled = true;
         btn.textContent = 'Sending...';
 
@@ -1598,19 +1599,27 @@
         payload.sms_consent = payload.sms_consent === 'yes';
         payload.source_page = window.location.pathname;
 
+        // Merge ad attribution (gclid/fbclid/utm_*) from /track-attribution.js
+        if (window.FrameAttribution) {
+          var attr = window.FrameAttribution.get();
+          for (var k in attr) {
+            if (Object.prototype.hasOwnProperty.call(attr, k)) payload[k] = attr[k];
+          }
+        }
+
         fetch(heroForm.getAttribute('data-endpoint'), {
           method: 'POST',
           body: JSON.stringify(payload),
           headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' }
         }).then(function(res) {
           if (res.ok) {
-            formCard.innerHTML = '<div style="text-align:center;padding:40px 20px"><svg viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2.5" style="width:48px;height:48px;margin:0 auto 16px;display:block"><circle cx="12" cy="12" r="10"/><path d="M8 12l2.5 2.5L16 9"/></svg><p style="font-family:Archivo Black,sans-serif;color:var(--navy);font-size:22px;text-transform:uppercase;margin-bottom:8px" role="status">Thanks!</p><p style="color:var(--gray);font-size:15px;line-height:1.6">We\'ll call you within 15 minutes<br>during business hours.</p><a href="tel:+14353024422" style="display:inline-block;margin-top:16px;color:var(--navy);font-family:Archivo Black,sans-serif;font-size:14px;text-transform:uppercase;letter-spacing:1px;text-decoration:none">Or call now: 435-302-4422</a></div>';
             if (window.dataLayer) { window.dataLayer.push({ event: 'form_submit', form_name: 'hero_inspection' }); }
-          } else {
-            btn.disabled = false;
-            btn.textContent = 'Get My Free Roof Inspection';
-            btn.insertAdjacentHTML('afterend', '<p style="color:#c0392b;font-size:12px;text-align:center;margin-top:8px">Something went wrong. Please try again or call 435-302-4422.</p>');
+            window.location.href = '/thank-you?lead=success&form=hero';
+            return;
           }
+          btn.disabled = false;
+          btn.textContent = 'Get My Free Roof Inspection';
+          btn.insertAdjacentHTML('afterend', '<p style="color:#c0392b;font-size:12px;text-align:center;margin-top:8px">Something went wrong. Please try again or call 435-302-4422.</p>');
         }).catch(function() {
           btn.disabled = false;
           btn.textContent = 'Get My Free Roof Inspection';
@@ -1631,19 +1640,28 @@
         new FormData(leadForm).forEach(function(v, k) { payload[k] = v; });
         payload.sms_consent = payload.sms_consent === 'yes';
         payload.source_page = window.location.pathname;
+
+        // Merge ad attribution (gclid/fbclid/utm_*) from /track-attribution.js
+        if (window.FrameAttribution) {
+          var attr = window.FrameAttribution.get();
+          for (var k in attr) {
+            if (Object.prototype.hasOwnProperty.call(attr, k)) payload[k] = attr[k];
+          }
+        }
+
         fetch(leadForm.getAttribute('data-endpoint'), {
           method: 'POST',
           body: JSON.stringify(payload),
           headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' }
         }).then(function(res) {
           if (res.ok) {
-            leadForm.innerHTML = '<div style="text-align:center;padding:40px 20px"><svg viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2.5" style="width:48px;height:48px;margin:0 auto 16px;display:block"><circle cx="12" cy="12" r="10"/><path d="M8 12l2.5 2.5L16 9"/></svg><p style="font-family:Archivo Black,sans-serif;color:var(--navy);font-size:22px;text-transform:uppercase;margin-bottom:8px" role="status">Thanks!</p><p style="color:var(--gray);font-size:15px;line-height:1.6">We\'ll call you within 15 minutes<br>during business hours.</p><a href="tel:+14353024422" style="display:inline-block;margin-top:16px;color:var(--navy);font-family:Archivo Black,sans-serif;font-size:14px;text-transform:uppercase;letter-spacing:1px;text-decoration:none">Or call now: 435-302-4422</a></div>';
             if (window.dataLayer) { window.dataLayer.push({ event: 'form_submit', form_name: 'lead_form' }); }
-          } else {
-            btn.disabled = false;
-            btn.textContent = 'Submit — Get My Free Inspection';
-            btn.insertAdjacentHTML('afterend', '<p style="color:#c0392b;font-size:12px;text-align:center;margin-top:8px">Something went wrong. Please try again or call 435-302-4422.</p>');
+            window.location.href = '/thank-you?lead=success&form=contact';
+            return;
           }
+          btn.disabled = false;
+          btn.textContent = 'Submit — Get My Free Inspection';
+          btn.insertAdjacentHTML('afterend', '<p style="color:#c0392b;font-size:12px;text-align:center;margin-top:8px">Something went wrong. Please try again or call 435-302-4422.</p>');
         }).catch(function() {
           btn.disabled = false;
           btn.textContent = 'Submit — Get My Free Inspection';
@@ -1671,7 +1689,7 @@
       });
     });
 
-  })();
+  });  // close DOMContentLoaded handler — addEventListener returns undefined; trailing () caused TypeError per Lighthouse 2026-05-04
   </script>
 
   <!-- Stats Counter Animation -->
