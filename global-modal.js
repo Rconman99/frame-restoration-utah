@@ -228,4 +228,188 @@
     });
   }
 
+  // ─── Mobile exit-intent slide-up ───
+  // Fires once per session when a phone user scrolls past 40% depth then
+  // reverses direction (signal: "I've seen enough, leaving"). Desktop has
+  // mouseleave-top; mobile gets scroll-velocity-reversal as the analog.
+  //
+  // Hard rules:
+  //   - mobile-only (≤820px)
+  //   - one shot per session (sessionStorage)
+  //   - never fires if the booking modal is already open
+  //   - never fires if user already submitted a lead this session
+  //   - suppressed on /thank-you, /privacy, /terms, /review
+  //   - PostHog events: exit_intent_show / _call / _form / _dismiss
+  function installExitIntent() {
+    var SESSION_KEY = 'fr_exit_intent_shown';
+    var SUBMIT_KEY  = 'fr_lead_submitted';
+    var path = window.location.pathname.toLowerCase();
+    var suppressPaths = ['/thank-you', '/privacy', '/terms', '/review'];
+    for (var i = 0; i < suppressPaths.length; i++) {
+      if (path.indexOf(suppressPaths[i]) === 0) return;
+    }
+    if (sessionStorage.getItem(SESSION_KEY) === '1') return;
+    if (sessionStorage.getItem(SUBMIT_KEY) === '1') return;
+
+    var styleId = 'fr-exit-intent-style';
+    if (!document.getElementById(styleId)) {
+      var style = document.createElement('style');
+      style.id = styleId;
+      style.textContent = [
+        '.fr-exit-intent{position:fixed;left:0;right:0;bottom:0;z-index:9998;',
+        'background:#0B4060;color:#FAF9F5;padding:18px 16px 20px;',
+        'box-shadow:0 -8px 32px rgba(0,0,0,0.35);transform:translateY(110%);',
+        'transition:transform .35s cubic-bezier(.2,.8,.2,1);',
+        'border-top:3px solid #E1B969;font-family:"Archivo",sans-serif}',
+        '.fr-exit-intent.open{transform:translateY(0)}',
+        // Lift above the dual sticky-call bar so neither overlaps.
+        'body.fr-has-sticky-call .fr-exit-intent{bottom:56px}',
+        '.fr-exit-intent-close{position:absolute;top:8px;right:10px;',
+        'background:none;border:none;color:rgba(250,249,245,0.7);font-size:24px;',
+        'line-height:1;padding:4px 8px;cursor:pointer;min-height:36px;min-width:36px}',
+        '.fr-exit-intent-close:hover{color:#E1B969}',
+        '.fr-exit-intent h3{font-family:"Archivo Black",sans-serif;font-size:16px;',
+        'text-transform:uppercase;margin:0 0 4px;color:#E1B969;letter-spacing:0.5px}',
+        '.fr-exit-intent p{font-size:14px;line-height:1.5;margin:0 0 12px;',
+        'color:rgba(250,249,245,0.92);max-width:420px}',
+        '.fr-exit-intent-cta-row{display:flex;gap:10px}',
+        '.fr-exit-intent-cta-row a,.fr-exit-intent-cta-row button{flex:1 1 50%;',
+        'min-height:48px;display:flex;align-items:center;justify-content:center;',
+        'gap:6px;padding:12px 10px;font-family:"Archivo Black",sans-serif;',
+        'font-size:14px;font-weight:700;letter-spacing:1px;text-decoration:none;',
+        'text-transform:uppercase;border-radius:4px;cursor:pointer;border:none}',
+        '.fr-exit-intent-call{background:#E1B969;color:#0B4060}',
+        '.fr-exit-intent-call:active{background:#d4a84f}',
+        '.fr-exit-intent-form{background:transparent;color:#FAF9F5;',
+        'border:2px solid rgba(250,249,245,0.85)!important}',
+        '.fr-exit-intent-form:active{background:rgba(250,249,245,0.1)}',
+        '@media(min-width:821px){.fr-exit-intent{display:none!important}}'
+      ].join('');
+      document.head.appendChild(style);
+    }
+
+    if (document.querySelector('.sticky-call')) {
+      document.body.classList.add('fr-has-sticky-call');
+    }
+
+    var banner = document.createElement('div');
+    banner.className = 'fr-exit-intent';
+    banner.setAttribute('role', 'dialog');
+    banner.setAttribute('aria-label', 'Free roof inspection offer');
+    banner.setAttribute('aria-hidden', 'true');
+    banner.innerHTML = [
+      '<button class="fr-exit-intent-close" aria-label="Dismiss">&times;</button>',
+      '<h3>Before you go &mdash; free inspection</h3>',
+      '<p>Wasatch Front roof? Frame Roofing Utah will inspect it free &mdash; no pressure, 15-minute callback during business hours.</p>',
+      '<div class="fr-exit-intent-cta-row">',
+      '<a class="fr-exit-intent-call" href="tel:+14353024422" aria-label="Call 435-302-4422">&#9742; Call now</a>',
+      '<button class="fr-exit-intent-form" type="button" aria-label="Open free inspection form">Free inspection</button>',
+      '</div>'
+    ].join('');
+    document.body.appendChild(banner);
+
+    function capture(event) {
+      if (window.posthog) {
+        posthog.capture(event, { path: path });
+      }
+      if (window.dataLayer) {
+        window.dataLayer.push({ event: event, path: path });
+      }
+    }
+
+    function show() {
+      if (sessionStorage.getItem(SESSION_KEY) === '1') return;
+      if (overlay && overlay.classList.contains('open')) return;
+      sessionStorage.setItem(SESSION_KEY, '1');
+      banner.classList.add('open');
+      banner.setAttribute('aria-hidden', 'false');
+      capture('exit_intent_show');
+    }
+
+    function hide(reason) {
+      banner.classList.remove('open');
+      banner.setAttribute('aria-hidden', 'true');
+      if (reason) capture(reason);
+    }
+
+    banner.querySelector('.fr-exit-intent-close').addEventListener('click', function() {
+      hide('exit_intent_dismiss');
+    });
+    banner.querySelector('.fr-exit-intent-call').addEventListener('click', function() {
+      capture('exit_intent_call');
+    });
+    banner.querySelector('.fr-exit-intent-form').addEventListener('click', function() {
+      capture('exit_intent_form');
+      hide();
+      openModal();
+    });
+
+    // ─── Scroll-velocity-reversal trigger ───
+    // Wait until user has reached ≥40% scroll depth, THEN watch for an
+    // upward scroll of ≥80px within a 600ms window. That combination is
+    // the mobile analog of mouseleave-top: "I read something, now leaving."
+    var DEPTH_THRESHOLD = 0.4;
+    var REVERSAL_PIXELS = 80;
+    var WINDOW_MS = 600;
+
+    var reachedDepth = false;
+    var lastY = window.scrollY || window.pageYOffset || 0;
+    var lastT = Date.now();
+    var deltaUp = 0;
+    var windowStart = lastT;
+
+    function onScroll() {
+      var y = window.scrollY || window.pageYOffset || 0;
+      var maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+      if (maxScroll < 600) return; // pages too short to bother
+      var depth = y / maxScroll;
+
+      if (!reachedDepth && depth >= DEPTH_THRESHOLD) {
+        reachedDepth = true;
+      }
+
+      var dy = y - lastY;
+      var now = Date.now();
+      if (now - windowStart > WINDOW_MS) {
+        deltaUp = 0;
+        windowStart = now;
+      }
+      if (dy < 0) deltaUp += -dy;
+
+      if (reachedDepth && deltaUp >= REVERSAL_PIXELS) {
+        show();
+        window.removeEventListener('scroll', onScroll);
+      }
+
+      lastY = y;
+      lastT = now;
+    }
+    window.addEventListener('scroll', onScroll, { passive: true });
+
+    // Also fire on pagehide / visibilitychange-to-hidden as a backstop.
+    // Without this, users who only tap-and-leave never see it.
+    function onLeave() {
+      if (reachedDepth) show();
+    }
+    document.addEventListener('visibilitychange', function() {
+      if (document.visibilityState === 'hidden') onLeave();
+    });
+    window.addEventListener('pagehide', onLeave);
+
+    // Mark lead submitted so we never re-show after a successful form.
+    document.addEventListener('submit', function(e) {
+      var f = e.target;
+      if (f && f.tagName === 'FORM') {
+        sessionStorage.setItem(SUBMIT_KEY, '1');
+        hide();
+      }
+    }, true);
+  }
+
+  // Only install on phone-sized viewports. Desktop already has nav CTA + side
+  // sticky; an exit-intent layer there is noise.
+  if (window.matchMedia && window.matchMedia('(max-width: 820px)').matches) {
+    installExitIntent();
+  }
+
 })();
