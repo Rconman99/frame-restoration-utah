@@ -54,7 +54,8 @@ footer{text-align:center;padding:32px;color:var(--muted);font-size:.8rem;border-
 .add-row button:hover{opacity:.85}
 .toggle-btn{padding:4px 12px;border:1px solid var(--border);border-radius:6px;background:transparent;cursor:pointer;font-size:.8rem}
 .toggle-btn.on{color:var(--green);border-color:var(--green)}.toggle-btn.off{color:var(--red);border-color:var(--red)}
-</style></head><body>
+</style>  <script src="/track-attribution.js" defer></script>
+</head><body>
 
 <div id="loginOverlay">
 <div class="login-box">
@@ -73,7 +74,7 @@ footer{text-align:center;padding:32px;color:var(--muted);font-size:.8rem;border-
 <div class="hdr"><div><h1>Frame Roofing Utah</h1><small>SEO & Lead Attribution Tracker</small></div>
 <div class="meta"><div>Live Data &middot; <span id="rDate"></span></div><div class="period" id="rPeriod">Last 30 Days</div>
 <div class="user-bar"><span class="user-name" id="userName"></span><span class="user-role" id="userRole"></span></div>
-<div style="margin-top:6px"><button class="rb" onclick="go(curD)">&#x21bb; Refresh</button> <button class="sm-btn" id="manageBtn" onclick="openAdmin()" style="display:none">Manage Users</button> <button class="sm-btn red" onclick="doLogout()">Logout</button></div></div></div>
+<div style="margin-top:6px"><button class="rb" onclick="go(curD)">&#x21bb; Refresh</button> <a class="sm-btn" href="/leads" style="border-color:var(--gold);color:var(--gold)">&rarr; Leads CRM</a> <button class="sm-btn" id="manageBtn" onclick="openAdmin()" style="display:none">Manage Users</button> <button class="sm-btn red" onclick="doLogout()">Logout</button></div></div></div>
 <div class="tb">
 <button class="pb" onclick="sw(7,this)">7 Days</button><button class="pb" onclick="sw(14,this)">14 Days</button>
 <button class="pb act" onclick="sw(30,this)">30 Days</button><button class="pb" onclick="sw(90,this)">90 Days</button></div>

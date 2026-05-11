@@ -20,6 +20,9 @@
 #                          Landon was actively working through. Third time this
 #                          class of bug has shipped. If a file isn't a private
 #                          strategy doc, assume it's public until proven otherwise.)
+#   leads.html           → PIN-gated CRM at /leads. Pairs with /seo-report.
+#                          Calls the lead-crm edge function. Linked from
+#                          /seo-report header. Added 2026-05-10.
 #   index.html, service pages, /locations/*, /blog/*, /projects/*
 #                        → Core site. Never ignore.
 # If you're doing an audit / cleanup pass and thinking about adding a file here,

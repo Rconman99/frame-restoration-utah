@@ -1,5 +1,9 @@
-// handle-lead v7 — Frame Roofing Utah
+// handle-lead v8 — Frame Roofing Utah
 // ─────────────────────────────────────────────────────────────────────────────
+// v8 (2026-05-10): Replace Formspree with Resend for outbound email.
+//   Formspree's free tier (50/mo) was being burned at 2x per lead — once for
+//   Landon's notification email, once for the Verizon SMS gateway. Resend's
+//   free tier is 100/day / 3000/mo and lets us send from leads@frameroofingutah.com.
 // v7 adds urgency-tier classification (heuristic-first, OpenRouter LLM fallback).
 // Tier drives notification routing: emergency leads page Landon louder; spam is
 // silently dropped to DB without notifying anyone.
@@ -10,10 +14,13 @@
 // Deploy:
 //   supabase functions deploy handle-lead --project-ref hdcflshhomzildwqlmwh --no-verify-jwt
 //
+// Required Deno secrets (set via `supabase secrets set KEY=val --project-ref hdcflshhomzildwqlmwh`):
+//   RESEND_API_KEY      ← new in v8. Without it, outbound email + Verizon SMS path both fail silently.
+//   OPENROUTER_API_KEY  ← from v7. Without it, classifier silently falls back to 'scheduled'.
+//   OPENROUTER_MODEL    ← optional. Defaults to google/gemini-2.0-flash-001 if unset.
+//
 // Required app_config rows (insert via SQL):
 //   TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_MESSAGING_SERVICE_SID (or TWILIO_PHONE_NUMBER)
-//   OPENROUTER_API_KEY  ← new in v7. Without it, classifier silently falls back to 'scheduled'.
-//   OPENROUTER_MODEL    ← optional. Defaults to google/gemini-2.0-flash-001 if unset.
 
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
@@ -219,27 +226,75 @@ async function sendTwilioSMS(config: Record<string, string>, to: string, body: s
   return false;
 }
 
+// ─── Resend email helper ─────────────────────────────────────────────────────
+// Resend replaces Formspree as our outbound email service (2026-05-10).
+// Formspree free tier (50/mo) was being burned at 2x per lead: 1 for Landon's
+// notification email + 1 for the Verizon SMS gateway path. Resend free tier is
+// 100/day / 3000/mo — covers Frame Roofing volume for years.
+//
+// Setup:
+//   supabase secrets set RESEND_API_KEY=re_... --project-ref hdcflshhomzildwqlmwh
+//   Domain frameroofingutah.com must be verified in Resend (DKIM/SPF DNS records).
+
+const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY") || "";
+const RESEND_FROM_LANDON = "Frame Roofing Utah <leads@frameroofingutah.com>";
+const RESEND_FROM_SMS = "Frame Roofing Utah <noreply@frameroofingutah.com>";
+const LANDON_EMAIL = "landon@framerestorations.com";
+const RYAN_EMAIL = "ryanconwell99@gmail.com";
+
+async function sendResendEmail(opts: {
+  from: string;
+  to: string | string[];
+  cc?: string | string[];
+  reply_to?: string;
+  subject: string;
+  text?: string;
+  html?: string;
+}): Promise<boolean> {
+  if (!RESEND_API_KEY) {
+    console.error("Resend: RESEND_API_KEY not set in Deno env");
+    return false;
+  }
+  try {
+    const resp = await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${RESEND_API_KEY}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        from: opts.from,
+        to: Array.isArray(opts.to) ? opts.to : [opts.to],
+        cc: opts.cc ? (Array.isArray(opts.cc) ? opts.cc : [opts.cc]) : undefined,
+        reply_to: opts.reply_to,
+        subject: opts.subject,
+        text: opts.text,
+        html: opts.html,
+      }),
+    });
+    if (!resp.ok) {
+      const errText = await resp.text();
+      console.error("Resend non-2xx:", resp.status, errText);
+      return false;
+    }
+    return true;
+  } catch (e) {
+    console.error("Resend error:", e instanceof Error ? e.message : e);
+    return false;
+  }
+}
+
 async function sendVerizonGatewaySMS(to: string, body: string): Promise<boolean> {
   const digits = to.replace(/\D/g, "").replace(/^1/, "");
   const verizonEmail = `${digits}@vtext.com`;
-  try {
-    const resp = await fetch("https://formspree.io/f/meeroaqa", {
-      method: "POST",
-      headers: { "Content-Type": "application/json", "Accept": "application/json" },
-      body: JSON.stringify({
-        email: verizonEmail,
-        _replyto: "noreply@frameroofingutah.com",
-        _subject: "New Lead",
-        message: body,
-        name: "Frame Roofing Utah",
-      }),
-    });
-    console.log("Verizon gateway SMS sent to", verizonEmail, "status:", resp.status);
-    return resp.ok;
-  } catch (e) {
-    console.error("Verizon SMS gateway error:", e);
-    return false;
-  }
+  const ok = await sendResendEmail({
+    from: RESEND_FROM_SMS,
+    to: verizonEmail,
+    subject: "New Lead",
+    text: body,
+  });
+  console.log("Verizon gateway SMS to", verizonEmail, "via Resend:", ok ? "delivered" : "failed");
+  return ok;
 }
 
 // ─── Tier-aware message builders ─────────────────────────────────────────────
@@ -303,6 +358,11 @@ Deno.serve(async (req: Request) => {
     const {
       name, email, phone, address, service, message, source_page,
       city, zip, issue, first_name, last_name,
+      // Ad attribution — populated by /track-attribution.js on the client.
+      // All nullable; pre-attribution leads simply omit them.
+      gclid, fbclid, msclkid, gbraid, wbraid,
+      utm_source, utm_medium, utm_campaign, utm_term, utm_content,
+      landing_page, referrer,
     } = formData;
     const leadName = name || ((first_name || "") + " " + (last_name || "")).trim() || "Unknown";
     const firstName = first_name || (name ? name.split(" ")[0] : "");
@@ -346,6 +406,19 @@ Deno.serve(async (req: Request) => {
       tier_reason: classification.reason,
       tier_confidence: classification.confidence,
       tier_classifier: classification.classifier,
+      // Ad attribution (nullable — only set when client surfaced these).
+      gclid: gclid || null,
+      fbclid: fbclid || null,
+      msclkid: msclkid || null,
+      gbraid: gbraid || null,
+      wbraid: wbraid || null,
+      utm_source: utm_source || null,
+      utm_medium: utm_medium || null,
+      utm_campaign: utm_campaign || null,
+      utm_term: utm_term || null,
+      utm_content: utm_content || null,
+      landing_page: landing_page || null,
+      referrer: referrer || null,
     });
     if (insertError) console.error("DB Error:", insertError);
 
@@ -358,20 +431,39 @@ Deno.serve(async (req: Request) => {
       );
     }
 
-    // 4. Email Landon via Formspree (subject prefixed by tier)
+    // 4. Email Landon via Resend (subject prefixed by tier; CC Ryan).
     try {
-      await fetch("https://formspree.io/f/meeroaqa", {
-        method: "POST",
-        headers: { "Content-Type": "application/json", "Accept": "application/json" },
-        body: JSON.stringify({
-          name: leadName, email, phone, address, service: leadService, message,
-          city, zip, issue,
-          tier: classification.tier,
-          tier_reason: classification.reason,
-          _replyto: email,
-          _subject: emailSubjectFor(classification.tier, leadName, leadService),
-        }),
+      const detailsText = [
+        `New lead from frameroofingutah.com`,
+        ``,
+        `Name:     ${leadName}`,
+        `Phone:    ${phone || "(not provided)"}`,
+        `Email:    ${email || "(not provided)"}`,
+        `Address:  ${address || "(not provided)"}`,
+        `City/ZIP: ${(city || "") + " " + (zip || "")}`.trim(),
+        `Service:  ${leadService}`,
+        `Dropdown: ${issue || "(none selected)"}`,
+        ``,
+        `Message:`,
+        message || "(no message)",
+        ``,
+        `── Triage ──`,
+        `Tier:        ${classification.tier.toUpperCase()}`,
+        `Reason:      ${classification.reason}`,
+        `Classifier:  ${classification.classifier}`,
+        classification.confidence != null ? `Confidence:  ${classification.confidence}` : "",
+        ``,
+        `Source page: ${source_page || "/"}`,
+      ].filter(Boolean).join("\n");
+      const ok = await sendResendEmail({
+        from: RESEND_FROM_LANDON,
+        to: LANDON_EMAIL,
+        cc: RYAN_EMAIL,
+        reply_to: email || undefined,
+        subject: emailSubjectFor(classification.tier, leadName, leadService),
+        text: detailsText,
       });
+      console.log("Email→Landon:", ok ? "delivered" : "failed");
     } catch (e) { console.error("Email error:", e); }
 
     // 5. SMS Landon — Verizon gateway (reliable) + Twilio (post-10DLC bonus)
