@@ -26,14 +26,14 @@ Park City roofs aren't ordinary roofs. Steep pitches, shake-style shingles, stan
 
 ---
 
-## Post #3 — Midway / Heber Valley premium snowload angle
+## Post #3 — Heber Valley premium snowload angle (Heber + Midway + Wallsburg + Charleston + Daniel)
 
-**Target ZIP:** 84049 (Midway) + 84032 (Heber)
-**Why:** Heber Valley is Frame's home turf and a premium market — Spirit Lake, Wasatch Mountain State Park, Soldier Hollow. 5,600+ ft elevation = real snowload engineering required. Local crew is a hard moat against out-of-area competitors. Low-traffic in our existing GBP analytics but high ACV.
+**Target ZIPs:** 84032 Heber + 84049 Midway + 84082 Wallsburg + Charleston/Daniel
+**Why:** Per Ryan's 2026-05-11 directive, treat Heber Valley as ONE market — same elevation, same snowload, same crew radius. Frame is HQ'd at 142 S Main Heber. Local crew is a hard moat against SLC/Provo roofers who don't live the elevation. This post explicitly names the valley communities so it can rank for every city's roofer query.
 
-**Copy (296 chars):**
+**Copy (335 chars):**
 ```
-At 5,600+ feet, a Heber Valley roof has to handle snowloads, freeze-thaw cycles, and high-altitude UV that flatten ordinary shingles in 8 years. Frame Restoration Utah engineers every reroof for the elevation — and our crew lives here. Free inspection, 10-yr workmanship warranty, financing available. 435-302-4422.
+At 5,600+ feet, Heber Valley roofs — Heber, Midway, Wallsburg, Charleston, Daniel — face snowloads, freeze-thaw cycles, and altitude UV that flatten ordinary shingles in 8 years. Frame Restoration Utah engineers every reroof for the valley, and our crew lives here. 10-yr workmanship warranty, free inspection, financing. Call 435-302-4422.
 ```
 
 **Photo:** `images/projects/heber-valley-crew-wide.jpg` (real crew on a real Heber job — trust signal)
