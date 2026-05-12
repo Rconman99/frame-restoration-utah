@@ -128,6 +128,67 @@ Deno.serve(async (req: Request) => {
     return jsonResp({ user, lead: updated });
   }
 
+  // ─── CREATE (manual lead entry) ────────────────────────────────────────────
+  if (action === "create") {
+    if (req.method !== "POST") return jsonResp({ error: "method_not_allowed", message: "Use POST for action=create" }, 405);
+
+    let body: any;
+    try { body = await req.json(); } catch { return jsonResp({ error: "bad_json" }, 400); }
+
+    const name = String(body.name || "").trim();
+    if (!name) return jsonResp({ error: "missing_name", message: "Name is required" }, 400);
+
+    const status = String(body.status || "new").toLowerCase();
+    if (!ALLOWED_STATUS.has(status)) return jsonResp({ error: "bad_status", message: `status must be one of ${[...ALLOWED_STATUS].join(", ")}` }, 400);
+
+    const tier = String(body.tier || "general").toLowerCase();
+    const allowedTiers = new Set(["emergency", "urgent", "scheduled", "general", "spam", "unclassified"]);
+    if (!allowedTiers.has(tier)) return jsonResp({ error: "bad_tier" }, 400);
+
+    const phone = body.phone ? String(body.phone).trim() : null;
+    const email = body.email ? String(body.email).trim() : null;
+    const address = body.address ? String(body.address).trim() : null;
+    const city = body.city ? String(body.city).trim() : null;
+    const service = body.service ? String(body.service).trim() : null;
+    const message = body.message ? String(body.message) : null;
+    const notes = body.notes ? String(body.notes) : null;
+    const jobValue = body.job_value === null || body.job_value === "" || body.job_value === undefined ? null : Number(body.job_value);
+    const margin = body.margin === null || body.margin === "" || body.margin === undefined ? null : Number(body.margin);
+
+    if (jobValue !== null && !Number.isFinite(jobValue)) return jsonResp({ error: "bad_job_value" }, 400);
+    if (margin !== null && !Number.isFinite(margin)) return jsonResp({ error: "bad_margin" }, 400);
+
+    const insertRow: Record<string, unknown> = {
+      name,
+      phone,
+      email,
+      address,
+      city,
+      service,
+      message,
+      notes,
+      status,
+      tier,
+      job_value: jobValue,
+      margin,
+      source_page: body.source_page || "manual-entry",
+      tier_classifier: "manual",
+      tier_reason: "Created via /leads Add Lead form",
+    };
+    if (status === "won") {
+      insertRow.won_at = body.won_at ? new Date(body.won_at).toISOString() : new Date().toISOString();
+    }
+
+    const { data: created, error: insErr } = await supabase
+      .from("leads")
+      .insert(insertRow)
+      .select()
+      .single();
+    if (insErr) return jsonResp({ error: "db_error", message: insErr.message }, 500);
+
+    return jsonResp({ user, lead: created });
+  }
+
   // ─── CLICKS ────────────────────────────────────────────────────────────────
   // Returns phone_clicks aggregated for the leads dashboard. Counts by source +
   // type, plus most recent N rows for the live feed.
@@ -163,5 +224,5 @@ Deno.serve(async (req: Request) => {
     });
   }
 
-  return jsonResp({ error: "unknown_action", message: `action must be 'list', 'update', or 'clicks' (got '${action}')` }, 400);
+  return jsonResp({ error: "unknown_action", message: `action must be 'list', 'create', 'update', or 'clicks' (got '${action}')` }, 400);
 });

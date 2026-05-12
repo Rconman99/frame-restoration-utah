@@ -142,6 +142,7 @@ footer{text-align:center;padding:24px;color:var(--muted);font-size:.78rem;border
       <div class="user-bar">
         <span class="user-name" id="userName">—</span>
         <span class="user-role" id="userRole">—</span>
+        <button class="sm-btn" style="background:var(--gold);color:#0d1117;font-weight:600" onclick="openAddLead()">+ Add Lead</button>
         <a class="sm-btn" href="/seo-report">SEO Report</a>
         <button class="sm-btn red" onclick="doLogout()">Sign out</button>
       </div>
@@ -238,6 +239,66 @@ footer{text-align:center;padding:24px;color:var(--muted);font-size:.78rem;border
   </div>
 </div>
 
+<!-- Add Lead panel -->
+<div class="panel" id="addPanel" style="display:none">
+  <button class="panel-close" onclick="closeAddLead()">×</button>
+  <h2 style="color:var(--gold)">+ Add Lead</h2>
+  <div class="pmeta">Manual entry · won contracts, walk-ins, phone calls — anything that didn't come through the website form</div>
+
+  <div class="field"><label>Name <span style="color:var(--red)">*</span></label><input type="text" id="add-name" placeholder="Greg Atkinson" autocomplete="off"></div>
+  <div class="two">
+    <div class="field"><label>Phone</label><input type="tel" id="add-phone" placeholder="(213) 494-2372" autocomplete="off"></div>
+    <div class="field"><label>Email</label><input type="email" id="add-email" placeholder="optional" autocomplete="off"></div>
+  </div>
+  <div class="field"><label>Address</label><input type="text" id="add-address" placeholder="808 Pole Dr, Heber City, UT 84032" autocomplete="off"></div>
+  <div class="two">
+    <div class="field"><label>City <span style="opacity:.6;font-weight:400">(Heber/Midway = 5%)</span></label><input type="text" id="add-city" placeholder="Heber City" autocomplete="off"></div>
+    <div class="field"><label>Service</label>
+      <select id="add-service">
+        <option value="">—</option>
+        <option>Roof Replacement</option>
+        <option>Roof Repair</option>
+        <option>Storm Damage</option>
+        <option>Gutters</option>
+        <option>Solar Removal/Reinstall</option>
+        <option>Inspection</option>
+        <option>Commercial</option>
+        <option>Other</option>
+      </select>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <div class="two">
+    <div class="field"><label>Status</label>
+      <select id="add-status">
+        <option value="new">New</option>
+        <option value="contacted">Contacted</option>
+        <option value="estimated">Estimated</option>
+        <option value="won">Won</option>
+        <option value="lost">Lost</option>
+      </select>
+    </div>
+    <div class="field"><label>Tier</label>
+      <select id="add-tier">
+        <option value="general" selected>General</option>
+        <option value="emergency">Emergency</option>
+        <option value="urgent">Urgent</option>
+        <option value="scheduled">Scheduled</option>
+        <option value="spam">Spam</option>
+      </select>
+    </div>
+  </div>
+  <div class="two">
+    <div class="field"><label>Job value ($)</label><input type="number" id="add-jobvalue" step="100" min="0" placeholder="118000"></div>
+    <div class="field"><label>Margin ($)</label><input type="number" id="add-margin" step="100" min="0" placeholder="optional"></div>
+  </div>
+  <div class="field"><label>Message (from customer)</label><textarea id="add-message" placeholder="What the customer said / contract scope / referral source" style="min-height:60px"></textarea></div>
+  <div class="field"><label>Internal notes</label><textarea id="add-notes" placeholder="Deposit received · contract date · check #" style="min-height:60px"></textarea></div>
+  <button class="save-btn" id="addSaveBtn" onclick="submitAddLead()">Save Lead</button>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script>
@@ -314,6 +375,55 @@ async function refresh(){
     leads=d.leads||[];render();
     loadClicks();
   }catch(e){console.error(e);toast("Refresh failed: "+(e.message||e),true)}
+}
+
+function openAddLead(){
+  ["add-name","add-phone","add-email","add-address","add-city","add-service","add-jobvalue","add-margin","add-message","add-notes"].forEach(function(id){var el=document.getElementById(id);if(el)el.value=""});
+  document.getElementById("add-status").value="new";
+  document.getElementById("add-tier").value="general";
+  document.getElementById("backdrop").classList.add("show");
+  var panel=document.getElementById("addPanel");
+  panel.style.display="block";
+  // Force a reflow so the transition fires
+  void panel.offsetWidth;
+  panel.classList.add("open");
+  setTimeout(function(){document.getElementById("add-name").focus()},150);
+}
+function closeAddLead(){
+  var panel=document.getElementById("addPanel");
+  panel.classList.remove("open");
+  document.getElementById("backdrop").classList.remove("show");
+  setTimeout(function(){panel.style.display="none"},300);
+}
+async function submitAddLead(){
+  var name=document.getElementById("add-name").value.trim();
+  if(!name){toast("Name is required",true);document.getElementById("add-name").focus();return}
+  var btn=document.getElementById("addSaveBtn");btn.disabled=true;btn.textContent="Saving…";
+  var payload={
+    name:name,
+    phone:document.getElementById("add-phone").value.trim()||null,
+    email:document.getElementById("add-email").value.trim()||null,
+    address:document.getElementById("add-address").value.trim()||null,
+    city:document.getElementById("add-city").value.trim()||null,
+    service:document.getElementById("add-service").value||null,
+    status:document.getElementById("add-status").value,
+    tier:document.getElementById("add-tier").value,
+    job_value:document.getElementById("add-jobvalue").value||null,
+    margin:document.getElementById("add-margin").value||null,
+    message:document.getElementById("add-message").value.trim()||null,
+    notes:document.getElementById("add-notes").value.trim()||null
+  };
+  try{
+    var r=await fetch(API+"?action=create&key="+KEY+"&pin="+encodeURIComponent(PIN),{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)});
+    if(r.status===403){doLogout();return}
+    var d=await r.json();
+    if(d.error)throw new Error(d.message||d.error);
+    toast("Lead saved · "+d.lead.name);
+    closeAddLead();
+    await refresh();
+    if(d.lead&&d.lead.id){selectedId=d.lead.id;openPanel(d.lead.id)}
+  }catch(e){toast("Save failed: "+(e.message||e),true)}
+  finally{btn.disabled=false;btn.textContent="Save Lead"}
 }
 
 var SOURCE_LABELS={gbp:"Google Business Profile",organic_google:"Google Search",google_ads:"Google Ads",bing:"Bing",duckduckgo:"DuckDuckGo",social:"Social",direct:"Direct",referral:"Other site",unknown:"Unknown"};
@@ -467,7 +577,10 @@ function openPanel(id){
 }
 function closePanel(){selectedId=null;document.getElementById("panel").classList.remove("open");document.getElementById("backdrop").classList.remove("show");render()}
 document.getElementById("panel-close").addEventListener("click",closePanel);
-document.getElementById("backdrop").addEventListener("click",closePanel);
+document.getElementById("backdrop").addEventListener("click",function(){
+  if(document.getElementById("addPanel").classList.contains("open")) closeAddLead();
+  else closePanel();
+});
 // Commission auto-computes from margin + city per Ryan's rule (5% Heber/Midway, 10% else).
 // Backend rejects writes to commission (GENERATED column); UI just displays the computed value.
 function recalcCommission(){
