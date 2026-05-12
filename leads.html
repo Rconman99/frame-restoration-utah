@@ -211,7 +211,11 @@ footer{text-align:center;padding:24px;color:var(--muted);font-size:.78rem;border
     </div>
     <div class="two">
       <div class="field"><label>Job value ($)</label><input type="number" id="p-jobvalue" step="100" min="0" placeholder="0"></div>
-      <div class="field"><label>Your 10% commission</label><input type="number" id="p-commission" step="50" min="0" placeholder="auto"></div>
+      <div class="field"><label>Margin ($)</label><input type="number" id="p-margin" step="100" min="0" placeholder="0"></div>
+    </div>
+    <div class="two">
+      <div class="field"><label>City <span style="opacity:0.6;font-weight:400">(Heber/Midway = 5%, else 10%)</span></label><input type="text" id="p-city" placeholder="Heber City, Midway, Holladay, etc."></div>
+      <div class="field"><label>Commission (auto)</label><div class="val" id="p-commission" style="padding-top:8px;font-weight:600;color:#0B4060">—</div></div>
     </div>
     <div class="field"><label>Notes</label><textarea id="p-notes" placeholder="Call log · next step · what was said…"></textarea></div>
     <button class="save-btn" id="save">Save</button>
@@ -302,7 +306,10 @@ function computeKpis(rows){
   var n30=rows.filter(function(r){return new Date(r.created_at)>thirty}).length;
   var pipe=rows.filter(function(r){return ["won","lost"].indexOf(statusOrNew(r.status))<0}).reduce(function(s,r){return s+(Number(r.job_value)||0)},0);
   var wonMtd=rows.filter(function(r){return statusOrNew(r.status)==="won"&&new Date(r.won_at||r.job_completed_at||r.created_at)>=ms}).reduce(function(s,r){return s+(Number(r.job_value)||0)},0);
-  var commMtd=rows.filter(function(r){return statusOrNew(r.status)==="won"&&new Date(r.won_at||r.job_completed_at||r.created_at)>=ms}).reduce(function(s,r){return s+(Number(r.commission)||(Number(r.job_value)||0)*0.10)},0);
+  // Commission rollup uses ONLY the DB-computed commission (margin × city-aware rate).
+  // No fallback to flat 10% on job_value — that produced wrong-shape numbers under the new rule.
+  // If margin isn't filled in yet on a won lead, commMtd just shows that contribution as $0.
+  var commMtd=rows.filter(function(r){return statusOrNew(r.status)==="won"&&new Date(r.won_at||r.job_completed_at||r.created_at)>=ms}).reduce(function(s,r){return s+(Number(r.commission)||0)},0);
   document.getElementById("k-new").textContent=nNew;
   document.getElementById("k-30d").textContent=n30;
   document.getElementById("k-pipeline").textContent=fmtMoney(pipe);
@@ -384,7 +391,9 @@ function openPanel(id){
 
   document.getElementById("p-status").value=statusOrNew(lead.status);
   document.getElementById("p-jobvalue").value=lead.job_value||"";
-  document.getElementById("p-commission").value=lead.commission||"";
+  document.getElementById("p-margin").value=lead.margin||"";
+  document.getElementById("p-city").value=lead.city||"";
+  recalcCommission();
   document.getElementById("p-notes").value=lead.notes||"";
   document.getElementById("panel").classList.add("open");
   document.getElementById("backdrop").classList.add("show");
@@ -393,13 +402,24 @@ function openPanel(id){
 function closePanel(){selectedId=null;document.getElementById("panel").classList.remove("open");document.getElementById("backdrop").classList.remove("show");render()}
 document.getElementById("panel-close").addEventListener("click",closePanel);
 document.getElementById("backdrop").addEventListener("click",closePanel);
-document.getElementById("p-commission").addEventListener("input",function(){commTouched=true});
-document.getElementById("p-jobvalue").addEventListener("input",function(e){if(commTouched)return;var v=Number(e.target.value)||0;document.getElementById("p-commission").value=v?(v*0.10).toFixed(0):""});
+// Commission auto-computes from margin + city per Ryan's rule (5% Heber/Midway, 10% else).
+// Backend rejects writes to commission (GENERATED column); UI just displays the computed value.
+function recalcCommission(){
+  var m=Number(document.getElementById("p-margin").value)||0;
+  var c=(document.getElementById("p-city").value||"").trim().toLowerCase();
+  var isHeberMidway=["heber","heber city","midway"].indexOf(c)>=0;
+  var rate=isHeberMidway?0.05:0.10;
+  var commission=m*rate;
+  var display=m?("$"+commission.toFixed(2)+" ("+(rate*100)+"% of $"+m.toLocaleString()+(isHeberMidway?" — Heber/Midway rate":"")+")"):"—";
+  document.getElementById("p-commission").textContent=display;
+}
+document.getElementById("p-margin").addEventListener("input",recalcCommission);
+document.getElementById("p-city").addEventListener("input",recalcCommission);
 
 async function save(){
   if(!selectedId)return;
   var btn=document.getElementById("save");btn.disabled=true;btn.textContent="Saving…";
-  var body={id:selectedId,status:document.getElementById("p-status").value,job_value:document.getElementById("p-jobvalue").value,commission:document.getElementById("p-commission").value,notes:document.getElementById("p-notes").value};
+  var body={id:selectedId,status:document.getElementById("p-status").value,job_value:document.getElementById("p-jobvalue").value,margin:document.getElementById("p-margin").value,city:document.getElementById("p-city").value,notes:document.getElementById("p-notes").value};
   try{
     var r=await fetch(API+"?action=update&key="+KEY+"&pin="+encodeURIComponent(PIN),{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)});
     if(r.status===403){doLogout();return}

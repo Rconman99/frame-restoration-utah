@@ -70,7 +70,7 @@ Deno.serve(async (req: Request) => {
       .from("leads")
       .select(`
         id, created_at, name, email, phone, address, service, message,
-        source_page, status, job_value, commission, notes,
+        source_page, status, job_value, margin, city, commission, notes,
         job_completed_at, review_requested_at, review_link_clicked,
         won_at,
         tier, tier_reason, tier_confidence, tier_classifier
@@ -99,7 +99,12 @@ Deno.serve(async (req: Request) => {
     }
     if ("notes"      in body) patch.notes      = body.notes ? String(body.notes) : null;
     if ("job_value"  in body) patch.job_value  = body.job_value  === null || body.job_value  === "" ? null : Number(body.job_value);
-    if ("commission" in body) patch.commission = body.commission === null || body.commission === "" ? null : Number(body.commission);
+    if ("margin"     in body) patch.margin     = body.margin     === null || body.margin     === "" ? null : Number(body.margin);
+    if ("city"       in body) patch.city       = body.city ? String(body.city).trim() : null;
+    // NOTE: commission is a GENERATED column in public.leads with city-aware CASE expression:
+    //   margin*0.05 for Heber/Midway, margin*0.10 elsewhere.
+    // Writing to it returns Postgres error 428C9. Update margin and/or city — commission
+    // recalculates automatically. Rule set by Ryan 2026-05-11; migration shipped same night.
 
     if (Object.keys(patch).length === 0) return jsonResp({ error: "nothing_to_update" }, 400);
 
