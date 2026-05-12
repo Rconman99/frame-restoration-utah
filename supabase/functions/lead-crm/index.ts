@@ -70,7 +70,7 @@ Deno.serve(async (req: Request) => {
       .from("leads")
       .select(`
         id, created_at, name, email, phone, address, service, message,
-        source_page, status, job_value, commission, notes,
+        source_page, status, job_value, margin, city, commission, notes,
         job_completed_at, review_requested_at, review_link_clicked,
         won_at,
         tier, tier_reason, tier_confidence, tier_classifier
@@ -99,7 +99,12 @@ Deno.serve(async (req: Request) => {
     }
     if ("notes"      in body) patch.notes      = body.notes ? String(body.notes) : null;
     if ("job_value"  in body) patch.job_value  = body.job_value  === null || body.job_value  === "" ? null : Number(body.job_value);
-    if ("commission" in body) patch.commission = body.commission === null || body.commission === "" ? null : Number(body.commission);
+    if ("margin"     in body) patch.margin     = body.margin     === null || body.margin     === "" ? null : Number(body.margin);
+    if ("city"       in body) patch.city       = body.city ? String(body.city).trim() : null;
+    // NOTE: commission is a GENERATED column in public.leads with city-aware CASE expression:
+    //   margin*0.05 for Heber/Midway, margin*0.10 elsewhere.
+    // Writing to it returns Postgres error 428C9. Update margin and/or city — commission
+    // recalculates automatically. Rule set by Ryan 2026-05-11; migration shipped same night.
 
     if (Object.keys(patch).length === 0) return jsonResp({ error: "nothing_to_update" }, 400);
 
@@ -123,5 +128,40 @@ Deno.serve(async (req: Request) => {
     return jsonResp({ user, lead: updated });
   }
 
-  return jsonResp({ error: "unknown_action", message: `action must be 'list' or 'update' (got '${action}')` }, 400);
+  // ─── CLICKS ────────────────────────────────────────────────────────────────
+  // Returns phone_clicks aggregated for the leads dashboard. Counts by source +
+  // type, plus most recent N rows for the live feed.
+  if (action === "clicks") {
+    const days = Math.max(1, Math.min(365, Number(url.searchParams.get("days") || 30)));
+    const since = new Date(Date.now() - days * 86400000).toISOString();
+
+    const { data: rows, error: clicksErr } = await supabase
+      .from("phone_clicks")
+      .select("id, created_at, click_type, phone, source, source_page, referrer, city, gclid, utm_source, utm_medium, utm_campaign")
+      .gte("created_at", since)
+      .order("created_at", { ascending: false })
+      .limit(200);
+    if (clicksErr) return jsonResp({ error: "db_error", message: clicksErr.message }, 500);
+
+    const list = rows || [];
+    const totals = { call: 0, sms: 0 };
+    const bySource: Record<string, { call: number; sms: number }> = {};
+    for (const r of list) {
+      const t = r.click_type === "sms" ? "sms" : "call";
+      totals[t]++;
+      const s = r.source || "unknown";
+      if (!bySource[s]) bySource[s] = { call: 0, sms: 0 };
+      bySource[s][t]++;
+    }
+
+    return jsonResp({
+      user,
+      window_days: days,
+      totals,
+      by_source: bySource,
+      recent: list.slice(0, 50)
+    });
+  }
+
+  return jsonResp({ error: "unknown_action", message: `action must be 'list', 'update', or 'clicks' (got '${action}')` }, 400);
 });
