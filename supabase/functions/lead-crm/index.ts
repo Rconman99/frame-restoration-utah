@@ -128,5 +128,40 @@ Deno.serve(async (req: Request) => {
     return jsonResp({ user, lead: updated });
   }
 
-  return jsonResp({ error: "unknown_action", message: `action must be 'list' or 'update' (got '${action}')` }, 400);
+  // ─── CLICKS ────────────────────────────────────────────────────────────────
+  // Returns phone_clicks aggregated for the leads dashboard. Counts by source +
+  // type, plus most recent N rows for the live feed.
+  if (action === "clicks") {
+    const days = Math.max(1, Math.min(365, Number(url.searchParams.get("days") || 30)));
+    const since = new Date(Date.now() - days * 86400000).toISOString();
+
+    const { data: rows, error: clicksErr } = await supabase
+      .from("phone_clicks")
+      .select("id, created_at, click_type, phone, source, source_page, referrer, city, gclid, utm_source, utm_medium, utm_campaign")
+      .gte("created_at", since)
+      .order("created_at", { ascending: false })
+      .limit(200);
+    if (clicksErr) return jsonResp({ error: "db_error", message: clicksErr.message }, 500);
+
+    const list = rows || [];
+    const totals = { call: 0, sms: 0 };
+    const bySource: Record<string, { call: number; sms: number }> = {};
+    for (const r of list) {
+      const t = r.click_type === "sms" ? "sms" : "call";
+      totals[t]++;
+      const s = r.source || "unknown";
+      if (!bySource[s]) bySource[s] = { call: 0, sms: 0 };
+      bySource[s][t]++;
+    }
+
+    return jsonResp({
+      user,
+      window_days: days,
+      totals,
+      by_source: bySource,
+      recent: list.slice(0, 50)
+    });
+  }
+
+  return jsonResp({ error: "unknown_action", message: `action must be 'list', 'update', or 'clicks' (got '${action}')` }, 400);
 });

@@ -156,6 +156,22 @@ footer{text-align:center;padding:24px;color:var(--muted);font-size:.78rem;border
     <div class="kc g"><div class="v" id="k-comm">—</div><div class="l">10% — month</div><div class="h">your commission</div></div>
   </div>
 
+  <!-- Phone / SMS click tracker — clicks on tel:/sms: links from the live site (last 30d) -->
+  <div class="clicks-panel" id="clicksPanel" style="margin:0 24px 12px;padding:14px 16px;border:1px solid var(--border);border-radius:12px;background:var(--card)">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;flex-wrap:wrap;gap:8px">
+      <div style="font-size:.95rem;color:var(--gold);font-weight:600">Phone &amp; SMS Clicks <span style="color:var(--muted);font-weight:400">— last 30 days</span></div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <span style="font-size:.8rem;color:var(--muted)" id="clicks-sub">—</span>
+        <button class="sm-btn" type="button" onclick="loadClicks()" style="font-size:.75rem;padding:4px 10px">Refresh</button>
+      </div>
+    </div>
+    <div id="clicks-by-source" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px"></div>
+    <details>
+      <summary style="cursor:pointer;color:var(--blue);font-size:.85rem">Recent clicks (last 50)</summary>
+      <div id="clicks-recent" style="margin-top:10px;max-height:240px;overflow:auto;font-size:.82rem"></div>
+    </details>
+  </div>
+
   <div class="tb">
     <span class="pb act" data-status="all">All</span>
     <span class="pb" data-status="new">New</span>
@@ -255,7 +271,7 @@ function doLogin(e){
       return r.json().then(function(d){
         if(!d||d.error){document.getElementById("loginErr").textContent=d&&d.message?d.message:"Login failed.";return}
         PIN=p;CUR_USER=d.user;sessionStorage.setItem("frp",p);
-        leads=d.leads||[];showReport();render();
+        leads=d.leads||[];showReport();render();loadClicks();
       });
     })
     .catch(function(){document.getElementById("loginErr").textContent="Network error. Try again."});
@@ -284,7 +300,7 @@ function doLogout(){
     PIN=s;
     fetch(API+"?action=list&key="+KEY+"&pin="+encodeURIComponent(s))
       .then(function(r){if(r.status===403){doLogout();return}return r.json()})
-      .then(function(d){if(!d||d.error){doLogout();return}CUR_USER=d.user;leads=d.leads||[];showReport();render()})
+      .then(function(d){if(!d||d.error){doLogout();return}CUR_USER=d.user;leads=d.leads||[];showReport();render();loadClicks()})
       .catch(function(){doLogout()});
   }
 })();
@@ -296,7 +312,57 @@ async function refresh(){
     var d=await r.json();
     if(d.error)throw new Error(d.message||d.error);
     leads=d.leads||[];render();
+    loadClicks();
   }catch(e){console.error(e);toast("Refresh failed: "+(e.message||e),true)}
+}
+
+var SOURCE_LABELS={gbp:"Google Business Profile",organic_google:"Google Search",google_ads:"Google Ads",bing:"Bing",duckduckgo:"DuckDuckGo",social:"Social",direct:"Direct",referral:"Other site",unknown:"Unknown"};
+var SOURCE_COLORS={gbp:"#4285F4",organic_google:"#34A853",google_ads:"#EA4335",bing:"#0078D4",social:"#bc8cff",direct:"#8b949e",referral:"#d29922",unknown:"#6e7681"};
+
+async function loadClicks(){
+  try{
+    var r=await fetch(API+"?action=clicks&days=30&key="+KEY+"&pin="+encodeURIComponent(PIN));
+    if(r.status===403){doLogout();return}
+    var d=await r.json();
+    if(d.error)throw new Error(d.message||d.error);
+    renderClicks(d);
+  }catch(e){console.error(e);document.getElementById("clicks-sub").textContent="Failed to load clicks";}
+}
+
+function renderClicks(d){
+  var totals=d.totals||{call:0,sms:0};
+  var bySource=d.by_source||{};
+  document.getElementById("clicks-sub").textContent=totals.call+" calls · "+totals.sms+" texts (30d)";
+  var sourceHtml="";
+  var sorted=Object.keys(bySource).sort(function(a,b){return (bySource[b].call+bySource[b].sms)-(bySource[a].call+bySource[a].sms)});
+  if(sorted.length===0){sourceHtml='<div style="color:var(--muted);font-size:.85rem;padding:8px 0">No clicks tracked yet — instrument the site, then click a phone link from your phone to see it appear here.</div>';}
+  sorted.forEach(function(s){
+    var lbl=SOURCE_LABELS[s]||s;
+    var color=SOURCE_COLORS[s]||"#8b949e";
+    var c=bySource[s].call,t=bySource[s].sms;
+    sourceHtml+='<div style="background:var(--card-hi);border:1px solid '+color+'33;border-left:3px solid '+color+';border-radius:8px;padding:8px 12px;min-width:140px">'
+      +'<div style="font-size:.75rem;color:var(--muted);margin-bottom:2px">'+esc(lbl)+'</div>'
+      +'<div style="font-size:1.05rem;font-weight:600">'+(c+t)+' <span style="color:var(--muted);font-weight:400;font-size:.8rem">('+c+' call · '+t+' txt)</span></div>'
+      +'</div>';
+  });
+  document.getElementById("clicks-by-source").innerHTML=sourceHtml;
+  var recentHtml="";
+  (d.recent||[]).forEach(function(c){
+    var t=new Date(c.created_at);
+    var rel=fmtDate(c.created_at);
+    var typeIcon=c.click_type==="sms"?"💬":"📞";
+    var srcColor=SOURCE_COLORS[c.source||"unknown"]||"#8b949e";
+    var srcLbl=SOURCE_LABELS[c.source]||c.source||"unknown";
+    var page=(c.source_page||"").replace(/^https?:\/\/[^/]+/,"")||"/";
+    recentHtml+='<div style="display:grid;grid-template-columns:60px 100px 1fr 110px;gap:10px;padding:6px 4px;border-bottom:1px solid var(--border);align-items:center">'
+      +'<div style="color:var(--muted)">'+esc(rel)+'</div>'
+      +'<div><span style="color:'+srcColor+';font-weight:600">'+esc(srcLbl)+'</span></div>'
+      +'<div style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="'+esc(c.source_page||"")+'">'+typeIcon+' '+esc(page)+'</div>'
+      +'<div style="color:var(--muted);font-size:.75rem">'+esc(c.city||"")+(c.gclid?" · gclid":"")+'</div>'
+      +'</div>';
+  });
+  if(!recentHtml)recentHtml='<div style="color:var(--muted);padding:8px 4px">No clicks recorded yet.</div>';
+  document.getElementById("clicks-recent").innerHTML=recentHtml;
 }
 
 function computeKpis(rows){
