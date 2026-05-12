@@ -99,7 +99,10 @@ Deno.serve(async (req: Request) => {
     }
     if ("notes"      in body) patch.notes      = body.notes ? String(body.notes) : null;
     if ("job_value"  in body) patch.job_value  = body.job_value  === null || body.job_value  === "" ? null : Number(body.job_value);
-    if ("commission" in body) patch.commission = body.commission === null || body.commission === "" ? null : Number(body.commission);
+    // NOTE: commission is a GENERATED column (job_value * 0.10) in public.leads.
+    // Writing to it returns Postgres error 428C9 "can only be updated to DEFAULT" — every
+    // UPDATE that included commission was returning 500. Dropping the field from the patch;
+    // the generated column auto-recalculates whenever job_value changes.
 
     if (Object.keys(patch).length === 0) return jsonResp({ error: "nothing_to_update" }, 400);
 
