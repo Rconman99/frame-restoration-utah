@@ -1,6 +1,6 @@
 # Review Language Audit — Frame Roofing Utah
 
-**Date:** 2026-05-11
+**Date:** 2026-05-15
 **Reviews analyzed:** 20 (from /reviews.json)
 **Why this report exists:** Google AI Overviews pull from review language. Attributes our customers don't mention won't show up when AIO answers "best roofer Heber City" or "roof replacement Park City." This audit finds the gaps.
 

@@ -1,0 +1,1558 @@
+{
+  "schema_version": "build-intelligence-loop.v1",
+  "generated_at": "2026-05-16T17:22:27.273Z",
+  "research_snapshot": {
+    "tracker_generated_at": "2026-05-15T04:15:54.775Z",
+    "topic_map_generated_at": "2026-05-15T15:42:17.766Z",
+    "contractor_category_generated_at": "2026-05-15T16:00:18.202Z",
+    "source_count": 13,
+    "video_count": 76,
+    "topic_count": 10,
+    "p0_topic_count": 6,
+    "contractor_category_count": 17,
+    "p0_contractor_category_count": 10,
+    "min_contractor_knowledge_score": 9.1,
+    "failure_count": 0,
+    "external_sources": [
+      {
+        "id": "openai-agent-improvement-loop",
+        "label": "OpenAI Cookbook - Build an Agent Improvement Loop with Traces, Evals, and Codex",
+        "url": "https://developers.openai.com/cookbook/examples/agents_sdk/agent_improvement_loop",
+        "source_type": "official",
+        "confidence": "High",
+        "classification": "NEW",
+        "finding": "A durable agent improvement flywheel starts with traces, adds human/model feedback, converts lessons into reusable evals, and hands evidence-backed changes to Codex.",
+        "loop_implication": "Every weekly insight needs a captured evidence record, reusable acceptance test, and Codex-ready handoff before it becomes product work."
+      },
+      {
+        "id": "openai-codex-repair-loops",
+        "label": "OpenAI Cookbook - Build iterative repair loops with Codex",
+        "url": "https://developers.openai.com/cookbook/examples/codex/build_iterative_repair_loops_with_codex",
+        "source_type": "official",
+        "confidence": "High",
+        "classification": "ITERATE",
+        "finding": "Iterative repair is strongest when each pass responds to the validation delta that remained instead of guessing everything up front.",
+        "loop_implication": "The fix stage must record what failed, the exact validation delta, and the re-audit result before implementation is accepted."
+      },
+      {
+        "id": "openai-agent-evals",
+        "label": "OpenAI API Docs - Evaluate agent workflows",
+        "url": "https://developers.openai.com/api/docs/guides/agent-evals",
+        "source_type": "official",
+        "confidence": "High",
+        "classification": "ITERATE",
+        "finding": "Trace grading helps debug workflow-level issues; once good behavior is known, datasets and eval runs make improvements repeatable.",
+        "loop_implication": "Use trace-style run records during investigation, then promote recurring checks into deterministic validators and scorecards."
+      },
+      {
+        "id": "openai-codex-best-practices",
+        "label": "OpenAI Codex - Best practices",
+        "url": "https://developers.openai.com/codex/learn/best-practices",
+        "source_type": "official",
+        "confidence": "High",
+        "classification": "ITERATE",
+        "finding": "Reliability improves when Codex knows what good looks like, creates tests when needed, runs checks, confirms results, and reviews work.",
+        "loop_implication": "AGENTS.md, adapter docs, and validation scripts must define done criteria for every build mode."
+      },
+      {
+        "id": "openai-agents-md",
+        "label": "OpenAI Codex - Custom instructions with AGENTS.md",
+        "url": "https://developers.openai.com/codex/guides/agents-md",
+        "source_type": "official",
+        "confidence": "High",
+        "classification": "ITERATE",
+        "finding": "Codex layers global and project instructions, with closer project files overriding earlier guidance.",
+        "loop_implication": "Install the loop into each build through AGENTS.md plus a local adapter so current, legacy, and greenfield projects inherit the same operating rules."
+      },
+      {
+        "id": "anthropic-claude-hooks",
+        "label": "Anthropic Claude Code - Hooks reference",
+        "url": "https://code.claude.com/docs/en/hooks",
+        "source_type": "official",
+        "confidence": "High",
+        "classification": "ITERATE",
+        "finding": "Hooks can run at lifecycle points, block risky actions, inject context, and report asynchronous test results back into the agent workflow.",
+        "loop_implication": "Weekly and per-edit automations should run validations, surface failures, and block promotion when protected gates fail."
+      },
+      {
+        "id": "anthropic-claude-subagents",
+        "label": "Anthropic Claude Code - Create custom subagents",
+        "url": "https://code.claude.com/docs/en/sub-agents",
+        "source_type": "official",
+        "confidence": "High",
+        "classification": "ITERATE",
+        "finding": "Specialized agents can research, review, debug, and test with scoped tools and instructions.",
+        "loop_implication": "Frame should model the loop as role-specific skills: scout, categorizer, investigator, auditor, fixer, verifier, implementer, and growth reporter."
+      },
+      {
+        "id": "github-copilot-cloud-agent",
+        "label": "GitHub Docs - About Copilot cloud agent",
+        "url": "https://docs.github.com/en/enterprise-cloud@latest/copilot/concepts/agents/cloud-agent/about-cloud-agent",
+        "source_type": "official",
+        "confidence": "High",
+        "classification": "ITERATE",
+        "finding": "Cloud agents can research repositories, plan, fix bugs, improve tests, update docs, and track PR lifecycle metrics such as created, merged, and median time to merge.",
+        "loop_implication": "Track cycle-time metrics for our own agent work, not just content metrics: request-to-build, build-to-review, review-to-ship, and fix-reopen rate."
+      },
+      {
+        "id": "github-copilot-responsible-use",
+        "label": "GitHub Docs - Responsible use of Copilot cloud agent",
+        "url": "https://docs.github.com/en/copilot/responsible-use/copilot-cloud-agent",
+        "source_type": "official",
+        "confidence": "High",
+        "classification": "ITERATE",
+        "finding": "Responsible cloud-agent use emphasizes limited permissions, repository boundaries, signed/traceable commits, and ongoing security best practices.",
+        "loop_implication": "Automation needs clear permissions, traceability, branch/PR records, and human approval for public/client-facing changes."
+      },
+      {
+        "id": "dora-ai-assisted-2025",
+        "label": "DORA - State of AI-assisted Software Development 2025",
+        "url": "https://dora.dev/research/2025/dora-report/",
+        "source_type": "research",
+        "confidence": "High",
+        "classification": "NEW",
+        "finding": "DORA frames AI as an amplifier of an organization system, not a magic replacement for the system.",
+        "loop_implication": "The business edge comes from better intake, specs, tests, reviews, release discipline, and learning loops around the tools."
+      },
+      {
+        "id": "dora-four-keys",
+        "label": "Google Cloud - Use Four Keys metrics to measure DevOps performance",
+        "url": "https://cloud.google.com/blog/products/devops-sre/using-the-four-keys-to-measure-your-devops-performance",
+        "source_type": "research",
+        "confidence": "High",
+        "classification": "ITERATE",
+        "finding": "Deployment frequency and lead time measure velocity, while change failure rate and time to restore service measure stability.",
+        "loop_implication": "Frame's factory dashboard should measure speed and stability together so faster delivery does not hide rework."
+      },
+      {
+        "id": "nist-ai-rmf",
+        "label": "NIST - AI Risk Management Framework",
+        "url": "https://www.nist.gov/itl/ai-risk-management-framework",
+        "source_type": "standard",
+        "confidence": "High",
+        "classification": "ITERATE",
+        "finding": "NIST positions AI risk management as voluntary, trustworthy, and tied to design, development, use, and evaluation.",
+        "loop_implication": "The audit stage should cover governance, known limits, human review, data boundaries, and evaluation records."
+      },
+      {
+        "id": "owasp-llm-top-10",
+        "label": "OWASP - Top 10 for Large Language Model Applications",
+        "url": "https://owasp.org/www-project-top-10-for-large-language-model-applications/",
+        "source_type": "standard",
+        "confidence": "High",
+        "classification": "ITERATE",
+        "finding": "LLM applications face security risks such as prompt injection and insecure output handling.",
+        "loop_implication": "Any agent that can write files, send outreach, change public pages, or ingest untrusted web content needs prompt-injection and output-handling checks."
+      },
+      {
+        "id": "xai-x-algorithm",
+        "label": "xAI - X For You Feed Algorithm",
+        "url": "https://github.com/xai-org/x-algorithm",
+        "source_type": "official",
+        "confidence": "High",
+        "classification": "NEW",
+        "finding": "The open For You feed implementation uses a composable recommendation pipeline with query hydration, candidate sources, hydrators, filters, scorers, selectors, post-selection checks, and side effects.",
+        "loop_implication": "Innovate research should rank opportunities like candidates: source them, hydrate with context, filter weak or risky items, score value/risk/reuse, select top actions, convert side effects into artifacts, and measure feedback."
+      },
+      {
+        "id": "twitter-the-algorithm",
+        "label": "Twitter/X - Recommendation Algorithm",
+        "url": "https://github.com/twitter/the-algorithm",
+        "source_type": "official",
+        "confidence": "High",
+        "classification": "ITERATE",
+        "finding": "The earlier X algorithm release separates candidate sources, light/heavy rankers, home mixing, visibility filters, trust and safety models, user signals, graph features, and embeddings.",
+        "loop_implication": "The skill needs separate candidate sourcing, ranker, trust/safety, visibility, and user-signal feedback concepts instead of a single blended recommendation step."
+      },
+      {
+        "id": "microsoft-recommenders",
+        "label": "Microsoft/Recommenders - Best Practices on Recommendation Systems",
+        "url": "https://github.com/recommenders-team/recommenders",
+        "source_type": "official",
+        "confidence": "High",
+        "classification": "ITERATE",
+        "finding": "The project frames recommendation work as prepare data, model, evaluate, optimize, and operationalize.",
+        "loop_implication": "Innovate outputs should include candidate preparation, comparison/evaluation, optimization, and operationalization instead of only a top-five action list."
+      },
+      {
+        "id": "tensorflow-recommenders",
+        "label": "TensorFlow Recommenders",
+        "url": "https://github.com/tensorflow/recommenders",
+        "source_type": "official",
+        "confidence": "High",
+        "classification": "ITERATE",
+        "finding": "TensorFlow Recommenders provides a model-building workflow for recommender systems with data preparation, retrieval tasks, candidate metrics, training, and evaluation.",
+        "loop_implication": "The skill should separate retrieval-style candidate discovery from ranking and require evaluation over the candidate set."
+      },
+      {
+        "id": "tensorflow-ranking",
+        "label": "TensorFlow Ranking",
+        "url": "https://github.com/tensorflow/ranking",
+        "source_type": "official",
+        "confidence": "High",
+        "classification": "ITERATE",
+        "finding": "TensorFlow Ranking includes pointwise, pairwise, and listwise losses; common ranking metrics such as MRR and NDCG; and unbiased learning-to-rank from biased feedback.",
+        "loop_implication": "The skill needs ranking metrics, bias-aware scoring, and explicit penalties for vendor hype, repeated-source bias, recency bias, and popularity bias."
+      },
+      {
+        "id": "metarank",
+        "label": "Metarank - Real-Time Personalization as a Service",
+        "url": "https://github.com/metarank/metarank",
+        "source_type": "official",
+        "confidence": "High",
+        "classification": "ITERATE",
+        "finding": "Metarank integrates customer interaction signals like clicks and purchases into ranking and adapts search/recommendation results from feedback.",
+        "loop_implication": "The skill needs a feedback ledger so shipped actions are re-ranked based on real build outcomes, not initial research confidence alone."
+      },
+      {
+        "id": "feast-feature-store",
+        "label": "Feast - Open Source Feature Store",
+        "url": "https://github.com/feast-dev/feast",
+        "source_type": "official",
+        "confidence": "High",
+        "classification": "ITERATE",
+        "finding": "Feast manages offline and online features, supports low-latency serving, and emphasizes point-in-time correct historical feature sets to avoid leakage.",
+        "loop_implication": "The skill needs an evidence feature store: source/date/confidence at decision time, stale evidence markers, and no silent overwriting of prior evidence."
+      },
+      {
+        "id": "nvidia-merlin-systems",
+        "label": "NVIDIA Merlin Systems",
+        "url": "https://github.com/NVIDIA-Merlin/systems",
+        "source_type": "official",
+        "confidence": "High",
+        "classification": "ITERATE",
+        "finding": "Merlin Systems composes feature stores, nearest-neighbor search, filtering, ranking models, exploration strategies, and serving pipelines.",
+        "loop_implication": "The skill needs an exploration budget and serving-minded side effects: proven actions, monitored experiments, and reversible watchlist items."
+      },
+      {
+        "id": "faiss",
+        "label": "Meta Faiss",
+        "url": "https://github.com/facebookresearch/faiss",
+        "source_type": "official",
+        "confidence": "High",
+        "classification": "ITERATE",
+        "finding": "Faiss provides efficient similarity search, clustering, evaluation, and parameter tuning over large vector sets.",
+        "loop_implication": "The skill needs semantic recall before creating new artifacts: search prior docs, templates, skills, audits, and handoffs for reusable patterns."
+      },
+      {
+        "id": "vespa",
+        "label": "Vespa",
+        "url": "https://github.com/vespa-engine/vespa",
+        "source_type": "official",
+        "confidence": "High",
+        "classification": "ITERATE",
+        "finding": "Vespa is used for online search, vector search, recommendation, personalization, and RAG-style serving.",
+        "loop_implication": "The skill should distinguish offline research ranking from online build-serving surfaces like MCP resources, dashboards, and build adapters."
+      },
+      {
+        "id": "recbole",
+        "label": "RecBole",
+        "url": "https://github.com/RUCAIBox/RecBole",
+        "source_type": "research",
+        "confidence": "High",
+        "classification": "ITERATE",
+        "finding": "RecBole provides a unified framework with many algorithms, benchmark datasets, extensible data structures, and standard evaluation protocols.",
+        "loop_implication": "The skill needs repeatable eval cases and comparable score outputs so improvements can be benchmarked instead of judged subjectively."
+      },
+      {
+        "id": "gorse",
+        "label": "Gorse Recommender System Engine",
+        "url": "https://github.com/gorse-io/gorse",
+        "source_type": "official",
+        "confidence": "High",
+        "classification": "ITERATE",
+        "finding": "Gorse imports items, users, and feedback; trains recommendations; exposes APIs; and provides a dashboard for monitoring and data management.",
+        "loop_implication": "The skill needs candidate/action, build/client, and feedback records that can later become API/dashboard data."
+      },
+      {
+        "id": "dspy",
+        "label": "DSPy",
+        "url": "https://github.com/stanfordnlp/dspy",
+        "source_type": "research",
+        "confidence": "High",
+        "classification": "ITERATE",
+        "finding": "DSPy treats language-model workflows as programs that can be optimized from measured outputs rather than hand-prompted indefinitely.",
+        "loop_implication": "The skill needs eval-driven prompt/program improvement so successful outputs become reusable skill guidance and weak outputs become test cases."
+      },
+      {
+        "id": "openai-evals",
+        "label": "OpenAI Evals",
+        "url": "https://github.com/openai/evals",
+        "source_type": "official",
+        "confidence": "High",
+        "classification": "ITERATE",
+        "finding": "OpenAI Evals is a framework and registry for evaluating LLMs and LLM systems, including custom evals for workflow-specific patterns.",
+        "loop_implication": "The skill needs an eval harness with broad strategy, implementation loop, compliance-sensitive, self-application, and current platform-shift cases."
+      }
+    ],
+    "thesis": "AI-builder content becomes a competitive advantage only when it is converted into a measured factory loop: research, categorize, investigate, audit, fix, re-audit, implement, and measure."
+  },
+  "loop_health": {
+    "score": 96,
+    "grade": "world-class operating-loop candidate",
+    "status": "ready",
+    "strengths": [
+      "Research is converted into artifact targets instead of remaining passive reading.",
+      "Contractor-growth categories have a 9+/10 knowledge floor and validation.",
+      "The loop includes customer request automation as part of delivery speed.",
+      "The loop uses speed and stability metrics together."
+    ],
+    "open_risks": [
+      "Outbound request delivery needs production email/SMS/Sheet provider credentials before real sends.",
+      "Factory dashboard metrics are visible, but booking-to-live and lead-quality deltas need more real customer cycles.",
+      "Per-client source-of-truth syncing still needs production access policies.",
+      "World-class local history is visible; scheduled remote Supabase sync still needs credentialed rollout."
+    ],
+    "next_upgrade": "Enable scheduled remote Supabase sync after service credentials, RLS verification, and owner approval are in place."
+  },
+  "operating_principles": [
+    "No research without a source and artifact target.",
+    "No broad audit without a candidate registry, score vector, decision, and filter reason for rejected ideas.",
+    "No evidence overwrite: preserve source/date/confidence at decision time and mark stale records explicitly.",
+    "No final top action list without bias and diversity checks.",
+    "No new durable artifact before semantic recall against prior docs, templates, skills, handoffs, validators, and MCP resources.",
+    "No category without business value, owner gates, risks, metrics, and tests.",
+    "No fix without the validation delta it is meant to close.",
+    "No implementation promotion without re-audit proof.",
+    "No public contractor claim, review, credential, service area, outreach, ad, GBP change, tracking script, or lead-data workflow without approval gates.",
+    "No speed metric without a paired stability metric.",
+    "No repeated manual blocker without turning it into a customer request template or automation.",
+    "No recurring research win without promotion into a template, skill, validator, MCP resource, AGENTS.md rule, or dashboard metric."
+  ],
+  "stages": [
+    {
+      "id": "research",
+      "label": "Research Signal Intake",
+      "order": 1,
+      "objective": "Collect high-signal YouTube, official docs, platform updates, competitive examples, and client-result signals without turning noise into build work.",
+      "owner_agent": "research_scout",
+      "cadence": "Weekly, plus before major architecture, SEO, AEO, automation, or offer changes.",
+      "inputs": [
+        "codex-builder video tracker",
+        "official AI/tool docs",
+        "contractor growth sources",
+        "client build outcomes",
+        "customer requests and blockers"
+      ],
+      "outputs": [
+        "evidence packet",
+        "source health",
+        "new versus hype classification",
+        "candidate build implications"
+      ],
+      "artifact_targets": [
+        "data/codex-builder-video-tracker.json",
+        "docs/codex-builder-video-digest-latest.md",
+        "docs/codex-builder-video-knowledge-base.md"
+      ],
+      "metrics": [
+        {
+          "id": "source_health",
+          "label": "Tracked sources refresh without failures",
+          "target": "0 unresolved P0 source failures"
+        },
+        {
+          "id": "freshness",
+          "label": "Research snapshot age",
+          "target": "7 days or less for weekly loop"
+        },
+        {
+          "id": "evidence_density",
+          "label": "Every candidate has source, date, and implication",
+          "target": "100%"
+        }
+      ],
+      "quality_gates": [
+        "Every external claim has a source URL or is marked as an internal inference.",
+        "Official docs or platform policy beat creator claims when they conflict.",
+        "No creator content is copied, downloaded, rehosted, or treated as ours."
+      ],
+      "failure_modes": [
+        "Chasing viral tools that do not improve contractor builds.",
+        "Using stale tool behavior after AI platforms change.",
+        "Confusing content popularity with customer business value."
+      ],
+      "fix_policy": [
+        "Demote unsourced claims to watchlist.",
+        "Refresh official docs for any compliance, API, MCP, Codex, Claude, Google, GBP, or search policy claim.",
+        "Attach an artifact target before promoting a pattern."
+      ],
+      "audit_policy": [
+        "Weekly source failure check.",
+        "Monthly review of sources that stopped publishing or stopped being useful.",
+        "Quarterly source mix review across Codex, Claude, GitHub, Google, OpenAI, local SEO, and contractor growth."
+      ],
+      "automation_hooks": [
+        "launchd weekly trigger",
+        "tracker source failure logging",
+        "local LLM brief generation",
+        "Codex optional weekly brief"
+      ],
+      "source_ids": [
+        "openai-agent-improvement-loop",
+        "dora-ai-assisted-2025"
+      ]
+    },
+    {
+      "id": "categorize",
+      "label": "Categorize Into Business Value",
+      "order": 2,
+      "objective": "Turn raw signals into product categories, contractor-growth modules, and build modes so agents know what each lesson should change.",
+      "owner_agent": "category_mapper",
+      "cadence": "After every research refresh.",
+      "inputs": [
+        "video digest",
+        "topic business-value map",
+        "contractor category knowledge map"
+      ],
+      "outputs": [
+        "topic priority",
+        "business value score",
+        "product module mapping",
+        "mode applicability"
+      ],
+      "artifact_targets": [
+        "data/codex-builder-topic-map.json",
+        "docs/codex-builder-topic-business-value-map.md",
+        "data/contractor-growth-category-knowledge-map.json",
+        "docs/contractor-growth-category-knowledge-map.md"
+      ],
+      "metrics": [
+        {
+          "id": "p0_coverage",
+          "label": "P0 categories cover lead, authority, proof, tracking, QA, and compliance",
+          "target": "all present"
+        },
+        {
+          "id": "category_score_floor",
+          "label": "Contractor category knowledge score floor",
+          "target": "9.0/10 minimum"
+        },
+        {
+          "id": "artifact_mapping",
+          "label": "Categories mapped to concrete build artifacts",
+          "target": "100%"
+        }
+      ],
+      "quality_gates": [
+        "Every category includes modules, automations, owner gates, risks, metrics, MVP actions, and tests.",
+        "Every P0 category has an implementation destination.",
+        "Backlink, review, GBP, and outreach categories include compliance constraints."
+      ],
+      "failure_modes": [
+        "A category describes a trend but not a product capability.",
+        "A useful lesson is trapped in docs and never reaches an issue, skill, or build gate.",
+        "A contractor category falls below the 9/10 knowledge threshold."
+      ],
+      "fix_policy": [
+        "Raise weak categories with official sources and concrete tests.",
+        "Split overloaded categories into separate skills when the owner, data, and gates differ.",
+        "Reject categories that cannot name a business outcome."
+      ],
+      "audit_policy": [
+        "Run category validation after generation.",
+        "Audit category gaps against shipped build failures and customer blockers.",
+        "Retire categories that stay watchlist-only for 90 days without value."
+      ],
+      "automation_hooks": [
+        "generate-build-intelligence-topic-map.js",
+        "generate-contractor-growth-category-knowledge-map.js",
+        "validate-contractor-growth-category-knowledge-map.js"
+      ],
+      "source_ids": [
+        "openai-agent-evals",
+        "dora-ai-assisted-2025"
+      ]
+    },
+    {
+      "id": "investigate",
+      "label": "Investigate Build Impact",
+      "order": 3,
+      "objective": "Compare prioritized lessons against current builds, old builds, and greenfield starters to find the real operational gap.",
+      "owner_agent": "impact_investigator",
+      "cadence": "Weekly for platform; per client before strategy lock, launch, or monthly growth report.",
+      "inputs": [
+        "category map",
+        "build adapter",
+        "current AGENTS.md",
+        "QA results",
+        "client request rows"
+      ],
+      "outputs": [
+        "gap statement",
+        "affected artifacts",
+        "risk level",
+        "implementation hypothesis"
+      ],
+      "artifact_targets": [
+        "build-intelligence/implementation-queue.md",
+        "HANDOFF_CLAUDE_CODE_YOUTUBE_BUILD_INTELLIGENCE.md",
+        "customer request rows",
+        "build-context snapshots"
+      ],
+      "metrics": [
+        {
+          "id": "gap_to_artifact_rate",
+          "label": "Investigations ending with an artifact target",
+          "target": "95%+"
+        },
+        {
+          "id": "customer_blocker_visibility",
+          "label": "Customer blockers represented in request rows",
+          "target": "100% for P0 blockers"
+        },
+        {
+          "id": "investigation_cycle_time",
+          "label": "Time from signal to impact decision",
+          "target": "48 hours or less for P0"
+        }
+      ],
+      "quality_gates": [
+        "A lesson is not actionable until it names the affected artifact and mode.",
+        "Customer-facing asks must map to a request row, approval gate, or blocked reason.",
+        "Competitive lessons must be translated into our product language."
+      ],
+      "failure_modes": [
+        "Research adds work that does not reduce delivery time or improve results.",
+        "Agents bounce between Claude/Codex without a single source of truth.",
+        "Customer missing-data loops remain manual and invisible."
+      ],
+      "fix_policy": [
+        "Create a customer request row for missing facts, photos, headshots, proof, access, or approvals.",
+        "Create one Codex/Claude handoff with acceptance criteria instead of repeated vague reviews.",
+        "Defer non-P0 ideas to watchlist when they do not reduce a known bottleneck."
+      ],
+      "audit_policy": [
+        "Every weekly P0 lesson gets an impact decision.",
+        "Every active client build gets a blocker audit before the next implementation sprint.",
+        "Every customer request row has owner, channel, status, and due date."
+      ],
+      "automation_hooks": [
+        "MCP get_build_intelligence_feed",
+        "customer request digest",
+        "build-context resource read",
+        "implementation queue sync"
+      ],
+      "source_ids": [
+        "openai-agents-md",
+        "github-copilot-cloud-agent"
+      ]
+    },
+    {
+      "id": "audit",
+      "label": "Audit Against World-Class Gates",
+      "order": 4,
+      "objective": "Score the build or capability against quality, speed, SEO/AEO, conversion, trust, compliance, customer friction, and maintainability gates.",
+      "owner_agent": "world_class_auditor",
+      "cadence": "Before fixes, before launch, and after any major platform capability change.",
+      "inputs": [
+        "impact investigation",
+        "category gates",
+        "contractor launch QA",
+        "customer request status"
+      ],
+      "outputs": [
+        "audit score",
+        "ranked findings",
+        "required tests",
+        "fix backlog"
+      ],
+      "artifact_targets": [
+        "WORLD_CLASS_BUILD_LOOP_AUDIT.md",
+        "launch QA packet",
+        "review queue",
+        "data/build-intelligence-loop.json"
+      ],
+      "metrics": [
+        {
+          "id": "audit_score",
+          "label": "World-class gate score",
+          "target": "90+ overall, 95+ for launch P0s"
+        },
+        {
+          "id": "finding_specificity",
+          "label": "Findings include file/artifact and acceptance test",
+          "target": "100%"
+        },
+        {
+          "id": "risk_visibility",
+          "label": "Compliance and approval risks are explicit",
+          "target": "100%"
+        }
+      ],
+      "quality_gates": [
+        "Findings lead with risks, not summaries.",
+        "Every P0 finding has an owner and a validation command or checklist.",
+        "Public-facing contractor claims, reviews, service areas, credentials, ads, GBP, and outreach are approval-gated."
+      ],
+      "failure_modes": [
+        "Review loops become opinion loops with no measurable stop condition.",
+        "Speed hides quality regressions.",
+        "AI-generated changes create compliance, privacy, or trust problems."
+      ],
+      "fix_policy": [
+        "Group findings by artifact so fixes can be owned cleanly.",
+        "Convert vague findings into acceptance tests before coding.",
+        "Block launch when compliance, tracking, or lead capture P0s are unresolved."
+      ],
+      "audit_policy": [
+        "Re-run audit after fix stage.",
+        "Record residual risk in handoff docs.",
+        "Run contractor launch QA before public launch."
+      ],
+      "automation_hooks": [
+        "validate-build-intelligence-loop.js",
+        "contractor-launch-qa skill",
+        "check-world-class-gates.mjs",
+        "typecheck/test/build"
+      ],
+      "source_ids": [
+        "nist-ai-rmf",
+        "owasp-llm-top-10",
+        "openai-codex-best-practices"
+      ]
+    },
+    {
+      "id": "fix",
+      "label": "Fix With Bounded Ownership",
+      "order": 5,
+      "objective": "Implement the smallest high-value change that closes the audited gap while preserving user edits and local project conventions.",
+      "owner_agent": "bounded_fixer",
+      "cadence": "After audit ranking and acceptance tests are defined.",
+      "inputs": [
+        "ranked audit findings",
+        "acceptance tests",
+        "affected files",
+        "customer-approved facts"
+      ],
+      "outputs": [
+        "patch",
+        "updated docs/data",
+        "changed file list",
+        "validation notes"
+      ],
+      "artifact_targets": [
+        "source files",
+        "scripts",
+        "docs",
+        "MCP tools/resources",
+        "adapter files"
+      ],
+      "metrics": [
+        {
+          "id": "fix_scope",
+          "label": "Fix touches only necessary artifacts",
+          "target": "no unrelated refactors"
+        },
+        {
+          "id": "acceptance_coverage",
+          "label": "Fix has mapped acceptance checks",
+          "target": "100% for P0/P1"
+        },
+        {
+          "id": "review_reopen_rate",
+          "label": "P0 finding reopens after fix",
+          "target": "less than 10%"
+        }
+      ],
+      "quality_gates": [
+        "Use existing patterns before adding new abstractions.",
+        "Preserve unrelated user changes.",
+        "Add tests or validators when the behavior is shared or recurring."
+      ],
+      "failure_modes": [
+        "Fixes expand into broad rewrites.",
+        "Agents undo each other's changes.",
+        "Fixes satisfy code review but not customer delivery speed."
+      ],
+      "fix_policy": [
+        "Assign disjoint write scopes when multiple agents are involved.",
+        "Keep customer-facing facts unchanged unless approved.",
+        "Update handoffs and adapters when the fix changes operating behavior."
+      ],
+      "audit_policy": [
+        "Record the validation delta the fix is meant to close.",
+        "Run the narrowest reliable checks first, then broader checks before final handoff.",
+        "If checks fail, route back to investigate with the exact failure."
+      ],
+      "automation_hooks": [
+        "apply_patch",
+        "agent handoff files",
+        "MCP feed update",
+        "customer request sync"
+      ],
+      "source_ids": [
+        "openai-codex-repair-loops",
+        "anthropic-claude-subagents"
+      ]
+    },
+    {
+      "id": "re_audit",
+      "label": "Re-Audit And Prove Delta",
+      "order": 6,
+      "objective": "Confirm the fix closed the original gap, did not create a new one, and improved the measurable score or cycle time.",
+      "owner_agent": "verification_auditor",
+      "cadence": "Immediately after fixes and before implementation promotion.",
+      "inputs": [
+        "patch",
+        "original audit",
+        "test output",
+        "rendered/browser evidence when needed"
+      ],
+      "outputs": [
+        "delta proof",
+        "remaining risk",
+        "go/no-go decision",
+        "next fix loop if needed"
+      ],
+      "artifact_targets": [
+        "test logs",
+        "QA packet",
+        "loop JSON",
+        "handoff notes"
+      ],
+      "metrics": [
+        {
+          "id": "delta_closed",
+          "label": "Original P0/P1 deltas closed",
+          "target": "100% or explicitly deferred with owner approval"
+        },
+        {
+          "id": "regression_count",
+          "label": "New regressions from fix",
+          "target": "0 P0/P1"
+        },
+        {
+          "id": "evidence_quality",
+          "label": "Verification includes command, screenshot, or checklist evidence",
+          "target": "100% for shipped changes"
+        }
+      ],
+      "quality_gates": [
+        "Never mark a loop complete without stating the check that passed.",
+        "Browser/visual changes need rendered verification.",
+        "If customer input is missing, request it instead of inventing facts."
+      ],
+      "failure_modes": [
+        "Review says fixed but tests were not run.",
+        "The same issue bounces between Claude and Codex because no delta is captured.",
+        "A passed local check hides a broken customer workflow."
+      ],
+      "fix_policy": [
+        "Return failed checks to the fix stage with exact output.",
+        "Return ambiguous product questions to customer request rows.",
+        "Escalate repeatedly failing P0s into a handoff with fresh context."
+      ],
+      "audit_policy": [
+        "Keep the original finding visible until proof exists.",
+        "Track reopened findings by category and agent.",
+        "Include residual risk in final handoff."
+      ],
+      "automation_hooks": [
+        "npm run typecheck",
+        "npm run test",
+        "npm run build",
+        "browser QA",
+        "loop validator"
+      ],
+      "source_ids": [
+        "openai-codex-repair-loops",
+        "openai-agent-evals",
+        "dora-four-keys"
+      ]
+    },
+    {
+      "id": "implement",
+      "label": "Implement Into Builds And Skills",
+      "order": 7,
+      "objective": "Promote proven lessons into reusable skills, build adapters, MCP resources/tools, customer requests, templates, QA gates, and starter workflows.",
+      "owner_agent": "implementation_integrator",
+      "cadence": "After re-audit passes; weekly for adapter refresh; monthly for skill/template promotion.",
+      "inputs": [
+        "delta proof",
+        "approved change",
+        "mode playbook",
+        "affected build list"
+      ],
+      "outputs": [
+        "adapter sync",
+        "MCP feed update",
+        "skill or template update",
+        "handoff",
+        "customer-facing request if needed"
+      ],
+      "artifact_targets": [
+        "customer-build-platform/build-intelligence/",
+        "customer-build-platform/src/lib/build-intelligence.ts",
+        "customer-build-platform/src/lib/mcp/resources.ts",
+        "AGENTS.md",
+        "skills and templates"
+      ],
+      "metrics": [
+        {
+          "id": "reuse_rate",
+          "label": "Lesson promoted to reusable artifact when applicable",
+          "target": "80%+ for repeated P0s"
+        },
+        {
+          "id": "mode_coverage",
+          "label": "Current/legacy/greenfield guidance exists",
+          "target": "all modes covered"
+        },
+        {
+          "id": "handoff_completeness",
+          "label": "Claude/Codex handoff includes context, files, tests, risks",
+          "target": "100%"
+        }
+      ],
+      "quality_gates": [
+        "A proven lesson is added to the adapter if it should affect future builds.",
+        "MCP feed exposes the loop to agents that do not read docs manually.",
+        "Customer outbound requests are generated for missing inputs instead of leaving silent blockers."
+      ],
+      "failure_modes": [
+        "A fix works once but never becomes part of the factory.",
+        "Old builds and greenfield builds drift into different standards.",
+        "Operators forget the research because it is not in the build context."
+      ],
+      "fix_policy": [
+        "Install or refresh the adapter in active builds after loop changes.",
+        "Update AGENTS.md when an operating rule changes.",
+        "Create a skill when the same workflow is repeated three times."
+      ],
+      "audit_policy": [
+        "Weekly check confirms adapter files match global loop snapshot.",
+        "Monthly check asks what shipped quality improved because of the loop.",
+        "Quarterly prune unused skills/templates."
+      ],
+      "automation_hooks": [
+        "install-build-intelligence-adapter.js",
+        "get_build_intelligence_feed",
+        "MCP resource list",
+        "weekly launchd trigger"
+      ],
+      "source_ids": [
+        "openai-agents-md",
+        "github-copilot-cloud-agent",
+        "anthropic-claude-hooks"
+      ]
+    },
+    {
+      "id": "measure",
+      "label": "Measure Business Outcomes And Feed Back",
+      "order": 8,
+      "objective": "Close the loop by measuring delivery speed, quality, visibility, customer friction, lead outcomes, and reusable knowledge created.",
+      "owner_agent": "growth_measurement_reporter",
+      "cadence": "Weekly internal, monthly per client, quarterly system review.",
+      "inputs": [
+        "shipped changes",
+        "DORA-style cycle metrics",
+        "GA4/GSC/GBP/lead data",
+        "customer request completion data"
+      ],
+      "outputs": [
+        "factory score",
+        "client growth digest",
+        "rework analysis",
+        "next research questions"
+      ],
+      "artifact_targets": [
+        "monthly growth digest",
+        "customer request dashboard",
+        "Search Console / GBP / GA4 reports",
+        "RESEARCH_OPERATING_SYSTEM_AND_BACKLOG.md"
+      ],
+      "metrics": [
+        {
+          "id": "booking_to_live_days",
+          "label": "Days from booking to launch-ready build",
+          "target": "target 7-10 days for standard contractor build"
+        },
+        {
+          "id": "customer_wait_time",
+          "label": "Days blocked waiting for customer input",
+          "target": "less than 3 active days per build stage"
+        },
+        {
+          "id": "change_failure_rate",
+          "label": "Build changes requiring rollback or major rework",
+          "target": "under 10%"
+        },
+        {
+          "id": "lead_quality_loop",
+          "label": "Leads tied back to source/city/service/page",
+          "target": "90%+"
+        }
+      ],
+      "quality_gates": [
+        "Measure speed and stability together.",
+        "Separate vanity metrics from qualified leads and booked jobs.",
+        "Feed recurring misses back into research and customer request automation."
+      ],
+      "failure_modes": [
+        "The factory ships faster but customer input still blocks launches.",
+        "Reports show traffic but not booked work.",
+        "The same missing asset or approval appears across clients."
+      ],
+      "fix_policy": [
+        "Create reusable customer request templates for repeated missing inputs.",
+        "Turn recurring delivery delays into factory automation tasks.",
+        "Turn recurring ranking/lead gaps into contractor growth category updates."
+      ],
+      "audit_policy": [
+        "Weekly factory review: speed, failures, blockers, shipped lessons.",
+        "Monthly client review: visibility, leads, proof, authority, next actions.",
+        "Quarterly competitor review: categories where we are below 9/10."
+      ],
+      "automation_hooks": [
+        "customer request digest",
+        "GSC/GA4/GBP collectors",
+        "monthly growth digest",
+        "weekly build-intelligence trigger"
+      ],
+      "source_ids": [
+        "dora-four-keys",
+        "dora-ai-assisted-2025"
+      ]
+    }
+  ],
+  "competitive_categories": [
+    {
+      "id": "ai-build-process",
+      "label": "AI Build Process And Factory Speed",
+      "score": 9.7,
+      "current_edge": "The loop makes speed measurable from booking to launch while preserving audit/re-audit gates.",
+      "next_edge": "Add factory dashboard metrics for request-to-build, build-to-review, review-to-live, and blocked-by-customer time.",
+      "covered_by_stages": [
+        "research",
+        "audit",
+        "re_audit",
+        "measure"
+      ]
+    },
+    {
+      "id": "code-agent-ops",
+      "label": "Codex, Claude, MCP, Skills, And Agent Ops",
+      "score": 9.6,
+      "current_edge": "Agent roles, AGENTS.md instructions, hooks/validators, and MCP feeds keep context consistent across tools.",
+      "next_edge": "Add role-specific skills for investigator, auditor, verifier, and customer-request dispatcher.",
+      "covered_by_stages": [
+        "investigate",
+        "fix",
+        "implement"
+      ]
+    },
+    {
+      "id": "local-contractor-growth",
+      "label": "Local Contractor Growth System",
+      "score": 9.8,
+      "current_edge": "The contractor category map already covers lead capture, tracking, GBP, SEO/AEO, proof, reviews, backlinks, and monthly growth.",
+      "next_edge": "Connect category gaps directly to city/service/product launch pages and monthly authority tasks.",
+      "covered_by_stages": [
+        "categorize",
+        "investigate",
+        "measure"
+      ]
+    },
+    {
+      "id": "ai-visibility-authority",
+      "label": "AI Visibility, SEO, AEO, And Authority",
+      "score": 9.5,
+      "current_edge": "The loop ties AI-search readiness and backlink authority to ethical source-backed growth categories.",
+      "next_edge": "Add citation/source monitoring for AI Overviews, ChatGPT referrals, Bing/IndexNow, and local citations.",
+      "covered_by_stages": [
+        "research",
+        "categorize",
+        "implement",
+        "measure"
+      ]
+    },
+    {
+      "id": "customer-request-automation",
+      "label": "Customer Request And Delivery Layer",
+      "score": 9.4,
+      "current_edge": "The loop treats missing customer facts, photos, access, approvals, and proof as data rows, not ad hoc messages.",
+      "next_edge": "Generate email/SMS/Sheet digests and sync replies back into the same request rows.",
+      "covered_by_stages": [
+        "investigate",
+        "fix",
+        "measure"
+      ]
+    },
+    {
+      "id": "risk-compliance-security",
+      "label": "Risk, Compliance, And AI Security",
+      "score": 9.3,
+      "current_edge": "NIST/OWASP/OpenAI/GitHub/Google policy sources inform approval gates, prompt-injection checks, and human review.",
+      "next_edge": "Add automated risk tags to agent actions that touch outreach, public pages, reviews, GBP, tracking, credentials, or lead data.",
+      "covered_by_stages": [
+        "audit",
+        "re_audit",
+        "implement"
+      ]
+    },
+    {
+      "id": "knowledge-packaging-training",
+      "label": "Knowledge Packaging, Training, And Reuse",
+      "score": 9.4,
+      "current_edge": "Research becomes reusable docs, adapters, MCP resources, and skill candidates instead of isolated chat output.",
+      "next_edge": "Create a quarterly skill promotion review and operator training path from the loop outputs.",
+      "covered_by_stages": [
+        "categorize",
+        "implement",
+        "measure"
+      ]
+    },
+    {
+      "id": "auto-enhance-design",
+      "label": "Auto-Enhance Design And Conversion Polish",
+      "score": 9.5,
+      "current_edge": "Design improvements are treated as a measurable lane with screenshots, category audit, bounded patches, browser QA, and reusable patterns.",
+      "next_edge": "Expose auto-enhance design actions in every build adapter and promote winning visual/component improvements into starters.",
+      "covered_by_stages": [
+        "audit",
+        "fix",
+        "re_audit",
+        "implement"
+      ]
+    },
+    {
+      "id": "recommendation-pipeline-prioritization",
+      "label": "Recommendation Pipeline Prioritization",
+      "score": 9.6,
+      "current_edge": "Research candidates are filtered and scored before they become build work, reducing tool-chasing and opinion-based prioritization.",
+      "next_edge": "Add explicit candidate scoring to broad innovate audits and platform build-intelligence panels.",
+      "covered_by_stages": [
+        "research",
+        "categorize",
+        "investigate",
+        "measure"
+      ]
+    },
+    {
+      "id": "evidence-memory-and-feedback",
+      "label": "Evidence Memory And Feedback Ledger",
+      "score": 9.7,
+      "current_edge": "Research decisions preserve source/date/confidence at decision time and can be re-ranked after build outcomes are known.",
+      "next_edge": "Add candidate registry, evidence feature store, and shipped-action feedback ledger to the platform.",
+      "covered_by_stages": [
+        "research",
+        "categorize",
+        "measure"
+      ]
+    },
+    {
+      "id": "bias-aware-evaluation",
+      "label": "Bias-Aware Evaluation And Diversity Gates",
+      "score": 9.6,
+      "current_edge": "Broad audits penalize vendor hype, popularity bias, recency bias, repeated-source bias, and category collapse before selecting actions.",
+      "next_edge": "Add bias/diversity checks and eval cases to every high-stakes innovate run.",
+      "covered_by_stages": [
+        "audit",
+        "re_audit",
+        "measure"
+      ]
+    },
+    {
+      "id": "semantic-recall-and-optimization",
+      "label": "Semantic Recall And Prompt Optimization",
+      "score": 9.4,
+      "current_edge": "Before creating new artifacts, the loop searches prior docs/templates/skills/handoffs and turns successful outputs into reusable guidance.",
+      "next_edge": "Add local semantic recall and eval-driven skill optimization to reduce duplicate work.",
+      "covered_by_stages": [
+        "research",
+        "implement",
+        "measure"
+      ]
+    }
+  ],
+  "action_backlog": [
+    {
+      "id": "loop-mcp-surface",
+      "priority": "P0",
+      "title": "Expose the build intelligence loop in the MCP feed and resource list.",
+      "applies_to": [
+        "current"
+      ],
+      "stage_id": "implement",
+      "destination": "customer-build-platform/src/lib/build-intelligence.ts and customer-build-platform/src/lib/mcp/resources.ts",
+      "acceptance_tests": [
+        "Feed includes operating_loop, loop_health, and loop_actions.",
+        "Resource list includes docs/build-intelligence-loop."
+      ],
+      "business_value": "Keeps every active build chat anchored to the operating loop.",
+      "feedback_score": 33.5,
+      "feedback_decision": "Ship",
+      "feedback_measurement_status": "validated_pending_outcomes"
+    },
+    {
+      "id": "weekly-loop-validation",
+      "priority": "P0",
+      "title": "Add loop generation and validation to the weekly trigger.",
+      "applies_to": [
+        "current",
+        "legacy",
+        "greenfield"
+      ],
+      "stage_id": "re_audit",
+      "destination": "scripts/run-weekly-codex-builder-video-trigger.sh",
+      "acceptance_tests": [
+        "Weekly log shows loop generated and validated.",
+        "Validator fails if stages or sources are incomplete."
+      ],
+      "business_value": "Prevents the factory from decaying into stale docs.",
+      "feedback_score": 35.5,
+      "feedback_decision": "Ship",
+      "feedback_measurement_status": "validated_pending_outcomes"
+    },
+    {
+      "id": "customer-request-dispatcher-skill",
+      "priority": "P0",
+      "title": "Create a customer request dispatcher skill that turns blockers into email/SMS/Sheet-ready requests.",
+      "applies_to": [
+        "current",
+        "greenfield"
+      ],
+      "stage_id": "implement",
+      "destination": "skills/customer-request-dispatcher or platform request delivery module",
+      "acceptance_tests": [
+        "Requests include owner, channel, due date, artifact, approval gate, and sync-back key."
+      ],
+      "business_value": "Cuts back-and-forth by making missing input visible and routable.",
+      "feedback_score": 36.5,
+      "feedback_decision": "Ship",
+      "feedback_measurement_status": "validated_pending_outcomes"
+    },
+    {
+      "id": "factory-dashboard-metrics",
+      "priority": "P0",
+      "title": "Add delivery speed and stability metrics to the platform dashboard.",
+      "applies_to": [
+        "current"
+      ],
+      "stage_id": "measure",
+      "destination": "customer-build-platform dashboard/reporting",
+      "acceptance_tests": [
+        "Metrics include booking-to-live, customer-wait time, review-reopen rate, and change failure rate."
+      ],
+      "business_value": "Lets Frame manage the factory like an operating system, not a collection of chats.",
+      "feedback_score": 29.5,
+      "feedback_decision": "Ship",
+      "feedback_measurement_status": "validated_pending_outcomes"
+    },
+    {
+      "id": "world-class-history-dashboard",
+      "priority": "P0",
+      "title": "Expose world-class research history, feedback ledger status, and remote-sync gates in the platform dashboard.",
+      "applies_to": [
+        "current"
+      ],
+      "stage_id": "measure",
+      "destination": "customer-build-platform world-class intelligence panel and Supabase build_intelligence_* tables",
+      "acceptance_tests": [
+        "Dashboard shows local latest/history snapshots with readiness, candidate, evidence, eval, and feedback counts.",
+        "Remote sync is visible as approval-gated and draft-only until signed Supabase credentials are configured.",
+        "Database eval-case constraint supports broad_strategy, implementation_loop, compliance_sensitive, self_application, and current_search_shift."
+      ],
+      "business_value": "Turns the research loop into visible operational memory instead of a hidden JSON artifact.",
+      "feedback_score": 32.5,
+      "feedback_decision": "Ship",
+      "feedback_measurement_status": "validated_pending_outcomes"
+    },
+    {
+      "id": "legacy-upgrade-loop",
+      "priority": "P1",
+      "title": "Install the loop adapter into old builds and generate a scored upgrade queue before editing pages.",
+      "applies_to": [
+        "legacy"
+      ],
+      "stage_id": "investigate",
+      "destination": "build-intelligence/implementation-queue.md",
+      "acceptance_tests": [
+        "Legacy mode queue ranks proof, CTA, schema, tracking, service-area, and approval gaps."
+      ],
+      "business_value": "Turns old sites into structured upgrades instead of rewrites.",
+      "feedback_score": 29,
+      "feedback_decision": "Monitor",
+      "feedback_measurement_status": "missing_feedback"
+    },
+    {
+      "id": "greenfield-starter-loop",
+      "priority": "P1",
+      "title": "Bake the loop into the greenfield contractor starter before sitemap/copy/design generation.",
+      "applies_to": [
+        "greenfield"
+      ],
+      "stage_id": "implement",
+      "destination": "new contractor starter template",
+      "acceptance_tests": [
+        "Starter includes loop README, queue, AGENTS.md block, QA gates, and request templates."
+      ],
+      "business_value": "Makes new builds faster from the first prompt.",
+      "feedback_score": 30,
+      "feedback_decision": "Monitor",
+      "feedback_measurement_status": "missing_feedback"
+    },
+    {
+      "id": "agent-role-skill-map",
+      "priority": "P1",
+      "title": "Promote repeated loop roles into skills: scout, categorizer, investigator, auditor, fixer, verifier, integrator, reporter.",
+      "applies_to": [
+        "current",
+        "legacy",
+        "greenfield"
+      ],
+      "stage_id": "implement",
+      "destination": ".agents/skills",
+      "acceptance_tests": [
+        "Each skill has trigger, inputs, outputs, safety rules, and validation commands."
+      ],
+      "business_value": "Reduces agent drift and makes the system trainable.",
+      "feedback_score": 32.5,
+      "feedback_decision": "Ship",
+      "feedback_measurement_status": "validated_pending_outcomes"
+    },
+    {
+      "id": "ai-security-gate",
+      "priority": "P1",
+      "title": "Add prompt-injection and insecure-output checks for agents touching public pages, outreach, reviews, GBP, or lead data.",
+      "applies_to": [
+        "current",
+        "greenfield"
+      ],
+      "stage_id": "audit",
+      "destination": "QA gates and agent policies",
+      "acceptance_tests": [
+        "Risk tags are present for untrusted input and public-output actions."
+      ],
+      "business_value": "Protects the system while automation increases.",
+      "feedback_score": 23.5,
+      "feedback_decision": "Monitor",
+      "feedback_measurement_status": "validated_pending_outcomes"
+    },
+    {
+      "id": "auto-enhance-design-lane",
+      "priority": "P0",
+      "title": "Run the Auto-Enhance Design Lane before launch QA when visual quality, trust proof, or mobile conversion is weak.",
+      "applies_to": [
+        "current",
+        "legacy",
+        "greenfield"
+      ],
+      "stage_id": "re_audit",
+      "destination": "docs/innovate-build-handoff.md and visual component briefs",
+      "acceptance_tests": [
+        "Desktop and mobile render without overlap.",
+        "CTA remains obvious and forms/calls still work.",
+        "Reusable visual pattern is added to a template, brief, or backlog when it should affect future builds."
+      ],
+      "business_value": "Improves first-impression trust and conversion without reopening the whole build.",
+      "feedback_score": 43.5,
+      "feedback_decision": "Ship",
+      "feedback_measurement_status": "validated_pending_outcomes"
+    },
+    {
+      "id": "recommendation-pipeline-scoring",
+      "priority": "P0",
+      "title": "Use Recommendation Pipeline Mode for broad audits so ideas are sourced, hydrated, filtered, scored, selected, converted into side effects, and measured.",
+      "applies_to": [
+        "current",
+        "legacy",
+        "greenfield"
+      ],
+      "stage_id": "categorize",
+      "destination": "innovate-research skill and build-intelligence action selection",
+      "acceptance_tests": [
+        "Broad audits include source/hydrate/filter/score/select/side-effect/feedback logic.",
+        "Selected candidates include artifact target, approval gate, acceptance check, and measurement path.",
+        "High-risk or missing-fact candidates become Monitor or Request input instead of Ship."
+      ],
+      "business_value": "Improves prioritization quality and reduces low-value research churn.",
+      "feedback_score": 38.5,
+      "feedback_decision": "Ship",
+      "feedback_measurement_status": "validated_pending_outcomes"
+    },
+    {
+      "id": "candidate-registry-evidence-store",
+      "priority": "P0",
+      "title": "Add a candidate registry and evidence feature store for broad innovate runs.",
+      "applies_to": [
+        "current",
+        "legacy",
+        "greenfield"
+      ],
+      "stage_id": "research",
+      "destination": "innovate-research skill, build-intelligence feed, Supabase build_intelligence_candidates and build_intelligence_evidence tables",
+      "acceptance_tests": [
+        "Every candidate records source URL, source date, observed date, confidence, category, artifact target, approval gate, decision, acceptance check, and measurement path.",
+        "Evidence is append-only at decision time and stale evidence is marked instead of overwritten.",
+        "Rejected candidates keep filter reasons so the system learns what not to repeat."
+      ],
+      "business_value": "Creates durable research memory and prevents repeated manual rediscovery.",
+      "feedback_score": 33.5,
+      "feedback_decision": "Ship",
+      "feedback_measurement_status": "validated_pending_outcomes"
+    },
+    {
+      "id": "bias-diversity-ranking-gates",
+      "priority": "P0",
+      "title": "Add bias and diversity gates before selecting top research actions.",
+      "applies_to": [
+        "current",
+        "legacy",
+        "greenfield"
+      ],
+      "stage_id": "audit",
+      "destination": "innovate-research skill and build review scorecards",
+      "acceptance_tests": [
+        "Broad audits check vendor bias, popularity bias, recency bias, repeated-source bias, category collapse, survivorship bias, and feedback bias.",
+        "Top-five action lists include at least three distinct categories unless the user requests a narrow lane.",
+        "High-bias candidates become Monitor or Skip unless corroborated."
+      ],
+      "business_value": "Improves decision quality and keeps the system from chasing noisy sources.",
+      "feedback_score": 34.5,
+      "feedback_decision": "Ship",
+      "feedback_measurement_status": "validated_pending_outcomes"
+    },
+    {
+      "id": "semantic-recall-before-new-artifacts",
+      "priority": "P0",
+      "title": "Run semantic/local recall before creating new docs, skills, templates, validators, or handoffs.",
+      "applies_to": [
+        "current",
+        "legacy",
+        "greenfield"
+      ],
+      "stage_id": "investigate",
+      "destination": "docs, templates, .agents/skills, MCP resources, handoff files",
+      "acceptance_tests": [
+        "Before creating an artifact, search prior docs/templates/skills/handoffs for reusable patterns.",
+        "If a similar artifact exists, update it instead of duplicating it.",
+        "Reuse decision is recorded in the final handoff."
+      ],
+      "business_value": "Reduces duplicate work and compounds prior research.",
+      "feedback_score": 43.5,
+      "feedback_decision": "Ship",
+      "feedback_measurement_status": "validated_pending_outcomes"
+    },
+    {
+      "id": "research-eval-harness",
+      "priority": "P0",
+      "title": "Create eval cases for broad strategy, implementation loop, compliance-sensitive, self-application, and current platform-shift innovate runs.",
+      "applies_to": [
+        "current",
+        "legacy",
+        "greenfield"
+      ],
+      "stage_id": "re_audit",
+      "destination": "innovate-research skill eval notes and future test fixtures",
+      "acceptance_tests": [
+        "Eval cases cover broad_strategy, implementation_loop, compliance_sensitive, self_application, and current_search_shift scenarios.",
+        "Eval cases verify candidate scoring, artifact targets, acceptance checks, HYPE/Skip classification, and approval gates.",
+        "Compliance-sensitive cases reject fake reviews, spam, fake engagement, and unapproved claims.",
+        "Self-application cases require every skill category to score at least 9/10 and run deterministic validators.",
+        "Failed outputs become skill improvement tasks."
+      ],
+      "business_value": "Makes the skill measurable and improvable instead of prompt-only.",
+      "feedback_score": 37.5,
+      "feedback_decision": "Ship",
+      "feedback_measurement_status": "validated_pending_outcomes"
+    },
+    {
+      "id": "feedback-ledger-exploration-budget",
+      "priority": "P1",
+      "title": "Add a feedback ledger and exploration budget for shipped research actions.",
+      "applies_to": [
+        "current",
+        "legacy",
+        "greenfield"
+      ],
+      "stage_id": "measure",
+      "destination": "build-intelligence feedback table, platform dashboard, monthly growth digest",
+      "acceptance_tests": [
+        "Shipped actions record validation result, cycle-time delta, quality delta, visibility/lead delta, rework delta, and customer-wait delta.",
+        "Broad audits allocate roughly 70% proven actions, 20% monitored experiments, and 10% exploratory watchlist.",
+        "Recurring wins are promoted into templates, skills, validators, MCP resources, or AGENTS.md rules."
+      ],
+      "business_value": "Turns research into a self-improving operating system.",
+      "feedback_score": 38.5,
+      "feedback_decision": "Ship",
+      "feedback_measurement_status": "validated_pending_outcomes"
+    },
+    {
+      "id": "skill-output-eval-harness",
+      "priority": "P0",
+      "title": "Run executable evals against saved innovate-research outputs instead of only checking skill file keywords.",
+      "applies_to": [
+        "current",
+        "legacy",
+        "greenfield"
+      ],
+      "stage_id": "re_audit",
+      "destination": "scripts/validate-innovate-output-evals.js",
+      "acceptance_tests": [
+        "Five eval cases pass: broad_strategy, implementation_loop, compliance_sensitive, self_application, and current_search_shift.",
+        "Each case validates saved output structure, sources where needed, approval gates, HYPE/Skip coverage, artifacts, and measurement."
+      ],
+      "business_value": "Makes skill quality observable from outputs, not just instructions.",
+      "feedback_score": 37.5,
+      "feedback_decision": "Ship",
+      "feedback_measurement_status": "validated_pending_outcomes"
+    },
+    {
+      "id": "feedback-score-updater",
+      "priority": "P0",
+      "title": "Turn feedback ledger rows into adjusted future action scores.",
+      "applies_to": [
+        "current",
+        "legacy",
+        "greenfield"
+      ],
+      "stage_id": "measure",
+      "destination": "scripts/apply-build-intelligence-feedback.js and data/build-intelligence-feedback-scores.json",
+      "acceptance_tests": [
+        "Feedback scores include base score, adjustment, adjusted score, measurement status, and recommended decision.",
+        "Future priority queues sort by adjusted score instead of first-pass score alone."
+      ],
+      "business_value": "Closes the loop between measured results and what the factory works on next.",
+      "feedback_score": 39.5,
+      "feedback_decision": "Ship",
+      "feedback_measurement_status": "validated_pending_outcomes"
+    },
+    {
+      "id": "research-report-freshness-checker",
+      "priority": "P0",
+      "title": "Check generated research reports for dates, source URLs, NEW-section evidence, and optional live link health.",
+      "applies_to": [
+        "current",
+        "legacy",
+        "greenfield"
+      ],
+      "stage_id": "research",
+      "destination": "scripts/check-research-report-freshness.js",
+      "acceptance_tests": [
+        "Reports have Generated dates inside the accepted freshness window.",
+        "Reports include source URLs and NEW sections include evidence.",
+        "Optional network mode can verify live URL health before major decisions."
+      ],
+      "business_value": "Reduces stale research and unsupported current-platform claims.",
+      "feedback_score": 28.5,
+      "feedback_decision": "Ship",
+      "feedback_measurement_status": "validated_pending_outcomes"
+    },
+    {
+      "id": "supabase-remote-approval-gate",
+      "priority": "P0",
+      "title": "Keep remote Supabase world-class history blocked until credentials, RLS verification, and explicit owner approval exist.",
+      "applies_to": [
+        "current"
+      ],
+      "stage_id": "audit",
+      "destination": "customer-build-platform/scripts/sync-build-intelligence-world-class.mjs",
+      "acceptance_tests": [
+        "Remote sync returns approval_required before touching Supabase unless BUILD_INTELLIGENCE_SYNC_REMOTE_APPROVED=1 or --approve-remote is present.",
+        "UI/feed exposes local_only, approval_required, or remote_requested state.",
+        "Remote writes remain draft-only and public_side_effect_allowed=false."
+      ],
+      "business_value": "Lets remote memory turn on cleanly without weakening Supabase safety.",
+      "feedback_score": 29.5,
+      "feedback_decision": "Ship",
+      "feedback_measurement_status": "validated_pending_outcomes"
+    },
+    {
+      "id": "frame-loop-plugin-readiness",
+      "priority": "P1",
+      "title": "Package the loop as a plugin only after it proves itself across multiple real build modes.",
+      "applies_to": [
+        "current",
+        "legacy",
+        "greenfield"
+      ],
+      "stage_id": "implement",
+      "destination": "scripts/check-frame-loop-plugin-readiness.js and docs/frame-build-loop-plugin-readiness.md",
+      "acceptance_tests": [
+        "Readiness gate requires at least three world-class history snapshots.",
+        "Readiness gate requires at least two build modes represented.",
+        "Plugin package excludes credentials and public-side-effect automations."
+      ],
+      "business_value": "Prevents premature packaging while giving the loop a clean plugin path.",
+      "feedback_score": 27.5,
+      "feedback_decision": "Monitor",
+      "feedback_measurement_status": "validated_pending_outcomes"
+    }
+  ],
+  "mode_playbooks": {
+    "current": {
+      "objective": "Expose the loop through MCP, active build context, customer request rows, QA gates, and dashboard metrics.",
+      "first_actions": [
+        "loop-mcp-surface",
+        "weekly-loop-validation",
+        "factory-dashboard-metrics"
+      ]
+    },
+    "legacy": {
+      "objective": "Install the adapter, audit before edits, and generate a ranked upgrade queue.",
+      "first_actions": [
+        "legacy-upgrade-loop",
+        "weekly-loop-validation"
+      ]
+    },
+    "greenfield": {
+      "objective": "Install the loop before sitemap/copy/design so every new build starts with current research, gates, and request templates.",
+      "first_actions": [
+        "greenfield-starter-loop",
+        "customer-request-dispatcher-skill"
+      ]
+    }
+  },
+  "score_model": {
+    "minimum_world_class_score": 90,
+    "score_components": [
+      {
+        "id": "evidence",
+        "weight": 15,
+        "description": "Current, sourced, high-confidence evidence."
+      },
+      {
+        "id": "artifact_conversion",
+        "weight": 20,
+        "description": "Insights change real build artifacts."
+      },
+      {
+        "id": "customer_speed",
+        "weight": 15,
+        "description": "Loop reduces missing-input and approval delay."
+      },
+      {
+        "id": "quality_gates",
+        "weight": 15,
+        "description": "Audit and re-audit are measurable."
+      },
+      {
+        "id": "bias_control",
+        "weight": 10,
+        "description": "Vendor, popularity, recency, repeated-source, and category-collapse bias are checked."
+      },
+      {
+        "id": "reuse",
+        "weight": 10,
+        "description": "Lessons become adapters, skills, templates, or MCP tools."
+      },
+      {
+        "id": "feedback_learning",
+        "weight": 10,
+        "description": "Shipped actions are re-ranked from real outcomes."
+      },
+      {
+        "id": "business_outcomes",
+        "weight": 15,
+        "description": "Measures leads, rankings, booked jobs, cycle time, and rework."
+      }
+    ],
+    "latest_feedback_scores": {
+      "generated_at": "2026-05-16T17:22:27.225Z",
+      "row_count": 21,
+      "changes_future_priorities": true
+    }
+  }
+}

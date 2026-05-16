@@ -1,0 +1,1966 @@
+{
+  "schema_version": "contractor-growth-category-knowledge-map.v1",
+  "generated_at": "2026-05-15T16:00:18.202Z",
+  "minimum_knowledge_score": 9,
+  "scoring_rubric": [
+    "source-backed evidence",
+    "contractor business value",
+    "automation readiness",
+    "data and measurement clarity",
+    "compliance and owner-gate clarity"
+  ],
+  "categories": [
+    {
+      "id": "lead-capture-conversion",
+      "label": "Lead Capture And Conversion",
+      "priority": "P0",
+      "knowledge_score": 9.8,
+      "business_value": "Turns traffic into estimate requests, calls, and booked-job opportunities.",
+      "why_add": "Most contractor sites leak demand after the user arrives. This category forces every page to answer what service is offered, where it is offered, why the contractor is credible, and how to contact them immediately.",
+      "evidence_summary": "Google Ads distinguishes lead-form volume from higher-intent lead quality. GA4 can measure lead-generation form submissions as key events, so conversion should be designed and tracked as a first-class product surface.",
+      "product_modules": [
+        "mobile CTA system",
+        "estimate form builder",
+        "call path QA",
+        "lead quality prompts",
+        "thank-you page and offline conversion handoff"
+      ],
+      "agents_or_skills": [
+        "conversion strategist",
+        "form friction auditor",
+        "mobile CTA QA agent",
+        "lead quality classifier"
+      ],
+      "data_signals": [
+        "cta_click",
+        "phone_click",
+        "form_start",
+        "form_submit",
+        "generate_lead",
+        "service_requested",
+        "city_requested",
+        "lead_quality"
+      ],
+      "automations": [
+        "detect pages without a primary CTA",
+        "test tel links and form endpoints",
+        "score form friction",
+        "route high-intent services to priority follow-up"
+      ],
+      "owner_gates": [
+        "privacy policy approval",
+        "form fields approval",
+        "claim wording approval",
+        "tracking script approval"
+      ],
+      "compliance_risks": [
+        "collecting personal information without disclosure",
+        "overpromising emergency response",
+        "asking for insurance or damage claims beyond approved intake"
+      ],
+      "success_metrics": [
+        "form submit rate",
+        "phone click rate",
+        "qualified lead rate",
+        "time to first response",
+        "booked job rate"
+      ],
+      "mvp_actions": [
+        "Add page-level CTA inventory.",
+        "Create standard roofing estimate form fields.",
+        "Add click-to-call QA.",
+        "Mark form submit as generate_lead/key event."
+      ],
+      "quality_tests": [
+        "CTA exists on mobile and desktop.",
+        "Form works with required fields only.",
+        "Lead event fires once per submit.",
+        "Thank-you path preserves source/page/city/service.",
+        "Privacy policy is linked before any paid lead form."
+      ],
+      "source_ids": [
+        "googleAdsLeadForms",
+        "googleAdsLeadFormRequirements",
+        "ga4Events",
+        "ga4KeyEvents",
+        "ga4LeadMeasurement"
+      ],
+      "sources": [
+        {
+          "id": "googleAdsLeadForms",
+          "label": "Google Ads - Use lead forms in campaigns",
+          "url": "https://support.google.com/google-ads/answer/16726829?hl=en",
+          "source_type": "official",
+          "confidence": "High",
+          "use_for": "Lead form volume versus qualification tradeoffs in paid campaigns."
+        },
+        {
+          "id": "googleAdsLeadFormRequirements",
+          "label": "Google Ads Policy - Lead form requirements",
+          "url": "https://support.google.com/adspolicy/answer/9472930?hl=en",
+          "source_type": "official policy",
+          "confidence": "High",
+          "use_for": "Lead form privacy policy, advertiser eligibility, sensitive vertical, and data-use requirements."
+        },
+        {
+          "id": "ga4Events",
+          "label": "Google Analytics - Recommended events",
+          "url": "https://developers.google.com/analytics/devguides/collection/ga4/reference/events?hl=en",
+          "source_type": "official",
+          "confidence": "High",
+          "use_for": "Lead events such as generate_lead, close_convert_lead, disqualify_lead, and lead_source."
+        },
+        {
+          "id": "ga4KeyEvents",
+          "label": "Google Analytics - About key events",
+          "url": "https://support.google.com/analytics/answer/9267568?hl=en",
+          "source_type": "official",
+          "confidence": "High",
+          "use_for": "Marking important business actions as key events and reporting on cross-channel performance."
+        },
+        {
+          "id": "ga4LeadMeasurement",
+          "label": "Google Analytics - Measure lead-generation form submissions as key events",
+          "url": "https://support.google.com/analytics/answer/13881540?hl=eN&ref_topic=13614110",
+          "source_type": "official",
+          "confidence": "High",
+          "use_for": "Lead form event measurement and key event setup."
+        }
+      ]
+    },
+    {
+      "id": "tracking-attribution-roi",
+      "label": "Tracking, Attribution, And ROI Loop",
+      "priority": "P0",
+      "knowledge_score": 10,
+      "business_value": "Proves whether the product is creating real pipeline, not just impressions or pretty pages.",
+      "why_add": "Frame needs to report leads, qualified leads, booked jobs, and revenue assumptions by source, page, city, and service. This is the difference between a build project and a monthly growth system.",
+      "evidence_summary": "Search Console provides page/query click and impression data. GBP performance reports expose actions such as calls, website clicks, and directions. GA4 key events can mark important business actions and attribute them across channels.",
+      "product_modules": [
+        "source ledger",
+        "GA4 event plan",
+        "Search Console collector",
+        "GBP performance collector",
+        "monthly ROI digest",
+        "booked-job feedback loop"
+      ],
+      "agents_or_skills": [
+        "analytics implementer",
+        "GSC opportunity miner",
+        "GBP performance analyst",
+        "ROI reporter"
+      ],
+      "data_signals": [
+        "source",
+        "medium",
+        "landing_page",
+        "query",
+        "city",
+        "service",
+        "lead_status",
+        "qualified",
+        "booked",
+        "job_value_estimate"
+      ],
+      "automations": [
+        "pull GSC query/page data",
+        "ingest GBP calls and website clicks",
+        "compare leads to booked jobs",
+        "flag pages with impressions but low CTR",
+        "monthly report draft"
+      ],
+      "owner_gates": [
+        "analytics access",
+        "call recording consent policy",
+        "CRM status definitions",
+        "revenue range assumptions"
+      ],
+      "compliance_risks": [
+        "recording calls without legal consent",
+        "misstating ROI",
+        "combining personal lead data without access controls"
+      ],
+      "success_metrics": [
+        "organic clicks",
+        "GBP interactions",
+        "generate_lead events",
+        "qualified lead rate",
+        "booked job count",
+        "estimated pipeline"
+      ],
+      "mvp_actions": [
+        "Create standard event taxonomy.",
+        "Connect GSC and GA4 reporting.",
+        "Add lead status fields.",
+        "Build a monthly booked-job feedback form."
+      ],
+      "quality_tests": [
+        "Every lead has source and landing page.",
+        "Every form has generate_lead.",
+        "Every report separates leads from booked jobs.",
+        "GSC data is filtered by query/page.",
+        "GBP metrics are not treated as exact call totals."
+      ],
+      "source_ids": [
+        "searchConsolePerformance",
+        "searchConsoleApi",
+        "googleGbpPerformance",
+        "ga4Events",
+        "ga4KeyEvents"
+      ],
+      "sources": [
+        {
+          "id": "searchConsolePerformance",
+          "label": "Search Console - Performance report",
+          "url": "https://support.google.com/webmasters/answer/7576553?hl=en",
+          "source_type": "official",
+          "confidence": "High",
+          "use_for": "Queries, pages, clicks, impressions, CTR, position, mobile/device filtering, and opportunity discovery."
+        },
+        {
+          "id": "searchConsoleApi",
+          "label": "Search Console API - Search Analytics query",
+          "url": "https://developers.google.com/webmaster-tools/v1/searchanalytics/query",
+          "source_type": "official",
+          "confidence": "High",
+          "use_for": "Automated Search Console query/page/country/device trend extraction."
+        },
+        {
+          "id": "googleGbpPerformance",
+          "label": "Google Business Profile - Understand your Business Profile performance",
+          "url": "https://support.google.com/business/answer/10018786?hl=en",
+          "source_type": "official",
+          "confidence": "High",
+          "use_for": "GBP metrics: views, searches, calls, website clicks, directions, date ranges, and downloadable profile performance."
+        },
+        {
+          "id": "ga4Events",
+          "label": "Google Analytics - Recommended events",
+          "url": "https://developers.google.com/analytics/devguides/collection/ga4/reference/events?hl=en",
+          "source_type": "official",
+          "confidence": "High",
+          "use_for": "Lead events such as generate_lead, close_convert_lead, disqualify_lead, and lead_source."
+        },
+        {
+          "id": "ga4KeyEvents",
+          "label": "Google Analytics - About key events",
+          "url": "https://support.google.com/analytics/answer/9267568?hl=en",
+          "source_type": "official",
+          "confidence": "High",
+          "use_for": "Marking important business actions as key events and reporting on cross-channel performance."
+        }
+      ]
+    },
+    {
+      "id": "google-business-profile-operations",
+      "label": "Google Business Profile Operations",
+      "priority": "P0",
+      "knowledge_score": 10,
+      "business_value": "Improves local trust, map-pack eligibility, customer action visibility, and monthly operations.",
+      "why_add": "For roofers, GBP is often the highest-intent local discovery surface. The product needs a profile-change queue, photo/update cadence, review response workflow, and profile performance digest.",
+      "evidence_summary": "Google says local results are mainly based on relevance, distance, and prominence, and recommends complete accurate info, verification, updated hours, review replies, and photos/videos. GBP posts can share updates, offers, and events, but they are reviewed against policy.",
+      "product_modules": [
+        "GBP profile audit",
+        "GBP update queue",
+        "GBP photo calendar",
+        "services and category review",
+        "GBP performance digest"
+      ],
+      "agents_or_skills": [
+        "GBP auditor",
+        "profile update drafter",
+        "photo proof curator",
+        "review response assistant"
+      ],
+      "data_signals": [
+        "primary_category",
+        "secondary_categories",
+        "services",
+        "hours",
+        "special_hours",
+        "photos_added",
+        "posts_added",
+        "calls",
+        "website_clicks",
+        "searches"
+      ],
+      "automations": [
+        "monthly GBP field audit",
+        "draft service updates from approved sitemap",
+        "suggest photo uploads from completed jobs",
+        "download performance snapshots"
+      ],
+      "owner_gates": [
+        "GBP owner approval",
+        "category/service approval",
+        "hours and service area approval",
+        "photo approval"
+      ],
+      "compliance_risks": [
+        "keyword-stuffed business name",
+        "unapproved service areas",
+        "fake address/location",
+        "policy-rejected posts"
+      ],
+      "success_metrics": [
+        "profile searches",
+        "calls",
+        "website clicks",
+        "photo freshness",
+        "review response coverage",
+        "service/category alignment"
+      ],
+      "mvp_actions": [
+        "Build GBP checklist.",
+        "Add profile update approval queue.",
+        "Map services to site pages.",
+        "Add monthly GBP performance report."
+      ],
+      "quality_tests": [
+        "NAP matches approved profile.",
+        "Services match real offerings.",
+        "Hours/special hours are current.",
+        "Photos are real and approved.",
+        "No GBP edit is published without owner approval."
+      ],
+      "source_ids": [
+        "googleLocalRanking",
+        "googleGbpPerformance",
+        "googleGbpPosts",
+        "googleGbpContentPolicy"
+      ],
+      "sources": [
+        {
+          "id": "googleLocalRanking",
+          "label": "Google Business Profile - Tips to improve your local ranking",
+          "url": "https://support.google.com/business/answer/7091?hl=en-en",
+          "source_type": "official",
+          "confidence": "High",
+          "use_for": "Local ranking factors: relevance, distance, prominence, profile completeness, hours, reviews, photos, and links across the web."
+        },
+        {
+          "id": "googleGbpPerformance",
+          "label": "Google Business Profile - Understand your Business Profile performance",
+          "url": "https://support.google.com/business/answer/10018786?hl=en",
+          "source_type": "official",
+          "confidence": "High",
+          "use_for": "GBP metrics: views, searches, calls, website clicks, directions, date ranges, and downloadable profile performance."
+        },
+        {
+          "id": "googleGbpPosts",
+          "label": "Google Business Profile - Create and manage posts",
+          "url": "https://support.google.com/business/answer/7342169?hl=en",
+          "source_type": "official",
+          "confidence": "High",
+          "use_for": "GBP updates, offers, events, photos, videos, action buttons, and post policy review."
+        },
+        {
+          "id": "googleGbpContentPolicy",
+          "label": "Google Business Profile - Prohibited and restricted content",
+          "url": "https://support.google.com/business/answer/7400114?hl=en",
+          "source_type": "official",
+          "confidence": "High",
+          "use_for": "Review, photo, Maps contribution, fake engagement, incentives, review gating, impersonation, and personal-information boundaries."
+        }
+      ]
+    },
+    {
+      "id": "reviews-reputation-engine",
+      "label": "Reviews And Reputation Engine",
+      "priority": "P0",
+      "knowledge_score": 10,
+      "business_value": "Compounds trust, improves conversion, supports local prominence, and creates proof language for pages.",
+      "why_add": "Roofing decisions are trust-heavy. Reviews should become a compliant operating loop: request, monitor, respond, categorize by service/city, and reuse approved themes without fabricating testimonials.",
+      "evidence_summary": "Google permits merchants to ask for genuine-experience reviews without incentives, but bans fake engagement, review gating, incentives, and competitor manipulation. The FTC rule adds federal risk around fake reviews, deceptive testimonials, suppression, and insider reviews. Yelp is stricter and says not to ask for Yelp reviews.",
+      "product_modules": [
+        "review request workflow",
+        "review response assistant",
+        "negative review triage",
+        "proof theme extractor",
+        "testimonial approval registry"
+      ],
+      "agents_or_skills": [
+        "review compliance agent",
+        "review reply drafter",
+        "reputation risk monitor",
+        "proof reuse curator"
+      ],
+      "data_signals": [
+        "review_platform",
+        "rating",
+        "review_text",
+        "service_mentioned",
+        "city_mentioned",
+        "response_status",
+        "proof_theme",
+        "approval_status"
+      ],
+      "automations": [
+        "send approved Google review link",
+        "draft owner-reviewed replies",
+        "flag urgent negative reviews",
+        "extract service/city proof themes",
+        "block Yelp solicitation tasks"
+      ],
+      "owner_gates": [
+        "review request copy approval",
+        "review reply approval",
+        "testimonial reuse approval",
+        "customer photo/name permission"
+      ],
+      "compliance_risks": [
+        "fake reviews",
+        "AI-generated customer reviews",
+        "review incentives",
+        "review gating",
+        "Yelp solicitation",
+        "suppression threats"
+      ],
+      "success_metrics": [
+        "review velocity",
+        "average rating by platform",
+        "response coverage",
+        "service/city mentions",
+        "negative review response time",
+        "testimonial approval count"
+      ],
+      "mvp_actions": [
+        "Create compliant review request templates.",
+        "Add Google review QR/link workflow.",
+        "Add review reply drafts.",
+        "Create review reuse approval fields."
+      ],
+      "quality_tests": [
+        "No incentive language.",
+        "No selective positive-only request flow.",
+        "Yelp request tasks are blocked.",
+        "Every testimonial reuse has source and approval.",
+        "Negative reviews get response drafts, not suppression tactics."
+      ],
+      "source_ids": [
+        "googleGbpContentPolicy",
+        "googleReviewLink",
+        "ftcReviewsRule",
+        "ftcFinalRule",
+        "yelpReviewPolicy"
+      ],
+      "sources": [
+        {
+          "id": "googleGbpContentPolicy",
+          "label": "Google Business Profile - Prohibited and restricted content",
+          "url": "https://support.google.com/business/answer/7400114?hl=en",
+          "source_type": "official",
+          "confidence": "High",
+          "use_for": "Review, photo, Maps contribution, fake engagement, incentives, review gating, impersonation, and personal-information boundaries."
+        },
+        {
+          "id": "googleReviewLink",
+          "label": "Google Business Profile - Create a link or QR code to request reviews",
+          "url": "https://support.google.com/business/answer/16816815?hl=en&ref_topic=4596755",
+          "source_type": "official",
+          "confidence": "High",
+          "use_for": "Compliant Google review request link and QR code workflow."
+        },
+        {
+          "id": "ftcReviewsRule",
+          "label": "FTC - Consumer Reviews and Testimonials Rule Q&A",
+          "url": "https://www.ftc.gov/business-guidance/resources/consumer-reviews-testimonials-rule-questions-answers",
+          "source_type": "official",
+          "confidence": "High",
+          "use_for": "US fake-review, review suppression, insider review, and testimonial compliance."
+        },
+        {
+          "id": "ftcFinalRule",
+          "label": "FTC - Final rule banning fake reviews and testimonials",
+          "url": "https://www.ftc.gov/news-events/news/press-releases/2024/08/federal-trade-commission-announces-final-rule-banning-fake-reviews-testimonials",
+          "source_type": "official",
+          "confidence": "High",
+          "use_for": "Current enforcement posture around fake, AI-generated, incentivized, suppressed, or manipulated reviews."
+        },
+        {
+          "id": "yelpReviewPolicy",
+          "label": "Yelp - Don't Ask for Reviews",
+          "url": "https://biz.yelp.com/support-center/Reviews/Best_Practices/Don-t-Ask-for-Reviews/en-US",
+          "source_type": "platform policy",
+          "confidence": "High",
+          "use_for": "Yelp-specific constraint: do not solicit reviews on Yelp even if Google review requests are allowed."
+        }
+      ]
+    },
+    {
+      "id": "backlink-citation-acquisition",
+      "label": "Backlink And Citation Acquisition",
+      "priority": "P0",
+      "knowledge_score": 9.8,
+      "business_value": "Builds local prominence and referral trust without exposing clients to link-spam risk.",
+      "why_add": "For Dallas roofers, the best backlinks are not generic SEO links. They are real local and trade proof: manufacturer profiles, supplier pages, chambers, sponsorships, local press, project partners, industry directories, vendor certifications, and citation consistency.",
+      "evidence_summary": "Google's local ranking guidance names prominence and links across the web as signals, but Search spam policies prohibit links created primarily to manipulate rankings. The product must separate legitimate earned/citation opportunities from risky paid/link-scheme tactics.",
+      "product_modules": [
+        "citation audit",
+        "backlink opportunity CRM",
+        "local partnership finder",
+        "manufacturer/vendor profile checklist",
+        "outreach approval queue"
+      ],
+      "agents_or_skills": [
+        "authority prospecting agent",
+        "citation consistency auditor",
+        "outreach drafter",
+        "link risk reviewer"
+      ],
+      "data_signals": [
+        "domain",
+        "opportunity_type",
+        "city",
+        "service",
+        "relationship_source",
+        "nap_match",
+        "outreach_status",
+        "approval_status",
+        "link_risk"
+      ],
+      "automations": [
+        "find local/trade directories",
+        "match vendors and manufacturers to profile pages",
+        "flag NAP mismatches",
+        "draft non-spam outreach",
+        "reject paid/manipulative link asks"
+      ],
+      "owner_gates": [
+        "outreach approval",
+        "sponsorship spend approval",
+        "directory claim approval",
+        "public partnership claim approval"
+      ],
+      "compliance_risks": [
+        "buying ranking links",
+        "private blog networks",
+        "irrelevant directories",
+        "fake sponsorships",
+        "unapproved claims"
+      ],
+      "success_metrics": [
+        "approved citation count",
+        "NAP consistency",
+        "earned referral links",
+        "authority opportunities by city/service",
+        "risk-rejected opportunities"
+      ],
+      "mvp_actions": [
+        "Create Dallas roofing citation matrix.",
+        "Add vendor/manufacturer backlink checklist.",
+        "Add link-risk rubric.",
+        "Create outreach approval queue."
+      ],
+      "quality_tests": [
+        "Opportunity has real business relevance.",
+        "NAP is accurate.",
+        "No paid ranking-link language.",
+        "Outreach claims are approved.",
+        "Every opportunity has city/service/product fit."
+      ],
+      "source_ids": [
+        "googleLocalRanking",
+        "googleLinkSpam",
+        "googleLinkBestPractices",
+        "googleSeoStarter"
+      ],
+      "sources": [
+        {
+          "id": "googleLocalRanking",
+          "label": "Google Business Profile - Tips to improve your local ranking",
+          "url": "https://support.google.com/business/answer/7091?hl=en-en",
+          "source_type": "official",
+          "confidence": "High",
+          "use_for": "Local ranking factors: relevance, distance, prominence, profile completeness, hours, reviews, photos, and links across the web."
+        },
+        {
+          "id": "googleLinkSpam",
+          "label": "Google Search Central - Spam policies for Google web search",
+          "url": "https://developers.google.com/search/docs/advanced/guidelines/link-schemes?hl=en&rd=1&visit_id=637787330132632764-3527068268",
+          "source_type": "official",
+          "confidence": "High",
+          "use_for": "Backlink boundaries: avoid link spam, manipulative links, paid link schemes, and site reputation abuse."
+        },
+        {
+          "id": "googleLinkBestPractices",
+          "label": "Google Search Central - Link best practices",
+          "url": "https://developers.google.com/search/docs/crawling-indexing/links-crawlable?hl=en",
+          "source_type": "official",
+          "confidence": "High",
+          "use_for": "Crawlable links and descriptive anchor text for internal authority and legitimate references."
+        },
+        {
+          "id": "googleSeoStarter",
+          "label": "Google Search Central - SEO Starter Guide",
+          "url": "https://developers.google.cn/search/docs/fundamentals/seo-starter-guide?hl=en",
+          "source_type": "official",
+          "confidence": "High",
+          "use_for": "Search fundamentals, crawlable site architecture, titles, snippets, links, images, and useful pages."
+        }
+      ]
+    },
+    {
+      "id": "city-service-expansion",
+      "label": "City And Service Expansion Strategy",
+      "priority": "P0",
+      "knowledge_score": 9.7,
+      "business_value": "Lets the contractor expand into target cities and services with useful pages instead of thin doorway pages.",
+      "why_add": "A Dallas roofer needs separate strategy for Dallas, Plano, Frisco, McKinney, Garland, Irving, Fort Worth, and service lines such as roof repair, storm damage, metal roofing, gutters, and inspections. The product must prevent mass-generated weak pages.",
+      "evidence_summary": "Google's useful-content guidance rewards pages built for people and warns against content made primarily to manipulate rankings. Local relevance also depends on complete business info and real prominence signals, not just city keyword repetition.",
+      "product_modules": [
+        "city/service matrix",
+        "page-priority model",
+        "proof requirement map",
+        "internal linking graph",
+        "doorway risk gate"
+      ],
+      "agents_or_skills": [
+        "service-area strategist",
+        "sitemap planner",
+        "proof gap analyst",
+        "internal-link architect"
+      ],
+      "data_signals": [
+        "city",
+        "service",
+        "priority",
+        "proof_available",
+        "review_mentions",
+        "photos_available",
+        "page_status",
+        "doorway_risk"
+      ],
+      "automations": [
+        "score city/service opportunities",
+        "block pages without proof or usefulness",
+        "generate internal link targets",
+        "find gaps in reviews/photos by city/service"
+      ],
+      "owner_gates": [
+        "service area approval",
+        "service offering approval",
+        "proof approval",
+        "public city claim approval"
+      ],
+      "compliance_risks": [
+        "doorway pages",
+        "invented service areas",
+        "thin duplicated city pages",
+        "unapproved emergency/insurance claims"
+      ],
+      "success_metrics": [
+        "approved city/service pages",
+        "proof coverage",
+        "internal links",
+        "query impressions by city/service",
+        "qualified leads by city/service"
+      ],
+      "mvp_actions": [
+        "Create city/service priority matrix.",
+        "Add proof-needed column.",
+        "Define no-proof/no-page rule.",
+        "Add internal linking plan."
+      ],
+      "quality_tests": [
+        "Each page has unique local usefulness.",
+        "Each page has approved service area.",
+        "Each page has visible proof or a proof request.",
+        "No claims are invented.",
+        "Internal links connect related service/city pages."
+      ],
+      "source_ids": [
+        "googleHelpfulContent",
+        "googleSeoStarter",
+        "googleLocalRanking",
+        "searchConsolePerformance"
+      ],
+      "sources": [
+        {
+          "id": "googleHelpfulContent",
+          "label": "Google Search Central - Creating helpful, reliable, people-first content",
+          "url": "https://developers.google.com/search/docs/fundamentals/creating-helpful-content",
+          "source_type": "official",
+          "confidence": "High",
+          "use_for": "Content usefulness, reliability, first-hand proof, and avoiding content made primarily to manipulate search."
+        },
+        {
+          "id": "googleSeoStarter",
+          "label": "Google Search Central - SEO Starter Guide",
+          "url": "https://developers.google.cn/search/docs/fundamentals/seo-starter-guide?hl=en",
+          "source_type": "official",
+          "confidence": "High",
+          "use_for": "Search fundamentals, crawlable site architecture, titles, snippets, links, images, and useful pages."
+        },
+        {
+          "id": "googleLocalRanking",
+          "label": "Google Business Profile - Tips to improve your local ranking",
+          "url": "https://support.google.com/business/answer/7091?hl=en-en",
+          "source_type": "official",
+          "confidence": "High",
+          "use_for": "Local ranking factors: relevance, distance, prominence, profile completeness, hours, reviews, photos, and links across the web."
+        },
+        {
+          "id": "searchConsolePerformance",
+          "label": "Search Console - Performance report",
+          "url": "https://support.google.com/webmasters/answer/7576553?hl=en",
+          "source_type": "official",
+          "confidence": "High",
+          "use_for": "Queries, pages, clicks, impressions, CTR, position, mobile/device filtering, and opportunity discovery."
+        }
+      ]
+    },
+    {
+      "id": "case-studies-proof-assets",
+      "label": "Case Studies And Proof Asset System",
+      "priority": "P0",
+      "knowledge_score": 9.6,
+      "business_value": "Turns completed jobs, photos, reviews, and owner expertise into conversion proof and local authority.",
+      "why_add": "Contractor buyers need to see evidence before they call. Proof assets also feed service pages, city pages, GBP photos, review themes, proposals, and sales demos.",
+      "evidence_summary": "Google recommends helpful, reliable, people-first content and complete business profiles with photos/videos. LocalBusiness schema can represent business identity, while visible page content should carry the actual proof.",
+      "product_modules": [
+        "project story template",
+        "before/after asset intake",
+        "proof approval registry",
+        "photo metadata organizer",
+        "case study page builder"
+      ],
+      "agents_or_skills": [
+        "proof interviewer",
+        "photo curator",
+        "case study copy agent",
+        "claim verifier"
+      ],
+      "data_signals": [
+        "project_city",
+        "service_type",
+        "before_photos",
+        "after_photos",
+        "customer_permission",
+        "review_reference",
+        "claim_approval",
+        "publish_status"
+      ],
+      "automations": [
+        "request missing job photos",
+        "draft project story from approved facts",
+        "route claims for owner approval",
+        "suggest proof blocks for related pages"
+      ],
+      "owner_gates": [
+        "customer permission",
+        "photo approval",
+        "claim approval",
+        "testimonial approval",
+        "insurance/damage wording approval"
+      ],
+      "compliance_risks": [
+        "using client photos without permission",
+        "inventing outcomes",
+        "implying insurer/legal results",
+        "publishing private property details"
+      ],
+      "success_metrics": [
+        "approved proof assets",
+        "case studies published",
+        "proof reuse per page",
+        "conversion lift by page",
+        "GBP photo cadence"
+      ],
+      "mvp_actions": [
+        "Create project proof intake form.",
+        "Add proof approval state.",
+        "Create case study outline.",
+        "Map proof assets to city/service pages."
+      ],
+      "quality_tests": [
+        "Every proof asset has source.",
+        "Every public photo has approval.",
+        "Claims match visible facts.",
+        "Private details are removed.",
+        "Proof is reused on relevant pages."
+      ],
+      "source_ids": [
+        "googleHelpfulContent",
+        "googleGbpPosts",
+        "schemaLocalBusiness",
+        "googleLocalBusinessSchema"
+      ],
+      "sources": [
+        {
+          "id": "googleHelpfulContent",
+          "label": "Google Search Central - Creating helpful, reliable, people-first content",
+          "url": "https://developers.google.com/search/docs/fundamentals/creating-helpful-content",
+          "source_type": "official",
+          "confidence": "High",
+          "use_for": "Content usefulness, reliability, first-hand proof, and avoiding content made primarily to manipulate search."
+        },
+        {
+          "id": "googleGbpPosts",
+          "label": "Google Business Profile - Create and manage posts",
+          "url": "https://support.google.com/business/answer/7342169?hl=en",
+          "source_type": "official",
+          "confidence": "High",
+          "use_for": "GBP updates, offers, events, photos, videos, action buttons, and post policy review."
+        },
+        {
+          "id": "schemaLocalBusiness",
+          "label": "Schema.org - LocalBusiness",
+          "url": "https://schema.org/LocalBusiness",
+          "source_type": "standard",
+          "confidence": "High",
+          "use_for": "Business entity properties, NAP, registration/certification, service area, and structured data vocabulary."
+        },
+        {
+          "id": "googleLocalBusinessSchema",
+          "label": "Google Search Central - Local business structured data",
+          "url": "https://developers.google.com/search/docs/appearance/structured-data/local-business?rd=1&ref_topic=3222270&visit_id=636882577671438993-3839562892",
+          "source_type": "official",
+          "confidence": "High",
+          "use_for": "Google-facing local business structured data guidance."
+        }
+      ]
+    },
+    {
+      "id": "aeo-ai-search-visibility",
+      "label": "AEO And AI Search Visibility",
+      "priority": "P0",
+      "knowledge_score": 9.5,
+      "business_value": "Makes contractor expertise easier for AI search, AI Overviews, ChatGPT search, and answer engines to understand and cite.",
+      "why_add": "AEO should not be a separate magic trick. It is answer-ready SEO: crawlable pages, clear entities, direct answers, schema, citations, proof, and robots/indexing choices.",
+      "evidence_summary": "Google gives site-owner guidance for AI Overviews and AI Mode. OpenAI documents OAI-SearchBot access and referral tracking. Bing's IndexNow supports faster discovery for participating engines.",
+      "product_modules": [
+        "answer-ready FAQ system",
+        "entity consistency registry",
+        "AI citation monitor",
+        "robots/searchbot policy check",
+        "IndexNow freshness lane"
+      ],
+      "agents_or_skills": [
+        "AEO answer architect",
+        "entity consistency auditor",
+        "AI visibility tester",
+        "freshness submitter"
+      ],
+      "data_signals": [
+        "question",
+        "answer",
+        "source_page",
+        "schema_type",
+        "entity_id",
+        "robot_policy",
+        "citation_observed",
+        "freshness_status"
+      ],
+      "automations": [
+        "generate answer blocks from approved content",
+        "test robots access",
+        "submit updated URLs where supported",
+        "monitor branded AI answers",
+        "flag unsupported AI claims"
+      ],
+      "owner_gates": [
+        "public answer approval",
+        "robots policy approval",
+        "schema fact approval",
+        "AI monitoring disclosure"
+      ],
+      "compliance_risks": [
+        "invented answers",
+        "schema not matching visible content",
+        "blocking desired search bots accidentally",
+        "claiming AI ranking guarantees"
+      ],
+      "success_metrics": [
+        "answer coverage by service",
+        "entity consistency",
+        "indexed answer pages",
+        "AI citation observations",
+        "branded answer accuracy"
+      ],
+      "mvp_actions": [
+        "Create AEO question bank.",
+        "Add direct answer blocks to service pages.",
+        "Validate robots and schema.",
+        "Track AI visibility manually before automating claims."
+      ],
+      "quality_tests": [
+        "Every answer cites approved visible content.",
+        "Schema matches page text.",
+        "Robots rules are intentional.",
+        "No AI ranking promise.",
+        "Freshness submission is logged."
+      ],
+      "source_ids": [
+        "googleAiFeatures",
+        "openaiPublisherFaq",
+        "bingIndexNow",
+        "googleHelpfulContent",
+        "googleLocalBusinessSchema"
+      ],
+      "sources": [
+        {
+          "id": "googleAiFeatures",
+          "label": "Google Search Central - AI features and your website",
+          "url": "https://developers.google.com/search/docs/appearance/ai-overviews?kgs=aa0bcc3d152ed142",
+          "source_type": "official",
+          "confidence": "High",
+          "use_for": "How website owners should think about inclusion in Google AI Overviews and AI Mode."
+        },
+        {
+          "id": "openaiPublisherFaq",
+          "label": "OpenAI Help - Publishers and Developers FAQ",
+          "url": "https://help.openai.com/en/articles/12627856-publishers-and-developers-faq",
+          "source_type": "official",
+          "confidence": "High",
+          "use_for": "OAI-SearchBot access, robots.txt, and ChatGPT referral measurement considerations."
+        },
+        {
+          "id": "bingIndexNow",
+          "label": "Bing Webmaster Tools - IndexNow",
+          "url": "https://www.bing.com/indexnow?source=Campaign",
+          "source_type": "official",
+          "confidence": "High",
+          "use_for": "Fast content discovery for participating search engines and freshness workflows."
+        },
+        {
+          "id": "googleHelpfulContent",
+          "label": "Google Search Central - Creating helpful, reliable, people-first content",
+          "url": "https://developers.google.com/search/docs/fundamentals/creating-helpful-content",
+          "source_type": "official",
+          "confidence": "High",
+          "use_for": "Content usefulness, reliability, first-hand proof, and avoiding content made primarily to manipulate search."
+        },
+        {
+          "id": "googleLocalBusinessSchema",
+          "label": "Google Search Central - Local business structured data",
+          "url": "https://developers.google.com/search/docs/appearance/structured-data/local-business?rd=1&ref_topic=3222270&visit_id=636882577671438993-3839562892",
+          "source_type": "official",
+          "confidence": "High",
+          "use_for": "Google-facing local business structured data guidance."
+        }
+      ]
+    },
+    {
+      "id": "content-operations",
+      "label": "Content Operations",
+      "priority": "P1",
+      "knowledge_score": 9.5,
+      "business_value": "Creates a monthly growth cadence that compounds service authority, seasonal relevance, and proof reuse.",
+      "why_add": "The product needs to move from one-time page generation to a controlled publishing calendar: storm season, roof types, repair guides, city updates, maintenance, financing, gutters, and insurance-safe education.",
+      "evidence_summary": "Google's helpful-content guidance makes usefulness and reliability the baseline. Search Console query/page data should feed content iteration rather than topic guessing.",
+      "product_modules": [
+        "editorial calendar",
+        "content brief generator",
+        "content QA gate",
+        "update/freshness queue",
+        "proof reuse planner"
+      ],
+      "agents_or_skills": [
+        "content strategist",
+        "query miner",
+        "brief generator",
+        "editorial QA agent"
+      ],
+      "data_signals": [
+        "topic",
+        "intent",
+        "query_cluster",
+        "page",
+        "proof_needed",
+        "last_updated",
+        "approval_status",
+        "performance_delta"
+      ],
+      "automations": [
+        "mine GSC queries",
+        "draft monthly briefs",
+        "flag stale pages",
+        "request missing proof",
+        "route content for approval"
+      ],
+      "owner_gates": [
+        "topic approval",
+        "technical claim approval",
+        "photo/proof approval",
+        "publishing approval"
+      ],
+      "compliance_risks": [
+        "thin AI content",
+        "unapproved warranties/licensing",
+        "medical/legal/insurance overreach",
+        "duplicated city pages"
+      ],
+      "success_metrics": [
+        "briefs shipped",
+        "pages updated",
+        "query coverage",
+        "click/impression growth",
+        "qualified leads from content"
+      ],
+      "mvp_actions": [
+        "Create 90-day roofing content calendar.",
+        "Tie every topic to service/city/business proof.",
+        "Add content QA gate.",
+        "Use GSC data in monthly reports."
+      ],
+      "quality_tests": [
+        "Topic has search/customer need.",
+        "Draft uses approved facts.",
+        "Page has unique value.",
+        "Performance is measured after publish.",
+        "Stale pages enter update queue."
+      ],
+      "source_ids": [
+        "googleHelpfulContent",
+        "googleSeoStarter",
+        "searchConsolePerformance",
+        "searchConsoleApi"
+      ],
+      "sources": [
+        {
+          "id": "googleHelpfulContent",
+          "label": "Google Search Central - Creating helpful, reliable, people-first content",
+          "url": "https://developers.google.com/search/docs/fundamentals/creating-helpful-content",
+          "source_type": "official",
+          "confidence": "High",
+          "use_for": "Content usefulness, reliability, first-hand proof, and avoiding content made primarily to manipulate search."
+        },
+        {
+          "id": "googleSeoStarter",
+          "label": "Google Search Central - SEO Starter Guide",
+          "url": "https://developers.google.cn/search/docs/fundamentals/seo-starter-guide?hl=en",
+          "source_type": "official",
+          "confidence": "High",
+          "use_for": "Search fundamentals, crawlable site architecture, titles, snippets, links, images, and useful pages."
+        },
+        {
+          "id": "searchConsolePerformance",
+          "label": "Search Console - Performance report",
+          "url": "https://support.google.com/webmasters/answer/7576553?hl=en",
+          "source_type": "official",
+          "confidence": "High",
+          "use_for": "Queries, pages, clicks, impressions, CTR, position, mobile/device filtering, and opportunity discovery."
+        },
+        {
+          "id": "searchConsoleApi",
+          "label": "Search Console API - Search Analytics query",
+          "url": "https://developers.google.com/webmaster-tools/v1/searchanalytics/query",
+          "source_type": "official",
+          "confidence": "High",
+          "use_for": "Automated Search Console query/page/country/device trend extraction."
+        }
+      ]
+    },
+    {
+      "id": "competitor-serp-intelligence",
+      "label": "Competitor And SERP Intelligence",
+      "priority": "P1",
+      "knowledge_score": 9.4,
+      "business_value": "Shows where the client can realistically win and which pages, proof, reviews, and authority signals are missing.",
+      "why_add": "Frame should not blindly generate pages. It should compare the target city/service SERP, map-pack competitors, review counts, page quality, proof depth, backlinks/citations, schema, and lead paths.",
+      "evidence_summary": "Search Console identifies query/page opportunities for the client's existing presence. GBP performance shows how customers interact with the profile. Google local ranking guidance frames local visibility around relevance, distance, and prominence.",
+      "product_modules": [
+        "SERP snapshot protocol",
+        "map-pack competitor table",
+        "competitor page rubric",
+        "gap-to-action queue",
+        "ranking-risk notes"
+      ],
+      "agents_or_skills": [
+        "SERP analyst",
+        "competitor gap auditor",
+        "authority comparator",
+        "opportunity prioritizer"
+      ],
+      "data_signals": [
+        "query",
+        "city",
+        "service",
+        "competitor",
+        "rank_observed",
+        "review_count",
+        "page_type",
+        "proof_depth",
+        "cta_quality",
+        "schema_present"
+      ],
+      "automations": [
+        "capture manual SERP snapshots",
+        "compare competitor page structures",
+        "prioritize weak spots",
+        "turn gaps into page/proof/backlink tasks"
+      ],
+      "owner_gates": [
+        "competitor list approval when used publicly",
+        "no public attack language",
+        "ranking report caveats"
+      ],
+      "compliance_risks": [
+        "scraping violations",
+        "invented competitors",
+        "overstated ranking promises",
+        "defamatory competitor claims"
+      ],
+      "success_metrics": [
+        "opportunities found",
+        "tasks created",
+        "position movement",
+        "CTR improvement",
+        "lead movement by target query"
+      ],
+      "mvp_actions": [
+        "Create city/service SERP snapshot template.",
+        "Add competitor rubric.",
+        "Map gaps to tasks.",
+        "Add caveats about location/personalization."
+      ],
+      "quality_tests": [
+        "Snapshot has date/location/device.",
+        "Competitor facts are sourced.",
+        "No ranking guarantees.",
+        "Findings map to actions.",
+        "Manual observations are labeled as observed."
+      ],
+      "source_ids": [
+        "searchConsolePerformance",
+        "searchConsoleApi",
+        "googleLocalRanking",
+        "googleGbpPerformance"
+      ],
+      "sources": [
+        {
+          "id": "searchConsolePerformance",
+          "label": "Search Console - Performance report",
+          "url": "https://support.google.com/webmasters/answer/7576553?hl=en",
+          "source_type": "official",
+          "confidence": "High",
+          "use_for": "Queries, pages, clicks, impressions, CTR, position, mobile/device filtering, and opportunity discovery."
+        },
+        {
+          "id": "searchConsoleApi",
+          "label": "Search Console API - Search Analytics query",
+          "url": "https://developers.google.com/webmaster-tools/v1/searchanalytics/query",
+          "source_type": "official",
+          "confidence": "High",
+          "use_for": "Automated Search Console query/page/country/device trend extraction."
+        },
+        {
+          "id": "googleLocalRanking",
+          "label": "Google Business Profile - Tips to improve your local ranking",
+          "url": "https://support.google.com/business/answer/7091?hl=en-en",
+          "source_type": "official",
+          "confidence": "High",
+          "use_for": "Local ranking factors: relevance, distance, prominence, profile completeness, hours, reviews, photos, and links across the web."
+        },
+        {
+          "id": "googleGbpPerformance",
+          "label": "Google Business Profile - Understand your Business Profile performance",
+          "url": "https://support.google.com/business/answer/10018786?hl=en",
+          "source_type": "official",
+          "confidence": "High",
+          "use_for": "GBP metrics: views, searches, calls, website clicks, directions, date ranges, and downloadable profile performance."
+        }
+      ]
+    },
+    {
+      "id": "sales-enablement-proposals",
+      "label": "Sales Enablement And Proposal Assets",
+      "priority": "P1",
+      "knowledge_score": 9.3,
+      "business_value": "Helps sell the product by translating technical work into buyer-visible business outcomes.",
+      "why_add": "Contractor owners do not buy schema, AI agents, or topic maps. They buy more qualified calls, better trust, better proof, less manual follow-up, and a clearer monthly plan.",
+      "evidence_summary": "The category is an application layer over sourced operating categories: local ranking, reviews, proof, tracking, and conversion. It should use conservative language and avoid ranking or lead guarantees.",
+      "product_modules": [
+        "audit deck",
+        "proposal generator",
+        "ROI assumption model",
+        "demo script",
+        "scope-to-value mapper"
+      ],
+      "agents_or_skills": [
+        "proposal strategist",
+        "ROI modeler",
+        "sales script drafter",
+        "objection mapper"
+      ],
+      "data_signals": [
+        "audit_score",
+        "opportunity",
+        "estimated_effort",
+        "risk",
+        "owner_gate",
+        "expected_metric",
+        "package_tier"
+      ],
+      "automations": [
+        "turn audit findings into proposal blocks",
+        "generate conservative 90-day plan",
+        "create demo script from build artifacts",
+        "surface compliance caveats"
+      ],
+      "owner_gates": [
+        "pricing approval",
+        "scope approval",
+        "ROI assumption approval",
+        "case study proof approval"
+      ],
+      "compliance_risks": [
+        "guaranteed rankings",
+        "guaranteed lead volume",
+        "unsupported revenue claims",
+        "using client proof without approval"
+      ],
+      "success_metrics": [
+        "proposal acceptance rate",
+        "discovery-to-close rate",
+        "scope clarity",
+        "retainer attach rate",
+        "objection resolution"
+      ],
+      "mvp_actions": [
+        "Create standard audit-to-proposal template.",
+        "Add conservative ROI assumptions.",
+        "Connect proof assets to sales deck.",
+        "Add no-guarantee language."
+      ],
+      "quality_tests": [
+        "Every claim maps to an artifact or source.",
+        "No guaranteed rankings/leads.",
+        "Proposal distinguishes build and retainer.",
+        "Approval gates are visible.",
+        "Pricing scope is explicit."
+      ],
+      "source_ids": [
+        "googleLocalRanking",
+        "googleGbpPerformance",
+        "ga4KeyEvents",
+        "ftcReviewsRule"
+      ],
+      "sources": [
+        {
+          "id": "googleLocalRanking",
+          "label": "Google Business Profile - Tips to improve your local ranking",
+          "url": "https://support.google.com/business/answer/7091?hl=en-en",
+          "source_type": "official",
+          "confidence": "High",
+          "use_for": "Local ranking factors: relevance, distance, prominence, profile completeness, hours, reviews, photos, and links across the web."
+        },
+        {
+          "id": "googleGbpPerformance",
+          "label": "Google Business Profile - Understand your Business Profile performance",
+          "url": "https://support.google.com/business/answer/10018786?hl=en",
+          "source_type": "official",
+          "confidence": "High",
+          "use_for": "GBP metrics: views, searches, calls, website clicks, directions, date ranges, and downloadable profile performance."
+        },
+        {
+          "id": "ga4KeyEvents",
+          "label": "Google Analytics - About key events",
+          "url": "https://support.google.com/analytics/answer/9267568?hl=en",
+          "source_type": "official",
+          "confidence": "High",
+          "use_for": "Marking important business actions as key events and reporting on cross-channel performance."
+        },
+        {
+          "id": "ftcReviewsRule",
+          "label": "FTC - Consumer Reviews and Testimonials Rule Q&A",
+          "url": "https://www.ftc.gov/business-guidance/resources/consumer-reviews-testimonials-rule-questions-answers",
+          "source_type": "official",
+          "confidence": "High",
+          "use_for": "US fake-review, review suppression, insider review, and testimonial compliance."
+        }
+      ]
+    },
+    {
+      "id": "client-intake-approval-workflow",
+      "label": "Client Intake And Approval Workflow",
+      "priority": "P1",
+      "knowledge_score": 9.7,
+      "business_value": "Prevents bad public claims and reduces delivery drag by collecting missing facts, proof, access, and approvals early.",
+      "why_add": "Most contractor automation fails because the system invents or assumes facts. Intake and approval gates let agents move fast without publishing unapproved service areas, licenses, warranties, photos, reviews, or tracking changes.",
+      "evidence_summary": "The highest-risk categories all require owner approval: GBP edits, review requests/replies, lead forms/privacy, schema facts, public claims, proof assets, ads, and tracking. This category makes those gates reusable.",
+      "product_modules": [
+        "client digest",
+        "fact registry",
+        "approval queue",
+        "asset request portal",
+        "access checklist",
+        "claim ledger"
+      ],
+      "agents_or_skills": [
+        "intake prefill agent",
+        "fact verifier",
+        "approval router",
+        "asset request agent"
+      ],
+      "data_signals": [
+        "fact",
+        "source",
+        "confidence",
+        "approval_status",
+        "approver",
+        "requested_asset",
+        "access_status",
+        "publish_gate"
+      ],
+      "automations": [
+        "prefill from public site",
+        "ask only missing questions",
+        "block publish on unapproved claims",
+        "route assets to correct pages",
+        "remind owner for access gaps"
+      ],
+      "owner_gates": [
+        "NAP approval",
+        "service approval",
+        "city approval",
+        "license/certification approval",
+        "photo approval",
+        "GBP/Search Console/GA4 access"
+      ],
+      "compliance_risks": [
+        "invented credentials",
+        "unapproved public claims",
+        "publishing private information",
+        "unauthorized account changes"
+      ],
+      "success_metrics": [
+        "approval completion rate",
+        "blocked claim count",
+        "asset completeness",
+        "time to build-ready",
+        "owner response lag"
+      ],
+      "mvp_actions": [
+        "Create fact registry schema.",
+        "Add required access checklist.",
+        "Add owner approval states.",
+        "Map missing facts to digest questions."
+      ],
+      "quality_tests": [
+        "Every public claim has source and approval.",
+        "Missing facts become questions.",
+        "No account edit without access approval.",
+        "Private data is protected.",
+        "Approval status is visible to agents."
+      ],
+      "source_ids": [
+        "googleGbpContentPolicy",
+        "googleAdsLeadFormRequirements",
+        "schemaLocalBusiness",
+        "ftcReviewsRule"
+      ],
+      "sources": [
+        {
+          "id": "googleGbpContentPolicy",
+          "label": "Google Business Profile - Prohibited and restricted content",
+          "url": "https://support.google.com/business/answer/7400114?hl=en",
+          "source_type": "official",
+          "confidence": "High",
+          "use_for": "Review, photo, Maps contribution, fake engagement, incentives, review gating, impersonation, and personal-information boundaries."
+        },
+        {
+          "id": "googleAdsLeadFormRequirements",
+          "label": "Google Ads Policy - Lead form requirements",
+          "url": "https://support.google.com/adspolicy/answer/9472930?hl=en",
+          "source_type": "official policy",
+          "confidence": "High",
+          "use_for": "Lead form privacy policy, advertiser eligibility, sensitive vertical, and data-use requirements."
+        },
+        {
+          "id": "schemaLocalBusiness",
+          "label": "Schema.org - LocalBusiness",
+          "url": "https://schema.org/LocalBusiness",
+          "source_type": "standard",
+          "confidence": "High",
+          "use_for": "Business entity properties, NAP, registration/certification, service area, and structured data vocabulary."
+        },
+        {
+          "id": "ftcReviewsRule",
+          "label": "FTC - Consumer Reviews and Testimonials Rule Q&A",
+          "url": "https://www.ftc.gov/business-guidance/resources/consumer-reviews-testimonials-rule-questions-answers",
+          "source_type": "official",
+          "confidence": "High",
+          "use_for": "US fake-review, review suppression, insider review, and testimonial compliance."
+        }
+      ]
+    },
+    {
+      "id": "crm-follow-up-automation",
+      "label": "CRM And Follow-Up Automation",
+      "priority": "P1",
+      "knowledge_score": 9.4,
+      "business_value": "Reduces lead leakage after the form or call by turning inquiries into tracked follow-up and booked-job outcomes.",
+      "why_add": "Organic growth is wasted if leads are not contacted quickly, qualified, and marked won/lost. This category closes the loop between marketing, sales, and monthly reporting.",
+      "evidence_summary": "GA4 recommended events include generated, converted, unconverted, and disqualified lead states. That event model should be mirrored in CRM status fields and monthly reporting.",
+      "product_modules": [
+        "lead router",
+        "CRM status model",
+        "missed-call task queue",
+        "quote follow-up sequence",
+        "won/lost feedback form"
+      ],
+      "agents_or_skills": [
+        "lead triage agent",
+        "follow-up drafter",
+        "CRM hygiene auditor",
+        "booked-job reporter"
+      ],
+      "data_signals": [
+        "lead_id",
+        "contact_method",
+        "lead_source",
+        "lead_status",
+        "disqualification_reason",
+        "quote_sent",
+        "booked",
+        "job_value_estimate"
+      ],
+      "automations": [
+        "create CRM lead from form",
+        "create missed-call task",
+        "send owner follow-up draft",
+        "request status update",
+        "sync booked job to ROI report"
+      ],
+      "owner_gates": [
+        "CRM integration approval",
+        "SMS/email copy approval",
+        "call recording policy",
+        "customer data retention policy"
+      ],
+      "compliance_risks": [
+        "contacting without consent",
+        "poor data security",
+        "unapproved automated SMS/email",
+        "misreported booked jobs"
+      ],
+      "success_metrics": [
+        "speed to lead",
+        "follow-up completion",
+        "quote rate",
+        "booked rate",
+        "lost reason coverage"
+      ],
+      "mvp_actions": [
+        "Define lead statuses.",
+        "Add form-to-CRM payload.",
+        "Add manual won/lost update.",
+        "Report booked jobs monthly."
+      ],
+      "quality_tests": [
+        "Every lead has status.",
+        "Follow-up respects consent.",
+        "Booked-job feedback is captured.",
+        "Lost reasons are not blank.",
+        "CRM fields match reporting fields."
+      ],
+      "source_ids": [
+        "ga4Events",
+        "ga4KeyEvents",
+        "ga4LeadMeasurement",
+        "googleAdsLeadFormRequirements"
+      ],
+      "sources": [
+        {
+          "id": "ga4Events",
+          "label": "Google Analytics - Recommended events",
+          "url": "https://developers.google.com/analytics/devguides/collection/ga4/reference/events?hl=en",
+          "source_type": "official",
+          "confidence": "High",
+          "use_for": "Lead events such as generate_lead, close_convert_lead, disqualify_lead, and lead_source."
+        },
+        {
+          "id": "ga4KeyEvents",
+          "label": "Google Analytics - About key events",
+          "url": "https://support.google.com/analytics/answer/9267568?hl=en",
+          "source_type": "official",
+          "confidence": "High",
+          "use_for": "Marking important business actions as key events and reporting on cross-channel performance."
+        },
+        {
+          "id": "ga4LeadMeasurement",
+          "label": "Google Analytics - Measure lead-generation form submissions as key events",
+          "url": "https://support.google.com/analytics/answer/13881540?hl=eN&ref_topic=13614110",
+          "source_type": "official",
+          "confidence": "High",
+          "use_for": "Lead form event measurement and key event setup."
+        },
+        {
+          "id": "googleAdsLeadFormRequirements",
+          "label": "Google Ads Policy - Lead form requirements",
+          "url": "https://support.google.com/adspolicy/answer/9472930?hl=en",
+          "source_type": "official policy",
+          "confidence": "High",
+          "use_for": "Lead form privacy policy, advertiser eligibility, sensitive vertical, and data-use requirements."
+        }
+      ]
+    },
+    {
+      "id": "paid-search-lsa-bridge",
+      "label": "Paid Search And LSA Bridge",
+      "priority": "P2",
+      "knowledge_score": 9.2,
+      "business_value": "Lets the organic system support paid acquisition without making ads the core product.",
+      "why_add": "Roofing campaigns often use Google Ads, LSAs, and retargeting. Frame should be ready to support them with landing pages, tracking, privacy, GBP alignment, and lead quality feedback.",
+      "evidence_summary": "Google Local Services advertisers may need screening, licenses, insurance, and background checks. Google lead forms require privacy policies and policy compliance and include a volume-versus-qualified lead tradeoff.",
+      "product_modules": [
+        "paid landing page checklist",
+        "LSA readiness checklist",
+        "lead form policy gate",
+        "ad-to-page alignment QA",
+        "offline conversion feedback"
+      ],
+      "agents_or_skills": [
+        "paid readiness auditor",
+        "LSA checklist agent",
+        "landing-page QA agent",
+        "lead-quality analyst"
+      ],
+      "data_signals": [
+        "campaign",
+        "ad_group",
+        "landing_page",
+        "lead_form_type",
+        "license_status",
+        "insurance_status",
+        "lead_quality",
+        "cost_per_qualified_lead"
+      ],
+      "automations": [
+        "audit ad landing pages",
+        "check privacy policy presence",
+        "map LSA service categories to GBP/site",
+        "feed qualified leads back into reports"
+      ],
+      "owner_gates": [
+        "ad spend approval",
+        "license/insurance proof approval",
+        "privacy policy approval",
+        "campaign launch approval"
+      ],
+      "compliance_risks": [
+        "running ads without required verification",
+        "missing privacy policy",
+        "misleading offer",
+        "low-quality lead spam"
+      ],
+      "success_metrics": [
+        "CPL",
+        "qualified CPL",
+        "LSA approval status",
+        "landing page conversion",
+        "lead quality by channel"
+      ],
+      "mvp_actions": [
+        "Create LSA readiness checklist.",
+        "Add privacy policy gate.",
+        "Map paid pages to tracking events.",
+        "Keep paid as optional bridge."
+      ],
+      "quality_tests": [
+        "LSA requirements are explicit.",
+        "Lead forms include privacy policy.",
+        "Paid claims match landing page.",
+        "Qualified lead tracking exists.",
+        "Ad actions require owner approval."
+      ],
+      "source_ids": [
+        "googleLsaQualification",
+        "googleLsaScreening",
+        "googleAdsLeadForms",
+        "googleAdsLeadFormRequirements"
+      ],
+      "sources": [
+        {
+          "id": "googleLsaQualification",
+          "label": "Google Local Services - How providers qualify",
+          "url": "https://support.google.com/localservices/answer/6230381?hl=en",
+          "source_type": "official",
+          "confidence": "High",
+          "use_for": "LSA screening, category, and Business Profile connection requirements."
+        },
+        {
+          "id": "googleLsaScreening",
+          "label": "Google Local Services - Screening and verification",
+          "url": "https://support.google.com/localservices/answer/6226575?hl=en",
+          "source_type": "official",
+          "confidence": "High",
+          "use_for": "LSA license, insurance, background check, verification, and ongoing trust requirements."
+        },
+        {
+          "id": "googleAdsLeadForms",
+          "label": "Google Ads - Use lead forms in campaigns",
+          "url": "https://support.google.com/google-ads/answer/16726829?hl=en",
+          "source_type": "official",
+          "confidence": "High",
+          "use_for": "Lead form volume versus qualification tradeoffs in paid campaigns."
+        },
+        {
+          "id": "googleAdsLeadFormRequirements",
+          "label": "Google Ads Policy - Lead form requirements",
+          "url": "https://support.google.com/adspolicy/answer/9472930?hl=en",
+          "source_type": "official policy",
+          "confidence": "High",
+          "use_for": "Lead form privacy policy, advertiser eligibility, sensitive vertical, and data-use requirements."
+        }
+      ]
+    },
+    {
+      "id": "compliance-risk-controls",
+      "label": "Compliance And Risk Controls",
+      "priority": "P0",
+      "knowledge_score": 10,
+      "business_value": "Keeps automation commercially usable by preventing avoidable account, legal, and trust damage.",
+      "why_add": "The faster the agents move, the more important the brakes become. This category protects GBP, reviews, ads, public claims, privacy, outreach, photos, tracking, and publishing.",
+      "evidence_summary": "Google, FTC, Yelp, Google Ads, and Local Services all carry explicit policy boundaries. The product needs reusable blocks that prevent fake engagement, unsupported claims, review manipulation, lead-form privacy failures, and risky link practices.",
+      "product_modules": [
+        "policy gate registry",
+        "claim approval ledger",
+        "risk scanner",
+        "public publish lock",
+        "human approval queue"
+      ],
+      "agents_or_skills": [
+        "compliance reviewer",
+        "claim verifier",
+        "policy-gate agent",
+        "risk escalation agent"
+      ],
+      "data_signals": [
+        "risk_type",
+        "policy_source",
+        "approval_required",
+        "claim_source",
+        "blocked_reason",
+        "escalation_owner",
+        "publish_status"
+      ],
+      "automations": [
+        "block fake review tactics",
+        "block paid ranking-link outreach",
+        "block unapproved public claims",
+        "flag missing privacy policies",
+        "require owner approval for GBP/ads/schema/tracking"
+      ],
+      "owner_gates": [
+        "public publish",
+        "GBP edits",
+        "review workflows",
+        "ads",
+        "tracking scripts",
+        "licenses/certifications",
+        "photos/testimonials"
+      ],
+      "compliance_risks": [
+        "fake engagement",
+        "review suppression",
+        "link spam",
+        "misleading ads",
+        "privacy violations",
+        "invented contractor claims"
+      ],
+      "success_metrics": [
+        "blocked risky actions",
+        "approved claims",
+        "policy exceptions",
+        "reviewed public changes",
+        "zero unauthorized publishes"
+      ],
+      "mvp_actions": [
+        "Create risk taxonomy.",
+        "Add public-publish lock.",
+        "Add approval gate per risky category.",
+        "Make blocked actions visible in reports."
+      ],
+      "quality_tests": [
+        "No fake reviews.",
+        "No ranking guarantees.",
+        "No paid link schemes.",
+        "No missing privacy policy for lead forms.",
+        "No public edits without approval."
+      ],
+      "source_ids": [
+        "googleGbpContentPolicy",
+        "ftcReviewsRule",
+        "googleLinkSpam",
+        "googleAdsLeadFormRequirements",
+        "yelpReviewPolicy"
+      ],
+      "sources": [
+        {
+          "id": "googleGbpContentPolicy",
+          "label": "Google Business Profile - Prohibited and restricted content",
+          "url": "https://support.google.com/business/answer/7400114?hl=en",
+          "source_type": "official",
+          "confidence": "High",
+          "use_for": "Review, photo, Maps contribution, fake engagement, incentives, review gating, impersonation, and personal-information boundaries."
+        },
+        {
+          "id": "ftcReviewsRule",
+          "label": "FTC - Consumer Reviews and Testimonials Rule Q&A",
+          "url": "https://www.ftc.gov/business-guidance/resources/consumer-reviews-testimonials-rule-questions-answers",
+          "source_type": "official",
+          "confidence": "High",
+          "use_for": "US fake-review, review suppression, insider review, and testimonial compliance."
+        },
+        {
+          "id": "googleLinkSpam",
+          "label": "Google Search Central - Spam policies for Google web search",
+          "url": "https://developers.google.com/search/docs/advanced/guidelines/link-schemes?hl=en&rd=1&visit_id=637787330132632764-3527068268",
+          "source_type": "official",
+          "confidence": "High",
+          "use_for": "Backlink boundaries: avoid link spam, manipulative links, paid link schemes, and site reputation abuse."
+        },
+        {
+          "id": "googleAdsLeadFormRequirements",
+          "label": "Google Ads Policy - Lead form requirements",
+          "url": "https://support.google.com/adspolicy/answer/9472930?hl=en",
+          "source_type": "official policy",
+          "confidence": "High",
+          "use_for": "Lead form privacy policy, advertiser eligibility, sensitive vertical, and data-use requirements."
+        },
+        {
+          "id": "yelpReviewPolicy",
+          "label": "Yelp - Don't Ask for Reviews",
+          "url": "https://biz.yelp.com/support-center/Reviews/Best_Practices/Don-t-Ask-for-Reviews/en-US",
+          "source_type": "platform policy",
+          "confidence": "High",
+          "use_for": "Yelp-specific constraint: do not solicit reviews on Yelp even if Google review requests are allowed."
+        }
+      ]
+    },
+    {
+      "id": "technical-seo-schema-infrastructure",
+      "label": "Technical SEO And Schema Infrastructure",
+      "priority": "P0",
+      "knowledge_score": 9.8,
+      "business_value": "Gives every page a crawlable, indexable, internally linked, structured foundation that supports SEO, AEO, and conversion.",
+      "why_add": "Without technical foundations, content and backlinks underperform. The product should ship clean metadata, crawlable navigation, schema tied to visible facts, sitemap/robots, fast mobile UI, and internal links.",
+      "evidence_summary": "Google's SEO starter guide and link best practices emphasize crawlable pages and links. LocalBusiness schema and Google local business structured data provide the entity layer, but schema must represent true visible information.",
+      "product_modules": [
+        "technical SEO audit",
+        "schema generator",
+        "sitemap/robots checker",
+        "internal link graph",
+        "metadata QA"
+      ],
+      "agents_or_skills": [
+        "technical SEO agent",
+        "schema validator",
+        "internal link architect",
+        "indexability QA agent"
+      ],
+      "data_signals": [
+        "url",
+        "title",
+        "description",
+        "canonical",
+        "schema_type",
+        "internal_links",
+        "index_status",
+        "robots_rule",
+        "sitemap_status"
+      ],
+      "automations": [
+        "validate metadata",
+        "generate LocalBusiness/Service/FAQ schema from approved facts",
+        "check crawlable links",
+        "check sitemap and robots",
+        "flag orphan pages"
+      ],
+      "owner_gates": [
+        "schema facts approval",
+        "NAP approval",
+        "service area approval",
+        "canonical launch approval"
+      ],
+      "compliance_risks": [
+        "schema claims not visible on page",
+        "wrong business type",
+        "orphan/thin pages",
+        "accidental noindex",
+        "inconsistent NAP"
+      ],
+      "success_metrics": [
+        "valid schema",
+        "indexed pages",
+        "orphan page count",
+        "internal link coverage",
+        "metadata coverage",
+        "search impressions"
+      ],
+      "mvp_actions": [
+        "Add schema QA.",
+        "Add sitemap/robots QA.",
+        "Add internal link rules.",
+        "Add metadata completeness check."
+      ],
+      "quality_tests": [
+        "Page is indexable when intended.",
+        "Links are crawlable.",
+        "Schema matches approved visible facts.",
+        "Canonical is correct.",
+        "Sitemap includes approved pages only."
+      ],
+      "source_ids": [
+        "googleSeoStarter",
+        "googleLinkBestPractices",
+        "schemaLocalBusiness",
+        "googleLocalBusinessSchema",
+        "searchConsolePerformance"
+      ],
+      "sources": [
+        {
+          "id": "googleSeoStarter",
+          "label": "Google Search Central - SEO Starter Guide",
+          "url": "https://developers.google.cn/search/docs/fundamentals/seo-starter-guide?hl=en",
+          "source_type": "official",
+          "confidence": "High",
+          "use_for": "Search fundamentals, crawlable site architecture, titles, snippets, links, images, and useful pages."
+        },
+        {
+          "id": "googleLinkBestPractices",
+          "label": "Google Search Central - Link best practices",
+          "url": "https://developers.google.com/search/docs/crawling-indexing/links-crawlable?hl=en",
+          "source_type": "official",
+          "confidence": "High",
+          "use_for": "Crawlable links and descriptive anchor text for internal authority and legitimate references."
+        },
+        {
+          "id": "schemaLocalBusiness",
+          "label": "Schema.org - LocalBusiness",
+          "url": "https://schema.org/LocalBusiness",
+          "source_type": "standard",
+          "confidence": "High",
+          "use_for": "Business entity properties, NAP, registration/certification, service area, and structured data vocabulary."
+        },
+        {
+          "id": "googleLocalBusinessSchema",
+          "label": "Google Search Central - Local business structured data",
+          "url": "https://developers.google.com/search/docs/appearance/structured-data/local-business?rd=1&ref_topic=3222270&visit_id=636882577671438993-3839562892",
+          "source_type": "official",
+          "confidence": "High",
+          "use_for": "Google-facing local business structured data guidance."
+        },
+        {
+          "id": "searchConsolePerformance",
+          "label": "Search Console - Performance report",
+          "url": "https://support.google.com/webmasters/answer/7576553?hl=en",
+          "source_type": "official",
+          "confidence": "High",
+          "use_for": "Queries, pages, clicks, impressions, CTR, position, mobile/device filtering, and opportunity discovery."
+        }
+      ]
+    },
+    {
+      "id": "community-platforms-and-local-social",
+      "label": "Community Platforms And Local Social",
+      "priority": "P2",
+      "knowledge_score": 9.1,
+      "business_value": "Adds neighborhood trust and referral surfaces without spamming communities.",
+      "why_add": "Roofers can earn visibility on Nextdoor, local Facebook groups, chambers, sponsorship pages, and neighborhood references. The product should treat this as trust and referral distribution, not automated spam.",
+      "evidence_summary": "Nextdoor supports local business pages and business posts, but its ad policy requires accurate representation, clear advertiser identity, and privacy policy support for lead generation.",
+      "product_modules": [
+        "Nextdoor/business page checklist",
+        "local social proof calendar",
+        "community sponsorship tracker",
+        "neighborhood post approval queue"
+      ],
+      "agents_or_skills": [
+        "local social strategist",
+        "community policy checker",
+        "post drafter",
+        "sponsorship tracker"
+      ],
+      "data_signals": [
+        "platform",
+        "community",
+        "post_type",
+        "proof_asset",
+        "approval_status",
+        "privacy_policy_required",
+        "referral_source"
+      ],
+      "automations": [
+        "draft neighborhood-safe posts",
+        "route community posts for approval",
+        "track referral source",
+        "block personal-account spam patterns"
+      ],
+      "owner_gates": [
+        "platform account approval",
+        "post approval",
+        "sponsorship approval",
+        "privacy policy approval"
+      ],
+      "compliance_risks": [
+        "community spam",
+        "misleading advertiser identity",
+        "privacy policy gaps",
+        "unapproved neighborhood claims"
+      ],
+      "success_metrics": [
+        "approved posts",
+        "referral traffic",
+        "neighborhood leads",
+        "sponsorship mentions",
+        "blocked risky posts"
+      ],
+      "mvp_actions": [
+        "Create Nextdoor checklist.",
+        "Add local social post approval gate.",
+        "Track referrals from community platforms.",
+        "Keep automation draft-only."
+      ],
+      "quality_tests": [
+        "Post is locally relevant.",
+        "Advertiser identity is clear.",
+        "Lead capture links have privacy policy.",
+        "No personal-account spam.",
+        "Proof assets are approved."
+      ],
+      "source_ids": [
+        "nextdoorBusiness",
+        "nextdoorAdsPolicy",
+        "googleGbpContentPolicy",
+        "googleHelpfulContent"
+      ],
+      "sources": [
+        {
+          "id": "nextdoorBusiness",
+          "label": "Nextdoor Business - Business Posts",
+          "url": "https://business.nextdoor.com/en-us/getting-started/business-post?hsLang=en-us",
+          "source_type": "platform guidance",
+          "confidence": "Medium",
+          "use_for": "Local business page, neighborhood posting, and community engagement use cases."
+        },
+        {
+          "id": "nextdoorAdsPolicy",
+          "label": "Nextdoor - Ads policy",
+          "url": "https://business.nextdoor.com/en-us/nam/nextdoor-ads-manager/ad-policy",
+          "source_type": "platform policy",
+          "confidence": "High",
+          "use_for": "Nextdoor ad accuracy, clear advertiser identity, and privacy policy requirements for lead generation."
+        },
+        {
+          "id": "googleGbpContentPolicy",
+          "label": "Google Business Profile - Prohibited and restricted content",
+          "url": "https://support.google.com/business/answer/7400114?hl=en",
+          "source_type": "official",
+          "confidence": "High",
+          "use_for": "Review, photo, Maps contribution, fake engagement, incentives, review gating, impersonation, and personal-information boundaries."
+        },
+        {
+          "id": "googleHelpfulContent",
+          "label": "Google Search Central - Creating helpful, reliable, people-first content",
+          "url": "https://developers.google.com/search/docs/fundamentals/creating-helpful-content",
+          "source_type": "official",
+          "confidence": "High",
+          "use_for": "Content usefulness, reliability, first-hand proof, and avoiding content made primarily to manipulate search."
+        }
+      ]
+    }
+  ]
+}
