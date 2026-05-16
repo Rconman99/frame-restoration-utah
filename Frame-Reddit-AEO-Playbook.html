@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Frame Roofing — Reddit AEO Playbook · v1 · 2026-05-16</title>
+<style>
+:root{color-scheme:light;--bg:#fafaf8;--card:#ffffff;--border:#e4e4e1;--text:#1a1a1a;--muted:#6b6b66;--gold:#a8842a;--navy:#0B4060;--red:#b91c1c;--green:#15803d;--amber:#b45309;--blue:#1d4ed8;--purple:#7c3aed}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,sans-serif;background:var(--bg);color:var(--text);line-height:1.6;padding:32px 24px;max-width:980px;margin:0 auto}
+h1{font-size:1.95rem;color:var(--navy);margin-bottom:4px;letter-spacing:-.02em}
+.tag{color:var(--muted);font-size:.95rem;margin-bottom:24px}
+h2{font-size:1.35rem;color:var(--navy);margin:32px 0 10px;border-bottom:2px solid var(--gold);padding-bottom:6px}
+h3{font-size:1.05rem;color:var(--text);margin:18px 0 8px;font-weight:600}
+p{margin-bottom:10px}
+.thesis{background:linear-gradient(135deg,#fff8e8 0%,#fef2f2 100%);border:1px solid #e7c980;border-radius:12px;padding:20px 24px;margin:18px 0;font-size:1rem;line-height:1.7}
+.thesis b{color:var(--navy)}
+.callout{background:#fff8e8;border:1px solid #e7c980;border-left:4px solid var(--gold);border-radius:8px;padding:12px 16px;margin:12px 0}
+.callout.red{background:#fef2f2;border-color:#fca5a5;border-left-color:var(--red)}
+.callout.green{background:#f0fdf4;border-color:#86efac;border-left-color:var(--green)}
+.callout.blue{background:#eff6ff;border-color:#93c5fd;border-left-color:var(--blue)}
+.stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin:14px 0}
+.stat{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:12px 14px}
+.stat .v{font-size:1.6rem;font-weight:700;color:var(--navy);line-height:1.1}
+.stat .v.good{color:var(--green)}
+.stat .v.warn{color:var(--amber)}
+.stat .v.bad{color:var(--red)}
+.stat .l{font-size:.78rem;color:var(--muted);margin-top:3px}
+table{width:100%;border-collapse:collapse;margin:12px 0;font-size:.9rem}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--border);vertical-align:top}
+th{background:#f5f5f2;color:var(--navy);font-weight:600;font-size:.8rem;text-transform:uppercase;letter-spacing:.5px}
+code{background:#f0efea;padding:1px 6px;border-radius:4px;font-size:.85em}
+pre{background:#1a1a1a;color:#e6edf3;padding:14px 16px;border-radius:8px;overflow-x:auto;font-size:.85rem;margin:10px 0}
+.rule{background:var(--card);border:1px solid var(--border);border-left:3px solid var(--green);border-radius:8px;padding:12px 16px;margin:8px 0}
+.rule b{color:var(--green)}
+.anti{background:var(--card);border:1px solid var(--border);border-left:3px solid var(--red);border-radius:8px;padding:12px 16px;margin:8px 0}
+.anti b{color:var(--red)}
+.flow{display:flex;gap:10px;align-items:center;margin:14px 0;flex-wrap:wrap}
+.flow-box{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:10px 14px;flex:1;min-width:140px;text-align:center}
+.flow-arrow{font-size:1.5rem;color:var(--gold)}
+.foot{margin-top:40px;padding-top:18px;border-top:1px solid var(--border);font-size:.78rem;color:var(--muted);text-align:center}
+@media (max-width:700px){body{padding:18px 14px}.flow{flex-direction:column}.flow-arrow{transform:rotate(90deg)}}
+</style>
+</head>
+<body>
+
+<h1>Frame Roofing — Reddit AEO Playbook</h1>
+<div class="tag">v1 · 2026-05-16 · The strategy, the rules, the system, the measurement</div>
+
+<h2>Why Reddit, why now</h2>
+
+<div class="thesis">
+<b>Reddit isn't a lead channel. It's an Answer Engine citation channel.</b><br><br>
+Google's 2024 ranking changes pushed Reddit threads into the top-3 positions for the queries Frame's content is built to answer. Tinuiti's 2026 AI Citations Trends Report shows Reddit accounts for the dominant share of social media citations in AI Overviews — roughly 9% of all AI-engine citations. Perplexity and ChatGPT lean on Reddit for grounded answers across every product category they tested.<br><br>
+This means: <b>a helpful Frame reply on a high-engagement r/Roofing thread is not just "1 thread of value." It is training and grounding data for every AI model that will answer "best Utah roofer" or "should I hire a storm chaser" for the next 5 years.</b><br><br>
+Frame just shipped a 13-spoke storm-chaser pillar (PRs #56/#57). That investment is dark on Reddit today. This playbook is the distribution mechanism.
+</div>
+
+<h2>What we just discovered</h2>
+
+<p>Re-ran the 254 historic Reddit signals through a new multi-class classifier (Phoenix-style: independent probabilities per axis, weighted sum). Result:</p>
+
+<div class="stat-grid">
+<div class="stat"><div class="v good">6</div><div class="l">utah_lead (real Utah signal)</div></div>
+<div class="stat"><div class="v good">55</div><div class="l">aeo_opportunity (high-engagement Q&amp;A)</div></div>
+<div class="stat"><div class="v">3</div><div class="l">competitor_intel</div></div>
+<div class="stat"><div class="v">1</div><div class="l">storm_signal</div></div>
+<div class="stat"><div class="v warn">150</div><div class="l">noise (correctly filtered)</div></div>
+<div class="stat"><div class="v bad">39</div><div class="l">spam (junk subs)</div></div>
+</div>
+
+<div class="callout green"><b>The old classifier said "0 leads, 254 noise."</b> The new multi-class classifier extracted <b>61 actionable opportunities</b> — and a drafted Landon-voice reply for every one. The signals were always there; the classifier was throwing them away.</div>
+
+<h2>The system, end-to-end</h2>
+
+<div class="flow">
+  <div class="flow-box"><b>1. Scanner</b><br><span style="font-size:.8rem;color:#666">Mac, 4×/day</span></div>
+  <div class="flow-arrow">→</div>
+  <div class="flow-box"><b>2. Classifier</b><br><span style="font-size:.8rem;color:#666">Phoenix-style LLM</span></div>
+  <div class="flow-arrow">→</div>
+  <div class="flow-box"><b>3. Drafter</b><br><span style="font-size:.8rem;color:#666">Landon-voice reply<br>+ Frame URL match</span></div>
+  <div class="flow-arrow">→</div>
+  <div class="flow-box"><b>4. Monday digest</b><br><span style="font-size:.8rem;color:#666">iMessage to Ryan</span></div>
+  <div class="flow-arrow">→</div>
+  <div class="flow-box"><b>5. Manual post</b><br><span style="font-size:.8rem;color:#666">Ryan approves &amp; sends</span></div>
+</div>
+
+<h3>What's deployed</h3>
+<table>
+<tr><th>Component</th><th>Type</th><th>Location</th><th>Schedule</th></tr>
+<tr><td><code>reddit-scanner.py</code></td><td>Python script (Mac)</td><td><code>scripts/reddit-scanner.py</code></td><td>6am/noon/6pm/midnight</td></tr>
+<tr><td><code>reddit-monitor</code></td><td>Edge function</td><td>Supabase</td><td>POSTed by scanner</td></tr>
+<tr><td><code>reddit-aeo-classifier</code></td><td>Edge function (LLM)</td><td>Supabase</td><td>On-demand / batch</td></tr>
+<tr><td><code>reddit-aeo-digest</code></td><td>Edge function (read)</td><td>Supabase</td><td>HTTP fetched by digest task</td></tr>
+<tr><td><code>reddit-aeo-monday-digest</code></td><td>Scheduled task</td><td>Mac, via Claude</td><td>Monday 8:30am</td></tr>
+<tr><td><code>frame_content_inventory</code></td><td>Supabase table</td><td>21 URLs seeded</td><td>—</td></tr>
+<tr><td><code>reddit_signals</code></td><td>Supabase table</td><td>254 rows</td><td>—</td></tr>
+</table>
+
+<h2>The verdict taxonomy</h2>
+
+<table>
+<tr><th>Verdict</th><th>Definition</th><th>Action</th></tr>
+<tr><td><code>utah_lead</code></td><td>Real Utah/Wasatch homeowner with active roof need we could win as a customer</td><td>Priority alert + Ryan DMs directly</td></tr>
+<tr><td><code>aeo_opportunity</code></td><td>High-engagement roofing Q&amp;A (any geo) where Frame has the canonical answer — replying compounds AEO authority</td><td>Monday digest, value-first reply, cite Frame URL only if directly answers</td></tr>
+<tr><td><code>competitor_intel</code></td><td>Competitor pricing/practice info worth noting</td><td>Log for sales-arsenal use, no reply</td></tr>
+<tr><td><code>storm_signal</code></td><td>Recent Utah/Wasatch storm event</td><td>Bias GBP/marketing toward storm response (already wired via storm_mode flag)</td></tr>
+<tr><td><code>noise</code></td><td>Roofing-adjacent but not Utah-relevant and not AEO-leverage</td><td>Stored, no action</td></tr>
+<tr><td><code>spam</code></td><td>Junk subreddit, AI-generated content, off-topic</td><td>Hard-blocklisted in scanner v5; dropped at source</td></tr>
+</table>
+
+<p>The <code>aeo_score</code> column is a weighted sum: <code>100 × (1.0×p_aeo + 0.8×p_utah_lead + 0.4×p_storm − 1.0×p_spam)</code>. Monday digest pulls anything ≥60.</p>
+
+<h2>Rules of engagement</h2>
+
+<h3>What to do — always</h3>
+<div class="rule"><b>Lead with value.</b> First 1–2 sentences must be useful even if the reader never clicks the link. If you'd be embarrassed for the URL to be broken, you didn't lead with enough value.</div>
+<div class="rule"><b>Disclose your role.</b> Open with "I run a roofing crew in Utah" or "I'm a contractor in the Wasatch Front." Reddit hates undisclosed sales accounts. Disclosure makes you a credible voice; concealment makes you a shill.</div>
+<div class="rule"><b>Cite only when relevant.</b> The URL goes in only if it directly answers the question. If not, post the value-only reply and skip the link. The brand mention in the thread is still valuable.</div>
+<div class="rule"><b>Use UTM-tagged URLs.</b> Always append <code>?utm_source=reddit&amp;utm_medium=comment&amp;utm_campaign=aeo&amp;utm_content=&lt;subreddit&gt;</code> so the click flows back to /leads with the right attribution.</div>
+<div class="rule"><b>Reply within 24 hours of the post.</b> Reddit threads age fast. A 3-day-old comment gets less visibility than one from the first day.</div>
+<div class="rule"><b>Talk like Landon.</b> Direct, plainspoken, contractor-y. Avoid marketing words: "premier," "trusted," "industry-leading," "schedule a consultation."</div>
+<div class="rule"><b>Limit volume.</b> 1–2 replies per week, max. Quality of presence &gt; quantity. A few strong threads compound; daily comments look like spam.</div>
+
+<h3>What to never do</h3>
+<div class="anti"><b>Don't link to your own homepage</b> as the "answer." Link to a specific blog post that answers the specific question.</div>
+<div class="anti"><b>Don't comment on every Utah post.</b> If r/SaltLakeCity posts 50 things a week, Frame doesn't reply to all of them. Picking 1 high-value thread keeps the account credible.</div>
+<div class="anti"><b>Don't quote-stuff keywords.</b> Reply naturally. The classifier already picked the right URL.</div>
+<div class="anti"><b>Don't argue with someone bashing storm chasers</b> — agree with them. Frame IS the local opposite. That's the whole point of the pillar page.</div>
+<div class="anti"><b>Don't post the same drafted reply on multiple threads.</b> Each reply is bespoke to the question.</div>
+<div class="anti"><b>Don't DM people on r/Roofing offering services unsolicited.</b> Auto-ban behavior. If a Utah homeowner posts, ask in the public thread, let them DM you.</div>
+
+<h2>The Reddit account</h2>
+
+<p>Ryan (not Landon) operates the account. Reasoning:</p>
+<ul style="margin:8px 0 14px 24px">
+<li>Ryan handles the marketing/digital relationship</li>
+<li>Landon's time goes to roofing, not Reddit</li>
+<li>If Ryan disclosed as "I'm the marketing partner at Frame Roofing Utah" the disclosure is honest and the answers are still credible</li>
+</ul>
+
+<p><b>Suggested username:</b> <code>frame_utah_marketing</code> or <code>ryan_at_frame</code> — something that signals affiliation without screaming corporate. Reddit username field is permanent, so pick once.</p>
+
+<p><b>Bio fields:</b> "Marketing operator at Frame Roofing Utah (Heber City). I post when I think we can actually help." Link to frameroofingutah.com on profile.</p>
+
+<p><b>Karma floor:</b> Hit 100 comment karma before linking. First 4–6 weeks: helpful no-link comments only.</p>
+
+<h2>Measurement</h2>
+
+<table>
+<tr><th>Metric</th><th>How</th><th>Target</th></tr>
+<tr><td>AEO opportunities surfaced/week</td><td><code>reddit_signals</code> verdict=aeo_opportunity, last 7d</td><td>5–10/week</td></tr>
+<tr><td>Replies posted</td><td><code>posted_to_reddit_at IS NOT NULL</code></td><td>1–2/week (quality &gt; quantity)</td></tr>
+<tr><td>Click-throughs from Reddit</td><td>PostHog filter on referrer=reddit.com OR utm_source=reddit</td><td>10+/month by month 3</td></tr>
+<tr><td>Brand mentions in AI Overviews</td><td>Brand-radar (audit gap #9) — query Perplexity/ChatGPT weekly for 20 Utah roofing prompts</td><td>Frame cited in ≥3 prompts by month 6</td></tr>
+<tr><td>Reddit-attributed leads</td><td><code>leads.source_page LIKE '%reddit%'</code> OR <code>utm_source=reddit</code></td><td>1+ closed lead by month 6</td></tr>
+</table>
+
+<h2>The Landon ask</h2>
+
+<div class="callout blue">
+<b>This is a "tell, not ask" conversation:</b><br><br>
+"Hey — I built out a Reddit content system. Every Monday I get a digest of 5–10 Utah-roofing questions on Reddit where Frame's content is the canonical answer. I pre-draft helpful replies in your voice, you don't have to lift a finger. I post them under a marketing-attributed Reddit account (not yours). The goal isn't direct leads — it's getting Frame cited as a source by ChatGPT and Google AI Overviews. We just put a year of content into the storm-chaser pillar; this is how AI engines learn it exists.<br><br>
+Any concerns about us commenting on r/Roofing under a 'Frame Roofing marketing' username?"<br><br>
+That's it. If he says no concerns, we run. If he wants Landon's voice instead, swap usernames.
+</div>
+
+<h2>What's NOT in this playbook yet</h2>
+
+<ul style="margin:8px 0 14px 24px">
+<li>An auto-poster that posts directly to Reddit without Ryan's approval (intentional — Reddit anti-spam is brutal, human-in-loop is the safeguard)</li>
+<li>Tracking when our replies get upvoted/replied to (would require Reddit OAuth — Phase 2)</li>
+<li>A second pass that detects when our citation actually shows up in a Perplexity/ChatGPT answer (audit gap #9 — separate build)</li>
+<li>Cross-posting helpful answers to LinkedIn / Quora (different channels, different rules — defer)</li>
+</ul>
+
+<h2>The 90-day target</h2>
+
+<div class="thesis">
+By 2026-08-15, Frame is cited in at least <b>3 of 20 sampled Perplexity prompts</b> for Utah roofing queries, has <b>posted 20+ helpful replies</b> across r/Roofing and Utah subs, and has captured <b>10+ click-throughs/month</b> from Reddit. By month 12, 1+ closed deal with <code>utm_source=reddit</code> attribution.<br><br>
+The bigger payoff is invisible: every AI model trained or grounded on Reddit content between now and 2027 has Frame's URLs in its substrate as the canonical Utah-roofing voice. That compounds whether or not Ryan touches Reddit again.
+</div>
+
+<div class="foot">
+Frame Roofing Utah · Reddit AEO Playbook · Built 2026-05-16 from live state + 2026 AEO research · Internal
+</div>
+</body>
+</html>

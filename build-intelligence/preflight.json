@@ -1,0 +1,224 @@
+{
+  "schema_version": "frame-build-preflight.v1",
+  "generated_at": "2026-05-16T18:45:14.387Z",
+  "build": {
+    "name": "Frame Roofing Utah",
+    "client_slug": "frame-roofing-utah",
+    "mode": "legacy",
+    "target_path": "/Users/agenticmac/projects/frame-restoration-utah",
+    "adapter_dir": "/Users/agenticmac/projects/frame-restoration-utah/build-intelligence",
+    "production_url": "https://www.frameroofingutah.com/",
+    "preview_url": "",
+    "public_side_effect_risk": "high",
+    "safe_write_scope": [
+      "build-intelligence/**",
+      "AGENTS.md"
+    ]
+  },
+  "git": {
+    "is_repo": true,
+    "branch": "main",
+    "upstream": "origin/main",
+    "default_branch": "origin/main",
+    "latest_commit": {
+      "short_hash": "1b95df5",
+      "hash": "1b95df5e3b95fe469b5f74a7faa8bad99172d1fe",
+      "authored_at": "2026-05-16T11:56:23-06:00",
+      "subject": "feat(crm): post-won workflow + unblock review-request agent (audit #7)"
+    },
+    "remotes": [
+      {
+        "name": "origin",
+        "url": "https://github.com/Rconman99/frame-restoration-utah.git",
+        "type": "fetch"
+      },
+      {
+        "name": "origin",
+        "url": "https://github.com/Rconman99/frame-restoration-utah.git",
+        "type": "push"
+      }
+    ],
+    "dirty": false,
+    "dirty_files": [],
+    "untracked_files": [],
+    "pre_existing_modified_files": []
+  },
+  "package": {
+    "exists": true,
+    "path": "/Users/agenticmac/projects/frame-restoration-utah/package.json",
+    "name": "frame-roofing-utah",
+    "version": "",
+    "scripts": {
+      "market-intel": "node scripts/market-intel.mjs",
+      "market-intel:dataforseo": "node scripts/market-intel.mjs --use-dataforseo",
+      "competitor-ads": "node scripts/competitor-ads.mjs",
+      "competitor-tiktok": "node scripts/competitor-tiktok.mjs",
+      "blog:target": "python3 scripts/blog-target-prioritizer.py",
+      "blog:next": "python3 scripts/blog-target-prioritizer.py --feed-blog-draft",
+      "blog:traffic": "bash scripts/refresh-traffic-snapshot.sh",
+      "blog:draft": "python3 scripts/generate-blog-post.py",
+      "blog:render": "python3 scripts/generate-blog-post.py --render"
+    },
+    "script_count": 9,
+    "dependencies": [
+      "playwright"
+    ],
+    "dev_dependencies": [],
+    "engines": {
+      "node": ">=18"
+    }
+  },
+  "server": {
+    "script": "",
+    "script_command": "",
+    "start_command": "",
+    "expected_port": null,
+    "local_url": "",
+    "running": false,
+    "started_by_preflight": false,
+    "start_log": "/Users/agenticmac/projects/frame-restoration-utah/build-intelligence/preflight-server.log"
+  },
+  "validators": [
+    {
+      "id": "missing:browser",
+      "name": "Browser/e2e smoke",
+      "command": "",
+      "category": "browser",
+      "status": "missing",
+      "requires_server": false,
+      "required_port": null,
+      "env_refs": [],
+      "missing_env": [],
+      "reason": "No matching validator script was discovered. Create one or port a proven validator from another build."
+    },
+    {
+      "id": "missing:build",
+      "name": "Production build",
+      "command": "",
+      "category": "build",
+      "status": "missing",
+      "requires_server": false,
+      "required_port": null,
+      "env_refs": [],
+      "missing_env": [],
+      "reason": "No matching validator script was discovered. Create one or port a proven validator from another build."
+    },
+    {
+      "id": "missing:content",
+      "name": "Content/template sanity",
+      "command": "",
+      "category": "content",
+      "status": "missing",
+      "requires_server": false,
+      "required_port": null,
+      "env_refs": [],
+      "missing_env": [],
+      "reason": "No matching validator script was discovered. Create one or port a proven validator from another build."
+    },
+    {
+      "id": "missing:extractability",
+      "name": "AEO extractability",
+      "command": "",
+      "category": "extractability",
+      "status": "missing",
+      "requires_server": false,
+      "required_port": null,
+      "env_refs": [],
+      "missing_env": [],
+      "reason": "No matching validator script was discovered. Create one or port a proven validator from another build."
+    },
+    {
+      "id": "missing:lead_tracking",
+      "name": "Lead path/tracking",
+      "command": "",
+      "category": "lead_tracking",
+      "status": "missing",
+      "requires_server": false,
+      "required_port": null,
+      "env_refs": [],
+      "missing_env": [],
+      "reason": "No matching validator script was discovered. Create one or port a proven validator from another build."
+    },
+    {
+      "id": "missing:liveness",
+      "name": "Liveness/link sweep",
+      "command": "",
+      "category": "liveness",
+      "status": "missing",
+      "requires_server": false,
+      "required_port": null,
+      "env_refs": [],
+      "missing_env": [],
+      "reason": "No matching validator script was discovered. Create one or port a proven validator from another build."
+    },
+    {
+      "id": "missing:rules",
+      "name": "Hard-rule/claim guard",
+      "command": "",
+      "category": "rules",
+      "status": "missing",
+      "requires_server": false,
+      "required_port": null,
+      "env_refs": [],
+      "missing_env": [],
+      "reason": "No matching validator script was discovered. Create one or port a proven validator from another build."
+    },
+    {
+      "id": "missing:schema",
+      "name": "Schema JSON-LD parse",
+      "command": "",
+      "category": "schema",
+      "status": "missing",
+      "requires_server": false,
+      "required_port": null,
+      "env_refs": [],
+      "missing_env": [],
+      "reason": "No matching validator script was discovered. Create one or port a proven validator from another build."
+    },
+    {
+      "id": "missing:typecheck",
+      "name": "Typecheck",
+      "command": "",
+      "category": "typecheck",
+      "status": "missing",
+      "requires_server": false,
+      "required_port": null,
+      "env_refs": [],
+      "missing_env": [],
+      "reason": "No matching validator script was discovered. Create one or port a proven validator from another build."
+    }
+  ],
+  "validator_summary": {
+    "total": 9,
+    "available": 0,
+    "needs_server": 0,
+    "missing": 9,
+    "blocked": 0
+  },
+  "ci": {
+    "workflow_count": 0,
+    "workflows": []
+  },
+  "feedback_capture_template": {
+    "build": "Frame Roofing Utah",
+    "mode": "legacy",
+    "artifact_changed": "preflight only",
+    "validator_used": "run-frame-preflight",
+    "before_score": null,
+    "after_score": null,
+    "p0_delta": null,
+    "p1_delta": null,
+    "p2_delta": null,
+    "customer_blockers": [],
+    "cycle_time_note": "",
+    "rework_note": "",
+    "recommended_future_priority": "Use validator discovery before edits."
+  },
+  "recommended_next_actions": [
+    "Create or port validator: Browser/e2e smoke.",
+    "Create or port validator: Production build.",
+    "Create or port validator: Content/template sanity.",
+    "Create or port validator: AEO extractability.",
+    "Create or port validator: Lead path/tracking."
+  ]
+}

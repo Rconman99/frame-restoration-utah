@@ -126,12 +126,33 @@ def detect_city(text):
             return city
     return None
 
+# v5 (2026-05-16): hard-blocklist garbage subs that historically slipped
+# through keyword search — AI-generated spam subs, off-topic communities,
+# random one-offs. Audit on 254 historic signals showed ~30% noise volume
+# came from these. Rejecting at the source means cleaner data + lower
+# classifier cost downstream.
+BLOCKLIST_SUBREDDITS = {
+    # AI-generated spam / link-farm subs
+    "star_light_links", "creativesociety4all", "creativesociety",
+    "assetstackers", "circled", "atlantagrowth", "possiblehistory2",
+    "infpideas",
+    # Off-topic communities matching on stray "roof"/"utah" tokens
+    "disastro", "climatenews", "crazyfreakingweather",
+    "scifi", "seattlekraken", "thetraitorsus", "mormon",
+    "bruggerthomet", "whichcrm", "overlanding",
+    # Out-of-state geo subs (we don't sell in CT, IN, etc.)
+    "connecticut", "bloomington",
+    # Sub-personal/user pages
+    "u_cmrp",
+}
+
 def classify(title, body, subreddit):
     """
-    Strict classifier v4. Uses ONLY title+body text (not subreddit name).
+    Strict classifier v5. Uses ONLY title+body text (not subreddit name).
     Returns (signal_type, keep_bool).
-    
+
     Rules:
+    - HARD BLOCKLIST: any post from BLOCKLIST_SUBREDDITS is rejected immediately
     - LEAD: lead phrase present AND roofing term present
     - STORM: storm phrase present (these embed roofing context)
     - COMPETITOR: competitor name AND roofing term present
@@ -141,6 +162,10 @@ def classify(title, body, subreddit):
     - r/roofing posts: only need utah term (roofing is implied)
     - Everything else: REJECT
     """
+    # v5: hard-blocklist short-circuit
+    if subreddit.lower().lstrip("r/").lstrip("u/") in BLOCKLIST_SUBREDDITS:
+        return "general", False
+
     text = f"{title} {body}".lower()
     has_roof = any(t in text for t in ROOFING_TERMS)
     has_utah = any(t in text for t in UTAH_TERMS)
