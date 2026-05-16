@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Frame Roofing — Innovation Audit · 2026-05-16</title>
+<style>
+:root{color-scheme:light;--bg:#fafaf8;--card:#ffffff;--border:#e4e4e1;--text:#1a1a1a;--muted:#6b6b66;--gold:#a8842a;--navy:#0B4060;--red:#b91c1c;--green:#15803d;--amber:#b45309;--blue:#1d4ed8;--purple:#7c3aed}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,sans-serif;background:var(--bg);color:var(--text);line-height:1.55;padding:32px 24px;max-width:1100px;margin:0 auto}
+h1{font-size:1.9rem;color:var(--navy);margin-bottom:4px;letter-spacing:-.02em}
+.tag{color:var(--muted);font-size:.95rem;margin-bottom:28px}
+h2{font-size:1.25rem;color:var(--navy);margin:32px 0 10px;border-bottom:2px solid var(--gold);padding-bottom:6px;letter-spacing:-.01em}
+h3{font-size:1rem;color:var(--text);margin:18px 0 8px;font-weight:600}
+p{margin-bottom:10px;color:var(--text)}
+.stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin:14px 0}
+.stat{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:12px 14px}
+.stat .v{font-size:1.5rem;font-weight:700;color:var(--navy);line-height:1.1}
+.stat .v.bad{color:var(--red)}
+.stat .v.warn{color:var(--amber)}
+.stat .v.good{color:var(--green)}
+.stat .l{font-size:.78rem;color:var(--muted);margin-top:3px}
+.callout{background:#fff8e8;border:1px solid #e7c980;border-left:4px solid var(--gold);border-radius:8px;padding:12px 16px;margin:12px 0;font-size:.95rem}
+.callout.red{background:#fef2f2;border-color:#fca5a5;border-left-color:var(--red)}
+.callout.green{background:#f0fdf4;border-color:#86efac;border-left-color:var(--green)}
+.callout.blue{background:#eff6ff;border-color:#93c5fd;border-left-color:var(--blue)}
+.gap{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px 18px;margin:10px 0}
+.gap-hdr{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:6px}
+.gap-title{font-weight:700;color:var(--navy);font-size:1rem}
+.gap-tag{font-size:.7rem;padding:3px 8px;border-radius:99px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;white-space:nowrap}
+.tag-bleed{background:#fef2f2;color:var(--red);border:1px solid #fca5a5}
+.tag-trap{background:#fff8e8;color:var(--amber);border:1px solid #e7c980}
+.tag-unlock{background:#eff6ff;color:var(--blue);border:1px solid #93c5fd}
+.gap-body{color:var(--text);font-size:.92rem;margin:6px 0}
+.gap-body .ev{color:var(--muted);font-style:italic;font-size:.85rem;display:block;margin-top:4px}
+.gap-fix{background:var(--bg);padding:8px 12px;border-radius:6px;border-left:3px solid var(--green);margin-top:8px;font-size:.88rem}
+.gap-fix b{color:var(--green)}
+.matrix{margin:14px 0;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px}
+.matrix-grid{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:1px;background:var(--border);border:1px solid var(--border);border-radius:10px;min-height:380px;position:relative}
+.q{padding:14px;background:var(--card)}
+.q-label{font-size:.7rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px}
+.q ul{list-style:none;padding:0}
+.q li{font-size:.82rem;padding:3px 0;color:var(--text)}
+.q li::before{content:"• ";color:var(--gold);font-weight:700}
+.q.do-now{background:#f0fdf4}
+.q.do-next{background:#fff8e8}
+.q.consider{background:#eff6ff}
+.q.defer{background:#fafafa}
+.stack{counter-reset:s;margin:14px 0}
+.stack-item{position:relative;padding:14px 18px 14px 56px;background:var(--card);border:1px solid var(--border);border-radius:10px;margin-bottom:10px;counter-increment:s}
+.stack-item::before{content:counter(s);position:absolute;left:14px;top:50%;transform:translateY(-50%);width:32px;height:32px;background:var(--navy);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:1rem}
+.stack-item h4{margin:0 0 4px;color:var(--navy);font-size:1rem}
+.stack-item .why{font-size:.88rem;color:var(--text);margin:4px 0}
+.stack-item .effort{font-size:.78rem;color:var(--muted);font-style:italic}
+.thesis{background:linear-gradient(135deg,#fff8e8 0%,#fef2f2 100%);border:1px solid #e7c980;border-radius:12px;padding:20px 24px;margin:18px 0;font-size:.98rem;line-height:1.7}
+.thesis b{color:var(--navy)}
+table{width:100%;border-collapse:collapse;margin:12px 0;font-size:.88rem}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--border)}
+th{background:#f5f5f2;color:var(--navy);font-weight:600;font-size:.8rem;text-transform:uppercase;letter-spacing:.5px}
+.foot{margin-top:40px;padding-top:18px;border-top:1px solid var(--border);font-size:.78rem;color:var(--muted);text-align:center}
+@media (max-width:700px){body{padding:18px 14px}.matrix-grid{grid-template-columns:1fr;grid-template-rows:repeat(4,1fr)}.gap-hdr{flex-direction:column;gap:4px}}
+</style>
+</head>
+<body>
+
+<h1>Frame Roofing — Innovation Audit</h1>
+<div class="tag">2026-05-16 · Real state of the stack, real gaps, real moves · Built from live Supabase + scheduled-task + git data</div>
+
+<h2>The Diagnostic</h2>
+<div class="thesis">
+<b>The infrastructure is enterprise-grade. The throughput is anemic.</b><br>
+11 deployed edge functions. 9 database tables. 13 scheduled agents running across iMessage, Gmail, Reddit, GBP, GSC, SEO. 130 instrumented pages with full UTM/gclid attribution. 254 Reddit signals scanned in the last 6 weeks.<br><br>
+And: <b>6 total leads, 2 of those won, 0 with margin filled in, 0 phone clicks tracked, 0 Reddit signals actioned.</b><br><br>
+The build phase is finished. The build was the easy part. The hard part — getting volume through the pipes Landon and Ryan already own — is the actual remaining work. Most of the moves below are not "build more"; they are "make what exists actually fire."
+</div>
+
+<h2>Real-State Inventory</h2>
+<div class="stat-grid">
+<div class="stat"><div class="v">11</div><div class="l">Edge functions deployed</div></div>
+<div class="stat"><div class="v">9</div><div class="l">DB tables</div></div>
+<div class="stat"><div class="v">13</div><div class="l">Scheduled agents</div></div>
+<div class="stat"><div class="v">130</div><div class="l">Instrumented pages</div></div>
+<div class="stat"><div class="v">6</div><div class="l">Lifetime leads</div></div>
+<div class="stat"><div class="v warn">2</div><div class="l">Won deals</div></div>
+<div class="stat"><div class="v bad">0</div><div class="l">Won deals with margin</div></div>
+<div class="stat"><div class="v bad">0</div><div class="l">Phone clicks (4d live)</div></div>
+<div class="stat"><div class="v">8</div><div class="l">Inbound calls</div></div>
+<div class="stat"><div class="v">5</div><div class="l">SMS conversations</div></div>
+<div class="stat"><div class="v">254</div><div class="l">Reddit signals scanned</div></div>
+<div class="stat"><div class="v bad">0</div><div class="l">Reddit signals actioned</div></div>
+<div class="stat"><div class="v bad">1</div><div class="l">Leads with email</div></div>
+<div class="stat"><div class="v warn">37</div><div class="l">Reddit hits scored 50+</div></div>
+</div>
+<div class="callout red"><b>The math problem:</b> If your lifetime won-deal margin sits at $0 in the DB, your commission engine returns $0 every time. Greg's $118K signed contract calculated $0 commission this morning, mathematically. Ryan is structurally underpaid by his own system on every closed deal. This is the loudest gap on the board.</div>
+
+<h2>The 12 Gaps</h2>
+<p style="color:var(--muted);font-size:.88rem">Categorized: <b style="color:var(--red)">BLEEDING</b> = losing money/leads today · <b style="color:var(--amber)">TRAP</b> = latent risk · <b style="color:var(--blue)">UNLOCK</b> = upside that just got cheaper with new Claude features</p>
+
+<div class="gap">
+<div class="gap-hdr"><div class="gap-title">1. Margin column is null on every won deal</div><div class="gap-tag tag-bleed">Bleeding</div></div>
+<div class="gap-body">The DB rule for commission is <code>margin × 0.05</code> (Heber/Midway) or <code>margin × 0.10</code> elsewhere. But margin requires Landon to manually type the dollar number after every job. He doesn't. <span class="ev">Evidence: 2 won deals, 0 with margin filled. Greg's $118K shows $0.00 commission.</span></div>
+<div class="gap-fix"><b>Fix:</b> Nightly QuickBooks pull (new Cowork integration) reads Landon's costs against job_value, computes margin, writes to DB. Self-calculating commission. Estimated unblock: <b>~$1.5K–$2K/job</b> properly attributed to Ryan.</div>
+</div>
+
+<div class="gap">
+<div class="gap-hdr"><div class="gap-title">2. Phone clicks at zero after 4 days live</div><div class="gap-tag tag-trap">Trap</div></div>
+<div class="gap-body">The tracker we shipped 2026-05-11 should be firing on every tel:/sms: click site-wide. <span class="ev">Evidence: phone_clicks table = 0 rows. Either the beacon is failing silently (CORS, sendBeacon blocked), or there genuinely was no tel:/sms: click on the site in 4 days. Both are bad and both need a fix.</span></div>
+<div class="gap-fix"><b>Fix:</b> Console-test from your phone right now (tap the GBP number, then refresh /leads). If still 0, the bug is in the beacon path. If non-zero, the problem is traffic, not tracking.</div>
+</div>
+
+<div class="gap">
+<div class="gap-hdr"><div class="gap-title">3. Inbound calls don't create lead records</div><div class="gap-tag tag-bleed">Bleeding</div></div>
+<div class="gap-body">8 calls logged in call_logs, 6 leads in leads. Someone called the Twilio tracking number 8 times, and zero of those calls became a contact card Ryan can follow up on. The handle-call edge fn forwards to Landon and logs the call — that's it. <span class="ev">Evidence: call_logs=8, leads=6, sms_logs=5 — none of the SMS or calls become a lead unless they also fill out the form.</span></div>
+<div class="gap-fix"><b>Fix:</b> handle-call + handle-sms write a "lead" row on first inbound from a new number (status=new, source_page=inbound-call or inbound-sms). One commit, big surface-area gain.</div>
+</div>
+
+<div class="gap">
+<div class="gap-hdr"><div class="gap-title">4. 254 Reddit signals, 0 actioned</div><div class="gap-tag tag-bleed">Bleeding</div></div>
+<div class="gap-body">37 of those signals scored 50+ on engagement (high-value posts). None were ever responded to, DMed, or converted. The scanner detects pain. Nothing actions it. <span class="ev">Evidence: reddit_signals WHERE actioned=true = 0. The agent collects, it doesn't respond.</span></div>
+<div class="gap-fix"><b>Fix:</b> An "action" tier in the agent: top 5 weekly signals get a drafted DM (with Landon brand-voice guardrails) queued for Ryan's approval each Monday. Even 1 conversion/month = $5–25K.</div>
+</div>
+
+<div class="gap">
+<div class="gap-hdr"><div class="gap-title">5. Email captured on 1 of 6 leads</div><div class="gap-tag tag-bleed">Bleeding</div></div>
+<div class="gap-body">Form has the field; people skip it. The CRM has no second-channel reach for 5 of 6 leads — if a customer goes cold on SMS, you're stuck. <span class="ev">Evidence: leads WHERE email IS NOT NULL = 1.</span></div>
+<div class="gap-fix"><b>Fix:</b> Make email required on the form OR add a follow-up "We'll text you the estimate — what email should we cc?" auto-SMS from handle-lead immediately after submit.</div>
+</div>
+
+<div class="gap">
+<div class="gap-hdr"><div class="gap-title">6. Greg's contract data lives in three places</div><div class="gap-tag tag-trap">Trap</div></div>
+<div class="gap-body">CRM row, photo of contract in iMessage cache, photo of deposit check separately. No customer file. When the install happens 4 weeks from now and someone asks "did Greg pick Brava Aged Cedar or Designer Shake?", the answer is "scroll through Ryan's messages." <span class="ev">Evidence: project_frame_lead_pipeline.md memory + Greg's case manually reconstructed from a photo this session.</span></div>
+<div class="gap-fix"><b>Fix:</b> DocuSign integration (new Cowork capability) replaces paper contract. Signed PDF auto-attaches to the lead row. End of paper.</div>
+</div>
+
+<div class="gap">
+<div class="gap-hdr"><div class="gap-title">7. No payment/job status tracking past "won"</div><div class="gap-tag tag-trap">Trap</div></div>
+<div class="gap-body">Once a lead hits status=won, the CRM is silent. No deposit_received_at, no install_scheduled_for, no balance_due, no warranty_doc_url, no job_completed_at workflow. The review-request agent fires 3 days after job_completed_at — and that field is set manually, basically never. <span class="ev">Evidence: review-request-trigger runs daily but no rows have job_completed_at set, so no review requests actually go out.</span></div>
+<div class="gap-fix"><b>Fix:</b> Post-won workflow columns + a simple "Job status" sub-panel on /leads. Once Landon marks "install complete" → review request fires automatically 3 days later.</div>
+</div>
+
+<div class="gap">
+<div class="gap-hdr"><div class="gap-title">8. Landon agent reads instructions but doesn't surface action</div><div class="gap-tag tag-unlock">Unlock</div></div>
+<div class="gap-body">The landon-message-agent runs every 15min and reacts to what Landon says. But the inverse — agent reading the CRM and proactively texting Landon "Greg's install is in 3 days, did you order materials?" — doesn't exist. <span class="ev">Evidence: landon-message-agent SKILL.md = reactive only; no proactive CRM-monitoring agent.</span></div>
+<div class="gap-fix"><b>Fix:</b> New "landon-cadence" agent — daily 7am check of all open won/scheduled jobs, texts Landon a punch list of what needs to happen today.</div>
+</div>
+
+<div class="gap">
+<div class="gap-hdr"><div class="gap-title">9. AEO content shipped, AEO citation tracking missing</div><div class="gap-tag tag-unlock">Unlock</div></div>
+<div class="gap-body">PR #56/#57 dropped a 13-spoke storm-chaser pillar with HowTo schema, llms.txt Q&A, standalone Service nodes. Massive AEO investment. Zero mechanism to know whether Perplexity, ChatGPT, or Google AI Overview actually cite frameroofingutah.com when someone searches "best Utah roofer." <span class="ev">Evidence: no aeo_citation_tracker in scheduled tasks; brand-radar tools available in the deferred MCP list but unused.</span></div>
+<div class="gap-fix"><b>Fix:</b> Weekly task that queries Perplexity + ChatGPT API for 20 Utah roofing prompts and records whether frameroofingutah.com is cited. Brand-radar Ahrefs tool already available in your MCP. Measure the AEO investment.</div>
+</div>
+
+<div class="gap">
+<div class="gap-hdr"><div class="gap-title">10. Skills aren't portable yet — the agent stack is locked in your Mac</div><div class="gap-tag tag-unlock">Unlock</div></div>
+<div class="gap-body">13 sophisticated scheduled tasks live under <code>~/Documents/Claude/Scheduled/</code>. With Agent Skills now an open standard portable across Claude.ai/Code/SDK, this entire stack could be packaged as <b>"Frame Stack"</b> Skills — sellable IP for the client-website-builder side of your business. <span class="ev">Evidence: project_client_builder.md memory mentions the productized service; the agent stack isn't structured for portability.</span></div>
+<div class="gap-fix"><b>Fix:</b> Convert top 5 agents to Skill format. Bundle as a marketplace plugin. Every client website you build deploys the stack on day 1.</div>
+</div>
+
+<div class="gap">
+<div class="gap-hdr"><div class="gap-title">11. /leads CRM has no mobile-first design</div><div class="gap-tag tag-trap">Trap</div></div>
+<div class="gap-body">Ryan runs his life from his phone. The dashboard is desktop-styled with a side-slide panel that doesn't behave great on iPhone. <span class="ev">Evidence: leads.html @media (max-width:700px) rule is minimal; the panel goes full-width but the toolbar wraps weirdly.</span></div>
+<div class="gap-fix"><b>Fix:</b> Mobile-first redo or a PWA wrapper with push notifications. Opus 4.7 visual pass when you're ready (the prior agent flagged this — agreed but lower priority than the bleeding gaps above).</div>
+</div>
+
+<div class="gap">
+<div class="gap-hdr"><div class="gap-title">12. No commission ledger — just an instantaneous calculation</div><div class="gap-tag tag-trap">Trap</div></div>
+<div class="gap-body">Each lead has a commission column that recomputes on the fly. There's no "Ryan earned $X this month, settled $Y, outstanding $Z." When you ask Landon for your check, you'll be summing rows manually. <span class="ev">Evidence: no commission_payments or commission_ledger table; no settle/paid status.</span></div>
+<div class="gap-fix"><b>Fix:</b> commission_ledger table + monthly statement view at /leads. Each month auto-locks the prior month's earned commission as an invoice to Landon.</div>
+</div>
+
+<h2>Impact × Effort Matrix</h2>
+<div class="matrix">
+<div class="matrix-grid">
+  <div class="q do-now"><div class="q-label">High impact · Low effort — DO NOW</div>
+    <ul>
+      <li>#3 Inbound calls → lead rows</li>
+      <li>#2 Smoke-test the click tracker bug</li>
+      <li>#5 Make email required (or auto-prompt)</li>
+      <li>#7 Add post-won workflow columns</li>
+    </ul>
+  </div>
+  <div class="q do-next"><div class="q-label">High impact · High effort — DO NEXT</div>
+    <ul>
+      <li>#1 QuickBooks → margin auto-fill</li>
+      <li>#6 DocuSign → contract pipeline</li>
+      <li>#4 Reddit action-tier agent</li>
+      <li>#8 Proactive Landon-cadence agent</li>
+    </ul>
+  </div>
+  <div class="q consider"><div class="q-label">Low impact · Low effort — CONSIDER</div>
+    <ul>
+      <li>#12 Commission ledger view</li>
+      <li>#9 AEO citation tracker</li>
+    </ul>
+  </div>
+  <div class="q defer"><div class="q-label">Low impact · High effort — DEFER</div>
+    <ul>
+      <li>#10 Skillify the agent stack</li>
+      <li>#11 Mobile-first /leads redo</li>
+    </ul>
+  </div>
+</div>
+</div>
+
+<h2>The Sequenced Stack — One Session Each</h2>
+<div class="stack">
+<div class="stack-item">
+  <h4>Inbound-call &amp; SMS → auto-lead</h4>
+  <div class="why">Edit handle-call + handle-sms to insert a leads row on first contact from a new number. Eight calls/five SMS already in your DB that should have been leads. <b>1 hour. Highest ROI move.</b></div>
+  <div class="effort">Two edge function edits, one Supabase deploy each.</div>
+</div>
+<div class="stack-item">
+  <h4>Click-tracker smoke + fix</h4>
+  <div class="why">Either prove the beacon works (you click, row appears) or find the bug. Until phone_clicks gets a real row, the data Ryan's making decisions from is fiction.</div>
+  <div class="effort">15 minutes from your phone + browser DevTools network tab.</div>
+</div>
+<div class="stack-item">
+  <h4>Post-won workflow columns + review-request unblock</h4>
+  <div class="why">Add deposit_received_at, install_scheduled_for, job_completed_at to /leads panel. Suddenly review-request agent (already deployed!) actually fires. Reviews compound; you go from 20 → 50 → 100 over 6 months.</div>
+  <div class="effort">DB migration + 60 lines in leads.html.</div>
+</div>
+<div class="stack-item">
+  <h4>QuickBooks → margin nightly pull</h4>
+  <div class="why">Closes the commission engine loop. Nightly cron reads QB cost vs job_value on won deals, computes margin, writes to leads.margin. Ryan's commission becomes real.</div>
+  <div class="effort">New scheduled task + QB OAuth (one-time). 2–3 hours including testing.</div>
+</div>
+<div class="stack-item">
+  <h4>DocuSign integration for new contracts</h4>
+  <div class="why">Replace Landon's paper proposal pad. New won deal → DocuSign template auto-fills from /leads → customer signs → PDF auto-attaches to lead row → status flips to won. Greg's whole experience eliminated as a manual workflow.</div>
+  <div class="effort">DocuSign template setup + webhook → handle-docusign-signed edge fn. Half-day.</div>
+</div>
+<div class="stack-item">
+  <h4>Reddit action-tier — drafted DM queue</h4>
+  <div class="why">For top 5 weekly signals scored &gt;50, agent drafts a casual Landon-voice DM and queues to Ryan's iMessage for approve/send. Don't auto-spam Reddit; pre-cook the reply. One conversion/quarter = ROI.</div>
+  <div class="effort">New scheduled task + Landon brand-voice skill (already exists in marketing plugin).</div>
+</div>
+<div class="stack-item">
+  <h4>Proactive landon-cadence agent</h4>
+  <div class="why">Daily 7am: scan open won/scheduled jobs, text Landon today's punch list ("Greg install Tuesday, material order due by Sunday"). Inverts the agent from reactive → proactive.</div>
+  <div class="effort">Mirror landon-message-agent skill structure with CRM SELECT instead of iMessage read.</div>
+</div>
+<div class="stack-item">
+  <h4>AEO citation tracker</h4>
+  <div class="why">Measure whether the storm-chaser pillar investment is actually getting cited by Perplexity/ChatGPT/Google AI. Brand-radar tool already in your MCP arsenal — just wire it to a weekly run.</div>
+  <div class="effort">~1 hour: 20 prompts, weekly cron, slack/SMS digest.</div>
+</div>
+</div>
+
+<h2>The Strategic Re-Frame</h2>
+<div class="thesis">
+You've quietly built the infrastructure for a <b>productized back-office service for residential contractors</b>. The website is the demo. The agent stack is the product.<br><br>
+Today Landon pays you implicitly via the 10% commission deal. That deal is priced for "Ryan runs marketing." With QB + DocuSign + Reddit + GBP + AEO + review automation all firing as one orchestrated platform, what Landon is actually getting is closer to "outsourced revenue operations" — and the next contractor (Connor in Dallas, the future Texas market) will need the same thing.<br><br>
+The new Claude small-business integrations aren't just Frame Roofing utilities. They're the building blocks of <b>"Frame Stack"</b> — the thing you sell to the next 10 contractors.<br><br>
+That's not a today decision. But every gap you fix above is also a feature of that future product. Build the bleeding gaps first because Landon needs them. Build them well because the next contractor will pay for them.
+</div>
+
+<h2>What's NOT a gap (deliberately leaving alone)</h2>
+<table>
+<tr><th>Thing</th><th>Status</th><th>Why it's fine</th></tr>
+<tr><td>SEO infrastructure</td><td>Lighthouse 96/100/96/92, 0 JSON-LD errors, HowTo schemas everywhere, storm pillar shipped</td><td>You're past good-enough. Diminishing returns on more SEO until lead volume justifies it.</td></tr>
+<tr><td>Photo authenticity</td><td>All real-Landon, audit-clean</td><td>Locked. Don't touch.</td></tr>
+<tr><td>10DLC SMS approval</td><td>Resubmitted &amp; pending</td><td>Out of your hands. Verizon gateway works.</td></tr>
+<tr><td>Form submission pipeline</td><td>Resend swap done, 3 forms wired, attribution capture site-wide</td><td>Solid. Don't disturb.</td></tr>
+<tr><td>Site performance</td><td>96 Lighthouse, fetchpriority=high on hero, instrumented CRO</td><td>Past good-enough.</td></tr>
+</table>
+
+<div class="foot">
+Frame Roofing Utah · Innovation Audit · Built 2026-05-16 from live state · Ryan Conwell — Internal CRM
+</div>
+</body>
+</html>
