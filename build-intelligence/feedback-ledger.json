@@ -1,0 +1,147 @@
+{
+  "schema_version": "frame-build-feedback-ledger.v1",
+  "generated_at": "2026-05-16T22:05:17.046Z",
+  "row_count": 1,
+  "latest_feedback_id": "frame-roofing-utah:legacy:repo-preflight-and-validator-discovery:run-frame-preflight:2026-05-16",
+  "summary": {
+    "by_client": {
+      "frame-roofing-utah": 1
+    },
+    "feed_ready_count": 0,
+    "pending_measurement_count": 0,
+    "adapter_validated_count": 1,
+    "rows_with_customer_blockers": 0
+  },
+  "rows": [
+    {
+      "schema_version": "frame-build-feedback-row.v1",
+      "feedback_id": "frame-roofing-utah:legacy:repo-preflight-and-validator-discovery:run-frame-preflight:2026-05-16",
+      "generated_at": "2026-05-16T22:05:17.044Z",
+      "build": {
+        "name": "Frame Roofing Utah",
+        "client_slug": "frame-roofing-utah",
+        "mode": "legacy",
+        "target_path": "/Users/agenticmac/projects/frame-restoration-utah",
+        "adapter_dir": "/Users/agenticmac/projects/frame-restoration-utah/build-intelligence",
+        "production_url": "https://www.frameroofingutah.com/",
+        "preview_url": "",
+        "public_side_effect_allowed": false,
+        "public_side_effect_note": "Feedback capture only. No public website, GBP, DNS, ads, email, SMS, review, or outreach action was performed."
+      },
+      "git": {
+        "branch": "main",
+        "upstream": "origin/main",
+        "default_branch": "origin/main",
+        "latest_commit": {
+          "short_hash": "1b95df5",
+          "hash": "1b95df5e3b95fe469b5f74a7faa8bad99172d1fe",
+          "authored_at": "2026-05-16T11:56:23-06:00",
+          "subject": "feat(crm): post-won workflow + unblock review-request agent (audit #7)"
+        },
+        "dirty_at_preflight": false,
+        "dirty_files_at_preflight": []
+      },
+      "loop": {
+        "role": "Reporter",
+        "stage": "measure",
+        "artifact_changed": "repo preflight and validator discovery",
+        "validator_used": "run-frame-preflight",
+        "validation_result": "adapter_validated",
+        "decision_after_feedback": "pending",
+        "recommended_future_priority": "Port missing validators so the next loop pass has real gates."
+      },
+      "measurements": {
+        "before_score": null,
+        "after_score": null,
+        "score_delta": null,
+        "score_source": "pending_real_audit",
+        "grade": null,
+        "deploy_ready": null,
+        "validator_summary": {
+          "total": 9,
+          "available": 0,
+          "needs_server": 0,
+          "missing": 9,
+          "blocked": 0
+        },
+        "priority_counts": {
+          "before": {
+            "P0": 0,
+            "P1": 0,
+            "P2": 0
+          },
+          "after": {
+            "P0": 0,
+            "P1": 0,
+            "P2": 0
+          },
+          "delta": {
+            "P0": {
+              "before": 0,
+              "after": 0,
+              "count_delta": 0,
+              "closed_delta": 0
+            },
+            "P1": {
+              "before": 0,
+              "after": 0,
+              "count_delta": 0,
+              "closed_delta": 0
+            },
+            "P2": {
+              "before": 0,
+              "after": 0,
+              "count_delta": 0,
+              "closed_delta": 0
+            }
+          }
+        },
+        "audit_passes": {
+          "liveness": null,
+          "schema": null,
+          "rules": null,
+          "extractability": null
+        }
+      },
+      "customer_blockers": [],
+      "cycle_time_note": "Preflight captured; cycle time pending next real audit.",
+      "rework_note": "No measured rework regression captured in this feedback row.",
+      "world_class_feedback": {
+        "action_id": "frame-roofing-utah:legacy:repo-preflight-and-validator-discovery:run-frame-preflight:2026-05-16",
+        "build": "legacy",
+        "artifact_changed": "repo preflight and validator discovery",
+        "validation_result": "adapter_validated",
+        "cycle_time_delta": "pending next audit cycle",
+        "quality_delta": "real audit pending; validators available 0, needs_server 0, missing 9, blocked 0",
+        "lead_or_visibility_delta": "pending GSC/GBP/lead-quality measurement; no public-side-effect action taken by this script",
+        "rework_delta": "no regression captured",
+        "customer_wait_delta": "no customer blocker captured",
+        "decision_after_feedback": "pending"
+      },
+      "sources": {
+        "preflight_path": "/Users/agenticmac/projects/frame-restoration-utah/build-intelligence/preflight.json",
+        "preflight_generated_at": "2026-05-16T18:45:14.387Z",
+        "audit_path": "",
+        "audit_generated_at": null,
+        "previous_audit_path": "",
+        "previous_audit_generated_at": null
+      },
+      "next_actions": {
+        "preflight_recommended": [
+          "Create or port validator: Browser/e2e smoke.",
+          "Create or port validator: Production build.",
+          "Create or port validator: Content/template sanity.",
+          "Create or port validator: AEO extractability.",
+          "Create or port validator: Lead path/tracking."
+        ],
+        "audit_top_actions": [],
+        "create_customer_request_rows_for": []
+      },
+      "safety": {
+        "remote_supabase_sync_attempted": false,
+        "public_side_effect_allowed": false,
+        "approval_gate": "Required before public launch, GBP/GSC/DNS/tracking changes, email/SMS sends, review asks, outreach, or backlink action."
+      }
+    }
+  ]
+}
