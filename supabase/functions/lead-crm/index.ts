@@ -71,7 +71,9 @@ Deno.serve(async (req: Request) => {
       .select(`
         id, created_at, name, email, phone, address, service, message,
         source_page, status, job_value, margin, city, commission, notes,
-        job_completed_at, review_requested_at, review_link_clicked,
+        deposit_received_at, deposit_amount, install_scheduled_for, job_started_at,
+        job_completed_at, balance_due, contract_url, warranty_doc_url, product,
+        review_requested_at, review_link_clicked,
         won_at,
         tier, tier_reason, tier_confidence, tier_classifier
       `)
@@ -101,6 +103,20 @@ Deno.serve(async (req: Request) => {
     if ("job_value"  in body) patch.job_value  = body.job_value  === null || body.job_value  === "" ? null : Number(body.job_value);
     if ("margin"     in body) patch.margin     = body.margin     === null || body.margin     === "" ? null : Number(body.margin);
     if ("city"       in body) patch.city       = body.city ? String(body.city).trim() : null;
+
+    // Post-won workflow columns
+    const tsOrNull = (v: any) => (v === null || v === "" || v === undefined) ? null : new Date(String(v)).toISOString();
+    const dateOrNull = (v: any) => (v === null || v === "" || v === undefined) ? null : String(v).slice(0, 10);
+    const numOrNull = (v: any) => (v === null || v === "" || v === undefined) ? null : Number(v);
+    if ("deposit_received_at"   in body) patch.deposit_received_at   = tsOrNull(body.deposit_received_at);
+    if ("deposit_amount"        in body) patch.deposit_amount        = numOrNull(body.deposit_amount);
+    if ("install_scheduled_for" in body) patch.install_scheduled_for = dateOrNull(body.install_scheduled_for);
+    if ("job_started_at"        in body) patch.job_started_at        = tsOrNull(body.job_started_at);
+    if ("job_completed_at"      in body) patch.job_completed_at      = tsOrNull(body.job_completed_at);
+    if ("balance_due"           in body) patch.balance_due           = numOrNull(body.balance_due);
+    if ("contract_url"          in body) patch.contract_url          = body.contract_url ? String(body.contract_url).trim() : null;
+    if ("warranty_doc_url"      in body) patch.warranty_doc_url      = body.warranty_doc_url ? String(body.warranty_doc_url).trim() : null;
+    if ("product"               in body) patch.product               = body.product ? String(body.product).trim() : null;
     // NOTE: commission is a GENERATED column in public.leads with city-aware CASE expression:
     //   margin*0.05 for Heber/Midway, margin*0.10 elsewhere.
     // Writing to it returns Postgres error 428C9. Update margin and/or city — commission

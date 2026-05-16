@@ -235,6 +235,30 @@ footer{text-align:center;padding:24px;color:var(--muted);font-size:.78rem;border
       <div class="field"><label>Commission (auto)</label><div class="val" id="p-commission" style="padding-top:8px;font-weight:600;color:#0B4060">—</div></div>
     </div>
     <div class="field"><label>Notes</label><textarea id="p-notes" placeholder="Call log · next step · what was said…"></textarea></div>
+
+    <!-- Post-won job pipeline — only visible when status=won -->
+    <div id="p-jobpipeline" style="display:none;margin-top:14px;padding:12px 14px;background:var(--card-hi);border:1px solid var(--border);border-left:3px solid var(--green);border-radius:8px">
+      <div style="font-size:.88rem;color:var(--green);font-weight:600;margin-bottom:10px">📋 Job pipeline</div>
+      <div class="two">
+        <div class="field"><label>Deposit received</label><input type="date" id="p-deposit-date"></div>
+        <div class="field"><label>Deposit amount ($)</label><input type="number" id="p-deposit-amt" step="100" min="0" placeholder="10000"></div>
+      </div>
+      <div class="two">
+        <div class="field"><label>Install scheduled</label><input type="date" id="p-install-date"></div>
+        <div class="field"><label>Balance due ($)</label><input type="number" id="p-balance" step="100" min="0"></div>
+      </div>
+      <div class="two">
+        <div class="field"><label>Job started</label><input type="date" id="p-job-started"></div>
+        <div class="field"><label>Job completed <span style="opacity:.6;font-weight:400">(triggers review-request)</span></label><input type="date" id="p-job-completed"></div>
+      </div>
+      <div class="field"><label>Product / scope</label><input type="text" id="p-product" placeholder="Brava Aged Cedar · 41 sq · tear-off"></div>
+      <div class="two">
+        <div class="field"><label>Contract URL</label><input type="url" id="p-contract-url" placeholder="DocuSign / Drive link"></div>
+        <div class="field"><label>Warranty doc URL</label><input type="url" id="p-warranty-url" placeholder="warranty PDF link"></div>
+      </div>
+      <div id="p-review-status" style="font-size:.78rem;color:var(--muted);margin-top:6px"></div>
+    </div>
+
     <button class="save-btn" id="save">Save</button>
   </div>
 </div>
@@ -571,9 +595,43 @@ function openPanel(id){
   document.getElementById("p-city").value=lead.city||"";
   recalcCommission();
   document.getElementById("p-notes").value=lead.notes||"";
+
+  // Post-won fields
+  function asDate(v){if(!v)return"";var d=new Date(v);return isNaN(d)?"":d.toISOString().slice(0,10)}
+  document.getElementById("p-deposit-date").value=asDate(lead.deposit_received_at);
+  document.getElementById("p-deposit-amt").value=lead.deposit_amount||"";
+  document.getElementById("p-install-date").value=asDate(lead.install_scheduled_for);
+  document.getElementById("p-balance").value=lead.balance_due||"";
+  document.getElementById("p-job-started").value=asDate(lead.job_started_at);
+  document.getElementById("p-job-completed").value=asDate(lead.job_completed_at);
+  document.getElementById("p-product").value=lead.product||"";
+  document.getElementById("p-contract-url").value=lead.contract_url||"";
+  document.getElementById("p-warranty-url").value=lead.warranty_doc_url||"";
+  togglePipeline(statusOrNew(lead.status));
+  renderReviewStatus(lead);
+
   document.getElementById("panel").classList.add("open");
   document.getElementById("backdrop").classList.add("show");
   render();
+}
+
+function togglePipeline(status){
+  var show=status==="won";
+  document.getElementById("p-jobpipeline").style.display=show?"block":"none";
+}
+document.getElementById("p-status").addEventListener("change",function(e){togglePipeline(e.target.value)});
+
+function renderReviewStatus(lead){
+  var el=document.getElementById("p-review-status");
+  if(!lead.job_completed_at){el.textContent="Set Job completed → review-request agent fires SMS+email 3 days later.";return}
+  if(lead.review_requested_at){
+    el.innerHTML='✓ Review request sent '+fmtDate(lead.review_requested_at)+(lead.review_link_clicked?" · <b style=\"color:var(--green)\">customer clicked!</b>":"");
+  } else {
+    var doneAt=new Date(lead.job_completed_at);
+    var fireAt=new Date(doneAt.getTime()+3*86400000);
+    var d=Math.ceil((fireAt-Date.now())/86400000);
+    el.textContent=d>0?("Review request scheduled in "+d+" day(s)."):"Review request should fire on next daily cron tick.";
+  }
 }
 function closePanel(){selectedId=null;document.getElementById("panel").classList.remove("open");document.getElementById("backdrop").classList.remove("show");render()}
 document.getElementById("panel-close").addEventListener("click",closePanel);
@@ -598,7 +656,23 @@ document.getElementById("p-city").addEventListener("input",recalcCommission);
 async function save(){
   if(!selectedId)return;
   var btn=document.getElementById("save");btn.disabled=true;btn.textContent="Saving…";
-  var body={id:selectedId,status:document.getElementById("p-status").value,job_value:document.getElementById("p-jobvalue").value,margin:document.getElementById("p-margin").value,city:document.getElementById("p-city").value,notes:document.getElementById("p-notes").value};
+  var body={
+    id:selectedId,
+    status:document.getElementById("p-status").value,
+    job_value:document.getElementById("p-jobvalue").value,
+    margin:document.getElementById("p-margin").value,
+    city:document.getElementById("p-city").value,
+    notes:document.getElementById("p-notes").value,
+    deposit_received_at:document.getElementById("p-deposit-date").value||null,
+    deposit_amount:document.getElementById("p-deposit-amt").value||null,
+    install_scheduled_for:document.getElementById("p-install-date").value||null,
+    balance_due:document.getElementById("p-balance").value||null,
+    job_started_at:document.getElementById("p-job-started").value||null,
+    job_completed_at:document.getElementById("p-job-completed").value||null,
+    product:document.getElementById("p-product").value||null,
+    contract_url:document.getElementById("p-contract-url").value||null,
+    warranty_doc_url:document.getElementById("p-warranty-url").value||null
+  };
   try{
     var r=await fetch(API+"?action=update&key="+KEY+"&pin="+encodeURIComponent(PIN),{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)});
     if(r.status===403){doLogout();return}
