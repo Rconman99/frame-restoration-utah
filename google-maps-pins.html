@@ -51,7 +51,7 @@ const projects = [
   { lat:40.7608, lng:-111.8910, city:"Salt Lake City", type:"residential", label:"Salt Lake City Residential Reroof (2026)", color:"#3182CE" }
 ];
 
-const hq = { lat:40.5069, lng:-111.4133, label:"Frame Roofing Utah HQ\n142 S Main St, Heber City, UT 84032\n435-302-4422" };
+const hq = { lat:40.5069, lng:-111.4133, label:"Frame Roofing Utah HQ\n142 S Main St, Heber City, UT 84032\n435-292-8802" };
 
 function initMap() {
   const map = new google.maps.Map(document.getElementById("map"), {
@@ -71,7 +71,7 @@ function initMap() {
     title: "Frame Roofing Utah HQ",
     icon: { path: google.maps.SymbolPath.CIRCLE, scale:12, fillColor:"#D69E2E", fillOpacity:1, strokeColor:"#fff", strokeWeight:3 }
   });
-  const hqInfo = new google.maps.InfoWindow({ content:'<div style="font-family:Archivo,sans-serif;"><strong>Frame Roofing Utah HQ</strong><br>142 S Main St, Heber City, UT 84032<br><a href="tel:+14352928802">435-302-4422</a><br><a href="https://www.frameroofingutah.com" target="_blank">frameroofingutah.com</a></div>' });
+  const hqInfo = new google.maps.InfoWindow({ content:'<div style="font-family:Archivo,sans-serif;"><strong>Frame Roofing Utah HQ</strong><br>142 S Main St, Heber City, UT 84032<br><a href="tel:+14352928802">435-292-8802</a><br><a href="https://www.frameroofingutah.com" target="_blank">frameroofingutah.com</a></div>' });
   hqMarker.addListener('click', ()=>hqInfo.open(map, hqMarker));
 
   // Project markers
@@ -83,7 +83,7 @@ function initMap() {
       icon: { path: google.maps.SymbolPath.CIRCLE, scale:9, fillColor:p.color, fillOpacity:1, strokeColor:"#fff", strokeWeight:2 }
     });
     const info = new google.maps.InfoWindow({
-      content: '<div style="font-family:Archivo,sans-serif;"><strong>'+p.label+'</strong><br>'+p.city+', UT<br>Type: '+p.type.charAt(0).toUpperCase()+p.type.slice(1)+'<br><a href="tel:+14352928802">435-302-4422</a></div>'
+      content: '<div style="font-family:Archivo,sans-serif;"><strong>'+p.label+'</strong><br>'+p.city+', UT<br>Type: '+p.type.charAt(0).toUpperCase()+p.type.slice(1)+'<br><a href="tel:+14352928802">435-292-8802</a></div>'
     });
     marker.addListener('click', ()=>info.open(map, marker));
   });

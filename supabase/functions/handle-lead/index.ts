@@ -331,20 +331,20 @@ function customerAutoReply(tier: Tier, firstName: string): string {
     case "emergency":
       return greeting +
         "Thanks for reaching out to Frame Roofing Utah. We saw you're dealing with an emergency — " +
-        "we're calling you within 15 minutes. If you can't wait, call us right now at (435) 302-4422. - Landon, Owner";
+        "we're calling you within 15 minutes. If you can't wait, call us right now at (435) 292-8802. - Landon, Owner";
     case "urgent":
       return greeting +
         "Thanks for reaching out to Frame Roofing Utah! Storm damage is time-sensitive — " +
-        "we'll call you within the hour. Need us sooner? (435) 302-4422. - Landon, Owner";
+        "we'll call you within the hour. Need us sooner? (435) 292-8802. - Landon, Owner";
     case "general":
       return greeting +
         "Thanks for reaching out to Frame Roofing Utah! We'll get back to you within one business day. " +
-        "If it's urgent, call us at (435) 302-4422. - Landon, Owner";
+        "If it's urgent, call us at (435) 292-8802. - Landon, Owner";
     case "scheduled":
     default:
       return greeting +
         "Thanks for reaching out to Frame Roofing Utah! A roofing specialist will call you shortly — usually within minutes. " +
-        "If you need us right away, call (435) 302-4422. - Landon, Owner";
+        "If you need us right away, call (435) 292-8802. - Landon, Owner";
   }
 }
 
@@ -524,7 +524,7 @@ Deno.serve(async (req: Request) => {
   } catch (err) {
     console.error("Handler error:", err);
     return new Response(
-      JSON.stringify({ success: false, message: "Something went wrong. Please call us at 435-302-4422." }),
+      JSON.stringify({ success: false, message: "Something went wrong. Please call us at 435-292-8802." }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 500 },
     );
   }

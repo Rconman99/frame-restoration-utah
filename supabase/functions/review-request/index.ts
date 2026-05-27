@@ -59,7 +59,7 @@ async function sendReviewEmail(to: string, name: string): Promise<boolean> {
         _replyto: "landon@framerestorations.com",
         _subject: "How did we do? — Frame Roofing Utah",
         name: "Frame Roofing Utah",
-        message: `Hi ${firstName},\n\nThank you for choosing Frame Roofing Utah! We hope you're happy with the work.\n\nWould you mind taking 30 seconds to leave us a quick review? It really helps other homeowners find us.\n\n${REVIEW_URL}\n\nThank you!\nLandon Yokers\nFrame Restoration Utah LLC\n(435) 302-4422`,
+        message: `Hi ${firstName},\n\nThank you for choosing Frame Roofing Utah! We hope you're happy with the work.\n\nWould you mind taking 30 seconds to leave us a quick review? It really helps other homeowners find us.\n\n${REVIEW_URL}\n\nThank you!\nLandon Yokers\nFrame Restoration Utah LLC\n(435) 292-8802`,
       }),
     });
     return resp.ok;

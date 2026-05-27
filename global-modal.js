@@ -151,7 +151,7 @@
     bar.classList.add('sticky-dual');
     existingCall.classList.add('sticky-call-side');
     existingCall.innerHTML = '&#9742; Call';
-    existingCall.setAttribute('aria-label', 'Call 435-302-4422');
+    existingCall.setAttribute('aria-label', 'Call 435-292-8802');
 
     var cta = document.createElement('a');
     cta.href = '#';
@@ -216,14 +216,14 @@
         btn.textContent = 'Get My Free Roof Inspection';
         var err = document.createElement('p');
         err.className = 'fr-modal-error';
-        err.textContent = 'Something went wrong. Please try again or call 435-302-4422.';
+        err.textContent = 'Something went wrong. Please try again or call 435-292-8802.';
         btn.insertAdjacentElement('afterend', err);
       }).catch(function() {
         btn.disabled = false;
         btn.textContent = 'Get My Free Roof Inspection';
         var err = document.createElement('p');
         err.className = 'fr-modal-error';
-        err.textContent = 'Network error. Please call 435-302-4422.';
+        err.textContent = 'Network error. Please call 435-292-8802.';
         btn.insertAdjacentElement('afterend', err);
       });
     });
@@ -303,7 +303,7 @@
       '<h3>Before you go &mdash; free inspection</h3>',
       '<p>Wasatch Front roof? Frame Roofing Utah will inspect it free &mdash; no pressure, 15-minute callback during business hours.</p>',
       '<div class="fr-exit-intent-cta-row">',
-      '<a class="fr-exit-intent-call" href="tel:+14353024422" aria-label="Call 435-302-4422">&#9742; Call now</a>',
+      '<a class="fr-exit-intent-call" href="tel:+14352928802" aria-label="Call 435-292-8802">&#9742; Call now</a>',
       '<button class="fr-exit-intent-form" type="button" aria-label="Open free inspection form">Free inspection</button>',
       '</div>'
     ].join('');
