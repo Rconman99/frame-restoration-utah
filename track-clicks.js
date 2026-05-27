@@ -1,5 +1,5 @@
 /*
- * track-clicks.js — Frame Roofing Utah
+ * track-clicks.js — Frame Roofing Utah  (v2 2026-05-27)
  *
  * Auto-instruments every tel: and sms: link on the page. On click:
  *   1. PostHog event ('phone_click' or 'sms_click')
@@ -16,6 +16,15 @@
  *   send_to: 'AW-1234567890/AbCdEfGhIjKlMnO',  // conversion ID/label
  *   value:   25                                  // optional default value
  * } in a <script> before this file, and conversions will fire.
+ *
+ * v2 fix (2026-05-27): previous version sent the beacon as a
+ * `application/json` Blob, which forces a CORS preflight that races the
+ * dialer hand-off. sendBeacon returned `true` but the browser dropped the
+ * payload, so phone_clicks stayed at 0 rows while PostHog captured the
+ * events normally. Switched to a `text/plain` Blob (a CORS "simple"
+ * request — no preflight) and made fetch+keepalive the primary path with
+ * sendBeacon as the fallback. The edge function reads the body with
+ * `req.json()` which ignores the declared Content-Type.
  */
 (function () {
   'use strict';
@@ -66,20 +75,38 @@
   }
 
   function sendBeacon(payload) {
+    // v2: keep this a CORS "simple" request (no preflight).
+    // - Body MUST be a string OR a Blob with type one of:
+    //     application/x-www-form-urlencoded, multipart/form-data, text/plain
+    // - No custom request headers. Content-Type must be text/plain.
+    // The edge function uses req.json() which parses regardless of the
+    // declared Content-Type — we keep the body as JSON so the server side
+    // is unchanged.
+    var json;
+    try { json = JSON.stringify(payload); } catch (e) { return; }
+
+    // Primary: fetch + keepalive. Survives in-tab navigation (tel: handoff
+    // on most desktops + iOS). Works cross-origin without a preflight as
+    // long as we don't set non-simple headers.
     try {
-      var json = JSON.stringify(payload);
-      if (navigator.sendBeacon) {
-        var blob = new Blob([json], { type: 'application/json' });
-        if (navigator.sendBeacon(ENDPOINT, blob)) return;
-      }
-      // Fallback — keepalive fetch so it survives the page nav
       fetch(ENDPOINT, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: json,
+        body: json,                       // raw string body (simple request)
+        headers: { 'Content-Type': 'text/plain;charset=UTF-8' },
         keepalive: true,
-        mode: 'cors'
+        mode: 'cors',
+        credentials: 'omit'
       }).catch(function () { /* fire and forget */ });
+    } catch (e) { /* fall through to sendBeacon */ }
+
+    // Fallback: sendBeacon. Older Safari sometimes kills keepalive fetch
+    // on full page unload; sendBeacon is designed for that case. Use
+    // text/plain Blob so the browser does NOT preflight (the v1 bug).
+    try {
+      if (navigator.sendBeacon) {
+        var blob = new Blob([json], { type: 'text/plain;charset=UTF-8' });
+        navigator.sendBeacon(ENDPOINT, blob);
+      }
     } catch (e) { /* no-op */ }
   }
 
