@@ -66,19 +66,19 @@ jobs:
         run: node scripts/audit-jsonld.mjs
 
   link-integrity:
-    name: Internal link integrity (ADVISORY — see ratchet)
+    name: Internal link integrity (blocking)
     runs-on: ubuntu-latest
-    # ADVISORY until UT's 17 broken internal links are triaged to 0.
-    # Remove continue-on-error and add --strict to make blocking (matches TX).
-    continue-on-error: true
+    # RATCHET CLOSED 2026-06-01: the 17 broken links were triaged to 0 on live
+    # pages (the rest were archive/draft noise; scanner now scopes to served
+    # pages). Now blocking, like TX.
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
-      - name: Report broken internal links (non-blocking)
+      - name: Fail on broken internal links
         # vercel.json redirects/rewrites are resolved, so routed links pass.
-        run: node scripts/audit-links.mjs
+        run: node scripts/audit-links.mjs --strict
 
   city-quality:
     name: Doorway / thin / duplicate-page guard (ADVISORY — see ratchet)
