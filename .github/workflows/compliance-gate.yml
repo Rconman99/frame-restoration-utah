@@ -1,0 +1,95 @@
+name: Compliance Gate
+
+# Enforces the Frame Restoration UT compliance contract on every PR + push to main.
+# Ported from TX v2 2026-05-30 and adapted for Utah law + Utah's current corpus.
+#
+# - compliance-words: BLOCKING — fails on any forbidden-word blocker. Utah basis
+#   is the unlicensed-adjusting statute (Utah Code §31A-26-201) + the deductible-
+#   rebate ban (§13-50-302), NOT Texas §4102.163. Dictionary +
+#   legal provenance: data/route-factory/compliance-words.json +
+#   data/route-factory/UTAH-COMPLIANCE-LAW.md. Passes clean on main as of 2026-05-30
+#   (patterns scoped to first-person offers; existing copy is compliant).
+# - jsonld-validity: BLOCKING — fails if any application/ld+json block doesn't
+#   parse. Excludes archive/ build-intelligence/ dashboard/ (internal eval HTML).
+#   Passes clean on main (0 invalid / 364 blocks).
+# - link-integrity: ADVISORY — UT currently has 17 genuinely-broken internal links
+#   (per-city service subpages that don't exist + a ${item.url} template leak +
+#   missing city pages). RATCHET: once those are triaged to 0, add `--strict` and
+#   remove continue-on-error to make blocking (matches TX).
+# - city-quality: ADVISORY — corpus-level doorway/thin/duplicate guard. Red-blocks
+#   on rating-integrity until the cloned AggregateRating debt is cleared (Phase 2 of
+#   the TX→UT port). RATCHET: remove continue-on-error once 45/45 location pages pass.
+#
+# NOTE: media-provenance (TX media-clearance gate) is intentionally omitted — it
+# requires data/image-registry.json, which is TX-specific. Add it here only if UT
+# adopts the same media-registry clearance workflow.
+
+on:
+  pull_request:
+    paths:
+      - '**/*.html'
+      - 'scripts/audit-compliance-words.mjs'
+      - 'scripts/audit-links.mjs'
+      - 'scripts/audit-jsonld.mjs'
+      - 'scripts/audit-city-quality.mjs'
+      - 'data/route-factory/**'
+      - '.github/workflows/compliance-gate.yml'
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  compliance-words:
+    name: Forbidden-word + saturation audit (blocking)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Run compliance-words validator
+        # exits 1 on any forbidden-word blocker; saturation stays a warning
+        # unless --strict is added later.
+        run: node scripts/audit-compliance-words.mjs
+
+  jsonld-validity:
+    name: JSON-LD structured-data validity (blocking)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Parse all JSON-LD blocks (fails on any invalid block)
+        run: node scripts/audit-jsonld.mjs
+
+  link-integrity:
+    name: Internal link integrity (ADVISORY — see ratchet)
+    runs-on: ubuntu-latest
+    # ADVISORY until UT's 17 broken internal links are triaged to 0.
+    # Remove continue-on-error and add --strict to make blocking (matches TX).
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Report broken internal links (non-blocking)
+        # vercel.json redirects/rewrites are resolved, so routed links pass.
+        run: node scripts/audit-links.mjs
+
+  city-quality:
+    name: Doorway / thin / duplicate-page guard (ADVISORY — see ratchet)
+    runs-on: ubuntu-latest
+    # ADVISORY until the rating-integrity debt is cleared (Phase 2 of TX→UT port).
+    # Remove continue-on-error to make blocking once all location pages pass.
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Corpus-level location-page quality report
+        run: node scripts/audit-city-quality.mjs locations/*.html

@@ -1,0 +1,94 @@
+name: Google Reviews Sync
+
+# Phase 3 of the TX→UT systems port. Runs Utah's EXISTING, proven review scraper
+# (scripts/update-google-reviews.py — SerpAPI Google Maps) in the cloud instead of
+# on a local launchd cron, so review sync no longer depends on a particular Mac
+# being awake. Verifies the result with the ported gates and opens a DRAFT PR for
+# human review — never auto-merges.
+#
+# Cadence mirrors the prior launchd cron: 1st & 15th of each month, ~7:17am Denver
+# (13:17 UTC). Also runnable on demand via workflow_dispatch.
+#
+# Secret required: SERPAPI_KEY (repo Settings → Secrets → Actions). If it's not
+# set, the job logs a notice and exits 0 (no failure) — so merging this workflow
+# is safe before the secret is configured.
+
+on:
+  schedule:
+    - cron: '17 13 1,15 * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  sync-google-reviews:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Sync Google reviews (Utah Python scraper), verify, open draft PR
+        env:
+          SERPAPI_KEY: ${{ secrets.SERPAPI_KEY }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if [ -z "$SERPAPI_KEY" ]; then
+            echo "::notice::SERPAPI_KEY is not configured; skipping Google review sync."
+            exit 0
+          fi
+
+          # Utah scraper exit codes: 0 = files updated, 2 = no change, 1 = error.
+          set +e
+          python3 scripts/update-google-reviews.py
+          code=$?
+          set -e
+          if [ "$code" -eq 2 ]; then
+            echo "No Google review changes detected (live count matches site)."
+            exit 0
+          elif [ "$code" -ne 0 ]; then
+            echo "::error::update-google-reviews.py failed (exit $code)."
+            exit "$code"
+          fi
+
+          # Verify the synced result against the ported gates before proposing it.
+          node scripts/audit-jsonld.mjs
+          node scripts/audit-compliance-words.mjs --quiet
+          node scripts/audit-links.mjs   # advisory
+
+          if git diff --quiet; then
+            echo "Scraper reported a change but no file diff — nothing to commit."
+            exit 0
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          BRANCH="bot/google-reviews-sync"
+          git switch -c "$BRANCH"
+          git add reviews.json index.html pages/about.html data/google-reviews.json data/reviews-full.json
+          git commit -m "chore(reviews): sync Google review state"
+          git push --force-with-lease origin "$BRANCH"
+
+          if gh pr view "$BRANCH" >/dev/null 2>&1; then
+            gh pr edit "$BRANCH" \
+              --title "chore(reviews): sync Google review state" \
+              --body "Automated Google review sync from SerpAPI (Utah scraper). Updates reviews.json + visible/schema review count and rating on the homepage and About page. Draft PR for review; no auto-merge."
+          else
+            gh pr create \
+              --draft \
+              --base main \
+              --head "$BRANCH" \
+              --title "chore(reviews): sync Google review state" \
+              --body "Automated Google review sync from SerpAPI (Utah scraper). Updates reviews.json + visible/schema review count and rating on the homepage and About page. Draft PR for review; no auto-merge."
+          fi

@@ -1,0 +1,119 @@
+{
+  "snapshot_date": "2026-06-01",
+  "period_days": 30,
+  "source": "https://hdcflshhomzildwqlmwh.supabase.co/functions/v1/weekly-report",
+  "data": {
+    "generated_at": "2026-06-01T14:06:53.772Z",
+    "period_days": 30,
+    "user": { "name": "Ryan Conwell", "role": "admin" },
+    "summary": {
+      "total_pageviews": 725,
+      "google_organic": 82,
+      "direct_traffic": 527,
+      "total_leads": 11,
+      "total_calls": 4,
+      "total_call_minutes": 1.3,
+      "total_job_value": 142000,
+      "total_commission": 0,
+      "conversion_rate_pct": 2.1
+    },
+    "traffic_breakdown": { "home": 435, "locations": 57, "services": 79, "blog": 33, "other": 121 },
+    "traffic_sources": {
+      "$direct": 527,
+      "www.google.com": 82,
+      "frame-tx-sandbox-git-v2-gallery-bb541c-ryans-projects-51d84217.vercel.app": 25,
+      "l.facebook.com": 17,
+      "facebook.com": 15,
+      "www.yelp.com": 10,
+      "m.yelp.com": 7,
+      "www.framerestoration.com": 7,
+      "bing.com": 6,
+      "chatgpt.com": 6,
+      "l.instagram.com": 4,
+      "www.bing.com": 3,
+      "search.yahoo.com": 3,
+      "com.enflick.android.tn2ndline": 3,
+      "frame-tx-sandbox.vercel.app": 2,
+      "instagram.com": 2,
+      "vercel.com": 2,
+      "frame-tx-sandbox-git-v2-remove-u-427c56-ryans-projects-51d84217.vercel.app": 1,
+      "www.frameroofingutah.com": 1,
+      "blue.bbb.org": 1
+    },
+    "lead_actions": { "form_submitted": 9, "phone_click": 14, "inbound_call": 10, "email_click": 1, "inbound_sms": 9 },
+    "top_pages": [
+      { "path": "/", "views": 435 },
+      { "path": "/about", "views": 86 },
+      { "path": "/pages/about", "views": 38 },
+      { "path": "/pages/gallery", "views": 28 },
+      { "path": "/blog", "views": 18 },
+      { "path": "/assets/videos/aerial-2026/aerial-2026-04-mid-install-underlayment.$ext", "views": 12 },
+      { "path": "/locations/$slug", "views": 11 },
+      { "path": "/locations/holladay", "views": 8 },
+      { "path": "/locations/cottonwood-heights", "views": 8 },
+      { "path": "/thank-you", "views": 7 },
+      { "path": "/projects/heber-valley-roof", "views": 4 },
+      { "path": "/blog/utah/utah-hail-season-roof-guide-2026", "views": 4 },
+      { "path": "/locations/wylie", "views": 4 },
+      { "path": "/locations/park-city", "views": 4 },
+      { "path": "/locations/frisco", "views": 4 },
+      { "path": "/pages/solar-installation", "views": 3 },
+      { "path": "/projects", "views": 3 },
+      { "path": "/blog/utah/april-2026-wasatch-storm-roof-checklist", "views": 2 },
+      { "path": "/pages/commercial-roofing", "views": 2 },
+      { "path": "/pages/storm-damage", "views": 2 }
+    ],
+    "location_performance": [
+      { "location": "cottonwood-heights", "views": 8 },
+      { "location": "holladay", "views": 8 },
+      { "location": "park-city", "views": 4 },
+      { "location": "heber-city", "views": 2 },
+      { "location": "lehi", "views": 2 },
+      { "location": "layton", "views": 1 },
+      { "location": "midway", "views": 1 },
+      { "location": "millcreek", "views": 1 },
+      { "location": "murray", "views": 1 },
+      { "location": "riverton", "views": 1 }
+    ],
+    "location_gaps": [
+      "alpine", "american-fork", "bluffdale", "bountiful", "brigham-city", "cedar-city", "centerville",
+      "clinton", "draper", "eagle-mountain", "farmington", "fruit-heights", "herriman", "highland",
+      "kaysville", "kearns", "lindon", "logan", "magna", "mapleton", "midvale", "north-ogden",
+      "north-salt-lake", "ogden", "orem", "payson", "pleasant-grove", "provo", "roy", "salem",
+      "salt-lake-city", "sandy", "santaquin", "saratoga-springs", "south-jordan", "south-ogden",
+      "spanish-fork", "springville", "st-george", "summit-park", "syracuse", "taylorsville", "tooele",
+      "vineyard", "wasatch-county", "west-bountiful", "west-jordan", "west-valley-city", "woods-cross"
+    ],
+    "gap_summary": { "total_locations": 59, "locations_with_traffic": 10, "locations_no_traffic": 49, "coverage_pct": 17 },
+    "leads": [
+      { "id": 67, "name": "Inbound caller — 2947", "phone": "+13465102947", "service": null, "source_page": "inbound-call", "status": "new", "job_value": null, "commission": 0, "created_at": "2026-05-29T22:52:18.741072+00:00" },
+      { "id": 66, "name": "Inbound caller — 4780", "phone": "+18018954780", "service": null, "source_page": "inbound-call", "status": "new", "job_value": null, "commission": 0, "created_at": "2026-05-29T16:37:28.452212+00:00" },
+      { "id": 65, "name": "Riley Marsh", "phone": "4356404207", "service": "Not specified", "source_page": "/", "status": "new", "job_value": null, "commission": 0, "created_at": "2026-05-28T13:25:51.471711+00:00" },
+      { "id": 64, "name": "Riley Marsh", "phone": "4356404207", "service": "Not specified", "source_page": "/", "status": "new", "job_value": null, "commission": 0, "created_at": "2026-05-28T13:25:51.391418+00:00" },
+      { "id": 63, "name": "Inbound caller — 1967", "phone": "+13852071967", "service": null, "source_page": "inbound-call", "status": "new", "job_value": null, "commission": 0, "created_at": "2026-05-27T19:22:20.228038+00:00" },
+      { "id": 62, "name": "Inbound caller — 2551", "phone": "+15512912551", "service": null, "source_page": "inbound-call", "status": "new", "job_value": null, "commission": 0, "created_at": "2026-05-27T17:34:12.594796+00:00" },
+      { "id": 61, "name": "Inbound SMS — 7749", "phone": "+19207777749", "service": null, "source_page": "inbound-sms", "status": "new", "job_value": null, "commission": 0, "created_at": "2026-05-27T17:31:24.007694+00:00" },
+      { "id": 48, "name": "Dan Richardson", "phone": "530-864-2148", "service": "Not specified", "source_page": "/", "status": "new", "job_value": null, "commission": 0, "created_at": "2026-05-12T14:10:23.105982+00:00" },
+      { "id": 46, "name": "Greg Atkinson", "phone": "2134942372", "service": "Roof replacement", "source_page": "offline-signed-contract", "status": "won", "job_value": 118000, "commission": 0, "created_at": "2026-05-12T01:45:23.152981+00:00" },
+      { "id": 44, "name": "George  warner", "phone": "17079050055", "service": "Not specified", "source_page": "/", "status": "new", "job_value": null, "commission": 0, "created_at": "2026-05-11T14:18:41.997198+00:00" },
+      { "id": 39, "name": "Jan Hermansen ", "phone": "4356713598", "service": "Not specified", "source_page": "/", "status": "won", "job_value": 24000, "commission": 0, "created_at": "2026-05-09T17:21:23.261979+00:00" }
+    ],
+    "calls": [
+      { "id": 25, "from_number": "+13465102947", "duration_seconds": 18, "status": "completed", "city": "Houston, TX", "source_page": "website-tracking-number", "created_at": "2026-05-29T22:52:18.87056+00:00" },
+      { "id": 23, "from_number": "+18018954780", "duration_seconds": 8, "status": "completed", "city": "SALT LAKE CITY, UT", "source_page": "website-tracking-number", "created_at": "2026-05-29T16:37:28.753136+00:00" },
+      { "id": 21, "from_number": "+13852071967", "duration_seconds": 50, "status": "completed", "city": "SALT LAKE CITY, UT", "source_page": "website-tracking-number", "created_at": "2026-05-27T19:22:20.595187+00:00" },
+      { "id": 19, "from_number": "+15512912551", "duration_seconds": 3, "status": "completed", "city": "unknown", "source_page": "website-tracking-number", "created_at": "2026-05-27T17:34:13.023465+00:00" }
+    ]
+  },
+  "filters_applied": {
+    "test_leads_removed": 0,
+    "landon_test_calls_removed": 0
+  },
+  "notes": [
+    "$142K revenue tracked from 2 won contracts: Greg Atkinson roof replacement ($118K) + Jan Hermansen ($24K).",
+    "Direct traffic dominates at 527 of 725 pageviews (73%); Google organic only 82 (11%) — organic still the growth gap.",
+    "Location coverage low at 17% (10/59 pages with traffic). Cottonwood Heights & Holladay lead, tied at 8 views each — both high-revenue target ZIPs.",
+    "4 inbound calls this period, all via the website tracking number; 9 form submissions, 9 inbound SMS.",
+    "No test leads (TEST in name) and no Landon test calls (+14353024422) present this period — 0 filtered."
+  ]
+}
