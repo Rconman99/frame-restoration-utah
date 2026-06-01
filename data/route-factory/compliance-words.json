@@ -1,0 +1,92 @@
+{
+  "schemaVersion": 1,
+  "updatedAt": "2026-05-30",
+  "market": "UT",
+  "purpose": "Site-wide compliance + AEO-concentration enforcement for Frame Restoration UT. Validator: scripts/audit-compliance-words.mjs. Legal basis: data/route-factory/UTAH-COMPLIANCE-LAW.md. Triggered pre-PR + CI on .html changes.",
+  "lineage": {
+    "rule": "Ported from TX v2 compliance gate 2026-05-30; dictionary re-authored for Utah law (TX §4102.163 / TDI do NOT apply in Utah).",
+    "adjustingBasis": "Utah Code §31A-26-102(6) + §31A-26-201(1) — claim negotiation/settlement is a licensed act; an unlicensed roofer may not negotiate/settle/adjust claims.",
+    "deductibleBasis": "Utah Code §13-50-302/-303 (Insured Homeowners Protection Act) — a residential contractor may not rebate/waive/pay an insurance deductible as an inducement; the homeowner is personally responsible for it.",
+    "licensingBasis": "Utah Code Title 58 Ch. 55 (Construction Trades Licensing Act); DOPL classification S280 Roofing Contractor."
+  },
+  "scanRoots": [
+    "blog/",
+    "pages/",
+    "locations/",
+    "services/",
+    "projects/",
+    "in-the-news/",
+    "index.html",
+    "about.html"
+  ],
+  "ignoreGlobs": [
+    "data/",
+    "scripts/",
+    "archive/",
+    "build-intelligence/",
+    "dashboard/",
+    "node_modules/",
+    ".git/",
+    ".vercel/",
+    ".claude/",
+    "src/",
+    "docs/"
+  ],
+  "forbiddenWords": {
+    "claimNegotiation": {
+      "patterns": ["negotiate your claim", "negotiate the claim", "negotiate your insurance", "negotiate with your insurance", "negotiate with the insurance", "negotiate your settlement", "negotiate the settlement", "negotiating your claim", "negotiate your roof claim", "negotiate the insurance claim"],
+      "maxPerFile": 0,
+      "severity": "blocker",
+      "reason": "In Utah, negotiating/settling a claim is licensed insurance adjusting (§31A-26-102(6), -201). A roofer may not advertise negotiating claims. Scoped to CLAIM negotiation only — ordinary 'price negotiation' / 'supplement negotiations' copy is allowed. Safe: 'document the damage', 'meet your adjuster on-site', 'provide a detailed scope'.",
+      "exemptFiles": []
+    },
+    "publicAdjuster": {
+      "patterns": ["we are your public adjuster", "we're your public adjuster", "act as your public adjuster", "as a public adjuster", "frame is a public adjuster", "we are public adjusters", "our public adjusters", "we provide public adjusting"],
+      "maxPerFile": 0,
+      "severity": "blocker",
+      "reason": "Public adjusting is a reserved licensed role (§31A-26-102(9)). Frame is a roofing contractor, not an adjuster. Scoped to FIRST-PERSON claims of being/offering a public adjuster — educational mentions ('beware public adjusters who...') are allowed.",
+      "exemptFiles": []
+    },
+    "deductibleRebate": {
+      "patterns": ["we waive your deductible", "we'll waive your deductible", "we will waive your deductible", "waive your deductible for you", "we cover your deductible", "we'll cover your deductible", "we will cover your deductible", "we pay your deductible", "we'll pay your deductible", "we will pay your deductible", "we eat your deductible", "we eat the deductible", "we absorb your deductible", "we absorb the deductible", "your deductible is on us", "your deductible is free", "no deductible required", "deductible-free roof", "free roof replacement", "free new roof", "we'll cover it with a discount", "cover your deductible with a discount", "pay nothing out of pocket", "$0 out of pocket", "zero out of pocket", "nothing out of pocket"],
+      "maxPerFile": 0,
+      "severity": "blocker",
+      "reason": "Utah §13-50-302 bars a residential contractor from rebating/waiving/paying an insurance deductible (or implying $0 out-of-pocket) as an inducement; §13-50-303 requires stating the homeowner is responsible for it. Scoped to FIRST-PERSON OFFERS — 'you pay your deductible' (compliant), 'free roof inspection', and storm-chaser WARNINGS ('they offer to waive your deductible') are all allowed. 'Frame does not waive deductibles' disclaimers are fine.",
+      "exemptFiles": []
+    },
+    "claimHandling": {
+      "patterns": ["we handle your claim", "we'll handle your claim", "we will handle your claim", "we file your claim", "we'll file your claim", "we adjust your claim", "we settle your claim", "we'll settle your claim", "handle the claim for you", "file the claim for you", "we manage your insurance claim", "let us handle your claim"],
+      "maxPerFile": 0,
+      "severity": "blocker",
+      "reason": "First-person claim handling describes licensed insurance adjusting (§31A-26-201). Scoped to FIRST-PERSON — third-person ('your insurer will settle your claim', 'your adjuster handles the claim') is allowed. Safe: 'we document your storm/hail damage', 'we meet your adjuster on-site', 'we supply a line-item estimate'.",
+      "exemptFiles": []
+    }
+  },
+  "approvedAlternatives": {
+    "negotiate": ["document the damage", "meet your adjuster on-site", "provide a detailed scope/estimate"],
+    "adjustYourClaim": ["document your storm/hail damage", "walk the roof with your adjuster", "supply a line-item estimate"],
+    "deductibleRebate": ["the homeowner is responsible for the deductible", "we handle the roofing work, you handle your deductible"]
+  },
+  "saturationThresholds": {
+    "insurance claim": {
+      "maxPerFile": 5,
+      "maxSiteWide": 80,
+      "severity": "warn",
+      "reason": "AEO concentration-over-repetition: concentrate jargon on the cornerstone (services/insurance-claims), distribute signal via FAQPage schema, not prose repetition.",
+      "exemptFiles": [
+        "services/insurance-claims/index.html",
+        "services/insurance-claims.html"
+      ]
+    },
+    "deductible": {
+      "maxPerFile": 4,
+      "maxSiteWide": 40,
+      "severity": "warn",
+      "reason": "Deductible language is legitimate (the law requires stating homeowner responsibility) but should not saturate — concentrate on the cornerstone insurance-claims page + FAQ.",
+      "exemptFiles": [
+        "services/insurance-claims/index.html",
+        "services/insurance-claims.html"
+      ]
+    }
+  }
+}

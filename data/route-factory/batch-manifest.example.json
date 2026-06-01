@@ -1,0 +1,50 @@
+{
+  "batchName": "blog-tier-a-example",
+  "mode": "integration",
+  "trustTier": "red-copy",
+  "description": "Example manifest for a 3-page blog guide batch plus coordinator-owned hub/sitemap integration.",
+  "allowDollarAmounts": false,
+  "newRoutes": [
+    {
+      "path": "/blog/example-guide-one-2026/",
+      "file": "blog/example-guide-one-2026/index.html",
+      "canonical": "https://www.framerestoration.com/blog/example-guide-one-2026/",
+      "expectedJsonLdTypes": ["BreadcrumbList", "BlogPosting", "FAQPage"],
+      "insuranceRelevant": false,
+      "sitemap": true
+    },
+    {
+      "path": "/blog/example-guide-two-2026/",
+      "file": "blog/example-guide-two-2026/index.html",
+      "canonical": "https://www.framerestoration.com/blog/example-guide-two-2026/",
+      "expectedJsonLdTypes": ["BreadcrumbList", "BlogPosting", "FAQPage"],
+      "insuranceRelevant": false,
+      "sitemap": true
+    },
+    {
+      "path": "/blog/example-guide-three-2026/",
+      "file": "blog/example-guide-three-2026/index.html",
+      "canonical": "https://www.framerestoration.com/blog/example-guide-three-2026/",
+      "expectedJsonLdTypes": ["BreadcrumbList", "BlogPosting", "FAQPage"],
+      "insuranceRelevant": false,
+      "sitemap": true
+    }
+  ],
+  "sharedFiles": [
+    "blog/index.html",
+    "sitemap.xml"
+  ],
+  "extraFiles": [],
+  "requiredPhrases": [],
+  "compliancePolicy": {
+    "validator": "scripts/audit-compliance-words.mjs",
+    "rule": "Zero tolerance site-wide for the forbidden word families listed in data/route-factory/compliance-words.json (forbiddenWords). Run scripts/audit-compliance-words.mjs per route; 0 blockers required before merge (TX Insurance Code §4102.163 / Devin Herpin compliance fence).",
+    "insuranceLanguage": "Topic-conditional. Only routes with insuranceRelevant:true may reference the claims process, and should soft-link to /services/insurance-claims/ rather than repeat compliance jargon (AEO concentration-over-repetition). Mechanical/maintenance routes (ventilation, decking, gutters, etc.) get NO compliance block.",
+    "approvedAlternatives": "data/route-factory/compliance-words.json -> approvedAlternatives"
+  },
+  "notes": [
+    "Workers should remove or replace example routes before using this manifest.",
+    "Coordinator owns sharedFiles. Worker-only batches should leave sharedFiles empty.",
+    "Set insuranceRelevant:true only on claim-context routes (default false). Do NOT reintroduce old claim-handling compliance-boilerplate requiredPhrases — that pattern caused the 2026-05-24 forbidden-word + saturation incident."
+  ]
+}
