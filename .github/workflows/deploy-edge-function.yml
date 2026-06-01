@@ -1,0 +1,51 @@
+name: Deploy UT Supabase Edge Function
+
+# Phase 4 of the TX→UT systems port. Manual-only. Deploys ONE edge function to the
+# Utah Supabase project (hdcflshhomzildwqlmwh) using the SUPABASE_ACCESS_TOKEN repo
+# secret, so deploys don't depend on a local CLI / MCP login being available.
+# workflow_dispatch only — never runs on push.
+#
+# Secret required: SUPABASE_ACCESS_TOKEN (repo Settings → Secrets → Actions).
+on:
+  workflow_dispatch:
+    inputs:
+      function:
+        description: "Edge function to deploy"
+        required: true
+        default: track-click
+        # Allowlist (not free-form) — constrains the value injected into the deploy
+        # shell to known UT functions, closing the shell-injection vector on a
+        # token-carrying workflow.
+        type: choice
+        options:
+          - track-click
+          - handle-lead
+          - lead-crm
+          - review-request
+          - handle-call
+          - handle-sms
+          - send-message
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: supabase/setup-cli@v1
+        with:
+          version: latest
+      - name: Verify function source exists
+        run: |
+          test -f "supabase/functions/${{ inputs.function }}/index.ts" \
+            || { echo "::error::supabase/functions/${{ inputs.function }}/index.ts not found"; exit 1; }
+      - name: Deploy ${{ inputs.function }} to UT project
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+        run: |
+          supabase functions deploy "${{ inputs.function }}" \
+            --project-ref hdcflshhomzildwqlmwh \
+            --no-verify-jwt --use-api

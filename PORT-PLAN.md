@@ -37,9 +37,14 @@ call/SMS edge functions and AEO measurement; those must not be overwritten.
       kept UT's logic (no regression), gained cloud scheduling + gate-verify + draft-PR safety.
       ⚠️ **User action:** add repo secret `SERPAPI_KEY` (Settings → Secrets → Actions) to activate;
       workflow skips gracefully until then.
-- [ ] **P4 — Lead-pipeline hardening.** Port `verify-pin` + `_shared` into UT supabase functions
-      (without touching call/SMS/send-message); add `deploy-edge-function.yml` for UT ref; port
-      `track-analytics.js`.
+- [x] **P4 — Edge-function CI deploy.** ✅ `deploy-edge-function.yml` (manual-dispatch, ref
+      `hdcflshhomzildwqlmwh`, allowlist = UT's 7 functions, same shell-injection hardening as TX).
+      ⚠️ **User action:** add repo secret `SUPABASE_ACCESS_TOKEN`. **SCOPE REDUCED after review:**
+      `verify-pin` + `_shared` deliberately SKIPPED — verify-pin gates a TX `report_access` table UT
+      doesn't have, UT has no PIN flow, and `_shared` would inject an unused parallel utility layer
+      (UT functions are standalone). `track-analytics.js` SKIPPED — it's a 404 shim and UT references
+      `/track-analytics.js` nowhere. Porting any = TX-specific dead code, not "better work."
+      _Note: `supabase/functions/send-message/` is untracked on disk — commit before CI-deploying it._
 - [ ] **P5 — Insurance-claims cornerstone.** Build UT `services/insurance-claims/` modeled on TX,
       rewritten for Utah law (no §4102; Utah hail/wind + DOPL framing). Through the gate before merge.
 - [ ] **P6 — Verify & ship.** Live smoke-test on UT sandbox; merge each PR via frame-business-loop.
