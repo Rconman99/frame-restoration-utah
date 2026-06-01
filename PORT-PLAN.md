@@ -32,8 +32,11 @@ call/SMS edge functions and AEO measurement; those must not be overwritten.
 - [x] **P2 — Schema/rating integrity.** ✅ Stripped cloned `5/20` AggregateRating from all 45 location
       pages (`fix-location-aggregate-rating.mjs --apply`); home/org keeps the one canonical rating.
       jsonld still green. Rating-integrity red-block cleared.
-- [ ] **P3 — Reviews automation.** Port `update-google-reviews.mjs` + `google-reviews-sync.yml`,
-      repoint to UT GBP place-ID + reviews.json.
+- [x] **P3 — Reviews automation.** ✅ `google-reviews-sync.yml` runs UT's EXISTING proven scraper
+      (`scripts/update-google-reviews.py`, SerpAPI) in the cloud instead of a local launchd cron —
+      kept UT's logic (no regression), gained cloud scheduling + gate-verify + draft-PR safety.
+      ⚠️ **User action:** add repo secret `SERPAPI_KEY` (Settings → Secrets → Actions) to activate;
+      workflow skips gracefully until then.
 - [ ] **P4 — Lead-pipeline hardening.** Port `verify-pin` + `_shared` into UT supabase functions
       (without touching call/SMS/send-message); add `deploy-edge-function.yml` for UT ref; port
       `track-analytics.js`.
