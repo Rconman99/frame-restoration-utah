@@ -51,11 +51,18 @@ const fileSet = new Set([...SCAN_DIRS.flatMap((d) => walk(d)), ...ROOT_PAGES.fil
 // ---- per-page extractors ----
 const text = (h) => h.replace(/<!--[\s\S]*?-->/g, ' ').replace(/<(script|style)\b[\s\S]*?<\/\1>/gi, ' ').replace(/<[^>]+>/g, ' ').replace(/&[a-z#0-9]+;/gi, ' ').replace(/\s+/g, ' ').trim();
 const tag = (h, re) => { const m = h.match(re); return m ? m[1].trim() : null; };
+// delimiter-aware attribute extraction — a double-quoted value can contain
+// apostrophes (e.g. "...isn't just..."), so match the opening quote and read to
+// the same quote, not to any quote char.
+const attr = (h, re) => { const m = h.match(re); return m ? m[2].trim() : null; };
+
+// rendered length: SERPs show &amp;→& etc. as one glyph, so measure decoded length
+const ent = (s) => (s || '').replace(/&amp;/g, '&').replace(/&(mdash|ndash);/g, '—').replace(/&#39;|&apos;|&rsquo;|&lsquo;/g, "'").replace(/&quot;|&ldquo;|&rdquo;/g, '"').replace(/&[a-z]+;/gi, ' ');
 
 function analyze(file) {
   const h = fs.readFileSync(path.join(repoRoot, file), 'utf8');
   const title = tag(h, /<title>([^<]*)<\/title>/i);
-  const meta = tag(h, /<meta[^>]+name=["']description["'][^>]+content=["']([^"']*)["']/i);
+  const meta = attr(h, /<meta[^>]+name=["']description["'][^>]+content=(["'])([\s\S]*?)\1/i);
   const canonical = /rel=["']canonical["']/i.test(h);
   const ogImage = /property=["']og:image["']/i.test(h);
   const h1s = (h.match(/<h1\b/gi) || []).length;
@@ -64,7 +71,7 @@ function analyze(file) {
   const imgsNoAlt = imgs.filter((t) => !/\balt=/i.test(t)).length;
   const ldTypes = [...h.matchAll(/"@type"\s*:\s*"([^"]+)"/g)].map((m) => m[1]);
   const hasFAQ = ldTypes.includes('FAQPage');
-  return { file, title, titleLen: title?.length ?? 0, meta, metaLen: meta?.length ?? 0,
+  return { file, title, titleLen: ent(title).length, meta, metaLen: ent(meta).length,
     canonical, ogImage, h1s, words, imgs: imgs.length, imgsNoAlt,
     ldTypes: [...new Set(ldTypes)], hasFAQ };
 }

@@ -49,3 +49,23 @@ Per Google's May-2026 guidance, the audit does **not** flag missing `llms.txt`, 
 3. Orphans + dup metas + og:image (#5–7).
 4. Thin pages (#2 services, #8 locations) — content work.
 5. agentic-browsing tree + console errors (#9) — investigate.
+
+---
+
+## ✅ Fixes applied (2026-06-01, branch `fix/site-audit-2026-06-01`)
+
+**Analyzer correction:** the initial run reported "15 broken metas + 3 duplicate meta groups" — those were a bug in `audit-full-site.mjs` (its regex truncated meta values at internal apostrophes). Fixed the extractor (delimiter-aware + entity-decoded rendered length). **Truth: 0 broken metas, 0 duplicate metas** — the only meta issue was 47 over-length.
+
+**Resolved:**
+- 🔴 **17 broken links → 0.** Scoped `audit-links` to served pages (archive/draft noise excluded); fixed real ones: heber-city + sandy blog path bugs (13 links), removed dead `fruit-heights`/`spanish-fork` links. **link-integrity gate flipped to `--strict` blocking.**
+- 🟡 **49 over-length titles → 0.** Removed ZIP/year/filler bloat (script) + hand-rewrote 39 to ≤60 rendered chars, keeping city + primary keyword.
+- 🟡 **47 over-length metas → 0.** Trimmed to ≤160 at clean boundaries.
+- 🟡 **5 missing og:image → 0.** Added relevant existing images (+ twitter:image).
+- 🟡 **1 sitemap orphan resolved** (salt-lake-valley blog added). `storm-damage-restoration` already canonicals to `/pages/storm-damage` (correctly de-duped).
+
+**Still open (content / owner decision — not mechanical):**
+- 3 thin service pages (`general-contracting` 325w, `solar-installation` 449w, `water-fire-flood-restoration` 492w) — expand to ≥600w.
+- 32 location pages < 500 *unique* words — add local detail.
+- `pages/about.html` self-canonicals and may duplicate `/about` — owner: keep (add to sitemap) or canonical to `/about`?
+- Lighthouse: `label-content-name-mismatch` (a11y), console errors (likely PostHog), agentic-browsing 67 (`agent-accessibility-tree`) — investigate.
+- `fruit-heights` + `spanish-fork` are served areas without location pages — candidates for new pages.
