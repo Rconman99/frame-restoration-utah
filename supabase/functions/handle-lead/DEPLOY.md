@@ -161,7 +161,7 @@ The DB columns added by the migration are non-destructive — old rows have `tie
 - Form HTML / JS — no changes needed
 - Form endpoint URL — same
 - Existing leads — none of them get reclassified retroactively (would need a backfill script if desired)
-- Twilio 10DLC — still pending; Verizon gateway still primary
+- Twilio — LIVE as of 2026-06-01 (10DLC approved; all four `TWILIO_*` creds set in `app_config`). Owner SMS + customer speed-to-lead auto-text both fire through Twilio. Verizon vtext gateway remains as a redundant owner-alert path, no longer the sole channel.
 - Formspree configuration — still in use for email + Verizon SMS path
 
 ---
