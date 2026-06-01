@@ -25,11 +25,13 @@ call/SMS edge functions and AEO measurement; those must not be overwritten.
 
 ## Phases (each ships as its own PR through the new gate)
 
-- [ ] **P0 — Baseline & branch.** ✅ branch created. Confirm UT Supabase ref + GBP place-ID.
-- [ ] **P1 — Quality-gate tooling.** Port 8 `scripts/*.mjs` + `compliance-gate.yml`; re-author
-      `data/route-factory/compliance-words.json` for Utah law; land advisory-first (no day-1 red-block).
-- [ ] **P2 — Schema/rating integrity.** Strip business-wide AggregateRating cloned across 45 UT
-      location pages; keep only on canonical home/org entity. JSON-LD gate enforces.
+- [x] **P0 — Baseline & branch.** Branch `feat/tx-systems-port` created. UT Vercel project confirmed.
+- [x] **P1 — Quality-gate tooling.** ✅ PR #59. 6 audit scripts + `compliance-gate.yml`; Utah
+      `compliance-words.json` authored from primary-sourced Utah law (§31A-26-201, §13-50-302).
+      compliance-words + jsonld BLOCKING (pass clean); links + city-quality advisory.
+- [x] **P2 — Schema/rating integrity.** ✅ Stripped cloned `5/20` AggregateRating from all 45 location
+      pages (`fix-location-aggregate-rating.mjs --apply`); home/org keeps the one canonical rating.
+      jsonld still green. Rating-integrity red-block cleared.
 - [ ] **P3 — Reviews automation.** Port `update-google-reviews.mjs` + `google-reviews-sync.yml`,
       repoint to UT GBP place-ID + reviews.json.
 - [ ] **P4 — Lead-pipeline hardening.** Port `verify-pin` + `_shared` into UT supabase functions
@@ -38,6 +40,16 @@ call/SMS edge functions and AEO measurement; those must not be overwritten.
 - [ ] **P5 — Insurance-claims cornerstone.** Build UT `services/insurance-claims/` modeled on TX,
       rewritten for Utah law (no §4102; Utah hail/wind + DOPL framing). Through the gate before merge.
 - [ ] **P6 — Verify & ship.** Live smoke-test on UT sandbox; merge each PR via frame-business-loop.
+
+## Backlog (surfaced by the gates — not part of the systems port)
+
+- **Depth:** 32 location pages sit at 474–499 unique words (just under the 500 floor). Differentiation
+  + local-substance PASS — these are not doorway pages, just marginally thin. ~1–25 words each to clear.
+- **Broken links (17):** per-city service subpages (`/locations/<city>/residential-roofing` etc.) that
+  don't exist in UT, missing city pages (`fruit-heights`, `spanish-fork`), a `${item.url}` template
+  leak, and a `...` ellipsis. Fix → then flip link-integrity to `--strict` blocking.
+- **Saturation:** "insurance claim" / "roof replacement" exceed concentration caps corpus-wide
+  (advisory) — redistribute via FAQ schema per the AEO concentration rule.
 
 ## Sequencing rationale
 
