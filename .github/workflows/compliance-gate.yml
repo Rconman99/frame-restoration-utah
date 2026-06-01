@@ -32,7 +32,10 @@ on:
       - 'scripts/audit-links.mjs'
       - 'scripts/audit-jsonld.mjs'
       - 'scripts/audit-city-quality.mjs'
+      - 'scripts/audit-cta-integrity.mjs'
       - 'data/route-factory/**'
+      - '.vercelignore'
+      - 'sitemap.xml'
       - '.github/workflows/compliance-gate.yml'
   push:
     branches: [main]
@@ -79,6 +82,22 @@ jobs:
       - name: Fail on broken internal links
         # vercel.json redirects/rewrites are resolved, so routed links pass.
         run: node scripts/audit-links.mjs --strict
+
+  cta-integrity:
+    name: CTA & external-link integrity (blocking)
+    runs-on: ubuntu-latest
+    # BLOCKING. Asserts every customer-facing page matches the canonical identity
+    # in data/route-factory/business.json: no internal-only phone leak, no wrong/
+    # dead Google listing cid/data_id, no placeholder links, no generic-search
+    # review CTAs. Added 2026-06-01 after a review CTA shipped pointing at a dead
+    # Google listing (cid 16833…) — this gate makes that class un-mergeable.
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Fail on CTA / external-link integrity violations
+        run: node scripts/audit-cta-integrity.mjs --strict
 
   city-quality:
     name: Doorway / thin / duplicate-page guard (ADVISORY — see ratchet)
