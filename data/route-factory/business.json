@@ -1,0 +1,26 @@
+{
+  "_comment": "Single source of truth for Frame Roofing Utah's external identity. The audit-cta-integrity gate asserts that every customer-facing surface matches THESE values. Change identity here, not scattered across HTML. See scripts/audit-cta-integrity.mjs.",
+  "brand": "Frame Roofing Utah",
+  "legal_entity": "Frame Restoration LLC",
+  "canonical_host": "www.frameroofingutah.com",
+
+  "gbp": {
+    "_comment": "Canonical Google Business Profile. cid + data_id verified 2026-06-01 against live Google Maps (h1 'Frame Restoration Utah', Heber City 40.5058,-111.4143). This is the 5-star profile the site scrapes via scripts/update-google-reviews.py.",
+    "cid": "8458659884566588108",
+    "data_id": "0x874df59069be3e09:0x756332595f702acc",
+    "maps_listing_url": "https://www.google.com/maps?cid=8458659884566588108"
+  },
+
+  "review_landing_path": "/review.html",
+  "review_form_link": "",
+  "_review_form_link_note": "Official GBP 'Ask for reviews' short link (g.page/r/.../review). EMPTY until Landon (listing owner) provides it; review.html falls back to the cid maps link meanwhile. When filled, must be a g.page/r/ or search.google.com/local/writereview link.",
+
+  "public_phone_display": "435-292-8802",
+  "public_phone_e164": "+14352928802",
+
+  "internal_phones_never_publish": ["435-302-4422"],
+  "_internal_phone_note": "LANDON_PHONE — call-forward target behind the tracking number. MUST appear in zero published HTML. The gate blocks any published page that contains it in any format (tel:, dashed, dotted, parenthesized, +1).",
+
+  "known_wrong_listing_cids": ["16833700945972353711"],
+  "_known_wrong_listing_note": "cid 16833... resolved to an empty Salt Lake-valley coordinate (no business) — the dead listing review.html mistakenly pointed at. Listed so the gate hard-blocks it ever reappearing in a published page."
+}
