@@ -45,8 +45,18 @@ call/SMS edge functions and AEO measurement; those must not be overwritten.
       (UT functions are standalone). `track-analytics.js` SKIPPED — it's a 404 shim and UT references
       `/track-analytics.js` nowhere. Porting any = TX-specific dead code, not "better work."
       _Note: `supabase/functions/send-message/` is untracked on disk — commit before CI-deploying it._
-- [ ] **P5 — Insurance-claims cornerstone.** Build UT `services/insurance-claims/` modeled on TX,
-      rewritten for Utah law (no §4102; Utah hail/wind + DOPL framing). Through the gate before merge.
+- [x] **P5 — Insurance-claims cornerstone + site-wide compliance remediation.** ✅ Scope changed
+      after discovery: UT already has `pages/insurance-claims.html` (a new `services/` page would have
+      DUPLICATED it). Instead **upgraded the existing page in place** with the §31A-26-201 "document,
+      don't adjust" boundary, the §13-50-302 deductible rule, a DOPL S280 compliance blockquote, and
+      compliant FAQ. **Bigger win:** strengthening the dictionary surfaced **adjusting-language
+      exposures across ~60 live files** (homepage, 45 location pages' templated "fight for your full
+      payout / full insurance claim navigation", service pages' "we handle the insurance / manage the
+      entire claim / maximize your payout"). All rewritten to compliant documentation framing
+      ("we document the damage, meet your adjuster on-site, the claim stays between you and your
+      insurer"). Both blocking gates green; case-insensitive sweep confirms zero forbidden phrases
+      remain. ⚠️ Net-new legal marketing copy on a LIVE site — **owner/legal review recommended
+      before merge.**
 - [ ] **P6 — Verify & ship.** Live smoke-test on UT sandbox; merge each PR via frame-business-loop.
 
 ## Backlog (surfaced by the gates — not part of the systems port)

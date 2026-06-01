@@ -1,0 +1,115 @@
+{
+  "snapshot_date": "2026-05-24",
+  "period_days": 30,
+  "source": "https://hdcflshhomzildwqlmwh.supabase.co/functions/v1/weekly-report",
+  "note": "seo-report.html renders live — this file is the historical record for week ending 2026-05-24.",
+  "data": {
+    "generated_at": "2026-05-24T18:36:48.682Z",
+    "period_days": 30,
+    "user": { "name": "Ryan Conwell", "role": "admin" },
+    "summary": {
+      "total_pageviews": 614,
+      "google_organic": 61,
+      "direct_traffic": 487,
+      "total_leads": 4,
+      "total_calls": 0,
+      "total_call_minutes": 0,
+      "total_job_value": 142000,
+      "total_commission": 0,
+      "conversion_rate_pct": 0.7
+    },
+    "traffic_breakdown": {
+      "home": 298,
+      "locations": 68,
+      "services": 89,
+      "blog": 81,
+      "other": 78
+    },
+    "traffic_sources": {
+      "$direct": 487,
+      "www.google.com": 61,
+      "frame-tx-sandbox-git-v2-gallery-bb541c-ryans-projects-51d84217.vercel.app": 16,
+      "bing.com": 12,
+      "www.yelp.com": 8,
+      "m.yelp.com": 6,
+      "www.frameroofingutah.com": 6,
+      "l.instagram.com": 4,
+      "www.bing.com": 3,
+      "com.enflick.android.tn2ndline": 3,
+      "vercel.com": 2,
+      "mail.google.com": 1,
+      "blue.bbb.org": 1,
+      "docs.google.com": 1,
+      "instagram.com": 1,
+      "frame-tx-sandbox.vercel.app": 1,
+      "www.framerestorations.com": 1
+    },
+    "lead_actions": {
+      "form_submitted": 5,
+      "phone_click": 8,
+      "inbound_call": 1,
+      "email_click": 1,
+      "inbound_sms": 2
+    },
+    "top_pages": [
+      { "path": "/", "views": 298 },
+      { "path": "/pages/about", "views": 40 },
+      { "path": "/about", "views": 39 },
+      { "path": "/blog/utah/utah-hail-season-roof-guide-2026", "views": 32 },
+      { "path": "/blog", "views": 22 },
+      { "path": "/pages/gallery", "views": 20 },
+      { "path": "/assets/videos/aerial-2026/aerial-2026-04-mid-install-underlayment.$ext", "views": 12 },
+      { "path": "/locations/heber-city", "views": 12 },
+      { "path": "/pages/storm-damage", "views": 12 },
+      { "path": "/pages/general-contracting", "views": 11 },
+      { "path": "/locations/$slug", "views": 11 },
+      { "path": "/blog/sandy/spring-hail-damage-roof", "views": 10 },
+      { "path": "/thank-you", "views": 10 },
+      { "path": "/locations/cottonwood-heights", "views": 8 },
+      { "path": "/locations/holladay", "views": 8 },
+      { "path": "/dashboard", "views": 6 },
+      { "path": "/locations/salt-lake-city", "views": 5 },
+      { "path": "/blog/utah/april-2026-wasatch-storm-roof-checklist", "views": 4 },
+      { "path": "/projects/heber-valley-roof", "views": 4 },
+      { "path": "/locations/park-city", "views": 4 }
+    ],
+    "location_performance": [
+      { "location": "heber-city", "views": 12 },
+      { "location": "cottonwood-heights", "views": 8 },
+      { "location": "holladay", "views": 8 },
+      { "location": "salt-lake-city", "views": 5 },
+      { "location": "park-city", "views": 4 },
+      { "location": "lehi", "views": 2 },
+      { "location": "layton", "views": 1 },
+      { "location": "midway", "views": 1 },
+      { "location": "millcreek", "views": 1 },
+      { "location": "murray", "views": 1 },
+      { "location": "sandy", "views": 1 }
+    ],
+    "location_gaps_count": 48,
+    "gap_summary": {
+      "total_locations": 59,
+      "locations_with_traffic": 11,
+      "locations_no_traffic": 48,
+      "coverage_pct": 19
+    },
+    "leads_filtered": [
+      { "id": 48, "name": "Dan Richardson", "phone": "530-864-2148", "service": "Not specified", "source_page": "/", "status": "new", "job_value": null, "created_at": "2026-05-12T14:10:23.105982+00:00" },
+      { "id": 46, "name": "Greg Atkinson", "phone": "2134942372", "service": "Roof replacement", "source_page": "offline-signed-contract", "status": "won", "job_value": 118000, "created_at": "2026-05-12T01:45:23.152981+00:00" },
+      { "id": 44, "name": "George  warner", "phone": "17079050055", "service": "Not specified", "source_page": "/", "status": "new", "job_value": null, "created_at": "2026-05-11T14:18:41.997198+00:00" },
+      { "id": 39, "name": "Jan Hermansen ", "phone": "4356713598", "service": "Not specified", "source_page": "/", "status": "won", "job_value": 24000, "created_at": "2026-05-09T17:21:23.261979+00:00" }
+    ],
+    "calls_filtered": []
+  },
+  "filters_applied": {
+    "test_leads_removed": 0,
+    "landon_test_calls_removed": 0
+  },
+  "notes": [
+    "PostHog MCP exec tool returned 'Tool exec not found' during this run — falling back to Supabase edge function totals, which aggregate the same PostHog data server-side.",
+    "seo-report.html is now a live-data renderer (fetches the Supabase edge function on every load); no static REPORT_DATA object exists to update.",
+    "Two won leads this period: Greg Atkinson ($118k) and Jan Hermansen ($24k) — $142k total revenue tracked.",
+    "Zero inbound calls this period — call tracking may need verification (or genuine quiet period).",
+    "Location coverage 19% (11/59) — Heber City leads at 12 views; 48 locations zero-traffic."
+  ]
+}
