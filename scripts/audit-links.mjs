@@ -25,14 +25,18 @@ import path from 'node:path';
 const repoRoot = process.cwd();
 const strict = process.argv.includes('--strict');
 const SKIP = /^(https?:|tel:|mailto:|sms:|data:|javascript:|#|\/\/)/i;
-const IGNORE_DIRS = new Set(['node_modules', '.git', '.github', '.vercel']);
+// Only audit LIVE, served pages. archive/, build-intelligence/, dashboard/,
+// data/, images/ hold internal drafts/reports (not served); the SKIP_FILES are
+// stray root drafts (index-redesign.html etc.) that aren't in the sitemap or nav.
+const IGNORE_DIRS = new Set(['node_modules', '.git', '.github', '.vercel', 'archive', 'build-intelligence', 'dashboard', 'data', 'images']);
+const SKIP_FILES = new Set(['index-redesign.html', 'leads.html', 'directory-blitz-tool.html', 'directory-tracker.html']);
 
 function walkHtml(dir, out = []) {
   for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
     if (IGNORE_DIRS.has(entry.name)) continue;
     const p = path.join(dir, entry.name);
     if (entry.isDirectory()) walkHtml(p, out);
-    else if (entry.name.endsWith('.html')) out.push(p);
+    else if (entry.name.endsWith('.html') && !SKIP_FILES.has(entry.name)) out.push(p);
   }
   return out;
 }
