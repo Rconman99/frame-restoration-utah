@@ -62,7 +62,9 @@ def check_live_review_page(cfg: dict) -> list[str]:
     fails: list[str] = []
     host = cfg.get("canonical_host", "")
     path = cfg.get("review_landing_path", "/review.html")
-    cid = cfg.get("gbp", {}).get("cid", "")
+    gbp = cfg.get("gbp", {})
+    cid = gbp.get("cid", "")
+    place_id = gbp.get("place_id", "")
     dead = set(cfg.get("known_wrong_listing_cids", []))
     url = f"https://{host}{path}"
 
@@ -72,13 +74,16 @@ def check_live_review_page(cfg: dict) -> list[str]:
         fails.append(f"review page {url} returned {code} (expected 200)")
         return fails  # nothing else to assert if it didn't load
 
-    if cid and cid not in body:
-        fails.append(f"canonical GBP cid {cid} NOT found on live review page — CTA may point at the wrong listing")
+    # The CTA may target the listing by cid (maps?cid=) OR by place_id
+    # (writereview?placeid=). Accept either canonical identifier.
+    identifiers = [v for v in (cid, place_id) if v]
+    if identifiers and not any(v in body for v in identifiers):
+        fails.append(f"neither canonical cid {cid} nor place_id {place_id} found on live review page — CTA may point at the wrong listing")
     for d in dead:
         if d in body:
             fails.append(f"known-dead listing cid {d} is LIVE on the review page — review CTA regressed")
     if not fails:
-        print(f"    ✓ live review page points at canonical cid {cid}, no dead cid present")
+        print(f"    ✓ live review page targets the canonical listing (cid/place_id), no dead cid present")
     return fails
 
 
