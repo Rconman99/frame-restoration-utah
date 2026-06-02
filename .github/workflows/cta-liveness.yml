@@ -1,0 +1,37 @@
+name: CTA Liveness Monitor
+
+# Layer 3 of the review-link defense (Layer 1 = business.json keystone, Layer 2 =
+# the blocking audit-cta-integrity gate at merge time). This watches the REAL
+# WORLD on a schedule for things a static gate can't catch:
+#   A. the deployed review page 404ing or drifting to the wrong Google listing
+#   B. the Google Business Profile itself going dead/suspended (what cid=16833…
+#      was — a valid-looking id pointing at nothing)
+#
+# A red run = a real customer-facing review path is broken → GitHub notifies the
+# repo watchers. Runs weekly + on demand.
+#
+# Secret (optional): SERPAPI_KEY enables check B (GBP liveness). Without it, the
+# job still runs check A (live review page) — no key needed — and exits 0 on the
+# skipped SerpAPI check. Safe to merge before the secret is set.
+
+on:
+  schedule:
+    - cron: '23 14 * * 1'   # Mondays ~8:23am Denver (14:23 UTC)
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  cta-liveness:
+    name: CTA liveness (live review page + GBP)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Check live review page + GBP liveness
+        env:
+          SERPAPI_KEY: ${{ secrets.SERPAPI_KEY }}
+        run: python3 scripts/check-cta-liveness.py
