@@ -62,7 +62,7 @@ Custom services let you match long-tail and locality-specific queries that the p
 | # | Service name | Description (≤300 chars) |
 |---|---|---|
 | 1 | **Residential Reroofing** | Full tear-off and reroofing for single-family homes across the Wasatch Front and Heber Valley. Includes plywood decking inspection, new underlayment, drip edge, valley metal, and flashing replacement. |
-| 2 | **Insurance Claim Roofing** | Storm and hail claim navigation for Utah homeowners. Includes inspection documentation, adjuster meet-ups, supplement preparation, and full-scope repair. |
+| 2 | **Storm & Hail Damage Roofing** | Storm and hail damage roofing for Utah homeowners. We document the damage, provide a line-item scope your adjuster can read, and meet your adjuster on site when requested. The claim stays between you and your insurer — we don't adjust. (Renamed from "Insurance Claim Roofing" 2026-06-01 — claim navigation / supplement prep is licensed adjusting under Utah §31A-26-201; the original wording is a violation.) |
 | 3 | **Designer Shake Reroofing** | Synthetic and composite shake-style roofing installation including Brava, DaVinci, and CertainTeed Grand Manor. Common for Park City, Midway, Alpine, and Heber-area homes. |
 | 4 | **Standing-Seam Metal Roofing** | Mountain-grade standing-seam metal panel roofing for residential and commercial buildings. Snow-shed and fire-resistance benefits relevant to Wasatch Front conditions. |
 | 5 | **Snow & Ice Damage Repair** | Ice dam, snow load, and freeze-thaw damage assessment and repair. Includes heat-cable installation and ventilation correction to prevent recurrence. |
