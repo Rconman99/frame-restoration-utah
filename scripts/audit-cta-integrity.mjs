@@ -152,6 +152,7 @@ const PLACEHOLDER_PATTERNS = [
 const hrefRe = /(?:href|src)=["']([^"']+)["']/g;
 const cidRe = /[?&]cid=(\d+)/i;
 const dataIdRe = /(0x[0-9a-f]+:0x[0-9a-f]+)/i;
+const placeidRe = /writereview\?placeid=([A-Za-z0-9_-]+)/i;
 const googleReviewRe = /google\.com\/maps|g\.page\/|search\.google\.com\/local\/writereview/i;
 const genericSearchRe = /google\.com\/maps\/search\/?\?[^"']*\bquery=|google\.com\/search\?[^"']*\bq=/i;
 
@@ -160,6 +161,7 @@ const phoneChecks = (cfg.internal_phones_never_publish || []).map((p) => ({ disp
 const wrongCids = new Set(cfg.known_wrong_listing_cids || []);
 const canonicalCid = cfg.gbp?.cid;
 const canonicalDataId = (cfg.gbp?.data_id || '').toLowerCase();
+const canonicalPlaceId = cfg.gbp?.place_id;
 
 const files = walkHtml(repoRoot);
 for (const f of files) {
@@ -191,6 +193,10 @@ for (const f of files) {
       else if (canonicalCid && cid !== canonicalCid) blockers.push({ type: 'WRONG-LISTING(cid)', file: rel, detail: `${href} — cid != canonical ${canonicalCid}` });
     }
     if (isGoogleReview) {
+      const pM = href.match(placeidRe);
+      if (pM && canonicalPlaceId && pM[1] !== canonicalPlaceId) {
+        blockers.push({ type: 'WRONG-LISTING(placeid)', file: rel, detail: `${href} — writereview placeid != canonical ${canonicalPlaceId}` });
+      }
       const dM = href.match(dataIdRe);
       if (dM && canonicalDataId && dM[1].toLowerCase() !== canonicalDataId) {
         blockers.push({ type: 'WRONG-LISTING(data_id)', file: rel, detail: `${href} — data_id != canonical` });
