@@ -9,7 +9,7 @@ We just expanded Frame's GBP service area from 10 to 20 cities (pending Google r
 ## Post copy (paste-ready, 321 chars / 1500 max)
 
 ```
-Frame Restoration Utah now serves 20 cities across the Wasatch Front — from Ogden to Provo. Salt Lake Valley, Utah Valley, Heber Valley — wherever you are, our crew can get there. Free roof inspections + financing available. Storm damage, insurance claims, full reroofs, gutters, and emergency tarping. Call 435-302-4422.
+Frame Restoration Utah now serves 20 cities across the Wasatch Front — from Ogden to Provo. Salt Lake Valley, Utah Valley, Heber Valley — wherever you are, our crew can get there. Free roof inspections + financing available. Storm damage, full reroofs, gutters, and emergency tarping. Call 435-292-8802.
 ```
 
 ## Recommended photo
@@ -26,7 +26,7 @@ Frame Restoration Utah now serves 20 cities across the Wasatch Front — from Og
 
 ## Recommended CTA button
 
-Add a "Call" button → pre-fills the 435-302-4422 number. One-tap action for searchers.
+Add a "Call" button → pre-fills the 435-292-8802 number. One-tap action for searchers.
 
 ## Manual publish steps (30 seconds)
 

@@ -17,7 +17,7 @@ See `GBP-POST-PUBLISH-READY-2026-05-11.md`. Top of queue. Publish this first.
 
 **Copy (325 chars):**
 ```
-Cottonwood Heights homes built in the 90s are hitting end-of-life on their first roof. Big Cottonwood Canyon snowmelt + Mt. Olympus tree debris speed it up. Frame Restoration Utah upgrades you to architectural or standing-seam metal — insurance claims welcome, financing available. Free inspection. Call 435-302-4422.
+Cottonwood Heights homes built in the 90s are hitting end-of-life on their first roof. Big Cottonwood Canyon snowmelt + Mt. Olympus tree debris speed it up. Frame Restoration Utah upgrades you to architectural or standing-seam metal — financing available, free inspection. Call 435-292-8802.
 ```
 
 **Photo:** Pick from `images/projects/cities/` — prefer a finished-roof shot (grep og:image use first)
@@ -33,7 +33,7 @@ Cottonwood Heights homes built in the 90s are hitting end-of-life on their first
 
 **Copy (310 chars):**
 ```
-Holladay's Mt. Olympus and Walker Lane homes deserve more than builder-grade shingles. Architectural Class 4 or standing-seam metal — both engineered for Wasatch snowmelt and the canopy debris that comes with mature trees. Frame Restoration Utah specs the right material for your home. Free estimate. 435-302-4422.
+Holladay's Mt. Olympus and Walker Lane homes deserve more than builder-grade shingles. Architectural Class 4 or standing-seam metal — both engineered for Wasatch snowmelt and the canopy debris that comes with mature trees. Frame Restoration Utah specs the right material for your home. Free estimate. 435-292-8802.
 ```
 
 **Photo:** `images/projects/cities/holladay-residential-reroof-2025.jpg` (real Holladay job)
@@ -49,7 +49,7 @@ Holladay's Mt. Olympus and Walker Lane homes deserve more than builder-grade shi
 
 **Copy (335 chars):**
 ```
-Salt Lake City east bench homes — Avenues, Federal Heights, Sugarhouse, Yalecrest — were built when slate, tile, and wood shake were standard. Modern replacement that respects the architecture takes a roofer who knows historic-district rules and decking-era sheathing. Frame Restoration Utah does. Free inspection. 435-302-4422.
+Salt Lake City east bench homes — Avenues, Federal Heights, Sugarhouse, Yalecrest — were built when slate, tile, and wood shake were standard. Modern replacement that respects the architecture takes a roofer who knows historic-district rules and decking-era sheathing. Frame Restoration Utah does. Free inspection. 435-292-8802.
 ```
 
 **Photo:** `images/projects/cities/salt-lake-city-residential-reroof-2026.jpg` (real SLC job)
@@ -65,7 +65,7 @@ Salt Lake City east bench homes — Avenues, Federal Heights, Sugarhouse, Yalecr
 
 **Copy (322 chars):**
 ```
-Sandy east bench — Pepperwood, Granite, Alta-foothill — gets the worst of two worlds: Wasatch canyon snowmelt and afternoon-sun UV exposure. Hidden ice-dam damage surfaces 2-3 years before a roof actually fails. Frame Restoration Utah catches it early. Free roof inspection, financing available. Call 435-302-4422.
+Sandy east bench — Pepperwood, Granite, Alta-foothill — gets the worst of two worlds: Wasatch canyon snowmelt and afternoon-sun UV exposure. Hidden ice-dam damage surfaces 2-3 years before a roof actually fails. Frame Restoration Utah catches it early. Free roof inspection, financing available. Call 435-292-8802.
 ```
 
 **Photo:** `images/projects/cities/sandy-storm-damage-reroof-2025-oct.jpg` or `sandy-storm-damage-reroof-1.jpg`
@@ -80,7 +80,7 @@ Sandy east bench — Pepperwood, Granite, Alta-foothill — gets the worst of tw
 
 **Copy (308 chars):**
 ```
-Hail or wind damage on your Salt Lake Valley roof? Don't fight your insurance alone. Frame Restoration Utah documents the damage, writes the scope, meets your adjuster on-site, and rebuilds the roof — start to invoice. No upfront cost on covered claims. Cottonwood Heights, Holladay, Sandy, Draper, SLC. 435-302-4422.
+Hail or wind damage on your Salt Lake Valley roof? Frame Restoration Utah documents the damage with photos, provides a line-item scope your adjuster can read, and meets your adjuster on site when requested — then rebuilds the roof right. The claim itself stays between you and your insurer; we document, we don't adjust. Cottonwood Heights, Holladay, Sandy, Draper, SLC. 435-292-8802.
 ```
 
 **Photo:** `images/projects/cities/sandy-storm-damage-reroof-2025-oct.jpg` (real storm-damage job)
@@ -101,7 +101,9 @@ Hail or wind damage on your Salt Lake Valley roof? Don't fight your insurance al
 - ✅ Every post has a real-Landon photo from `images/projects/`
 - ✅ Lead with the **Salt Lake Valley ZIP / neighborhood** in the first sentence
 - ✅ Include "Free inspection" or "financing" hook
-- ✅ Always 435-302-4422 (canonical phone)
+- ✅ Always the PUBLIC number 435-292-8802 — NEVER 435-302-4422 (that's the internal call-forward line; publishing it is a leak)
+- ❌ NEVER mention Google reviews, star ratings, or ask for a review inside a GBP post — that's a DPNB violation and **Frame is on Google enforcement watch** (a prior post triggered it). Review asks go via the direct write-review link, not posts.
+- ❌ No unlicensed-adjusting language: no "fight your insurance," "handle/manage/navigate your claim," "maximize payout," "we write your scope and handle it start-to-invoice." Safe framing: "we document the damage, provide a line-item scope your adjuster can read, meet your adjuster on site — the claim stays between you and your insurer; we don't adjust." (Utah §31A-26-201.)
 - ❌ No drone-inspection mentions (Landon directive 2026-05-11)
 - ❌ No text-only posts
 - ❌ No generic "we're great at roofs" copy — every post needs a specific angle
