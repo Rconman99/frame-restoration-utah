@@ -16,7 +16,7 @@ name: Compliance Gate
 #   (per-city service subpages that don't exist + a ${item.url} template leak +
 #   missing city pages). RATCHET: once those are triaged to 0, add `--strict` and
 #   remove continue-on-error to make blocking (matches TX).
-# - city-quality: ADVISORY — corpus-level doorway/thin/duplicate guard. Red-blocks
+# - city-quality: BLOCKING (ratchet closed 2026-06-02, PR #72) — corpus-level doorway/thin/duplicate guard. Red-blocks
 #   on rating-integrity until the cloned AggregateRating debt is cleared (Phase 2 of
 #   the TX→UT port). RATCHET: remove continue-on-error once 45/45 location pages pass.
 #
@@ -100,11 +100,12 @@ jobs:
         run: node scripts/audit-cta-integrity.mjs --strict
 
   city-quality:
-    name: Doorway / thin / duplicate-page guard (ADVISORY — see ratchet)
+    name: Doorway / thin / duplicate-page guard (blocking)
     runs-on: ubuntu-latest
-    # ADVISORY until the rating-integrity debt is cleared (Phase 2 of TX→UT port).
-    # Remove continue-on-error to make blocking once all location pages pass.
-    continue-on-error: true
+    # RATCHET CLOSED 2026-06-02: all 45 location pages now clear the depth/
+    # local-substance/rating-integrity checks (the last 15 thin pages were
+    # deepened past the 500-unique-word floor in PR #72). Now BLOCKING — a thin
+    # or templated location page can no longer silently ship.
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
