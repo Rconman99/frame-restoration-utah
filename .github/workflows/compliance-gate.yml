@@ -39,6 +39,7 @@ on:
       - 'scripts/audit-city-quality.mjs'
       - 'scripts/audit-cta-integrity.mjs'
       - 'scripts/audit-review-integrity.mjs'
+      - 'scripts/audit-entity-consistency.mjs'
       - 'reviews.json'
       - 'data/reviews-full.json'
       - 'data/route-factory/**'
@@ -139,3 +140,20 @@ jobs:
           node-version: '20'
       - name: Fail on cloned ratings or fabricated reviews
         run: node scripts/audit-review-integrity.mjs --strict
+
+  entity-consistency:
+    name: Entity consistency — hasMap + sameAs (blocking)
+    runs-on: ubuntu-latest
+    # BLOCKING (added 2026-06-03, AEO Pillar 2). Asserts every location page's
+    # primary RoofingContractor node carries hasMap + sameAs EXACTLY matching the
+    # keystone in data/route-factory/business.json. AI engines resolve a citation
+    # to one business only when identity links agree everywhere; this prevents
+    # drift (a new page missing them, an altered/stray profile URL). A new
+    # location page can no longer ship without consistent entity links.
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Fail on missing or drifted hasMap/sameAs
+        run: node scripts/audit-entity-consistency.mjs --strict
