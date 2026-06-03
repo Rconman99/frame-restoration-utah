@@ -1,0 +1,52 @@
+{
+  "schemaVersion": 1,
+  "updatedAt": "2026-06-02",
+  "market": "UT",
+  "purpose": "Compliance gate for Google Business Profile *paste-ready copy* — the text Landon/Ryan paste into the Google merchant panel (Posts, Services, descriptions). Validator: scripts/audit-gbp-copy.mjs. This closes the gap that put Frame's GBP on Google enforcement watch: the on-site compliance gate (audit-compliance-words.mjs) explicitly IGNORES data/, so GBP draft copy in data/GBP-*.md was never checked. A post that mentioned reviews/stars (DPNB), an 'Insurance Claim Assistance' service (unlicensed adjusting), and a 'Free Roof Estimate' service (auto-reject) all shipped to the live profile before this gate existed. See data/GBP-AUDIT-2026-05-11.md and memory frame-gbp-enforcement-watch-2026-06-01.",
+
+  "lineage": {
+    "adjustingLanguage": "Reused verbatim from data/route-factory/compliance-words.json (forbiddenWords) — single source of truth for Utah unlicensed-adjusting language (§31A-26-201). Change it there; this gate enforces the same dictionary on GBP copy.",
+    "internalPhone": "Pulled from data/route-factory/business.json internal_phones_never_publish — LANDON_PHONE 435-302-4422 must never appear in any GBP copy, in any format.",
+    "googlePolicy": "Free/promo in a service NAME = instant Google rejection (Google Business Profile content policy: no promotional language in names). Reviews/stars solicitation in a Post = 'Don't Prompt for Reviews' (DPNB) violation — the exact class that triggered Frame's enforcement watch. Phone/URL inside a service DESCRIPTION is stripped by Google (low severity)."
+  },
+
+  "reuseComplianceWords": "data/route-factory/compliance-words.json",
+  "businessKeystone": "data/route-factory/business.json",
+
+  "scanGlobs": ["data/GBP-*.md"],
+
+  "_extraction_note": "The gate only scans PASTE-READY copy, not the strategy/policy prose around it, so audit docs that legitimately QUOTE a violation to fix it don't false-positive. Two recognizers: (1) fenced code blocks (``` … ```) = post / paste-ready copy; (2) markdown tables whose header has a literal 'Service name' column = GBP Services. Policy tables ('Rule | How I applied it', 'Service | Reason') are NOT 'Service name' tables and are skipped. HTML comments are stripped before scanning. Add a trailing `<!-- gbp-allow -->` on a table row or put a file in exemptFiles to suppress a deliberate, documented exception.",
+
+  "rules": {
+    "freeInServiceName": {
+      "severity": "blocker",
+      "appliesTo": ["serviceName"],
+      "patterns": ["free", "discount", "% off", "deal", "cheap", "cheapest", "best price", "lowest price", "call now", "guaranteed"],
+      "reason": "Promotional language in a GBP service NAME triggers instant Google rejection — and on a profile already on enforcement watch, a rejected edit is a strike. Service names must be plain ('Roof Inspection', not 'Free Roof Inspection'). Move any offer into a Post instead."
+    },
+    "reviewsStarsInPost": {
+      "severity": "blocker",
+      "appliesTo": ["post", "serviceName", "serviceDescription"],
+      "patterns": ["leave us a review", "leave a review", "leave a 5-star", "leave a five-star", "give us 5 stars", "give us five stars", "5-star review", "five-star review", "rate us 5", "rate us five", "review us on google", "check our reviews", "see our reviews", "our 5-star", "our five-star", "our google reviews", "read our reviews", "★★★★★", "⭐⭐⭐⭐⭐"],
+      "reason": "Soliciting/advertising reviews or star ratings in GBP content is a 'Don't Prompt for Reviews' (DPNB) policy violation. A reviews-mention post is exactly what put Frame's GBP on enforcement watch. Reviews are earned via the on-site review.html CTA, never via GBP copy."
+    },
+    "promoInPost": {
+      "severity": "warn",
+      "appliesTo": ["post"],
+      "patterns": ["free roof", "free new roof", "free estimate", "free inspection", "free roof inspection", "% off", "discount", "call now", "best price", "cheapest", "lowest price", "no money down", "$0 down"],
+      "reason": "Promo language ('free', 'discount', 'call now') in a Post is tolerated more than in a service name but is risky on a watched profile and dilutes the message. Prefer neutral phrasing ('roof inspections available'). WARN, not blocker — promo in posts is a judgment call per the 2026-05-11 directive."
+    },
+    "phoneInServiceDescription": {
+      "severity": "warn",
+      "appliesTo": ["serviceDescription"],
+      "reason": "Google strips phone numbers and URLs from service descriptions. They belong in the structured Phone/Website fields and in Posts, not in service-description prose. WARN — Google silently removes them, no strike."
+    },
+    "urlInServiceDescription": {
+      "severity": "warn",
+      "appliesTo": ["serviceDescription"],
+      "reason": "Google strips URLs from service descriptions (see phoneInServiceDescription)."
+    }
+  },
+
+  "exemptFiles": []
+}
