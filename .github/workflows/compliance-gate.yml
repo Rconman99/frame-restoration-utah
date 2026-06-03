@@ -19,6 +19,11 @@ name: Compliance Gate
 # - city-quality: BLOCKING (ratchet closed 2026-06-02, PR #72) — corpus-level doorway/thin/duplicate guard. Red-blocks
 #   on rating-integrity until the cloned AggregateRating debt is cleared (Phase 2 of
 #   the TX→UT port). RATCHET: remove continue-on-error once 45/45 location pages pass.
+# - review-integrity: BLOCKING (added 2026-06-03) — the dedicated anti-clone gate.
+#   Location pages may carry individual <Review> markup from REAL reviewers only
+#   (reviews.json / data/reviews-full.json), and NEVER an AggregateRating (the single
+#   sitewide GBP rating belongs only on homepage/About). Codifies the compliance line
+#   from commit 816c280 and gates the top-10-cities Review-schema rollout.
 #
 # NOTE: media-provenance (TX media-clearance gate) is intentionally omitted — it
 # requires data/image-registry.json, which is TX-specific. Add it here only if UT
@@ -33,6 +38,9 @@ on:
       - 'scripts/audit-jsonld.mjs'
       - 'scripts/audit-city-quality.mjs'
       - 'scripts/audit-cta-integrity.mjs'
+      - 'scripts/audit-review-integrity.mjs'
+      - 'reviews.json'
+      - 'data/reviews-full.json'
       - 'data/route-factory/**'
       - '.vercelignore'
       - 'sitemap.xml'
@@ -113,3 +121,21 @@ jobs:
           node-version: '20'
       - name: Corpus-level location-page quality report
         run: node scripts/audit-city-quality.mjs locations/*.html
+
+  review-integrity:
+    name: Review & rating integrity (blocking)
+    runs-on: ubuntu-latest
+    # BLOCKING. Codifies the compliance line from commit 816c280 (which removed a
+    # cloned AggregateRating from 45 city pages): location pages may carry
+    # individual <Review> markup from REAL reviewers only (reviews.json /
+    # data/reviews-full.json, written by google-reviews-sync), and NEVER an
+    # AggregateRating — replicating the single sitewide GBP rating per-city is the
+    # banned clone. Makes "fake/cloned rating" un-mergeable. Required before the
+    # top-10-cities Review-schema rollout so that work can't re-introduce a clone.
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Fail on cloned ratings or fabricated reviews
+        run: node scripts/audit-review-integrity.mjs --strict
