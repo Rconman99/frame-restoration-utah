@@ -39,13 +39,15 @@ function lastFour(phone: string): string {
 
 async function findRecentLead(phone: string): Promise<number | null> {
   if (!phone) return null;
-  const normalized = normalizePhone(phone);
-  const digits = phone.replace(/\D/g, "");
+  // Build .or() candidates ONLY from strictly digit-validated forms so a forged
+  // From value can't inject PostgREST operator syntax into the filter (CODEX MED).
+  const ten = (phone || "").replace(/\D/g, "").slice(-10);
+  if (!/^\d{10}$/.test(ten)) return null;
   const cutoff = new Date(Date.now() - 90 * 86400000).toISOString();
   const { data } = await supabase
     .from("leads")
     .select("id")
-    .or(`phone.eq.${normalized},phone.eq.${digits},phone.ilike.%${digits.slice(-10)}`)
+    .or(`phone.eq.+1${ten},phone.eq.${ten},phone.ilike.%${ten}`)
     .gte("created_at", cutoff)
     .order("created_at", { ascending: false })
     .limit(1);
@@ -172,13 +174,27 @@ Deno.serve(async (req: Request) => {
         customerNumber = toMatch[1].startsWith("+") ? toMatch[1] : "+1" + toMatch[1];
         messageBody = toMatch[2];
       } else {
-        const { data: lastConvo } = await supabase
+        // Guarded sticky reply (CODEX HIGH): only auto-route a plain reply when
+        // exactly ONE customer conversation is active in the last 30 min. 2+
+        // active → require TO:; none active → require TO: (don't text a stale
+        // customer from an old all-time conversation).
+        const windowStart = new Date(Date.now() - 30 * 60000).toISOString();
+        const { data: recent } = await supabase
           .from("sms_conversation_map")
           .select("customer_number")
-          .order("last_message_at", { ascending: false })
-          .limit(1)
-          .single();
-        if (lastConvo) customerNumber = lastConvo.customer_number;
+          .gte("last_message_at", windowStart)
+          .order("last_message_at", { ascending: false });
+        const distinct = Array.from(
+          new Set((recent || []).map((r: any) => r.customer_number)),
+        );
+        if (distinct.length >= 2) {
+          return new Response(`<?xml version="1.0" encoding="UTF-8"?><Response><Message>2+ recent conversations — reply with TO:&lt;10-digit number&gt; so it goes to the right customer.</Message></Response>`, { headers: { "Content-Type": "text/xml" } });
+        }
+        if (distinct.length === 1) {
+          customerNumber = distinct[0];
+        } else {
+          return new Response(`<?xml version="1.0" encoding="UTF-8"?><Response><Message>No active conversation in the last 30 min. Reply with TO:&lt;10-digit number&gt; message.</Message></Response>`, { headers: { "Content-Type": "text/xml" } });
+        }
       }
 
       if (!customerNumber) {
@@ -212,6 +228,23 @@ Deno.serve(async (req: Request) => {
     }
 
     // ─── CUSTOMER PATH (inbound) — v5 adds auto-lead creation ──────────────
+    // A2P opt-out (CODEX MED): when Advanced Opt-Out is on the Messaging Service,
+    // Twilio sends OptOutType (STOP | START | HELP) and auto-replies to the
+    // customer itself. Log it + a non-sticky heads-up to Landon, but do NOT make
+    // it a sticky conversation or forward it as a normal message — that would
+    // prompt a reply to someone who just unsubscribed.
+    const optOutType = (params.OptOutType || "").trim().toUpperCase();
+    if (optOutType) {
+      await supabase.from("sms_logs").insert({
+        message_sid: messageSid,
+        direction: "inbound",
+        from_number: from,
+        to_number: to,
+        body: `[${optOutType}] ${body}`,
+      });
+      return new Response(`<?xml version="1.0" encoding="UTF-8"?><Response><Message to="${LANDON_PHONE}">[opt-out: ${escapeXml(optOutType)}] ${escapeXml(from)} — do not reply</Message></Response>`, { headers: { "Content-Type": "text/xml" } });
+    }
+
     await supabase.from("sms_conversation_map").upsert(
       { customer_number: from, last_message_at: new Date().toISOString() },
       { onConflict: "customer_number" }
