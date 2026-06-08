@@ -40,6 +40,8 @@ on:
       - 'scripts/audit-cta-integrity.mjs'
       - 'scripts/audit-review-integrity.mjs'
       - 'scripts/audit-entity-consistency.mjs'
+      - 'scripts/audit-doc-isolation.mjs'
+      - '**/*.md'
       - 'reviews.json'
       - 'data/reviews-full.json'
       - 'data/route-factory/**'
@@ -157,3 +159,21 @@ jobs:
           node-version: '20'
       - name: Fail on missing or drifted hasMap/sameAs
         run: node scripts/audit-entity-consistency.mjs --strict
+
+  doc-isolation:
+    name: Internal-doc isolation (blocking)
+    runs-on: ubuntu-latest
+    # BLOCKING (added 2026-06-08). Mirrored from TX PR #208 (which graduated the CBP
+    # refinement loop's draft proposal #2, source frame-tx#101). Static-HTML site →
+    # Vercel serves the repo as files, so any markdown not excluded by .vercelignore
+    # is publicly fetchable (e.g. /AEO-BUILDOUT-HANDOFF-*.md). Utah was covered by the
+    # `*.md` rule but ungated; this asserts NO .md is in the public build tree so the
+    # handoff/plan docs can't leak if someone drops `*.md` or adds a doc in an
+    # un-ignored spot.
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Fail if any internal doc would deploy publicly
+        run: node scripts/audit-doc-isolation.mjs --strict
