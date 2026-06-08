@@ -86,6 +86,23 @@ async function getTwilioCreds() {
   return { sid: config.TWILIO_ACCOUNT_SID, auth: config.TWILIO_AUTH_TOKEN, msgServiceSid: config.TWILIO_MESSAGING_SERVICE_SID, phone: config.TWILIO_PHONE_NUMBER };
 }
 
+// Process-once claim for Twilio retries (CODEX HIGH). Inserts the webhook's SID
+// into processed_webhooks; the PK makes it atomic. Returns false if already
+// claimed (a Twilio retry → caller returns empty TwiML and does nothing). For
+// side-effecting paths (operator CALL/SMS) pass failOpen=false so a transient DB
+// error can't let a duplicate send/call through.
+async function claimWebhook(eventKey: string, failOpen = true): Promise<boolean> {
+  if (!eventKey) return true; // nothing to dedupe on — don't block real work
+  const { error } = await supabase.from("processed_webhooks").insert({ event_key: eventKey });
+  if (!error) return true;
+  if ((error as { code?: string }).code === "23505") return false; // unique_violation = already processed
+  console.error("[handle-sms] claimWebhook error:", error, "failOpen=", failOpen);
+  return failOpen;
+}
+
+const emptyTwiml = () =>
+  new Response(`<?xml version="1.0" encoding="UTF-8"?><Response></Response>`, { headers: { "Content-Type": "text/xml" } });
+
 function escapeXml(str: string): string {
   return (str || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&apos;");
 }
@@ -134,6 +151,9 @@ Deno.serve(async (req: Request) => {
         const customerNumber = callMatch[1].startsWith("+") ? callMatch[1] : "+1" + callMatch[1];
 
         if (twilioSid && twilioAuth) {
+          // Idempotency: claim before placing the call so a Twilio retry can't
+          // create a SECOND outbound call (CODEX HIGH). fail-closed.
+          if (!(await claimWebhook(`sms:${messageSid}`, false))) return emptyTwiml();
           const twilioUrl = `https://api.twilio.com/2010-04-01/Accounts/${twilioSid}/Calls.json`;
           const callBody = new URLSearchParams({
             From: twilioNumber,
@@ -202,6 +222,9 @@ Deno.serve(async (req: Request) => {
       }
 
       if (twilioSid && twilioAuth) {
+        // Idempotency: claim before sending so a Twilio retry can't double-text
+        // the customer (CODEX HIGH). fail-closed.
+        if (!(await claimWebhook(`sms:${messageSid}`, false))) return emptyTwiml();
         const smsParams: Record<string, string> = { To: customerNumber, Body: messageBody };
         if (msgServiceSid) smsParams.MessagingServiceSid = msgServiceSid;
         else smsParams.From = twilioNumber;
@@ -228,6 +251,11 @@ Deno.serve(async (req: Request) => {
     }
 
     // ─── CUSTOMER PATH (inbound) — v5 adds auto-lead creation ──────────────
+    // Idempotency: claim before writing/forwarding so a Twilio retry can't
+    // double-forward to Landon or double-log (CODEX HIGH). fail-open default — a
+    // transient DB error shouldn't drop a real customer message.
+    if (!(await claimWebhook(`sms:${messageSid}`))) return emptyTwiml();
+
     // A2P opt-out (CODEX MED): when Advanced Opt-Out is on the Messaging Service,
     // Twilio sends OptOutType (STOP | START | HELP) and auto-replies to the
     // customer itself. Log it + a non-sticky heads-up to Landon, but do NOT make
