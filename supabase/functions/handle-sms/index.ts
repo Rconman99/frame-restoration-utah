@@ -137,7 +137,7 @@ Deno.serve(async (req: Request) => {
             From: twilioNumber,
             To: LANDON_PHONE,
             Url: `${OUTBOUND_CALL_URL}?customer=${encodeURIComponent(customerNumber)}&twilio_number=${encodeURIComponent(twilioNumber)}`,
-            StatusCallback: `${SUPABASE_URL}/functions/v1/handle-call`,
+            StatusCallback: `${SUPABASE_URL}/functions/v1/handle-call/status`,
           });
 
           const callRes = await fetch(twilioUrl, {
@@ -250,7 +250,9 @@ Deno.serve(async (req: Request) => {
     return new Response(twiml, { headers: { "Content-Type": "text/xml" } });
 
   } catch (err) {
+    // Fail closed: a malformed/unparseable request never passes the signature
+    // gate, so return 403 rather than a 200 empty-TwiML that masks the rejection.
     console.error("SMS handler error:", err);
-    return new Response(`<?xml version="1.0" encoding="UTF-8"?><Response></Response>`, { headers: { "Content-Type": "text/xml" } });
+    return new Response("Forbidden", { status: 403 });
   }
 });

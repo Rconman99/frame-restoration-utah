@@ -113,7 +113,9 @@ async function sendPostHogEvent(event: string, properties: Record<string, unknow
 
 Deno.serve(async (req: Request) => {
   const url = new URL(req.url);
-  const path = url.pathname.split("/").pop();
+  // Normalize trailing slashes so `/handle-call/status/` routes the same as
+  // `/handle-call/status` (otherwise `.pop()` yields "" and misroutes to inbound).
+  const path = url.pathname.replace(/\/+$/, "").split("/").pop();
 
   const formData = await req.formData();
   const data: Record<string, string> = {};
@@ -200,7 +202,10 @@ Deno.serve(async (req: Request) => {
 
   // === CALL COMPLETED ===
   if (path === "completed" || path === "status") {
-    const callSid = data.CallSid || data.ParentCallSid || "";
+    // <Number statusCallback> child-leg events carry the child id in CallSid and
+    // the original inbound call in ParentCallSid. The call_logs row is keyed by
+    // the inbound (parent) CallSid, so prefer ParentCallSid to update that row.
+    const callSid = data.ParentCallSid || data.CallSid || "";
     const duration = parseInt(data.DialCallDuration || data.CallDuration || data.Duration || "0");
     const callStatus = data.DialCallStatus || data.CallStatus || "unknown";
     const recordingUrl = data.RecordingUrl || null;
