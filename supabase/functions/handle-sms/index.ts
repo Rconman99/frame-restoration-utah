@@ -14,6 +14,7 @@
 
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { createClient } from "jsr:@supabase/supabase-js@2";
+import { verifyTwilioRequest } from "../_shared/twilio-verify.ts";
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
@@ -77,10 +78,10 @@ async function createInboundSmsLead(fromNumber: string, body: string): Promise<n
 }
 
 async function getTwilioCreds() {
-  const { data } = await supabase.from("app_config").select("key, value").in("key", ["TWILIO_ACCOUNT_SID", "TWILIO_AUTH_TOKEN", "TWILIO_MESSAGING_SERVICE_SID"]);
+  const { data } = await supabase.from("app_config").select("key, value").in("key", ["TWILIO_ACCOUNT_SID", "TWILIO_AUTH_TOKEN", "TWILIO_MESSAGING_SERVICE_SID", "TWILIO_PHONE_NUMBER"]);
   const config: Record<string, string> = {};
   data?.forEach((r: any) => { config[r.key] = r.value; });
-  return { sid: config.TWILIO_ACCOUNT_SID, auth: config.TWILIO_AUTH_TOKEN, msgServiceSid: config.TWILIO_MESSAGING_SERVICE_SID };
+  return { sid: config.TWILIO_ACCOUNT_SID, auth: config.TWILIO_AUTH_TOKEN, msgServiceSid: config.TWILIO_MESSAGING_SERVICE_SID, phone: config.TWILIO_PHONE_NUMBER };
 }
 
 function escapeXml(str: string): string {
@@ -95,11 +96,35 @@ Deno.serve(async (req: Request) => {
     const body = (formData.get("Body") as string || "").trim();
     const messageSid = formData.get("MessageSid") as string;
 
+    // ─── SECURITY GATE: verify Twilio signature BEFORE any DB write / REST call.
+    // Build params from the already-consumed body (a Request body reads once).
+    const params: Record<string, string> = {};
+    formData.forEach((v, k) => { params[k] = v.toString(); });
+
+    // Load Twilio creds from app_config (auth token + business number) up front;
+    // the operator path below reuses these instead of re-loading.
+    const creds = await getTwilioCreds();
+
+    const v = await verifyTwilioRequest(req, params, creds.auth);
+    if (!v.ok) {
+      console.warn("[handle-sms] rejected Twilio request:", v.reason);
+      return new Response("Forbidden", { status: 403 });
+    }
+    // AccountSid must match our account when both are present.
+    if (params.AccountSid && creds.sid && params.AccountSid !== creds.sid) {
+      return new Response("Forbidden", { status: 403 });
+    }
+    // Only enforce the To-check when a business number is configured in app_config
+    // (skip if the TWILIO_PHONE_NUMBER key is absent, to avoid breaking the line).
+    if (creds.phone && params.To !== creds.phone) {
+      return new Response("Forbidden", { status: 403 });
+    }
+
     const isFromLandon = from === LANDON_PHONE;
 
     // ─── OPERATOR PATH (Landon) — unchanged from v4 ────────────────────────
     if (isFromLandon) {
-      const { sid: twilioSid, auth: twilioAuth, msgServiceSid } = await getTwilioCreds();
+      const { sid: twilioSid, auth: twilioAuth, msgServiceSid } = creds;
       const twilioNumber = to;
 
       const callMatch = body.match(/^CALL\s*(\+?\d{10,15})$/i);
@@ -112,7 +137,7 @@ Deno.serve(async (req: Request) => {
             From: twilioNumber,
             To: LANDON_PHONE,
             Url: `${OUTBOUND_CALL_URL}?customer=${encodeURIComponent(customerNumber)}&twilio_number=${encodeURIComponent(twilioNumber)}`,
-            StatusCallback: `${SUPABASE_URL}/functions/v1/handle-call`,
+            StatusCallback: `${SUPABASE_URL}/functions/v1/handle-call/status`,
           });
 
           const callRes = await fetch(twilioUrl, {
@@ -225,7 +250,9 @@ Deno.serve(async (req: Request) => {
     return new Response(twiml, { headers: { "Content-Type": "text/xml" } });
 
   } catch (err) {
+    // Fail closed: a malformed/unparseable request never passes the signature
+    // gate, so return 403 rather than a 200 empty-TwiML that masks the rejection.
     console.error("SMS handler error:", err);
-    return new Response(`<?xml version="1.0" encoding="UTF-8"?><Response></Response>`, { headers: { "Content-Type": "text/xml" } });
+    return new Response("Forbidden", { status: 403 });
   }
 });

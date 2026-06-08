@@ -16,6 +16,7 @@
 
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { verifyTwilioRequest } from "../_shared/twilio-verify.ts";
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL") ?? "";
 const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
@@ -82,6 +83,15 @@ async function createInboundCallLead(fromNumber: string, city: string): Promise<
   return data?.id ?? null;
 }
 
+// Load Twilio creds (auth token + account SID + business number) from app_config.
+// handle-call did not previously read these; needed for signature validation.
+async function getTwilioCreds() {
+  const { data } = await supabase.from("app_config").select("key, value").in("key", ["TWILIO_ACCOUNT_SID", "TWILIO_AUTH_TOKEN", "TWILIO_PHONE_NUMBER"]);
+  const config: Record<string, string> = {};
+  data?.forEach((r: any) => { config[r.key] = r.value; });
+  return { sid: config.TWILIO_ACCOUNT_SID, auth: config.TWILIO_AUTH_TOKEN, phone: config.TWILIO_PHONE_NUMBER };
+}
+
 async function sendPostHogEvent(event: string, properties: Record<string, unknown>) {
   try {
     await fetch("https://us.i.posthog.com/capture/", {
@@ -103,13 +113,36 @@ async function sendPostHogEvent(event: string, properties: Record<string, unknow
 
 Deno.serve(async (req: Request) => {
   const url = new URL(req.url);
-  const path = url.pathname.split("/").pop();
+  // Normalize trailing slashes so `/handle-call/status/` routes the same as
+  // `/handle-call/status` (otherwise `.pop()` yields "" and misroutes to inbound).
+  const path = url.pathname.replace(/\/+$/, "").split("/").pop();
 
   const formData = await req.formData();
   const data: Record<string, string> = {};
   formData.forEach((value, key) => { data[key] = value.toString(); });
 
   console.log(`[handle-call] path=${path}`, JSON.stringify(data));
+
+  // ─── SECURITY GATE: verify Twilio signature BEFORE any DB write / TwiML.
+  // Covers all paths (inbound + /status + /completed). The body has already been
+  // consumed into `data`, which we pass as the signed POST params.
+  const creds = await getTwilioCreds();
+  const verified = await verifyTwilioRequest(req, data, creds.auth);
+  if (!verified.ok) {
+    console.warn("[handle-call] rejected Twilio request:", verified.reason);
+    return new Response("Forbidden", { status: 403 });
+  }
+  // AccountSid must match our account when both are present.
+  if (data.AccountSid && creds.sid && data.AccountSid !== creds.sid) {
+    return new Response("Forbidden", { status: 403 });
+  }
+
+  const isInbound = path === "handle-call" || path === "" || !path;
+  // On the INBOUND path, the call must be to our business line (when configured).
+  // Skip on /status + /completed callbacks (their `To` is the dialed party).
+  if (isInbound && creds.phone && data.To !== creds.phone) {
+    return new Response("Forbidden", { status: 403 });
+  }
 
   // === INCOMING CALL ===
   if (path === "handle-call" || path === "" || !path) {
@@ -169,7 +202,10 @@ Deno.serve(async (req: Request) => {
 
   // === CALL COMPLETED ===
   if (path === "completed" || path === "status") {
-    const callSid = data.CallSid || data.ParentCallSid || "";
+    // <Number statusCallback> child-leg events carry the child id in CallSid and
+    // the original inbound call in ParentCallSid. The call_logs row is keyed by
+    // the inbound (parent) CallSid, so prefer ParentCallSid to update that row.
+    const callSid = data.ParentCallSid || data.CallSid || "";
     const duration = parseInt(data.DialCallDuration || data.CallDuration || data.Duration || "0");
     const callStatus = data.DialCallStatus || data.CallStatus || "unknown";
     const recordingUrl = data.RecordingUrl || null;
