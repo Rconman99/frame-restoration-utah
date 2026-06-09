@@ -1,4 +1,7 @@
 # GBP Post Backlog — Frame Restoration Utah
+
+> 🚫 **MANUAL-PUBLISH ONLY — DO NOT AUTO-PUBLISH.** This is a draft queue, not an instruction to post. Per the CLAUDE.md GBP rule (2026-06-08), **no Claude session, "Auto-Refresh" agent, scheduled job, cron, or browser automation may publish, schedule, or submit any of this to Google Business Profile.** Publishing is a human (Landon) action at business.google.com only, and every queued entry must first pass `node scripts/audit-gbp-copy.mjs`. Auto-posting a reviews/stars mention is what caused the prior GBP enforcement watch — don't repeat it.
+
 **Created:** 2026-05-11
 **Strategic focus:** Salt Lake Valley + surrounding premium ZIPs (Cottonwood Heights, Holladay, Millcreek, Sandy east bench, Draper east bench, SLC east bench). Per Ryan 2026-05-11: "the valley i mean salt lake city and the surrounding areas." Heber Valley and Park City are demoted out of this round — Frame already has visibility there. Every post must include a photo. Cadence: 1-2 posts/week.
 
