@@ -1,0 +1,551 @@
+{
+  "snapshot_date": "2026-06-08",
+  "period_days": 30,
+  "source": "https://hdcflshhomzildwqlmwh.supabase.co/functions/v1/weekly-report",
+  "data": {
+    "generated_at": "2026-06-08T21:14:22.899Z",
+    "period_days": 30,
+    "user": {
+      "name": "Ryan Conwell",
+      "role": "admin"
+    },
+    "summary": {
+      "total_pageviews": 1013,
+      "google_organic": 179,
+      "direct_traffic": 625,
+      "total_leads": 19,
+      "total_calls": 9,
+      "total_call_minutes": 4.2,
+      "total_job_value": 118000,
+      "total_commission": 0,
+      "conversion_rate_pct": 2.8
+    },
+    "traffic_breakdown": {
+      "home": 676,
+      "locations": 64,
+      "services": 98,
+      "blog": 21,
+      "other": 154
+    },
+    "traffic_sources": {
+      "$direct": 625,
+      "www.google.com": 179,
+      "facebook.com": 51,
+      "l.facebook.com": 32,
+      "frame-tx-sandbox-git-v2-gallery-bb541c-ryans-projects-51d84217.vercel.app": 25,
+      "www.framerestoration.com": 13,
+      "m.facebook.com": 12,
+      "www.yelp.com": 8,
+      "blue.bbb.org": 7,
+      "chatgpt.com": 7,
+      "gemini.google.com": 7,
+      "www.bing.com": 7,
+      "embracebenchmark.com": 6,
+      "bing.com": 6,
+      "m.yelp.com": 6,
+      "l.instagram.com": 5,
+      "search.yahoo.com": 4,
+      "com.enflick.android.tn2ndline": 3,
+      "instagram.com": 2,
+      "www.framerestorations.com": 2
+    },
+    "lead_actions": {
+      "form_submitted": 11,
+      "phone_click": 21,
+      "inbound_call": 20,
+      "inbound_sms": 12
+    },
+    "top_pages": [
+      {
+        "path": "/",
+        "views": 676
+      },
+      {
+        "path": "/about",
+        "views": 116
+      },
+      {
+        "path": "/pages/about",
+        "views": 40
+      },
+      {
+        "path": "/pages/gallery",
+        "views": 40
+      },
+      {
+        "path": "/assets/videos/aerial-2026/aerial-2026-04-mid-install-underlayment.$ext",
+        "views": 12
+      },
+      {
+        "path": "/locations/$slug",
+        "views": 11
+      },
+      {
+        "path": "/thank-you",
+        "views": 11
+      },
+      {
+        "path": "/locations/cottonwood-heights",
+        "views": 8
+      },
+      {
+        "path": "/locations/holladay",
+        "views": 8
+      },
+      {
+        "path": "/blog",
+        "views": 7
+      },
+      {
+        "path": "/locations/frisco",
+        "views": 5
+      },
+      {
+        "path": "/locations/wylie",
+        "views": 4
+      },
+      {
+        "path": "/locations/park-city",
+        "views": 4
+      },
+      {
+        "path": "/pages/residential-roofing",
+        "views": 3
+      },
+      {
+        "path": "/projects/heber-valley-roof",
+        "views": 3
+      },
+      {
+        "path": "/pages/general-contracting",
+        "views": 3
+      },
+      {
+        "path": "/pages/gutters",
+        "views": 3
+      },
+      {
+        "path": "/projects",
+        "views": 3
+      },
+      {
+        "path": "/blog/utah/utah-hail-season-roof-guide-2026",
+        "views": 3
+      },
+      {
+        "path": "/pages/solar-installation",
+        "views": 3
+      }
+    ],
+    "location_performance": [
+      {
+        "location": "cottonwood-heights",
+        "views": 8
+      },
+      {
+        "location": "holladay",
+        "views": 8
+      },
+      {
+        "location": "park-city",
+        "views": 4
+      },
+      {
+        "location": "payson",
+        "views": 3
+      },
+      {
+        "location": "heber-city",
+        "views": 2
+      },
+      {
+        "location": "lehi",
+        "views": 2
+      },
+      {
+        "location": "midway",
+        "views": 2
+      },
+      {
+        "location": "layton",
+        "views": 1
+      },
+      {
+        "location": "millcreek",
+        "views": 1
+      },
+      {
+        "location": "murray",
+        "views": 1
+      },
+      {
+        "location": "north-salt-lake",
+        "views": 1
+      },
+      {
+        "location": "riverton",
+        "views": 1
+      }
+    ],
+    "location_gaps": [
+      "alpine",
+      "american-fork",
+      "bluffdale",
+      "bountiful",
+      "brigham-city",
+      "cedar-city",
+      "centerville",
+      "clinton",
+      "draper",
+      "eagle-mountain",
+      "farmington",
+      "fruit-heights",
+      "herriman",
+      "highland",
+      "kaysville",
+      "kearns",
+      "lindon",
+      "logan",
+      "magna",
+      "mapleton",
+      "midvale",
+      "north-ogden",
+      "ogden",
+      "orem",
+      "pleasant-grove",
+      "provo",
+      "roy",
+      "salem",
+      "salt-lake-city",
+      "sandy",
+      "santaquin",
+      "saratoga-springs",
+      "south-jordan",
+      "south-ogden",
+      "spanish-fork",
+      "springville",
+      "st-george",
+      "summit-park",
+      "syracuse",
+      "taylorsville",
+      "tooele",
+      "vineyard",
+      "wasatch-county",
+      "west-bountiful",
+      "west-jordan",
+      "west-valley-city",
+      "woods-cross"
+    ],
+    "gap_summary": {
+      "total_locations": 59,
+      "locations_with_traffic": 12,
+      "locations_no_traffic": 47,
+      "coverage_pct": 20
+    },
+    "leads": [
+      {
+        "id": 76,
+        "name": "Inbound SMS \u2014 6005",
+        "phone": "+18338176005",
+        "service": null,
+        "source_page": "inbound-sms",
+        "status": "new",
+        "job_value": null,
+        "commission": 0,
+        "created_at": "2026-06-08T18:36:01.25078+00:00"
+      },
+      {
+        "id": 75,
+        "name": "Inbound caller \u2014 4444",
+        "phone": "+16176754444",
+        "service": null,
+        "source_page": "inbound-call",
+        "status": "new",
+        "job_value": null,
+        "commission": 0,
+        "created_at": "2026-06-04T21:45:04.357136+00:00"
+      },
+      {
+        "id": 74,
+        "name": "Inbound SMS \u2014 4497",
+        "phone": "+18887744497",
+        "service": null,
+        "source_page": "inbound-sms",
+        "status": "new",
+        "job_value": null,
+        "commission": 0,
+        "created_at": "2026-06-03T22:50:10.299081+00:00"
+      },
+      {
+        "id": 73,
+        "name": "Inbound caller \u2014 6187",
+        "phone": "+18123596187",
+        "service": null,
+        "source_page": "inbound-call",
+        "status": "new",
+        "job_value": null,
+        "commission": 0,
+        "created_at": "2026-06-03T21:35:13.085889+00:00"
+      },
+      {
+        "id": 72,
+        "name": "Inbound caller \u2014 2988",
+        "phone": "+13236592988",
+        "service": null,
+        "source_page": "inbound-call",
+        "status": "new",
+        "job_value": null,
+        "commission": 0,
+        "created_at": "2026-06-03T20:02:13.71614+00:00"
+      },
+      {
+        "id": 71,
+        "name": "Inbound caller \u2014 4981",
+        "phone": "+18013914981",
+        "service": null,
+        "source_page": "inbound-call",
+        "status": "new",
+        "job_value": null,
+        "commission": 0,
+        "created_at": "2026-06-03T14:59:06.794522+00:00"
+      },
+      {
+        "id": 70,
+        "name": "Inbound caller \u2014 4761",
+        "phone": "+12135154761",
+        "service": null,
+        "source_page": "inbound-call",
+        "status": "new",
+        "job_value": null,
+        "commission": 0,
+        "created_at": "2026-06-02T16:13:02.302359+00:00"
+      },
+      {
+        "id": 69,
+        "name": "Eddie beekam",
+        "phone": "18019712675",
+        "service": "Not specified",
+        "source_page": "/",
+        "status": "new",
+        "job_value": null,
+        "commission": 0,
+        "created_at": "2026-06-02T11:47:17.684125+00:00"
+      },
+      {
+        "id": 68,
+        "name": "Eddie beekam",
+        "phone": "18019712675",
+        "service": "Not specified",
+        "source_page": "/",
+        "status": "new",
+        "job_value": null,
+        "commission": 0,
+        "created_at": "2026-06-02T11:47:17.643701+00:00"
+      },
+      {
+        "id": 67,
+        "name": "Inbound caller \u2014 2947",
+        "phone": "+13465102947",
+        "service": null,
+        "source_page": "inbound-call",
+        "status": "new",
+        "job_value": null,
+        "commission": 0,
+        "created_at": "2026-05-29T22:52:18.741072+00:00"
+      },
+      {
+        "id": 66,
+        "name": "Inbound caller \u2014 4780",
+        "phone": "+18018954780",
+        "service": null,
+        "source_page": "inbound-call",
+        "status": "new",
+        "job_value": null,
+        "commission": 0,
+        "created_at": "2026-05-29T16:37:28.452212+00:00"
+      },
+      {
+        "id": 65,
+        "name": "Riley Marsh",
+        "phone": "4356404207",
+        "service": "Not specified",
+        "source_page": "/",
+        "status": "new",
+        "job_value": null,
+        "commission": 0,
+        "created_at": "2026-05-28T13:25:51.471711+00:00"
+      },
+      {
+        "id": 64,
+        "name": "Riley Marsh",
+        "phone": "4356404207",
+        "service": "Not specified",
+        "source_page": "/",
+        "status": "new",
+        "job_value": null,
+        "commission": 0,
+        "created_at": "2026-05-28T13:25:51.391418+00:00"
+      },
+      {
+        "id": 63,
+        "name": "Inbound caller \u2014 1967",
+        "phone": "+13852071967",
+        "service": null,
+        "source_page": "inbound-call",
+        "status": "new",
+        "job_value": null,
+        "commission": 0,
+        "created_at": "2026-05-27T19:22:20.228038+00:00"
+      },
+      {
+        "id": 62,
+        "name": "Inbound caller \u2014 2551",
+        "phone": "+15512912551",
+        "service": null,
+        "source_page": "inbound-call",
+        "status": "new",
+        "job_value": null,
+        "commission": 0,
+        "created_at": "2026-05-27T17:34:12.594796+00:00"
+      },
+      {
+        "id": 61,
+        "name": "Inbound SMS \u2014 7749",
+        "phone": "+19207777749",
+        "service": null,
+        "source_page": "inbound-sms",
+        "status": "new",
+        "job_value": null,
+        "commission": 0,
+        "created_at": "2026-05-27T17:31:24.007694+00:00"
+      },
+      {
+        "id": 48,
+        "name": "Dan Richardson",
+        "phone": "530-864-2148",
+        "service": "Not specified",
+        "source_page": "/",
+        "status": "new",
+        "job_value": null,
+        "commission": 0,
+        "created_at": "2026-05-12T14:10:23.105982+00:00"
+      },
+      {
+        "id": 46,
+        "name": "Greg Atkinson",
+        "phone": "2134942372",
+        "service": "Roof replacement",
+        "source_page": "offline-signed-contract",
+        "status": "won",
+        "job_value": 118000,
+        "commission": 0,
+        "created_at": "2026-05-12T01:45:23.152981+00:00"
+      },
+      {
+        "id": 44,
+        "name": "George  warner",
+        "phone": "17079050055",
+        "service": "Not specified",
+        "source_page": "/",
+        "status": "new",
+        "job_value": null,
+        "commission": 0,
+        "created_at": "2026-05-11T14:18:41.997198+00:00"
+      }
+    ],
+    "calls": [
+      {
+        "id": 35,
+        "from_number": "+16176754444",
+        "duration_seconds": 6,
+        "status": "completed",
+        "city": "HYDE PARK, MA",
+        "source_page": "website-tracking-number",
+        "created_at": "2026-06-04T21:45:04.692086+00:00"
+      },
+      {
+        "id": 33,
+        "from_number": "+18123596187",
+        "duration_seconds": 18,
+        "status": "completed",
+        "city": "RICHLAND, IN",
+        "source_page": "website-tracking-number",
+        "created_at": "2026-06-03T21:35:13.389814+00:00"
+      },
+      {
+        "id": 31,
+        "from_number": "+13236592988",
+        "duration_seconds": 21,
+        "status": "completed",
+        "city": "LOS ANGELES, CA",
+        "source_page": "website-tracking-number",
+        "created_at": "2026-06-03T20:02:14.092109+00:00"
+      },
+      {
+        "id": 29,
+        "from_number": "+18013914981",
+        "duration_seconds": 125,
+        "status": "completed",
+        "city": "OGDEN, UT",
+        "source_page": "website-tracking-number",
+        "created_at": "2026-06-03T14:59:06.973177+00:00"
+      },
+      {
+        "id": 27,
+        "from_number": "+12135154761",
+        "duration_seconds": 5,
+        "status": "completed",
+        "city": "unknown",
+        "source_page": "website-tracking-number",
+        "created_at": "2026-06-02T16:13:02.662512+00:00"
+      },
+      {
+        "id": 25,
+        "from_number": "+13465102947",
+        "duration_seconds": 18,
+        "status": "completed",
+        "city": "Houston, TX",
+        "source_page": "website-tracking-number",
+        "created_at": "2026-05-29T22:52:18.87056+00:00"
+      },
+      {
+        "id": 23,
+        "from_number": "+18018954780",
+        "duration_seconds": 8,
+        "status": "completed",
+        "city": "SALT LAKE CITY, UT",
+        "source_page": "website-tracking-number",
+        "created_at": "2026-05-29T16:37:28.753136+00:00"
+      },
+      {
+        "id": 21,
+        "from_number": "+13852071967",
+        "duration_seconds": 50,
+        "status": "completed",
+        "city": "SALT LAKE CITY, UT",
+        "source_page": "website-tracking-number",
+        "created_at": "2026-05-27T19:22:20.595187+00:00"
+      },
+      {
+        "id": 19,
+        "from_number": "+15512912551",
+        "duration_seconds": 3,
+        "status": "completed",
+        "city": "unknown",
+        "source_page": "website-tracking-number",
+        "created_at": "2026-05-27T17:34:13.023465+00:00"
+      }
+    ]
+  },
+  "filters_applied": {
+    "test_leads_removed": 0,
+    "landon_test_calls_removed": 0
+  },
+  "notes": [
+    "1,013 pageviews / 179 Google organic over 30 days; $direct still dominant at 625.",
+    "Only won lead: Greg Atkinson roof replacement $118,000 (offline signed contract).",
+    "Location coverage 20% (12/59) \u2014 Cottonwood Heights & Holladay tied top at 8 views each; 47 location pages still zero-traffic.",
+    "Inbound call/SMS volume healthy (9 calls, several UT-area) but most callers out-of-state or short duration.",
+    "TX expansion footprint visible: Frisco/Wylie location pages and Houston TX inbound call present."
+  ]
+}
