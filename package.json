@@ -10,7 +10,8 @@
     "blog:next": "python3 scripts/blog-target-prioritizer.py --feed-blog-draft",
     "blog:traffic": "bash scripts/refresh-traffic-snapshot.sh",
     "blog:draft": "python3 scripts/generate-blog-post.py",
-    "blog:render": "python3 scripts/generate-blog-post.py --render"
+    "blog:render": "python3 scripts/generate-blog-post.py --render",
+    "audit:gbp-copy": "node scripts/audit-gbp-copy.mjs"
   },
   "dependencies": {
     "playwright": "^1.59.1"

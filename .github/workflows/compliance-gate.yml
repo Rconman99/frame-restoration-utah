@@ -38,6 +38,8 @@ on:
       - 'scripts/audit-jsonld.mjs'
       - 'scripts/audit-city-quality.mjs'
       - 'scripts/audit-cta-integrity.mjs'
+      - 'scripts/audit-gbp-copy.mjs'
+      - 'data/GBP-*.md'
       - 'scripts/audit-review-integrity.mjs'
       - 'scripts/audit-entity-consistency.mjs'
       - 'scripts/audit-doc-isolation.mjs'
@@ -124,6 +126,26 @@ jobs:
           node-version: '20'
       - name: Corpus-level location-page quality report
         run: node scripts/audit-city-quality.mjs locations/*.html
+
+  gbp-copy:
+    name: GBP paste-ready copy compliance (blocking)
+    runs-on: ubuntu-latest
+    # BLOCKING. Scans the paste-ready Google Business Profile copy in data/GBP-*.md
+    # (Posts, Services, descriptions) — the text pasted into the merchant panel —
+    # for the violations that put Frame's GBP on Google enforcement watch:
+    # unlicensed-adjusting language (reused from compliance-words.json), "Free"/promo
+    # in a service NAME (instant Google rejection), reviews/stars solicitation (DPNB),
+    # and the internal LANDON_PHONE (business.json). Closes the gap that the on-site
+    # compliance gate leaves open by design (it ignores data/). Config + provenance:
+    # data/route-factory/gbp-copy.json. Passes clean on main as of 2026-06-02
+    # (post-#71 scrub; only promo-in-post WARNs remain, which are non-blocking).
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Fail on GBP-copy compliance violations
+        run: node scripts/audit-gbp-copy.mjs
 
   review-integrity:
     name: Review & rating integrity (blocking)
