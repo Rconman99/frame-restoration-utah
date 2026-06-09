@@ -1,5 +1,7 @@
 # Google Post — Publish-Ready (2026-05-11)
 
+> 🚫 **MANUAL-PUBLISH ONLY — DO NOT AUTO-PUBLISH.** "Publish-Ready" means the copy is drafted, not that an agent should post it. Per the CLAUDE.md GBP rule (2026-06-08), **no Claude session, "Auto-Refresh" agent, scheduled job, cron, or browser automation may publish/schedule/submit this to Google Business Profile.** Publishing is a human (Landon) action at business.google.com only, and the copy must first pass `node scripts/audit-gbp-copy.mjs`. Auto-posting a reviews/stars mention is what caused the prior GBP enforcement watch — don't repeat it.
+
 **Status:** drafted in GBP composer this session but **NOT published** — Google's merchant panel is cross-origin from Chrome MCP, so the file input can't be reached programmatically and the photo can't be auto-uploaded. Manual publish takes about 30 seconds.
 
 ## Why this post exists

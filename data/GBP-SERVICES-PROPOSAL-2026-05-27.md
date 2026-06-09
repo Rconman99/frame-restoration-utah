@@ -1,5 +1,7 @@
 # Frame Roofing Utah — GBP Services Proposal
 
+> 🚫 **MANUAL-SUBMIT ONLY — DO NOT AUTO-SUBMIT.** This is a proposal for owner review, not an instruction to push services live. Per the CLAUDE.md GBP rule (2026-06-08), **no Claude session, "Auto-Refresh" agent, scheduled job, cron, or browser automation may submit/publish these services to Google Business Profile.** Submitting is a human (Landon) action at business.google.com only, and every service name/description must first pass `node scripts/audit-gbp-copy.mjs` ("Free"/promo service names are an instant Google rejection on a watched profile).
+
 **Date:** 2026-05-27
 **Purpose:** Add a Services section to the GBP so Google can match more local-pack queries to Frame. Each service Google approves becomes a keyword anchor used by their query-understanding model.
 **Status:** Draft for Ryan's review. **Do not submit until Ryan approves.**

@@ -12,6 +12,18 @@
     "maps_listing_url": "https://www.google.com/maps?cid=8458659884566588108"
   },
 
+  "entity_links": {
+    "_comment": "Canonical off-site identity replicated onto EVERY location page for entity consistency (AEO Pillar 2): hasMap = GBP map URL; sameAs = the same profile set as the homepage. AI engines only resolve citations to ONE business when NAP + these links agree across the site AND the third-party directories (third-party-targets.md). audit-entity-consistency.mjs asserts all 47 location pages carry exactly these. DOPL license (#14256097-5501) is intentionally NOT here — it is hasCredential, not a sameAs URL.",
+    "hasMap": "https://www.google.com/maps?cid=8458659884566588108",
+    "sameAs": [
+      "https://www.facebook.com/61572258054303",
+      "https://www.instagram.com/frameroofingutah",
+      "https://www.yelp.com/biz/frame-restoration-heber-city",
+      "https://www.bbb.org/us/ut/heber-city/profile/roofing-contractors/frame-restoration-utah-llc-1166-90056184",
+      "https://www.google.com/maps/place/Frame+Restoration+Utah/@40.5069,-111.4133,17z/"
+    ]
+  },
+
   "review_landing_path": "/review.html",
   "review_form_link": "https://search.google.com/local/writereview?placeid=ChIJCT6-aZD1TYcRzCpwX1kyY3U",
   "_review_form_link_note": "Direct one-tap write-review deep link for the canonical GBP (place_id resolved via SerpAPI 2026-06-01, no owner login needed). Opens the star-rating dialog. Equivalent to the official g.page/r/ 'Ask for reviews' link. review.html's Google button uses this.",

@@ -14,6 +14,7 @@
 
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { createClient } from "jsr:@supabase/supabase-js@2";
+import { verifyTwilioRequest } from "../_shared/twilio-verify.ts";
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
@@ -38,13 +39,15 @@ function lastFour(phone: string): string {
 
 async function findRecentLead(phone: string): Promise<number | null> {
   if (!phone) return null;
-  const normalized = normalizePhone(phone);
-  const digits = phone.replace(/\D/g, "");
+  // Build .or() candidates ONLY from strictly digit-validated forms so a forged
+  // From value can't inject PostgREST operator syntax into the filter (CODEX MED).
+  const ten = (phone || "").replace(/\D/g, "").slice(-10);
+  if (!/^\d{10}$/.test(ten)) return null;
   const cutoff = new Date(Date.now() - 90 * 86400000).toISOString();
   const { data } = await supabase
     .from("leads")
     .select("id")
-    .or(`phone.eq.${normalized},phone.eq.${digits},phone.ilike.%${digits.slice(-10)}`)
+    .or(`phone.eq.+1${ten},phone.eq.${ten},phone.ilike.%${ten}`)
     .gte("created_at", cutoff)
     .order("created_at", { ascending: false })
     .limit(1);
@@ -77,11 +80,28 @@ async function createInboundSmsLead(fromNumber: string, body: string): Promise<n
 }
 
 async function getTwilioCreds() {
-  const { data } = await supabase.from("app_config").select("key, value").in("key", ["TWILIO_ACCOUNT_SID", "TWILIO_AUTH_TOKEN", "TWILIO_MESSAGING_SERVICE_SID"]);
+  const { data } = await supabase.from("app_config").select("key, value").in("key", ["TWILIO_ACCOUNT_SID", "TWILIO_AUTH_TOKEN", "TWILIO_MESSAGING_SERVICE_SID", "TWILIO_PHONE_NUMBER"]);
   const config: Record<string, string> = {};
   data?.forEach((r: any) => { config[r.key] = r.value; });
-  return { sid: config.TWILIO_ACCOUNT_SID, auth: config.TWILIO_AUTH_TOKEN, msgServiceSid: config.TWILIO_MESSAGING_SERVICE_SID };
+  return { sid: config.TWILIO_ACCOUNT_SID, auth: config.TWILIO_AUTH_TOKEN, msgServiceSid: config.TWILIO_MESSAGING_SERVICE_SID, phone: config.TWILIO_PHONE_NUMBER };
 }
+
+// Process-once claim for Twilio retries (CODEX HIGH). Inserts the webhook's SID
+// into processed_webhooks; the PK makes it atomic. Returns false if already
+// claimed (a Twilio retry → caller returns empty TwiML and does nothing). For
+// side-effecting paths (operator CALL/SMS) pass failOpen=false so a transient DB
+// error can't let a duplicate send/call through.
+async function claimWebhook(eventKey: string, failOpen = true): Promise<boolean> {
+  if (!eventKey) return true; // nothing to dedupe on — don't block real work
+  const { error } = await supabase.from("processed_webhooks").insert({ event_key: eventKey });
+  if (!error) return true;
+  if ((error as { code?: string }).code === "23505") return false; // unique_violation = already processed
+  console.error("[handle-sms] claimWebhook error:", error, "failOpen=", failOpen);
+  return failOpen;
+}
+
+const emptyTwiml = () =>
+  new Response(`<?xml version="1.0" encoding="UTF-8"?><Response></Response>`, { headers: { "Content-Type": "text/xml" } });
 
 function escapeXml(str: string): string {
   return (str || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&apos;");
@@ -95,11 +115,35 @@ Deno.serve(async (req: Request) => {
     const body = (formData.get("Body") as string || "").trim();
     const messageSid = formData.get("MessageSid") as string;
 
+    // ─── SECURITY GATE: verify Twilio signature BEFORE any DB write / REST call.
+    // Build params from the already-consumed body (a Request body reads once).
+    const params: Record<string, string> = {};
+    formData.forEach((v, k) => { params[k] = v.toString(); });
+
+    // Load Twilio creds from app_config (auth token + business number) up front;
+    // the operator path below reuses these instead of re-loading.
+    const creds = await getTwilioCreds();
+
+    const v = await verifyTwilioRequest(req, params, creds.auth);
+    if (!v.ok) {
+      console.warn("[handle-sms] rejected Twilio request:", v.reason);
+      return new Response("Forbidden", { status: 403 });
+    }
+    // AccountSid must match our account when both are present.
+    if (params.AccountSid && creds.sid && params.AccountSid !== creds.sid) {
+      return new Response("Forbidden", { status: 403 });
+    }
+    // Only enforce the To-check when a business number is configured in app_config
+    // (skip if the TWILIO_PHONE_NUMBER key is absent, to avoid breaking the line).
+    if (creds.phone && params.To !== creds.phone) {
+      return new Response("Forbidden", { status: 403 });
+    }
+
     const isFromLandon = from === LANDON_PHONE;
 
     // ─── OPERATOR PATH (Landon) — unchanged from v4 ────────────────────────
     if (isFromLandon) {
-      const { sid: twilioSid, auth: twilioAuth, msgServiceSid } = await getTwilioCreds();
+      const { sid: twilioSid, auth: twilioAuth, msgServiceSid } = creds;
       const twilioNumber = to;
 
       const callMatch = body.match(/^CALL\s*(\+?\d{10,15})$/i);
@@ -107,12 +151,15 @@ Deno.serve(async (req: Request) => {
         const customerNumber = callMatch[1].startsWith("+") ? callMatch[1] : "+1" + callMatch[1];
 
         if (twilioSid && twilioAuth) {
+          // Idempotency: claim before placing the call so a Twilio retry can't
+          // create a SECOND outbound call (CODEX HIGH). fail-closed.
+          if (!(await claimWebhook(`sms:${messageSid}`, false))) return emptyTwiml();
           const twilioUrl = `https://api.twilio.com/2010-04-01/Accounts/${twilioSid}/Calls.json`;
           const callBody = new URLSearchParams({
             From: twilioNumber,
             To: LANDON_PHONE,
             Url: `${OUTBOUND_CALL_URL}?customer=${encodeURIComponent(customerNumber)}&twilio_number=${encodeURIComponent(twilioNumber)}`,
-            StatusCallback: `${SUPABASE_URL}/functions/v1/handle-call`,
+            StatusCallback: `${SUPABASE_URL}/functions/v1/handle-call/status`,
           });
 
           const callRes = await fetch(twilioUrl, {
@@ -147,13 +194,27 @@ Deno.serve(async (req: Request) => {
         customerNumber = toMatch[1].startsWith("+") ? toMatch[1] : "+1" + toMatch[1];
         messageBody = toMatch[2];
       } else {
-        const { data: lastConvo } = await supabase
+        // Guarded sticky reply (CODEX HIGH): only auto-route a plain reply when
+        // exactly ONE customer conversation is active in the last 30 min. 2+
+        // active → require TO:; none active → require TO: (don't text a stale
+        // customer from an old all-time conversation).
+        const windowStart = new Date(Date.now() - 30 * 60000).toISOString();
+        const { data: recent } = await supabase
           .from("sms_conversation_map")
           .select("customer_number")
-          .order("last_message_at", { ascending: false })
-          .limit(1)
-          .single();
-        if (lastConvo) customerNumber = lastConvo.customer_number;
+          .gte("last_message_at", windowStart)
+          .order("last_message_at", { ascending: false });
+        const distinct = Array.from(
+          new Set((recent || []).map((r: any) => r.customer_number)),
+        );
+        if (distinct.length >= 2) {
+          return new Response(`<?xml version="1.0" encoding="UTF-8"?><Response><Message>2+ recent conversations — reply with TO:&lt;10-digit number&gt; so it goes to the right customer.</Message></Response>`, { headers: { "Content-Type": "text/xml" } });
+        }
+        if (distinct.length === 1) {
+          customerNumber = distinct[0];
+        } else {
+          return new Response(`<?xml version="1.0" encoding="UTF-8"?><Response><Message>No active conversation in the last 30 min. Reply with TO:&lt;10-digit number&gt; message.</Message></Response>`, { headers: { "Content-Type": "text/xml" } });
+        }
       }
 
       if (!customerNumber) {
@@ -161,6 +222,9 @@ Deno.serve(async (req: Request) => {
       }
 
       if (twilioSid && twilioAuth) {
+        // Idempotency: claim before sending so a Twilio retry can't double-text
+        // the customer (CODEX HIGH). fail-closed.
+        if (!(await claimWebhook(`sms:${messageSid}`, false))) return emptyTwiml();
         const smsParams: Record<string, string> = { To: customerNumber, Body: messageBody };
         if (msgServiceSid) smsParams.MessagingServiceSid = msgServiceSid;
         else smsParams.From = twilioNumber;
@@ -187,6 +251,28 @@ Deno.serve(async (req: Request) => {
     }
 
     // ─── CUSTOMER PATH (inbound) — v5 adds auto-lead creation ──────────────
+    // Idempotency: claim before writing/forwarding so a Twilio retry can't
+    // double-forward to Landon or double-log (CODEX HIGH). fail-open default — a
+    // transient DB error shouldn't drop a real customer message.
+    if (!(await claimWebhook(`sms:${messageSid}`))) return emptyTwiml();
+
+    // A2P opt-out (CODEX MED): when Advanced Opt-Out is on the Messaging Service,
+    // Twilio sends OptOutType (STOP | START | HELP) and auto-replies to the
+    // customer itself. Log it + a non-sticky heads-up to Landon, but do NOT make
+    // it a sticky conversation or forward it as a normal message — that would
+    // prompt a reply to someone who just unsubscribed.
+    const optOutType = (params.OptOutType || "").trim().toUpperCase();
+    if (optOutType) {
+      await supabase.from("sms_logs").insert({
+        message_sid: messageSid,
+        direction: "inbound",
+        from_number: from,
+        to_number: to,
+        body: `[${optOutType}] ${body}`,
+      });
+      return new Response(`<?xml version="1.0" encoding="UTF-8"?><Response><Message to="${LANDON_PHONE}">[opt-out: ${escapeXml(optOutType)}] ${escapeXml(from)} — do not reply</Message></Response>`, { headers: { "Content-Type": "text/xml" } });
+    }
+
     await supabase.from("sms_conversation_map").upsert(
       { customer_number: from, last_message_at: new Date().toISOString() },
       { onConflict: "customer_number" }
@@ -225,7 +311,9 @@ Deno.serve(async (req: Request) => {
     return new Response(twiml, { headers: { "Content-Type": "text/xml" } });
 
   } catch (err) {
+    // Fail closed: a malformed/unparseable request never passes the signature
+    // gate, so return 403 rather than a 200 empty-TwiML that masks the rejection.
     console.error("SMS handler error:", err);
-    return new Response(`<?xml version="1.0" encoding="UTF-8"?><Response></Response>`, { headers: { "Content-Type": "text/xml" } });
+    return new Response("Forbidden", { status: 403 });
   }
 });

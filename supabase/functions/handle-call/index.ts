@@ -16,6 +16,7 @@
 
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { verifyTwilioRequest } from "../_shared/twilio-verify.ts";
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL") ?? "";
 const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
@@ -40,16 +41,16 @@ function lastFour(phone: string): string {
 // Returns existing lead id if one matches the phone in the last 90 days, else null.
 async function findRecentLead(phone: string): Promise<number | null> {
   if (!phone) return null;
-  const normalized = normalizePhone(phone);
-  const digits = phone.replace(/\D/g, "");
+  // Build .or() candidates ONLY from a strict 10-digit validated value so a forged
+  // From can't inject PostgREST operator syntax into the filter (CODEX MED). Match
+  // either the +1XXXXXXXXXX form or the raw 10-digit form (older rows are mixed).
+  const ten = (phone || "").replace(/\D/g, "").slice(-10);
+  if (!/^\d{10}$/.test(ten)) return null;
   const cutoff = new Date(Date.now() - 90 * 86400000).toISOString();
-
-  // Match either the +1XXXXXXXXXX form or the raw 10-digit form (form submits
-  // typically store raw digits; handle-lead normalizes; older rows are mixed).
   const { data } = await supabase
     .from("leads")
     .select("id")
-    .or(`phone.eq.${normalized},phone.eq.${digits},phone.ilike.%${digits.slice(-10)}`)
+    .or(`phone.eq.+1${ten},phone.eq.${ten},phone.ilike.%${ten}`)
     .gte("created_at", cutoff)
     .order("created_at", { ascending: false })
     .limit(1);
@@ -82,6 +83,29 @@ async function createInboundCallLead(fromNumber: string, city: string): Promise<
   return data?.id ?? null;
 }
 
+// Load Twilio creds (auth token + account SID + business number) from app_config.
+// handle-call did not previously read these; needed for signature validation.
+async function getTwilioCreds() {
+  const { data } = await supabase.from("app_config").select("key, value").in("key", ["TWILIO_ACCOUNT_SID", "TWILIO_AUTH_TOKEN", "TWILIO_PHONE_NUMBER"]);
+  const config: Record<string, string> = {};
+  data?.forEach((r: any) => { config[r.key] = r.value; });
+  return { sid: config.TWILIO_ACCOUNT_SID, auth: config.TWILIO_AUTH_TOKEN, phone: config.TWILIO_PHONE_NUMBER };
+}
+
+// Process-once claim for Twilio retries (CODEX). Inserts the event key into
+// processed_webhooks; the PK makes it atomic. Returns false if already claimed
+// (a retry) so the caller can skip the one-time side effects. fail-open default —
+// a DB blip shouldn't drop call handling. (call_logs has no unique call_sid, so
+// this claim, not an upsert, is what makes the insert retry-safe.)
+async function claimWebhook(eventKey: string): Promise<boolean> {
+  if (!eventKey) return true;
+  const { error } = await supabase.from("processed_webhooks").insert({ event_key: eventKey });
+  if (!error) return true;
+  if ((error as { code?: string }).code === "23505") return false; // already processed
+  console.error("[handle-call] claimWebhook error:", error);
+  return true;
+}
+
 async function sendPostHogEvent(event: string, properties: Record<string, unknown>) {
   try {
     await fetch("https://us.i.posthog.com/capture/", {
@@ -103,7 +127,9 @@ async function sendPostHogEvent(event: string, properties: Record<string, unknow
 
 Deno.serve(async (req: Request) => {
   const url = new URL(req.url);
-  const path = url.pathname.split("/").pop();
+  // Normalize trailing slashes so `/handle-call/status/` routes the same as
+  // `/handle-call/status` (otherwise `.pop()` yields "" and misroutes to inbound).
+  const path = url.pathname.replace(/\/+$/, "").split("/").pop();
 
   const formData = await req.formData();
   const data: Record<string, string> = {};
@@ -111,43 +137,74 @@ Deno.serve(async (req: Request) => {
 
   console.log(`[handle-call] path=${path}`, JSON.stringify(data));
 
+  // ─── SECURITY GATE: verify Twilio signature BEFORE any DB write / TwiML.
+  // Covers all paths (inbound + /status + /completed). The body has already been
+  // consumed into `data`, which we pass as the signed POST params.
+  const creds = await getTwilioCreds();
+  const verified = await verifyTwilioRequest(req, data, creds.auth);
+  if (!verified.ok) {
+    console.warn("[handle-call] rejected Twilio request:", verified.reason);
+    return new Response("Forbidden", { status: 403 });
+  }
+  // AccountSid must match our account when both are present.
+  if (data.AccountSid && creds.sid && data.AccountSid !== creds.sid) {
+    return new Response("Forbidden", { status: 403 });
+  }
+
+  const isInbound = path === "handle-call" || path === "" || !path;
+  // On the INBOUND path, the call must be to our business line (when configured).
+  // Skip on /status + /completed callbacks (their `To` is the dialed party).
+  if (isInbound && creds.phone && data.To !== creds.phone) {
+    return new Response("Forbidden", { status: 403 });
+  }
+
   // === INCOMING CALL ===
   if (path === "handle-call" || path === "" || !path) {
-    const callSid = data.CallSid || "unknown";
+    const callSid = (data.CallSid || "").trim();
+    // Reject a missing/blank CallSid instead of writing an "unknown" row that can
+    // collide across bad requests (CODEX). A real Twilio inbound call always has one.
+    if (!callSid) return new Response("Forbidden", { status: 403 });
     const fromNumber = data.From || "unknown";
     const toNumber = data.To || "unknown";
     const callerCity = data.FromCity || "";
     const callerState = data.FromState || "";
     const cityLabel = callerCity ? `${callerCity}, ${callerState}` : "unknown";
 
-    // Look up or create a lead for this caller (new in v2)
-    let leadId: number | null = null;
-    if (fromNumber && fromNumber !== "unknown") {
-      leadId = await findRecentLead(fromNumber);
-      if (!leadId) {
-        leadId = await createInboundCallLead(fromNumber, cityLabel);
+    // Idempotency: run the lead lookup + call_logs insert + analytics ONCE per call.
+    // A Twilio retry of the inbound webhook is deduped via the processed_webhooks
+    // claim (call_logs has no unique call_sid, so a claim — not an upsert — is what
+    // makes this retry-safe). We ALWAYS return the Dial TwiML below, so a retry
+    // still rings Landon: the claim guards the side effects, not the call handling.
+    if (await claimWebhook(`call:${callSid}`)) {
+      // Look up or create a lead for this caller (new in v2)
+      let leadId: number | null = null;
+      if (fromNumber && fromNumber !== "unknown") {
+        leadId = await findRecentLead(fromNumber);
+        if (!leadId) {
+          leadId = await createInboundCallLead(fromNumber, cityLabel);
+        }
       }
+
+      const { error } = await supabase.from("call_logs").insert({
+        call_sid: callSid,
+        from_number: fromNumber,
+        to_number: toNumber,
+        forwarded_to: LANDON_PHONE,
+        status: "ringing",
+        city: cityLabel,
+        source_page: "website-tracking-number",
+        lead_id: leadId,
+      });
+      if (error) console.error("[handle-call] call_logs insert error:", error);
+
+      await sendPostHogEvent("inbound_call", {
+        from_number: fromNumber,
+        caller_city: callerCity,
+        caller_state: callerState,
+        source: "website",
+        lead_id: leadId,
+      });
     }
-
-    const { error } = await supabase.from("call_logs").insert({
-      call_sid: callSid,
-      from_number: fromNumber,
-      to_number: toNumber,
-      forwarded_to: LANDON_PHONE,
-      status: "ringing",
-      city: cityLabel,
-      source_page: "website-tracking-number",
-      lead_id: leadId,
-    });
-    if (error) console.error("[handle-call] call_logs insert error:", error);
-
-    await sendPostHogEvent("inbound_call", {
-      from_number: fromNumber,
-      caller_city: callerCity,
-      caller_state: callerState,
-      source: "website",
-      lead_id: leadId,
-    });
 
     const statusCallbackUrl = `${SUPABASE_URL}/functions/v1/handle-call/status`;
     const twiml = `<?xml version="1.0" encoding="UTF-8"?>
@@ -169,7 +226,10 @@ Deno.serve(async (req: Request) => {
 
   // === CALL COMPLETED ===
   if (path === "completed" || path === "status") {
-    const callSid = data.CallSid || data.ParentCallSid || "";
+    // <Number statusCallback> child-leg events carry the child id in CallSid and
+    // the original inbound call in ParentCallSid. The call_logs row is keyed by
+    // the inbound (parent) CallSid, so prefer ParentCallSid to update that row.
+    const callSid = data.ParentCallSid || data.CallSid || "";
     const duration = parseInt(data.DialCallDuration || data.CallDuration || data.Duration || "0");
     const callStatus = data.DialCallStatus || data.CallStatus || "unknown";
     const recordingUrl = data.RecordingUrl || null;
