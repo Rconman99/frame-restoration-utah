@@ -29,15 +29,23 @@ from __future__ import annotations
 import argparse
 import csv
 import json
+import os
 import re
 import shlex
 import sys
+import urllib.error
+import urllib.request
 import xml.etree.ElementTree as ET
-from datetime import date, datetime, timezone
+from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 from typing import Optional
 
 ROOT = Path(__file__).resolve().parent.parent
+WEATHER_SIGNAL_PATH = ROOT / "data" / "weather-event-signals.json"
+NWS_USER_AGENT = os.environ.get(
+    "FRAME_NWS_USER_AGENT",
+    "FrameRoofingUtahBlogBot/1.0 (https://www.frameroofingutah.com)",
+)
 
 # ── Service catalog (must match the Frame service-page slugs) ───────
 SERVICES = [
@@ -48,6 +56,91 @@ SERVICES = [
     {"slug": "residential-roofing", "name": "Residential Roofing", "lead_value": 7, "intent": "informational"},
     {"slug": "gutters", "name": "Gutters", "lead_value": 4, "intent": "transactional"},
 ]
+
+LEAD_INTENT_MULTIPLIER = {
+    "emergency": 1.3,
+    "high-ticket": 1.25,
+    "claim-process": 1.2,
+    "transactional": 1.1,
+    "informational": 0.95,
+}
+
+WEATHER_SERVICE_BOOSTS = {
+    "hail": {
+        "storm-damage": 1.9,
+        "insurance-claims": 1.7,
+        "roof-repair": 1.45,
+        "roof-replacement": 1.12,
+    },
+    "thunderstorm": {
+        "storm-damage": 1.75,
+        "insurance-claims": 1.55,
+        "roof-repair": 1.4,
+        "roof-replacement": 1.08,
+    },
+    "wind": {
+        "roof-repair": 1.65,
+        "storm-damage": 1.6,
+        "insurance-claims": 1.35,
+        "roof-replacement": 1.06,
+    },
+    "heavy-rain": {
+        "roof-repair": 1.55,
+        "storm-damage": 1.35,
+        "insurance-claims": 1.2,
+        "gutters": 1.12,
+    },
+    "snow": {
+        "roof-repair": 1.45,
+        "storm-damage": 1.35,
+        "insurance-claims": 1.15,
+        "roof-replacement": 1.08,
+        "gutters": 1.08,
+    },
+    "freeze": {
+        "roof-repair": 1.35,
+        "storm-damage": 1.2,
+        "roof-replacement": 1.08,
+        "gutters": 1.08,
+    },
+    "heat": {
+        "roof-replacement": 1.12,
+        "residential-roofing": 1.08,
+        "roof-repair": 1.05,
+    },
+}
+
+WEATHER_KEYWORD_TEMPLATES = {
+    "hail": {
+        "storm-damage": "hail damage roof inspection {city}",
+        "insurance-claims": "{city} hail damage roof insurance claim",
+        "roof-repair": "hail damage roof repair {city}",
+    },
+    "thunderstorm": {
+        "storm-damage": "storm damage roof repair {city}",
+        "insurance-claims": "{city} storm damage roof insurance claim",
+        "roof-repair": "storm roof leak repair {city}",
+    },
+    "wind": {
+        "storm-damage": "wind damage roof repair {city}",
+        "insurance-claims": "{city} wind damage roof insurance claim",
+        "roof-repair": "wind lifted shingle repair {city}",
+    },
+    "heavy-rain": {
+        "roof-repair": "roof leak repair after rain {city}",
+        "storm-damage": "storm leak roof repair {city}",
+        "gutters": "gutter repair after heavy rain {city}",
+    },
+    "snow": {
+        "roof-repair": "ice dam roof repair {city}",
+        "storm-damage": "snow damage roof repair {city}",
+        "gutters": "ice dam gutter repair {city}",
+    },
+    "freeze": {
+        "roof-repair": "freeze thaw roof leak repair {city}",
+        "roof-replacement": "winter roof replacement planning {city}",
+    },
+}
 
 # ── Keyword templates per (service, city_kind) ──────────────────────
 # city_kind = mountain (Park City, Heber, Midway) | valley | metro
@@ -198,23 +291,33 @@ def load_gsc_csv(path: Path) -> dict[str, dict]:
 
 
 def load_traffic_snapshot() -> dict:
-    """Load the weekly-report snapshot. {city_slug: posthog_views}."""
+    """Load the weekly-report snapshot. {city_slug: posthog_views}.
+
+    Prefer data/traffic-snapshot.json when present; otherwise fall back to the
+    latest committed weekly report so local ranking still has real conversion
+    context when the private PostHog snapshot is absent.
+    """
     p = ROOT / "data" / "traffic-snapshot.json"
     if not p.exists():
-        return {"available": False, "by_city": {}, "summary": {}}
+        reports = sorted((ROOT / "data" / "weekly-reports").glob("*.json"))
+        if not reports:
+            return {"available": False, "by_city": {}, "summary": {}}
+        p = reports[-1]
     try:
-        snap = json.loads(p.read_text())
+        raw = json.loads(p.read_text())
+        snap = raw.get("data", raw)
         by_city = {}
         for entry in snap.get("location_performance", []):
             by_city[entry["location"]] = entry["views"]
         for slug in snap.get("location_gaps", []):
-            by_city[slug] = 0
+            by_city.setdefault(slug, 0)
         return {
             "available": True,
             "by_city": by_city,
             "summary": snap.get("summary", {}),
             "top_pages": snap.get("top_pages", []),
             "generated_at": snap.get("generated_at", ""),
+            "source_path": str(p.relative_to(ROOT)),
         }
     except (json.JSONDecodeError, KeyError):
         return {"available": False, "by_city": {}, "summary": {}}
@@ -251,6 +354,274 @@ def load_reddit_signals() -> dict[str, dict]:
     except (json.JSONDecodeError, KeyError):
         pass
     return out
+
+
+def load_city_coords() -> dict[str, tuple[float, float]]:
+    """Extract city lat/lon from the location pages' LocalBusiness JSON-LD."""
+    coords: dict[str, tuple[float, float]] = {}
+    for path in (ROOT / "locations").glob("*.html"):
+        text = path.read_text(errors="ignore")
+        lat = re.search(r'"latitude"\s*:\s*([0-9.-]+)', text)
+        lon = re.search(r'"longitude"\s*:\s*([0-9.-]+)', text)
+        if lat and lon:
+            coords[path.stem] = (float(lat.group(1)), float(lon.group(1)))
+    return coords
+
+
+def fetch_json(url: str, timeout: int = 12) -> Optional[dict]:
+    req = urllib.request.Request(
+        url,
+        headers={
+            "User-Agent": NWS_USER_AGENT,
+            "Accept": "application/geo+json, application/json",
+        },
+    )
+    try:
+        with urllib.request.urlopen(req, timeout=timeout) as resp:
+            return json.loads(resp.read().decode("utf-8"))
+    except (urllib.error.URLError, TimeoutError, json.JSONDecodeError):
+        return None
+
+
+def classify_weather_text(text: str, temperature: Optional[int] = None) -> Optional[str]:
+    """Map NWS alert/forecast language to roofing-relevant hazard categories."""
+    lower = text.lower()
+    if "hail" in lower:
+        return "hail"
+    if "severe thunderstorm" in lower or "thunderstorm" in lower or "lightning" in lower:
+        return "thunderstorm"
+    if any(token in lower for token in ("high wind", "wind advisory", "wind warning", "windy", "strong wind")):
+        return "wind"
+    gusts = [int(n) for n in re.findall(r"gusts?\s+(?:as high as|to|near|up to)?\s*(\d+)\s*mph", lower)]
+    if gusts and max(gusts) >= 30:
+        return "wind"
+    wind_ranges = [max(int(a), int(b)) for a, b in re.findall(r"wind\s+\d*\s*(\d+)\s*(?:to|-)\s*(\d+)\s*mph", lower)]
+    if wind_ranges and max(wind_ranges) >= 25:
+        return "wind"
+    if any(token in lower for token in ("heavy rain", "excessive rainfall", "flood", "downpour")):
+        return "heavy-rain"
+    if any(token in lower for token in ("snow", "winter storm", "blizzard", "ice accumulation")):
+        return "snow"
+    if any(token in lower for token in ("freeze", "freezing", "frost", "ice storm")):
+        return "freeze"
+    if "heat advisory" in lower or "excessive heat" in lower or (temperature is not None and temperature >= 95):
+        return "heat"
+    return None
+
+
+def weather_context_for(city_name: str, hazard: str, event: str, source: str, is_alert: bool) -> str:
+    """Short model-safe hook. Avoid exact measurements so generated copy stays review-light."""
+    if is_alert:
+        return (
+            f"Current NWS context for {city_name}: active {event}. "
+            "Use this as a timely roof-readiness and inspection hook, but do not claim any specific home was damaged."
+        )
+    if hazard == "wind":
+        return (
+            f"Current NWS context for {city_name}: forecast includes gusty winds in the next few days. "
+            "Use a wind-readiness angle around lifted shingles, ridge caps, flashing, and safe post-wind inspection."
+        )
+    if hazard == "hail":
+        return (
+            f"Current NWS context for {city_name}: forecast language includes hail/storm potential. "
+            "Use a hail-readiness and damage-documentation angle without claiming hail has already hit the city."
+        )
+    if hazard == "thunderstorm":
+        return (
+            f"Current NWS context for {city_name}: forecast includes thunderstorm potential. "
+            "Use a storm-readiness, leak-prevention, and post-storm inspection angle."
+        )
+    if hazard == "heavy-rain":
+        return (
+            f"Current NWS context for {city_name}: forecast includes rain that can expose roof leaks. "
+            "Use a leak-prevention and gutter/drainage inspection angle."
+        )
+    if hazard == "snow":
+        return (
+            f"Current NWS context for {city_name}: forecast includes winter weather. "
+            "Use an ice-dam, snow-load, ventilation, and eave-protection angle."
+        )
+    if hazard == "freeze":
+        return (
+            f"Current NWS context for {city_name}: forecast includes freeze-thaw conditions. "
+            "Use a flashing, sealant, eave, and attic-ventilation inspection angle."
+        )
+    if hazard == "heat":
+        return (
+            f"Current NWS context for {city_name}: forecast includes hot weather. "
+            "Use a UV aging, attic ventilation, shingle wear, and replacement-planning angle."
+        )
+    return ""
+
+
+def empty_weather_signal(city_name: str) -> dict:
+    return {
+        "hazard": None,
+        "event": "",
+        "event_context": "",
+        "source_url": "",
+        "service_boosts": {},
+        "score": 0.0,
+        "city_name": city_name,
+    }
+
+
+def fetch_city_weather_signal(city_slug: str, city_name: str, coords: tuple[float, float]) -> dict:
+    lat, lon = coords
+    point = f"{lat:.4f},{lon:.4f}"
+
+    alerts_url = f"https://api.weather.gov/alerts/active?point={point}"
+    alerts = fetch_json(alerts_url)
+    if alerts:
+        severity_weight = {"Extreme": 1.0, "Severe": 0.85, "Moderate": 0.65, "Minor": 0.45, "Unknown": 0.35}
+        best: Optional[dict] = None
+        for feature in alerts.get("features", []):
+            props = feature.get("properties", {})
+            event = props.get("event") or "weather alert"
+            text = " ".join(str(props.get(k) or "") for k in ("event", "headline", "description", "areaDesc"))
+            hazard = classify_weather_text(text)
+            if not hazard:
+                continue
+            score = severity_weight.get(props.get("severity", "Unknown"), 0.35)
+            candidate = {
+                "hazard": hazard,
+                "event": event,
+                "event_context": weather_context_for(city_name, hazard, event, alerts_url, is_alert=True),
+                "source_url": props.get("@id") or feature.get("id") or alerts_url,
+                "service_boosts": WEATHER_SERVICE_BOOSTS.get(hazard, {}),
+                "score": score,
+                "city_name": city_name,
+            }
+            if not best or candidate["score"] > best["score"]:
+                best = candidate
+        if best:
+            return best
+
+    point_meta = fetch_json(f"https://api.weather.gov/points/{point}")
+    forecast_url = ((point_meta or {}).get("properties") or {}).get("forecast")
+    if not forecast_url:
+        return empty_weather_signal(city_name)
+
+    forecast = fetch_json(forecast_url)
+    periods = (((forecast or {}).get("properties") or {}).get("periods") or [])[:6]
+    best = empty_weather_signal(city_name)
+    hazard_score = {
+        "hail": 0.65,
+        "thunderstorm": 0.55,
+        "wind": 0.5,
+        "heavy-rain": 0.45,
+        "snow": 0.45,
+        "freeze": 0.35,
+        "heat": 0.25,
+    }
+    for period in periods:
+        text = " ".join(str(period.get(k) or "") for k in ("name", "shortForecast", "detailedForecast", "windSpeed"))
+        hazard = classify_weather_text(text, period.get("temperature"))
+        if not hazard:
+            continue
+        score = hazard_score.get(hazard, 0.2)
+        if score > best["score"]:
+            event = f"{period.get('name', 'upcoming')} {period.get('shortForecast', 'weather')}".strip()
+            if hazard == "wind":
+                event = "Gusty wind forecast"
+            elif hazard == "hail":
+                event = "Hail/storm forecast"
+            elif hazard == "thunderstorm":
+                event = "Thunderstorm forecast"
+            elif hazard == "heavy-rain":
+                event = "Heavy rain forecast"
+            elif hazard == "snow":
+                event = "Winter weather forecast"
+            elif hazard == "freeze":
+                event = "Freeze-thaw forecast"
+            elif hazard == "heat":
+                event = "Hot weather forecast"
+            best = {
+                "hazard": hazard,
+                "event": event,
+                "event_context": weather_context_for(city_name, hazard, event, forecast_url, is_alert=False),
+                "source_url": forecast_url,
+                "service_boosts": WEATHER_SERVICE_BOOSTS.get(hazard, {}),
+                "score": score,
+                "city_name": city_name,
+            }
+    return best
+
+
+def load_weather_signals(
+    market: dict[str, dict],
+    cache_hours: int = 6,
+    refresh: bool = False,
+    enabled: bool = True,
+) -> dict[str, dict]:
+    """Live weather/current-event signals from the National Weather Service.
+
+    The file is intentionally ignored by git. It gives Monday/Thursday cron runs
+    a current hook without adding volatile API output to the repo.
+    """
+    if not enabled:
+        return {}
+
+    if WEATHER_SIGNAL_PATH.exists() and not refresh:
+        try:
+            cached = json.loads(WEATHER_SIGNAL_PATH.read_text())
+            generated = datetime.fromisoformat(cached.get("generated_at", "").replace("Z", "+00:00"))
+            if generated.tzinfo is None:
+                generated = generated.replace(tzinfo=timezone.utc)
+            if datetime.now(timezone.utc) - generated <= timedelta(hours=cache_hours):
+                return cached.get("by_city", {})
+        except (json.JSONDecodeError, ValueError):
+            pass
+
+    coords = load_city_coords()
+    by_city: dict[str, dict] = {}
+    for city_slug, city_data in market.items():
+        if city_slug not in coords:
+            continue
+        by_city[city_slug] = fetch_city_weather_signal(city_slug, city_data["name"], coords[city_slug])
+
+    WEATHER_SIGNAL_PATH.write_text(json.dumps({
+        "generated_at": datetime.now(timezone.utc).isoformat(),
+        "source": "https://api.weather.gov/",
+        "by_city": by_city,
+    }, indent=2))
+    return by_city
+
+
+def parse_iso_date(value: str) -> Optional[date]:
+    if not value:
+        return None
+    try:
+        return datetime.fromisoformat(value[:10]).date()
+    except ValueError:
+        return None
+
+
+def load_recent_city_slugs(days: int) -> set[str]:
+    """Cities drafted/published recently, used to keep Mon/Thu posts rotating."""
+    if days <= 0:
+        return set()
+    cutoff = date.today() - timedelta(days=days)
+    recent: set[str] = set()
+
+    for path in (ROOT / "data" / "blog-pending").glob("*.json"):
+        try:
+            manifest = json.loads(path.read_text())
+        except json.JSONDecodeError:
+            continue
+        draft_date = parse_iso_date(str(manifest.get("draft_date") or ""))
+        city = manifest.get("city_slug")
+        if city and draft_date and draft_date >= cutoff:
+            recent.add(city)
+
+    for path in (ROOT / "blog").glob("*/*.html"):
+        text = path.read_text(errors="ignore")
+        match = re.search(r'"datePublished"\s*:\s*"([^"]+)"', text) or re.search(r'datetime="(\d{4}-\d{2}-\d{2})"', text)
+        published = parse_iso_date(match.group(1) if match else "")
+        if published and published >= cutoff:
+            recent.add(path.parent.name)
+
+    return recent
 
 
 # ── Scoring ─────────────────────────────────────────────────────────
@@ -322,6 +693,7 @@ def score_target(
     gsc: dict,
     posthog_views: int,
     reddit: dict,
+    weather_signal: Optional[dict],
     include_saturated: bool = False,
 ) -> dict:
     """Return scoring breakdown for a (city, service) target.
@@ -365,6 +737,10 @@ def score_target(
     # 6. Revenue proxy — LSA $/mo allocation × service lead_value
     revenue_proxy = (city_data.get("allocation", 0) / 350.0) * (service["lead_value"] / 10.0)
 
+    # 6b. Lead-conversion intent — emergency/high-ticket/claim-process content is
+    # more likely to turn traffic into calls than broad informational roofing copy.
+    lead_intent_mult = LEAD_INTENT_MULTIPLIER.get(service.get("intent"), 1.0)
+
     # 7. GSC traffic gap (only when CSV provided)
     gsc_mult = 1.0
     gsc_data = gsc.get(loc_path) or gsc.get(loc_path + "/") or {}
@@ -406,6 +782,15 @@ def score_target(
     if posthog_views >= 5 and reddit_demand >= 3.0 and 3 <= blog_count <= 7:
         depth_play_mult = 1.6  # SLC, Heber, Bountiful currently fit this
 
+    # 10. Weather/current-event alignment — live NWS alert/forecast context.
+    # A storm signal should not crown a low-value city by itself; it should move
+    # the *right service* up when the SEO/AEO and conversion fundamentals already fit.
+    weather_event_mult = 1.0
+    weather_hazard = None
+    if weather_signal:
+        weather_hazard = weather_signal.get("hazard")
+        weather_event_mult = float((weather_signal.get("service_boosts") or {}).get(service["slug"], 1.0))
+
     score = (
         coverage_gap * 100
         * tier_mult
@@ -413,9 +798,11 @@ def score_target(
         * aeo_mult
         * fresh_mult
         * (1 + revenue_proxy)
+        * lead_intent_mult
         * gsc_mult
         * demand_supply_gap
         * depth_play_mult
+        * weather_event_mult
     )
 
     return {
@@ -427,18 +814,25 @@ def score_target(
             "aeo_mult": round(aeo_mult, 3),
             "fresh_mult": fresh_mult,
             "revenue_proxy": round(revenue_proxy, 3),
+            "lead_intent_mult": lead_intent_mult,
             "gsc_mult": gsc_mult,
             "demand_supply_gap": round(demand_supply_gap, 3),
             "depth_play_mult": depth_play_mult,
+            "weather_event_mult": round(weather_event_mult, 3),
         },
         "loc_lastmod_days": days_since(loc_lastmod),
         "posthog_views": posthog_views,
         "reddit_demand": round(reddit_demand, 2),
+        "weather_hazard": weather_hazard,
         "gsc": gsc_data or None,
     }
 
 
-def keyword_for(service_slug: str, city_slug: str, city_name: str) -> str:
+def keyword_for(service_slug: str, city_slug: str, city_name: str, weather_signal: Optional[dict] = None) -> str:
+    hazard = (weather_signal or {}).get("hazard")
+    weather_template = WEATHER_KEYWORD_TEMPLATES.get(hazard or "", {}).get(service_slug)
+    if weather_template:
+        return weather_template.format(city=city_name, service=service_slug.replace("-", " "))
     template = KEYWORD_TEMPLATES.get(service_slug, {}).get(city_kind(city_slug), "{service} {city}")
     return template.format(city=city_name, service=service_slug.replace("-", " "))
 
@@ -455,6 +849,14 @@ def main():
                         help=f"Include cities at the {MAX_SPOKES_PER_CITY}-spoke saturation cap (use only for distinct-intent exceptions)")
     parser.add_argument("--include-heber-valley-cluster", action="store_true",
                         help="Include Heber City/Midway/Wallsburg/Charleston/Daniel. Default excludes them so unattended blog drafts follow the Heber Valley umbrella rule in CLAUDE.md.")
+    parser.add_argument("--exclude-recent-city-days", type=int, default=21,
+                        help="Skip cities drafted/published in the last N days so Mon/Thu posts rotate markets (default 21; use 0 to disable)")
+    parser.add_argument("--no-weather", action="store_true",
+                        help="Disable live NWS weather/current-event scoring")
+    parser.add_argument("--refresh-weather", action="store_true",
+                        help="Ignore cached data/weather-event-signals.json and fetch fresh NWS signals")
+    parser.add_argument("--weather-cache-hours", type=int, default=6,
+                        help="Reuse cached weather signals for this many hours (default 6)")
     args = parser.parse_args()
 
     market = load_market_intel()
@@ -466,18 +868,31 @@ def main():
     gsc = load_gsc_csv(args.gsc_csv) if args.gsc_csv else {}
     traffic = load_traffic_snapshot()
     reddit = load_reddit_signals()
+    weather = load_weather_signals(
+        market,
+        cache_hours=args.weather_cache_hours,
+        refresh=args.refresh_weather,
+        enabled=not args.no_weather,
+    )
+    recent_cities = load_recent_city_slugs(args.exclude_recent_city_days)
 
     if args.gsc_csv:
         print(f"# GSC: {len(gsc)} URL rows from {args.gsc_csv}", file=sys.stderr)
     if traffic.get("available"):
         s = traffic["summary"]
-        print(f"# PostHog (live, last 90d): {s.get('total_pageviews', 0)} pageviews · "
+        source = traffic.get("source_path", "data/traffic-snapshot.json")
+        print(f"# PostHog ({source}): {s.get('total_pageviews', 0)} pageviews · "
               f"{s.get('total_leads', 0)} leads · {s.get('total_calls', 0)} calls · "
               f"{s.get('conversion_rate_pct', 0)}% conv", file=sys.stderr)
     else:
         print(f"# PostHog snapshot missing — run scripts/refresh-traffic-snapshot.sh", file=sys.stderr)
     if reddit:
         print(f"# Reddit signals: {len(reddit)} cities with chatter (last 180d)", file=sys.stderr)
+    if weather:
+        active_weather = sum(1 for s in weather.values() if s.get("hazard"))
+        print(f"# NWS weather/current-event signals: {active_weather}/{len(weather)} cities with roofing-relevant forecast/alert hooks", file=sys.stderr)
+    if recent_cities:
+        print(f"# Recent city rotation: skipping {len(recent_cities)} cities drafted/published in last {args.exclude_recent_city_days} days", file=sys.stderr)
     print(f"# Cities: {len(market)} | Existing spokes: {sum(spokes.values())} blog posts across {len(spokes)} cities", file=sys.stderr)
     print(f"# AEO actions open: {len(load_aeo_actions())}", file=sys.stderr)
 
@@ -485,9 +900,12 @@ def main():
     for city_slug, city_data in market.items():
         if city_slug in HEBER_VALLEY_CLUSTER and not args.include_heber_valley_cluster:
             continue
+        if city_slug in recent_cities:
+            continue
         blog_count = spokes.get(city_slug, 0)
         posthog_views = traffic.get("by_city", {}).get(city_slug, 0)
         reddit_data = reddit.get(city_slug, {})
+        weather_signal = weather.get(city_slug, {})
         for service in SERVICES:
             existing = existing_post_for_target(city_slug, service["slug"])
             spoke_exists = existing is not None
@@ -496,6 +914,7 @@ def main():
             scoring = score_target(
                 city_slug, city_data, service, blog_count, spoke_exists,
                 sitemap, gsc, posthog_views, reddit_data,
+                weather_signal,
                 include_saturated=args.include_saturated,
             )
             # Skip zero-score rows unless --include-existing or --include-saturated requested an audit
@@ -506,7 +925,7 @@ def main():
                 "city_name": city_data["name"],
                 "service_slug": service["slug"],
                 "service_name": service["name"],
-                "keyword": keyword_for(service["slug"], city_slug, city_data["name"]),
+                "keyword": keyword_for(service["slug"], city_slug, city_data["name"], weather_signal),
                 "tier": city_data["tier"],
                 "blog_spokes_in_city": blog_count,
                 "storm_override": city_data["storm_override"],
@@ -517,6 +936,12 @@ def main():
                 "loc_page_age_days": scoring.get("loc_lastmod_days"),
                 "posthog_views_90d": scoring.get("posthog_views"),
                 "reddit_demand": scoring.get("reddit_demand"),
+                "weather_event": {
+                    "hazard": (weather_signal or {}).get("hazard"),
+                    "event": (weather_signal or {}).get("event"),
+                    "event_context": (weather_signal or {}).get("event_context"),
+                    "source_url": (weather_signal or {}).get("source_url"),
+                } if weather_signal and weather_signal.get("hazard") else None,
                 "gsc": scoring.get("gsc"),
             })
 
@@ -531,15 +956,25 @@ def main():
         if not top:
             sys.exit("No targets — all (city, service) combinations already have spokes.")
         t = top[0]
+        event = t.get("weather_event") or {}
+        event_args = ""
+        if event.get("event_context"):
+            event_args = " " + shlex.join([
+                "--event-context", event["event_context"],
+                "--event-source-url", event.get("source_url", ""),
+            ])
         cmd = (
             f'cd {shlex.quote(str(ROOT))} && '
             f'npm run blog:draft -- '
             f'--keyword "{t["keyword"]}" '
             f'--city {t["city_slug"]} '
             f'--style {"storm" if t["service_slug"] in {"storm-damage","roof-repair","insurance-claims"} else "atmospheric"}'
+            f'{event_args}'
         )
         print(f"# Top target: {t['city_name']} × {t['service_name']} (score {t['score']})")
         print(f"# Why: tier {t['tier']}, {t['blog_spokes_in_city']} existing spokes, storm-override={t['storm_override']}, ${t['lsa_allocation']}/mo allocation")
+        if event.get("hazard"):
+            print(f"# Weather/current hook: {event.get('hazard')} · {event.get('event')}")
         print()
         print(cmd)
         return
@@ -587,12 +1022,13 @@ def main():
     print()
     print("═══ FULL RANKING (all axes blended) ═══")
     print()
-    print(f"{'#':<3} {'CITY':<22} {'SERVICE':<22} {'SCORE':>7} {'SPOK':>4} {'T':>2} {'ST':>3} {'PV':>4} {'RD':>5}")
-    print("─" * 78)
+    print(f"{'#':<3} {'CITY':<22} {'SERVICE':<22} {'SCORE':>7} {'SPOK':>4} {'T':>2} {'ST':>3} {'PV':>4} {'RD':>5} {'WX':>6}")
+    print("─" * 86)
     for i, t in enumerate(top, 1):
         storm = "✓" if t["storm_override"] else " "
         pv = t.get("posthog_views_90d", 0) or 0
         rd = t.get("reddit_demand", 0) or 0
+        wx = ((t.get("weather_event") or {}).get("hazard") or "—")[:6]
         print(
             f"{i:<3} "
             f"{t['city_name']:<22} "
@@ -602,11 +1038,12 @@ def main():
             f"{t['tier']:>2} "
             f"{storm:>3} "
             f"{pv:>4} "
-            f"{rd:>5.1f}"
+            f"{rd:>5.1f} "
+            f"{wx:>6}"
         )
     print()
     print("  Legend: SCORE=composite · SPOK=existing blog spokes in city · T=tier · ST=storm-override")
-    print("          PV=PostHog /locations/{city} pageviews (90d) · RD=Reddit demand (engagement/50)")
+    print("          PV=PostHog /locations/{city} pageviews · RD=Reddit demand (engagement/50) · WX=NWS hook")
     print()
     if top:
         t1 = top[0]
@@ -616,6 +1053,9 @@ def main():
             print(f"  ⚡ demand-supply gap: {bd['demand_supply_gap']}x  (Reddit chatter > current traffic)")
         if bd.get("depth_play_mult", 1.0) > 1.0:
             print(f"  ⚡ depth-play boost: {bd['depth_play_mult']}x  (existing traffic + Reddit demand, untapped service)")
+        if bd.get("weather_event_mult", 1.0) > 1.0:
+            event = t1.get("weather_event") or {}
+            print(f"  ⚡ weather/current-event boost: {bd['weather_event_mult']}x  ({event.get('hazard')} · {event.get('event')})")
     print(f"\nRun: python3 scripts/blog-target-prioritizer.py --feed-blog-draft   ← prints the npm command")
     print()
     if not traffic.get("available"):

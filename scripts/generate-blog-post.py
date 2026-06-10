@@ -340,15 +340,25 @@ Respond with ONLY valid JSON using the exact structure requested above.
 
 
 # ── Prompt builder ──────────────────────────────────────────────────
-def build_prompt(keyword: str, city_slug: str, style: str) -> str:
+def build_prompt(keyword: str, city_slug: str, style: str, event_context: str = "", event_source_url: str = "") -> str:
     city_label = "Utah" if city_slug == "utah" else city_slug.replace("-", " ").title()
     today_iso = date.today().isoformat()
     paths = "\n".join(f"  {p}" for p in VALID_INTERNAL_PATHS)
+    current_context = ""
+    if event_context.strip():
+        current_context = f"""
+CURRENT WEATHER / CITY CONTEXT:
+{event_context.strip()}
+Source: {event_source_url.strip() or "National Weather Service"}
+
+Use this only as a timely homeowner-education hook. Do not state that damage occurred, do not imply Frame inspected a specific property, and do not add exact weather measurements unless they are directly attributed to the source.
+"""
     return f"""You are an SEO + AEO content writer for {BUSINESS_NAME}, a Utah roofing contractor based in Heber City. The owner is {AUTHOR_NAME}.
 
 Write a blog post targeting the keyword: "{keyword}"
 Target city/region: {city_label}
 Today's date: {today_iso}
+{current_context}
 
 HARD RULES (do not violate):
 1. Frame Roofing Utah is licensed + insured + BBB Accredited (A+) since 2026-04-07. Do not add trade-association, manufacturer, installer, inspector, or other certification claims.
@@ -707,6 +717,8 @@ def main():
     parser.add_argument("--style", default="atmospheric", choices=sorted(STYLE_PRESETS.keys()),
                         help="Higgsfield image style preset")
     parser.add_argument("--ollama-model", default=DEFAULT_MODEL, help="Ollama model")
+    parser.add_argument("--event-context", default="", help="Optional current weather/event hook to include in the prompt")
+    parser.add_argument("--event-source-url", default="", help="Source URL for --event-context")
     parser.add_argument("--prompt-only", action="store_true", help="Print prompt, don't run Ollama")
     parser.add_argument("--dry-run", action="store_true", help="Don't write files")
     parser.add_argument("--no-hero", action="store_true", help="Use existing fallback image, no Higgsfield needed")
@@ -736,7 +748,7 @@ def main():
     if not args.keyword:
         sys.exit("--keyword required (unless --render)")
 
-    prompt = build_prompt(args.keyword, args.city, args.style)
+    prompt = build_prompt(args.keyword, args.city, args.style, args.event_context, args.event_source_url)
 
     if args.prompt_only:
         print(prompt)

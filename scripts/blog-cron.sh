@@ -1,5 +1,5 @@
 #!/bin/bash
-# Weekly Frame Roofing Utah blog draft runner.
+# Twice-weekly Frame Roofing Utah blog draft runner.
 #
 # This is intentionally draft-first. The May 2026 handoff says generated posts
 # need human finishing before production, so launchd should create the next
@@ -15,6 +15,9 @@ LOG="${FRAME_UTAH_BLOG_LOG:-$HOME/.cache/frame-roofing-blog.log}"
 OLLAMA_BASE="${OLLAMA_URL:-http://127.0.0.1:11434}"
 OLLAMA_MODEL="${OLLAMA_MODEL:-nemotron-3-nano:30b}"
 AUTO_RENDER="${FRAME_UTAH_BLOG_AUTO_RENDER:-0}"
+RECENT_CITY_DAYS="${FRAME_UTAH_BLOG_RECENT_CITY_DAYS:-21}"
+TARGET_TOP="${FRAME_UTAH_BLOG_TARGET_TOP:-80}"
+USE_WEATHER="${FRAME_UTAH_BLOG_USE_WEATHER:-1}"
 STARTED=$(date +%s)
 
 mkdir -p "$(dirname "$LOG")"
@@ -67,16 +70,35 @@ else
   log "! Current branch does not track origin/main (upstream=${upstream:-none}); drafting on current checked-out branch."
 fi
 
+export FRAME_UTAH_BLOG_RECENT_CITY_DAYS="$RECENT_CITY_DAYS"
+export FRAME_UTAH_BLOG_TARGET_TOP="$TARGET_TOP"
+export FRAME_UTAH_BLOG_USE_WEATHER="$USE_WEATHER"
+
 target=$(
   python3 - <<'PY'
 import json
+import os
 import pathlib
 import subprocess
 import sys
 
 repo = pathlib.Path.cwd()
+recent_days = os.environ.get("FRAME_UTAH_BLOG_RECENT_CITY_DAYS", "21")
+target_top = os.environ.get("FRAME_UTAH_BLOG_TARGET_TOP", "80")
+use_weather = os.environ.get("FRAME_UTAH_BLOG_USE_WEATHER", "1")
+cmd = [
+    sys.executable,
+    "scripts/blog-target-prioritizer.py",
+    "--json",
+    "--top",
+    target_top,
+    "--exclude-recent-city-days",
+    recent_days,
+]
+if use_weather in {"0", "false", "False", "no", "NO"}:
+    cmd.append("--no-weather")
 proc = subprocess.run(
-    [sys.executable, "scripts/blog-target-prioritizer.py", "--json", "--top", "40"],
+    cmd,
     cwd=repo,
     text=True,
     capture_output=True,
@@ -108,8 +130,10 @@ for item in data.get("top", []):
             "city": item["city_slug"],
             "city_name": item["city_name"],
             "service": item["service_name"],
+            "service_slug": item["service_slug"],
             "style": style,
             "score": item["score"],
+            "weather_event": item.get("weather_event"),
         }))
         sys.exit(0)
 
@@ -128,21 +152,38 @@ keyword=$(python3 -c 'import json,sys; print(json.loads(sys.argv[1])["keyword"])
 city=$(python3 -c 'import json,sys; print(json.loads(sys.argv[1])["city"])' "$target")
 city_name=$(python3 -c 'import json,sys; print(json.loads(sys.argv[1])["city_name"])' "$target")
 service=$(python3 -c 'import json,sys; print(json.loads(sys.argv[1])["service"])' "$target")
+service_slug=$(python3 -c 'import json,sys; print(json.loads(sys.argv[1]).get("service_slug",""))' "$target")
 style=$(python3 -c 'import json,sys; print(json.loads(sys.argv[1])["style"])' "$target")
 score=$(python3 -c 'import json,sys; print(json.loads(sys.argv[1])["score"])' "$target")
+event_context=$(python3 -c 'import json,sys; print(((json.loads(sys.argv[1]).get("weather_event") or {}).get("event_context") or ""))' "$target")
+event_source_url=$(python3 -c 'import json,sys; print(((json.loads(sys.argv[1]).get("weather_event") or {}).get("source_url") or ""))' "$target")
+weather_hazard=$(python3 -c 'import json,sys; print(((json.loads(sys.argv[1]).get("weather_event") or {}).get("hazard") or ""))' "$target")
 
 log "-> Drafting blog target: $city_name x $service (score=$score)"
 log "-> Keyword: $keyword"
+if [ -n "$weather_hazard" ]; then
+  log "-> Weather/current hook: $weather_hazard"
+fi
 
 before=$(mktemp)
 after=$(mktemp)
 find data/blog-pending -type f -name '*.json' -print | sort >"$before" 2>/dev/null || true
 
-python3 scripts/generate-blog-post.py \
+draft_cmd=(
+  python3 scripts/generate-blog-post.py
   --keyword "$keyword" \
   --city "$city" \
   --style "$style" \
-  --ollama-model "$OLLAMA_MODEL" >>"$LOG" 2>&1
+  --ollama-model "$OLLAMA_MODEL"
+)
+if [ -n "$event_context" ]; then
+  draft_cmd+=(--event-context "$event_context")
+fi
+if [ -n "$event_source_url" ]; then
+  draft_cmd+=(--event-source-url "$event_source_url")
+fi
+
+"${draft_cmd[@]}" >>"$LOG" 2>&1
 draft_exit=$?
 
 if [ "$draft_exit" -ne 0 ]; then
