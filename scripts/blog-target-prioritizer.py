@@ -30,6 +30,7 @@ import argparse
 import csv
 import json
 import re
+import shlex
 import sys
 import xml.etree.ElementTree as ET
 from datetime import date, datetime, timezone
@@ -58,7 +59,7 @@ KEYWORD_TEMPLATES = {
     },
     "roof-replacement": {
         "mountain": "mountain home roof replacement {city}",
-        "valley":   "roof replacement cost {city}",
+        "valley":   "roof replacement {city} utah",
         "metro":    "roof replacement {city} utah",
     },
     "insurance-claims": {
@@ -86,6 +87,7 @@ KEYWORD_TEMPLATES = {
 MOUNTAIN_CITIES = {"park-city", "heber-city", "midway", "alpine"}
 METRO_CITIES = {"salt-lake-city", "west-valley-city", "ogden", "provo", "orem", "south-salt-lake"}
 # everything else = valley
+HEBER_VALLEY_CLUSTER = {"heber-city", "midway", "wallsburg", "charleston", "daniel"}
 
 # Per-city blog-spoke saturation cap (2026-05-09 research).
 # 2026 local-SEO sentiment converged on "fewer/deeper, not more/thinner":
@@ -451,6 +453,8 @@ def main():
     parser.add_argument("--include-existing", action="store_true", help="Include rows where a spoke already exists (for audit)")
     parser.add_argument("--include-saturated", action="store_true",
                         help=f"Include cities at the {MAX_SPOKES_PER_CITY}-spoke saturation cap (use only for distinct-intent exceptions)")
+    parser.add_argument("--include-heber-valley-cluster", action="store_true",
+                        help="Include Heber City/Midway/Wallsburg/Charleston/Daniel. Default excludes them so unattended blog drafts follow the Heber Valley umbrella rule in CLAUDE.md.")
     args = parser.parse_args()
 
     market = load_market_intel()
@@ -479,6 +483,8 @@ def main():
 
     targets = []
     for city_slug, city_data in market.items():
+        if city_slug in HEBER_VALLEY_CLUSTER and not args.include_heber_valley_cluster:
+            continue
         blog_count = spokes.get(city_slug, 0)
         posthog_views = traffic.get("by_city", {}).get(city_slug, 0)
         reddit_data = reddit.get(city_slug, {})
@@ -526,7 +532,7 @@ def main():
             sys.exit("No targets — all (city, service) combinations already have spokes.")
         t = top[0]
         cmd = (
-            f'cd ~/projects/frame-restoration-utah && '
+            f'cd {shlex.quote(str(ROOT))} && '
             f'npm run blog:draft -- '
             f'--keyword "{t["keyword"]}" '
             f'--city {t["city_slug"]} '

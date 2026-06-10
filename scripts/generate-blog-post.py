@@ -27,7 +27,7 @@ Hard rules (encoded — do not change without reading CLAUDE.md):
   - Higgsfield assets get ImageObject schema with disambiguatingDescription, NEVER Photograph schema.
   - Alt text labels them as "stylized illustration," not photography.
   - File paths use -illustration.webp suffix to keep naming honest.
-  - Phone CTAs use 435-302-4422 (call); never 435-292-8802 (text-only).
+  - Phone CTAs use the Twilio line: 435-292-8802.
   - No invented certifications. BBB A+ is allowed; NRCA / GAF Master Elite are NOT.
   - Brand string is "Frame Roofing Utah" — never "Frame Restoration TX" leak.
 """
@@ -56,8 +56,8 @@ IMAGE_DIR.mkdir(parents=True, exist_ok=True)
 SITE = "https://www.frameroofingutah.com"
 BUSINESS_NAME = "Frame Roofing Utah"
 LEGAL_NAME = "Frame Restoration Utah LLC"
-PHONE_CALL = "435-302-4422"
-PHONE_TEL = "+14353024422"
+PHONE_CALL = "435-292-8802"
+PHONE_TEL = "+14352928802"
 SCHEDULE_URL = "https://calendar.app.google/cR4bBSWfb9TQ28UF8"
 AUTHOR_NAME = "Landon Yokers"
 AUTHOR_TITLE = "Owner"
@@ -128,6 +128,24 @@ STYLE_PRESETS = {
 # ── Ollama ──────────────────────────────────────────────────────────
 OLLAMA_URL = os.environ.get("OLLAMA_URL", "http://localhost:11434")
 DEFAULT_MODEL = os.environ.get("OLLAMA_MODEL", "qwen3:8b")
+MIN_DRAFT_WORDS = int(os.environ.get("FRAME_BLOG_MIN_WORDS", "900"))
+OLLAMA_FORMAT = os.environ.get("FRAME_BLOG_OLLAMA_FORMAT", "json")
+BRAND_SUFFIX_RE = re.compile(r"\s*(?:\||-|–|—)\s*Frame Roofing Utah\s*$", re.I)
+FORBIDDEN_DRAFT_PATTERNS = [
+    ("old call number", re.compile(r"435[-\s]?302[-\s]?4422|\+?1?4353024422")),
+    ("Texas brand leak", re.compile(r"\b(?:Texas|Frisco|Dallas|Frame Restoration TX|framerestorations\.com)\b", re.I)),
+    ("unverified certification", re.compile(r"\b(?:NRCA|GAF Master Elite|Owens Corning Preferred|OC Preferred|certified inspectors?|certified inspection|certified assessment)\b", re.I)),
+    ("invented license number", re.compile(r"\b(?:license|lic\.?|DOPL)\s*(?:#|no\.?|number)\s*(?!14256097-5501\b)[A-Z0-9-]+", re.I)),
+    ("invented customer count", re.compile(r"\b(?:helped|served|completed|installed|repaired)\s+(?:over\s+)?\d[\d,]*\s+(?:Utah\s+)?(?:families|homeowners|customers|jobs|projects|roofs)\b", re.I)),
+    ("unverified recommendation claim", re.compile(r"\b(?:insurance agents?\s+routinely\s+recommend|preferred choice|go-to provider|longest in the region)\b", re.I)),
+    ("invented age claim", re.compile(r"\b(?:over|more than)?\s*\d+\+?\s+years(?:\s+of)?\s+experience\b|\bdecades of experience\b", re.I)),
+]
+REVIEW_WARNING_PATTERNS = [
+    ("unverified financing terms", re.compile(r"\b(?:0%\s*APR|zero percent|\d+(?:\.\d+)?%\s*APR|rates?\s+as\s+low\s+as|low[-\s]?interest|low\s+rates?|\$0[-\s]?down|terms?\s+up\s+to\s+\d+\s+(?:months?|years?)|monthly payments?\s+from)\b", re.I)),
+    ("unverified cost range", re.compile(r"\$\d{1,3}(?:,\d{3})+(?:\s*(?:to|-|–)\s*\$\d{1,3}(?:,\d{3})+)?", re.I)),
+    ("invented response time", re.compile(r"\b(?:within|in)\s+\d+\s*(?:minutes?|mins?)\b|\b\d+\s*[- ]?minute\s+response\b", re.I)),
+    ("unsupported exact local metric", re.compile(r"\b\d[\d,]*\s*(?:mph|pounds per square foot|psf|inches annually|feet elevation|foot elevation|ft elevation)\b|\b\d[\d,]*[-\s]?(?:foot|ft)\s+elevation\b", re.I)),
+]
 
 
 def call_ollama(prompt: str, model: str = DEFAULT_MODEL, num_predict: int = 6000,
@@ -141,12 +159,15 @@ def call_ollama(prompt: str, model: str = DEFAULT_MODEL, num_predict: int = 6000
     timed out after CH consumed ~2 min). Set OLLAMA_NUM_PARALLEL=2+ in the
     Ollama daemon env to allow same-model concurrent inference.
     """
-    payload = json.dumps({
+    payload_dict = {
         "model": model,
         "prompt": prompt,
         "stream": False,
-        "options": {"num_predict": num_predict, "temperature": 0.4},
-    }).encode("utf-8")
+        "options": {"num_predict": num_predict, "temperature": 0.25},
+    }
+    if OLLAMA_FORMAT and OLLAMA_FORMAT.lower() not in {"0", "false", "none", "off"}:
+        payload_dict["format"] = OLLAMA_FORMAT
+    payload = json.dumps(payload_dict).encode("utf-8")
     req = urllib.request.Request(
         f"{OLLAMA_URL}/api/generate",
         data=payload,
@@ -175,31 +196,177 @@ def extract_json(text: str) -> dict:
             sys.exit(f"ERROR: Could not parse JSON from Ollama output:\n{text[:500]}")
 
 
+def normalize_manifest(manifest: dict, fallback_title: str) -> dict:
+    """Normalize model output before validation/rendering."""
+    title = str(manifest.get("title") or fallback_title).strip()
+    manifest["title"] = BRAND_SUFFIX_RE.sub("", title).strip() or fallback_title
+    manifest["slug"] = slugify(str(manifest.get("slug") or manifest["title"]))
+    manifest["sections"] = normalize_sections(manifest.get("sections", []))
+    return manifest
+
+
+def normalize_sections(sections: object) -> list[dict]:
+    """Flatten common model deviations into the renderer's h2/p section stream."""
+    flat: list[dict] = []
+    if not isinstance(sections, list):
+        return flat
+
+    for section in sections:
+        if not isinstance(section, dict):
+            continue
+
+        raw_type = str(section.get("type") or "").strip().lower()
+        text = str(section.get("text") or section.get("heading") or "").strip()
+        if raw_type in {"h2", "heading"} and text:
+            flat.append({"type": "h2", "text": text})
+            for paragraph in section.get("paragraphs") or []:
+                paragraph_text = str(paragraph).strip()
+                if paragraph_text:
+                    flat.append({"type": "p", "text": paragraph_text})
+            continue
+
+        if raw_type in {"p", "paragraph"} and text:
+            flat.append({"type": "p", "text": text})
+
+    return flat
+
+
+def manifest_text(manifest: dict) -> str:
+    parts = [
+        str(manifest.get("title", "")),
+        str(manifest.get("excerpt", "")),
+        str(manifest.get("tldr", "")),
+    ]
+    for sec in normalize_sections(manifest.get("sections", [])):
+        if isinstance(sec, dict):
+            parts.append(str(sec.get("text", "")))
+    for faq in manifest.get("faqs", []):
+        if isinstance(faq, dict):
+            parts.append(str(faq.get("q", "")))
+            parts.append(str(faq.get("a", "")))
+    howto = manifest.get("howto") or {}
+    parts.append(str(howto.get("name", "")))
+    for step in howto.get("steps", []):
+        if isinstance(step, dict):
+            parts.append(str(step.get("name", "")))
+            parts.append(str(step.get("text", "")))
+    return "\n".join(parts)
+
+
+def word_count(text: str) -> int:
+    return len(re.findall(r"\b[\w'-]+\b", text))
+
+
+def validate_manifest(manifest: dict, min_words: int = MIN_DRAFT_WORDS) -> list[str]:
+    """Reject thin or unsafe drafts before they enter the publishing queue."""
+    errors: list[str] = []
+    text = manifest_text(manifest)
+    words = word_count(text)
+    sections = normalize_sections(manifest.get("sections", []))
+    h2_count = sum(1 for sec in sections if sec.get("type") == "h2")
+    paragraph_count = sum(1 for sec in sections if sec.get("type") == "p")
+    faq_count = len(manifest.get("faqs", []))
+    howto_steps = len((manifest.get("howto") or {}).get("steps", []))
+    source_count = len(manifest.get("sources", []))
+
+    if words < min_words:
+        errors.append(f"word count {words} below minimum {min_words}")
+    if h2_count < 5:
+        errors.append(f"H2 section count {h2_count} below minimum 5")
+    if paragraph_count < 6:
+        errors.append(f"paragraph count {paragraph_count} below minimum 6")
+    if faq_count < 4:
+        errors.append(f"FAQ count {faq_count} below minimum 4")
+    if howto_steps < 5:
+        errors.append(f"HowTo step count {howto_steps} below minimum 5")
+    if source_count < 3:
+        errors.append(f"source count {source_count} below minimum 3")
+    if BRAND_SUFFIX_RE.search(str(manifest.get("title", ""))):
+        errors.append("title still contains brand suffix")
+    for label, pattern in FORBIDDEN_DRAFT_PATTERNS:
+        if pattern.search(text):
+            errors.append(f"forbidden content: {label}")
+    return errors
+
+
+def review_warnings(manifest: dict) -> list[str]:
+    """Warnings that should keep generated copy in human-review status."""
+    text = manifest_text(manifest)
+    warnings: list[str] = []
+    for label, pattern in REVIEW_WARNING_PATTERNS:
+        if pattern.search(text):
+            warnings.append(f"review content: {label}")
+    return warnings
+
+
+def retry_prompt(base_prompt: str, errors: list[str]) -> str:
+    guidance = []
+    for error in errors:
+        if "Texas brand leak" in error:
+            guidance.append("- Keep the copy entirely Utah-scoped; do not mention out-of-state locations, brands, domains, or sister operations.")
+        elif "unverified certification" in error:
+            guidance.append("- Use only these trust claims: licensed, insured, BBB Accredited (A+), 10-year workmanship warranty. Do not use certified/certification language.")
+        elif "old call number" in error:
+            guidance.append("- Use only 435-292-8802 as the phone number.")
+        elif "invented license number" in error:
+            guidance.append("- Do not include any license number or DOPL number in generated body copy.")
+        elif "invented customer count" in error:
+            guidance.append("- Do not include job counts, customer counts, project counts, or 'served X homeowners' claims.")
+        elif "unverified recommendation claim" in error:
+            guidance.append("- Avoid ranking, recommendation, preferred-provider, or 'go-to' claims.")
+        elif "invented age claim" in error:
+            guidance.append("- Do not state years in business, company age, founding date, or experience duration.")
+        else:
+            guidance.append(f"- Fix quality issue: {error}")
+    bullets = "\n".join(dict.fromkeys(guidance))
+    return f"""{base_prompt}
+
+The previous JSON failed Frame Roofing Utah's quality gate:
+{bullets}
+
+Rewrite the complete JSON from scratch. Hard minimums:
+- 1,200-1,800 words across tldr, paragraphs, FAQs, and HowTo text.
+- 5-7 H2 sections.
+- At least 6 paragraph sections, each specific to the target city.
+- 4 FAQs, each 50-90 words.
+- 5-7 HowTo steps.
+- Do not put "| Frame Roofing Utah" or any brand suffix in the title.
+- Use only 435-292-8802 as the phone number.
+- Do not include license numbers, customer/job counts, exact cost ranges, financing APR/rate/down-payment/term claims, exact minute response-time claims, or unsupported certification language.
+- If financing must be mentioned, use only this neutral phrasing: "Financing may be available; ask during your free inspection for current options." Do not add rates, terms, lender names, down-payment copy, or "low-interest" language.
+
+Respond with ONLY valid JSON using the exact structure requested above.
+"""
+
+
 # ── Prompt builder ──────────────────────────────────────────────────
 def build_prompt(keyword: str, city_slug: str, style: str) -> str:
     city_label = "Utah" if city_slug == "utah" else city_slug.replace("-", " ").title()
     today_iso = date.today().isoformat()
     paths = "\n".join(f"  {p}" for p in VALID_INTERNAL_PATHS)
-    return f"""You are an SEO + AEO content writer for {BUSINESS_NAME}, a licensed family-owned roofing contractor based in Heber City, Utah. The owner is {AUTHOR_NAME}.
+    return f"""You are an SEO + AEO content writer for {BUSINESS_NAME}, a Utah roofing contractor based in Heber City. The owner is {AUTHOR_NAME}.
 
 Write a blog post targeting the keyword: "{keyword}"
 Target city/region: {city_label}
 Today's date: {today_iso}
 
 HARD RULES (do not violate):
-1. Frame Roofing Utah is licensed + insured + BBB Accredited (A+) since 2026-04-07. NEVER claim NRCA member, GAF Master Elite, OC Preferred, or any cert not in this list.
+1. Frame Roofing Utah is licensed + insured + BBB Accredited (A+) since 2026-04-07. Do not add trade-association, manufacturer, installer, inspector, or other certification claims.
 2. Confirmed claims you MAY use: Licensed & Insured in Utah, Free Roof Inspections, 24/7 Storm Response, Financing Available, 10-Year Workmanship Warranty, BBB Accredited (A+).
 3. NEVER invent company age, years in business, founding date, number of jobs completed, or "over X years of experience". Frame Roofing Utah's age is NOT public — do not estimate or fabricate it.
-4. Frame Roofing Utah is the Utah brand only. NEVER mention Texas, Frisco, Dallas, Frame Restoration (the Texas DBA), or framerestorations.com.
-5. Phone CTA = {PHONE_CALL}. Never the SMS-only 435-292-8802.
-6. The hero image will be a stylized AI illustration — NOT a real Frame customer's roof. Write copy that does not imply the hero photo depicts an actual job.
-7. No "as an AI" preambles. No filler ("In today's world...", "Let's dive in!"). Lead with substance.
+4. Frame Roofing Utah is the Utah public brand only. Do not mention parent brands, sister companies, out-of-state locations, out-of-state operations, or external company domains.
+5. Phone CTA = {PHONE_CALL}. This is the only public phone number for Frame Roofing Utah.
+6. Do not include license numbers, customer/job counts, exact cost ranges, exact weather/elevation measurements, financing APR/rate/down-payment/term claims, exact minute response-time claims, or words like "certified" and "certification." Use only the confirmed claims above.
+7. If financing must be mentioned, use only this neutral phrasing: "Financing may be available; ask during your free inspection for current options." Do not add rates, terms, lender names, down-payment copy, or "low-interest" language.
+8. The hero image will be a stylized AI illustration — NOT a real Frame customer's roof. Write copy that does not imply the hero photo depicts an actual job.
+9. No "as an AI" preambles. No filler ("In today's world...", "Let's dive in!"). Lead with substance.
 
 SEO + AEO RULES:
 - Title: include the keyword, under 60 characters. Do NOT append "| Frame Roofing Utah" — the renderer adds that.
 - Excerpt: 150-200 chars meta description with the keyword in the first half.
 - Word count: 1,200-1,800 words across all paragraph sections combined. Each H2 section MUST be 200-300 words. This is non-negotiable — short sections fail AEO citation depth checks.
 - Structure: 5-7 H2 sections. Never H1.
+- Sections JSON: use a flat array only. Every heading object is {{"type":"h2","text":"..."}} and every paragraph object is {{"type":"p","text":"..."}}. Do not use nested "paragraphs" arrays.
 - TL;DR / Quick Answer: a 60-90 word direct answer at the very top — count the words. This is the highest-value AEO citation surface; if it's under 60 words you have failed the brief. Lead with the SPECIFIC ANSWER (numbers, timeframes, neighborhoods), not a restatement of the excerpt.
 - Internal links: 3+ links using {{{{link:/path|anchor}}}} syntax. Valid paths:
 {paths}
@@ -523,7 +690,7 @@ def render_html(manifest: dict, image_url: Optional[str], image_local_path: Opti
 
 <footer style="background:var(--navy);color:#fff;padding:32px 5%;text-align:center;font-size:14px;">
   <p>&copy; {date.today().year} {LEGAL_NAME} (DBA {BUSINESS_NAME}). 142 S Main St, Heber City, UT 84032.</p>
-  <p>Call: <a href="tel:{PHONE_TEL}" style="color:var(--gold)">{PHONE_CALL}</a> &bull; Text: <a href="sms:+14352928802" style="color:var(--gold)">435-292-8802</a></p>
+  <p>Call or text: <a href="tel:{PHONE_TEL}" style="color:var(--gold)">{PHONE_CALL}</a></p>
   <p style="margin-top:8px"><a href="/" style="color:rgba(255,255,255,0.7)">Home</a> &bull; <a href="/blog" style="color:rgba(255,255,255,0.7)">Blog</a> &bull; <a href="/privacy" style="color:rgba(255,255,255,0.7)">Privacy</a> &bull; <a href="/terms" style="color:rgba(255,255,255,0.7)">Terms</a> &bull; <a href="/review" style="color:var(--gold)">★ Leave a Review</a></p>
 </footer>
 </body>
@@ -575,20 +742,42 @@ def main():
         print(prompt)
         return
 
-    print(f"⏳ Drafting via Ollama ({args.ollama_model})…", file=sys.stderr)
-    raw = call_ollama(prompt, model=args.ollama_model)
-    manifest = extract_json(raw)
+    manifest = None
+    errors: list[str] = []
+    warnings: list[str] = []
+    active_prompt = prompt
+    for attempt in range(1, 3):
+        suffix = "" if attempt == 1 else " (quality retry)"
+        print(f"⏳ Drafting via Ollama ({args.ollama_model}){suffix}…", file=sys.stderr)
+        raw = call_ollama(active_prompt, model=args.ollama_model)
+        candidate = normalize_manifest(extract_json(raw), args.keyword)
+        errors = validate_manifest(candidate)
+        if not errors:
+            manifest = candidate
+            warnings = review_warnings(candidate)
+            if warnings:
+                print("⚠ Draft saved for human review:", file=sys.stderr)
+                for warning in warnings:
+                    print(f"  - {warning}", file=sys.stderr)
+            break
+        print("⚠ Draft failed quality gate:", file=sys.stderr)
+        for err in errors:
+            print(f"  - {err}", file=sys.stderr)
+        active_prompt = retry_prompt(prompt, errors)
+
+    if manifest is None:
+        sys.exit("ERROR: Ollama draft failed quality gate after retry:\n- " + "\n- ".join(errors))
 
     # Annotate manifest with run metadata
     manifest["city_slug"] = args.city
     manifest["style"] = args.style
     manifest["keyword"] = args.keyword
     manifest["draft_date"] = date.today().isoformat()
-    manifest["status"] = "drafted"
+    manifest["status"] = "needs-review" if warnings else "drafted"
+    if warnings:
+        manifest["quality_warnings"] = warnings
 
-    # Validate slug + ensure unique on disk
-    slug = manifest.get("slug") or slugify(manifest["title"])
-    manifest["slug"] = slug
+    slug = manifest["slug"]
 
     out_manifest = PENDING_DIR / f"{slug}.json"
     if args.dry_run:
