@@ -32,7 +32,8 @@ finish() {
   log "$status runtime=${runtime}s"
 }
 
-if [ ! -d "$REPO/.git" ]; then
+# -e not -d: in a git worktree (the blogbot's normal home) .git is a FILE.
+if [ ! -e "$REPO/.git" ]; then
   log "x Repo not found at $REPO"
   finish "failed"
   exit 1
