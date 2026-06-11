@@ -1,5 +1,12 @@
-// handle-lead v8 — Frame Roofing Utah
+// handle-lead v9 — Frame Roofing Utah
 // ─────────────────────────────────────────────────────────────────────────────
+// v9 (2026-06-10): TCPA consent gate + A2P opt-out line + frozen SMS contract.
+//   The form has ALWAYS sent sms_consent; v8 dropped it on the floor and
+//   auto-texted every valid phone. v9 stores it (leads.sms_consent, migration
+//   20260610) and refuses the customer auto-text without it. The SMS message
+//   builders moved to _shared/lead-sms.ts (every auto-reply now ends with the
+//   A2P "Reply STOP to opt out." line) and are frozen by lead-sms.test.ts —
+//   the blocking lead-sms-contract CI job. Owner alerts to Landon unchanged.
 // v8 (2026-05-10): Replace Formspree with Resend for outbound email.
 //   Formspree's free tier (50/mo) was being burned at 2x per lead — once for
 //   Landon's notification email, once for the Verizon SMS gateway. Resend's
@@ -24,6 +31,11 @@
 
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import {
+  customerAutoReply,
+  shouldSendCustomerAutoText,
+  smsForLandon,
+} from "../_shared/lead-sms.ts";
 
 const SUPABASE_URL = "https://hdcflshhomzildwqlmwh.supabase.co";
 const SUPABASE_SERVICE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") || "";
@@ -298,21 +310,9 @@ async function sendVerizonGatewaySMS(to: string, body: string): Promise<boolean>
 }
 
 // ─── Tier-aware message builders ─────────────────────────────────────────────
-
-function smsForLandon(tier: Tier, leadName: string, phone: string, service: string, reason: string): string {
-  const phoneStr = phone || "no phone";
-  switch (tier) {
-    case "emergency":
-      return `🚨 EMERGENCY LEAD: ${leadName} | ${phoneStr} | ${service}\nReason: ${reason}\nCall NOW.`;
-    case "urgent":
-      return `🔥 URGENT LEAD: ${leadName} | ${phoneStr} | ${service}\nReason: ${reason}\nCall today.`;
-    case "general":
-      return `INFO REQUEST: ${leadName} | ${phoneStr} | ${service}`;
-    case "scheduled":
-    default:
-      return `NEW LEAD: ${leadName} | ${phoneStr} | ${service}`;
-  }
-}
+// smsForLandon / customerAutoReply now live in ../_shared/lead-sms.ts so the
+// blocking lead-sms-contract CI job can freeze the customer-facing copy
+// (A2P STOP line, business number, no Utah forbidden terms, consent gate).
 
 function emailSubjectFor(tier: Tier, leadName: string, service: string): string {
   const prefix = {
@@ -357,7 +357,7 @@ Deno.serve(async (req: Request) => {
     const formData = await req.json();
     const {
       name, email, phone, address, service, message, source_page,
-      city, zip, issue, first_name, last_name,
+      city, zip, issue, first_name, last_name, sms_consent,
       // Ad attribution — populated by /track-attribution.js on the client.
       // All nullable; pre-attribution leads simply omit them.
       gclid, fbclid, msclkid, gbraid, wbraid,
@@ -419,6 +419,9 @@ Deno.serve(async (req: Request) => {
       utm_content: utm_content || null,
       landing_page: landing_page || null,
       referrer: referrer || null,
+      // TCPA audit trail (migration 20260610): what the customer actually checked.
+      sms_consent: sms_consent === true || sms_consent === "true" ||
+        sms_consent === "on" || sms_consent === "1" || sms_consent === 1,
     });
     if (insertError) console.error("DB Error:", insertError);
 
@@ -484,17 +487,26 @@ Deno.serve(async (req: Request) => {
       );
     }
 
-    // 6. Speed-to-lead auto-text to customer (tier-personalized)
+    // 6. Speed-to-lead auto-text to customer (tier-personalized).
+    // TCPA gate (v9): the auto-text fires ONLY when the customer checked
+    // sms_consent on the form — the decision is shouldSendCustomerAutoText()
+    // in _shared/lead-sms.ts, frozen by lead-sms.test.ts. Refusals are logged
+    // for the audit trail.
     const customerPhone = normalizePhone(phone || "");
-    if (customerPhone && config.TWILIO_ACCOUNT_SID) {
+    const consentGate = shouldSendCustomerAutoText(sms_consent, customerPhone);
+    if (consentGate.send && config.TWILIO_ACCOUNT_SID) {
       const autoReplyBody = customerAutoReply(classification.tier, firstName);
       smsPromises.push(
-        sendTwilioSMS(config, customerPhone, autoReplyBody)
+        sendTwilioSMS(config, customerPhone!, autoReplyBody)
           .then(ok => console.log("Auto-text→customer:", customerPhone, ok ? "sent" : "failed"))
           .catch(e => console.error("Auto-text error:", e)),
       );
     } else {
-      console.log("Auto-text skipped:", !customerPhone ? "no valid phone" : "no Twilio config");
+      console.log(
+        "Auto-text skipped:",
+        consentGate.send ? "no Twilio config" : consentGate.reason,
+        "| phone:", customerPhone || "(invalid)",
+      );
     }
 
     await Promise.allSettled(smsPromises);
