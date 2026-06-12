@@ -17,10 +17,14 @@
 
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { failedAttemptRow, throttleAllows } from "../_shared/auth-throttle.ts";
 
 const SUPABASE_URL = "https://hdcflshhomzildwqlmwh.supabase.co";
 const SUPABASE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
-const API_KEY = "frame-roofing-2026";
+// The key ships in public leads.html, so it is a routing token, not a secret —
+// the PIN (+ per-IP throttle below) is the real auth. Env-driven so it can be
+// rotated without a redeploy; unset = function disabled (fail closed).
+const API_KEY = Deno.env.get("LEAD_CRM_API_KEY") ?? "";
 
 const ALLOWED_STATUS = new Set(["new", "contacted", "estimated", "won", "lost"]);
 
@@ -41,6 +45,10 @@ Deno.serve(async (req: Request) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   const url = new URL(req.url);
+  if (!API_KEY) {
+    console.error("[lead-crm] LEAD_CRM_API_KEY not set — function disabled (fail closed)");
+    return jsonResp({ error: "not_configured" }, 503);
+  }
   const key = url.searchParams.get("key");
   if (key !== API_KEY) return jsonResp({ error: "unauthorized" }, 401);
 
@@ -49,6 +57,20 @@ Deno.serve(async (req: Request) => {
 
   const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
+  // Per-IP PIN throttle (≤10 fails / 15 min — _shared/auth-throttle.ts, frozen
+  // by auth-throttle.test.ts). PINs are plaintext in a query string; before
+  // this, brute force was unthrottled.
+  const ip = (req.headers.get("x-forwarded-for") || "").split(",")[0].trim() || "unknown";
+  const now = Date.now();
+  const { data: attemptRow } = await supabase
+    .from("auth_attempts")
+    .select("ip, fail_count, window_start")
+    .eq("ip", ip)
+    .maybeSingle();
+  if (!throttleAllows(attemptRow, now)) {
+    return jsonResp({ error: "too_many_attempts", message: "Too many PIN attempts. Try again later." }, 429);
+  }
+
   // PIN check — same shape as weekly-report
   const { data: accessRow, error: accessErr } = await supabase
     .from("report_access")
@@ -56,7 +78,19 @@ Deno.serve(async (req: Request) => {
     .eq("pin", pin)
     .single();
   if (accessErr || !accessRow || !accessRow.active) {
+    const { error: throttleErr } = await supabase
+      .from("auth_attempts")
+      .upsert(failedAttemptRow(ip, attemptRow, now), { onConflict: "ip" });
+    if (throttleErr) console.error("[lead-crm] auth_attempts upsert failed:", throttleErr);
     return jsonResp({ error: "invalid_pin", message: "Invalid PIN. Access denied." }, 403);
+  }
+  // Successful auth clears the counter (best-effort).
+  if (attemptRow) {
+    supabase.from("auth_attempts").delete().eq("ip", ip).then(
+      ({ error }: { error: unknown }) => {
+        if (error) console.error("[lead-crm] auth_attempts clear failed:", error);
+      },
+    );
   }
   // Don't block on this — failure to bump last_accessed is non-critical.
   supabase.from("report_access").update({ last_accessed: new Date().toISOString() }).eq("id", accessRow.id);

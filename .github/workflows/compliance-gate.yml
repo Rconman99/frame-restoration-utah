@@ -50,6 +50,12 @@ on:
       - '.vercelignore'
       - 'sitemap.xml'
       - '.github/workflows/compliance-gate.yml'
+      - 'supabase/functions/handle-lead/**'
+      - 'supabase/functions/lead-crm/**'
+      - 'supabase/functions/_shared/lead-sms.ts'
+      - 'supabase/functions/_shared/lead-sms.test.ts'
+      - 'supabase/functions/_shared/auth-throttle.ts'
+      - 'supabase/functions/_shared/auth-throttle.test.ts'
   push:
     branches: [main]
 
@@ -57,6 +63,26 @@ permissions:
   contents: read
 
 jobs:
+  lead-sms-contract:
+    name: Lead SMS consent + A2P message contract (blocking)
+    runs-on: ubuntu-latest
+    # BLOCKING (added 2026-06-10, ported from the TX pattern). handle-lead's
+    # customer auto-reply is texted to real homeowners on the LIVE 10DLC number,
+    # but v8 had no test coverage AND ignored the form's sms_consent checkbox.
+    # The builders now live in _shared/lead-sms.ts (the real handler imports
+    # them); lead-sms.test.ts asserts: every auto-reply carries the A2P
+    # "Reply STOP to opt out." line + the business number, no Utah forbidden
+    # term (same canonical compliance-words.json as the site gate), and the
+    # TCPA consent gate (no sms_consent → NO auto-text). auth-throttle.test.ts
+    # freezes the lead-crm per-IP PIN throttle (≤10 fails / 15 min).
+    steps:
+      - uses: actions/checkout@v4
+      - uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.x
+      - name: Run SMS contract + auth-throttle fixtures
+        run: deno test supabase/functions/_shared/lead-sms.test.ts supabase/functions/_shared/auth-throttle.test.ts
+
   compliance-words:
     name: Forbidden-word + saturation audit (blocking)
     runs-on: ubuntu-latest
