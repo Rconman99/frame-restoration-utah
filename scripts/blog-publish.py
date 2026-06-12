@@ -365,6 +365,7 @@ def git_publish(manifest_path: Path, manifest: dict, rendered: Path,
                 published_url: str) -> None:
     slug = manifest["slug"]
     city = city_label(manifest.get("city_slug", "utah"))
+    manifest_was_tracked = is_tracked(manifest_path)
 
     PUBLISHED_DIR.mkdir(parents=True, exist_ok=True)
     published_manifest = PUBLISHED_DIR / f"{slug}.json"
@@ -379,8 +380,9 @@ def git_publish(manifest_path: Path, manifest: dict, rendered: Path,
         str(SITEMAP.relative_to(ROOT)),
         str(BLOG_INDEX.relative_to(ROOT)),
         str(published_manifest.relative_to(ROOT)),
-        str(manifest_path.relative_to(ROOT)),  # records the deletion
     ]
+    if manifest_was_tracked:
+        rels.append(str(manifest_path.relative_to(ROOT)))  # records the deletion
     added = git("add", "-A", "--", *rels)
     if added.returncode != 0:
         log("x git add failed:\n" + added.stderr)
