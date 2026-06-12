@@ -1,16 +1,17 @@
 #!/bin/bash
-# Twice-weekly Frame Roofing Utah blog draft runner.
+# Frame Roofing Utah blog draft runner.
 #
-# This is intentionally draft-first. The May 2026 handoff says generated posts
-# need human finishing before production, so launchd should create the next
-# manifest and log the exact render command instead of shipping raw LLM copy.
+# This stage is intentionally draft-first: it creates the next manifest and logs
+# the render command. The scheduled launchd entrypoint is blog-publish-cron.sh,
+# which runs this draft stage first, then auto-publishes only clean `drafted`
+# manifests through scripts/blog-publish.py --push.
 #
 # Optional: set FRAME_UTAH_BLOG_AUTO_RENDER=1 to render with the fallback Heber
 # project image after drafting. The script still does not commit or push.
 
 set -u
 
-REPO="${FRAME_UTAH_REPO:-$HOME/projects/tradeworker-site/frame-restoration-utah}"
+REPO="${FRAME_UTAH_REPO:-$HOME/projects/frame-restoration-utah-blogbot}"
 LOG="${FRAME_UTAH_BLOG_LOG:-$HOME/.cache/frame-roofing-blog.log}"
 OLLAMA_BASE="${OLLAMA_URL:-http://127.0.0.1:11434}"
 OLLAMA_MODEL="${OLLAMA_MODEL:-nemotron-3-nano:30b}"
