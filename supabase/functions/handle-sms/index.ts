@@ -15,22 +15,22 @@
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { createClient } from "jsr:@supabase/supabase-js@2";
 import { verifyTwilioRequest } from "../_shared/twilio-verify.ts";
+import {
+  classifyCustomerInbound,
+  isOperator,
+  normalizePhone,
+  OPERATOR_PHONE,
+  parseCallCommand,
+  parseToCommand,
+} from "../_shared/classify-inbound.ts";
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
-const LANDON_PHONE = "+14353024422";
+const LANDON_PHONE = OPERATOR_PHONE;
 const POSTHOG_KEY = "phc_BnECzlZ2OeDujli2dbqcgGODXlv2tYERbp40dTF7UBV";
 const OUTBOUND_CALL_URL = `${SUPABASE_URL}/functions/v1/outbound-call`;
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
-
-function normalizePhone(phone: string): string {
-  const digits = (phone || "").replace(/\D/g, "");
-  if (digits.length === 10) return "+1" + digits;
-  if (digits.length === 11 && digits.startsWith("1")) return "+" + digits;
-  if (digits.length > 10) return "+" + digits;
-  return phone || "";
-}
 
 function lastFour(phone: string): string {
   const digits = (phone || "").replace(/\D/g, "");
@@ -139,16 +139,16 @@ Deno.serve(async (req: Request) => {
       return new Response("Forbidden", { status: 403 });
     }
 
-    const isFromLandon = from === LANDON_PHONE;
+    const isFromLandon = isOperator(from);
 
     // ─── OPERATOR PATH (Landon) — unchanged from v4 ────────────────────────
     if (isFromLandon) {
       const { sid: twilioSid, auth: twilioAuth, msgServiceSid } = creds;
       const twilioNumber = to;
 
-      const callMatch = body.match(/^CALL\s*(\+?\d{10,15})$/i);
-      if (callMatch) {
-        const customerNumber = callMatch[1].startsWith("+") ? callMatch[1] : "+1" + callMatch[1];
+      const callCustomer = parseCallCommand(body);
+      if (callCustomer) {
+        const customerNumber = callCustomer;
 
         if (twilioSid && twilioAuth) {
           // Idempotency: claim before placing the call so a Twilio retry can't
@@ -189,10 +189,10 @@ Deno.serve(async (req: Request) => {
       let customerNumber: string | null = null;
       let messageBody = body;
 
-      const toMatch = body.match(/^TO:\s*(\+?\d{10,15})\s+(.+)$/is);
-      if (toMatch) {
-        customerNumber = toMatch[1].startsWith("+") ? toMatch[1] : "+1" + toMatch[1];
-        messageBody = toMatch[2];
+      const toCmd = parseToCommand(body);
+      if (toCmd) {
+        customerNumber = toCmd.customerNumber;
+        messageBody = toCmd.message;
       } else {
         // Guarded sticky reply (CODEX HIGH): only auto-route a plain reply when
         // exactly ONE customer conversation is active in the last 30 min. 2+
@@ -262,7 +262,7 @@ Deno.serve(async (req: Request) => {
     // it a sticky conversation or forward it as a normal message — that would
     // prompt a reply to someone who just unsubscribed.
     const optOutType = (params.OptOutType || "").trim().toUpperCase();
-    if (optOutType) {
+    if (classifyCustomerInbound(params.OptOutType) === "optout") {
       await supabase.from("sms_logs").insert({
         message_sid: messageSid,
         direction: "inbound",
