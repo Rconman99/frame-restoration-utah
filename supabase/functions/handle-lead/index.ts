@@ -36,6 +36,13 @@ import {
   shouldSendCustomerAutoText,
   smsForLandon,
 } from "../_shared/lead-sms.ts";
+import {
+  type Classification,
+  coerceLlmClassification,
+  fallbackClassification,
+  heuristicClassify,
+  type Tier,
+} from "../_shared/lead-tier.ts";
 
 const SUPABASE_URL = "https://hdcflshhomzildwqlmwh.supabase.co";
 const SUPABASE_SERVICE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") || "";
@@ -49,13 +56,9 @@ const corsHeaders = {
   "Access-Control-Allow-Methods": "POST, OPTIONS",
 };
 
-type Tier = "emergency" | "urgent" | "scheduled" | "general" | "spam";
-type Classification = {
-  tier: Tier;
-  reason: string;
-  confidence: number | null;  // null when set by heuristic
-  classifier: string;  // 'heuristic' | model slug (e.g. 'google/gemini-2.0-flash-001') | 'fallback'
-};
+// Tier / Classification + heuristicClassify / coerceLlmClassification /
+// fallbackClassification now live in _shared/lead-tier.ts (frozen by
+// lead-tier.test.ts). Imported above.
 
 // ─── Config helpers ──────────────────────────────────────────────────────────
 
@@ -78,37 +81,6 @@ function normalizePhone(phone: string): string | null {
 }
 
 // ─── Tier classification ─────────────────────────────────────────────────────
-
-// Heuristic short-circuit. Fires when the form's `issue` dropdown alone
-// gives us a confident answer AND the free-text message is short enough to
-// not contradict it. Returns null if the case is ambiguous → caller falls
-// through to the LLM.
-function heuristicClassify(issue: string, message: string): Classification | null {
-  const msg = (message || "").trim();
-  const longMessage = msg.length > 50;  // longer messages might add nuance
-
-  // Always classify free-text messages with the LLM if substantial — the
-  // dropdown is just one signal, the message body trumps it.
-  if (longMessage) return null;
-
-  switch ((issue || "").toLowerCase()) {
-    case "leak":
-      return { tier: "emergency", reason: "Form: active roof leak", confidence: null, classifier: "heuristic" };
-    case "hail":
-      return { tier: "urgent", reason: "Form: hail/storm damage", confidence: null, classifier: "heuristic" };
-    case "insurance":
-      return { tier: "scheduled", reason: "Form: insurance claim help", confidence: null, classifier: "heuristic" };
-    case "old_roof":
-      return { tier: "scheduled", reason: "Form: roof replacement quote", confidence: null, classifier: "heuristic" };
-    case "":
-      // No dropdown selected, no substantial message → minimal contact, low intent
-      if (!msg) return { tier: "general", reason: "Minimal info: contact only, no issue stated", confidence: null, classifier: "heuristic" };
-      return null;
-    default:
-      // "other" or unknown — let the LLM look at the message
-      return null;
-  }
-}
 
 const CLASSIFIER_PROMPT = `You triage roofing leads for Frame Roofing Utah, a contractor in Utah serving Heber City, Park City, Salt Lake metro and surrounding areas.
 
@@ -171,14 +143,12 @@ async function llmClassify(
     const jsonText = text.replace(/^```(?:json)?\s*|\s*```$/g, "").trim();
     const parsed = JSON.parse(jsonText);
 
-    const allowed: Tier[] = ["emergency", "urgent", "scheduled", "general", "spam"];
-    if (!allowed.includes(parsed.tier)) {
+    const coerced = coerceLlmClassification(parsed, model);
+    if (!coerced) {
       console.error("Classifier returned invalid tier:", parsed.tier);
       return null;
     }
-    const confidence = Math.max(0, Math.min(1, Number(parsed.confidence) || 0.5));
-    const reason = String(parsed.reason || "no reason given").slice(0, 200);
-    return { tier: parsed.tier, reason, confidence, classifier: model };
+    return coerced;
   } catch (e) {
     console.error("Classifier error:", e instanceof Error ? e.message : e);
     return null;
@@ -197,12 +167,7 @@ async function classifyLead(
   if (llm) return llm;
 
   // Fail-open: never lose a lead because the classifier broke.
-  return {
-    tier: "scheduled",
-    reason: "Classifier unavailable — defaulted to scheduled",
-    confidence: null,
-    classifier: "fallback",
-  };
+  return fallbackClassification();
 }
 
 // ─── Notification helpers ────────────────────────────────────────────────────

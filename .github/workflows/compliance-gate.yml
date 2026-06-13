@@ -59,6 +59,8 @@ on:
       - 'supabase/functions/handle-sms/**'
       - 'supabase/functions/_shared/classify-inbound.ts'
       - 'supabase/functions/_shared/classify-inbound.test.ts'
+      - 'supabase/functions/_shared/lead-tier.ts'
+      - 'supabase/functions/_shared/lead-tier.test.ts'
   push:
     branches: [main]
 
@@ -105,6 +107,26 @@ jobs:
           deno-version: v2.x
       - name: Run relay classification fixtures
         run: deno test supabase/functions/_shared/classify-inbound.test.ts
+
+  lead-tier-classification:
+    name: Lead tier classification eval (blocking)
+    runs-on: ubuntu-latest
+    # BLOCKING (added 2026-06-12, parity port from the TX repo #217). handle-lead
+    # routes every lead into a 5-way tier (emergency/urgent/scheduled/general/spam)
+    # that drives notification urgency (emergency pages Landon loudest) and SMS
+    # suppression. The heuristic dropdown short-circuit classifies most leads BEFORE
+    # the optional, timeout-bounded OpenRouter LLM — so an emergency-leak lead
+    # silently dropping to "general", or a hallucinated LLM tier reaching the DB, is
+    # the regression this freezes. The pure decisions now live in _shared/lead-tier.ts
+    # (handle-lead imports them): heuristicClassify + coerceLlmClassification (the
+    # parse contract) + fallbackClassification. Behavior-preserving extraction.
+    steps:
+      - uses: actions/checkout@v4
+      - uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.x
+      - name: Run lead tier classification fixtures
+        run: deno test supabase/functions/_shared/lead-tier.test.ts
 
   compliance-words:
     name: Forbidden-word + saturation audit (blocking)
