@@ -325,29 +325,6 @@ function emailSubjectFor(tier: Tier, leadName: string, service: string): string 
   return `${prefix}NEW LEAD - ${leadName} - ${service}`;
 }
 
-function customerAutoReply(tier: Tier, firstName: string): string {
-  const greeting = firstName ? `Hi ${firstName}! ` : "Hi! ";
-  switch (tier) {
-    case "emergency":
-      return greeting +
-        "Thanks for reaching out to Frame Roofing Utah. We saw you're dealing with an emergency — " +
-        "we're calling you within 15 minutes. If you can't wait, call us right now at (435) 292-8802. - Landon, Owner";
-    case "urgent":
-      return greeting +
-        "Thanks for reaching out to Frame Roofing Utah! Storm damage is time-sensitive — " +
-        "we'll call you within the hour. Need us sooner? (435) 292-8802. - Landon, Owner";
-    case "general":
-      return greeting +
-        "Thanks for reaching out to Frame Roofing Utah! We'll get back to you within one business day. " +
-        "If it's urgent, call us at (435) 292-8802. - Landon, Owner";
-    case "scheduled":
-    default:
-      return greeting +
-        "Thanks for reaching out to Frame Roofing Utah! A roofing specialist will call you shortly — usually within minutes. " +
-        "If you need us right away, call (435) 292-8802. - Landon, Owner";
-  }
-}
-
 // ─── Main handler ────────────────────────────────────────────────────────────
 
 Deno.serve(async (req: Request) => {
