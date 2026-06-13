@@ -56,6 +56,9 @@ on:
       - 'supabase/functions/_shared/lead-sms.test.ts'
       - 'supabase/functions/_shared/auth-throttle.ts'
       - 'supabase/functions/_shared/auth-throttle.test.ts'
+      - 'supabase/functions/handle-sms/**'
+      - 'supabase/functions/_shared/classify-inbound.ts'
+      - 'supabase/functions/_shared/classify-inbound.test.ts'
   push:
     branches: [main]
 
@@ -82,6 +85,26 @@ jobs:
           deno-version: v2.x
       - name: Run SMS contract + auth-throttle fixtures
         run: deno test supabase/functions/_shared/lead-sms.test.ts supabase/functions/_shared/auth-throttle.test.ts
+
+  relay-classification:
+    name: SMS relay classification eval (blocking)
+    runs-on: ubuntu-latest
+    # BLOCKING (added 2026-06-12, relay-parity port from the TX repo). handle-sms
+    # routes inbound webhooks: operator commands (CALL / TO:<number> message) vs
+    # customer messages, and Twilio Advanced Opt-Out (STOP/START/HELP) which must
+    # NOT become a sticky conversation or get force-forwarded. In the TX repo this
+    # routing misclassified inbound THREE times before it was frozen (#215). The
+    # pure decisions now live in _shared/classify-inbound.ts (handle-sms imports
+    # them); classify-inbound.test.ts freezes them so a one-line routing slip can't
+    # ship. Behavior-preserving extraction — no routing change shipped with the
+    # port. Deno = same runtime that deploys.
+    steps:
+      - uses: actions/checkout@v4
+      - uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.x
+      - name: Run relay classification fixtures
+        run: deno test supabase/functions/_shared/classify-inbound.test.ts
 
   compliance-words:
     name: Forbidden-word + saturation audit (blocking)
