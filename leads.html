@@ -38,14 +38,15 @@ a{color:var(--blue);text-decoration:none}a:hover{text-decoration:underline}
 .sm-btn.red:hover{border-color:var(--red);color:var(--red)}
 
 /* KPI grid */
-.kg{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;padding:24px 24px 0}
-@media(max-width:900px){.kg{grid-template-columns:repeat(2,1fr)}}
-.kc{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px;text-align:center;border-top:3px solid var(--gold)}
-.kc.b{border-top-color:var(--blue)}.kc.g{border-top-color:var(--green)}.kc.r{border-top-color:var(--red)}.kc.p{border-top-color:var(--purple)}
-.kc .v{font-size:1.9rem;font-weight:700}
-.kc.b .v{color:var(--blue)}.kc.g .v{color:var(--green)}.kc.r .v{color:var(--red)}.kc.p .v{color:var(--purple)}
-.kc .l{font-size:.78rem;color:var(--muted);margin-top:4px;text-transform:uppercase;letter-spacing:.5px}
-.kc .h{font-size:.7rem;color:var(--muted);opacity:.7;margin-top:2px}
+	.kg{display:grid;grid-template-columns:repeat(6,1fr);gap:14px;padding:24px 24px 0}
+	@media(max-width:1120px){.kg{grid-template-columns:repeat(3,1fr)}}
+	@media(max-width:760px){.kg{grid-template-columns:repeat(2,1fr)}}
+	.kc{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px;text-align:center;border-top:3px solid var(--gold)}
+	.kc.b{border-top-color:var(--blue)}.kc.g{border-top-color:var(--green)}.kc.r{border-top-color:var(--red)}.kc.p{border-top-color:var(--purple)}.kc.o{border-top-color:var(--orange)}
+	.kc .v{font-size:1.9rem;font-weight:700}
+	.kc.b .v{color:var(--blue)}.kc.g .v{color:var(--green)}.kc.r .v{color:var(--red)}.kc.p .v{color:var(--purple)}.kc.o .v{color:var(--orange)}
+	.kc .l{font-size:.78rem;color:var(--muted);margin-top:4px;text-transform:uppercase;letter-spacing:.5px}
+	.kc .h{font-size:.7rem;color:var(--muted);opacity:.7;margin-top:2px}
 
 /* Filters */
 .tb{display:flex;gap:6px;padding:18px 24px 8px;flex-wrap:wrap;align-items:center}
@@ -73,11 +74,44 @@ td.name{font-weight:600;color:var(--text)}
 .b-spam     {background:rgba(248,81,73,.10);color:#a16766}
 .b-new      {background:rgba(88,166,255,.16);color:var(--blue)}
 .b-contacted{background:rgba(188,140,255,.16);color:var(--purple)}
-.b-estimated{background:rgba(210,153,34,.18);color:var(--orange)}
-.b-won      {background:rgba(63,185,80,.18);color:var(--green)}
-.b-lost     {background:rgba(139,148,158,.18);color:var(--muted)}
+	.b-estimated{background:rgba(210,153,34,.18);color:var(--orange)}
+	.b-won      {background:rgba(63,185,80,.18);color:var(--green)}
+	.b-lost     {background:rgba(139,148,158,.18);color:var(--muted)}
+	.b-third_party{background:rgba(248,81,73,.12);color:#ff9b95}
+	.b-notified {background:rgba(63,185,80,.12);color:var(--green)}
+	.b-unnotified{background:rgba(248,81,73,.18);color:var(--red)}
+	.b-manual   {background:rgba(139,148,158,.14);color:var(--muted)}
+	.alert-panel{margin:14px 24px 0;padding:14px 16px;border:1px solid rgba(248,81,73,.35);border-left:4px solid var(--red);border-radius:12px;background:rgba(248,81,73,.08);display:none}
+	.alert-panel h2{font-size:.95rem;color:var(--red);margin-bottom:8px}
+	.alert-panel .alert-row{display:grid;grid-template-columns:90px 1fr minmax(120px,240px);gap:10px;padding:7px 0;border-top:1px solid rgba(248,81,73,.18);font-size:.84rem}
+	.alert-panel .alert-row:first-of-type{border-top:0}
+	.alert-panel button{background:transparent;border:0;color:var(--blue);cursor:pointer;text-align:left;font:inherit;padding:0}
+	.alert-panel button:hover{text-decoration:underline}
+	.growth-wrap{margin:14px 24px 0;padding:16px;border:1px solid var(--border);border-radius:12px;background:var(--card)}
+	.growth-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:14px}
+	.growth-head h2{font-size:1rem;color:var(--gold);margin-bottom:3px}
+	.growth-head p{color:var(--muted);font-size:.86rem;line-height:1.45;max-width:780px}
+	.growth-lanes{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+	.growth-lane-title{font-size:.78rem;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;display:flex;justify-content:space-between}
+	.action-list{display:flex;flex-direction:column;gap:10px}
+	.action-card{background:var(--bg);border:1px solid var(--border);border-left:4px solid var(--muted);border-radius:10px;padding:12px;display:flex;flex-direction:column;gap:8px}
+	.action-card.p0{border-left-color:var(--red)}.action-card.p1{border-left-color:var(--orange)}.action-card.p2{border-left-color:var(--blue)}
+	.action-top{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+	.action-title{font-size:.92rem;font-weight:700;color:var(--text);line-height:1.3}
+	.action-detail{color:var(--muted);font-size:.82rem;line-height:1.4}
+	.action-step{color:#d7bf69;font-size:.82rem;line-height:1.35}
+	.action-meta,.action-link,.action-controls{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+	.action-controls .sm-btn{font-size:.72rem;padding:4px 10px}
+	.action-controls .sm-btn:disabled{opacity:.45;cursor:not-allowed}
+	.pri,.cat,.state-pill{display:inline-block;padding:3px 8px;border-radius:999px;font-size:.66rem;font-weight:800;text-transform:uppercase;letter-spacing:.4px}
+	.pri.p0{background:rgba(248,81,73,.18);color:var(--red)}.pri.p1{background:rgba(210,153,34,.18);color:var(--orange)}.pri.p2{background:rgba(88,166,255,.16);color:var(--blue)}
+	.cat{background:rgba(139,148,158,.14);color:var(--muted)}
+	.state-pill{background:rgba(63,185,80,.12);color:var(--green)}.state-pill.snoozed{background:rgba(210,153,34,.16);color:var(--orange)}.state-pill.done{background:rgba(63,185,80,.14);color:var(--green)}
+	.empty-lane{border:1px dashed var(--border);border-radius:10px;padding:16px;color:var(--muted);font-size:.84rem;text-align:center}
+	.growth-pending{background:rgba(210,153,34,.10);border:1px solid rgba(210,153,34,.28);border-left:4px solid var(--orange);border-radius:10px;padding:12px;color:#d7bf69;font-size:.86rem;line-height:1.45}
+	@media(max-width:1120px){.growth-lanes{grid-template-columns:1fr}}
 
-/* Detail panel */
+	/* Detail panel */
 .backdrop{position:fixed;inset:0;background:rgba(0,0,0,.55);opacity:0;pointer-events:none;transition:opacity .2s;z-index:99}
 .backdrop.show{opacity:1;pointer-events:auto}
 .panel{position:fixed;top:0;right:-520px;width:500px;height:100%;background:var(--card);border-left:1px solid var(--border);box-shadow:-12px 0 32px rgba(0,0,0,.5);padding:24px;overflow-y:auto;transition:right .25s ease;z-index:100}
@@ -149,13 +183,18 @@ footer{text-align:center;padding:24px;color:var(--muted);font-size:.78rem;border
     </div>
   </div>
 
-  <div class="kg">
-    <div class="kc r"><div class="v" id="k-new">—</div><div class="l">New (untouched)</div><div class="h">Call these first</div></div>
-    <div class="kc b"><div class="v" id="k-30d">—</div><div class="l">Last 30 days</div><div class="h">all tiers</div></div>
-    <div class="kc p"><div class="v" id="k-pipeline">—</div><div class="l">Open pipeline</div><div class="h">value not yet closed</div></div>
-    <div class="kc"><div class="v" id="k-won">—</div><div class="l">Won — month</div><div class="h">job value</div></div>
-    <div class="kc g"><div class="v" id="k-comm">—</div><div class="l">10% — month</div><div class="h">your commission</div></div>
-  </div>
+	  <div class="kg">
+	    <div class="kc r"><div class="v" id="k-new">—</div><div class="l">New (untouched)</div><div class="h">Call these first</div></div>
+	    <div class="kc b"><div class="v" id="k-30d">—</div><div class="l">Last 30 days</div><div class="h">all tiers</div></div>
+	    <div class="kc p"><div class="v" id="k-pipeline">—</div><div class="l">Open pipeline</div><div class="h">value not yet closed</div></div>
+	    <div class="kc"><div class="v" id="k-won">—</div><div class="l">Won — month</div><div class="h">job value</div></div>
+	    <div class="kc g"><div class="v" id="k-comm">—</div><div class="l">10% — month</div><div class="h">your commission</div></div>
+	    <div class="kc r"><div class="v" id="k-notify">—</div><div class="l">Email alerts</div><div class="h">failed / needs review</div></div>
+	  </div>
+	  <div class="alert-panel" id="notifyPanel">
+	    <h2>Stored leads with failed email notification</h2>
+	    <div id="notifyRows"></div>
+	  </div>
 
   <!-- Phone / SMS click tracker — clicks on tel:/sms: links from the live site (last 30d) -->
   <div class="clicks-panel" id="clicksPanel" style="margin:0 24px 12px;padding:14px 16px;border:1px solid var(--border);border-radius:12px;background:var(--card)">
@@ -171,15 +210,17 @@ footer{text-align:center;padding:24px;color:var(--muted);font-size:.78rem;border
       <summary style="cursor:pointer;color:var(--blue);font-size:.85rem">Recent clicks (last 50)</summary>
       <div id="clicks-recent" style="margin-top:10px;max-height:240px;overflow:auto;font-size:.82rem"></div>
     </details>
-  </div>
+	  </div>
+	  <div id="growthPanel" class="growth-wrap"></div>
 
-  <div class="tb">
-    <span class="pb act" data-status="all">All</span>
-    <span class="pb" data-status="new">New</span>
-    <span class="pb" data-status="contacted">Contacted</span>
-    <span class="pb" data-status="estimated">Estimated</span>
-    <span class="pb" data-status="won">Won</span>
-    <span class="pb" data-status="lost">Lost</span>
+	  <div class="tb">
+	    <span class="pb act" data-status="all">All</span>
+	    <span class="pb" data-status="new">New</span>
+	    <span class="pb" data-status="contacted">Contacted</span>
+	    <span class="pb" data-status="estimated">Estimated</span>
+	    <span class="pb" data-status="won">Won</span>
+	    <span class="pb" data-status="lost">Lost</span>
+	    <span class="pb" data-status="third_party">Contractor / 3rd Party</span>
     <span class="spacer"></span>
     <label for="tier-f">Tier</label>
     <select id="tier-f">
@@ -209,9 +250,10 @@ footer{text-align:center;padding:24px;color:var(--muted);font-size:.78rem;border
 
   <div class="field"><label>Phone</label><a id="p-phone" href="#">—</a></div>
   <div class="field"><label>Email</label><a id="p-email" href="#">—</a></div>
-  <div class="field"><label>Address</label><div class="val" id="p-address">—</div></div>
-  <div class="field"><label>Service</label><div class="val" id="p-service">—</div></div>
-  <div class="field"><label>Message</label><div class="val" id="p-message" style="white-space:pre-wrap">—</div></div>
+	  <div class="field"><label>Address</label><div class="val" id="p-address">—</div></div>
+	  <div class="field"><label>Service</label><div class="val" id="p-service">—</div></div>
+	  <div class="field"><label>Message</label><div class="val" id="p-message" style="white-space:pre-wrap">—</div></div>
+	  <div class="field"><label>Email notification</label><div class="val" id="p-notification">—</div></div>
 
   <hr class="divider">
 
@@ -221,10 +263,11 @@ footer{text-align:center;padding:24px;color:var(--muted);font-size:.78rem;border
       <select id="p-status">
         <option value="new">New</option>
         <option value="contacted">Contacted</option>
-        <option value="estimated">Estimated</option>
-        <option value="won">Won</option>
-        <option value="lost">Lost</option>
-      </select>
+	        <option value="estimated">Estimated</option>
+	        <option value="won">Won</option>
+	        <option value="lost">Lost</option>
+	        <option value="third_party">Contractor / 3rd Party</option>
+	      </select>
     </div>
     <div class="two">
       <div class="field"><label>Job value ($)</label><input type="number" id="p-jobvalue" step="100" min="0" placeholder="0"></div>
@@ -247,11 +290,16 @@ footer{text-align:center;padding:24px;color:var(--muted);font-size:.78rem;border
         <div class="field"><label>Install scheduled</label><input type="date" id="p-install-date"></div>
         <div class="field"><label>Balance due ($)</label><input type="number" id="p-balance" step="100" min="0"></div>
       </div>
-      <div class="two">
-        <div class="field"><label>Job started</label><input type="date" id="p-job-started"></div>
-        <div class="field"><label>Job completed <span style="opacity:.6;font-weight:400">(triggers review-request)</span></label><input type="date" id="p-job-completed"></div>
-      </div>
-      <div class="field"><label>Product / scope</label><input type="text" id="p-product" placeholder="Brava Aged Cedar · 41 sq · tear-off"></div>
+	      <div class="two">
+	        <div class="field"><label>Job started</label><input type="date" id="p-job-started"></div>
+	        <div class="field"><label>Job completed <span style="opacity:.6;font-weight:400">(triggers review-request)</span></label><input type="date" id="p-job-completed"></div>
+	      </div>
+	      <div class="two">
+	        <div class="field"><label>Est. completion</label><input type="date" id="p-est-completion"></div>
+	        <div class="field"><label>Final payment received</label><input type="date" id="p-final-pmt"></div>
+	      </div>
+	      <div id="p-parity-status" style="font-size:.78rem;color:var(--muted);margin:-4px 0 10px"></div>
+	      <div class="field"><label>Product / scope</label><input type="text" id="p-product" placeholder="Brava Aged Cedar · 41 sq · tear-off"></div>
       <div class="two">
         <div class="field"><label>Contract URL</label><input type="url" id="p-contract-url" placeholder="DocuSign / Drive link"></div>
         <div class="field"><label>Warranty doc URL</label><input type="url" id="p-warranty-url" placeholder="warranty PDF link"></div>
@@ -299,10 +347,11 @@ footer{text-align:center;padding:24px;color:var(--muted);font-size:.78rem;border
       <select id="add-status">
         <option value="new">New</option>
         <option value="contacted">Contacted</option>
-        <option value="estimated">Estimated</option>
-        <option value="won">Won</option>
-        <option value="lost">Lost</option>
-      </select>
+	        <option value="estimated">Estimated</option>
+	        <option value="won">Won</option>
+	        <option value="lost">Lost</option>
+	        <option value="third_party">Contractor / 3rd Party</option>
+	      </select>
     </div>
     <div class="field"><label>Tier</label>
       <select id="add-tier">
@@ -336,13 +385,49 @@ var filterTier=localStorage.getItem("frame.leads.filter.tier")||"all";
 var searchQ="";
 var sortKey=localStorage.getItem("frame.leads.sort.key")||"created_at";
 var sortDir=localStorage.getItem("frame.leads.sort.dir")||"desc";
-var selectedId=null;
-var commTouched=false;
+	var selectedId=null;
+	var commTouched=false;
+	var clickData={totals:{call:0,sms:0},by_source:{},recent:[]};
+	var crmParityReady=true;
+	var growthStates={};
+	var growthStateLoaded=false;
+	var growthStorageReady=false;
+	var growthActionIndex={};
+	var UTAH_CITY_SLUGS=["heber-city","park-city","midway","salt-lake-city","millcreek","sandy","draper","west-jordan","south-jordan","cottonwood-heights","west-valley-city","murray","holladay","bountiful","layton","kaysville","lehi","orem","provo","american-fork","pleasant-grove","springville","riverton","herriman","magna","taylorsville","midvale","north-salt-lake","farmington","alpine","highland","spanish-fork","payson","saratoga-springs","eagle-mountain"];
+	var INDEXING_QUEUE=[
+	  {url:"https://www.frameroofingutah.com/",label:"Homepage"},
+	  {url:"https://www.frameroofingutah.com/pages/insurance-claims",label:"Insurance claims"},
+	  {url:"https://www.frameroofingutah.com/pages/roof-replacement",label:"Roof replacement"},
+	  {url:"https://www.frameroofingutah.com/pages/roof-repair",label:"Roof repair"},
+	  {url:"https://www.frameroofingutah.com/locations/heber-city",label:"Heber City"},
+	  {url:"https://www.frameroofingutah.com/locations/park-city",label:"Park City"},
+	  {url:"https://www.frameroofingutah.com/locations/salt-lake-city",label:"Salt Lake City"},
+	  {url:"https://www.frameroofingutah.com/locations/sandy",label:"Sandy"},
+	  {url:"https://www.frameroofingutah.com/blog/utah/roof-replacement-cost-utah-2026",label:"Utah roof replacement cost"},
+	  {url:"https://www.frameroofingutah.com/blog/utah/utah-roof-insurance-claims-guide",label:"Utah insurance claims guide"}
+	];
 
-function esc(s){if(s==null)return"";return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#39;")}
-function fmtDate(s){if(!s)return"—";var d=new Date(s),now=new Date(),dd=Math.floor((now-d)/(86400000));if(dd===0)return d.toLocaleTimeString([],{hour:"numeric",minute:"2-digit"});if(dd===1)return"Yesterday";if(dd<7)return dd+"d ago";return d.toLocaleDateString([],{month:"short",day:"numeric"})}
-function fmtMoney(n){if(n==null||isNaN(Number(n)))return"—";var v=Number(n);if(v===0)return"—";if(v>=1000)return"$"+(v/1000).toFixed(1).replace(/\.0$/,"")+"k";return"$"+v.toFixed(0)}
-function statusOrNew(s){return s||"new"}
+	function esc(s){if(s==null)return"";return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#39;")}
+	function fmtDate(s){if(!s)return"—";var d=new Date(s),now=new Date(),dd=Math.floor((now-d)/(86400000));if(dd===0)return d.toLocaleTimeString([],{hour:"numeric",minute:"2-digit"});if(dd===1)return"Yesterday";if(dd<7)return dd+"d ago";return d.toLocaleDateString([],{month:"short",day:"numeric"})}
+	function fmtMoney(n){if(n==null||isNaN(Number(n)))return"—";var v=Number(n);if(v===0)return"—";if(v>=1000)return"$"+(v/1000).toFixed(1).replace(/\.0$/,"")+"k";return"$"+v.toFixed(0)}
+	function statusOrNew(s){return s||"new"}
+	function statusLabel(s){return s==="third_party"?"Contractor / 3rd Party":statusOrNew(s)}
+	function isClosedStatus(s){return ["won","lost","third_party"].indexOf(statusOrNew(s))>=0}
+	function notificationFailed(r){return crmParityReady&&(Boolean(r.notification_error)||((Number(r.notification_attempts)||0)>0&&r.notified===false))}
+	function notificationBadge(r){
+	  if(!crmParityReady)return '<span class="badge b-manual">pending</span>';
+	  if(notificationFailed(r))return '<span class="badge b-unnotified">email failed</span>';
+	  if(r.notified===true)return '<span class="badge b-notified">sent</span>';
+	  return '<span class="badge b-manual">manual</span>';
+	}
+	function syncSchemaBoundControls(){
+	  document.querySelectorAll('option[value="third_party"]').forEach(function(opt){opt.disabled=!crmParityReady});
+	}
+	function applyListResponse(d){
+	  crmParityReady=!(d&&d.schema&&d.schema.crm_parity_ready===false);
+	  leads=d&&d.leads?d.leads:[];
+	  syncSchemaBoundControls();
+	}
 
 function doLogin(e){
   e.preventDefault();
@@ -355,8 +440,8 @@ function doLogin(e){
       if(!r.ok){document.getElementById("loginErr").textContent="Server error ("+r.status+"). Try again.";return}
       return r.json().then(function(d){
         if(!d||d.error){document.getElementById("loginErr").textContent=d&&d.message?d.message:"Login failed.";return}
-        PIN=p;CUR_USER=d.user;sessionStorage.setItem("frp",p);
-        leads=d.leads||[];showReport();render();loadClicks();
+	        PIN=p;CUR_USER=d.user;sessionStorage.setItem("frp",p);
+	        applyListResponse(d);showReport();loadGrowthStates().then(function(){render();loadClicks()});
       });
     })
     .catch(function(){document.getElementById("loginErr").textContent="Network error. Try again."});
@@ -371,7 +456,7 @@ function showReport(){
   }
 }
 function doLogout(){
-  sessionStorage.removeItem("frp");PIN="";CUR_USER=null;leads=[];selectedId=null;
+	  sessionStorage.removeItem("frp");PIN="";CUR_USER=null;leads=[];selectedId=null;growthStates={};growthStateLoaded=false;growthStorageReady=false;growthActionIndex={};
   document.getElementById("reportWrap").style.display="none";
   document.getElementById("loginOverlay").style.display="flex";
   document.getElementById("pinInput").value="";
@@ -385,7 +470,7 @@ function doLogout(){
     PIN=s;
     fetch(API+"?action=list&key="+KEY+"&pin="+encodeURIComponent(s))
       .then(function(r){if(r.status===403){doLogout();return}return r.json()})
-      .then(function(d){if(!d||d.error){doLogout();return}CUR_USER=d.user;leads=d.leads||[];showReport();render();loadClicks()})
+	      .then(function(d){if(!d||d.error){doLogout();return}CUR_USER=d.user;applyListResponse(d);showReport();loadGrowthStates().then(function(){render();loadClicks()})})
       .catch(function(){doLogout()});
   }
 })();
@@ -396,12 +481,15 @@ async function refresh(){
     if(r.status===403){doLogout();return}
     var d=await r.json();
     if(d.error)throw new Error(d.message||d.error);
-    leads=d.leads||[];render();
-    loadClicks();
+	    applyListResponse(d);
+	    await loadGrowthStates();
+	    render();
+	    loadClicks();
   }catch(e){console.error(e);toast("Refresh failed: "+(e.message||e),true)}
 }
 
 function openAddLead(){
+  syncSchemaBoundControls();
   ["add-name","add-phone","add-email","add-address","add-city","add-service","add-jobvalue","add-margin","add-message","add-notes"].forEach(function(id){var el=document.getElementById(id);if(el)el.value=""});
   document.getElementById("add-status").value="new";
   document.getElementById("add-tier").value="general";
@@ -450,16 +538,166 @@ async function submitAddLead(){
   finally{btn.disabled=false;btn.textContent="Save Lead"}
 }
 
-var SOURCE_LABELS={gbp:"Google Business Profile",organic_google:"Google Search",google_ads:"Google Ads",bing:"Bing",duckduckgo:"DuckDuckGo",social:"Social",direct:"Direct",referral:"Other site",unknown:"Unknown"};
-var SOURCE_COLORS={gbp:"#4285F4",organic_google:"#34A853",google_ads:"#EA4335",bing:"#0078D4",social:"#bc8cff",direct:"#8b949e",referral:"#d29922",unknown:"#6e7681"};
+	var SOURCE_LABELS={gbp:"Google Business Profile",organic_google:"Google Search",google_ads:"Google Ads",bing:"Bing",duckduckgo:"DuckDuckGo",social:"Social",direct:"Direct",referral:"Other site",unknown:"Unknown"};
+	var SOURCE_COLORS={gbp:"#4285F4",organic_google:"#34A853",google_ads:"#EA4335",bing:"#0078D4",social:"#bc8cff",direct:"#8b949e",referral:"#d29922",unknown:"#6e7681"};
 
-async function loadClicks(){
+	function mountainDateParts(d){
+	  var out={};
+	  new Intl.DateTimeFormat("en-US",{timeZone:"America/Denver",year:"numeric",month:"2-digit",day:"2-digit",weekday:"short"}).formatToParts(d).forEach(function(p){out[p.type]=p.value});
+	  return {key:out.year+"-"+out.month+"-"+out.day,weekday:["Sun","Mon","Tue","Wed","Thu","Fri","Sat"].indexOf(out.weekday)};
+	}
+	function dateKey(offsetDays){return mountainDateParts(new Date(Date.now()+(offsetDays||0)*86400000)).key}
+	function weekKey(){var p=mountainDateParts(new Date()),days=(p.weekday+6)%7;return mountainDateParts(new Date(Date.now()-days*86400000)).key}
+	function titleCity(slug){return String(slug||"").split("-").map(function(w){return w.charAt(0).toUpperCase()+w.slice(1)}).join(" ")}
+	function pathOnly(v){v=String(v||"");try{if(/^https?:/i.test(v))return new URL(v).pathname||"/"}catch(e){}return v.split("?")[0].split("#")[0]||"/"}
+	function sourceLabel(s){return SOURCE_LABELS[s]||s||"Unknown"}
+	function addCount(obj,key,n){key=key||"unknown";obj[key]=(obj[key]||0)+(n||1)}
+	function cityFromPath(path){var m=pathOnly(path).match(/\/locations\/([^\/]+)/);return m?m[1]:""}
+	function slugifyCity(v){return String(v||"").trim().toLowerCase().replace(/&/g,"and").replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"")}
+	function leadCityKey(r){return cityFromPath(r.source_page||r.landing_page||"")||slugifyCity(r.city)}
+	function leadSource(r){var u=[r.utm_source,r.utm_medium,r.utm_campaign,r.referrer,r.landing_page,r.source_page].filter(Boolean).join(" ").toLowerCase();if(r.gclid||r.gbraid||r.wbraid||u.indexOf("google ads")>=0||u.indexOf("cpc")>=0)return"google_ads";if(u.indexOf("google")>=0)return"organic_google";if(u.indexOf("bing")>=0)return"bing";if(u.indexOf("facebook")>=0||u.indexOf("instagram")>=0||r.fbclid)return"social";if(u.indexOf("manual")>=0)return"manual";return"direct"}
+	function pageLabel(p){p=pathOnly(p);if(p==="/")return"Homepage";return p.replace(/^\//,"").replace(/\/$/,"").replace(/\//g," / ")||"Homepage"}
+	function topEntries(obj,n){return Object.keys(obj).map(function(k){return{key:k,value:obj[k]}}).sort(function(a,b){return b.value-a.value}).slice(0,n||8)}
+	function hoursSince(s){var t=new Date(s).getTime();return Number.isFinite(t)?Math.max(0,(Date.now()-t)/3600000):0}
+	function daysSince(s){return Math.floor(hoursSince(s)/24)}
+	function priorityRank(p){return p==="P0"?0:p==="P1"?1:2}
+	function growthActionSort(a,b){var p=priorityRank(a.priority)-priorityRank(b.priority);if(p)return p;return String(a.category+a.title).localeCompare(String(b.category+b.title))}
+
+	function hydrateGrowthStates(rows,storageReady){
+	  growthStates={};
+	  (rows||[]).forEach(function(r){if(r&&r.action_key)growthStates[r.action_key]=r});
+	  growthStateLoaded=true;
+	  growthStorageReady=storageReady!==false;
+	}
+	async function loadGrowthStates(){
+	  try{
+	    var r=await fetch(API+"?action=growth_state&key="+KEY+"&pin="+encodeURIComponent(PIN));
+	    if(r.status===403){doLogout();return}
+	    var d=await r.json();
+	    if(d.error)throw new Error(d.message||d.error);
+	    hydrateGrowthStates(d.actions||[],d.storage_ready!==false);
+	  }catch(e){
+	    console.error(e);
+	    hydrateGrowthStates([],false);
+	  }
+	}
+	function growthActionKey(a){
+	  var id=String(a.id||"action");
+	  if(id==="gsc-live-watch"||id==="paid-feedback")return id+"-"+dateKey(0);
+	  if(id==="gbp-weekly-proof"||id==="ai-visibility-watch"||id==="partner-filter")return id+"-"+weekKey();
+	  if(id.indexOf("city-gap-")===0||id.indexOf("page-gap-")===0)return id+"-"+weekKey();
+	  return id;
+	}
+	function growthStateFor(a){return growthStates[growthActionKey(a)]||null}
+	function growthStateIsHidden(st){return growthStorageReady&&st&&(st.state==="done"||(st.state==="snoozed"&&st.snoozed_until&&st.snoozed_until>dateKey(0)))}
+	async function saveGrowthState(key,patch){
+	  if(!growthStorageReady){toast("Growth Queue migration is prepared but not applied yet.",true);return}
+	  var a=growthActionIndex[key]||{title:key,category:"Ops",priority:"P2"};
+	  var current=growthStates[key]||{};
+	  var payload={
+	    action_key:key,
+	    state:patch.state||current.state||"open",
+	    assigned_to:("assigned_to" in patch)?patch.assigned_to:(current.assigned_to||null),
+	    snoozed_until:("snoozed_until" in patch)?patch.snoozed_until:(current.snoozed_until||null),
+	    note:("note" in patch)?patch.note:(current.note||null),
+	    action_title:a.title||key,
+	    category:a.category||"Ops",
+	    priority:a.priority||"P2"
+	  };
+	  try{
+	    var r=await fetch(API+"?action=growth_update&key="+KEY+"&pin="+encodeURIComponent(PIN),{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)});
+	    if(r.status===403){doLogout();return}
+	    var d=await r.json();
+	    if(!r.ok||d.error)throw new Error(d.message||d.error||("HTTP "+r.status));
+	    growthStates[d.action.action_key]=d.action;growthStateLoaded=true;renderGrowthQueue();toast("Growth action saved",false);
+	  }catch(e){console.error(e);toast("Growth action failed: "+(e.message||e),true)}
+	}
+	function markGrowthDone(key){saveGrowthState(key,{state:"done",snoozed_until:null})}
+	function snoozeGrowthAction(key){saveGrowthState(key,{state:"snoozed",snoozed_until:dateKey(7)})}
+	function assignGrowthAction(key){var current=growthStates[key]||{};var name=prompt("Assign to",current.assigned_to||(CUR_USER&&CUR_USER.name)||"");if(name===null)return;saveGrowthState(key,{state:current.state||"open",assigned_to:name.trim()||null})}
+	function reopenGrowthAction(key){saveGrowthState(key,{state:"open",snoozed_until:null})}
+
+	function addGrowthAction(list,a){
+	  list.push({id:a.id||("a"+list.length),priority:a.priority||"P2",category:a.category||"Ops",title:a.title||"Untitled action",detail:a.detail||"",step:a.step||"",owner:a.owner||"Ryan / Landon",leadId:a.leadId||null,url:a.url||"",due:a.due||"next"});
+	}
+	function buildGrowthData(){
+	  var clicks=(clickData.recent||[]);
+	  var pageLead={},pageClicks={},cityLead={},cityClicks={},sourceCounts={};
+	  leads.forEach(function(r){var p=pathOnly(r.source_page||r.landing_page||"/");addCount(pageLead,p);addCount(sourceCounts,leadSource(r));var c=leadCityKey(r);if(c)addCount(cityLead,c)});
+	  clicks.forEach(function(c){var p=pathOnly(c.source_page||"/");addCount(pageClicks,p);addCount(sourceCounts,c.source||"unknown");var city=cityFromPath(p);if(city)addCount(cityClicks,city)});
+	  return {clicks:clicks,pageLead:pageLead,pageClicks:pageClicks,cityLead:cityLead,cityClicks:cityClicks,sourceCounts:sourceCounts};
+	}
+	function buildGrowthQueue(){
+	  var D=buildGrowthData(),actions=[];
+	  var failed=leads.filter(notificationFailed).sort(function(a,b){return new Date(b.created_at)-new Date(a.created_at)});
+	  failed.slice(0,8).forEach(function(r){addGrowthAction(actions,{id:"notify-"+r.id,priority:"P0",category:"Lead Ops",title:"Fix failed lead notification",detail:(r.name||"Unnamed lead")+" · "+fmtDate(r.created_at)+" · "+(r.notification_error||"email alert did not complete"),step:"Confirm sales received the lead, then resolve the Resend/email path.",leadId:r.id,due:"now"})});
+	  var untouched=leads.filter(function(r){return statusOrNew(r.status)==="new"}).sort(function(a,b){return new Date(a.created_at)-new Date(b.created_at)});
+	  untouched.slice(0,12).forEach(function(r){var h=hoursSince(r.created_at),urgent=["emergency","urgent"].indexOf(r.tier)>=0;addGrowthAction(actions,{id:"touch-"+r.id,priority:urgent||h>=2?"P0":"P1",category:"Lead Ops",title:"First-touch new lead",detail:(r.name||"Unnamed lead")+" · "+(r.phone||r.email||"no contact shown")+" · "+(r.tier||"general")+" · "+Math.max(0,Math.round(h))+"h old",step:"Call, log the result, then move status to Contacted, Estimated, Won, Lost, or Contractor / 3rd Party.",leadId:r.id,due:urgent?"now":"today"})});
+	  leads.filter(function(r){var st=statusOrNew(r.status);return (st==="contacted"||st==="estimated")&&hoursSince(r.created_at)>48&&!isClosedStatus(st)}).slice(0,8).forEach(function(r){addGrowthAction(actions,{id:"stale-"+r.id,priority:"P1",category:"Pipeline",title:"Advance stale open lead",detail:(r.name||"Unnamed lead")+" has been "+statusLabel(r.status)+" for "+daysSince(r.created_at)+"d.",step:"Add the latest note and either estimate, close, or mark it as contractor / third-party noise.",leadId:r.id,due:"today"})});
+	  leads.filter(function(r){return statusOrNew(r.status)==="estimated"&&(!(Number(r.job_value)||0)||!(Number(r.margin)||0))}).slice(0,8).forEach(function(r){addGrowthAction(actions,{id:"value-"+r.id,priority:"P1",category:"Revenue",title:"Fill estimate value and margin",detail:(r.name||"Unnamed lead")+" is Estimated but missing job value or margin.",step:"Enter job value and margin so the CRM can prove pipeline ROI.",leadId:r.id,due:"today"})});
+	  var reviewReady=leads.filter(function(r){return statusOrNew(r.status)==="won"&&r.job_completed_at&&!r.review_requested_at&&daysSince(r.job_completed_at)>=3});
+	  reviewReady.slice(0,8).forEach(function(r){addGrowthAction(actions,{id:"review-"+r.id,priority:"P1",category:"Reviews",title:"Review request due",detail:(r.name||"Won job")+" completed "+fmtDate(r.job_completed_at)+" and has no stored review request timestamp.",step:"Verify the review-request cron fired or send the approved real-customer request.",leadId:r.id,due:"today"})});
+	  leads.filter(function(r){return statusOrNew(r.status)==="won"&&(r.city||cityFromPath(r.source_page||""))}).slice(0,10).forEach(function(r){var city=titleCity(leadCityKey(r)||r.city||"Utah");addGrowthAction(actions,{id:"proof-"+r.id,priority:r.job_completed_at?"P1":"P2",category:"Proof",title:"Create job proof asset",detail:(r.name||"Won job")+" · "+city+" · "+(r.product||r.service||"roofing job"),step:"Capture approved photos/video, service, city, and scope. Route proof into the matching city page, GBP post, and AI visibility tracker.",leadId:r.id,due:r.job_completed_at?"this week":"next"})});
+	  topEntries(D.cityClicks,8).forEach(function(x){if(x.value>=2&&!D.cityLead[x.key])addGrowthAction(actions,{id:"city-gap-"+x.key,priority:"P1",category:"Website",title:"City clicks without form leads",detail:titleCity(x.key)+" has "+x.value+" phone/text clicks but no form leads in the 30d window.",step:"Review CTA placement, local proof, and mobile form visibility before requesting indexing.",url:"https://www.frameroofingutah.com/locations/"+x.key,due:"this week"})});
+	  topEntries(D.pageClicks,8).forEach(function(x){if(x.value>=3&&!D.pageLead[x.key])addGrowthAction(actions,{id:"page-gap-"+x.key,priority:"P1",category:"Website",title:"Page gets calls but no forms",detail:pageLabel(x.key)+" has "+x.value+" call/text clicks and no form submissions.",step:"Check mobile CTA placement, form visibility, and whether the copy answers the visitor's next question.",url:"https://www.frameroofingutah.com"+(x.key==="/"?"":x.key),due:"this week"})});
+	  var quietCities=UTAH_CITY_SLUGS.filter(function(s){return !D.cityLead[s]&&!D.cityClicks[s]}).slice(0,8);
+	  if(quietCities.length)addGrowthAction(actions,{id:"utah-city-coverage",priority:"P2",category:"Website",title:"Review quiet Utah city routes",detail:"No attribution events yet for: "+quietCities.map(titleCity).join(", ")+".",step:"Prioritize approved proof/internal links for the highest-value quiet Utah city pages before broad new page work.",due:"next"});
+	  var quietIndex=INDEXING_QUEUE.filter(function(x){return !D.pageLead[pathOnly(x.url)]&&!D.pageClicks[pathOnly(x.url)]}).slice(0,5);
+	  if(quietIndex.length)addGrowthAction(actions,{id:"gsc-live-watch",priority:"P1",category:"Search",title:"Run Search Console live watch",detail:"Priority URLs with no attribution events: "+quietIndex.map(function(x){return x.label}).join(", ")+".",step:"Inspect/request indexing on quiet priority URLs and log indexed status at 24h, 72h, and 7d.",due:"today"});
+	  var google=(D.sourceCounts.organic_google||0)+(D.sourceCounts.google_ads||0)+(D.sourceCounts.gbp||0);
+	  addGrowthAction(actions,{id:"gbp-weekly-proof",priority:google<3?"P1":"P2",category:"GBP",title:"Publish GBP proof update",detail:"Google-attributed events in this window: "+google+".",step:"Post one approved real job photo/video update and confirm service/category fields.",due:"this week"});
+	  addGrowthAction(actions,{id:"ai-visibility-watch",priority:"P2",category:"AI Visibility",title:"Re-run Utah AI visibility watch",detail:"Keep checking whether AI/search surfaces cite Frame Roofing Utah for priority city and service queries.",step:"Run the approved visibility baseline and convert missing citation sources into proof, review, or citation tasks.",due:"this week"});
+	  var closed=leads.filter(function(r){return isClosedStatus(r.status)}),third=leads.filter(function(r){return statusOrNew(r.status)==="third_party"});
+	  if(third.length>=2||(closed.length&&third.length/closed.length>.25))addGrowthAction(actions,{id:"partner-filter",priority:"P2",category:"Lead Quality",title:"Tighten contractor / partner filtering",detail:third.length+" third-party/internal leads are stored.",step:"Look for repeated source pages, phone patterns, or message language and add clearer intake rules.",due:"next"});
+	  if((leads.length+(D.clicks||[]).length)<10)addGrowthAction(actions,{id:"paid-feedback",priority:"P1",category:"Traffic",title:"Start paid traffic feedback loop",detail:"Attribution volume is still thin in the 30d window.",step:"Use approved paid channels only after owner approval, keep UTM/click IDs intact, and update won/lost/third-party status daily.",due:"now"});
+	  actions.sort(growthActionSort);
+	  return {actions:actions,failed:failed.length,untouched:untouched.length,reviewReady:reviewReady.length,proofReady:leads.filter(function(r){return statusOrNew(r.status)==="won"&&(r.city||cityFromPath(r.source_page||""))}).length};
+	}
+	function actionCard(a){
+	  var cls=a.priority.toLowerCase(),key=growthActionKey(a),st=growthStateFor(a),snoozeActive=st&&st.state==="snoozed"&&st.snoozed_until&&st.snoozed_until>dateKey(0),disabled=growthStorageReady?"":" disabled";
+	  var h='<article class="action-card '+cls+'" data-gkey="'+esc(key)+'"><div class="action-top"><div class="action-title">'+esc(a.title)+'</div><span class="pri '+cls+'">'+esc(a.priority)+'</span></div>';
+	  h+='<div class="action-detail">'+esc(a.detail)+'</div><div class="action-step">→ '+esc(a.step)+'</div><div class="action-meta"><span class="cat">'+esc(a.category)+'</span><span class="cat">'+esc(a.due)+'</span><span class="cat">'+esc(a.owner)+'</span></div>';
+	  if(st&&(st.assigned_to||st.state==="done"||snoozeActive)){h+='<div class="action-meta">';if(st.assigned_to)h+='<span class="state-pill">Assigned · '+esc(st.assigned_to)+'</span>';if(snoozeActive)h+='<span class="state-pill snoozed">Snoozed · '+esc(st.snoozed_until||"")+'</span>';if(st.state==="done")h+='<span class="state-pill done">Done</span>';h+='</div>'}
+	  if(a.leadId||a.url){h+='<div class="action-link">';if(a.leadId)h+='<button class="sm-btn" type="button" onclick="openPanel('+Number(a.leadId)+')">Open lead</button>';if(a.url)h+='<a class="sm-btn" target="_blank" rel="noopener" href="'+esc(a.url)+'">Open page</a>';h+='</div>'}
+	  h+='<div class="action-controls"><button class="sm-btn growth-done" type="button" data-gkey="'+esc(key)+'"'+disabled+'>Done</button><button class="sm-btn growth-snooze" type="button" data-gkey="'+esc(key)+'"'+disabled+'>Snooze 7d</button><button class="sm-btn growth-assign" type="button" data-gkey="'+esc(key)+'"'+disabled+'>Assign</button></div></article>';
+	  return h;
+	}
+	function wireGrowthControls(){
+	  var host=document.getElementById("growthPanel");if(!host)return;
+	  host.querySelectorAll(".growth-done").forEach(function(btn){btn.addEventListener("click",function(){markGrowthDone(btn.getAttribute("data-gkey"))})});
+	  host.querySelectorAll(".growth-snooze").forEach(function(btn){btn.addEventListener("click",function(){snoozeGrowthAction(btn.getAttribute("data-gkey"))})});
+	  host.querySelectorAll(".growth-assign").forEach(function(btn){btn.addEventListener("click",function(){assignGrowthAction(btn.getAttribute("data-gkey"))})});
+	  host.querySelectorAll(".growth-reopen").forEach(function(btn){btn.addEventListener("click",function(){reopenGrowthAction(btn.getAttribute("data-gkey"))})});
+	}
+	function renderGrowthQueue(){
+	  var host=document.getElementById("growthPanel");if(!host)return;
+	  if(!growthStateLoaded||!growthStorageReady){
+	    host.innerHTML='<div class="growth-head"><div><h2>Growth Queue</h2><p>Utah Growth Queue logic is staged, but persistence stays disabled until the prepared growth_queue_actions migration is approved and applied.</p></div><button class="sm-btn" type="button" onclick="loadGrowthStates().then(renderGrowthQueue)">Check storage</button></div><div class="growth-pending">No growth actions are shown or writable yet. This keeps the queue safe before the storage table exists.</div>';
+	    return;
+	  }
+	  var q=buildGrowthQueue(),allActions=q.actions;
+	  growthActionIndex={};allActions.forEach(function(a){growthActionIndex[growthActionKey(a)]=a});
+	  var hidden=allActions.filter(function(a){return growthStateIsHidden(growthStateFor(a))});
+	  var actions=allActions.filter(function(a){return !growthStateIsHidden(growthStateFor(a))});
+	  var p0=actions.filter(function(a){return a.priority==="P0"}).length,p1=actions.filter(function(a){return a.priority==="P1"}).length,p2=actions.filter(function(a){return a.priority==="P2"}).length;
+	  var h='<div class="growth-head"><div><h2>Growth Queue</h2><p>Live CRM and phone/text attribution actions for Utah. Done, snoozed, and assigned state persists after the approved migration is in place.</p></div><button class="sm-btn" type="button" onclick="refresh()">Refresh</button></div>';
+	  h+='<div class="kg" style="padding:0;margin-bottom:14px">';[
+	    {v:p0,l:"P0 Actions",h:"same-day",c:p0?"r":"g"},{v:p1,l:"P1 Actions",h:"this week",c:"o"},{v:p2,l:"P2 Actions",h:"next",c:"b"},{v:q.untouched,l:"New Leads",h:"need first touch",c:q.untouched?"r":"g"},{v:q.failed,l:"Alert Failures",h:"email notification",c:q.failed?"r":"g"},{v:q.proofReady,l:"Proof Jobs",h:"won jobs to mine",c:"p"}
+	  ].forEach(function(k){h+='<div class="kc '+k.c+'"><div class="v">'+esc(k.v)+'</div><div class="l">'+esc(k.l)+'</div><div class="h">'+esc(k.h)+'</div></div>'});h+='</div>';
+	  h+='<div class="growth-lanes">';["P0","P1","P2"].forEach(function(p){var lane=actions.filter(function(a){return a.priority===p});h+='<section><div class="growth-lane-title"><span>'+p+'</span><span>'+lane.length+'</span></div><div class="action-list">';if(lane.length)lane.slice(0,8).forEach(function(a){h+=actionCard(a)});else h+='<div class="empty-lane">No '+p+' actions right now.</div>';h+='</div></section>'});h+='</div>';
+	  if(hidden.length){h+='<div style="margin-top:14px"><div class="growth-lane-title"><span>Done / Snoozed</span><span>'+hidden.length+'</span></div>';hidden.slice(0,8).forEach(function(a){var key=growthActionKey(a),st=growthStateFor(a)||{},label=st.state==="snoozed"?"snoozed until "+(st.snoozed_until||"next"):"done";h+='<div class="action-card"><div class="action-top"><div class="action-title">'+esc(a.title)+' · '+esc(label)+'</div><button class="sm-btn growth-reopen" type="button" data-gkey="'+esc(key)+'">Reopen</button></div></div>'});h+='</div>'}
+	  host.innerHTML=h;wireGrowthControls();
+	}
+
+	async function loadClicks(){
   try{
     var r=await fetch(API+"?action=clicks&days=30&key="+KEY+"&pin="+encodeURIComponent(PIN));
     if(r.status===403){doLogout();return}
-    var d=await r.json();
-    if(d.error)throw new Error(d.message||d.error);
-    renderClicks(d);
+	    var d=await r.json();
+	    if(d.error)throw new Error(d.message||d.error);
+	    clickData=d;
+	    renderClicks(d);
+	    renderGrowthQueue();
   }catch(e){console.error(e);document.getElementById("clicks-sub").textContent="Failed to load clicks";}
 }
 
@@ -504,7 +742,7 @@ function computeKpis(rows){
   var thirty=new Date(Date.now()-30*86400000);
   var nNew=rows.filter(function(r){return statusOrNew(r.status)==="new"}).length;
   var n30=rows.filter(function(r){return new Date(r.created_at)>thirty}).length;
-  var pipe=rows.filter(function(r){return ["won","lost"].indexOf(statusOrNew(r.status))<0}).reduce(function(s,r){return s+(Number(r.job_value)||0)},0);
+	  var pipe=rows.filter(function(r){return !isClosedStatus(r.status)}).reduce(function(s,r){return s+(Number(r.job_value)||0)},0);
   var wonMtd=rows.filter(function(r){return statusOrNew(r.status)==="won"&&new Date(r.won_at||r.job_completed_at||r.created_at)>=ms}).reduce(function(s,r){return s+(Number(r.job_value)||0)},0);
   // Commission rollup uses ONLY the DB-computed commission (margin × city-aware rate).
   // No fallback to flat 10% on job_value — that produced wrong-shape numbers under the new rule.
@@ -512,10 +750,23 @@ function computeKpis(rows){
   var commMtd=rows.filter(function(r){return statusOrNew(r.status)==="won"&&new Date(r.won_at||r.job_completed_at||r.created_at)>=ms}).reduce(function(s,r){return s+(Number(r.commission)||0)},0);
   document.getElementById("k-new").textContent=nNew;
   document.getElementById("k-30d").textContent=n30;
-  document.getElementById("k-pipeline").textContent=fmtMoney(pipe);
-  document.getElementById("k-won").textContent=fmtMoney(wonMtd);
-  document.getElementById("k-comm").textContent=fmtMoney(commMtd);
-}
+	  document.getElementById("k-pipeline").textContent=fmtMoney(pipe);
+	  document.getElementById("k-won").textContent=fmtMoney(wonMtd);
+	  document.getElementById("k-comm").textContent=fmtMoney(commMtd);
+	  document.getElementById("k-notify").textContent=crmParityReady?rows.filter(notificationFailed).length:"—";
+	}
+
+	function renderNotificationPanel(rows){
+	  var panel=document.getElementById("notifyPanel"),host=document.getElementById("notifyRows");
+	  if(!crmParityReady){panel.style.display="none";host.innerHTML="";return}
+	  var failures=rows.filter(notificationFailed).slice(0,8);
+	  if(!failures.length){panel.style.display="none";host.innerHTML="";return}
+	  panel.style.display="block";
+	  host.innerHTML=failures.map(function(r){
+	    var msg=r.notification_error||"Email notification did not complete.";
+	    return '<div class="alert-row"><div>'+esc(fmtDate(r.created_at))+'</div><button type="button" onclick="openPanel('+Number(r.id)+')">'+esc(r.name||"Unnamed lead")+'</button><div title="'+esc(msg)+'">'+esc((msg||"").slice(0,48))+(msg&&msg.length>48?"…":"")+'</div></div>';
+	  }).join("");
+	}
 
 function applyFilters(rows){return rows.filter(function(r){
   if(filterStatus!=="all"&&statusOrNew(r.status)!==filterStatus)return false;
@@ -529,8 +780,10 @@ function render(){
   var sub=document.getElementById("reportSub");
   var latest=leads[0]?new Date(leads[0].created_at).toLocaleString():"—";
   sub.innerHTML="<b>"+leads.length+"</b> leads · latest: "+esc(latest);
-  document.getElementById("last-load").textContent="loaded "+new Date().toLocaleTimeString();
-  computeKpis(leads);
+	  document.getElementById("last-load").textContent="loaded "+new Date().toLocaleTimeString();
+	  computeKpis(leads);
+	  renderNotificationPanel(leads);
+	  renderGrowthQueue();
 
   var visible=applySort(applyFilters(leads));
   var host=document.getElementById("ct");
@@ -542,7 +795,8 @@ function render(){
   h+='<th class="hide-sm">Phone</th>';
   h+='<th data-sort="status">Status <span class="arrow">'+arrow("status")+'</span></th>';
   h+='<th class="hide-sm" data-sort="tier">Tier <span class="arrow">'+arrow("tier")+'</span></th>';
-  h+='<th class="hide-sm">Service</th>';
+	  h+='<th class="hide-sm">Notify</th>';
+	  h+='<th class="hide-sm">Service</th>';
   h+='<th class="num" data-sort="job_value">Value <span class="arrow">'+arrow("job_value")+'</span></th>';
   h+='</tr></thead><tbody>';
   for(var i=0;i<visible.length;i++){
@@ -552,8 +806,9 @@ function render(){
     h+='<td>'+esc(fmtDate(r.created_at))+'</td>';
     h+='<td class="name">'+esc(r.name||"—")+'</td>';
     h+='<td class="hide-sm">'+esc(r.phone||"")+'</td>';
-    h+='<td><span class="badge b-'+esc(st)+'">'+esc(st)+'</span></td>';
-    h+='<td class="hide-sm">'+(tr?'<span class="badge b-'+esc(tr)+'">'+esc(tr)+'</span>':"—")+'</td>';
+	    h+='<td><span class="badge b-'+esc(st)+'">'+esc(statusLabel(st))+'</span></td>';
+	    h+='<td class="hide-sm">'+(tr?'<span class="badge b-'+esc(tr)+'">'+esc(tr)+'</span>':"—")+'</td>';
+	    h+='<td class="hide-sm">'+notificationBadge(r)+'</td>';
     h+='<td class="hide-sm">'+esc(r.service||"—")+'</td>';
     h+='<td class="num">'+esc(fmtMoney(r.job_value))+'</td>';
     h+='</tr>';
@@ -581,9 +836,22 @@ function openPanel(id){
   if(phone){pe.textContent=phone;pe.href="tel:"+phone.replace(/\D/g,"")}else{pe.textContent="—";pe.removeAttribute("href")}
   var email=lead.email||"",ee=document.getElementById("p-email");
   if(email){ee.textContent=email;ee.href="mailto:"+email}else{ee.textContent="—";ee.removeAttribute("href")}
-  document.getElementById("p-address").textContent=lead.address||"—";
-  document.getElementById("p-service").textContent=lead.service||"—";
-  document.getElementById("p-message").textContent=lead.message||"(no message)";
+	  document.getElementById("p-address").textContent=lead.address||"—";
+	  document.getElementById("p-service").textContent=lead.service||"—";
+	  document.getElementById("p-message").textContent=lead.message||"(no message)";
+	  var n=document.getElementById("p-notification");
+	  if(!crmParityReady){
+	    n.textContent="Prepared migration not applied yet";
+	  }else if(notificationFailed(lead)){
+	    n.innerHTML='<span style="color:var(--red);font-weight:600">Failed</span>'
+	      +' · attempts: '+esc(lead.notification_attempts||0)
+	      +(lead.notification_error?' · '+esc(lead.notification_error):"");
+	  }else if(lead.notified===true){
+	    n.innerHTML='<span style="color:var(--green);font-weight:600">Sent</span>'
+	      +(lead.notified_at?' · '+esc(fmtDate(lead.notified_at)):"");
+	  }else{
+	    n.textContent="Manual/no email notification attempted";
+	  }
 
   var t=document.getElementById("p-triage");
   if(lead.tier){t.style.display="block";t.innerHTML='<b>'+esc(lead.tier.toUpperCase())+'</b> · '+esc(lead.tier_reason||"no reason")+(lead.tier_classifier?' <span style="opacity:0.6">('+esc(lead.tier_classifier)+')</span>':"")}
@@ -602,9 +870,17 @@ function openPanel(id){
   document.getElementById("p-deposit-amt").value=lead.deposit_amount||"";
   document.getElementById("p-install-date").value=asDate(lead.install_scheduled_for);
   document.getElementById("p-balance").value=lead.balance_due||"";
-  document.getElementById("p-job-started").value=asDate(lead.job_started_at);
-  document.getElementById("p-job-completed").value=asDate(lead.job_completed_at);
-  document.getElementById("p-product").value=lead.product||"";
+	  document.getElementById("p-job-started").value=asDate(lead.job_started_at);
+	  document.getElementById("p-job-completed").value=asDate(lead.job_completed_at);
+	  var est=document.getElementById("p-est-completion"),finalPmt=document.getElementById("p-final-pmt");
+	  est.value=asDate(lead.estimated_completion_date);
+	  finalPmt.value=asDate(lead.final_payment_received_at);
+	  est.dataset.original=est.value;
+	  finalPmt.dataset.original=finalPmt.value;
+	  est.disabled=!crmParityReady;
+	  finalPmt.disabled=!crmParityReady;
+	  document.getElementById("p-parity-status").textContent=crmParityReady?"":"Completion/payment fields are staged; enable them by applying the prepared CRM parity migration.";
+	  document.getElementById("p-product").value=lead.product||"";
   document.getElementById("p-contract-url").value=lead.contract_url||"";
   document.getElementById("p-warranty-url").value=lead.warranty_doc_url||"";
   togglePipeline(statusOrNew(lead.status));
@@ -667,12 +943,17 @@ async function save(){
     deposit_amount:document.getElementById("p-deposit-amt").value||null,
     install_scheduled_for:document.getElementById("p-install-date").value||null,
     balance_due:document.getElementById("p-balance").value||null,
-    job_started_at:document.getElementById("p-job-started").value||null,
-    job_completed_at:document.getElementById("p-job-completed").value||null,
-    product:document.getElementById("p-product").value||null,
-    contract_url:document.getElementById("p-contract-url").value||null,
-    warranty_doc_url:document.getElementById("p-warranty-url").value||null
-  };
+	    job_started_at:document.getElementById("p-job-started").value||null,
+	    job_completed_at:document.getElementById("p-job-completed").value||null,
+	    product:document.getElementById("p-product").value||null,
+	    contract_url:document.getElementById("p-contract-url").value||null,
+	    warranty_doc_url:document.getElementById("p-warranty-url").value||null
+	  };
+	  if(crmParityReady){
+	    var est=document.getElementById("p-est-completion"),finalPmt=document.getElementById("p-final-pmt");
+	    if(est.value||est.dataset.original)body.estimated_completion_date=est.value||null;
+	    if(finalPmt.value||finalPmt.dataset.original)body.final_payment_received_at=finalPmt.value||null;
+	  }
   try{
     var r=await fetch(API+"?action=update&key="+KEY+"&pin="+encodeURIComponent(PIN),{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)});
     if(r.status===403){doLogout();return}
