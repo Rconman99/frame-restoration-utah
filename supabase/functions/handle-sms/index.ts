@@ -26,9 +26,17 @@ import {
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+// Operator (Landon) line — single source of truth in classify-inbound.ts so the
+// frozen test and the live relay agree. (origin/main parity; Phase A inlined it.)
 const LANDON_PHONE = OPERATOR_PHONE;
 const POSTHOG_KEY = "phc_BnECzlZ2OeDujli2dbqcgGODXlv2tYERbp40dTF7UBV";
 const OUTBOUND_CALL_URL = `${SUPABASE_URL}/functions/v1/outbound-call`;
+const INTERNAL_SENDERS = new Set(
+  (Deno.env.get("INTERNAL_RELAY_NUMBERS") || "")
+    .split(",")
+    .map((s) => s.trim())
+    .filter(Boolean),
+);
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
 
@@ -54,7 +62,10 @@ async function findRecentLead(phone: string): Promise<number | null> {
   return data && data.length ? data[0].id : null;
 }
 
-async function createInboundSmsLead(fromNumber: string, body: string): Promise<number | null> {
+async function createInboundSmsLead(
+  fromNumber: string,
+  body: string,
+): Promise<number | null> {
   if (!fromNumber) return null;
   const preview = (body || "").slice(0, 500);
   const { data, error } = await supabase
@@ -68,7 +79,8 @@ async function createInboundSmsLead(fromNumber: string, body: string): Promise<n
       tier: "general",
       tier_classifier: "auto-inbound-sms",
       tier_reason: "Auto-created by handle-sms on first SMS from this number",
-      notes: "Auto-created from inbound SMS. Reply via /leads or text 'TO:" + lastFour(fromNumber) + " message' from Landon's phone.",
+      notes: "Auto-created from inbound SMS. Reply via /leads or text 'TO:" +
+        lastFour(fromNumber) + " message' from Landon's phone.",
     })
     .select("id")
     .single();
@@ -80,10 +92,25 @@ async function createInboundSmsLead(fromNumber: string, body: string): Promise<n
 }
 
 async function getTwilioCreds() {
-  const { data } = await supabase.from("app_config").select("key, value").in("key", ["TWILIO_ACCOUNT_SID", "TWILIO_AUTH_TOKEN", "TWILIO_MESSAGING_SERVICE_SID", "TWILIO_PHONE_NUMBER"]);
+  const { data } = await supabase.from("app_config").select("key, value").in(
+    "key",
+    [
+      "TWILIO_ACCOUNT_SID",
+      "TWILIO_AUTH_TOKEN",
+      "TWILIO_MESSAGING_SERVICE_SID",
+      "TWILIO_PHONE_NUMBER",
+    ],
+  );
   const config: Record<string, string> = {};
-  data?.forEach((r: any) => { config[r.key] = r.value; });
-  return { sid: config.TWILIO_ACCOUNT_SID, auth: config.TWILIO_AUTH_TOKEN, msgServiceSid: config.TWILIO_MESSAGING_SERVICE_SID, phone: config.TWILIO_PHONE_NUMBER };
+  data?.forEach((r: any) => {
+    config[r.key] = r.value;
+  });
+  return {
+    sid: config.TWILIO_ACCOUNT_SID,
+    auth: config.TWILIO_AUTH_TOKEN,
+    msgServiceSid: config.TWILIO_MESSAGING_SERVICE_SID,
+    phone: config.TWILIO_PHONE_NUMBER,
+  };
 }
 
 // Process-once claim for Twilio retries (CODEX HIGH). Inserts the webhook's SID
@@ -91,20 +118,35 @@ async function getTwilioCreds() {
 // claimed (a Twilio retry → caller returns empty TwiML and does nothing). For
 // side-effecting paths (operator CALL/SMS) pass failOpen=false so a transient DB
 // error can't let a duplicate send/call through.
-async function claimWebhook(eventKey: string, failOpen = true): Promise<boolean> {
+async function claimWebhook(
+  eventKey: string,
+  failOpen = true,
+): Promise<boolean> {
   if (!eventKey) return true; // nothing to dedupe on — don't block real work
-  const { error } = await supabase.from("processed_webhooks").insert({ event_key: eventKey });
+  const { error } = await supabase.from("processed_webhooks").insert({
+    event_key: eventKey,
+  });
   if (!error) return true;
   if ((error as { code?: string }).code === "23505") return false; // unique_violation = already processed
-  console.error("[handle-sms] claimWebhook error:", error, "failOpen=", failOpen);
+  console.error(
+    "[handle-sms] claimWebhook error:",
+    error,
+    "failOpen=",
+    failOpen,
+  );
   return failOpen;
 }
 
 const emptyTwiml = () =>
-  new Response(`<?xml version="1.0" encoding="UTF-8"?><Response></Response>`, { headers: { "Content-Type": "text/xml" } });
+  new Response(`<?xml version="1.0" encoding="UTF-8"?><Response></Response>`, {
+    headers: { "Content-Type": "text/xml" },
+  });
 
 function escapeXml(str: string): string {
-  return (str || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&apos;");
+  return (str || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(
+    />/g,
+    "&gt;",
+  ).replace(/"/g, "&quot;").replace(/'/g, "&apos;");
 }
 
 Deno.serve(async (req: Request) => {
@@ -118,7 +160,9 @@ Deno.serve(async (req: Request) => {
     // ─── SECURITY GATE: verify Twilio signature BEFORE any DB write / REST call.
     // Build params from the already-consumed body (a Request body reads once).
     const params: Record<string, string> = {};
-    formData.forEach((v, k) => { params[k] = v.toString(); });
+    formData.forEach((v, k) => {
+      params[k] = v.toString();
+    });
 
     // Load Twilio creds from app_config (auth token + business number) up front;
     // the operator path below reuses these instead of re-loading.
@@ -146,19 +190,24 @@ Deno.serve(async (req: Request) => {
       const { sid: twilioSid, auth: twilioAuth, msgServiceSid } = creds;
       const twilioNumber = to;
 
-      const callCustomer = parseCallCommand(body);
-      if (callCustomer) {
-        const customerNumber = callCustomer;
+      const callTarget = parseCallCommand(body);
+      if (callTarget) {
+        const customerNumber = callTarget;
 
         if (twilioSid && twilioAuth) {
           // Idempotency: claim before placing the call so a Twilio retry can't
           // create a SECOND outbound call (CODEX HIGH). fail-closed.
-          if (!(await claimWebhook(`sms:${messageSid}`, false))) return emptyTwiml();
-          const twilioUrl = `https://api.twilio.com/2010-04-01/Accounts/${twilioSid}/Calls.json`;
+          if (!(await claimWebhook(`sms:${messageSid}`, false))) {
+            return emptyTwiml();
+          }
+          const twilioUrl =
+            `https://api.twilio.com/2010-04-01/Accounts/${twilioSid}/Calls.json`;
           const callBody = new URLSearchParams({
             From: twilioNumber,
             To: LANDON_PHONE,
-            Url: `${OUTBOUND_CALL_URL}?customer=${encodeURIComponent(customerNumber)}&twilio_number=${encodeURIComponent(twilioNumber)}`,
+            Url: `${OUTBOUND_CALL_URL}?customer=${
+              encodeURIComponent(customerNumber)
+            }&twilio_number=${encodeURIComponent(twilioNumber)}`,
             StatusCallback: `${SUPABASE_URL}/functions/v1/handle-call/status`,
           });
 
@@ -181,9 +230,15 @@ Deno.serve(async (req: Request) => {
             notes: "Outbound call via SMS command",
           });
 
-          return new Response(`<?xml version="1.0" encoding="UTF-8"?><Response><Message>Calling ${customerNumber} now. Your phone will ring shortly.</Message></Response>`, { headers: { "Content-Type": "text/xml" } });
+          return new Response(
+            `<?xml version="1.0" encoding="UTF-8"?><Response><Message>Calling ${customerNumber} now. Your phone will ring shortly.</Message></Response>`,
+            { headers: { "Content-Type": "text/xml" } },
+          );
         }
-        return new Response(`<?xml version="1.0" encoding="UTF-8"?><Response><Message>Error: Twilio creds not found.</Message></Response>`, { headers: { "Content-Type": "text/xml" } });
+        return new Response(
+          `<?xml version="1.0" encoding="UTF-8"?><Response><Message>Error: Twilio creds not found.</Message></Response>`,
+          { headers: { "Content-Type": "text/xml" } },
+        );
       }
 
       let customerNumber: string | null = null;
@@ -192,7 +247,7 @@ Deno.serve(async (req: Request) => {
       const toCmd = parseToCommand(body);
       if (toCmd) {
         customerNumber = toCmd.customerNumber;
-        messageBody = toCmd.message;
+        messageBody = toCmd.messageBody;
       } else {
         // Guarded sticky reply (CODEX HIGH): only auto-route a plain reply when
         // exactly ONE customer conversation is active in the last 30 min. 2+
@@ -208,34 +263,51 @@ Deno.serve(async (req: Request) => {
           new Set((recent || []).map((r: any) => r.customer_number)),
         );
         if (distinct.length >= 2) {
-          return new Response(`<?xml version="1.0" encoding="UTF-8"?><Response><Message>2+ recent conversations — reply with TO:&lt;10-digit number&gt; so it goes to the right customer.</Message></Response>`, { headers: { "Content-Type": "text/xml" } });
+          return new Response(
+            `<?xml version="1.0" encoding="UTF-8"?><Response><Message>2+ recent conversations — reply with TO:&lt;10-digit number&gt; so it goes to the right customer.</Message></Response>`,
+            { headers: { "Content-Type": "text/xml" } },
+          );
         }
         if (distinct.length === 1) {
           customerNumber = distinct[0];
         } else {
-          return new Response(`<?xml version="1.0" encoding="UTF-8"?><Response><Message>No active conversation in the last 30 min. Reply with TO:&lt;10-digit number&gt; message.</Message></Response>`, { headers: { "Content-Type": "text/xml" } });
+          return new Response(
+            `<?xml version="1.0" encoding="UTF-8"?><Response><Message>No active conversation in the last 30 min. Reply with TO:&lt;10-digit number&gt; message.</Message></Response>`,
+            { headers: { "Content-Type": "text/xml" } },
+          );
         }
       }
 
       if (!customerNumber) {
-        return new Response(`<?xml version="1.0" encoding="UTF-8"?><Response><Message>No recipient. Use TO:8015551234 message or CALL 8015551234</Message></Response>`, { headers: { "Content-Type": "text/xml" } });
+        return new Response(
+          `<?xml version="1.0" encoding="UTF-8"?><Response><Message>No recipient. Use TO:8015551234 message or CALL 8015551234</Message></Response>`,
+          { headers: { "Content-Type": "text/xml" } },
+        );
       }
 
       if (twilioSid && twilioAuth) {
         // Idempotency: claim before sending so a Twilio retry can't double-text
         // the customer (CODEX HIGH). fail-closed.
-        if (!(await claimWebhook(`sms:${messageSid}`, false))) return emptyTwiml();
-        const smsParams: Record<string, string> = { To: customerNumber, Body: messageBody };
+        if (!(await claimWebhook(`sms:${messageSid}`, false))) {
+          return emptyTwiml();
+        }
+        const smsParams: Record<string, string> = {
+          To: customerNumber,
+          Body: messageBody,
+        };
         if (msgServiceSid) smsParams.MessagingServiceSid = msgServiceSid;
         else smsParams.From = twilioNumber;
-        await fetch(`https://api.twilio.com/2010-04-01/Accounts/${twilioSid}/Messages.json`, {
-          method: "POST",
-          headers: {
-            "Authorization": "Basic " + btoa(`${twilioSid}:${twilioAuth}`),
-            "Content-Type": "application/x-www-form-urlencoded",
+        await fetch(
+          `https://api.twilio.com/2010-04-01/Accounts/${twilioSid}/Messages.json`,
+          {
+            method: "POST",
+            headers: {
+              "Authorization": "Basic " + btoa(`${twilioSid}:${twilioAuth}`),
+              "Content-Type": "application/x-www-form-urlencoded",
+            },
+            body: new URLSearchParams(smsParams).toString(),
           },
-          body: new URLSearchParams(smsParams).toString(),
-        });
+        );
       }
 
       await supabase.from("sms_logs").insert({
@@ -246,8 +318,10 @@ Deno.serve(async (req: Request) => {
         body: messageBody,
       });
 
-      return new Response(`<?xml version="1.0" encoding="UTF-8"?><Response></Response>`, { headers: { "Content-Type": "text/xml" } });
-
+      return new Response(
+        `<?xml version="1.0" encoding="UTF-8"?><Response></Response>`,
+        { headers: { "Content-Type": "text/xml" } },
+      );
     }
 
     // ─── CUSTOMER PATH (inbound) — v5 adds auto-lead creation ──────────────
@@ -256,13 +330,23 @@ Deno.serve(async (req: Request) => {
     // transient DB error shouldn't drop a real customer message.
     if (!(await claimWebhook(`sms:${messageSid}`))) return emptyTwiml();
 
+    // Pure routing decision (frozen by classify-inbound.test.ts): opt-out beats
+    // internal automation, and only normal customer messages become sticky
+    // conversations or auto-created CRM leads.
+    const optOutType = (params.OptOutType || "").trim().toUpperCase();
+    const customerRoute = classifyCustomerInbound({
+      from,
+      body,
+      optOutType,
+      internalSenders: INTERNAL_SENDERS,
+    });
+
     // A2P opt-out (CODEX MED): when Advanced Opt-Out is on the Messaging Service,
     // Twilio sends OptOutType (STOP | START | HELP) and auto-replies to the
     // customer itself. Log it + a non-sticky heads-up to Landon, but do NOT make
     // it a sticky conversation or forward it as a normal message — that would
     // prompt a reply to someone who just unsubscribed.
-    const optOutType = (params.OptOutType || "").trim().toUpperCase();
-    if (classifyCustomerInbound(params.OptOutType) === "optout") {
+    if (customerRoute === "optout") {
       await supabase.from("sms_logs").insert({
         message_sid: messageSid,
         direction: "inbound",
@@ -270,12 +354,35 @@ Deno.serve(async (req: Request) => {
         to_number: to,
         body: `[${optOutType}] ${body}`,
       });
-      return new Response(`<?xml version="1.0" encoding="UTF-8"?><Response><Message to="${LANDON_PHONE}">[opt-out: ${escapeXml(optOutType)}] ${escapeXml(from)} — do not reply</Message></Response>`, { headers: { "Content-Type": "text/xml" } });
+      return new Response(
+        `<?xml version="1.0" encoding="UTF-8"?><Response><Message to="${LANDON_PHONE}">[opt-out: ${
+          escapeXml(optOutType)
+        }] ${escapeXml(from)} — do not reply</Message></Response>`,
+        { headers: { "Content-Type": "text/xml" } },
+      );
+    }
+
+    // Internal automation (for example, JobNimbus) is useful to forward, but it
+    // is not a customer conversation. Skip sticky mapping + lead creation.
+    if (customerRoute === "internal") {
+      await supabase.from("sms_logs").insert({
+        message_sid: messageSid,
+        direction: "inbound",
+        from_number: from,
+        to_number: to,
+        body: `[internal] ${body}`,
+      });
+      return new Response(
+        `<?xml version="1.0" encoding="UTF-8"?><Response><Message to="${LANDON_PHONE}">${
+          escapeXml(`[internal] [From: ${from}]\n${body}`)
+        }</Message></Response>`,
+        { headers: { "Content-Type": "text/xml" } },
+      );
     }
 
     await supabase.from("sms_conversation_map").upsert(
       { customer_number: from, last_message_at: new Date().toISOString() },
-      { onConflict: "customer_number" }
+      { onConflict: "customer_number" },
     );
 
     // Find or create a lead for this customer phone (new in v5)
@@ -301,15 +408,23 @@ Deno.serve(async (req: Request) => {
           api_key: POSTHOG_KEY,
           event: "inbound_sms",
           distinct_id: from,
-          properties: { from_number: from, to_number: to, message_preview: body?.substring(0, 50), source: "twilio_sms", lead_id: leadId },
+          properties: {
+            from_number: from,
+            to_number: to,
+            message_preview: body?.substring(0, 50),
+            source: "twilio_sms",
+            lead_id: leadId,
+          },
         }),
       });
     } catch (_) {}
 
     const forwardMsg = `[From: ${from}]\n${body}`;
-    const twiml = `<?xml version="1.0" encoding="UTF-8"?><Response><Message to="${LANDON_PHONE}">${escapeXml(forwardMsg)}</Message></Response>`;
+    const twiml =
+      `<?xml version="1.0" encoding="UTF-8"?><Response><Message to="${LANDON_PHONE}">${
+        escapeXml(forwardMsg)
+      }</Message></Response>`;
     return new Response(twiml, { headers: { "Content-Type": "text/xml" } });
-
   } catch (err) {
     // Fail closed: a malformed/unparseable request never passes the signature
     // gate, so return 403 rather than a 200 empty-TwiML that masks the rejection.
