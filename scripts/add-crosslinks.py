@@ -23,7 +23,7 @@ SERVICE_PAGES = [
 CROSSLINK_TEMPLATE = '''
 <section class="crosslink-section" style="padding:2rem 0;background:#fff;">
   <div style="max-width:800px;margin:0 auto;padding:0 1.5rem;">
-    <h2 style="font-size:1.4rem;font-weight:800;color:#0B4060;margin-bottom:1rem;">Frame Roofing Utah Across the Salt Lake Valley</h2>
+    <h2 style="font-size:1.4rem;font-weight:800;color:#0B4060;margin-bottom:1rem;">Frame Restoration Utah Across the Salt Lake Valley</h2>
     <p style="color:#334155;margin-bottom:1rem;">We deliver the same uncompromising quality across every community we serve. Explore roofing services in nearby cities:</p>
     <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:1.5rem;">
 {city_links}
