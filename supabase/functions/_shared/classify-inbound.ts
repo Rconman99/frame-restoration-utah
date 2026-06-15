@@ -1,33 +1,12 @@
-// classify-inbound — pure inbound-SMS routing decisions for Frame Roofing Utah's
-// handle-sms relay.
+// classify-inbound — pure routing/classification for the SMS relay (handle-sms)
 // ─────────────────────────────────────────────────────────────────────────────
-// Side-effect-free. handle-sms imports these so the frozen contract
-// (classify-inbound.test.ts) exercises the SAME routing the live relay runs —
-// the parity port of the TX repo's _shared/classify-inbound.ts (which froze the
-// relay after it misclassified inbound webhooks three times: opt-out leak,
-// TO-parser too strict, internal automation treated as a customer).
-//
-// This is a BEHAVIOR-PRESERVING extraction of handle-sms v5's inline logic: the
-// regexes and checks below are byte-for-byte what the handler used inline. No
-// routing change ships with this commit — the gate just makes the current
-// behavior un-droppable. (Notably, parseToCommand keeps UT's current STRICT form;
-// hardening it to TX's bracket/space-tolerant #212 parser would be a deliberate
-// follow-up with its own fixture, not a silent change here.)
+// Side-effect-free. The production handler keeps DB writes, Twilio sends, and
+// signature auth; this module only owns the repeatable routing decisions.
 
 // Landon's personal phone — the operator. A message From this number is an
-// operator command (CALL / TO), never an inbound customer lead.
+// operator command (CALL / TO), never an inbound customer lead. Preserved from
+// origin/main so handle-sms + the frozen test share one operator definition.
 export const OPERATOR_PHONE = "+14353024422";
-
-// Normalize a phone to E.164-ish form. Mirrors handle-sms's inline normalizePhone
-// exactly: bare 10-digit → +1XXXXXXXXXX, 11-digit w/ leading 1 → +…, longer →
-// +digits, anything else → returned unchanged (never throws on junk input).
-export function normalizePhone(phone: string): string {
-  const digits = (phone || "").replace(/\D/g, "");
-  if (digits.length === 10) return "+1" + digits;
-  if (digits.length === 11 && digits.startsWith("1")) return "+" + digits;
-  if (digits.length > 10) return "+" + digits;
-  return phone || "";
-}
 
 // Is this inbound From the operator (Landon)? Operator messages take the command
 // path; everyone else is a customer. Phone is parameterized for testability but
@@ -36,35 +15,71 @@ export function isOperator(from: string, operatorPhone: string = OPERATOR_PHONE)
   return from === operatorPhone;
 }
 
-// `CALL <number>` → place an outbound call to the customer. Returns the E.164
-// customer number, or null if the body isn't a CALL command. (Regex identical to
-// handle-sms's inline `/^CALL\s*(\+?\d{10,15})$/i`.)
-export function parseCallCommand(body: string): string | null {
-  const m = (body || "").match(/^CALL\s*(\+?\d{10,15})$/i);
-  if (!m) return null;
-  return m[1].startsWith("+") ? m[1] : "+1" + m[1];
+/** Normalize a phone string to E.164-ish (+1XXXXXXXXXX for US 10/11-digit). */
+export function normalizePhone(phone: string): string {
+  const digits = (phone || "").replace(/\D/g, "");
+  if (digits.length === 10) return "+1" + digits;
+  if (digits.length === 11 && digits.startsWith("1")) return "+" + digits;
+  if (digits.length > 10) return "+" + digits;
+  return phone || "";
 }
 
-// `TO:<number> <message>` → relay a message to the customer. Returns
-// {customerNumber, message} or null if it isn't a TO command. (Regex identical to
-// handle-sms's inline `/^TO:\s*(\+?\d{10,15})\s+(.+)$/is` — the `s` flag lets the
-// message span newlines.)
-export function parseToCommand(
+// Body-keyword fallback for internal automation that rotates sender numbers.
+// Kept narrow on purpose: a literal "jobnimbus" mention.
+export const INTERNAL_BODY_RE = /jobnimbus/i;
+
+/** True if this inbound is internal automation, not a customer. */
+export function isInternalRelay(
+  from: string,
   body: string,
-): { customerNumber: string; message: string } | null {
-  const m = (body || "").match(/^TO:\s*(\+?\d{10,15})\s+(.+)$/is);
-  if (!m) return null;
-  const customerNumber = m[1].startsWith("+") ? m[1] : "+1" + m[1];
-  return { customerNumber, message: m[2] };
+  internalSenders: Iterable<string>,
+): boolean {
+  const set = internalSenders instanceof Set
+    ? internalSenders
+    : new Set(internalSenders);
+  return set.has(from) || INTERNAL_BODY_RE.test(body || "");
 }
 
-// Customer-side classification. A Twilio Advanced Opt-Out event (OptOutType =
-// STOP | START | HELP) must be logged + flagged but NEVER turned into a sticky
-// conversation or force-forwarded as a normal message — replying to someone who
-// just unsubscribed is exactly the A2P violation the relay must avoid.
-export type CustomerInbound = "optout" | "normal";
-export function classifyCustomerInbound(
-  optOutType: string | null | undefined,
-): CustomerInbound {
-  return (optOutType || "").trim() ? "optout" : "normal";
+export interface ToCommand {
+  customerNumber: string;
+  messageBody: string;
+}
+
+// Tolerant operator "TO:<number> message" parse. Accepts "TO:" or "TO ",
+// optional <>/()/[] brackets the operator may copy from a prompt, and a US phone
+// with common separators:
+//   TO:<8015551234> hi · TO 801-555-1234 hi · TO:+1 801 555 1234 hi
+const TO_RE =
+  /^TO[:\s]*[<(\[]?\s*(\+?1?[-.\s]?\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4})\s*[>)\]]?[\s:,\-]+([\s\S]+)$/i;
+
+/** Parse an operator "TO:<number> message" command, or null if it is not one. */
+export function parseToCommand(body: string): ToCommand | null {
+  const m = (body || "").match(TO_RE);
+  if (!m) return null;
+  return { customerNumber: normalizePhone(m[1]), messageBody: m[2].trim() };
+}
+
+const CALL_RE = /^CALL\s*(\+?\d{10,15})$/i;
+
+/** Parse an operator "CALL <number>" command, or null if it is not one. */
+export function parseCallCommand(body: string): string | null {
+  const m = (body || "").match(CALL_RE);
+  return m ? normalizePhone(m[1]) : null;
+}
+
+export type CustomerRoute = "optout" | "internal" | "normal";
+
+// Order matters and mirrors the handler: A2P opt-out wins, internal automation
+// is next, otherwise this is a real customer conversation.
+export function classifyCustomerInbound(input: {
+  from: string;
+  body: string;
+  optOutType?: string;
+  internalSenders: Iterable<string>;
+}): CustomerRoute {
+  if ((input.optOutType || "").trim()) return "optout";
+  if (isInternalRelay(input.from, input.body, input.internalSenders)) {
+    return "internal";
+  }
+  return "normal";
 }

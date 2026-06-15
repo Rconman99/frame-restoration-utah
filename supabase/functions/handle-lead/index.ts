@@ -290,6 +290,42 @@ function emailSubjectFor(tier: Tier, leadName: string, service: string): string 
   return `${prefix}NEW LEAD - ${leadName} - ${service}`;
 }
 
+// ─── Notification-state (Phase A CRM parity) ─────────────────────────────────
+// The optional notification-state columns ship in migration
+// 20260614143100_add_lead_notification_state.sql. Until that's applied the
+// UPDATE no-ops gracefully instead of failing the request.
+let notificationSchemaMissingWarned = false;
+
+function isMissingSchemaError(error: unknown): boolean {
+  const e = error as { code?: string; message?: string } | null;
+  const msg = String(e?.message || "").toLowerCase();
+  return e?.code === "42703" ||
+    e?.code === "PGRST204" ||
+    msg.includes("could not find") ||
+    msg.includes("does not exist") ||
+    msg.includes("schema cache");
+}
+
+async function saveNotificationState(
+  supabase: any,
+  leadId: number | null,
+  patch: Record<string, unknown>,
+): Promise<void> {
+  if (!leadId) return;
+  const { error } = await supabase.from("leads").update(patch).eq("id", leadId);
+  if (!error) return;
+  if (isMissingSchemaError(error)) {
+    if (!notificationSchemaMissingWarned) {
+      console.warn(
+        "[handle-lead] notification state columns not present; prepared migration not applied yet.",
+      );
+      notificationSchemaMissingWarned = true;
+    }
+    return;
+  }
+  console.error("[handle-lead] notification state update failed:", error);
+}
+
 // ─── Main handler ────────────────────────────────────────────────────────────
 
 Deno.serve(async (req: Request) => {
@@ -333,10 +369,11 @@ Deno.serve(async (req: Request) => {
     );
     console.log("Lead classified:", classification.tier, "via", classification.classifier, "—", classification.reason);
 
-    // 2. Save to DB with tier.
-    // No .select() back — leads RLS allows anon INSERT but only authenticated SELECT,
-    // and the function runs with the anon key (anti-spam: form submits don't need a JWT).
-    const { error: insertError } = await supabase.from("leads").insert({
+    // 2. Save to DB with tier. Select the id back so notification state can be
+    // updated after we email Landon. This runs with the service-role key (above),
+    // so the select-back is NOT blocked by the leads anon-INSERT/auth-SELECT RLS
+    // split — service role bypasses RLS.
+    const { data: storedLead, error: insertError } = await supabase.from("leads").insert({
       name: leadName,
       email,
       phone,
@@ -364,8 +401,9 @@ Deno.serve(async (req: Request) => {
       // TCPA audit trail (migration 20260610): what the customer actually checked.
       sms_consent: sms_consent === true || sms_consent === "true" ||
         sms_consent === "on" || sms_consent === "1" || sms_consent === 1,
-    });
+    }).select("id").single();
     if (insertError) console.error("DB Error:", insertError);
+    const storedLeadId = storedLead?.id ? Number(storedLead.id) : null;
 
     // 3. Spam → silent drop. Saved to DB for review, but no email/SMS noise.
     if (classification.tier === "spam") {
@@ -409,7 +447,30 @@ Deno.serve(async (req: Request) => {
         text: detailsText,
       });
       console.log("Email→Landon:", ok ? "delivered" : "failed");
-    } catch (e) { console.error("Email error:", e); }
+      await saveNotificationState(
+        supabase,
+        storedLeadId,
+        ok
+          ? {
+            notified: true,
+            notified_at: new Date().toISOString(),
+            notification_attempts: 1,
+            notification_error: null,
+          }
+          : {
+            notified: false,
+            notification_attempts: 1,
+            notification_error: "resend_email_failed",
+          },
+      );
+    } catch (e) {
+      console.error("Email error:", e);
+      await saveNotificationState(supabase, storedLeadId, {
+        notified: false,
+        notification_attempts: 1,
+        notification_error: e instanceof Error ? e.message : String(e),
+      });
+    }
 
     // 5. SMS Landon — Verizon gateway (reliable) + Twilio (post-10DLC bonus)
     const smsBody = smsForLandon(classification.tier, leadName, phone || "", leadService, classification.reason);
