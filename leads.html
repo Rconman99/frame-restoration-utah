@@ -91,25 +91,56 @@ td.name{font-weight:600;color:var(--text)}
 	.growth-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:14px}
 	.growth-head h2{font-size:1rem;color:var(--gold);margin-bottom:3px}
 	.growth-head p{color:var(--muted);font-size:.86rem;line-height:1.45;max-width:780px}
-	.growth-lanes{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
 	.growth-lane-title{font-size:.78rem;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;display:flex;justify-content:space-between}
-	.action-list{display:flex;flex-direction:column;gap:10px}
-	.action-card{background:var(--bg);border:1px solid var(--border);border-left:4px solid var(--muted);border-radius:10px;padding:12px;display:flex;flex-direction:column;gap:8px}
-	.action-card.p0{border-left-color:var(--red)}.action-card.p1{border-left-color:var(--orange)}.action-card.p2{border-left-color:var(--blue)}
-	.action-top{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
-	.action-title{font-size:.92rem;font-weight:700;color:var(--text);line-height:1.3}
-	.action-detail{color:var(--muted);font-size:.82rem;line-height:1.4}
-	.action-step{color:#d7bf69;font-size:.82rem;line-height:1.35}
-	.action-meta,.action-link,.action-controls{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
-	.action-controls .sm-btn{font-size:.72rem;padding:4px 10px}
-	.action-controls .sm-btn:disabled{opacity:.45;cursor:not-allowed}
+	/* compact horizontal stats bar */
+	.gq-stats{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+	.gq-stat{display:flex;align-items:baseline;gap:6px;background:var(--bg);border:1px solid var(--border);border-left:3px solid var(--muted);border-radius:8px;padding:6px 11px}
+	.gq-stat .v{font-size:1.05rem;font-weight:800;color:var(--text);line-height:1}
+	.gq-stat .l{font-size:.66rem;color:var(--muted);text-transform:uppercase;letter-spacing:.4px}
+	.gq-stat.r{border-left-color:var(--red)}.gq-stat.r .v{color:var(--red)}
+	.gq-stat.o{border-left-color:var(--orange)}.gq-stat.o .v{color:var(--orange)}
+	.gq-stat.b{border-left-color:var(--blue)}.gq-stat.b .v{color:var(--blue)}
+	.gq-stat.g{border-left-color:var(--green)}.gq-stat.g .v{color:var(--green)}
+	.gq-stat.p{border-left-color:var(--purple)}.gq-stat.p .v{color:var(--purple)}
+	/* filter tabs */
+	.gq-tabs{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
+	.gq-tab{font:inherit;font-size:.74rem;font-weight:700;padding:5px 12px;border-radius:999px;border:1px solid var(--border);background:transparent;color:var(--muted);cursor:pointer;letter-spacing:.3px}
+	.gq-tab:hover{color:var(--text);border-color:var(--muted)}
+	.gq-tab.active{background:var(--card-hi);color:var(--gold);border-color:var(--gold)}
+	.gq-tab .n{opacity:.65;font-weight:600;margin-left:2px}
+	/* compact action list — one action per row */
+	.gq-list{display:flex;flex-direction:column;border:1px solid var(--border);border-radius:10px;overflow:hidden}
+	.gq-row{display:grid;grid-template-columns:32px minmax(0,1fr) auto auto;align-items:center;gap:8px 12px;padding:9px 12px;border-top:1px solid var(--border);border-left:3px solid var(--muted);background:var(--bg)}
+	.gq-list .gq-row:first-child{border-top:0}
+	.gq-row.p0{border-left-color:var(--red)}.gq-row.p1{border-left-color:var(--orange)}.gq-row.p2{border-left-color:var(--blue)}
+	.gq-row.is-done{opacity:.55}
+	.gq-row.open{background:var(--card-hi)}
+	.gq-pribadge{width:26px;height:26px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:.6rem;font-weight:800}
+	.gq-pribadge.p0{background:rgba(248,81,73,.18);color:var(--red)}.gq-pribadge.p1{background:rgba(210,153,34,.18);color:var(--orange)}.gq-pribadge.p2{background:rgba(88,166,255,.16);color:var(--blue)}
+	.gq-main{min-width:0;cursor:pointer}
+	.gq-title{font-size:.86rem;font-weight:700;color:var(--text);line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+	.gq-target{font-size:.74rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px}
+	.gq-meta{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+	.gq-due{font-size:.64rem;font-weight:700;text-transform:uppercase;letter-spacing:.3px;color:var(--muted)}
+	.gq-owner{font-size:.72rem;color:var(--muted);white-space:nowrap}
+	.gq-acts{display:flex;gap:5px;align-items:center;justify-content:flex-end;flex-wrap:wrap}
+	.gq-acts .sm-btn{font-size:.7rem;padding:4px 9px}
+	.gq-acts .sm-btn:disabled{opacity:.45;cursor:not-allowed}
+	.gq-detail{grid-column:1/-1;display:none;flex-direction:column;gap:8px;padding:8px 2px 4px;border-top:1px dashed var(--border);margin-top:6px}
+	.gq-row.open .gq-detail{display:flex}
+	.gq-detail .d-reason{color:var(--muted);font-size:.82rem;line-height:1.45}
+	.gq-detail .d-step{color:#d7bf69;font-size:.82rem;line-height:1.4}
+	.gq-detail .d-links{display:flex;gap:6px;flex-wrap:wrap}
+	.gq-empty{padding:20px;color:var(--muted);font-size:.84rem;text-align:center}
 	.pri,.cat,.state-pill{display:inline-block;padding:3px 8px;border-radius:999px;font-size:.66rem;font-weight:800;text-transform:uppercase;letter-spacing:.4px}
-	.pri.p0{background:rgba(248,81,73,.18);color:var(--red)}.pri.p1{background:rgba(210,153,34,.18);color:var(--orange)}.pri.p2{background:rgba(88,166,255,.16);color:var(--blue)}
 	.cat{background:rgba(139,148,158,.14);color:var(--muted)}
 	.state-pill{background:rgba(63,185,80,.12);color:var(--green)}.state-pill.snoozed{background:rgba(210,153,34,.16);color:var(--orange)}.state-pill.done{background:rgba(63,185,80,.14);color:var(--green)}
-	.empty-lane{border:1px dashed var(--border);border-radius:10px;padding:16px;color:var(--muted);font-size:.84rem;text-align:center}
 	.growth-pending{background:rgba(210,153,34,.10);border:1px solid rgba(210,153,34,.28);border-left:4px solid var(--orange);border-radius:10px;padding:12px;color:#d7bf69;font-size:.86rem;line-height:1.45}
-	@media(max-width:1120px){.growth-lanes{grid-template-columns:1fr}}
+	@media(max-width:860px){
+	  .gq-row{grid-template-columns:30px minmax(0,1fr)}
+	  .gq-meta,.gq-acts{grid-column:1/-1}
+	  .gq-acts{justify-content:flex-start}
+	}
 
 	/* Detail panel */
 .backdrop{position:fixed;inset:0;background:rgba(0,0,0,.55);opacity:0;pointer-events:none;transition:opacity .2s;z-index:99}
@@ -393,6 +424,7 @@ var sortDir=localStorage.getItem("frame.leads.sort.dir")||"desc";
 	var growthStateLoaded=false;
 	var growthStorageReady=false;
 	var growthActionIndex={};
+	var growthFilter=localStorage.getItem("frame.growth.filter")||"all";
 	var UTAH_CITY_SLUGS=["heber-city","park-city","midway","salt-lake-city","millcreek","sandy","draper","west-jordan","south-jordan","cottonwood-heights","west-valley-city","murray","holladay","bountiful","layton","kaysville","lehi","orem","provo","american-fork","pleasant-grove","springville","riverton","herriman","magna","taylorsville","midvale","north-salt-lake","farmington","alpine","highland","spanish-fork","payson","saratoga-springs","eagle-mountain"];
 	var INDEXING_QUEUE=[
 	  {url:"https://www.framerestorationutah.com/",label:"Homepage"},
@@ -561,7 +593,8 @@ async function submitAddLead(){
 	function hoursSince(s){var t=new Date(s).getTime();return Number.isFinite(t)?Math.max(0,(Date.now()-t)/3600000):0}
 	function daysSince(s){return Math.floor(hoursSince(s)/24)}
 	function priorityRank(p){return p==="P0"?0:p==="P1"?1:2}
-	function growthActionSort(a,b){var p=priorityRank(a.priority)-priorityRank(b.priority);if(p)return p;return String(a.category+a.title).localeCompare(String(b.category+b.title))}
+	function dueRank(d){d=String(d||"").toLowerCase();return d==="now"?0:d==="today"?1:d==="this week"?2:d==="next"?3:4}
+	function growthActionSort(a,b){var p=priorityRank(a.priority)-priorityRank(b.priority);if(p)return p;var dd=dueRank(a.due)-dueRank(b.due);if(dd)return dd;return String(a.category+a.title).localeCompare(String(b.category+b.title))}
 
 	function hydrateGrowthStates(rows,storageReady){
 	  growthStates={};
@@ -653,13 +686,25 @@ async function submitAddLead(){
 	  actions.sort(growthActionSort);
 	  return {actions:actions,failed:failed.length,untouched:untouched.length,reviewReady:reviewReady.length,proofReady:leads.filter(function(r){return statusOrNew(r.status)==="won"&&(r.city||cityFromPath(r.source_page||""))}).length};
 	}
-	function actionCard(a){
-	  var cls=a.priority.toLowerCase(),key=growthActionKey(a),st=growthStateFor(a),snoozeActive=st&&st.state==="snoozed"&&st.snoozed_until&&st.snoozed_until>dateKey(0),disabled=growthStorageReady?"":" disabled";
-	  var h='<article class="action-card '+cls+'" data-gkey="'+esc(key)+'"><div class="action-top"><div class="action-title">'+esc(a.title)+'</div><span class="pri '+cls+'">'+esc(a.priority)+'</span></div>';
-	  h+='<div class="action-detail">'+esc(a.detail)+'</div><div class="action-step">→ '+esc(a.step)+'</div><div class="action-meta"><span class="cat">'+esc(a.category)+'</span><span class="cat">'+esc(a.due)+'</span><span class="cat">'+esc(a.owner)+'</span></div>';
-	  if(st&&(st.assigned_to||st.state==="done"||snoozeActive)){h+='<div class="action-meta">';if(st.assigned_to)h+='<span class="state-pill">Assigned · '+esc(st.assigned_to)+'</span>';if(snoozeActive)h+='<span class="state-pill snoozed">Snoozed · '+esc(st.snoozed_until||"")+'</span>';if(st.state==="done")h+='<span class="state-pill done">Done</span>';h+='</div>'}
-	  if(a.leadId||a.url){h+='<div class="action-link">';if(a.leadId)h+='<button class="sm-btn" type="button" onclick="openPanel('+Number(a.leadId)+')">Open lead</button>';if(a.url)h+='<a class="sm-btn" target="_blank" rel="noopener" href="'+esc(a.url)+'">Open page</a>';h+='</div>'}
-	  h+='<div class="action-controls"><button class="sm-btn growth-done" type="button" data-gkey="'+esc(key)+'"'+disabled+'>Done</button><button class="sm-btn growth-snooze" type="button" data-gkey="'+esc(key)+'"'+disabled+'>Snooze 7d</button><button class="sm-btn growth-assign" type="button" data-gkey="'+esc(key)+'"'+disabled+'>Assign</button></div></article>';
+	function actionRow(a){
+	  var cls=a.priority.toLowerCase(),key=growthActionKey(a),st=growthStateFor(a)||{},snoozeActive=st.state==="snoozed"&&st.snoozed_until&&st.snoozed_until>dateKey(0),isDone=st.state==="done",disabled=growthStorageReady?"":" disabled";
+	  // Row "target" = the short lead/page label (first segment of the detail); full detail lives in the expansion.
+	  var target=String(a.detail||"").split(" · ")[0];
+	  var h='<div class="gq-row '+cls+(isDone?" is-done":"")+'" data-gkey="'+esc(key)+'">';
+	  h+='<div class="gq-pribadge '+cls+'">'+esc(a.priority)+'</div>';
+	  h+='<div class="gq-main gq-toggle"><div class="gq-title">'+esc(a.title)+'</div><div class="gq-target">'+esc(target)+'</div></div>';
+	  h+='<div class="gq-meta"><span class="cat">'+esc(a.category)+'</span><span class="gq-due">'+esc(a.due)+'</span><span class="gq-owner">'+esc(st.assigned_to||a.owner)+'</span>';
+	  if(snoozeActive)h+='<span class="state-pill snoozed">Snoozed</span>';if(isDone)h+='<span class="state-pill done">Done</span>';
+	  h+='</div>';
+	  h+='<div class="gq-acts"><button class="sm-btn gq-toggle" type="button">Open</button>';
+	  if(isDone||snoozeActive){h+='<button class="sm-btn growth-reopen" type="button" data-gkey="'+esc(key)+'">Reopen</button>';}
+	  else{h+='<button class="sm-btn growth-done" type="button" data-gkey="'+esc(key)+'"'+disabled+'>Done</button><button class="sm-btn growth-snooze" type="button" data-gkey="'+esc(key)+'"'+disabled+'>Snooze 7d</button><button class="sm-btn growth-assign" type="button" data-gkey="'+esc(key)+'"'+disabled+'>Assign</button>';}
+	  h+='</div>';
+	  // inline expandable detail — full reason + recommended step + related links
+	  h+='<div class="gq-detail"><div class="d-reason">'+esc(a.detail)+'</div><div class="d-step">→ '+esc(a.step)+'</div>';
+	  if(a.leadId||a.url){h+='<div class="d-links">';if(a.leadId)h+='<button class="sm-btn" type="button" onclick="openPanel('+Number(a.leadId)+')">Open lead</button>';if(a.url)h+='<a class="sm-btn" target="_blank" rel="noopener" href="'+esc(a.url)+'">Open page</a>';h+='</div>'}
+	  h+='</div>';
+	  h+='</div>';
 	  return h;
 	}
 	function wireGrowthControls(){
@@ -668,6 +713,10 @@ async function submitAddLead(){
 	  host.querySelectorAll(".growth-snooze").forEach(function(btn){btn.addEventListener("click",function(){snoozeGrowthAction(btn.getAttribute("data-gkey"))})});
 	  host.querySelectorAll(".growth-assign").forEach(function(btn){btn.addEventListener("click",function(){assignGrowthAction(btn.getAttribute("data-gkey"))})});
 	  host.querySelectorAll(".growth-reopen").forEach(function(btn){btn.addEventListener("click",function(){reopenGrowthAction(btn.getAttribute("data-gkey"))})});
+	  // filter tabs — re-render only (no writes)
+	  host.querySelectorAll(".gq-tab").forEach(function(btn){btn.addEventListener("click",function(){growthFilter=btn.getAttribute("data-gqfilter");try{localStorage.setItem("frame.growth.filter",growthFilter)}catch(e){}renderGrowthQueue()})});
+	  // row expand/collapse — toggle inline detail on the row (title or "Open")
+	  host.querySelectorAll(".gq-toggle").forEach(function(el){el.addEventListener("click",function(ev){ev.stopPropagation();var row=el.closest(".gq-row");if(row)row.classList.toggle("open")})});
 	}
 	function renderGrowthQueue(){
 	  var host=document.getElementById("growthPanel");if(!host)return;
@@ -677,15 +726,38 @@ async function submitAddLead(){
 	  }
 	  var q=buildGrowthQueue(),allActions=q.actions;
 	  growthActionIndex={};allActions.forEach(function(a){growthActionIndex[growthActionKey(a)]=a});
-	  var hidden=allActions.filter(function(a){return growthStateIsHidden(growthStateFor(a))});
-	  var actions=allActions.filter(function(a){return !growthStateIsHidden(growthStateFor(a))});
-	  var p0=actions.filter(function(a){return a.priority==="P0"}).length,p1=actions.filter(function(a){return a.priority==="P1"}).length,p2=actions.filter(function(a){return a.priority==="P2"}).length;
+	  function gqState(a){return growthStateFor(a)||{}}
+	  var active=allActions.filter(function(a){return !growthStateIsHidden(growthStateFor(a))});
+	  var mineName=(CUR_USER&&CUR_USER.name)?CUR_USER.name:null;
+	  var counts={
+	    all:active.length,
+	    P0:active.filter(function(a){return a.priority==="P0"}).length,
+	    P1:active.filter(function(a){return a.priority==="P1"}).length,
+	    P2:active.filter(function(a){return a.priority==="P2"}).length,
+	    mine:active.filter(function(a){return mineName&&gqState(a).assigned_to===mineName}).length,
+	    snoozed:allActions.filter(function(a){return gqState(a).state==="snoozed"}).length,
+	    done:allActions.filter(function(a){return gqState(a).state==="done"}).length
+	  };
+	  // resolve the active filter tab into the shown set (list stays P0→P1→P2 then due-sorted)
+	  var shown;
+	  if(growthFilter==="snoozed")shown=allActions.filter(function(a){return gqState(a).state==="snoozed"});
+	  else if(growthFilter==="done")shown=allActions.filter(function(a){return gqState(a).state==="done"});
+	  else if(growthFilter==="P0"||growthFilter==="P1"||growthFilter==="P2")shown=active.filter(function(a){return a.priority===growthFilter});
+	  else if(growthFilter==="mine")shown=active.filter(function(a){return mineName&&gqState(a).assigned_to===mineName});
+	  else shown=active;
 	  var h='<div class="growth-head"><div><h2>Growth Queue</h2><p>Live CRM and phone/text attribution actions for Utah. Done, snoozed, and assigned state persists after the approved migration is in place.</p></div><button class="sm-btn" type="button" onclick="refresh()">Refresh</button></div>';
-	  h+='<div class="kg" style="padding:0;margin-bottom:14px">';[
-	    {v:p0,l:"P0 Actions",h:"same-day",c:p0?"r":"g"},{v:p1,l:"P1 Actions",h:"this week",c:"o"},{v:p2,l:"P2 Actions",h:"next",c:"b"},{v:q.untouched,l:"New Leads",h:"need first touch",c:q.untouched?"r":"g"},{v:q.failed,l:"Alert Failures",h:"email notification",c:q.failed?"r":"g"},{v:q.proofReady,l:"Proof Jobs",h:"won jobs to mine",c:"p"}
-	  ].forEach(function(k){h+='<div class="kc '+k.c+'"><div class="v">'+esc(k.v)+'</div><div class="l">'+esc(k.l)+'</div><div class="h">'+esc(k.h)+'</div></div>'});h+='</div>';
-	  h+='<div class="growth-lanes">';["P0","P1","P2"].forEach(function(p){var lane=actions.filter(function(a){return a.priority===p});h+='<section><div class="growth-lane-title"><span>'+p+'</span><span>'+lane.length+'</span></div><div class="action-list">';if(lane.length)lane.slice(0,8).forEach(function(a){h+=actionCard(a)});else h+='<div class="empty-lane">No '+p+' actions right now.</div>';h+='</div></section>'});h+='</div>';
-	  if(hidden.length){h+='<div style="margin-top:14px"><div class="growth-lane-title"><span>Done / Snoozed</span><span>'+hidden.length+'</span></div>';hidden.slice(0,8).forEach(function(a){var key=growthActionKey(a),st=growthStateFor(a)||{},label=st.state==="snoozed"?"snoozed until "+(st.snoozed_until||"next"):"done";h+='<div class="action-card"><div class="action-top"><div class="action-title">'+esc(a.title)+' · '+esc(label)+'</div><button class="sm-btn growth-reopen" type="button" data-gkey="'+esc(key)+'">Reopen</button></div></div>'});h+='</div>'}
+	  // compact horizontal stats bar
+	  h+='<div class="gq-stats">';[
+	    {v:counts.P0,l:"P0",c:counts.P0?"r":"g"},{v:counts.P1,l:"P1",c:"o"},{v:counts.P2,l:"P2",c:"b"},{v:q.untouched,l:"New Leads",c:q.untouched?"r":"g"},{v:q.failed,l:"Alert Failures",c:q.failed?"r":"g"},{v:q.proofReady,l:"Proof Jobs",c:"p"}
+	  ].forEach(function(k){h+='<div class="gq-stat '+k.c+'"><span class="v">'+esc(k.v)+'</span><span class="l">'+esc(k.l)+'</span></div>'});h+='</div>';
+	  // filter tabs with live counts
+	  var tabs=[{k:"all",t:"All"},{k:"P0",t:"P0"},{k:"P1",t:"P1"},{k:"P2",t:"P2"},{k:"mine",t:"Mine"},{k:"snoozed",t:"Snoozed"},{k:"done",t:"Done"}];
+	  h+='<div class="gq-tabs">';tabs.forEach(function(t){h+='<button class="gq-tab'+(growthFilter===t.k?" active":"")+'" type="button" data-gqfilter="'+esc(t.k)+'">'+esc(t.t)+'<span class="n">'+(counts[t.k]||0)+'</span></button>'});h+='</div>';
+	  // single compact action list — one action per row
+	  h+='<div class="gq-list">';
+	  if(shown.length)shown.forEach(function(a){h+=actionRow(a)});
+	  else h+='<div class="gq-empty">No actions in this view.</div>';
+	  h+='</div>';
 	  host.innerHTML=h;wireGrowthControls();
 	}
 
