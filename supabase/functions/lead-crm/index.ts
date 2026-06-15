@@ -26,7 +26,40 @@ const SUPABASE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
 // rotated without a redeploy; unset = function disabled (fail closed).
 const API_KEY = Deno.env.get("LEAD_CRM_API_KEY") ?? "";
 
-const ALLOWED_STATUS = new Set(["new", "contacted", "estimated", "won", "lost"]);
+const ALLOWED_STATUS = new Set([
+  "new",
+  "contacted",
+  "estimated",
+  "won",
+  "lost",
+  "third_party",
+]);
+const ALLOWED_GROWTH_STATES = new Set(["open", "done", "snoozed"]);
+
+const LEAD_SELECT_BASE = `
+  id, created_at, name, email, phone, address, service, message,
+  source_page, status, job_value, margin, city, commission, notes,
+  deposit_received_at, deposit_amount, install_scheduled_for, job_started_at,
+  job_completed_at, balance_due, contract_url, warranty_doc_url, product,
+  review_requested_at, review_link_clicked,
+  won_at,
+  tier, tier_reason, tier_confidence, tier_classifier
+`;
+
+const LEAD_SELECT_PARITY = `
+  ${LEAD_SELECT_BASE},
+  estimated_completion_date, final_payment_received_at,
+  notified, notified_at, notification_attempts, notification_error
+`;
+
+const OPTIONAL_LEAD_DEFAULTS = {
+  estimated_completion_date: null,
+  final_payment_received_at: null,
+  notified: null,
+  notified_at: null,
+  notification_attempts: 0,
+  notification_error: null,
+};
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -41,26 +74,106 @@ function jsonResp(body: unknown, status = 200): Response {
   });
 }
 
+function isMissingSchemaError(error: unknown): boolean {
+  const e = error as { code?: string; message?: string } | null;
+  const msg = String(e?.message || "").toLowerCase();
+  return e?.code === "42703" ||
+    e?.code === "42P01" ||
+    e?.code === "PGRST204" ||
+    msg.includes("does not exist") ||
+    msg.includes("could not find") ||
+    msg.includes("schema cache");
+}
+
+function cleanText(value: unknown, max = 1000): string | null {
+  if (value === null || value === undefined) return null;
+  const text = String(value).trim();
+  return text ? text.slice(0, max) : null;
+}
+
+function dateOrNull(v: unknown): string | null {
+  if (v === null || v === "" || v === undefined) return null;
+  const text = String(v).slice(0, 10);
+  return /^\d{4}-\d{2}-\d{2}$/.test(text) ? text : null;
+}
+
+function tsOrNull(v: unknown): string | null {
+  if (v === null || v === "" || v === undefined) return null;
+  const d = new Date(String(v));
+  return Number.isNaN(d.getTime()) ? null : d.toISOString();
+}
+
+function numOrNull(v: unknown): number | null {
+  if (v === null || v === "" || v === undefined) return null;
+  const n = Number(v);
+  return Number.isFinite(n) ? n : null;
+}
+
+function withOptionalLeadDefaults(rows: any[] | null | undefined): any[] {
+  return (rows || []).map((row) => ({ ...OPTIONAL_LEAD_DEFAULTS, ...row }));
+}
+
+async function selectLeads(
+  supabase: any,
+): Promise<{ leads: any[]; parityReady: boolean; error?: any }> {
+  const extended = await supabase
+    .from("leads")
+    .select(LEAD_SELECT_PARITY)
+    .order("created_at", { ascending: false });
+  if (!extended.error) {
+    return {
+      leads: withOptionalLeadDefaults(extended.data),
+      parityReady: true,
+    };
+  }
+  if (!isMissingSchemaError(extended.error)) {
+    return { leads: [], parityReady: false, error: extended.error };
+  }
+  console.warn(
+    "[lead-crm] CRM parity columns not present; falling back to base lead select:",
+    extended.error.message,
+  );
+  const base = await supabase
+    .from("leads")
+    .select(LEAD_SELECT_BASE)
+    .order("created_at", { ascending: false });
+  if (base.error) return { leads: [], parityReady: false, error: base.error };
+  return { leads: withOptionalLeadDefaults(base.data), parityReady: false };
+}
+
+function cleanActionKey(value: unknown): string | null {
+  const key = cleanText(value, 240);
+  if (!key) return null;
+  return /^[a-z0-9][a-z0-9._:/-]{1,239}$/i.test(key) ? key : null;
+}
+
 Deno.serve(async (req: Request) => {
-  if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
+  if (req.method === "OPTIONS") {
+    return new Response(null, { headers: corsHeaders });
+  }
 
   const url = new URL(req.url);
   if (!API_KEY) {
-    console.error("[lead-crm] LEAD_CRM_API_KEY not set — function disabled (fail closed)");
+    console.error(
+      "[lead-crm] LEAD_CRM_API_KEY not set — function disabled (fail closed)",
+    );
     return jsonResp({ error: "not_configured" }, 503);
   }
   const key = url.searchParams.get("key");
   if (key !== API_KEY) return jsonResp({ error: "unauthorized" }, 401);
 
   const pin = url.searchParams.get("pin");
-  if (!pin) return jsonResp({ error: "invalid_pin", message: "PIN required." }, 403);
+  if (!pin) {
+    return jsonResp({ error: "invalid_pin", message: "PIN required." }, 403);
+  }
 
   const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
   // Per-IP PIN throttle (≤10 fails / 15 min — _shared/auth-throttle.ts, frozen
   // by auth-throttle.test.ts). PINs are plaintext in a query string; before
   // this, brute force was unthrottled.
-  const ip = (req.headers.get("x-forwarded-for") || "").split(",")[0].trim() || "unknown";
+  const ip = (req.headers.get("x-forwarded-for") || "").split(",")[0].trim() ||
+    "unknown";
   const now = Date.now();
   const { data: attemptRow } = await supabase
     .from("auth_attempts")
@@ -68,7 +181,10 @@ Deno.serve(async (req: Request) => {
     .eq("ip", ip)
     .maybeSingle();
   if (!throttleAllows(attemptRow, now)) {
-    return jsonResp({ error: "too_many_attempts", message: "Too many PIN attempts. Try again later." }, 429);
+    return jsonResp({
+      error: "too_many_attempts",
+      message: "Too many PIN attempts. Try again later.",
+    }, 429);
   }
 
   // PIN check — same shape as weekly-report
@@ -81,82 +197,147 @@ Deno.serve(async (req: Request) => {
     const { error: throttleErr } = await supabase
       .from("auth_attempts")
       .upsert(failedAttemptRow(ip, attemptRow, now), { onConflict: "ip" });
-    if (throttleErr) console.error("[lead-crm] auth_attempts upsert failed:", throttleErr);
-    return jsonResp({ error: "invalid_pin", message: "Invalid PIN. Access denied." }, 403);
+    if (throttleErr) {
+      console.error("[lead-crm] auth_attempts upsert failed:", throttleErr);
+    }
+    return jsonResp({
+      error: "invalid_pin",
+      message: "Invalid PIN. Access denied.",
+    }, 403);
   }
   // Successful auth clears the counter (best-effort).
   if (attemptRow) {
     supabase.from("auth_attempts").delete().eq("ip", ip).then(
       ({ error }: { error: unknown }) => {
-        if (error) console.error("[lead-crm] auth_attempts clear failed:", error);
+        if (error) {
+          console.error("[lead-crm] auth_attempts clear failed:", error);
+        }
       },
     );
   }
   // Don't block on this — failure to bump last_accessed is non-critical.
-  supabase.from("report_access").update({ last_accessed: new Date().toISOString() }).eq("id", accessRow.id);
+  supabase.from("report_access").update({
+    last_accessed: new Date().toISOString(),
+  }).eq("id", accessRow.id);
 
   const user = { name: accessRow.name, role: accessRow.role };
   const action = url.searchParams.get("action") || "list";
 
   // ─── LIST ──────────────────────────────────────────────────────────────────
   if (action === "list") {
-    const { data: leads, error: leadsErr } = await supabase
-      .from("leads")
-      .select(`
-        id, created_at, name, email, phone, address, service, message,
-        source_page, status, job_value, margin, city, commission, notes,
-        deposit_received_at, deposit_amount, install_scheduled_for, job_started_at,
-        job_completed_at, balance_due, contract_url, warranty_doc_url, product,
-        review_requested_at, review_link_clicked,
-        won_at,
-        tier, tier_reason, tier_confidence, tier_classifier
-      `)
-      .order("created_at", { ascending: false });
-    if (leadsErr) return jsonResp({ error: "db_error", message: leadsErr.message }, 500);
-    return jsonResp({ user, leads: leads || [] });
+    const result = await selectLeads(supabase);
+    if (result.error) {
+      return jsonResp(
+        { error: "db_error", message: result.error.message },
+        500,
+      );
+    }
+    return jsonResp({
+      user,
+      leads: result.leads,
+      schema: { crm_parity_ready: result.parityReady },
+    });
   }
 
   // ─── UPDATE ────────────────────────────────────────────────────────────────
   if (action === "update") {
-    if (req.method !== "POST") return jsonResp({ error: "method_not_allowed", message: "Use POST for action=update" }, 405);
+    if (req.method !== "POST") {
+      return jsonResp({
+        error: "method_not_allowed",
+        message: "Use POST for action=update",
+      }, 405);
+    }
 
     let body: any;
-    try { body = await req.json(); } catch { return jsonResp({ error: "bad_json" }, 400); }
+    try {
+      body = await req.json();
+    } catch {
+      return jsonResp({ error: "bad_json" }, 400);
+    }
 
     const id = Number(body.id);
-    if (!Number.isFinite(id) || id <= 0) return jsonResp({ error: "bad_id", message: "id must be a positive integer" }, 400);
+    if (!Number.isFinite(id) || id <= 0) {
+      return jsonResp({
+        error: "bad_id",
+        message: "id must be a positive integer",
+      }, 400);
+    }
 
     // Whitelist of editable columns. Anything else is silently ignored.
     const patch: Record<string, unknown> = {};
     if ("status" in body) {
       const s = String(body.status || "").toLowerCase();
-      if (!ALLOWED_STATUS.has(s)) return jsonResp({ error: "bad_status", message: `status must be one of ${[...ALLOWED_STATUS].join(", ")}` }, 400);
+      if (!ALLOWED_STATUS.has(s)) {
+        return jsonResp({
+          error: "bad_status",
+          message: `status must be one of ${[...ALLOWED_STATUS].join(", ")}`,
+        }, 400);
+      }
       patch.status = s;
     }
-    if ("notes"      in body) patch.notes      = body.notes ? String(body.notes) : null;
-    if ("job_value"  in body) patch.job_value  = body.job_value  === null || body.job_value  === "" ? null : Number(body.job_value);
-    if ("margin"     in body) patch.margin     = body.margin     === null || body.margin     === "" ? null : Number(body.margin);
-    if ("city"       in body) patch.city       = body.city ? String(body.city).trim() : null;
+    if ("notes" in body) patch.notes = body.notes ? String(body.notes) : null;
+    if ("job_value" in body) {
+      patch.job_value = body.job_value === null || body.job_value === ""
+        ? null
+        : Number(body.job_value);
+    }
+    if ("margin" in body) {
+      patch.margin = body.margin === null || body.margin === ""
+        ? null
+        : Number(body.margin);
+    }
+    if ("city" in body) {
+      patch.city = body.city ? String(body.city).trim() : null;
+    }
 
     // Post-won workflow columns
-    const tsOrNull = (v: any) => (v === null || v === "" || v === undefined) ? null : new Date(String(v)).toISOString();
-    const dateOrNull = (v: any) => (v === null || v === "" || v === undefined) ? null : String(v).slice(0, 10);
-    const numOrNull = (v: any) => (v === null || v === "" || v === undefined) ? null : Number(v);
-    if ("deposit_received_at"   in body) patch.deposit_received_at   = tsOrNull(body.deposit_received_at);
-    if ("deposit_amount"        in body) patch.deposit_amount        = numOrNull(body.deposit_amount);
-    if ("install_scheduled_for" in body) patch.install_scheduled_for = dateOrNull(body.install_scheduled_for);
-    if ("job_started_at"        in body) patch.job_started_at        = tsOrNull(body.job_started_at);
-    if ("job_completed_at"      in body) patch.job_completed_at      = tsOrNull(body.job_completed_at);
-    if ("balance_due"           in body) patch.balance_due           = numOrNull(body.balance_due);
-    if ("contract_url"          in body) patch.contract_url          = body.contract_url ? String(body.contract_url).trim() : null;
-    if ("warranty_doc_url"      in body) patch.warranty_doc_url      = body.warranty_doc_url ? String(body.warranty_doc_url).trim() : null;
-    if ("product"               in body) patch.product               = body.product ? String(body.product).trim() : null;
+    if ("deposit_received_at" in body) {
+      patch.deposit_received_at = tsOrNull(body.deposit_received_at);
+    }
+    if ("deposit_amount" in body) {
+      patch.deposit_amount = numOrNull(body.deposit_amount);
+    }
+    if ("install_scheduled_for" in body) {
+      patch.install_scheduled_for = dateOrNull(body.install_scheduled_for);
+    }
+    if ("job_started_at" in body) {
+      patch.job_started_at = tsOrNull(body.job_started_at);
+    }
+    if ("job_completed_at" in body) {
+      patch.job_completed_at = tsOrNull(body.job_completed_at);
+    }
+    if ("balance_due" in body) patch.balance_due = numOrNull(body.balance_due);
+    if ("contract_url" in body) {
+      patch.contract_url = body.contract_url
+        ? String(body.contract_url).trim()
+        : null;
+    }
+    if ("warranty_doc_url" in body) {
+      patch.warranty_doc_url = body.warranty_doc_url
+        ? String(body.warranty_doc_url).trim()
+        : null;
+    }
+    if ("product" in body) {
+      patch.product = body.product ? String(body.product).trim() : null;
+    }
+    if ("estimated_completion_date" in body) {
+      patch.estimated_completion_date = dateOrNull(
+        body.estimated_completion_date,
+      );
+    }
+    if ("final_payment_received_at" in body) {
+      patch.final_payment_received_at = tsOrNull(
+        body.final_payment_received_at,
+      );
+    }
     // NOTE: commission is a GENERATED column in public.leads with city-aware CASE expression:
     //   margin*0.05 for Heber/Midway, margin*0.10 elsewhere.
     // Writing to it returns Postgres error 428C9. Update margin and/or city — commission
     // recalculates automatically. Rule set by Ryan 2026-05-11; migration shipped same night.
 
-    if (Object.keys(patch).length === 0) return jsonResp({ error: "nothing_to_update" }, 400);
+    if (Object.keys(patch).length === 0) {
+      return jsonResp({ error: "nothing_to_update" }, 400);
+    }
 
     // Stamp won_at when transitioning to "won"
     if (patch.status === "won") {
@@ -173,26 +354,54 @@ Deno.serve(async (req: Request) => {
       .eq("id", id)
       .select()
       .single();
-    if (updErr) return jsonResp({ error: "db_error", message: updErr.message }, 500);
+    if (updErr) {
+      return jsonResp({ error: "db_error", message: updErr.message }, 500);
+    }
 
     return jsonResp({ user, lead: updated });
   }
 
   // ─── CREATE (manual lead entry) ────────────────────────────────────────────
   if (action === "create") {
-    if (req.method !== "POST") return jsonResp({ error: "method_not_allowed", message: "Use POST for action=create" }, 405);
+    if (req.method !== "POST") {
+      return jsonResp({
+        error: "method_not_allowed",
+        message: "Use POST for action=create",
+      }, 405);
+    }
 
     let body: any;
-    try { body = await req.json(); } catch { return jsonResp({ error: "bad_json" }, 400); }
+    try {
+      body = await req.json();
+    } catch {
+      return jsonResp({ error: "bad_json" }, 400);
+    }
 
     const name = String(body.name || "").trim();
-    if (!name) return jsonResp({ error: "missing_name", message: "Name is required" }, 400);
+    if (!name) {
+      return jsonResp(
+        { error: "missing_name", message: "Name is required" },
+        400,
+      );
+    }
 
     const status = String(body.status || "new").toLowerCase();
-    if (!ALLOWED_STATUS.has(status)) return jsonResp({ error: "bad_status", message: `status must be one of ${[...ALLOWED_STATUS].join(", ")}` }, 400);
+    if (!ALLOWED_STATUS.has(status)) {
+      return jsonResp({
+        error: "bad_status",
+        message: `status must be one of ${[...ALLOWED_STATUS].join(", ")}`,
+      }, 400);
+    }
 
     const tier = String(body.tier || "general").toLowerCase();
-    const allowedTiers = new Set(["emergency", "urgent", "scheduled", "general", "spam", "unclassified"]);
+    const allowedTiers = new Set([
+      "emergency",
+      "urgent",
+      "scheduled",
+      "general",
+      "spam",
+      "unclassified",
+    ]);
     if (!allowedTiers.has(tier)) return jsonResp({ error: "bad_tier" }, 400);
 
     const phone = body.phone ? String(body.phone).trim() : null;
@@ -202,11 +411,21 @@ Deno.serve(async (req: Request) => {
     const service = body.service ? String(body.service).trim() : null;
     const message = body.message ? String(body.message) : null;
     const notes = body.notes ? String(body.notes) : null;
-    const jobValue = body.job_value === null || body.job_value === "" || body.job_value === undefined ? null : Number(body.job_value);
-    const margin = body.margin === null || body.margin === "" || body.margin === undefined ? null : Number(body.margin);
+    const jobValue = body.job_value === null || body.job_value === "" ||
+        body.job_value === undefined
+      ? null
+      : Number(body.job_value);
+    const margin =
+      body.margin === null || body.margin === "" || body.margin === undefined
+        ? null
+        : Number(body.margin);
 
-    if (jobValue !== null && !Number.isFinite(jobValue)) return jsonResp({ error: "bad_job_value" }, 400);
-    if (margin !== null && !Number.isFinite(margin)) return jsonResp({ error: "bad_margin" }, 400);
+    if (jobValue !== null && !Number.isFinite(jobValue)) {
+      return jsonResp({ error: "bad_job_value" }, 400);
+    }
+    if (margin !== null && !Number.isFinite(margin)) {
+      return jsonResp({ error: "bad_margin" }, 400);
+    }
 
     const insertRow: Record<string, unknown> = {
       name,
@@ -226,7 +445,9 @@ Deno.serve(async (req: Request) => {
       tier_reason: "Created via /leads Add Lead form",
     };
     if (status === "won") {
-      insertRow.won_at = body.won_at ? new Date(body.won_at).toISOString() : new Date().toISOString();
+      insertRow.won_at = body.won_at
+        ? new Date(body.won_at).toISOString()
+        : new Date().toISOString();
     }
 
     const { data: created, error: insErr } = await supabase
@@ -234,7 +455,9 @@ Deno.serve(async (req: Request) => {
       .insert(insertRow)
       .select()
       .single();
-    if (insErr) return jsonResp({ error: "db_error", message: insErr.message }, 500);
+    if (insErr) {
+      return jsonResp({ error: "db_error", message: insErr.message }, 500);
+    }
 
     return jsonResp({ user, lead: created });
   }
@@ -243,16 +466,23 @@ Deno.serve(async (req: Request) => {
   // Returns phone_clicks aggregated for the leads dashboard. Counts by source +
   // type, plus most recent N rows for the live feed.
   if (action === "clicks") {
-    const days = Math.max(1, Math.min(365, Number(url.searchParams.get("days") || 30)));
+    const days = Math.max(
+      1,
+      Math.min(365, Number(url.searchParams.get("days") || 30)),
+    );
     const since = new Date(Date.now() - days * 86400000).toISOString();
 
     const { data: rows, error: clicksErr } = await supabase
       .from("phone_clicks")
-      .select("id, created_at, click_type, phone, source, source_page, referrer, city, gclid, utm_source, utm_medium, utm_campaign")
+      .select(
+        "id, created_at, click_type, phone, source, source_page, referrer, city, gclid, utm_source, utm_medium, utm_campaign",
+      )
       .gte("created_at", since)
       .order("created_at", { ascending: false })
       .limit(200);
-    if (clicksErr) return jsonResp({ error: "db_error", message: clicksErr.message }, 500);
+    if (clicksErr) {
+      return jsonResp({ error: "db_error", message: clicksErr.message }, 500);
+    }
 
     const list = rows || [];
     const totals = { call: 0, sms: 0 };
@@ -270,9 +500,109 @@ Deno.serve(async (req: Request) => {
       window_days: days,
       totals,
       by_source: bySource,
-      recent: list.slice(0, 50)
+      recent: list.slice(0, 50),
     });
   }
 
-  return jsonResp({ error: "unknown_action", message: `action must be 'list', 'create', 'update', or 'clicks' (got '${action}')` }, 400);
+  // ─── GROWTH QUEUE STATE ────────────────────────────────────────────────────
+  if (action === "growth_state") {
+    const { data: actions, error } = await supabase
+      .from("growth_queue_actions")
+      .select(
+        "action_key, state, assigned_to, snoozed_until, note, completed_at, updated_at, updated_by_name, updated_by_role, action_title, category, priority",
+      )
+      .order("updated_at", { ascending: false })
+      .limit(1000);
+    if (error) {
+      if (isMissingSchemaError(error)) {
+        return jsonResp({ user, storage_ready: false, actions: [] });
+      }
+      return jsonResp({ error: "db_error", message: error.message }, 500);
+    }
+    return jsonResp({ user, storage_ready: true, actions: actions || [] });
+  }
+
+  if (action === "growth_update") {
+    if (req.method !== "POST") {
+      return jsonResp({
+        error: "method_not_allowed",
+        message: "Use POST for action=growth_update",
+      }, 405);
+    }
+
+    let body: any;
+    try {
+      body = await req.json();
+    } catch {
+      return jsonResp({ error: "bad_json" }, 400);
+    }
+
+    const actionKey = cleanActionKey(body.action_key);
+    if (!actionKey) {
+      return jsonResp({
+        error: "bad_action_key",
+        message: "action_key must be 2-240 URL-safe characters.",
+      }, 400);
+    }
+
+    const state = String(body.state || "open").toLowerCase();
+    if (!ALLOWED_GROWTH_STATES.has(state)) {
+      return jsonResp({
+        error: "bad_growth_state",
+        message: "state must be open, done, or snoozed",
+      }, 400);
+    }
+
+    const snoozedUntil = state === "snoozed"
+      ? dateOrNull(body.snoozed_until)
+      : null;
+    if (state === "snoozed" && !snoozedUntil) {
+      return jsonResp({
+        error: "bad_snooze_date",
+        message: "snoozed_until must be YYYY-MM-DD when state=snoozed.",
+      }, 400);
+    }
+
+    const now = new Date().toISOString();
+    const row = {
+      action_key: actionKey,
+      state,
+      assigned_to: cleanText(body.assigned_to, 120),
+      snoozed_until: snoozedUntil,
+      note: cleanText(body.note, 1000),
+      completed_at: state === "done" ? now : null,
+      last_seen_at: now,
+      action_title: cleanText(body.action_title, 240),
+      category: cleanText(body.category, 80),
+      priority: cleanText(body.priority, 20),
+      updated_by_name: user.name,
+      updated_by_role: user.role,
+    };
+
+    const { data: saved, error } = await supabase
+      .from("growth_queue_actions")
+      .upsert(row, { onConflict: "action_key" })
+      .select(
+        "action_key, state, assigned_to, snoozed_until, note, completed_at, updated_at, updated_by_name, updated_by_role, action_title, category, priority",
+      )
+      .single();
+    if (error) {
+      if (isMissingSchemaError(error)) {
+        return jsonResp({
+          error: "storage_not_ready",
+          message:
+            "Apply the prepared growth_queue_actions migration before saving Growth Queue state.",
+        }, 409);
+      }
+      return jsonResp({ error: "db_error", message: error.message }, 500);
+    }
+
+    return jsonResp({ user, action: saved });
+  }
+
+  return jsonResp({
+    error: "unknown_action",
+    message:
+      `action must be 'list', 'create', 'update', 'clicks', 'growth_state', or 'growth_update' (got '${action}')`,
+  }, 400);
 });
