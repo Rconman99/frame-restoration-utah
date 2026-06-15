@@ -54,7 +54,21 @@ IMAGE_DIR.mkdir(parents=True, exist_ok=True)
 
 # ── Frame Roofing Utah constants (mirrors CLAUDE.md) ─────────────────
 SITE = "https://www.frameroofingutah.com"
-BUSINESS_NAME = "Frame Roofing Utah"
+
+
+def _load_brand() -> str:
+    """Canonical public brand — single source of truth is business.json.
+    Falls back to the historical literal if the field is missing/unreadable so
+    the generator never crashes on a malformed config. Reading it here means a
+    brand transition only has to change business.json; this generator follows."""
+    p = ROOT / "data" / "route-factory" / "business.json"
+    try:
+        return json.loads(p.read_text()).get("brand") or "Frame Roofing Utah"
+    except (OSError, json.JSONDecodeError):
+        return "Frame Roofing Utah"
+
+
+BUSINESS_NAME = _load_brand()
 LEGAL_NAME = "Frame Restoration Utah LLC"
 PHONE_CALL = "435-292-8802"
 PHONE_TEL = "+14352928802"
@@ -130,7 +144,7 @@ OLLAMA_URL = os.environ.get("OLLAMA_URL", "http://localhost:11434")
 DEFAULT_MODEL = os.environ.get("OLLAMA_MODEL", "qwen3:8b")
 MIN_DRAFT_WORDS = int(os.environ.get("FRAME_BLOG_MIN_WORDS", "900"))
 OLLAMA_FORMAT = os.environ.get("FRAME_BLOG_OLLAMA_FORMAT", "json")
-BRAND_SUFFIX_RE = re.compile(r"\s*(?:\||-|–|—)\s*Frame Roofing Utah\s*$", re.I)
+BRAND_SUFFIX_RE = re.compile(r"\s*(?:\||-|–|—)\s*Frame (?:Roofing|Restoration) Utah\s*$", re.I)
 FORBIDDEN_DRAFT_PATTERNS = [
     ("old call number", re.compile(r"435[-\s]?302[-\s]?4422|\+?1?4353024422")),
     ("Texas brand leak", re.compile(r"\b(?:Texas|Frisco|Dallas|Frame Restoration TX|framerestorations\.com)\b", re.I)),
@@ -321,7 +335,7 @@ def retry_prompt(base_prompt: str, errors: list[str]) -> str:
     bullets = "\n".join(dict.fromkeys(guidance))
     return f"""{base_prompt}
 
-The previous JSON failed Frame Roofing Utah's quality gate:
+The previous JSON failed {BUSINESS_NAME}'s quality gate:
 {bullets}
 
 Rewrite the complete JSON from scratch. Hard minimums:
@@ -330,7 +344,7 @@ Rewrite the complete JSON from scratch. Hard minimums:
 - At least 6 paragraph sections, each specific to the target city.
 - 4 FAQs, each 50-90 words.
 - 5-7 HowTo steps.
-- Do not put "| Frame Roofing Utah" or any brand suffix in the title.
+- Do not put "| {BUSINESS_NAME}" or any brand suffix in the title.
 - Use only 435-292-8802 as the phone number.
 - Do not include license numbers, customer/job counts, exact cost ranges, financing APR/rate/down-payment/term claims, exact minute response-time claims, or unsupported certification language.
 - If financing must be mentioned, use only this neutral phrasing: "Financing may be available; ask during your free inspection for current options." Do not add rates, terms, lender names, down-payment copy, or "low-interest" language.
@@ -361,18 +375,18 @@ Today's date: {today_iso}
 {current_context}
 
 HARD RULES (do not violate):
-1. Frame Roofing Utah is licensed + insured + BBB Accredited (A+) since 2026-04-07. Do not add trade-association, manufacturer, installer, inspector, or other certification claims.
+1. {BUSINESS_NAME} is licensed + insured + BBB Accredited (A+) since 2026-04-07. Do not add trade-association, manufacturer, installer, inspector, or other certification claims.
 2. Confirmed claims you MAY use: Licensed & Insured in Utah, Free Roof Inspections, 24/7 Storm Response, Financing Available, 10-Year Workmanship Warranty, BBB Accredited (A+).
-3. NEVER invent company age, years in business, founding date, number of jobs completed, or "over X years of experience". Frame Roofing Utah's age is NOT public — do not estimate or fabricate it.
-4. Frame Roofing Utah is the Utah public brand only. Do not mention parent brands, sister companies, out-of-state locations, out-of-state operations, or external company domains.
-5. Phone CTA = {PHONE_CALL}. This is the only public phone number for Frame Roofing Utah.
+3. NEVER invent company age, years in business, founding date, number of jobs completed, or "over X years of experience". {BUSINESS_NAME}'s age is NOT public — do not estimate or fabricate it.
+4. {BUSINESS_NAME} is the Utah public brand only. Do not mention parent brands, sister companies, out-of-state locations, out-of-state operations, or external company domains.
+5. Phone CTA = {PHONE_CALL}. This is the only public phone number for {BUSINESS_NAME}.
 6. Do not include license numbers, customer/job counts, exact cost ranges, exact weather/elevation measurements, financing APR/rate/down-payment/term claims, exact minute response-time claims, or words like "certified" and "certification." Use only the confirmed claims above.
 7. If financing must be mentioned, use only this neutral phrasing: "Financing may be available; ask during your free inspection for current options." Do not add rates, terms, lender names, down-payment copy, or "low-interest" language.
 8. The hero image will be a stylized AI illustration — NOT a real Frame customer's roof. Write copy that does not imply the hero photo depicts an actual job.
 9. No "as an AI" preambles. No filler ("In today's world...", "Let's dive in!"). Lead with substance.
 
 SEO + AEO RULES:
-- Title: include the keyword, under 60 characters. Do NOT append "| Frame Roofing Utah" — the renderer adds that.
+- Title: include the keyword, under 60 characters. Do NOT append "| {BUSINESS_NAME}" — the renderer adds that.
 - Excerpt: 150-200 chars meta description with the keyword in the first half.
 - Word count: 1,200-1,800 words across all paragraph sections combined. Each H2 section MUST be 200-300 words. This is non-negotiable — short sections fail AEO citation depth checks.
 - Structure: 5-7 H2 sections. Never H1.
