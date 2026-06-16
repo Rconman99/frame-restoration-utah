@@ -395,16 +395,16 @@ var sortDir=localStorage.getItem("frame.leads.sort.dir")||"desc";
 	var growthActionIndex={};
 	var UTAH_CITY_SLUGS=["heber-city","park-city","midway","salt-lake-city","millcreek","sandy","draper","west-jordan","south-jordan","cottonwood-heights","west-valley-city","murray","holladay","bountiful","layton","kaysville","lehi","orem","provo","american-fork","pleasant-grove","springville","riverton","herriman","magna","taylorsville","midvale","north-salt-lake","farmington","alpine","highland","spanish-fork","payson","saratoga-springs","eagle-mountain"];
 	var INDEXING_QUEUE=[
-	  {url:"https://www.frameroofingutah.com/",label:"Homepage"},
-	  {url:"https://www.frameroofingutah.com/pages/insurance-claims",label:"Insurance claims"},
-	  {url:"https://www.frameroofingutah.com/pages/roof-replacement",label:"Roof replacement"},
-	  {url:"https://www.frameroofingutah.com/pages/roof-repair",label:"Roof repair"},
-	  {url:"https://www.frameroofingutah.com/locations/heber-city",label:"Heber City"},
-	  {url:"https://www.frameroofingutah.com/locations/park-city",label:"Park City"},
-	  {url:"https://www.frameroofingutah.com/locations/salt-lake-city",label:"Salt Lake City"},
-	  {url:"https://www.frameroofingutah.com/locations/sandy",label:"Sandy"},
-	  {url:"https://www.frameroofingutah.com/blog/utah/roof-replacement-cost-utah-2026",label:"Utah roof replacement cost"},
-	  {url:"https://www.frameroofingutah.com/blog/utah/utah-roof-insurance-claims-guide",label:"Utah insurance claims guide"}
+	  {url:"https://www.framerestorationutah.com/",label:"Homepage"},
+	  {url:"https://www.framerestorationutah.com/pages/insurance-claims",label:"Insurance claims"},
+	  {url:"https://www.framerestorationutah.com/pages/roof-replacement",label:"Roof replacement"},
+	  {url:"https://www.framerestorationutah.com/pages/roof-repair",label:"Roof repair"},
+	  {url:"https://www.framerestorationutah.com/locations/heber-city",label:"Heber City"},
+	  {url:"https://www.framerestorationutah.com/locations/park-city",label:"Park City"},
+	  {url:"https://www.framerestorationutah.com/locations/salt-lake-city",label:"Salt Lake City"},
+	  {url:"https://www.framerestorationutah.com/locations/sandy",label:"Sandy"},
+	  {url:"https://www.framerestorationutah.com/blog/utah/roof-replacement-cost-utah-2026",label:"Utah roof replacement cost"},
+	  {url:"https://www.framerestorationutah.com/blog/utah/utah-roof-insurance-claims-guide",label:"Utah insurance claims guide"}
 	];
 
 	function esc(s){if(s==null)return"";return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#39;")}
@@ -638,8 +638,8 @@ async function submitAddLead(){
 	  var reviewReady=leads.filter(function(r){return statusOrNew(r.status)==="won"&&r.job_completed_at&&!r.review_requested_at&&daysSince(r.job_completed_at)>=3});
 	  reviewReady.slice(0,8).forEach(function(r){addGrowthAction(actions,{id:"review-"+r.id,priority:"P1",category:"Reviews",title:"Review request due",detail:(r.name||"Won job")+" completed "+fmtDate(r.job_completed_at)+" and has no stored review request timestamp.",step:"Verify the review-request cron fired or send the approved real-customer request.",leadId:r.id,due:"today"})});
 	  leads.filter(function(r){return statusOrNew(r.status)==="won"&&(r.city||cityFromPath(r.source_page||""))}).slice(0,10).forEach(function(r){var city=titleCity(leadCityKey(r)||r.city||"Utah");addGrowthAction(actions,{id:"proof-"+r.id,priority:r.job_completed_at?"P1":"P2",category:"Proof",title:"Create job proof asset",detail:(r.name||"Won job")+" · "+city+" · "+(r.product||r.service||"roofing job"),step:"Capture approved photos/video, service, city, and scope. Route proof into the matching city page, GBP post, and AI visibility tracker.",leadId:r.id,due:r.job_completed_at?"this week":"next"})});
-	  topEntries(D.cityClicks,8).forEach(function(x){if(x.value>=2&&!D.cityLead[x.key])addGrowthAction(actions,{id:"city-gap-"+x.key,priority:"P1",category:"Website",title:"City clicks without form leads",detail:titleCity(x.key)+" has "+x.value+" phone/text clicks but no form leads in the 30d window.",step:"Review CTA placement, local proof, and mobile form visibility before requesting indexing.",url:"https://www.frameroofingutah.com/locations/"+x.key,due:"this week"})});
-	  topEntries(D.pageClicks,8).forEach(function(x){if(x.value>=3&&!D.pageLead[x.key])addGrowthAction(actions,{id:"page-gap-"+x.key,priority:"P1",category:"Website",title:"Page gets calls but no forms",detail:pageLabel(x.key)+" has "+x.value+" call/text clicks and no form submissions.",step:"Check mobile CTA placement, form visibility, and whether the copy answers the visitor's next question.",url:"https://www.frameroofingutah.com"+(x.key==="/"?"":x.key),due:"this week"})});
+	  topEntries(D.cityClicks,8).forEach(function(x){if(x.value>=2&&!D.cityLead[x.key])addGrowthAction(actions,{id:"city-gap-"+x.key,priority:"P1",category:"Website",title:"City clicks without form leads",detail:titleCity(x.key)+" has "+x.value+" phone/text clicks but no form leads in the 30d window.",step:"Review CTA placement, local proof, and mobile form visibility before requesting indexing.",url:"https://www.framerestorationutah.com/locations/"+x.key,due:"this week"})});
+	  topEntries(D.pageClicks,8).forEach(function(x){if(x.value>=3&&!D.pageLead[x.key])addGrowthAction(actions,{id:"page-gap-"+x.key,priority:"P1",category:"Website",title:"Page gets calls but no forms",detail:pageLabel(x.key)+" has "+x.value+" call/text clicks and no form submissions.",step:"Check mobile CTA placement, form visibility, and whether the copy answers the visitor's next question.",url:"https://www.framerestorationutah.com"+(x.key==="/"?"":x.key),due:"this week"})});
 	  var quietCities=UTAH_CITY_SLUGS.filter(function(s){return !D.cityLead[s]&&!D.cityClicks[s]}).slice(0,8);
 	  if(quietCities.length)addGrowthAction(actions,{id:"utah-city-coverage",priority:"P2",category:"Website",title:"Review quiet Utah city routes",detail:"No attribution events yet for: "+quietCities.map(titleCity).join(", ")+".",step:"Prioritize approved proof/internal links for the highest-value quiet Utah city pages before broad new page work.",due:"next"});
 	  var quietIndex=INDEXING_QUEUE.filter(function(x){return !D.pageLead[pathOnly(x.url)]&&!D.pageClicks[pathOnly(x.url)]}).slice(0,5);
