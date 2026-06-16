@@ -82,7 +82,7 @@ function normalizePhone(phone: string): string | null {
 
 // ─── Tier classification ─────────────────────────────────────────────────────
 
-const CLASSIFIER_PROMPT = `You triage roofing leads for Frame Roofing Utah, a contractor in Utah serving Heber City, Park City, Salt Lake metro and surrounding areas.
+const CLASSIFIER_PROMPT = `You triage roofing leads for Frame Restoration Utah, a contractor in Utah serving Heber City, Park City, Salt Lake metro and surrounding areas.
 
 Read the lead and return a JSON object with this exact shape:
   { "tier": "...", "reason": "...", "confidence": 0.0-1.0 }
@@ -214,7 +214,7 @@ async function sendTwilioSMS(config: Record<string, string>, to: string, body: s
 //   Domain frameroofingutah.com must be verified in Resend (DKIM/SPF DNS records).
 
 const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY") || "";
-const RESEND_FROM_LANDON = "Frame Roofing Utah <leads@frameroofingutah.com>";
+const RESEND_FROM_LANDON = "Frame Restoration Utah <leads@frameroofingutah.com>";
 const RESEND_FROM_SMS = "Frame Roofing Utah <noreply@frameroofingutah.com>";
 const LANDON_EMAIL = "landon@framerestorations.com";
 const RYAN_EMAIL = "ryanconwell99@gmail.com";
