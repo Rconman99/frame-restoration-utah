@@ -14,3 +14,12 @@ create table if not exists public.blocked_callers (
 insert into public.blocked_callers (phone, reason, source)
 values ('+18333380180', 'cold-pitch SEO solicitation (auto-classified spam 2026-05-16)', 'seed')
 on conflict (phone) do nothing;
+
+-- Lock down like every other internal table (matches processed_webhooks + the
+-- baseline-hardened-RLS posture): RLS on with NO policies → anon/authenticated are
+-- denied; service_role keeps access via BYPASSRLS. handle-call reads this with the
+-- service-role key, so the blocklist keeps working while staying invisible to the
+-- public anon key. Safe on live Utah too — a brand-new table has no anon flow to break.
+alter table public.blocked_callers enable row level security;
+revoke all on table public.blocked_callers from anon, authenticated;
+grant all on table public.blocked_callers to service_role;
