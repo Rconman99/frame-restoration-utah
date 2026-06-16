@@ -312,11 +312,17 @@ def insert_index_card(manifest: dict, post_path: str, image: str) -> bool:
 
 
 # ── Gates ───────────────────────────────────────────────────────────
-def run_gates() -> tuple[bool, str]:
+def run_gates(manual_review: bool = False) -> tuple[bool, str]:
+    # compliance-words is a compliance JUDGMENT; on the human-reviewed path it
+    # is advisory (reported, not blocking). The rest are structural and stay hard.
+    advisory = {"audit-compliance-words.mjs"} if manual_review else set()
     for gate in GATES:
-        log(f"-> Gate: {gate}")
+        log(f"-> Gate: {gate}" + ("  (advisory)" if gate in advisory else ""))
         proc = run(["node", str(ROOT / "scripts" / gate)])
         if proc.returncode != 0:
+            if gate in advisory:
+                log(f"   ⚠ {gate} reported issues (ADVISORY — not blocking)")
+                continue
             tail = "\n".join((proc.stdout + proc.stderr).strip().splitlines()[-12:])
             return False, f"{gate} exit {proc.returncode}\n{tail}"
         log(f"   PASS {gate}")
@@ -362,7 +368,7 @@ def fail_closed(state: TreeState, manifest_path: Path, manifest: dict,
 
 # ── Publish (git) ───────────────────────────────────────────────────
 def git_publish(manifest_path: Path, manifest: dict, rendered: Path,
-                published_url: str) -> None:
+                published_url: str, manual_review: bool = False) -> None:
     slug = manifest["slug"]
     city = city_label(manifest.get("city_slug", "utah"))
     manifest_was_tracked = is_tracked(manifest_path)
@@ -390,7 +396,9 @@ def git_publish(manifest_path: Path, manifest: dict, rendered: Path,
 
     name = COMMIT_AUTHOR.split(" <")[0]
     email = COMMIT_AUTHOR.split("<")[1].rstrip(">")
-    message = f"content(blog): auto-publish {slug} ({city}) [skip-review scheduled post]"
+    marker = "[manual-review human-approved]" if manual_review else "[skip-review scheduled post]"
+    verb = "publish" if manual_review else "auto-publish"
+    message = f"content(blog): {verb} {slug} ({city}) {marker}"
     commit = git("-c", f"user.name={name}", "-c", f"user.email={email}",
                  "commit", "--author", COMMIT_AUTHOR, "-m", message, "--", *rels)
     if commit.returncode != 0:
@@ -433,6 +441,12 @@ def main() -> None:
     parser.add_argument("--push", action="store_true",
                         help="Actually commit + push. Without this flag the run is a "
                         "dry-publish: render + integrate + gates, then restore the tree.")
+    parser.add_argument("--manual-review", action="store_true",
+                        help="Human-reviewed publish. A person has read + fixed the draft, "
+                        "so the COMPLIANCE judgment (advocacy-phrase fence, insurance-claim "
+                        "cap, compliance-words gate) becomes ADVISORY — it reports but does "
+                        "not block. Structural gates (jsonld/links/doc-isolation) stay hard. "
+                        "Also accepts status=needs-review, not just status=drafted.")
     args = parser.parse_args()
 
     # 1. Pick manifest
@@ -453,10 +467,14 @@ def main() -> None:
         sys.exit(1)
     manifest = json.loads(manifest_path.read_text())
     status = manifest.get("status")
-    if status != "drafted":
-        log(f"x Refusing manifest with status={status!r} (only 'drafted' auto-publishes).")
+    allowed = {"drafted", "needs-review"} if args.manual_review else {"drafted"}
+    if status not in allowed:
+        log(f"x Refusing manifest with status={status!r} (allowed: {sorted(allowed)}).")
         log_run(str(manifest_path), manifest.get("slug", "?"), "skipped", f"status={status}")
         sys.exit(1)
+    if args.manual_review:
+        log(f"-> MANUAL-REVIEW mode: compliance checks ADVISORY (human-reviewed); "
+            f"structural gates still hard. Accepting status={status!r}.")
 
     slug = manifest["slug"]
     city_slug = manifest.get("city_slug", "utah")
@@ -501,13 +519,19 @@ def main() -> None:
                     f"render reported success but {rendered} is missing", args.push)
     log(f"✓ Rendered {rendered.relative_to(ROOT)}")
 
-    # 5. Compliance hard-fence on the rendered HTML
+    # 5. Compliance fence on the rendered HTML
     rendered_html = rendered.read_text()
     reasons = compliance_fence(rendered_html, style=manifest.get("style", ""))
     if reasons:
-        fail_closed(state, manifest_path, manifest,
-                    "compliance fence: " + "; ".join(reasons), args.push)
-    log("✓ Compliance hard-fence clean")
+        if args.manual_review:
+            log("⚠ Compliance fence (ADVISORY — human-reviewed, not blocking):")
+            for r in reasons:
+                log(f"    - {r}")
+        else:
+            fail_closed(state, manifest_path, manifest,
+                        "compliance fence: " + "; ".join(reasons), args.push)
+    else:
+        log("✓ Compliance fence clean")
 
     # 6. Integrate: sitemap + blog index
     post_path = f"/blog/{city_slug}/{slug}"
@@ -522,8 +546,8 @@ def main() -> None:
     log(f"✓ Sitemap: {'inserted' if sitemap_added else 'already present (skipped)'}")
     log(f"✓ Blog index card: {'inserted' if card_added else 'already present (skipped)'}")
 
-    # 7. Gates (fail closed)
-    ok, gate_reason = run_gates()
+    # 7. Gates (fail closed; compliance-words advisory in manual-review)
+    ok, gate_reason = run_gates(manual_review=args.manual_review)
     if not ok:
         fail_closed(state, manifest_path, manifest, f"gate failed: {gate_reason}", args.push)
 
@@ -531,7 +555,8 @@ def main() -> None:
 
     # 8. Publish or restore
     if args.push:
-        git_publish(manifest_path, manifest, rendered, post_url)
+        git_publish(manifest_path, manifest, rendered, post_url,
+                    manual_review=args.manual_review)
         log(f"\n✓ PUBLISHED {post_url}")
         log_run(rel_manifest, slug, "published", post_url)
     else:
