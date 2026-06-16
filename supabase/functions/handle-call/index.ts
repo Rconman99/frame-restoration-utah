@@ -1,18 +1,21 @@
-// handle-call v2 — Frame Roofing Utah
+// handle-call v3 — Frame Restoration Utah
 // ─────────────────────────────────────────────────────────────────────────────
+// v3 (2026-06-16): Spam-call mitigation (Phase 0). Inbound calls are now routed:
+//   • blocklisted number (blocked_callers table) → polite hangup, no ring, no lead
+//   • Utah area code (801/385/435)                → ring straight through (frictionless)
+//   • anything else (out-of-state / no caller ID) → "press 1 to connect" screen
+//        - press 1  → create lead + ring Landon (proves a human)
+//        - no input → voicemail, NO lead (robo-dialers land here)
+//   This stops robocalls from ringing Landon AND from polluting /leads, while a
+//   real human is never dead-ended (voicemail fallback everywhere). Lead creation
+//   for screened calls is DEFERRED to /connect so spam never becomes a "general"
+//   lead. Blocklist + attestation logic both FAIL OPEN (a DB blip or absent table
+//   degrades to ringing, never to dropping a real call).
+//
 // v2 (2026-05-16): Auto-create a leads row on first inbound call from a
-//   previously-unseen phone number. This closes the gap where 8 calls had
-//   landed in call_logs but never surfaced in /leads.
+//   previously-unseen phone number (closed the call_logs-not-in-/leads gap).
 //
-// Inbound call flow:
-//   1. Twilio webhooks the tracking number → this fn
-//   2. Insert call_logs row (existing behavior)
-//   3. If no leads row with same phone in last 90d → create one
-//      (status=new, source_page=inbound-call, tier=general)
-//   4. Set call_logs.lead_id pointer
-//   5. Return TwiML to forward call to Landon (existing behavior)
-//
-// Source pulled from prod 2026-05-16 (deployed version 5) + lead-create patch.
+// Source pulled from prod 2026-05-16 (deployed v5) + lead-create patch + v3 screening.
 
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
@@ -38,6 +41,85 @@ function lastFour(phone: string): string {
   return digits.slice(-4) || "????";
 }
 
+// ── Spam screening (Phase 0, v3) ─────────────────────────────────────────────
+// Known repeat spam callers (blocked_callers table) get a polite hangup. Fails
+// OPEN: if the query errors or the table is absent, returns false (call proceeds).
+async function isBlockedCaller(phone: string): Promise<boolean> {
+  const norm = normalizePhone(phone);
+  if (!norm) return false;
+  const { data, error } = await supabase
+    .from("blocked_callers").select("phone").eq("phone", norm).limit(1);
+  if (error) return false; // fail open — never drop a call over a blocklist error
+  return !!(data && data.length);
+}
+
+// Local-trust rule: Utah-area-code callers (801 / 385 / 435 cover the whole
+// state) ring straight through — that's virtually all real customers. Every
+// out-of-state / unknown-caller-ID number gets the press-1 screen (spam skews
+// out-of-state). Add area codes here if Frame ever serves another state.
+const UTAH_AREA_CODES = new Set(["801", "385", "435"]);
+function isUtahNumber(phone: string): boolean {
+  const digits = (phone || "").replace(/\D/g, "");
+  const ten = digits.length === 11 && digits.startsWith("1") ? digits.slice(1) : digits;
+  if (ten.length !== 10) return false; // unknown / malformed / short-code → screen
+  return UTAH_AREA_CODES.has(ten.slice(0, 3));
+}
+
+function xml(body: string): Response {
+  return new Response(`<?xml version="1.0" encoding="UTF-8"?>\n${body}`, {
+    headers: { "Content-Type": "text/xml" },
+  });
+}
+
+// Connect the caller to Landon (the existing dial+record+voicemail-fallback block).
+function dialLandonTwiml(callerId: string): string {
+  const statusCallbackUrl = `${SUPABASE_URL}/functions/v1/handle-call/status`;
+  return `<Response>
+  <Dial callerId="${callerId}" timeout="30"
+        action="${SUPABASE_URL}/functions/v1/handle-call/completed"
+        record="record-from-answer-dual">
+    <Number statusCallbackEvent="initiated ringing answered completed"
+            statusCallback="${statusCallbackUrl}">
+      ${LANDON_PHONE}
+    </Number>
+  </Dial>
+</Response>`;
+  // No-answer voicemail is handled by the /completed Dial-action callback — a
+  // trailing <Record> here would be dead code (<Dial action> overrides fall-through).
+}
+
+// Every <Record> below sets an explicit action → /voicemail (a no-op route that
+// just saves the recording). Without it, <Record> defaults its action to the
+// current document URL, looping back into /handle-call or /connect (and a "1"
+// finish-key could be misread as "press 1 to connect" → ghost lead).
+const RECORD = `<Record maxLength="120" transcribe="true" action="${SUPABASE_URL}/functions/v1/handle-call/voicemail" />`;
+
+// Human-gate: bots can't press a key. No input falls through to voicemail.
+function screenTwiml(): string {
+  return `<Response>
+  <Gather numDigits="1" timeout="8" method="POST"
+          action="${SUPABASE_URL}/functions/v1/handle-call/connect">
+    <Say>Thank you for calling Frame Restoration Utah. To reach our team, press 1.</Say>
+  </Gather>
+  <Say>We didn't get a response. Please leave a message after the beep and we'll call you back.</Say>
+  ${RECORD}
+</Response>`;
+}
+
+function voicemailTwiml(): string {
+  return `<Response>
+  <Say>Please leave a message after the beep and we'll call you back.</Say>
+  ${RECORD}
+</Response>`;
+}
+
+function blockedTwiml(): string {
+  return `<Response>
+  <Say>This number does not accept solicitation calls. Goodbye.</Say>
+  <Hangup/>
+</Response>`;
+}
+
 // Returns existing lead id if one matches the phone in the last 90 days, else null.
 async function findRecentLead(phone: string): Promise<number | null> {
   if (!phone) return null;
@@ -58,7 +140,7 @@ async function findRecentLead(phone: string): Promise<number | null> {
   return data && data.length ? data[0].id : null;
 }
 
-async function createInboundCallLead(fromNumber: string, city: string): Promise<number | null> {
+async function createInboundCallLead(fromNumber: string, city: string, classifier = "auto-inbound-call"): Promise<number | null> {
   if (!fromNumber || fromNumber === "unknown") return null;
   const { data, error } = await supabase
     .from("leads")
@@ -70,7 +152,7 @@ async function createInboundCallLead(fromNumber: string, city: string): Promise<
       source_page: "inbound-call",
       status: "new",
       tier: "general",
-      tier_classifier: "auto-inbound-call",
+      tier_classifier: classifier,
       tier_reason: "Auto-created by handle-call on first call from this number",
       notes: "Auto-created from inbound call. Update name/details when you have them.",
     })
@@ -170,19 +252,29 @@ Deno.serve(async (req: Request) => {
     const callerState = data.FromState || "";
     const cityLabel = callerCity ? `${callerCity}, ${callerState}` : "unknown";
 
-    // Idempotency: run the lead lookup + call_logs insert + analytics ONCE per call.
-    // A Twilio retry of the inbound webhook is deduped via the processed_webhooks
-    // claim (call_logs has no unique call_sid, so a claim — not an upsert — is what
-    // makes this retry-safe). We ALWAYS return the Dial TwiML below, so a retry
-    // still rings Landon: the claim guards the side effects, not the call handling.
+    // v3 routing: decide how this call is handled. Both checks FAIL OPEN — a DB
+    // error degrades to the ring path, never to dropping a real call.
+    const stirVerstat = data.StirVerstat || "";
+    const blocked = await isBlockedCaller(fromNumber);
+    const route = blocked ? "blocked" : (isUtahNumber(fromNumber) ? "ring" : "screen");
+
+    // Idempotency: run side effects (lead lookup/create + call_logs + analytics)
+    // ONCE per call, deduped via the processed_webhooks claim. We ALWAYS return the
+    // routed TwiML below, so a retry is still handled: the claim guards side effects,
+    // not call handling. For the "screen" route, lead creation is DEFERRED to
+    // /connect (only humans who press 1 become leads → spam stays out of /leads).
     if (await claimWebhook(`call:${callSid}`)) {
-      // Look up or create a lead for this caller (new in v2)
       let leadId: number | null = null;
-      if (fromNumber && fromNumber !== "unknown") {
-        leadId = await findRecentLead(fromNumber);
-        if (!leadId) {
-          leadId = await createInboundCallLead(fromNumber, cityLabel);
+      let logStatus = "ringing";
+      if (route === "blocked") {
+        logStatus = "blocked-spam";
+      } else if (route === "ring") {
+        if (fromNumber && fromNumber !== "unknown") {
+          leadId = await findRecentLead(fromNumber);
+          if (!leadId) leadId = await createInboundCallLead(fromNumber, cityLabel);
         }
+      } else {
+        logStatus = "screening"; // lead deferred to /connect
       }
 
       const { error } = await supabase.from("call_logs").insert({
@@ -190,38 +282,60 @@ Deno.serve(async (req: Request) => {
         from_number: fromNumber,
         to_number: toNumber,
         forwarded_to: LANDON_PHONE,
-        status: "ringing",
+        status: logStatus,
         city: cityLabel,
         source_page: "website-tracking-number",
         lead_id: leadId,
       });
       if (error) console.error("[handle-call] call_logs insert error:", error);
 
-      await sendPostHogEvent("inbound_call", {
-        from_number: fromNumber,
-        caller_city: callerCity,
-        caller_state: callerState,
-        source: "website",
-        lead_id: leadId,
-      });
+      await sendPostHogEvent(
+        route === "blocked" ? "blocked_spam_call" : route === "screen" ? "screening_call" : "inbound_call",
+        {
+          from_number: fromNumber,
+          caller_city: callerCity,
+          caller_state: callerState,
+          stir_verstat: stirVerstat,
+          route,
+          source: "website",
+          lead_id: leadId,
+        },
+      );
     }
 
-    const statusCallbackUrl = `${SUPABASE_URL}/functions/v1/handle-call/status`;
-    const twiml = `<?xml version="1.0" encoding="UTF-8"?>
-<Response>
-  <Dial callerId="${toNumber}" timeout="30"
-        action="${SUPABASE_URL}/functions/v1/handle-call/completed"
-        record="record-from-answer-dual">
-    <Number statusCallbackEvent="initiated ringing answered completed"
-            statusCallback="${statusCallbackUrl}">
-      ${LANDON_PHONE}
-    </Number>
-  </Dial>
-  <Say>Sorry, no one is available right now. Please leave a message after the beep.</Say>
-  <Record maxLength="120" transcribe="true" />
-</Response>`;
+    if (route === "blocked") return xml(blockedTwiml());
+    if (route === "screen") return xml(screenTwiml());
+    return xml(dialLandonTwiml(toNumber));
+  }
 
-    return new Response(twiml, { headers: { "Content-Type": "text/xml" } });
+  // === SCREEN RESULT ("press 1 to connect") ===
+  // Gather action callback. A human who pressed 1 gets connected to Landon and
+  // becomes a lead NOW (deferred from the inbound hit so robo-dialers — which
+  // never press a key — never create a lead). Anything else → voicemail.
+  if (path === "connect") {
+    const digits = (data.Digits || "").trim();
+    const callSid = (data.CallSid || "").trim();
+    const fromNumber = data.From || "unknown";
+    const callerId = data.To || creds.phone || "";
+    if (digits === "1") {
+      if (callSid && (await claimWebhook(`connect:${callSid}`))) {
+        let leadId: number | null = null;
+        if (fromNumber && fromNumber !== "unknown") {
+          leadId = await findRecentLead(fromNumber);
+          if (!leadId) {
+            const cityLabel = data.FromCity ? `${data.FromCity}, ${data.FromState || ""}` : "unknown";
+            leadId = await createInboundCallLead(fromNumber, cityLabel, "auto-inbound-call-screened");
+          }
+        }
+        await supabase.from("call_logs").update({ status: "ringing", lead_id: leadId }).eq("call_sid", callSid);
+        await sendPostHogEvent("inbound_call", {
+          from_number: fromNumber, route: "screen-passed", source: "website", lead_id: leadId,
+        });
+      }
+      return xml(dialLandonTwiml(callerId));
+    }
+    // No valid keypress (robo-dialers, abandons) → voicemail, no lead.
+    return xml(voicemailTwiml());
   }
 
   // === CALL COMPLETED ===
@@ -252,9 +366,33 @@ Deno.serve(async (req: Request) => {
       }
     }
 
-    return new Response(`<?xml version="1.0" encoding="UTF-8"?><Response></Response>`, {
-      headers: { "Content-Type": "text/xml" }
-    });
+    // No-answer voicemail (Dial action callback only). If Landon didn't pick up,
+    // offer voicemail instead of returning silence. The per-leg /status callbacks
+    // also land here — guard on path === "completed" so they don't emit voicemail.
+    if (path === "completed") {
+      const dial = (data.DialCallStatus || "").toLowerCase();
+      if (dial && dial !== "completed" && dial !== "answered") {
+        return xml(`<Response>
+  <Say>Sorry, no one is available right now. Please leave a message after the beep.</Say>
+  ${RECORD}
+</Response>`);
+      }
+    }
+    return xml(`<Response></Response>`);
+  }
+
+  // === VOICEMAIL recording finished ===
+  // Dedicated no-op target for every <Record action> so a finished recording never
+  // loops back into /handle-call or /connect. Saves the recording, ends cleanly.
+  if (path === "voicemail") {
+    const callSid = (data.CallSid || data.ParentCallSid || "").trim();
+    const recordingUrl = data.RecordingUrl || null;
+    if (callSid && recordingUrl) {
+      const { error } = await supabase.from("call_logs")
+        .update({ recording_url: recordingUrl, status: "voicemail" }).eq("call_sid", callSid);
+      if (error) console.error("[handle-call] voicemail update error:", error);
+    }
+    return xml(`<Response></Response>`);
   }
 
   return new Response("OK", { status: 200 });
