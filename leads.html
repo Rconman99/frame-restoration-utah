@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
-<title>Frame Roofing Utah — Leads CRM</title>
+<title>Frame Restoration Utah — Leads CRM</title>
 <style>
 :root{--bg:#0d1117;--card:#161b22;--border:#30363d;--text:#e6edf3;--muted:#8b949e;--gold:#c8a951;--green:#3fb950;--blue:#58a6ff;--purple:#bc8cff;--red:#f85149;--orange:#d29922;--card-hi:#1c232c}
 *{margin:0;padding:0;box-sizing:border-box}
@@ -158,7 +158,7 @@ footer{text-align:center;padding:24px;color:var(--muted);font-size:.78rem;border
 <div id="loginOverlay">
   <div class="login-box">
     <div class="login-lock">🔒</div>
-    <h1>Frame Roofing — Leads</h1>
+    <h1>Frame Restoration — Leads</h1>
     <div class="sub">Internal CRM · PIN required</div>
     <form onsubmit="return doLogin(event)">
       <input type="password" id="pinInput" placeholder="Enter PIN" autocomplete="off" autofocus>
@@ -170,7 +170,7 @@ footer{text-align:center;padding:24px;color:var(--muted);font-size:.78rem;border
 
 <div id="reportWrap">
   <div class="hdr">
-    <h1>Frame Roofing<span class="sep">·</span>Leads</h1>
+    <h1>Frame Restoration<span class="sep">·</span>Leads</h1>
     <div class="meta">
       <div id="reportSub">— leads · latest: —</div>
       <div class="user-bar">
@@ -237,7 +237,7 @@ footer{text-align:center;padding:24px;color:var(--muted);font-size:.78rem;border
   <div id="ct"><div class="ld"><span class="sp"></span>Loading leads…</div></div>
 
   <footer>
-    Frame Roofing Utah · Internal CRM · <span id="last-load">—</span>
+    Frame Restoration Utah · Internal CRM · <span id="last-load">—</span>
   </footer>
 </div>
 
@@ -646,7 +646,7 @@ async function submitAddLead(){
 	  if(quietIndex.length)addGrowthAction(actions,{id:"gsc-live-watch",priority:"P1",category:"Search",title:"Run Search Console live watch",detail:"Priority URLs with no attribution events: "+quietIndex.map(function(x){return x.label}).join(", ")+".",step:"Inspect/request indexing on quiet priority URLs and log indexed status at 24h, 72h, and 7d.",due:"today"});
 	  var google=(D.sourceCounts.organic_google||0)+(D.sourceCounts.google_ads||0)+(D.sourceCounts.gbp||0);
 	  addGrowthAction(actions,{id:"gbp-weekly-proof",priority:google<3?"P1":"P2",category:"GBP",title:"Publish GBP proof update",detail:"Google-attributed events in this window: "+google+".",step:"Post one approved real job photo/video update and confirm service/category fields.",due:"this week"});
-	  addGrowthAction(actions,{id:"ai-visibility-watch",priority:"P2",category:"AI Visibility",title:"Re-run Utah AI visibility watch",detail:"Keep checking whether AI/search surfaces cite Frame Roofing Utah for priority city and service queries.",step:"Run the approved visibility baseline and convert missing citation sources into proof, review, or citation tasks.",due:"this week"});
+	  addGrowthAction(actions,{id:"ai-visibility-watch",priority:"P2",category:"AI Visibility",title:"Re-run Utah AI visibility watch",detail:"Keep checking whether AI/search surfaces cite Frame Restoration Utah for priority city and service queries.",step:"Run the approved visibility baseline and convert missing citation sources into proof, review, or citation tasks.",due:"this week"});
 	  var closed=leads.filter(function(r){return isClosedStatus(r.status)}),third=leads.filter(function(r){return statusOrNew(r.status)==="third_party"});
 	  if(third.length>=2||(closed.length&&third.length/closed.length>.25))addGrowthAction(actions,{id:"partner-filter",priority:"P2",category:"Lead Quality",title:"Tighten contractor / partner filtering",detail:third.length+" third-party/internal leads are stored.",step:"Look for repeated source pages, phone patterns, or message language and add clearer intake rules.",due:"next"});
 	  if((leads.length+(D.clicks||[]).length)<10)addGrowthAction(actions,{id:"paid-feedback",priority:"P1",category:"Traffic",title:"Start paid traffic feedback loop",detail:"Attribution volume is still thin in the 30d window.",step:"Use approved paid channels only after owner approval, keep UTM/click IDs intact, and update won/lost/third-party status daily.",due:"now"});
