@@ -145,6 +145,8 @@
   function upgradeStickyBar() {
     var bar = document.querySelector('.sticky-call');
     if (!bar || bar.getAttribute('data-upgraded') === '1') return;
+    // Canonical static dual Call+Text bar already in the markup — don't rebuild it.
+    if (bar.querySelector('.sticky-call-actions')) { bar.setAttribute('data-upgraded', '1'); return; }
     var existingCall = bar.querySelector('a[href^="tel:"]');
     if (!existingCall) return;
     bar.setAttribute('data-upgraded', '1');
@@ -264,7 +266,8 @@
         'border-top:3px solid #E1B969;font-family:"Archivo",sans-serif}',
         '.fr-exit-intent.open{transform:translateY(0)}',
         // Lift above the dual sticky-call bar so neither overlaps.
-        'body.fr-has-sticky-call .fr-exit-intent{bottom:56px}',
+        // Lift only the OPEN banner above the bar; closed stays at bottom:0 so translateY(110%) fully hides it.
+        'body.fr-has-sticky-call .fr-exit-intent.open{bottom:calc(96px + env(safe-area-inset-bottom, 0px))}',
         '.fr-exit-intent-close{position:absolute;top:8px;right:10px;',
         'background:none;border:none;color:rgba(250,249,245,0.7);font-size:24px;',
         'line-height:1;padding:4px 8px;cursor:pointer;min-height:36px;min-width:36px}',
