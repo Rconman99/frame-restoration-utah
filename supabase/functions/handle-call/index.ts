@@ -26,6 +26,30 @@ const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "
 const LANDON_PHONE = "+14353024422";
 const POSTHOG_API_KEY = "phc_BnECzlZ2OeDujli2dbqcgGODXlv2tYERbp40dTF7UBV";
 
+// ── Call-source attribution (commission tracking) ────────────────────────────
+// Each public tracking number maps to a lead source + whether that lead counts
+// toward Ryan's commission. Google (GBP) + the website both publish the canonical
+// NAP below → commission. EVERY OTHER tracking number is a directory line
+// (HomeAdvisor / Yelp / Angi / etc.) → NOT commission. Provision a directory
+// number in Twilio, point its voice webhook at this same function, then add a row
+// here. Unknown dialed numbers default to NON-commission so the ledger never
+// over-counts (a misroute or not-yet-mapped number is treated as not-Ryan's).
+const NUMBER_SOURCES: Record<string, { source: string; commission: boolean }> = {
+  "+14352928802": { source: "google_website", commission: true }, // GBP + website NAP
+  // "+1XXXXXXXXXX": { source: "directory", commission: false },   // ← directory tracking line (add once provisioned)
+};
+function classifyDialedNumber(toNumber: string): { source: string; commission: boolean } {
+  return NUMBER_SOURCES[normalizePhone(toNumber)] ?? { source: "unknown", commission: false };
+}
+// True if `toNumber` is any phone number we own (configured business line OR a
+// mapped tracking number). Gates the inbound webhook so a second tracking number
+// isn't rejected by the single-number `creds.phone` check.
+function isOurBusinessNumber(toNumber: string, configuredPhone?: string): boolean {
+  const norm = normalizePhone(toNumber);
+  if (configuredPhone && norm === normalizePhone(configuredPhone)) return true;
+  return norm in NUMBER_SOURCES;
+}
+
 const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
 
 function normalizePhone(phone: string): string {
@@ -140,7 +164,12 @@ async function findRecentLead(phone: string): Promise<number | null> {
   return data && data.length ? data[0].id : null;
 }
 
-async function createInboundCallLead(fromNumber: string, city: string, classifier = "auto-inbound-call"): Promise<number | null> {
+async function createInboundCallLead(
+  fromNumber: string,
+  city: string,
+  classifier = "auto-inbound-call",
+  attribution: { source: string; commission: boolean } = { source: "unknown", commission: false },
+): Promise<number | null> {
   if (!fromNumber || fromNumber === "unknown") return null;
   const { data, error } = await supabase
     .from("leads")
@@ -150,6 +179,8 @@ async function createInboundCallLead(fromNumber: string, city: string, classifie
       address: city || null,
       city: city ? city.split(",")[0].trim() : null,
       source_page: "inbound-call",
+      call_source: attribution.source,
+      commission_eligible: attribution.commission,
       status: "new",
       tier: "general",
       tier_classifier: classifier,
@@ -234,9 +265,11 @@ Deno.serve(async (req: Request) => {
   }
 
   const isInbound = path === "handle-call" || path === "" || !path;
-  // On the INBOUND path, the call must be to our business line (when configured).
-  // Skip on /status + /completed callbacks (their `To` is the dialed party).
-  if (isInbound && creds.phone && data.To !== creds.phone) {
+  // On the INBOUND path, the call must be to a number we own — the configured
+  // business line OR any mapped tracking number (so a directory tracking line
+  // routed at this same function isn't rejected). Skip on /status + /completed
+  // callbacks (their `To` is the dialed party, i.e. Landon's cell).
+  if (isInbound && creds.phone && !isOurBusinessNumber(data.To, creds.phone)) {
     return new Response("Forbidden", { status: 403 });
   }
 
@@ -257,6 +290,8 @@ Deno.serve(async (req: Request) => {
     const stirVerstat = data.StirVerstat || "";
     const blocked = await isBlockedCaller(fromNumber);
     const route = blocked ? "blocked" : (isUtahNumber(fromNumber) ? "ring" : "screen");
+    // Which tracking number was dialed → lead source + commission eligibility.
+    const attribution = classifyDialedNumber(toNumber);
 
     // Idempotency: run side effects (lead lookup/create + call_logs + analytics)
     // ONCE per call, deduped via the processed_webhooks claim. We ALWAYS return the
@@ -271,7 +306,7 @@ Deno.serve(async (req: Request) => {
       } else if (route === "ring") {
         if (fromNumber && fromNumber !== "unknown") {
           leadId = await findRecentLead(fromNumber);
-          if (!leadId) leadId = await createInboundCallLead(fromNumber, cityLabel);
+          if (!leadId) leadId = await createInboundCallLead(fromNumber, cityLabel, "auto-inbound-call", attribution);
         }
       } else {
         logStatus = "screening"; // lead deferred to /connect
@@ -284,7 +319,7 @@ Deno.serve(async (req: Request) => {
         forwarded_to: LANDON_PHONE,
         status: logStatus,
         city: cityLabel,
-        source_page: "website-tracking-number",
+        source_page: attribution.source,
         lead_id: leadId,
       });
       if (error) console.error("[handle-call] call_logs insert error:", error);
@@ -297,7 +332,8 @@ Deno.serve(async (req: Request) => {
           caller_state: callerState,
           stir_verstat: stirVerstat,
           route,
-          source: "website",
+          source: attribution.source,
+          commission: attribution.commission,
           lead_id: leadId,
         },
       );
@@ -317,6 +353,8 @@ Deno.serve(async (req: Request) => {
     const callSid = (data.CallSid || "").trim();
     const fromNumber = data.From || "unknown";
     const callerId = data.To || creds.phone || "";
+    // Classify off the dialed tracking number (callerId === the number they called).
+    const attribution = classifyDialedNumber(callerId);
     if (digits === "1") {
       if (callSid && (await claimWebhook(`connect:${callSid}`))) {
         let leadId: number | null = null;
@@ -324,12 +362,13 @@ Deno.serve(async (req: Request) => {
           leadId = await findRecentLead(fromNumber);
           if (!leadId) {
             const cityLabel = data.FromCity ? `${data.FromCity}, ${data.FromState || ""}` : "unknown";
-            leadId = await createInboundCallLead(fromNumber, cityLabel, "auto-inbound-call-screened");
+            leadId = await createInboundCallLead(fromNumber, cityLabel, "auto-inbound-call-screened", attribution);
           }
         }
         await supabase.from("call_logs").update({ status: "ringing", lead_id: leadId }).eq("call_sid", callSid);
         await sendPostHogEvent("inbound_call", {
-          from_number: fromNumber, route: "screen-passed", source: "website", lead_id: leadId,
+          from_number: fromNumber, route: "screen-passed",
+          source: attribution.source, commission: attribution.commission, lead_id: leadId,
         });
       }
       return xml(dialLandonTwiml(callerId));
@@ -361,7 +400,7 @@ Deno.serve(async (req: Request) => {
           from_number: data.From || "unknown",
           duration_seconds: duration,
           status: callStatus,
-          source: "website",
+          source: "inbound",
         });
       }
     }
