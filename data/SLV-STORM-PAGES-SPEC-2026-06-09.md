@@ -13,8 +13,10 @@ exist to prevent). **Replacement intent stays concentrated on the parents.** Sto
 transactional intent ("storm damage roof repair {city}", "emergency roof repair {city}") is
 genuinely unowned — parents give it one mini-card; blog spokes are informational. So:
 
-**6 new pages:** `locations/<city>/storm-damage.html` → `/locations/<city>/storm-damage`
-for: cottonwood-heights · holladay · sandy · draper · millcreek · murray
+**6 original pages:** `locations/<city>/storm-damage.html` → `/locations/<city>/storm-damage`
+for: cottonwood-heights · holladay · sandy · draper · millcreek · murray.
+**2026-06-18 P0 gap follow-up:** add Midvale because the parent page existed and the storm
+subpage was missing from the first SLV batch.
 
 ## Page contract (all six conform)
 - Geo meta + coords **copied from the parent page verbatim** (never invented — Fruit-Heights rule)
@@ -44,6 +46,8 @@ for: cottonwood-heights · holladay · sandy · draper · millcreek · murray
    `/locations/cottonwood-heights/storm-damage` · `/locations/holladay/storm-damage` ·
    `/locations/sandy/storm-damage` · `/locations/draper/storm-damage` ·
    `/locations/millcreek/storm-damage` · `/locations/murray/storm-damage`
+   - 2026-06-18 follow-up: add `/locations/midvale/storm-damage`, lastmod 2026-06-18,
+     priority 0.7.
 4. **Blog storm spokes** (holladay, sandy, draper, murray ones referenced) — optional follow-up:
    add a "need repairs now?" CTA link down to the matching transactional page.
 
@@ -62,5 +66,6 @@ dead cid) · doc-isolation (this file is data/*.md — vercelignored, never depl
 | Draper | 40.5247;-111.8638 | photos/frame-restoration-20.webp | blog/draper/insurance-claims-storm-damage |
 | Millcreek | 40.6866;-111.8755 | millcreek-commercial-reroof.webp | hail-season pillar (no city storm spoke) |
 | Murray | 40.6669;-111.888 | photos/frame-restoration-04.webp | blog/murray/storm-damage-roofing-murray-utah |
+| Midvale | 40.6111;-111.8999 | photos/frame-restoration-20.webp | hail-season pillar (no city storm spoke; Midvale proof/photos NEEDS_REVIEW) |
 
 Replacement-intent Service JSON-LD upgrades on the 6 parents = deferred to C-part-2 (separate PR).
