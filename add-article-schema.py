@@ -34,7 +34,7 @@ def extract_canonical(content):
 def extract_og_image(content):
     """Extract OG image URL."""
     m = re.search(r'<meta property="og:image" content="(.+?)"', content)
-    return m.group(1) if m else "https://www.frameroofingutah.com/images/og-image.webp"
+    return m.group(1) if m else "https://www.framerestorationutah.com/images/og-image.webp"
 
 def build_article_schema(city_name, description, url, image_url):
     """Build Article JSON-LD schema."""
@@ -49,20 +49,20 @@ def build_article_schema(city_name, description, url, image_url):
             "@type": "Person",
             "name": "Landon Yokers",
             "jobTitle": "Owner & Licensed Contractor",
-            "url": "https://www.frameroofingutah.com/pages/about",
+            "url": "https://www.framerestorationutah.com/pages/about",
             "worksFor": {
                 "@type": "Organization",
                 "name": "Frame Roofing Utah",
-                "url": "https://www.frameroofingutah.com"
+                "url": "https://www.framerestorationutah.com"
             }
         },
         "publisher": {
             "@type": "Organization",
             "name": "Frame Roofing Utah",
-            "url": "https://www.frameroofingutah.com",
+            "url": "https://www.framerestorationutah.com",
             "logo": {
                 "@type": "ImageObject",
-                "url": "https://www.frameroofingutah.com/images/logo-darkblue.webp"
+                "url": "https://www.framerestorationutah.com/images/logo-darkblue.webp"
             }
         },
         "datePublished": "2025-01-15",
