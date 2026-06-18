@@ -353,8 +353,11 @@ Deno.serve(async (req: Request) => {
     const callSid = (data.CallSid || "").trim();
     const fromNumber = data.From || "unknown";
     const callerId = data.To || creds.phone || "";
-    // Classify off the dialed tracking number (callerId === the number they called).
-    const attribution = classifyDialedNumber(callerId);
+    // Classify off the ORIGINAL dialed number ONLY (data.To). Never fall back to
+    // creds.phone here — that's the commissionable website line, so a /connect
+    // callback missing `To` would silently become google_website/commission=true.
+    // Missing `To` → "unknown" → non-commission (safe direction; never over-counts).
+    const attribution = classifyDialedNumber(data.To || "unknown");
     if (digits === "1") {
       if (callSid && (await claimWebhook(`connect:${callSid}`))) {
         let leadId: number | null = null;
