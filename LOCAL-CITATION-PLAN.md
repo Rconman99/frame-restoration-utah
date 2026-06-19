@@ -1,8 +1,17 @@
 # Frame Roofing Utah — Local Citation & Directory Submission Plan
 
+> SUPERSEDED - DO NOT USE FOR VENDOR HANDOFF OR LIVE CITATION WORK.
+>
+> Current source of truth: `data/NAP-DIRECTORY-CHECKLIST-2026-06-01.md`.
+> Public phone: `435-292-8802`.
+> Vendors must not use stale citation docs, archived directory prompts, or
+> internal forwarding/legacy numbers for any listing submission or update.
+>
+> The historical notes below are preserved for context only.
+
 **Business Name:** Frame Restoration Utah LLC (DBA Frame Roofing Utah)
 **Address:** 142 S Main St, Heber City, UT 84032
-**Phone:** 435-302-4422
+**Phone:** SUPERSEDED - use public phone `435-292-8802` from the current NAP checklist.
 **Website:** https://www.frameroofingutah.com
 **Email:** landon@framerestorations.com
 **Owner:** Landon Yokers
@@ -116,7 +125,7 @@ Verified via Data Axle search, BuildZoom, CertainTeed, and web search across all
 
 - **Business Name:** Frame Restoration Utah LLC
 - **Address:** 142 S Main St, Heber City, UT 84032
-- **Phone:** (435) 302-4422
+- **Phone:** SUPERSEDED - use `(435) 292-8802` from `data/NAP-DIRECTORY-CHECKLIST-2026-06-01.md`
 - **Website:** https://www.frameroofingutah.com
 - **Email:** landon@framerestorations.com
 
@@ -125,7 +134,7 @@ Verified via Data Axle search, BuildZoom, CertainTeed, and web search across all
 - "142 South Main Street" vs "142 S Main St" — use abbreviated format everywhere
 - "Heber" vs "Heber City" — always use "Heber City"
 - Missing suite/unit numbers — there are none, don't add any
-- Phone format: always (435) 302-4422 with area code
+- Phone format: SUPERSEDED - current public format is `(435) 292-8802` with area code
 ---
 ## SUBMISSION PRIORITY (Updated 2026-04-10)
 

@@ -83,6 +83,9 @@ function isDeployed(rel) {
 // shouldn't be public at all are a separate .vercelignore hygiene task.
 const CUSTOMER_DIRS = ['locations/', 'blog/', 'pages/', 'projects/', 'services/'];
 const CUSTOMER_FILES = new Set(['index.html', 'review.html', 'about.html']);
+// Public operational/vendor files can be copied into third-party workflows, so
+// they must obey the same public NAP rules as customer-facing pages.
+const PUBLIC_VENDOR_FILES = new Set(['directory-blitz-tool.html']);
 const sitemapRoutes = loadSitemapRoutes();
 
 function loadSitemapRoutes() {
@@ -103,6 +106,7 @@ function routeOf(rel) {
 
 function isCustomerFacing(rel) {
   if (!isDeployed(rel)) return false;
+  if (PUBLIC_VENDOR_FILES.has(rel)) return true;
   if (CUSTOMER_DIRS.some((d) => rel.startsWith(d))) return true;
   if (CUSTOMER_FILES.has(rel)) return true;
   return sitemapRoutes.has(routeOf(rel));
@@ -166,6 +170,7 @@ const canonicalPlaceId = cfg.gbp?.place_id;
 const files = walkHtml(repoRoot);
 for (const f of files) {
   const rel = path.relative(repoRoot, f);
+  const isPublicVendorFile = PUBLIC_VENDOR_FILES.has(rel);
   const raw = fs.readFileSync(f, 'utf8');
   const html = stripComments(raw);
 
@@ -178,9 +183,13 @@ for (const f of files) {
   for (const m of html.matchAll(hrefRe)) {
     const href = m[1];
 
-    // 3. placeholder tokens in any link
-    for (const p of PLACEHOLDER_PATTERNS) {
-      if (p.test(href)) { blockers.push({ type: 'PLACEHOLDER-LINK', file: rel, detail: href }); break; }
+    // 3. placeholder tokens in customer links. Public vendor tools are scanned
+    // for NAP/internal-phone leakage, but may contain JS templates like
+    // `${item.url}` that are not rendered customer CTAs.
+    if (!isPublicVendorFile) {
+      for (const p of PLACEHOLDER_PATTERNS) {
+        if (p.test(href)) { blockers.push({ type: 'PLACEHOLDER-LINK', file: rel, detail: href }); break; }
+      }
     }
 
     const isGoogleReview = googleReviewRe.test(href);
@@ -210,7 +219,7 @@ for (const f of files) {
 }
 
 console.log('\n=== CTA & external-link integrity ===');
-console.log(`audited ${files.length} customer-facing pages · identity: ${cfg.brand} (cid ${canonicalCid})`);
+console.log(`audited ${files.length} public CTA/NAP surfaces · identity: ${cfg.brand} (cid ${canonicalCid})`);
 console.log(`(${deployedNonCustomer} deployed operational/owner pages out of scope — see .vercelignore hygiene)`);
 
 if (blockers.length === 0) {
