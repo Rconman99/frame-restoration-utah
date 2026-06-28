@@ -60,7 +60,7 @@ MapQuest · YellowPages · Superpages · Manta · Foursquare · Networx · Bark 
 
 ## Tier 4 — Low (batch) (14)
 CitySearch · Hotfrog · Local.com · ShowMeLocal · EZLocal · USDirectory · iBegin · 2FindLocal · Hub.biz · Tuugo · Brownbook · Cylex · n49 · Storeboard
-> `scripts/directory-blitz.py` automates the long tail.
+> Legacy directory-blitz automation is retired. Use this locked checklist plus owner-approved vendor data room/change approvals for any long-tail citation work.
 
 ---
 

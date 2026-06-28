@@ -39,7 +39,7 @@ Global Post-Deploy Verification Protocol: HTTP 200 → content grep → Lighthou
 
 ### High Priority
 1. **10DLC Campaign Approval** — resubmitted 2026-04-07, check-10dlc-status scheduled task monitors daily, expect 1-5 business days
-2. **Directory Submissions** — 35 of 38 remaining. Cheat sheet at `Frame-Roofing-Directory-Cheat-Sheet.pdf`. Landon needs to blitz through these.
+2. **Directory Submissions** — 35 of 38 remaining. Use `data/NAP-DIRECTORY-CHECKLIST-2026-06-01.md` only for citation work. Do not use old directory cheat sheets or historical citation PDFs. Use the locked NAP checklist only.
 3. **Review Collection Strategy** — currently 19 Google reviews, target 200+. Need systematic approach.
 
 ### Medium Priority
@@ -67,7 +67,7 @@ Ollama 0.20.5 (qwen3:8b, qwen2.5-coder:14b, llama3.1:8b, mistral-small3.1), MLX-
 ## Critical Reminders
 - **Desktop Commander for ALL file edits** — sandbox Read tool returns metadata-only for Mac files
 - **Git push to main = auto-deploy** to Vercel
-- **Phone number is ALWAYS 435-302-4422** — never the Twilio number
+- **Public phone/NAP is ALWAYS 435-292-8802** — 435-302-4422 is internal forwarding/legacy only
 - **BBB profile ID is 90056184** — not 90109025
 - **LLC name on directories:** Frame Restoration Utah LLC
 - **Website brand name:** Frame Roofing Utah
