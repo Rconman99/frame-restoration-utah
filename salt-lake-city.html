@@ -87,6 +87,24 @@
       word-break: break-word;
       hyphens: auto;
     }
+    /* Phase 1 flagship sections (page-scoped) */
+    .trust-strip{display:flex;flex-wrap:wrap;justify-content:center;gap:12px 32px;background:var(--navy);padding:18px 24px}
+    .trust-strip .ti{display:flex;align-items:center;gap:7px;color:#fff;font-size:12.5px;font-weight:700;letter-spacing:.3px}
+    .trust-strip .ti b{color:var(--gold);font-size:14px}
+    .slc-gallery{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;margin:28px 0}
+    .slc-gallery figure{margin:0;border-radius:8px;overflow:hidden;background:#0e1626;box-shadow:0 2px 12px rgba(11,64,96,.10)}
+    .slc-gallery img{width:100%;height:230px;object-fit:cover;display:block}
+    .slc-gallery figcaption{font-size:13px;color:var(--navy);padding:11px 14px;font-weight:700}
+    .slc-reviews{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:18px;margin:26px 0}
+    .slc-review{background:var(--off-white);border-top:3px solid var(--gold);border-radius:0 0 8px 8px;padding:22px 20px}
+    .slc-review .stars{color:var(--gold);font-size:15px;letter-spacing:2px;margin-bottom:8px}
+    .slc-review p{font-size:14px;color:var(--gray);line-height:1.7;margin:0 0 12px}
+    .slc-review .who{font-weight:800;color:var(--navy);font-size:13px}
+    .slc-review .where{color:#64748b;font-size:12px;font-weight:600}
+    .hood-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;margin:24px 0}
+    .hood-grid .hood{background:#fff;border:1px solid #e2e8f0;border-radius:8px;padding:18px}
+    .hood-grid .hood h3{font-family:'Archivo Black',sans-serif;font-size:13px;color:var(--navy);text-transform:uppercase;margin:0 0 6px;letter-spacing:.3px}
+    .hood-grid .hood p{font-size:13px;color:var(--gray);line-height:1.65;margin:0}
   </style>
   <script src="/global-modal.js" defer></script>
   <script>
@@ -131,6 +149,14 @@
   </div>
 </section>
 
+<section class="trust-strip" aria-label="Frame Restoration Utah credentials">
+  <div class="ti"><b>&#9733;</b> BBB A+ Accredited</div>
+  <div class="ti"><b>&#10003;</b> Licensed &amp; Insured &mdash; Utah DOPL #14256097-5501</div>
+  <div class="ti"><b>&#10003;</b> 10-Year Workmanship Warranty</div>
+  <div class="ti"><b>&#10003;</b> Financing Available</div>
+  <div class="ti"><b>&#10003;</b> Free Roof Inspections</div>
+</section>
+
 <section>
   <div class="content-section">
     <span class="section-label">What We Do</span>
@@ -156,6 +182,43 @@
 
 <section>
   <div class="content-section">
+    <div class="direct-answer" style="background:#f0f7ff;border-left:4px solid #0B4060;padding:20px 24px;margin:8px 0;border-radius:0 8px 8px 0;">
+      <p style="margin:0 0 8px;font-weight:700;color:#0B4060;font-size:1.05rem;">Hiring a Roofing Contractor in Salt Lake City &mdash; Quick Facts</p>
+      <p style="margin:0;color:#374151;line-height:1.7;font-size:0.95rem;">
+        Roof repairs in Salt Lake City typically run <strong>$400&ndash;$2,500</strong> and full replacements <strong>$9,000&ndash;$28,000+</strong>, depending on size, pitch, and materials. Hail season runs <strong>May&ndash;August</strong>, and storm damage is often insurance-covered. A qualified contractor pulls Salt Lake City / Salt Lake County permits and carries general liability plus workers&rsquo; comp. Frame Restoration Utah is a licensed Utah roofing contractor (<strong>DOPL #14256097-5501</strong>), BBB A+ accredited, offers financing, and backs every job with a 10-year workmanship warranty. Call <strong>(435) 610-7699</strong> for a free inspection.
+      </p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="content-section">
+    <span class="section-label">Recent Work</span>
+    <h2>Real Salt Lake Valley Roofing Projects</h2>
+    <p>Every photo below is an actual Frame Restoration Utah project across the Salt Lake Valley &mdash; no stock images, just our crews&rsquo; work.</p>
+    <div class="slc-gallery">
+      <figure><img src="/images/projects/cities/salt-lake-city-residential-reroof-2026.webp" alt="Residential roof replacement in Salt Lake City, Utah by Frame Restoration Utah" width="1200" height="800" loading="lazy"><figcaption>Residential reroof &mdash; Salt Lake City</figcaption></figure>
+      <figure><img src="/images/projects/cities/holladay-mt-olympus-architectural-install-2026.webp" alt="Architectural shingle roof install in Holladay, Utah with Mt. Olympus backdrop" width="1200" height="800" loading="lazy"><figcaption>Architectural install &mdash; Holladay</figcaption></figure>
+      <figure><img src="/images/projects/cities/cottonwood-heights-mountain-modern-reroof-2026.webp" alt="Mountain-modern roof replacement in Cottonwood Heights, Utah" width="1200" height="800" loading="lazy"><figcaption>Mountain-modern reroof &mdash; Cottonwood Heights</figcaption></figure>
+      <figure><img src="/images/projects/cities/millcreek-commercial-reroof-2025.webp" alt="Commercial roof replacement in Millcreek, Utah" width="1200" height="800" loading="lazy"><figcaption>Commercial reroof &mdash; Millcreek</figcaption></figure>
+      <figure><img src="/images/projects/cities/sandy-east-bench-architectural-install-2026.webp" alt="Architectural roof install on the east bench in Sandy, Utah" width="1200" height="800" loading="lazy"><figcaption>Architectural install &mdash; Sandy</figcaption></figure>
+      <figure><img src="/images/projects/cities/salt-lake-valley-east-bench-aerial-2026.webp" alt="Aerial view of a completed roof on the Salt Lake Valley east bench" width="1200" height="800" loading="lazy"><figcaption>Aerial &mdash; Salt Lake Valley East Bench</figcaption></figure>
+    </div>
+  </div>
+</section>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[
+{"@type":"ImageObject","contentUrl":"https://www.framerestorationutah.com/images/projects/cities/salt-lake-city-residential-reroof-2026.webp","caption":"Residential reroof — Salt Lake City, UT — Frame Restoration Utah"},
+{"@type":"ImageObject","contentUrl":"https://www.framerestorationutah.com/images/projects/cities/holladay-mt-olympus-architectural-install-2026.webp","caption":"Architectural install — Holladay, UT — Frame Restoration Utah"},
+{"@type":"ImageObject","contentUrl":"https://www.framerestorationutah.com/images/projects/cities/cottonwood-heights-mountain-modern-reroof-2026.webp","caption":"Mountain-modern reroof — Cottonwood Heights, UT — Frame Restoration Utah"},
+{"@type":"ImageObject","contentUrl":"https://www.framerestorationutah.com/images/projects/cities/millcreek-commercial-reroof-2025.webp","caption":"Commercial reroof — Millcreek, UT — Frame Restoration Utah"},
+{"@type":"ImageObject","contentUrl":"https://www.framerestorationutah.com/images/projects/cities/sandy-east-bench-architectural-install-2026.webp","caption":"Architectural install — Sandy, UT — Frame Restoration Utah"},
+{"@type":"ImageObject","contentUrl":"https://www.framerestorationutah.com/images/projects/cities/salt-lake-valley-east-bench-aerial-2026.webp","caption":"Aerial — Salt Lake Valley east bench — Frame Restoration Utah"}
+]}
+</script>
+
+<section>
+  <div class="content-section">
     <span class="section-label">Local Roofing Expertise</span>
     <h2>Why Salt Lake City Homeowners Trust Frame Restoration Utah</h2>
     <p>Choosing the right roofing company means working with professionals who understand the local climate, construction standards, and the challenges that roofs face throughout the year. Frame Restoration Utah has built a reputation for providing dependable roofing services backed by knowledgeable workmanship and responsive communication.</p>
@@ -176,6 +239,50 @@
       <div class="service-mini-card">
         <h2>Additional Services Available in Salt Lake City</h2>
         <p>While roofing remains our primary focus in Salt Lake City, Frame Restoration Utah also provides a variety of complementary exterior and restoration services. Homeowners and commercial property owners can also rely on our team for Commercial Roofing, Gutter &amp; Gutter Guards, Water, Fire &amp; Flood Restoration, and Solar Installation. These additional services allow property owners to work with a single experienced contractor for multiple exterior improvement and restoration needs while maintaining consistent quality and dependable service.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="content-section">
+    <span class="section-label">Local Knowledge</span>
+    <h2>Roofing Salt Lake City, Neighborhood by Neighborhood</h2>
+    <p>Salt Lake City isn&rsquo;t one roofing market &mdash; each neighborhood has its own architecture, permit rules, and weather exposure. Here&rsquo;s how our crews approach the areas we work in most.</p>
+    <div class="hood-grid">
+      <div class="hood"><h3>The Avenues</h3><p>Historic-district homes often need Planning Commission review before a material change. We match period-appropriate profiles and handle the design-review paperwork.</p></div>
+      <div class="hood"><h3>Sugar House</h3><p>1920s&ndash;40s bungalows run low-pitch with shallow attics. We spec Class A architectural shingles (required city-wide) and add ventilation where the original build fell short.</p></div>
+      <div class="hood"><h3>Capitol Hill &amp; Federal Heights</h3><p>Tile and standing-seam metal are common, but some overlays restrict materials &mdash; we verify the overlay before quoting metal so nothing gets rejected at permit.</p></div>
+      <div class="hood"><h3>East Bench</h3><p>Steep lots and Wasatch-compressed wind call for premium architectural or metal systems and upgraded fastening. We build for the exposure, not the average.</p></div>
+      <div class="hood"><h3>Downtown &amp; West Side</h3><p>The valley heat island pushes roof temps 20&ndash;30&deg;F higher, accelerating granule loss. We recommend cool-roof shingles and ventilation upgrades on west-side reroofs.</p></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="content-section">
+    <span class="section-label">What Salt Lake Homeowners Say</span>
+    <h2>Reviews From Across the Salt Lake Valley</h2>
+    <div class="slc-reviews">
+      <div class="slc-review">
+        <div class="stars" aria-label="5 out of 5 stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+        <p>&ldquo;I had a persistent roof leak for several years that was extremely difficult to locate. Two other roofing companies couldn&rsquo;t find the source &mdash; both simply recommended replacing the entire roof.&rdquo;</p>
+        <div class="who">Timothy Kaspar</div><div class="where">Millcreek &middot; Google Review</div>
+      </div>
+      <div class="slc-review">
+        <div class="stars" aria-label="5 out of 5 stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+        <p>&ldquo;Landon was top notch. He made everything easy and checked in with me along the way for a total roof replacement I needed done.&rdquo;</p>
+        <div class="who">Coach Sis</div><div class="where">Sandy &middot; Google Review</div>
+      </div>
+      <div class="slc-review">
+        <div class="stars" aria-label="5 out of 5 stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+        <p>&ldquo;Working with Landon was a breeze. He was knowledgeable and provided me with excellent advice on the best options for our new roof.&rdquo;</p>
+        <div class="who">Sam Thornton</div><div class="where">Millcreek &middot; Google Review</div>
+      </div>
+      <div class="slc-review">
+        <div class="stars" aria-label="5 out of 5 stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+        <p>&ldquo;High quality workmanship by his crew, cleaned up every nail and garbage. Communicated throughout the process and made sure we were happy before he got paid.&rdquo;</p>
+        <div class="who">Chris Chatzis</div><div class="where">Google Review</div>
       </div>
     </div>
   </div>
