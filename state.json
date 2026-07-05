@@ -1,0 +1,57 @@
+{
+  "last_run": {
+    "timestamp": "2026-07-05T00:00:00Z",
+    "date": "2026-07-05",
+    "routine": "aeo-citation-monitor",
+    "outcome": "success",
+    "summary": "AEO citation monitor: 0/5 (regression from 1/5 on 2026-05-06). Frame Roofing not cited on any tracked query; Heber City fell from Local Pack #1 to not-in-top-10.",
+    "report_path": "data/aeo-citations/2026-07-05.md",
+    "commit": "dc99ba0",
+    "pushed": true
+  },
+  "score": {
+    "current": 0,
+    "max": 5,
+    "prior": 1,
+    "prior_date": "2026-05-06",
+    "delta": -1,
+    "trend": "regression"
+  },
+  "last_error": null,
+  "pending_actions": [
+    {
+      "priority": "high",
+      "action": "Verify GBP listing is still live, unchanged, 5.0★, reviews still flowing — 2026-05-27 primary-phone edit and 2026-06-15 brand transition are the suspects for the Heber City Local Pack regression",
+      "owner": "Ryan"
+    },
+    {
+      "priority": "high",
+      "action": "Run scripts/aeo-aio-sweep.py 26-query panel to capture the failed-hypothesis data for the 2026-05-20 cost-page rewrite (cdee7de) — day +46 post-merge, first-citation target missed",
+      "owner": "Ryan"
+    },
+    {
+      "priority": "medium",
+      "action": "Execute Pillar 1 off-page consensus loop (Yelp claim #1, BBB confirm, Nextdoor claim, GAF/CertainTeed installer-locator listings) per AEO-BUILDOUT-HANDOFF-2026-06-03.md",
+      "owner": "Ryan / Landon"
+    },
+    {
+      "priority": "medium",
+      "action": "Sweep NAP directory checklist (data/NAP-DIRECTORY-CHECKLIST-2026-06-01.md) — inconsistency is a plausible contributor to the Local Pack drop",
+      "owner": "Ryan"
+    },
+    {
+      "priority": "medium",
+      "action": "Build Park City storm-damage subpage (mirror the SLV storm-damage subpage pattern from PR #93 + Midvale b85ddc0) — Crown Roofing Park City has a dedicated exact-match domain winning that intent",
+      "owner": "Ryan"
+    }
+  ],
+  "threats_new_this_cycle": [
+    "BigHorn Roofing (GAF Master Elite credential dominates Heber City)",
+    "Crown Roofing Park City (dedicated PC exact-match domain)",
+    "M.W. Roofing (H1 anchor 'Wasatch Front #1')"
+  ],
+  "threats_persistent": [
+    "Homer Roofing (still owns cost + insurance queries — 2026-05-20 AIO experiment did not unseat)",
+    "roofingutah.com (still cited on storm + insurance)"
+  ]
+}
