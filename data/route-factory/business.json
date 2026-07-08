@@ -11,7 +11,7 @@
     "maps_listing_url": "https://www.google.com/maps?cid=8458659884566588108"
   },
   "entity_links": {
-    "_comment": "Canonical off-site identity replicated onto EVERY location page for entity consistency (AEO Pillar 2): hasMap = GBP map URL; sameAs = the same profile set as the homepage. AI engines only resolve citations to ONE business when NAP + these links agree across the site AND the third-party directories (third-party-targets.md). audit-entity-consistency.mjs asserts all location pages carry exactly these. DOPL license (#14256097-5501) is intentionally NOT here \u2014 it is hasCredential, not a sameAs URL. Expanded 2026-06-10 with the 5 claimed public directory profiles from the consensus pipeline (gohebervalley/angi/homeadvisor/thumbtack/nextdoor); Bing Places + Apple Business Connect intentionally excluded until public (non-dashboard) listing URLs exist.",
+    "_comment": "Canonical off-site identity replicated onto EVERY location page for entity consistency (AEO Pillar 2): hasMap = GBP map URL; sameAs = the same profile set as the homepage. AI engines only resolve citations to ONE business when NAP + these links agree across the site AND the third-party directories (third-party-targets.md). audit-entity-consistency.mjs asserts all location pages carry exactly these. DOPL license (#14256097-5501) is intentionally NOT here \u2014 it is hasCredential, not a sameAs URL. Expanded 2026-06-10 with the 5 claimed public directory profiles from the consensus pipeline (gohebervalley/angi/homeadvisor/thumbtack/nextdoor); Bing Places intentionally excluded until public (non-dashboard) listing URLs exist. Reconciled 2026-07-07 with BuildZoom + Birdeye + Apple Maps, which PR #144 (6/30 trust sweep) added to index.html + all location pages but never added here — the keystone had drifted from the live pages, failing this gate on every run since 6/30.",
     "hasMap": "https://www.google.com/maps?cid=8458659884566588108",
     "sameAs": [
       "https://www.facebook.com/61572258054303",
@@ -23,7 +23,10 @@
       "https://www.homeadvisor.com/rated.FrameRestoration.157214032.html",
       "https://www.thumbtack.com/ut/heber-city/roofing/frame-restoration-utah/service/575757991393927176",
       "https://nextdoor.com/page/frame-restoration-utah-llc-heber-city-ut",
-      "https://www.google.com/maps/place/Frame+Restoration+Utah/@40.5069,-111.4133,17z/"
+      "https://www.google.com/maps/place/Frame+Restoration+Utah/@40.5069,-111.4133,17z/",
+      "https://www.buildzoom.com/contractor/frame-restoration-utah-llc",
+      "https://reviews.birdeye.com/frame-restoration-utah-177732760787552",
+      "https://maps.apple/p/3.Ws8CAg~5tDio"
     ]
   },
   "review_landing_path": "/review.html",
