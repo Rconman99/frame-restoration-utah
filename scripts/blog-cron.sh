@@ -46,6 +46,20 @@ cd "$REPO" || {
   exit 1
 }
 
+# Ollama auto-draft RETIRED for Utah (2026-07-09, Ryan directive) — parity with
+# the Texas pipeline. The local nemotron model returns empty/unparseable output
+# on the heavy blog prompt (failed every real run since 2026-06-11), so it was
+# silently starving the auto-publisher. Utah drafting now comes from Claude-
+# authored compliant manifests -> validate_manifest -> blog-publish.py
+# --manual-review -> PR. This early-skip makes the scheduled draft stage a clean
+# no-op instead of a hard failure; the wrapper's publish stage still ships any
+# queued status=drafted manifest. Set FRAME_UTAH_BLOG_ALLOW_OLLAMA=1 to re-enable.
+if [ "${FRAME_UTAH_BLOG_ALLOW_OLLAMA:-0}" != "1" ]; then
+  log "Ollama auto-draft retired (Claude-drafting). Set FRAME_UTAH_BLOG_ALLOW_OLLAMA=1 to re-enable."
+  finish "ok"
+  exit 0
+fi
+
 if ! curl -fsS "$OLLAMA_BASE/api/tags" >/dev/null 2>&1; then
   log "x Ollama unreachable at $OLLAMA_BASE. Start with: brew services start ollama"
   finish "failed"
