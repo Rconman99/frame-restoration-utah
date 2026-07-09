@@ -1,0 +1,61 @@
+name: AEO citation monitor (Utah)
+
+# Cloud-native, Mac-independent replacement for the local launchd job
+# com.ryan.frame-roofing-aeo (aeo-citation-cron.sh). Runs the monthly AEO
+# citation sweep so it keeps reporting when the Mac is off/restarted.
+#
+# Each run: SerpAPI sweep over the QUERIES panel (5 core + 7 city spokes added
+# 2026-07 in #152) — Local Pack / organic / AI-Overview citation check for
+# frameroofingutah.com — writes data/aeo-citations/<date>.{md,json} + trend/
+# actions files and commits them. The local Ollama action-drafting section is
+# skipped in the cloud (optional); the SerpAPI citation scoring is unaffected.
+#
+# Secrets: SERPAPI_KEY (required — already set). OPENROUTER_API_KEY (optional,
+# enables the Perplexity Sonar cross-check; set via the blog-autopost PR).
+# data/aeo-citations/ is .vercelignored, so committing it does not change the site.
+
+on:
+  schedule:
+    # 5th of each month ~8:23am Denver (14:23 UTC in MDT) — matches the launchd cadence.
+    - cron: '23 14 5 * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: aeo-citation-monitor-utah
+  cancel-in-progress: false
+
+jobs:
+  monitor:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Configure git identity
+        run: |
+          git config user.name "AEO Monitor"
+          git config user.email "aeo-monitor@users.noreply.github.com"
+
+      - name: Run AEO citation monitor (SerpAPI sweep)
+        env:
+          SERPAPI_KEY: ${{ secrets.SERPAPI_KEY }}
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+        run: python3 scripts/aeo-citation-monitor.py
+
+      - name: Commit + push the report
+        run: |
+          git add data/aeo-citations/
+          if git diff --cached --quiet; then
+            echo "No report change this run — nothing to commit."
+            exit 0
+          fi
+          TODAY=$(date +%F)
+          SCORE=$(grep -m1 -oE "cited in [0-9]+ of [0-9]+" "data/aeo-citations/${TODAY}.md" 2>/dev/null || echo "—")
+          git commit -m "chore(aeo): citation monitor report ${TODAY} — ${SCORE} [cloud]"
+          git push
