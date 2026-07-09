@@ -1,0 +1,82 @@
+name: Blog auto-post (Utah)
+
+# Cloud-native, Mac-independent blog auto-poster (owner decision 2026-07-09:
+# fully autonomous — supersedes the local launchd job com.ryan.frame-roofing-blog
+# and the Wave-3 owner-merge PR flow for scheduled posts).
+#
+# Each run: pick the top weather+tracking target (blog-target-prioritizer, free
+# NWS + in-repo PostHog snapshot) -> draft via OpenRouter (blog-draft-openrouter,
+# status=drafted) -> blog-publish.py --push, which renders + runs the HARD
+# compliance fence (§31A forbidden-phrase + insurance-claim cap) + structural
+# gates (jsonld/links/doc-isolation/compliance-words). Clean -> commit to main ->
+# Vercel auto-deploy. A draft that trips the fence/gates fail-closes to
+# status=needs-review and is NOT published (the next run drafts a fresh target).
+#
+# Only secret needed: OPENROUTER_API_KEY (drafting). The gates + publish need no
+# API keys; the built-in GITHUB_TOKEN (contents: write) pushes to main.
+
+on:
+  schedule:
+    # Mon + Thu ~9:31am Denver (15:31 UTC in MDT; matches the retired launchd cadence).
+    - cron: '31 15 * * 1,4'
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Draft + gate only, do NOT publish (true/false)'
+        required: false
+        default: 'false'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: blog-autopost-utah
+  cancel-in-progress: false
+
+jobs:
+  autopost:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Configure git identity
+        run: |
+          git config user.name "Frame Blog Bot"
+          git config user.email "blog-bot@users.noreply.github.com"
+
+      - name: Pick weather + tracking target
+        id: target
+        run: |
+          python3 scripts/blog-target-prioritizer.py --json --top 1 \
+            --exclude-recent-city-days 21 > /tmp/target.json || echo '{"top":[]}' > /tmp/target.json
+          COUNT=$(python3 -c 'import json;print(len(json.load(open("/tmp/target.json")).get("top",[])))')
+          echo "count=$COUNT" >> "$GITHUB_OUTPUT"
+          if [ "$COUNT" -gt 0 ]; then
+            python3 -c 'import json;t=json.load(open("/tmp/target.json"))["top"][0];print("target:",t.get("city_name"),"x",t.get("service_name"),"score",t.get("score"))'
+          else
+            echo "No new target this run (top cities all drafted within the exclusion window) — skipping."
+          fi
+
+      - name: Draft via OpenRouter
+        if: steps.target.outputs.count != '0'
+        env:
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+        run: |
+          python3 scripts/blog-autobrief.py --from-prioritizer /tmp/target.json --out /tmp/brief.json
+          python3 scripts/blog-draft-openrouter.py --brief /tmp/brief.json --status drafted
+
+      - name: Publish (HARD compliance fence + gates -> live)
+        if: steps.target.outputs.count != '0' && github.event.inputs.dry_run != 'true'
+        run: python3 scripts/blog-publish.py --push
+
+      - name: Dry-run (manual dispatch with dry_run=true)
+        if: steps.target.outputs.count != '0' && github.event.inputs.dry_run == 'true'
+        run: python3 scripts/blog-publish.py

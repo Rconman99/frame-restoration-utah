@@ -151,6 +151,11 @@ def main() -> None:
     ap.add_argument("--model", default=DEFAULT_MODEL)
     ap.add_argument("--out")
     ap.add_argument("--retries", type=int, default=3)
+    ap.add_argument("--status", default="needs-review",
+                    choices=["needs-review", "drafted"],
+                    help="Manifest status. 'needs-review' (default) = human-review path "
+                         "(blog-publish.py --manual-review). 'drafted' = the autonomous "
+                         "auto-publish path (blog-publish.py --push, HARD compliance fence).")
     args = ap.parse_args()
 
     brief = json.loads(pathlib.Path(args.brief).read_text())
@@ -178,11 +183,13 @@ def main() -> None:
     manifest["city_slug"] = brief["city_slug"]
     manifest["style"] = brief.get("style", "atmospheric")
     manifest["keyword"] = brief["keyword"]
-    manifest["status"] = "needs-review"
+    manifest["status"] = args.status
     manifest.setdefault("draft_date", "")
+    review_note = ("auto-publish path — HARD compliance fence + gates are the backstop"
+                   if args.status == "drafted" else "Human compliance review required")
     manifest.setdefault("edit_log", []).append(
         f"OpenRouter draft ({args.model}); target {brief['keyword']}; "
-        f"weather hook: {brief.get('weather_hook','')}. Human compliance review required."
+        f"weather hook: {brief.get('weather_hook','')}. {review_note}."
     )
 
     # Compliance pre-scan (reported; human still gates via blog-publish.py).
