@@ -69,6 +69,15 @@ QUERIES = [
     "storm damage roofing Park City",
     "Utah roof insurance claim help",
     "licensed roofer Wasatch Front",
+    # 2026-07 catch-up city spokes — track AI-citation + local-pack for each new
+    # post's target keyword (one query per newly published city page).
+    "storm damage roof repair Bluffdale Utah",
+    "roof replacement Holladay Utah",
+    "roof replacement Lehi Utah",
+    "roof replacement American Fork Utah",
+    "roof replacement Pleasant Grove Utah",
+    "roof replacement Highland Utah",
+    "storm damage roof repair South Jordan Utah",
 ]
 
 # Domains we already track as competitors / context — extracted into the report
