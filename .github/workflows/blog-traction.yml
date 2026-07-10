@@ -23,7 +23,8 @@ on:
     workflows: ["Blog auto-post (Utah)"]
     types: [completed]
   schedule:
-    - cron: '41 15 * * 1'   # Mondays ~09:41 Denver
+    - cron: '41 21 * * 1'   # Mondays ~15:41 Denver — hours AFTER the poster
+                            # (15:31 UTC) so the two never race on a push to main
   workflow_dispatch:
 
 permissions:
@@ -62,5 +63,11 @@ jobs:
             echo "no traction changes"
           else
             git commit -m "chore(blog): refresh traction snapshot + enhancer benchmark [skip ci]"
-            git push origin HEAD:main
+            # Rebase-retry so an overlapping poster push (both target main) can
+            # never drop this refresh or the post to a non-fast-forward error.
+            for i in 1 2 3 4 5; do
+              git pull --rebase --autostash origin main && git push origin HEAD:main && exit 0
+              echo "push race, retry $i"; sleep 7
+            done
+            echo "push failed after retries"; exit 1
           fi

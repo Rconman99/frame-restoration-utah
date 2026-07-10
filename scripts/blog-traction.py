@@ -36,6 +36,7 @@ from __future__ import annotations
 import argparse
 import json
 import re
+from html.parser import HTMLParser
 from datetime import date, datetime, timezone
 from pathlib import Path
 from typing import Any
@@ -56,6 +57,7 @@ TARGET_SOURCES = 5
 TARGET_INTERNAL_LINKS = 5
 REQUIRED_SCHEMA = ("BlogPosting", "FAQPage")
 FRESH_DAYS = 120
+TRAFFIC_BONUS = 40.0  # max points a top-traffic post gains over its quality score
 
 SERVICE_TERMS = {
     "storm-damage": ("storm", "hail", "wind"),
@@ -84,14 +86,77 @@ def visible_text(fragment: str) -> str:
     return re.sub(r"\s+", " ", text).strip()
 
 
+_VOID_TAGS = {"area", "base", "br", "col", "embed", "hr", "img", "input",
+              "link", "meta", "param", "source", "track", "wbr"}
+
+
+class _BlogBodyExtractor(HTMLParser):
+    """Depth-aware extraction of the <article|div class="blog-body"> element's
+    inner HTML. Regex can't do this: current posts use <article>, ~7 legacy
+    posts use <div> with nested divs (non-greedy truncates, greedy over-grabs),
+    and the .blog-body CSS rule would false-match. HTMLParser treats <style>
+    content as data, tracks nesting, and skips void tags."""
+
+    def __init__(self, line_starts):
+        super().__init__(convert_charrefs=False)
+        self._ls = line_starts
+        self.in_body = False
+        self.depth = 0
+        self.start_off = None
+        self.end_off = None
+
+    def _off(self):
+        line, col = self.getpos()
+        return self._ls[line - 1] + col
+
+    def handle_starttag(self, tag, attrs):
+        if self.end_off is not None:
+            return
+        if not self.in_body:
+            cls = (dict(attrs).get("class") or "").split()
+            if "blog-body" in cls:
+                self.in_body = True
+                self.depth = 1
+                self.start_off = self._off() + len(self.get_starttag_text() or "")
+        elif tag not in _VOID_TAGS:
+            self.depth += 1
+
+    def handle_endtag(self, tag):
+        if self.in_body and self.end_off is None and tag not in _VOID_TAGS:
+            self.depth -= 1
+            if self.depth == 0:
+                self.end_off = self._off()
+                self.in_body = False
+
+
+def extract_blog_body(htmltext: str) -> str:
+    line_starts = [0]
+    for i, ch in enumerate(htmltext):
+        if ch == "\n":
+            line_starts.append(i + 1)
+    try:
+        p = _BlogBodyExtractor(line_starts)
+        p.feed(htmltext)
+        if p.start_off is not None and p.end_off is not None and p.end_off > p.start_off:
+            return htmltext[p.start_off:p.end_off]
+    except Exception:
+        pass
+    # fallback: simple article match, else whole doc
+    m = re.search(r'<article[^>]*class="blog-body"[^>]*>([\s\S]*?)</article>', htmltext, re.I)
+    return m.group(1) if m else htmltext
+
+
 def count_sources(body: str) -> int:
-    """Distinct citation URLs in the Sources section only — not the booking/CTA
-    or social links elsewhere in the body (counting every external anchor would
-    inflate the source count and ratchet the benchmark off chrome)."""
-    m = re.search(r'<h2\b[^>]*>\s*(?:sources|references)[\s\S]*?</h2>([\s\S]*?)(?:<h2\b|\Z)', body, re.I)
-    if not m:
-        return 0
-    urls = re.findall(r'<a[^>]+href="(https?://[^"]+)"', m.group(1))
+    """Distinct citation URLs in the Sources citation LIST only. Bounding to the
+    <ul>/<ol> right after the Sources heading (not "to the next H2/end") keeps
+    the trailing CTA/booking link out of the count when Sources is the final
+    section — counting every external anchor would inflate sources + the
+    ratcheted benchmark."""
+    m = re.search(
+        r'<h2\b[^>]*>\s*(?:sources|references)[^<]*</h2>\s*<(ul|ol)\b[^>]*>([\s\S]*?)</\1>',
+        body, re.I)
+    region = m.group(2) if m else ""
+    urls = re.findall(r'<a[^>]+href="(https?://[^"]+)"', region)
     return len(set(urls))
 
 
@@ -152,15 +217,13 @@ def analyze_post(html_file: Path, city: str, today: str, views_map: dict[str, di
     # fall back to HTML head/body for the ~handful of legacy posts that predate
     # the schema (they surface here as low-quality laggards to fix, not vanish).
     bp = blogposting or {}
-    url = bp.get("url")
-    if not url:
-        cm = re.search(r'<link[^>]+rel="canonical"[^>]+href="([^"]+)"', htmltext)
-        url = cm.group(1) if cm else f"https://www.framerestorationutah.com/blog/{city}/{slug}"
-    path = "/" + url.split("//", 1)[-1].split("/", 1)[-1] if "//" in url else url
-    # PostHog $pathname is the clean URL (cleanUrls: true) — normalize the
-    # derived path (some legacy posts carry a .html or trailing slash) so the
-    # traffic join lands.
-    path = re.sub(r"\.html$", "", path).rstrip("/") or "/"
+    # Filesystem layout is authoritative: posts live at blog/<city>/<slug>.html
+    # and deploy to /blog/<city>/<slug> (cleanUrls). Some legacy BlogPosting
+    # canonicals omit the city, which broke the PostHog traffic join and
+    # produced 404 dashboard links — so derive path + URL from disk, not the
+    # (occasionally wrong) canonical.
+    path = f"/blog/{city}/{slug}"
+    url = f"https://www.framerestorationutah.com{path}"
 
     def _head(*pats):
         for pat in pats:
@@ -169,8 +232,7 @@ def analyze_post(html_file: Path, city: str, today: str, views_map: dict[str, di
                 return m.group(1).strip()
         return ""
 
-    body_m = re.search(r'<article class="blog-body">([\s\S]*?)</article>', htmltext)
-    body = body_m.group(1) if body_m else htmltext
+    body = extract_blog_body(htmltext)
     words = len(visible_text(body).split())
     h2 = count_content_h2(body)
     if faqpage is not None:
@@ -245,16 +307,25 @@ def quality_score(p: dict) -> float:
 
 
 def add_traction_scores(posts: list[dict]) -> bool:
+    """A post's traction is a traffic-weighted blend ONLY when we actually have
+    a pageview reading for it; a post with no PostHog row (views_90d is None)
+    falls back to its quality score rather than being treated as 0 views. That
+    keeps unmeasured posts — and every freshly-published one, until the traffic
+    snapshot is refreshed — from being buried at 40% of quality."""
     if not posts:
         return False
-    has_traffic = any(p.get("views_90d") for p in posts)
-    max_views = max((p.get("views_90d") or 0) for p in posts) or 1
+    measured = [p.get("views_90d") for p in posts if p.get("views_90d") is not None]
+    has_traffic = any(v for v in measured)
+    max_views = (max(measured) if measured else 0) or 1
+    # Traffic is a BONUS on top of quality, never a penalty: a measured post is
+    # lifted above its quality peers in proportion to its pageviews, while an
+    # unmeasured post (no PostHog row, incl. every freshly-published one) sits at
+    # its quality score — not buried. This keeps the real traffic leader as the
+    # champion instead of letting a pristine-but-unmeasured post outrank it.
     for p in posts:
-        if has_traffic:
-            v = _clamp01((p.get("views_90d") or 0) / max_views) * 100
-            p["traction_score"] = round(0.6 * v + 0.4 * p["quality_score"], 1)
-        else:
-            p["traction_score"] = p["quality_score"]
+        v90 = p.get("views_90d")
+        bonus = _clamp01(v90 / max_views) * TRAFFIC_BONUS if (has_traffic and v90 is not None) else 0.0
+        p["traction_score"] = round(p["quality_score"] + bonus, 1)
     return has_traffic
 
 
