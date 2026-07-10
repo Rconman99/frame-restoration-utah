@@ -74,12 +74,43 @@ SERVICE_TERMS = {
     "storm-damage": ("storm", "hail", "wind"),
 }
 
+# Route folders that are NOT a city — statewide / regional buckets. Kept out of
+# the per-city rollup + winning-cities so they don't dominate or get injected as
+# a "city" to double down on.
+NON_CITY_DIRS = {"utah", "salt-lake-valley"}
+
+
+def load_service_map() -> dict[str, str]:
+    """slug -> service_slug from the published/pending manifests. This is the
+    AUTHORITATIVE service identity (a slug like "storm-damage-roof-repair" is
+    ambiguous to infer); slug inference is only the fallback for legacy posts
+    that predate the manifest pipeline."""
+    out: dict[str, str] = {}
+    for d in (ROOT / "data" / "blog-published", ROOT / "data" / "blog-pending"):
+        if not d.is_dir():
+            continue
+        for p in d.glob("*.json"):
+            try:
+                m = json.loads(p.read_text())
+            except Exception:
+                continue
+            slug, svc = m.get("slug"), m.get("service_slug")
+            if slug and svc:
+                out[slug] = svc
+    return out
+
 
 def infer_service(slug: str) -> str | None:
+    """Fallback when a slug has no manifest: the service whose term appears
+    EARLIEST in the slug (primary intent is leftmost, e.g. gutter-repair ->
+    gutters, storm-damage-roof-repair -> storm-damage)."""
+    best_pos, best_svc = len(slug) + 1, None
     for svc, terms in SERVICE_TERMS.items():
-        if any(t in slug for t in terms):
-            return svc
-    return None
+        for t in terms:
+            pos = slug.find(t)
+            if 0 <= pos < best_pos:
+                best_pos, best_svc = pos, svc
+    return best_svc
 
 
 def visible_text(fragment: str) -> str:
@@ -104,7 +135,7 @@ class _BlogBodyExtractor(HTMLParser):
         super().__init__(convert_charrefs=False)
         self._ls = line_starts
         self.in_body = False
-        self.depth = 0
+        self.stack = []          # open tag names inside blog-body (element = stack[0])
         self.start_off = None
         self.end_off = None
 
@@ -119,17 +150,26 @@ class _BlogBodyExtractor(HTMLParser):
             cls = (dict(attrs).get("class") or "").split()
             if "blog-body" in cls:
                 self.in_body = True
-                self.depth = 1
+                self.stack = [tag]
                 self.start_off = self._off() + len(self.get_starttag_text() or "")
         elif tag not in _VOID_TAGS:
-            self.depth += 1
+            self.stack.append(tag)
 
     def handle_endtag(self, tag):
-        if self.in_body and self.end_off is None and tag not in _VOID_TAGS:
-            self.depth -= 1
-            if self.depth == 0:
-                self.end_off = self._off()
-                self.in_body = False
+        # Only pop when the close matches an open element on the stack; a stray
+        # close (e.g. an unmatched </p> from optional-end-tag HTML) is ignored so
+        # it can't prematurely end extraction. Improperly-nested closes unwind to
+        # the matching tag, mirroring how a browser recovers.
+        if not self.in_body or self.end_off is not None or tag in _VOID_TAGS:
+            return
+        if tag not in self.stack:
+            return
+        while self.stack:
+            if self.stack.pop() == tag:
+                break
+        if not self.stack:
+            self.end_off = self._off()
+            self.in_body = False
 
 
 def extract_blog_body(htmltext: str) -> str:
@@ -155,10 +195,18 @@ def count_sources(body: str) -> int:
     the trailing CTA/booking link out of the count when Sources is the final
     section — counting every external anchor would inflate sources + the
     ratcheted benchmark."""
+    region = ""
+    # (a) a Sources/References heading (h2 OR h3) followed by its <ul>/<ol> list
     m = re.search(
-        r'<h2\b[^>]*>\s*(?:sources|references)[^<]*</h2>\s*<(ul|ol)\b[^>]*>([\s\S]*?)</\1>',
+        r'<h[23]\b[^>]*>\s*(?:sources|references)[^<]*</h[23]>\s*<(ul|ol)\b[^>]*>([\s\S]*?)</\1>',
         body, re.I)
-    region = m.group(2) if m else ""
+    if m:
+        region = m.group(2)
+    else:
+        # (b) a container class'd for sources (e.g. <div class="sources-section">)
+        m2 = re.search(r'<(?:div|section)\b[^>]*class="[^"]*sources[^"]*"[^>]*>([\s\S]*?)</(?:div|section)>',
+                       body, re.I)
+        region = m2.group(1) if m2 else ""
     urls = re.findall(r'<a[^>]+href="(https?://[^"]+)"', region)
     return len(set(urls))
 
@@ -197,7 +245,8 @@ def days_between(iso_a: str, iso_b: str) -> int | None:
         return None
 
 
-def analyze_post(html_file: Path, city: str, today: str, views_map: dict[str, dict]) -> dict[str, Any] | None:
+def analyze_post(html_file: Path, city: str, today: str, views_map: dict[str, dict],
+                 service_map: dict[str, str]) -> dict[str, Any] | None:
     htmltext = html_file.read_text(encoding="utf-8", errors="ignore")
     blocks = parse_jsonld(htmltext)
     schema_types: list[str] = []
@@ -268,8 +317,8 @@ def analyze_post(html_file: Path, city: str, today: str, views_map: dict[str, di
         "url": url,
         "path": path,
         "title": title,
-        "city_slug": city,
-        "service_slug": infer_service(slug),
+        "city_slug": None if city in NON_CITY_DIRS else city,
+        "service_slug": service_map.get(slug) or infer_service(slug),
         "layout": "city-file",
         "date_published": date_pub or None,
         "date_modified": date_mod or None,
@@ -363,13 +412,16 @@ def rollup_by_city(posts: list[dict]) -> list[dict]:
 
 def build(today: str) -> dict:
     views_map: dict[str, dict] = {}
+    traffic_snapshot_at = None
     if VIEWS_SNAPSHOT.is_file():
         try:
             raw = json.loads(VIEWS_SNAPSHOT.read_text())
             views_map = raw.get("by_path", raw) if isinstance(raw, dict) else {}
+            traffic_snapshot_at = raw.get("generated_at") if isinstance(raw, dict) else None
         except Exception:
             views_map = {}
 
+    service_map = load_service_map()
     posts: list[dict] = []
     if BLOG_DIR.is_dir():
         for city_dir in sorted(BLOG_DIR.iterdir()):
@@ -378,7 +430,8 @@ def build(today: str) -> dict:
             for f in sorted(city_dir.glob("*.html")):
                 if f.name == "index.html":
                     continue  # city hub, not a post
-                p = analyze_post(f, city=city_dir.name, today=today, views_map=views_map)
+                p = analyze_post(f, city=city_dir.name, today=today,
+                                 views_map=views_map, service_map=service_map)
                 if p:
                     posts.append(p)
 
@@ -389,6 +442,7 @@ def build(today: str) -> dict:
 
     return {
         "generated_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
+        "traffic_snapshot_at": traffic_snapshot_at,
         "market": MARKET,
         "traffic_source": "posthog" if has_traffic else "structural-only",
         "post_count": len(posts),

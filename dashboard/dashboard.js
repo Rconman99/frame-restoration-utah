@@ -490,7 +490,7 @@
       var gen = d.generated_at ? new Date(d.generated_at).toLocaleString() : '—';
       var champ = d.champion || {};
       var h = '<div class="st">Blog Traction <span class="badge bb">' + posts.length + ' posts</span></div>';
-      h += '<div class="cc" style="margin-bottom:14px;color:var(--muted);font-size:.9rem;line-height:1.5">Every published blog post ranked by <b style="color:var(--text)">traction</b> — a blend of real PostHog pageviews and structural quality (depth, FAQs, schema, freshness). The <b style="color:var(--text)">enhancer</b> turns the champion into the bar each new post must beat, and the publish pipeline blocks any draft below the hard floor. Signal source: <b style="color:var(--gold)">' + btEsc(srcLabel) + '</b>. Snapshot: ' + btEsc(gen) + '.</div>';
+      h += '<div class="cc" style="margin-bottom:14px;color:var(--muted);font-size:.9rem;line-height:1.5">Every published blog post ranked by <b style="color:var(--text)">traction</b> — a blend of real PostHog pageviews and structural quality (depth, FAQs, schema, freshness). The <b style="color:var(--text)">enhancer</b> turns the champion into the bar each new post must beat, and the publish pipeline blocks any draft below the hard floor. Signal source: <b style="color:var(--gold)">' + btEsc(srcLabel) + '</b>. Built ' + btEsc(gen) + (d.traffic_snapshot_at ? ' &middot; traffic as of ' + btEsc(new Date(d.traffic_snapshot_at).toLocaleDateString()) : '') + '.</div>';
       // KPI row (self-contained)
       h += '<div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:16px">';
       h += '<div class="cc" style="flex:1;min-width:130px;text-align:center"><div style="font-size:1.8rem;font-weight:700;color:var(--blue)">' + posts.length + '</div><div style="font-size:.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:.5px">Published posts</div></div>';
@@ -502,7 +502,7 @@
       if (b && b.target) {
         var f = b.floor || {}, t = b.target || {};
         h += '<div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:14px">';
-        h += '<div class="cc" style="flex:1;min-width:260px"><h3 style="color:var(--muted);font-size:.9rem;margin-bottom:8px">Next post must MATCH OR BEAT</h3><table><tbody>'
+        h += '<div class="cc" style="flex:1;min-width:260px"><h3 style="color:var(--muted);font-size:.9rem;margin-bottom:8px">Aspirational target <span style="font-weight:400">(best so far — enforced bar is the hard floor)</span></h3><table><tbody>'
           + '<tr><td>Words</td><td class="num">≥ ' + btNz(t.words) + '</td></tr>'
           + '<tr><td>Content H2 sections</td><td class="num">≥ ' + btNz(t.h2) + '</td></tr>'
           + '<tr><td>FAQs</td><td class="num">≥ ' + btNz(t.faqs) + '</td></tr>'
