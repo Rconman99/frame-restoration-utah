@@ -37,11 +37,15 @@ def load_quality_target() -> dict:
     return {
         "champion_slug": champ.get("slug"),
         "champion_title": champ.get("title"),
-        "min_words": t.get("words"),
-        "min_h2": t.get("h2"),
-        "min_faqs": t.get("faqs"),
-        "min_sources": t.get("sources"),
-        "min_internal_links": t.get("internal_links"),
+        # Clamp to what the SYSTEM prompt + available link tokens can actually
+        # deliver, so the injected "beat the champion" ask never contradicts the
+        # drafter's own spec (SYSTEM caps ~7-8 H2s, provides ~3 link tokens) or
+        # asks for an absurd number when a legacy long-form post is the champion.
+        "min_words": min(int(t.get("words") or 0), 2600),
+        "min_h2": min(int(t.get("h2") or 0), 8),
+        "min_faqs": min(int(t.get("faqs") or 0), 6),
+        "min_sources": min(int(t.get("sources") or 0), 6),
+        "min_internal_links": min(int(t.get("internal_links") or 0), 3),
         "hard_floor": bm.get("floor", {}),
         "winning_cities": [c.get("key") for c in winning.get("cities", [])][:3],
     }
