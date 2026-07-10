@@ -108,9 +108,30 @@ def extract_json(text: str) -> dict:
         raise
 
 
+def build_quality_block(qt: dict, avail_links: int) -> str:
+    """Inject the traction-derived 'beat the champion' bar so each new post is
+    briefed to be better than the best one so far — not merely acceptable."""
+    if not qt:
+        return ""
+    floor = qt.get("hard_floor") or {}
+    cities = ", ".join(qt.get("winning_cities") or []) or "—"
+    return f"""
+
+QUALITY BAR — beat the current best-performing post ("{qt.get('champion_title') or qt.get('champion_slug')}").
+Meet or exceed EVERY number below (this is how each new post outperforms the last):
+- Body length ≥ {qt.get('min_words')} words (aim higher — depth wins).
+- ≥ {qt.get('min_h2')} h2 content sections (excluding the FAQ/Sources headings).
+- ≥ {qt.get('min_faqs')} FAQs, each a genuine, specific question a homeowner would ask.
+- ≥ {qt.get('min_sources')} authoritative sources.
+- Weave ALL {avail_links} of the provided internal-link tokens into paragraph text naturally.
+HARD FLOOR (a post below this is rejected, not published): ≥ {floor.get('min_words','?')} words, ≥ {floor.get('min_h2','?')} h2 sections, ≥ {floor.get('min_faqs','?')} FAQs.
+Cities currently pulling the most traction (mirror their depth + local specificity): {cities}."""
+
+
 def build_user_prompt(brief: dict) -> str:
     facts = "\n".join(f"- {f}" for f in brief.get("facts", []))
     links = "\n".join(f"- {l}" for l in brief.get("internal_links", []))
+    quality = build_quality_block(brief.get("quality_target") or {}, len(brief.get("internal_links", [])))
     return f"""Write the blog post for this target.
 
 City: {brief['city_name']} ({brief.get('zip','')}), Utah — city_slug "{brief['city_slug']}"
@@ -123,6 +144,7 @@ City-true facts you MUST use (do not contradict, do not invent beyond these):
 
 Internal links available (use the {{{{link:/path|anchor}}}} token form; only these paths):
 {links}
+{quality}
 
 Return the JSON manifest now."""
 

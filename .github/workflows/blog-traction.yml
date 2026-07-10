@@ -1,0 +1,63 @@
+name: Blog traction refresh (Utah)
+
+# Rebuilds the blog traction tracker + enhancer benchmark and commits the
+# committed snapshots the /dashboard "Blog Traction" section reads:
+#   data/blog-traction.json          (scripts/blog-traction.py)
+#   data/blog-traction-history.jsonl (dated trend line)
+#   data/blog-quality-benchmark.json (scripts/blog-enhancer.py — the bar to beat)
+#   data/blog-playbook.md            (human-readable standard)
+#
+# Zero-secret: everything is computed from on-disk posts + the committed
+# data/posthog-blog-views.json snapshot. (Refreshing that PostHog snapshot with
+# live pageviews needs a PostHog personal read key and is a separate owner step;
+# structural metrics, freshness, and new posts refresh here regardless.)
+#
+# Triggers:
+#   - after every "Blog auto-post (Utah)" run, so a newly-published post enters
+#     the tracker and the champion/floor ratchet immediately (no poster edit)
+#   - weekly, so freshness drift + any manual post edits are picked up
+#   - manual dispatch
+
+on:
+  workflow_run:
+    workflows: ["Blog auto-post (Utah)"]
+    types: [completed]
+  schedule:
+    - cron: '41 15 * * 1'   # Mondays ~09:41 Denver
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: blog-traction-utah
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Rebuild traction snapshot + enhancer benchmark
+        run: |
+          python3 scripts/blog-traction.py
+          python3 scripts/blog-enhancer.py
+
+      - name: Commit if changed
+        run: |
+          git config user.name "Blog Bot"
+          git config user.email "blog-bot@frameroofingutah.com"
+          git add data/blog-traction.json data/blog-traction-history.jsonl \
+                  data/blog-quality-benchmark.json data/blog-playbook.md
+          if git diff --cached --quiet; then
+            echo "no traction changes"
+          else
+            git commit -m "chore(blog): refresh traction snapshot + enhancer benchmark [skip ci]"
+            git push origin HEAD:main
+          fi

@@ -17,6 +17,35 @@ import json
 import pathlib
 import sys
 
+ROOT = pathlib.Path(__file__).resolve().parent.parent
+BENCHMARK_FILE = ROOT / "data" / "blog-quality-benchmark.json"
+
+
+def load_quality_target() -> dict:
+    """The traction-derived bar the new post must match or beat (written by
+    scripts/blog-enhancer.py from the current champion). Absent -> {} and the
+    drafter just uses its static spec."""
+    try:
+        bm = json.loads(BENCHMARK_FILE.read_text())
+    except Exception:
+        return {}
+    t = bm.get("target", {})
+    if not t:
+        return {}
+    champ = bm.get("champion", {})
+    winning = bm.get("winning", {})
+    return {
+        "champion_slug": champ.get("slug"),
+        "champion_title": champ.get("title"),
+        "min_words": t.get("words"),
+        "min_h2": t.get("h2"),
+        "min_faqs": t.get("faqs"),
+        "min_sources": t.get("sources"),
+        "min_internal_links": t.get("internal_links"),
+        "hard_floor": bm.get("floor", {}),
+        "winning_cities": [c.get("key") for c in winning.get("cities", [])][:3],
+    }
+
 STORM_SERVICES = {"storm-damage", "roof-repair", "insurance-claims"}
 
 STORM_LINKS = [
@@ -82,6 +111,9 @@ def main() -> None:
     if not top:
         sys.exit("blog-autobrief: prioritizer returned no targets (nothing to draft this run)")
     brief = brief_from_target(top[0])
+    quality_target = load_quality_target()
+    if quality_target:
+        brief["quality_target"] = quality_target
     pathlib.Path(args.out).write_text(json.dumps(brief, indent=2) + "\n")
     print(f"autobrief -> {args.out}: {brief['city_name']} × {brief['service_name']} "
           f"(keyword: {brief['keyword']})")

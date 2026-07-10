@@ -400,6 +400,8 @@
     }
     h += '</div>';
 
+    h += '<div id="blogTractionBox" class="sec"></div>';
+
     document.getElementById('ct').innerHTML = h;
 
     // Storm Watch — fetch NWS API + render in placeholder. Async, non-blocking.
@@ -408,6 +410,8 @@
     loadReviews();
     loadSitemap();
     loadCWV();
+    // Blog traction tracker (data/blog-traction.json) — async, silent-fail
+    loadBlogTraction();
 
     // Charts
     if (typeof Chart !== 'undefined') {
@@ -463,6 +467,84 @@
   // ─── Phase 2: Site Health tiles ──────────────────────────────────────
   // Three async-loaded tiles that pull external SEO/AEO health signals.
   // Each tile is independent and silent-fails so the dashboard keeps working.
+
+  function btScoreColor(s) { s = Number(s) || 0; if (s >= 85) return 'var(--green)'; if (s >= 70) return 'var(--gold)'; if (s >= 55) return 'var(--orange)'; return 'var(--red)'; }
+  function btFresh(d) { if (d == null) return '<span style="color:var(--muted)">—</span>'; var c = d <= 120 ? 'var(--green)' : d <= 240 ? 'var(--gold)' : 'var(--red)'; return '<span style="color:' + c + '">' + d + 'd</span>'; }
+  function btNz(v) { return (v == null) ? '<span style="color:var(--muted)">—</span>' : v; }
+  function btEsc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+
+  async function loadBlogTraction() {
+    var el = document.getElementById('blogTractionBox');
+    if (!el) return;
+    try {
+      var results = await Promise.all([
+        fetch('/data/blog-traction.json', { cache: 'no-store' }).then(function (r) { if (!r.ok) throw new Error('traction ' + r.status); return r.json(); }),
+        fetch('/data/blog-quality-benchmark.json', { cache: 'no-store' }).then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; })
+      ]);
+      var d = results[0], b = results[1];
+      var posts = d.posts || [];
+      var totalViews = 0, qSum = 0, i;
+      for (i = 0; i < posts.length; i++) { totalViews += (posts[i].views_90d || 0); qSum += (posts[i].quality_score || 0); }
+      var avgQ = posts.length ? (qSum / posts.length) : 0;
+      var srcLabel = d.traffic_source === 'posthog' ? 'PostHog pageviews + structure' : 'structure only (no traffic data yet)';
+      var gen = d.generated_at ? new Date(d.generated_at).toLocaleString() : '—';
+      var champ = d.champion || {};
+      var h = '<div class="st">Blog Traction <span class="badge bb">' + posts.length + ' posts</span></div>';
+      h += '<div class="cc" style="margin-bottom:14px;color:var(--muted);font-size:.9rem;line-height:1.5">Every published blog post ranked by <b style="color:var(--text)">traction</b> — a blend of real PostHog pageviews and structural quality (depth, FAQs, schema, freshness). The <b style="color:var(--text)">enhancer</b> turns the champion into the bar each new post must beat, and the publish pipeline blocks any draft below the hard floor. Signal source: <b style="color:var(--gold)">' + btEsc(srcLabel) + '</b>. Snapshot: ' + btEsc(gen) + '.</div>';
+      // KPI row (self-contained)
+      h += '<div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:16px">';
+      h += '<div class="cc" style="flex:1;min-width:130px;text-align:center"><div style="font-size:1.8rem;font-weight:700;color:var(--blue)">' + posts.length + '</div><div style="font-size:.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:.5px">Published posts</div></div>';
+      h += '<div class="cc" style="flex:1;min-width:130px;text-align:center"><div style="font-size:1.8rem;font-weight:700;color:var(--green)">' + avgQ.toFixed(0) + '</div><div style="font-size:.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:.5px">Avg quality</div></div>';
+      h += '<div class="cc" style="flex:1;min-width:130px;text-align:center"><div style="font-size:1.8rem;font-weight:700;color:var(--purple)">' + totalViews + '</div><div style="font-size:.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:.5px">Views / 90d</div></div>';
+      h += '<div class="cc" style="flex:1.4;min-width:180px;text-align:center"><div style="font-size:.95rem;font-weight:600;color:var(--gold);line-height:1.3">' + btEsc(champ.slug || '—') + '</div><div style="font-size:.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:.5px">Champion — traction ' + (champ.traction_score != null ? champ.traction_score : '—') + '</div></div>';
+      h += '</div>';
+      // Bar to beat
+      if (b && b.target) {
+        var f = b.floor || {}, t = b.target || {};
+        h += '<div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:14px">';
+        h += '<div class="cc" style="flex:1;min-width:260px"><h3 style="color:var(--muted);font-size:.9rem;margin-bottom:8px">Next post must MATCH OR BEAT</h3><table><tbody>'
+          + '<tr><td>Words</td><td class="num">≥ ' + btNz(t.words) + '</td></tr>'
+          + '<tr><td>Content H2 sections</td><td class="num">≥ ' + btNz(t.h2) + '</td></tr>'
+          + '<tr><td>FAQs</td><td class="num">≥ ' + btNz(t.faqs) + '</td></tr>'
+          + '<tr><td>Sources</td><td class="num">≥ ' + btNz(t.sources) + '</td></tr>'
+          + '</tbody></table></div>';
+        h += '<div class="cc" style="flex:1;min-width:260px"><h3 style="color:var(--muted);font-size:.9rem;margin-bottom:8px">Hard floor <span style="color:var(--muted);font-weight:400">(below → needs-review)</span></h3><table><tbody>'
+          + '<tr><td>Words</td><td class="num">≥ ' + btNz(f.min_words) + '</td></tr>'
+          + '<tr><td>Content H2 sections</td><td class="num">≥ ' + btNz(f.min_h2) + '</td></tr>'
+          + '<tr><td>FAQs</td><td class="num">≥ ' + btNz(f.min_faqs) + '</td></tr>'
+          + '<tr><td>Schema required</td><td class="num">' + btEsc((f.required_schema || []).join(', ') || '—') + '</td></tr>'
+          + '</tbody></table></div>';
+        h += '</div>';
+      }
+      // Per-city rollup
+      var byCity = (d.by_city || []).filter(function (c) { return c.city_slug; });
+      if (byCity.length) {
+        h += '<div class="cc" style="margin-bottom:14px"><h3 style="color:var(--muted);font-size:.9rem;margin-bottom:8px">Traction by city <span class="badge bgo">where to double down</span></h3><table><thead><tr><th>City</th><th class="num">Posts</th><th class="num">Views/90d</th><th class="num">Avg quality</th><th>Top post</th></tr></thead><tbody>';
+        for (i = 0; i < byCity.length; i++) {
+          var cc = byCity[i];
+          h += '<tr><td>' + btEsc(cc.city_slug) + '</td><td class="num">' + cc.posts + '</td><td class="num">' + (cc.views_90d || 0) + '</td><td class="num" style="color:' + btScoreColor(cc.avg_quality) + '">' + cc.avg_quality + '</td><td><a href="/blog/' + btEsc(cc.city_slug) + '/' + btEsc(cc.top_slug) + '" target="_blank" rel="noopener">' + btEsc(cc.top_slug || '—') + '</a></td></tr>';
+        }
+        h += '</tbody></table></div>';
+      }
+      // Ranked posts
+      h += '<div class="cc"><h3 style="color:var(--muted);font-size:.9rem;margin-bottom:8px">All posts by traction</h3><table><thead><tr><th>#</th><th>Post</th><th>City</th><th class="num">Quality</th><th class="num">Traction</th><th class="num">30d</th><th class="num">90d</th><th class="num">Fresh</th></tr></thead><tbody>';
+      for (i = 0; i < posts.length; i++) {
+        var p = posts[i];
+        h += '<tr><td style="color:var(--muted)">' + (i + 1) + '</td>'
+          + '<td><a href="' + btEsc(p.url || ('/blog/' + p.city_slug + '/' + p.slug)) + '" target="_blank" rel="noopener">' + btEsc(p.title || p.slug) + '</a><div style="color:var(--muted);font-size:.7rem">' + btEsc(p.slug) + '</div></td>'
+          + '<td>' + (p.city_slug ? btEsc(p.city_slug) : '<span style="color:var(--muted)">—</span>') + '</td>'
+          + '<td class="num" style="color:' + btScoreColor(p.quality_score) + '">' + p.quality_score + '</td>'
+          + '<td class="num" style="color:' + btScoreColor(p.traction_score) + ';font-weight:700">' + p.traction_score + '</td>'
+          + '<td class="num">' + btNz(p.views_30d) + '</td>'
+          + '<td class="num">' + btNz(p.views_90d) + '</td>'
+          + '<td class="num">' + btFresh(p.freshness_days) + '</td></tr>';
+      }
+      h += '</tbody></table></div>';
+      el.innerHTML = h;
+    } catch (e) {
+      el.innerHTML = '<div class="cc"><h3>Blog Traction</h3><div style="color:var(--muted);font-size:.85rem">Could not load /data/blog-traction.json (' + btEsc(e.message) + '). Run <code>python3 scripts/blog-traction.py &amp;&amp; python3 scripts/blog-enhancer.py</code> and commit the JSON.</div></div>';
+    }
+  }
 
   async function loadReviews() {
     var el = document.getElementById('reviewsCard');

@@ -41,6 +41,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 PENDING_DIR = ROOT / "data" / "blog-pending"
 PUBLISHED_DIR = ROOT / "data" / "blog-published"
+BENCHMARK_FILE = ROOT / "data" / "blog-quality-benchmark.json"
 BLOG_INDEX = ROOT / "blog" / "index.html"
 SITEMAP = ROOT / "sitemap.xml"
 CITY_IMAGE_DIR = ROOT / "images" / "projects" / "cities"
@@ -255,6 +256,43 @@ def compliance_fence(rendered_html: str, style: str = "") -> list[str]:
         reasons.append(
             f"\"{INSURANCE_BIGRAM}\" appears {bigram_count}x in visible text (max {cap})"
         )
+    return reasons
+
+
+def quality_floor_violations(rendered_html: str, manifest: dict) -> list[str]:
+    """Enhancer floor — the rendered post must clear the structural minimums in
+    data/blog-quality-benchmark.json (derived by scripts/blog-enhancer.py from
+    real traction). This is the "every post better than the last" ratchet: a
+    draft below the bar is sent to needs-review instead of shipping, so the
+    standard only ever moves up.
+
+    Fail-OPEN by design: no benchmark file (first run / enhancer not run yet) ->
+    no violations, publishing proceeds. Only axes the drafter controls and we
+    can measure reliably are floored (word count, content H2s, FAQ count,
+    required schema)."""
+    try:
+        floor = json.loads(BENCHMARK_FILE.read_text()).get("floor", {})
+    except (OSError, json.JSONDecodeError):
+        return []
+    if not floor:
+        return []
+    body_m = re.search(r'<article class="blog-body">([\s\S]*?)</article>', rendered_html)
+    body = body_m.group(1) if body_m else rendered_html
+    words = len(visible_text(body).split())
+    h2 = len([h for h in re.findall(r"<h2[^>]*>([\s\S]*?)</h2>", body)
+              if 'id="faq"' not in h and h.strip().lower() != "sources"])
+    faqs = len(manifest.get("faqs", []))
+    schema_present = set(re.findall(r'"@type":\s*"([A-Za-z]+)"', rendered_html))
+    reasons = []
+    if words < floor.get("min_words", 0):
+        reasons.append(f"words {words} < floor {floor['min_words']}")
+    if h2 < floor.get("min_h2", 0):
+        reasons.append(f"content H2 {h2} < floor {floor['min_h2']}")
+    if faqs < floor.get("min_faqs", 0):
+        reasons.append(f"FAQs {faqs} < floor {floor['min_faqs']}")
+    for s in floor.get("required_schema", []):
+        if s not in schema_present:
+            reasons.append(f"missing schema {s}")
     return reasons
 
 
@@ -532,6 +570,20 @@ def main() -> None:
                         "compliance fence: " + "; ".join(reasons), args.push)
     else:
         log("✓ Compliance fence clean")
+
+    # 5b. Quality floor (enhancer ratchet): never publish a post thinner than
+    # the traction-derived bar. Below floor -> needs-review; standard ratchets up.
+    floor_reasons = quality_floor_violations(rendered_html, manifest)
+    if floor_reasons:
+        if args.manual_review:
+            log("⚠ Quality floor (ADVISORY — human-reviewed, not blocking):")
+            for r in floor_reasons:
+                log(f"    - {r}")
+        else:
+            fail_closed(state, manifest_path, manifest,
+                        "quality floor: " + "; ".join(floor_reasons), args.push)
+    else:
+        log("✓ Quality floor clean")
 
     # 6. Integrate: sitemap + blog index
     post_path = f"/blog/{city_slug}/{slug}"
