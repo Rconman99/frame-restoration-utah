@@ -1,39 +1,38 @@
 # Review Language Audit — Frame Roofing Utah
 
-**Date:** 2026-05-15
-**Reviews analyzed:** 20 (from /reviews.json)
+**Date:** 2026-07-01
+**Reviews analyzed:** 30 (from /reviews.json)
 **Why this report exists:** Google AI Overviews pull from review language. Attributes our customers don't mention won't show up when AIO answers "best roofer Heber City" or "roof replacement Park City." This audit finds the gaps.
 
 ## Attribute Coverage
 
 | Attribute | Mentions | Coverage | Status |
 |---|---|---|---|
-| Response Speed | 5/20 | 25% | GAP |
-| Communication | 8/20 | 40% | OK |
-| Honest Pricing | 7/20 | 35% | OK |
-| Financing / Insurance | 3/20 | 15% | GAP |
-| Quality of Work | 11/20 | 55% | OK |
-| Cleanup | 1/20 | 5% | GAP |
-| Warranty / Trust | 1/20 | 5% | GAP |
-| Free Estimate / Inspection | 1/20 | 5% | GAP |
-| Storm / Hail / Leak | 4/20 | 20% | GAP |
-| Crew / Team | 7/20 | 35% | OK |
-| Recommend Again | 9/20 | 45% | OK |
+| Response Speed | 11/30 | 36% | OK |
+| Communication | 10/30 | 33% | OK |
+| Honest Pricing | 9/30 | 30% | OK |
+| Financing / Insurance | 3/30 | 10% | GAP |
+| Quality of Work | 16/30 | 53% | OK |
+| Cleanup | 3/30 | 10% | GAP |
+| Warranty / Trust | 1/30 | 3% | GAP |
+| Free Estimate / Inspection | 3/30 | 10% | GAP |
+| Storm / Hail / Leak | 5/30 | 16% | GAP |
+| Crew / Team | 11/30 | 36% | OK |
+| Recommend Again | 15/30 | 50% | OK |
 
 ## Gaps to close
 
-- **Cleanup** — 1/20 reviews (5%)
-- **Warranty / Trust** — 1/20 reviews (5%)
-- **Free Estimate / Inspection** — 1/20 reviews (5%)
-- **Financing / Insurance** — 3/20 reviews (15%)
-- **Storm / Hail / Leak** — 4/20 reviews (20%)
-- **Response Speed** — 5/20 reviews (25%)
+- **Warranty / Trust** — 1/30 reviews (3%)
+- **Financing / Insurance** — 3/30 reviews (10%)
+- **Cleanup** — 3/30 reviews (10%)
+- **Free Estimate / Inspection** — 3/30 reviews (10%)
+- **Storm / Hail / Leak** — 5/30 reviews (16%)
 
-## Landon CTA template — post-job text to send happy customers
+## Neutral post-job review request template
 
-> hey [name], thanks again for going with us on the roof. if you have 30 seconds for a google review it would mean the world. if you can mention how the crew cleaned up afterward, or the warranty / that we stand behind the work, or the free estimate or inspection that helps a ton with how we show up online. no pressure — link here: [google review link]
+> hey [name], thanks again for trusting us with the roof. If you have 30 seconds to leave an honest Google review about your experience, good or bad, it helps future homeowners understand what working with us is like. No pressure — link here: [google review link]
 
-Send this to the next 5-10 customers after a successful job, swapping `[name]` and pasting the Google review link. The goal is to seed the missing attributes into the review corpus so AI Overviews see them.
+Send this consistently to eligible completed-job customers after the work is done, swapping `[name]` and pasting the Google review link. Do not filter by sentiment, offer incentives, request only positive feedback, or ask customers to mention specific keywords or attributes.
 
 ## How this updates
 
