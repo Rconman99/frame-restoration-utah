@@ -257,7 +257,7 @@ def rollup_by_city(posts: list[dict]) -> list[dict]:
         b["views_90d"] += (p.get("views_90d") or 0)
         b["quality_sum"] += p["quality_score"]
         if b["top"] is None or p["traction_score"] > b["top"]["traction_score"]:
-            b["top"] = {"slug": p["slug"], "traction_score": p["traction_score"]}
+            b["top"] = {"slug": p["slug"], "path": p["path"], "traction_score": p["traction_score"]}
     out = []
     for b in buckets.values():
         out.append({
@@ -266,6 +266,7 @@ def rollup_by_city(posts: list[dict]) -> list[dict]:
             "views_90d": b["views_90d"],
             "avg_quality": round(b["quality_sum"] / b["posts"], 1),
             "top_slug": b["top"]["slug"] if b["top"] else None,
+            "top_path": b["top"]["path"] if b["top"] else None,
         })
     out.sort(key=lambda x: (-x["views_90d"], -x["avg_quality"]))
     return out

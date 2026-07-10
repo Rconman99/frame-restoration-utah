@@ -522,7 +522,7 @@
         h += '<div class="cc" style="margin-bottom:14px"><h3 style="color:var(--muted);font-size:.9rem;margin-bottom:8px">Traction by city <span class="badge bgo">where to double down</span></h3><table><thead><tr><th>City</th><th class="num">Posts</th><th class="num">Views/90d</th><th class="num">Avg quality</th><th>Top post</th></tr></thead><tbody>';
         for (i = 0; i < byCity.length; i++) {
           var cc = byCity[i];
-          h += '<tr><td>' + btEsc(cc.city_slug) + '</td><td class="num">' + cc.posts + '</td><td class="num">' + (cc.views_90d || 0) + '</td><td class="num" style="color:' + btScoreColor(cc.avg_quality) + '">' + cc.avg_quality + '</td><td><a href="/blog/' + btEsc(cc.city_slug) + '/' + btEsc(cc.top_slug) + '" target="_blank" rel="noopener">' + btEsc(cc.top_slug || '—') + '</a></td></tr>';
+          h += '<tr><td>' + btEsc(cc.city_slug) + '</td><td class="num">' + cc.posts + '</td><td class="num">' + (cc.views_90d || 0) + '</td><td class="num" style="color:' + btScoreColor(cc.avg_quality) + '">' + cc.avg_quality + '</td><td><a href="' + btEsc(cc.top_path || ('/blog/' + cc.city_slug + '/' + cc.top_slug)) + '" target="_blank" rel="noopener">' + btEsc(cc.top_slug || '—') + '</a></td></tr>';
         }
         h += '</tbody></table></div>';
       }
