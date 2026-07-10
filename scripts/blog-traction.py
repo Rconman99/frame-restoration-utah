@@ -84,6 +84,17 @@ def visible_text(fragment: str) -> str:
     return re.sub(r"\s+", " ", text).strip()
 
 
+def count_sources(body: str) -> int:
+    """Distinct citation URLs in the Sources section only — not the booking/CTA
+    or social links elsewhere in the body (counting every external anchor would
+    inflate the source count and ratchet the benchmark off chrome)."""
+    m = re.search(r'<h2\b[^>]*>\s*(?:sources|references)[\s\S]*?</h2>([\s\S]*?)(?:<h2\b|\Z)', body, re.I)
+    if not m:
+        return 0
+    urls = re.findall(r'<a[^>]+href="(https?://[^"]+)"', m.group(1))
+    return len(set(urls))
+
+
 def count_content_h2(body: str) -> int:
     """Article-depth H2 count: exclude the FAQ heading (id="faq" lives in the
     OPENING tag, not the inner text) and the Sources heading. Prefix match so
@@ -166,7 +177,7 @@ def analyze_post(html_file: Path, city: str, today: str, views_map: dict[str, di
         faqs = len(faqpage.get("mainEntity", []))
     else:
         faqs = len(re.findall(r'"@type":\s*"Question"', htmltext))
-    sources = len(re.findall(r'<a[^>]+href="https?://', body))
+    sources = count_sources(body)
     # Count only links the ARTICLE earned — not nav/footer/location-list chrome
     # (page-wide chrome is identical on every post and would inflate the score).
     internal_links = len(re.findall(r'<a[^>]+href="/(?:blog|pages|services|locations)/', body))

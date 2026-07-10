@@ -44,7 +44,7 @@ def load_quality_target() -> dict:
         "min_words": min(int(t.get("words") or 0), 2600),
         "min_h2": min(int(t.get("h2") or 0), 8),
         "min_faqs": min(int(t.get("faqs") or 0), 6),
-        "min_sources": min(int(t.get("sources") or 0), 6),
+        "min_sources": min(int(t.get("sources") or 0), 5),
         "min_internal_links": min(int(t.get("internal_links") or 0), 3),
         "hard_floor": bm.get("floor", {}),
         "winning_cities": [c.get("key") for c in winning.get("cities", [])][:3],
