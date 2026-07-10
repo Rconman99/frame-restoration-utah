@@ -36,6 +36,9 @@ concurrency:
 jobs:
   refresh:
     runs-on: ubuntu-latest
+    # Skip when triggered by a FAILED poster run (workflow_run fires on every
+    # completion); scheduled/manual runs have no workflow_run payload.
+    if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
     steps:
       - uses: actions/checkout@v4
         with:

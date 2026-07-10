@@ -279,8 +279,14 @@ def quality_floor_violations(rendered_html: str, manifest: dict) -> list[str]:
     body_m = re.search(r'<article class="blog-body">([\s\S]*?)</article>', rendered_html)
     body = body_m.group(1) if body_m else rendered_html
     words = len(visible_text(body).split())
-    h2 = len([h for h in re.findall(r"<h2[^>]*>([\s\S]*?)</h2>", body)
-              if 'id="faq"' not in h and h.strip().lower() != "sources"])
+    # content H2s: id="faq" lives in the OPENING tag; prefix-match the Sources/
+    # FAQ headings so "Sources & References" / "Frequently Asked Questions" count out.
+    h2 = 0
+    for m in re.finditer(r"<h2\b([^>]*)>([\s\S]*?)</h2>", body):
+        txt = re.sub(r"<[^>]+>", "", m.group(2)).strip().lower()
+        if "faq" in m.group(1).lower() or txt.startswith("frequently asked") or txt.startswith("source"):
+            continue
+        h2 += 1
     faqs = len(manifest.get("faqs", []))
     schema_present = set(re.findall(r'"@type":\s*"([A-Za-z]+)"', rendered_html))
     reasons = []

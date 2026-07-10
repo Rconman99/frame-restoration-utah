@@ -65,6 +65,8 @@ SERVICE_TERMS = {
     "gutters": ("gutter", "drainage"),
     "ventilation": ("ventilation", "ridge-vent", "vent"),
     "snow-ice": ("snow", "ice-dam", "ice"),
+    "emergency-tarping": ("tarping", "tarp", "emergency"),
+    "commercial-roofing": ("commercial", "flat-roof", "tpo"),
 }
 
 
@@ -80,6 +82,20 @@ def visible_text(fragment: str) -> str:
     text = re.sub(r"<style[\s\S]*?</style>", " ", text, flags=re.I)
     text = re.sub(r"<[^>]+>", " ", text)
     return re.sub(r"\s+", " ", text).strip()
+
+
+def count_content_h2(body: str) -> int:
+    """Article-depth H2 count: exclude the FAQ heading (id="faq" lives in the
+    OPENING tag, not the inner text) and the Sources heading. Prefix match so
+    "Sources & References" / "Frequently Asked Questions" are both caught."""
+    n = 0
+    for m in re.finditer(r"<h2\b([^>]*)>([\s\S]*?)</h2>", body):
+        attrs = m.group(1).lower()
+        txt = re.sub(r"<[^>]+>", "", m.group(2)).strip().lower()
+        if "faq" in attrs or txt.startswith("frequently asked") or txt.startswith("source"):
+            continue
+        n += 1
+    return n
 
 
 def parse_jsonld(htmltext: str) -> list[dict]:
@@ -145,14 +161,15 @@ def analyze_post(html_file: Path, city: str, today: str, views_map: dict[str, di
     body_m = re.search(r'<article class="blog-body">([\s\S]*?)</article>', htmltext)
     body = body_m.group(1) if body_m else htmltext
     words = len(visible_text(body).split())
-    h2 = len([h for h in re.findall(r"<h2[^>]*>([\s\S]*?)</h2>", body)
-              if 'id="faq"' not in h and h.strip().lower() != "sources"])
+    h2 = count_content_h2(body)
     if faqpage is not None:
         faqs = len(faqpage.get("mainEntity", []))
     else:
         faqs = len(re.findall(r'"@type":\s*"Question"', htmltext))
     sources = len(re.findall(r'<a[^>]+href="https?://', body))
-    internal_links = len(re.findall(r'<a[^>]+href="/(?:blog|pages|services|locations)/', htmltext))
+    # Count only links the ARTICLE earned — not nav/footer/location-list chrome
+    # (page-wide chrome is identical on every post and would inflate the score).
+    internal_links = len(re.findall(r'<a[^>]+href="/(?:blog|pages|services|locations)/', body))
 
     date_pub = str(bp.get("datePublished") or _head(
         r'<meta[^>]+property="article:published_time"[^>]+content="([^"]+)"',
@@ -217,6 +234,8 @@ def quality_score(p: dict) -> float:
 
 
 def add_traction_scores(posts: list[dict]) -> bool:
+    if not posts:
+        return False
     has_traffic = any(p.get("views_90d") for p in posts)
     max_views = max((p.get("views_90d") or 0) for p in posts) or 1
     for p in posts:
