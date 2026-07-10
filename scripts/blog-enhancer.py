@@ -88,7 +88,15 @@ def build(snap: dict) -> dict:
     champ = snap.get("champion")
     champ_post = next((p for p in posts if champ and p["slug"] == champ["slug"]), posts[0])
     best_quality = max(posts, key=lambda p: p["quality_score"])
-    axis = lambda k: max(champ_post[k], best_quality[k])
+    # Monotonic ratchet: carry forward the previous benchmark's per-axis maxima
+    # so a new best-quality post that wins on one axis can never LOWER the target
+    # on another (the advertised "only ratchets up" guarantee).
+    prev = {}
+    try:
+        prev = json.loads(BENCHMARK.read_text()).get("target", {})
+    except Exception:
+        prev = {}
+    axis = lambda k: max(champ_post[k], best_quality[k], int(prev.get(k) or 0))
     target = {
         "words": axis("words"),
         "h2": axis("h2"),

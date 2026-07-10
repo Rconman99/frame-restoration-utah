@@ -59,16 +59,19 @@ REQUIRED_SCHEMA = ("BlogPosting", "FAQPage")
 FRESH_DAYS = 120
 TRAFFIC_BONUS = 40.0  # max points a top-traffic post gains over its quality score
 
+# Explicit services are matched BEFORE hazard-y "storm-damage"/"snow-ice", because
+# prioritizer slugs combine both (e.g. "hail-damage-roof-repair" is a roof-repair
+# post, not storm-damage). infer_service returns the first hit, so order matters.
 SERVICE_TERMS = {
-    "storm-damage": ("storm", "hail", "wind"),
     "roof-replacement": ("replacement", "reroof", "reroofing"),
     "roof-repair": ("repair", "leak"),
     "insurance-claims": ("claim", "insurance"),
     "gutters": ("gutter", "drainage"),
     "ventilation": ("ventilation", "ridge-vent", "vent"),
-    "snow-ice": ("snow", "ice-dam", "ice"),
     "emergency-tarping": ("tarping", "tarp", "emergency"),
     "commercial-roofing": ("commercial", "flat-roof", "tpo"),
+    "snow-ice": ("snow", "ice-dam", "ice"),
+    "storm-damage": ("storm", "hail", "wind"),
 }
 
 
@@ -168,7 +171,10 @@ def count_content_h2(body: str) -> int:
     for m in re.finditer(r"<h2\b([^>]*)>([\s\S]*?)</h2>", body):
         attrs = m.group(1).lower()
         txt = re.sub(r"<[^>]+>", "", m.group(2)).strip().lower()
-        if "faq" in attrs or txt.startswith("frequently asked") or txt.startswith("source"):
+        # exclude FAQ (attr id, "frequently asked ...", or a heading that is/ends
+        # with the word "FAQ" like "Frisco Roof Repair FAQ") and the Sources head
+        if ("faq" in attrs or txt.startswith("frequently asked")
+                or re.search(r"\bfaqs?\b", txt) or txt.startswith("source")):
             continue
         n += 1
     return n
@@ -240,9 +246,10 @@ def analyze_post(html_file: Path, city: str, today: str, views_map: dict[str, di
     else:
         faqs = len(re.findall(r'"@type":\s*"Question"', htmltext))
     sources = count_sources(body)
-    # Count only links the ARTICLE earned — not nav/footer/location-list chrome
-    # (page-wide chrome is identical on every post and would inflate the score).
-    internal_links = len(re.findall(r'<a[^>]+href="/(?:blog|pages|services|locations)/', body))
+    # Count all same-origin content routes the ARTICLE earned (blog/pages/
+    # services/locations/projects/about) — but only within the body, so nav/
+    # footer chrome (identical on every post) can't inflate the score.
+    internal_links = len(re.findall(r'<a[^>]+href="/(?:blog|pages|services|locations|projects|about)(?:/|")', body))
 
     date_pub = str(bp.get("datePublished") or _head(
         r'<meta[^>]+property="article:published_time"[^>]+content="([^"]+)"',
