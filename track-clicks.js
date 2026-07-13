@@ -46,8 +46,8 @@
     if (m) return m[1].replace(/-/g, ' ');
     m = path.match(/\/blog\/([a-z-]+)\//);
     if (m && m[1] !== 'utah') return m[1].replace(/-/g, ' ');
-    // Root-level standalone service landing pages (e.g. /salt-lake-city — SLC
-    // vendor/backlink money-page). Extend this list if more root city pages ship.
+    // Root-level standalone service landing pages (e.g. /salt-lake-city).
+    // Extend this list if more root city pages ship.
     if (path === '/salt-lake-city' || path === '/salt-lake-city.html') return 'salt lake city';
     return null;
   }
