@@ -49,6 +49,8 @@
 
   <!-- Preload hero image for LCP -->
   <link rel="preload" as="image" href="/images/photos/frame-restoration-02.webp" fetchpriority="high" />
+  <link rel="preload" as="font" type="font/woff2" href="/assets/fonts/archivo-regular.woff2" crossorigin />
+  <link rel="preload" as="font" type="font/woff2" href="/assets/fonts/archivo-black.woff2" crossorigin />
 
   <!-- DNS prefetch for external resources -->
   <!-- Images now served locally from /images/photos/ -->
@@ -401,8 +403,10 @@
   }
   </script>
 
-  <!-- Fonts: self-hosted via global.css @font-face (removed Google Fonts link to kill render-blocking + double-FOUT) -->
-  <link rel="stylesheet" href="/global.css?v=20260422a">
+  <!-- Keep the nav/hero shell render-safe; the full shared system is noncritical on the homepage. -->
+  <link rel="stylesheet" href="/global-critical.css?v=20260713">
+  <link rel="stylesheet" href="/global.css?v=20260422a" media="print" onload="this.media='all'">
+  <noscript><link rel="stylesheet" href="/global.css?v=20260422a"></noscript>
 
   <style>
     /* ─── INDEX-SPECIFIC STYLES ─── */
@@ -924,14 +928,22 @@
   </style>
   <script src="/global-modal.js" defer></script>
 <script>
-    !function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.crossOrigin="anonymous",p.async=!0,p.src=s.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+".people (stub)"},o="init capture register register_once register_for_session unregister unregister_for_session getFeatureFlag getFeatureFlagPayload isFeatureEnabled reloadFeatureFlags updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures on onFeatureFlags onSessionId getSurveys getActiveMatchingSurveys renderSurvey canRenderSurvey identify setPersonProperties group resetGroups setPersonPropertiesForFlags resetPersonPropertiesForFlags setGroupPropertiesForFlags resetGroupPropertiesForFlags reset get_distinct_id getGroups get_session_id get_session_replay_url alias set_config startSessionRecording stopSessionRecording sessionRecordingStarted captureException loadToolbar get_property getSessionProperty createPersonProfile opt_in_capturing opt_out_capturing has_opted_in_capturing has_opted_out_capturing clear_opt_in_out_capturing debug getPageviewId".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
-    posthog.init('phc_BnECzlZ2OeDujli2dbqcgGODXlv2tYERbp40dTF7UBV',{api_host:'https://us.i.posthog.com', person_profiles: 'identified_only', disable_surveys: true})
+  // Analytics must not compete with the customer-facing hero. Start on the
+  // first meaningful interaction, with a short fallback for passive visits.
+  (function(){
+    var started = false;
+    function startPostHog(){
+      if (started) return;
+      started = true;
+      !function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.crossOrigin="anonymous",p.async=!0,p.src=s.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+".people (stub)"},o="init capture register register_once register_for_session unregister unregister_for_session getFeatureFlag getFeatureFlagPayload isFeatureEnabled reloadFeatureFlags updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures on onFeatureFlags onSessionId getSurveys getActiveMatchingSurveys renderSurvey canRenderSurvey identify setPersonProperties group resetGroups setPersonPropertiesForFlags resetPersonPropertiesForFlags setGroupPropertiesForFlags resetGroupPropertiesForFlags reset get_distinct_id getGroups get_session_id get_session_replay_url alias set_config startSessionRecording stopSessionRecording sessionRecordingStarted captureException loadToolbar get_property getSessionProperty createPersonProfile opt_in_capturing opt_out_capturing has_opted_in_capturing has_opted_out_capturing clear_opt_in_out_capturing debug getPageviewId".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
+      posthog.init('phc_BnECzlZ2OeDujli2dbqcgGODXlv2tYERbp40dTF7UBV',{api_host:'https://us.i.posthog.com', person_profiles: 'identified_only', disable_surveys: true});
+    }
+    ['pointerdown','keydown','scroll'].forEach(function(eventName){
+      window.addEventListener(eventName, startPostHog, { once: true, passive: true, capture: true });
+    });
+    window.setTimeout(startPostHog, 4000);
+  })();
 </script>
-  <!-- Tippy.js for service-map tooltips (self-hosted · Tippy 6.3.7 + Popper 2.11.8) -->
-  <link rel="stylesheet" href="/vendor/tippy.css">
-  <link rel="stylesheet" href="/vendor/tippy-shift-away-subtle.css">
-  <script src="/vendor/popper.min.js" defer></script>
-  <script src="/vendor/tippy.min.js" defer></script>
   <script src="/track-attribution.js" defer></script>
   <script src="/track-clicks.js?v=2" defer></script>
 </head>
@@ -1079,14 +1091,15 @@
 
     <div class="fa-feature-video">
       <video
+        data-lazy-video
         muted
         loop
         playsinline
-        preload="metadata"
-        poster="/assets/videos/aerial-2026/aerial-2026-04-mid-install-underlayment-poster.jpg"
+        preload="none"
+        data-poster="/assets/videos/aerial-2026/aerial-2026-04-mid-install-underlayment-poster.jpg"
         aria-label="Aerial drone footage of a Frame Restoration Utah crew mid-install with synthetic underlayment laid and architectural shingles staged on an Orem, Utah luxury home, April 2026">
-        <source src="/assets/videos/aerial-2026/aerial-2026-04-mid-install-underlayment.webm" type="video/webm">
-        <source src="/assets/videos/aerial-2026/aerial-2026-04-mid-install-underlayment.mp4" type="video/mp4">
+        <source data-src="/assets/videos/aerial-2026/aerial-2026-04-mid-install-underlayment.webm" type="video/webm">
+        <source data-src="/assets/videos/aerial-2026/aerial-2026-04-mid-install-underlayment.mp4" type="video/mp4">
         Your browser does not support HTML5 video.
       </video>
     </div>
@@ -1109,20 +1122,45 @@
 (function(){
   var v = document.querySelector('#fresh-aerials .fa-feature-video video');
   if (!v) return;
+  var hydrated = false;
+  function hydrate() {
+    if (hydrated) return;
+    if (v.dataset.poster) {
+      v.poster = v.dataset.poster;
+      v.removeAttribute('data-poster');
+    }
+    v.querySelectorAll('source[data-src]').forEach(function(source){
+      source.src = source.getAttribute('data-src');
+      source.removeAttribute('data-src');
+    });
+    v.load();
+    hydrated = true;
+  }
   var reduce = false;
   try {
     var mq = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)');
     reduce = !!(mq && mq.matches);
     if (reduce) v.removeAttribute('loop');
   } catch(e){}
-  if (!('IntersectionObserver' in window)) return;
+  if (!('IntersectionObserver' in window)) {
+    hydrate();
+    v.controls = true;
+    return;
+  }
   var container = v.closest('.fa-feature-video') || v;
+  var preload = new IntersectionObserver(function(entries, observer){
+    if (entries.some(function(entry){ return entry.isIntersecting; })) {
+      hydrate();
+      observer.disconnect();
+    }
+  }, { rootMargin: '300px 0px' });
+  preload.observe(container);
   var io = new IntersectionObserver(function(entries){
     entries.forEach(function(e){
       var visible = e.intersectionRatio > 0.55;
       document.body.classList.toggle('fa-video-active', visible);
       if (reduce) return;             // accessibility: never play for reduced-motion users
-      if (visible) { v.play().catch(function(){}); }
+      if (visible) { hydrate(); v.play().catch(function(){}); }
       else { v.pause(); }
     });
   }, { threshold: [0, 0.3, 0.55, 0.8, 1] });
@@ -1138,15 +1176,15 @@
     <p class="section-sub">An aerial pass over a Heber Valley luxury home we reroofed — captured on location against the Wasatch range. No stock footage. No stand-ins. Just our work.</p>
     <div class="watch-player">
       <video
-        autoplay
+        data-lazy-video
         muted
         loop
         playsinline
-        preload="metadata"
-        poster="/assets/videos/frame-restoration-showcase-poster.jpg?v=20260506"
+        preload="none"
+        data-poster="/assets/videos/frame-restoration-showcase-poster.jpg?v=20260506"
         aria-label="Aerial drone footage of a Heber Valley luxury home reroofed by Frame Restoration Utah, with the Wasatch range in the background">
-        <source src="/assets/videos/frame-restoration-showcase.webm?v=20260506" type="video/webm" />
-        <source src="/assets/videos/frame-restoration-showcase.mp4?v=20260506" type="video/mp4" />
+        <source data-src="/assets/videos/frame-restoration-showcase.webm?v=20260506" type="video/webm" />
+        <source data-src="/assets/videos/frame-restoration-showcase.mp4?v=20260506" type="video/mp4" />
         Your browser does not support HTML5 video. <a href="/assets/videos/frame-restoration-showcase.mp4" style="color:var(--gold)">Download the video</a> instead.
       </video>
     </div>
@@ -1160,6 +1198,58 @@
     </div>
   </div>
 </section>
+<script>
+// Keep the multi-megabyte brand reel out of the initial page load. It hydrates
+// near the viewport and only plays when mostly visible; reduced-motion users
+// keep the poster and can opt into playback with native controls.
+(function(){
+  var v = document.querySelector('#watch-in-action video[data-lazy-video]');
+  if (!v) return;
+  var hydrated = false;
+  var reduce = false;
+  try {
+    var mq = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)');
+    reduce = !!(mq && mq.matches);
+  } catch(e){}
+  function hydrate() {
+    if (hydrated) return;
+    if (v.dataset.poster) {
+      v.poster = v.dataset.poster;
+      v.removeAttribute('data-poster');
+    }
+    v.querySelectorAll('source[data-src]').forEach(function(source){
+      source.src = source.getAttribute('data-src');
+      source.removeAttribute('data-src');
+    });
+    v.load();
+    hydrated = true;
+  }
+  if (reduce) v.controls = true;
+  if (!('IntersectionObserver' in window)) {
+    hydrate();
+    v.controls = true;
+    return;
+  }
+  var preload = new IntersectionObserver(function(entries, observer){
+    if (entries.some(function(entry){ return entry.isIntersecting; })) {
+      hydrate();
+      observer.disconnect();
+    }
+  }, { rootMargin: '300px 0px' });
+  preload.observe(v);
+  var playback = new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      if (entry.intersectionRatio > 0.55 && !reduce) {
+        hydrate();
+        v.play().catch(function(){});
+      } else {
+        v.pause();
+      }
+    });
+  }, { threshold: [0, 0.55, 1] });
+  playback.observe(v);
+})();
+</script>
 
 <!-- ─── TRUST BAR ─── -->
 <div class="trust-bar" role="list" aria-label="Trust signals — Utah Roofing Contractor">
@@ -1336,9 +1426,9 @@
   </div>
   <div class="video-grid">
     <div class="video-player reveal">
-      <video controls playsinline preload="none" poster="/assets/videos/frame-roofing-showreel-poster.jpg?v=20260506" aria-label="Frame Restoration Utah brand showreel — 60-second tear-off to finished mountain-grade roof in Heber Valley with music">
-        <source src="/assets/videos/frame-roofing-showreel.webm?v=20260506" type="video/webm" />
-        <source src="/assets/videos/frame-roofing-showreel.mp4?v=20260506" type="video/mp4" />
+      <video data-lazy-video controls playsinline preload="none" data-poster="/assets/videos/frame-roofing-showreel-poster.jpg?v=20260506" aria-label="Frame Restoration Utah brand showreel — 60-second tear-off to finished mountain-grade roof in Heber Valley with music">
+        <source data-src="/assets/videos/frame-roofing-showreel.webm?v=20260506" type="video/webm" />
+        <source data-src="/assets/videos/frame-roofing-showreel.mp4?v=20260506" type="video/mp4" />
         Your browser does not support the video tag.
       </video>
     </div>
@@ -1347,6 +1437,36 @@
     </div>
   </div>
 </section>
+<script>
+(function(){
+  var v = document.querySelector('#video-showcase video[data-lazy-video]');
+  if (!v) return;
+  function hydrate() {
+    if (v.dataset.hydrated === 'true') return;
+    if (v.dataset.poster) {
+      v.poster = v.dataset.poster;
+      v.removeAttribute('data-poster');
+    }
+    v.querySelectorAll('source[data-src]').forEach(function(source){
+      source.src = source.getAttribute('data-src');
+      source.removeAttribute('data-src');
+    });
+    v.dataset.hydrated = 'true';
+    v.load();
+  }
+  if (!('IntersectionObserver' in window)) {
+    hydrate();
+    return;
+  }
+  var observer = new IntersectionObserver(function(entries, current){
+    if (entries.some(function(entry){ return entry.isIntersecting; })) {
+      hydrate();
+      current.disconnect();
+    }
+  }, { rootMargin: '300px 0px' });
+  observer.observe(v);
+})();
+</script>
 
 <!-- ─── WHY FRAME ─── -->
 <section id="why">
