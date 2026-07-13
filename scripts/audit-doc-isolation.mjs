@@ -10,7 +10,7 @@
  *
  * Risk it closes: this is a static-HTML site — Vercel serves the repo as files,
  * so any markdown NOT excluded by .vercelignore is publicly fetchable
- * (e.g. frameroofingutah.com/AEO-BUILDOUT-HANDOFF-2026-06-03.md would serve the
+ * (e.g. framerestorationutah.com/AEO-BUILDOUT-HANDOFF-2026-06-03.md would serve the
  * raw planning doc). Internal handoffs/plans/audits/owner-notes must never ship.
  *
  * Invariant: NO .md file is in the public build tree. Markdown is documentation,
@@ -93,7 +93,7 @@ if (exposed.length === 0) {
 
 console.log(`${strict ? '🚨' : '⚠'} ${exposed.length} markdown file(s) WOULD deploy publicly${strict ? '' : ' (informational)'}:`);
 for (const rel of exposed.slice(0, 50)) {
-  console.log(`    ${rel}  →  https://www.frameroofingutah.com/${rel}`);
+  console.log(`    ${rel}  →  https://www.framerestorationutah.com/${rel}`);
 }
 if (exposed.length > 50) console.log(`    …and ${exposed.length - 50} more`);
 console.log('  Fix: add a matching rule to .vercelignore (e.g. `*.md`), or `!file.md` to intentionally publish one.');

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-IndexNow Bulk Submission for Frame Roofing Utah
+IndexNow Bulk Submission for Frame Restoration Utah
 
 Reads sitemap.xml and submits all URLs to Bing/Yandex/Naver/Yep
 via the IndexNow protocol. Google has been accepting IndexNow
@@ -9,7 +9,7 @@ submissions since 2025.
 Usage:
     python3 scripts/indexnow-submit.py              # Submit all URLs from sitemap
     python3 scripts/indexnow-submit.py --dry-run     # Show what would be submitted
-    python3 scripts/indexnow-submit.py --url https://www.frameroofingutah.com/pages/roof-repair
+    python3 scripts/indexnow-submit.py --url https://www.framerestorationutah.com/pages/roof-repair
 
 IndexNow supports up to 10,000 URLs per batch request.
 No rate limits. No structured data requirements. Free.
@@ -25,7 +25,7 @@ from pathlib import Path
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 
-HOST = "www.frameroofingutah.com"
+HOST = "www.framerestorationutah.com"
 KEY = "50319c55a63045fca82b1ecb978980b5"
 KEY_LOCATION = f"https://{HOST}/{KEY}.txt"
 INDEXNOW_ENDPOINT = "https://api.indexnow.org/indexnow"

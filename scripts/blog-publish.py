@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Frame Roofing Utah — Blog Auto-Publish Stage
+Frame Restoration Utah — Blog Auto-Publish Stage
 
 Sits downstream of blog-cron.sh (the draft stage). Takes the oldest `drafted`
 manifest from data/blog-pending/, polishes the title for CTR, renders it via
@@ -18,7 +18,7 @@ Usage:
   python3 scripts/blog-publish.py --push
 
 Hard rules (encoded — do not change without reading CLAUDE.md):
-  - Brand is Frame Roofing Utah ONLY. Never Texas / framerestoration.
+  - Brand is Frame Restoration Utah. Never Texas / Frame Restoration TX.
   - This script never edits generate-blog-post.py behavior — phone-number
     rules (public 435-292-8802 in hrefs) live in the renderer.
   - Fail closed: any fence/gate failure deletes the rendered HTML, restores
@@ -44,11 +44,11 @@ PUBLISHED_DIR = ROOT / "data" / "blog-published"
 BLOG_INDEX = ROOT / "blog" / "index.html"
 SITEMAP = ROOT / "sitemap.xml"
 CITY_IMAGE_DIR = ROOT / "images" / "projects" / "cities"
-RUN_LOG = Path.home() / ".cache" / "frame-roofing-blog-publish.jsonl"
+RUN_LOG = Path.home() / ".cache" / "frame-restoration-utah-blog-publish.jsonl"
 
-SITE = "https://www.frameroofingutah.com"
+SITE = "https://www.framerestorationutah.com"
 FALLBACK_IMAGE = "/images/projects/cities/heber-valley-drone-poster.webp"
-COMMIT_AUTHOR = "Blog Bot <blog-bot@frameroofingutah.com>"
+COMMIT_AUTHOR = "Blog Bot <blog-bot@framerestorationutah.com>"
 
 # ── Compliance hard-fence (beyond the CI gates — unreviewed auto-publish) ──
 # Utah §31A-26-201 unlicensed-adjusting vocabulary + advocacy phrasing the

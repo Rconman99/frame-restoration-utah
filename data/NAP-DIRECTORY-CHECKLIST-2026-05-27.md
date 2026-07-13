@@ -2,6 +2,10 @@
 **Date:** 2026-05-27
 **Trigger:** Public phone swap from `(435) 302-4422` → `(435) 292-8802` to capture every Google-initiated call in `call_logs`.
 
+> SUPERSEDED - DO NOT USE FOR LIVE DIRECTORY WORK.
+> Current source of truth: `data/NAP-DIRECTORY-CHECKLIST-2026-06-01.md`.
+> Canonical directory name is now `Frame Restoration Utah LLC`; canonical website is `https://www.framerestorationutah.com/`.
+
 ## Paste-ready NAP block (copy this verbatim into every directory)
 
 ```

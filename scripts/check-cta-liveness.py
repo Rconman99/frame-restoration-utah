@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-CTA liveness monitor for Frame Roofing Utah — Layer 3 of the review-link defense.
+CTA liveness monitor for Frame Restoration Utah — Layer 3 of the review-link defense.
 
 The static gate (scripts/audit-cta-integrity.mjs) blocks bad links at MERGE time,
 but it can't tell that a syntactically-valid Google listing is actually DEAD, or
@@ -35,7 +35,7 @@ import urllib.request
 from pathlib import Path
 
 CFG_PATH = Path(__file__).resolve().parent.parent / "data" / "route-factory" / "business.json"
-UA = "FrameRoofingUtah-CTALiveness/1.0 (+https://www.frameroofingutah.com)"
+UA = "FrameRestorationUtah-CTALiveness/1.0 (+https://www.framerestorationutah.com)"
 
 
 def load_cfg() -> dict:
@@ -97,7 +97,7 @@ def check_gbp_alive(cfg: dict) -> list[str]:
     data_id = os.environ.get("SERPAPI_DATA_ID") or cfg.get("gbp", {}).get("data_id", "")
     params = urllib.parse.urlencode({
         "engine": "google_maps",
-        "q": cfg.get("brand", "Frame Roofing Utah"),
+        "q": cfg.get("brand", "Frame Restoration Utah"),
         "data_id": data_id,
         "api_key": api_key,
     })

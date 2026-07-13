@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""AEO citation monitor for Frame Roofing Utah — replaces the claude.ai/code
+"""AEO citation monitor for Frame Restoration Utah — replaces the claude.ai/code
 trigger that ran 5 WebSearches + 5 WebFetches + wrote a report each month.
 
 Approach:
@@ -61,7 +61,7 @@ except ImportError:
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 OUT_DIR = ROOT / "data" / "aeo-citations"
-TARGET_DOMAIN = "frameroofingutah.com"
+TARGET_DOMAIN = "framerestorationutah.com"
 
 QUERIES = [
     "best roofer Heber City Utah",
@@ -297,7 +297,7 @@ def _draft_action_items(rows: list[dict], llm) -> str:
     """
     summary_for_llm = json.dumps(rows, indent=2, default=str)
     if llm is not None:
-        prompt = f"""You're an SEO/AEO strategist for Frame Roofing Utah (frameroofingutah.com).
+        prompt = f"""You're an SEO/AEO strategist for Frame Restoration Utah (framerestorationutah.com).
 Below is this month's citation-monitor data for 5 queries. Write 3-5 prioritized action items
 in markdown bullet format. Each item: one line, starts with priority (HIGH/MED/LOW), then the
 specific action. Focus on what would improve next month's score.

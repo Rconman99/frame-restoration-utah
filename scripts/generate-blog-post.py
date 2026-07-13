@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Frame Roofing Utah — Blog Post Generator (Higgsfield-aware)
+Frame Restoration Utah — Blog Post Generator (Higgsfield-aware)
 
 Tier-based routing per ~/.claude/projects/-Users-agenticmac/memory/cost_optimized_tool_routing.md:
   Tier 1 (Ollama qwen3:8b)  $0  drafts post body + FAQs + HowTo + image prompt
@@ -29,7 +29,7 @@ Hard rules (encoded — do not change without reading CLAUDE.md):
   - File paths use -illustration.webp suffix to keep naming honest.
   - Phone CTAs use the Twilio line: 435-292-8802.
   - No invented certifications. BBB A+ is allowed; NRCA / GAF Master Elite are NOT.
-  - Brand string is "Frame Roofing Utah" — never "Frame Restoration TX" leak.
+  - Brand string is "Frame Restoration Utah" — never "Frame Restoration TX" leak.
 """
 
 from __future__ import annotations
@@ -52,8 +52,8 @@ IMAGE_DIR = ROOT / "images" / "blog"
 PENDING_DIR.mkdir(parents=True, exist_ok=True)
 IMAGE_DIR.mkdir(parents=True, exist_ok=True)
 
-# ── Frame Roofing Utah constants (mirrors CLAUDE.md) ─────────────────
-SITE = "https://www.frameroofingutah.com"
+# ── Frame Restoration Utah constants (mirrors data/route-factory/business.json) ──
+SITE = "https://www.framerestorationutah.com"
 
 
 def _load_brand() -> str:
@@ -63,9 +63,9 @@ def _load_brand() -> str:
     brand transition only has to change business.json; this generator follows."""
     p = ROOT / "data" / "route-factory" / "business.json"
     try:
-        return json.loads(p.read_text()).get("brand") or "Frame Roofing Utah"
+        return json.loads(p.read_text()).get("brand") or "Frame Restoration Utah"
     except (OSError, json.JSONDecodeError):
-        return "Frame Roofing Utah"
+        return "Frame Restoration Utah"
 
 
 BUSINESS_NAME = _load_brand()

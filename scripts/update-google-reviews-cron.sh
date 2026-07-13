@@ -85,7 +85,7 @@ case "$exit_code" in
     log "✓ Files changed — count=$count rating=$rating"
 
     git config user.name 'Review Bot'
-    git config user.email 'review-bot@frameroofingutah.com'
+    git config user.email 'review-bot@framerestorationutah.com'
     git add index.html pages/about.html data/google-reviews.json reviews.json \
             data/reviews-full.json \
             data/review-language-audit.md data/review-language-audit.json 2>>"$LOG" || true

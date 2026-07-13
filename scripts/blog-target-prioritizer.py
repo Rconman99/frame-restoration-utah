@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Frame Roofing Utah — Blog Target Prioritizer
+Frame Restoration Utah — Blog Target Prioritizer
 
 The gate before `npm run blog:draft`. Ranks (city, service) blog targets by
 data-driven score so we publish where the marginal lift is largest.
@@ -44,7 +44,7 @@ ROOT = Path(__file__).resolve().parent.parent
 WEATHER_SIGNAL_PATH = ROOT / "data" / "weather-event-signals.json"
 NWS_USER_AGENT = os.environ.get(
     "FRAME_NWS_USER_AGENT",
-    "FrameRoofingUtahBlogBot/1.0 (https://www.frameroofingutah.com)",
+    "FrameRestorationUtahBlogBot/1.0 (https://www.framerestorationutah.com)",
 )
 
 # ── Service catalog (must match the Frame service-page slugs) ───────

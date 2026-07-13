@@ -118,7 +118,7 @@ def check_ai_overview(api_key: str) -> dict:
             if isinstance(ref, dict) and "link" in ref:
                 cited_urls.append(ref["link"])
 
-        frame_cited = any("frameroofingutah.com" in u for u in cited_urls)
+        frame_cited = any("framerestorationutah.com" in u for u in cited_urls)
         print(f"✓ AIO present: {len(cited_urls)} cited URLs · frame_cited={frame_cited}")
         if cited_urls[:3]:
             print(f"  First 3: {cited_urls[:3]}")

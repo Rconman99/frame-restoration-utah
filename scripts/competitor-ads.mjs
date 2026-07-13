@@ -32,7 +32,7 @@ const COMPETITORS = [
   { name: 'roofingutah.com', domain: 'roofingutah.com', notes: 'exact-match domain, content-DORMANT since 2024-05-31' },
   { name: 'utahroofingcompany.com', domain: 'utahroofingcompany.com', notes: 'no blog, 22 URLs total' },
   { name: 'reignroofing.com', domain: 'reignroofing.com', notes: 'placeholder — verify' },
-  { name: 'frameroofingutah.com', domain: 'frameroofingutah.com', notes: 'us — for own positioning' },
+  { name: 'framerestorationutah.com', domain: 'framerestorationutah.com', notes: 'us — for own positioning' },
 ];
 
 const PRIORITY_KW = [

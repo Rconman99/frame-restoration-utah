@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""AEO AI Overview citation sweep for Frame Roofing Utah — v1.2 (Codex-audited).
+"""AEO AI Overview citation sweep for Frame Restoration Utah — v1.2 (Codex-audited).
 
 Production-grade Phase 1 measurement script. Per Codex audit 2026-05-20:
   - Quota preflight, hard-stop unless the run can preserve a 50-search reserve
@@ -38,7 +38,7 @@ from pathlib import Path
 # ─── Config ─────────────────────────────────────────────────────────────────────
 ENV_FILE = Path.home() / ".config" / "frame-roofing-utah" / ".env"
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
-TARGET_DOMAIN = "frameroofingutah.com"
+TARGET_DOMAIN = "framerestorationutah.com"
 LOCATION = "Heber City, Utah, United States"
 QUOTA_FLOOR = 50  # Preserve this many searches after worst-case run cost.
 PANEL_VERSION = "v1"
