@@ -43,6 +43,7 @@ on:
       - 'scripts/audit-review-integrity.mjs'
       - 'scripts/audit-entity-consistency.mjs'
       - 'scripts/audit-doc-isolation.mjs'
+      - 'scripts/audit-public-seo-surface.mjs'
       - '**/*.md'
       - 'reviews.json'
       - 'data/reviews-full.json'
@@ -217,6 +218,21 @@ jobs:
           node-version: '20'
       - name: Fail on GBP-copy compliance violations
         run: node scripts/audit-gbp-copy.mjs
+
+  public-seo-surface:
+    name: Public SEO surface drift (blocking)
+    runs-on: ubuntu-latest
+    # BLOCKING. Static HTML sites can accidentally keep old public deliverables
+    # live even after a domain/NAP migration. This catches stale old-domain
+    # references, legacy internal phone leaks, and sitemap URLs that point at
+    # noindex pages.
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Fail on stale public SEO signals
+        run: npm run audit:public-seo
 
   review-integrity:
     name: Review & rating integrity (blocking)

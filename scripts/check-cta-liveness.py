@@ -45,16 +45,24 @@ def load_cfg() -> dict:
     return json.loads(CFG_PATH.read_text())
 
 
-def http_get(url: str, timeout: int = 20) -> tuple[int, str]:
+class Redirect308Handler(urllib.request.HTTPRedirectHandler):
+    """urllib follows 301/302/303/307, but not all Python builds follow 308."""
+
+    def http_error_308(self, req, fp, code, msg, headers):  # noqa: N802
+        return self.http_error_301(req, fp, code, msg, headers)
+
+
+def http_get(url: str, timeout: int = 20) -> tuple[int, str, str]:
     req = urllib.request.Request(url, headers={"User-Agent": UA})
+    opener = urllib.request.build_opener(Redirect308Handler)
     try:
-        with urllib.request.urlopen(req, timeout=timeout) as resp:
-            return resp.getcode(), resp.read().decode("utf-8", "replace")
+        with opener.open(req, timeout=timeout) as resp:
+            return resp.getcode(), resp.read().decode("utf-8", "replace"), resp.geturl()
     except urllib.error.HTTPError as e:
-        return e.code, ""
+        return e.code, "", e.geturl()
     except Exception as e:  # noqa: BLE001
         print(f"::error::fetch failed for {url}: {e}")
-        return 0, ""
+        return 0, "", url
 
 
 def check_live_review_page(cfg: dict) -> list[str]:
@@ -68,8 +76,8 @@ def check_live_review_page(cfg: dict) -> list[str]:
     dead = set(cfg.get("known_wrong_listing_cids", []))
     url = f"https://{host}{path}"
 
-    code, body = http_get(url)
-    print(f"[A] GET {url} -> {code}")
+    code, body, final_url = http_get(url)
+    print(f"[A] GET {url} -> {code} ({final_url})")
     if code != 200:
         fails.append(f"review page {url} returned {code} (expected 200)")
         return fails  # nothing else to assert if it didn't load

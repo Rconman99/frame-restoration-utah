@@ -12,7 +12,8 @@
     "blog:draft": "python3 scripts/generate-blog-post.py",
     "blog:render": "python3 scripts/generate-blog-post.py --render",
     "blog:cron": "bash scripts/blog-cron.sh",
-    "audit:gbp-copy": "node scripts/audit-gbp-copy.mjs"
+    "audit:gbp-copy": "node scripts/audit-gbp-copy.mjs",
+    "audit:public-seo": "node scripts/audit-public-seo-surface.mjs"
   },
   "dependencies": {
     "playwright": "^1.59.1"
