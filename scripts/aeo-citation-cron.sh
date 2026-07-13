@@ -1,5 +1,5 @@
 #!/bin/bash
-# Cron-only replacement for the claude.ai/code "frame-roofing-aeo-citation-monitor"
+# Cron-only replacement for the claude.ai/code Utah AEO citation monitor
 # trigger. Runs the AEO check via SerpAPI, drafts action items via local
 # mistral-nemo:12b, commits the report. No Claude tokens.
 #
@@ -44,7 +44,7 @@ SCORE=$(grep -m1 -oE "cited in [0-9]+ of [0-9]+" "$REPORT" || echo "—")
 log "✓ Report ready: $SCORE"
 
 git config user.name 'AEO Monitor'
-git config user.email 'aeo-monitor@frameroofingutah.com'
+git config user.email 'aeo-monitor@framerestorationutah.com'
 git add data/aeo-citations/ 2>>"$LOG" || true
 if git diff --cached --quiet; then
   log "⚠ Nothing staged (report unchanged?)"; exit 0

@@ -1,18 +1,20 @@
-# Frame Roofing Utah — Local Citation & Directory Submission Plan
+# Frame Restoration Utah — Local Citation & Directory Submission Plan
 
 > SUPERSEDED - DO NOT USE FOR VENDOR HANDOFF OR LIVE CITATION WORK.
 >
 > Current source of truth: `data/NAP-DIRECTORY-CHECKLIST-2026-06-01.md`.
+> Canonical directory name: `Frame Restoration Utah LLC`.
 > Public phone: `435-292-8802`.
+> Canonical website: `https://www.framerestorationutah.com/`.
 > Vendors must not use stale citation docs, archived directory prompts, or
 > internal forwarding/legacy numbers for any listing submission or update.
 >
 > The historical notes below are preserved for context only.
 
-**Business Name:** Frame Restoration Utah LLC (DBA Frame Roofing Utah)
+**Business Name:** Frame Restoration Utah LLC
 **Address:** 142 S Main St, Heber City, UT 84032
 **Phone:** SUPERSEDED - use public phone `435-292-8802` from the current NAP checklist.
-**Website:** https://www.frameroofingutah.com
+**Website:** SUPERSEDED - use `https://www.framerestorationutah.com/` from the current NAP checklist.
 **Email:** landon@framerestorations.com
 **Owner:** Landon Yokers
 **DOPL License:** #14256097-5501
@@ -126,7 +128,7 @@ Verified via Data Axle search, BuildZoom, CertainTeed, and web search across all
 - **Business Name:** Frame Restoration Utah LLC
 - **Address:** 142 S Main St, Heber City, UT 84032
 - **Phone:** SUPERSEDED - use `(435) 292-8802` from `data/NAP-DIRECTORY-CHECKLIST-2026-06-01.md`
-- **Website:** https://www.frameroofingutah.com
+- **Website:** SUPERSEDED - use `https://www.framerestorationutah.com/` from `data/NAP-DIRECTORY-CHECKLIST-2026-06-01.md`
 - **Email:** landon@framerestorations.com
 
 **Common mistakes to avoid:**

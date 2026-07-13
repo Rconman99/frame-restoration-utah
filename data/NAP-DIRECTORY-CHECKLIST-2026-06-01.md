@@ -1,78 +1,103 @@
-# Frame Utah — NAP / Directory Cleanup Checklist (refreshed + audited)
+# Frame Utah — NAP / Directory Cleanup Checklist
 
-**Date:** 2026-06-01 · supersedes `NAP-DIRECTORY-CHECKLIST-2026-05-27.md`
-**Triggers:** (1) public phone swap `(435) 302-4422` → `(435) 292-8802`; (2) audit finding #2 — directories on the old number; (3) audit finding #1 — name inconsistency.
+**Current refresh:** 2026-07-13
+**Status:** active source of truth for Utah directory cleanup.
+**Supersedes:** `NAP-DIRECTORY-CHECKLIST-2026-05-27.md`, the stale 2026-06-01 DBA/name-change plan, and historical `LOCAL-CITATION-PLAN.md` details.
 
-## ✅ DECIDED — canonical name = "Frame Roofing Utah" (2026-06-01)
-Align GBP + directories **to the website** ("Frame Roofing Utah"). See `BRAND-DECISION-2026-06-01.md`.
-**Sequence the GBP name change safely: confirm the registered LLC name → file DBA "Frame Roofing Utah" → then edit the GBP name.** A GBP name backed by a registered DBA passes Google's review; one that isn't can stall on re-verification (risky for an already-slipping listing).
+## Canonical identity
 
-## ✅ Repo side — DONE
-`llms.txt` → `435-292-8802` (PR #59). Website HTML/schema already on the new number + "Frame Roofing Utah". `435-302-4422` retained only as internal `LANDON_PHONE` forwarding target — never publish it.
+Use this exact NAP for directory claims, correction packets, vendor handoffs, and owner instructions:
 
----
-
-## Paste-ready NAP block (copy verbatim into every listing)
-```
-Business name:  Frame Roofing Utah
+```text
+Business name:  Frame Restoration Utah LLC
+Web brand:      Frame Restoration Utah
 Phone:          (435) 292-8802
 Address:        142 S Main St, Heber City, UT 84032
-Website:        https://www.frameroofingutah.com
+Website:        https://www.framerestorationutah.com/
+Email:          landon@framerestorations.com
 License:        Utah DOPL #14256097-5501
 Primary cat:    Roofing Contractor
 ```
-> Do NOT publish `(435) 302-4422` (internal forwarding line).
-> ⚠️ Verify before publishing: "Founded 2014" (05-27 block) vs LLC incorporated 2025 (BBB/Bizapedia); email `info@framerestorationutah.com` uses the *old* domain.
 
----
+Do not publish `(435) 302-4422`. It is the legacy/internal forwarding target, not the public NAP.
 
-## Tier 1 — Live listings to fix (AUDITED 2026-06-01) — name → "Frame Roofing Utah", phone → 292-8802
+## Policy guardrails
 
-### ✅ Verified live (I loaded each page — currently shows the wrong name)
-| # | Directory | Current name | Current phone | Edit URL | Notes |
-|---|---|---|---|---|---|
-| 1 | **Google Business Profile** | Frame Restoration Utah | — | https://business.google.com/locations | THE big one. Name change is review-gated → do after the DBA. 27 reviews stay attached. Verified via screenshot + scrape. |
-| 2 | **BBB** | Frame Restoration Utah LLC | shows BOTH 302-4422 + 292-8802 | https://www.bbb.org/us/ut/heber-city/profile/roofing-contractors/frame-restoration-utah-llc-1166-90056184 | remove the old number |
-| 3 | **Nextdoor** | Frame Restoration Utah LLC | 302-4422 | https://nextdoor.com/pages/frame-restoration-utah-llc-heber-city-ut/ | name + phone |
-| 4 | **BuildZoom** | Frame Restoration Utah LLC | — | https://www.buildzoom.com/contractor/frame-restoration-utah-llc | also add DOPL # (shows "no active license") |
+- Utah GBP posting stays disabled. Create drafts/packets for Landon approval only.
+- Do not change the Utah GBP name through automation. Any GBP edit requires Landon approval because trust must be rebuilt after prior Google issues.
+- Do not let a vendor overwrite NAP from a scanner result. Surefire/Yext scans are a lead list, not source of truth.
+- Reviews must be requested compliantly only. No incentives, gating, fake engagement, or mass posting.
+- The old `Frame Roofing Utah` DBA/name-change plan is retired for directory work. It remains relevant only where TCR/SMS consent copy explicitly requires the separate DBA string.
 
-### ❓ Unverified — blocked to automated checking, confirm when you log in
-| # | Directory | Edit URL | Status |
-|---|---|---|---|
-| 5 | **HomeAdvisor / Angi** | https://www.homeadvisor.com/rated.FrameRestoration.157214032.html | 403 to automated fetch; Google index title reads "Frame Restoration Utah LLC" → likely wrong, confirm live |
-| 6 | **Yelp** | https://www.yelp.com/biz/frame-restoration-heber-city | 403; slug implies "Frame Restoration" — confirm it resolves + the name |
-| 7 | **Facebook** | https://www.facebook.com/61572258054303 | login-walled; confirm the page display name |
-| 8 | **Instagram** | https://www.instagram.com/frameroofingutah | handle already correct ✅; confirm display name |
+## 2026-07-13 Surefire/Yext scan fact-check
 
-### 🏛️ Legal / owned — not a directory edit
-| Source | Note |
-|---|---|
-| **Bizapedia** (https://www.bizapedia.com/ut/frame-restoration-llc.html) | Shows "FRAME RESTORATION LLC" — the *state record*. Follows the DBA/legal filing, not a directory edit. Confirms the legal-name ambiguity. |
-| **framerestorations.com/utah-home** | Returned **404** on fetch (2026-06-01) — verify in a browser; may be a dead/stale-indexed page on your TX domain. Decide: redirect to frameroofingutah.com or remove. |
+Landon reported that Surefire Local called after the scan. Treat this as a vendor sales contact until the underlying listings are verified.
 
----
+The screenshots show real drift, but the headline is overstated:
 
-## Tier 2 — High-priority, claim with the NAP block above (10)
-Apple Business Connect · Bing Places · Facebook Business · Angi · Thumbtack · Houzz · Porch · Utah.com · GAF/CertainTeed dealer listings · SLC Chamber
+- The scan says `100% listings inaccuracy` and `no reviews were found anywhere on the web`. That is not reliable as a factual claim because Google and Facebook both showed temporary scan failures.
+- Yelp appears to have the right address but the wrong phone, `(435) 302-4422`.
+- Where To? appears to have the right legal name, address, and public phone.
+- Many lower-tier directories show `Listing Not Found`. That is a citation opportunity, not proof that the business has no reputation.
 
-## Tier 3 — Medium (batch) (9)
-MapQuest · YellowPages · Superpages · Manta · Foursquare · Networx · Bark · ChamberofCommerce.com · BBB-UT (0477)
+If Surefire/Yext calls again, ask for:
 
-## Tier 4 — Low (batch) (14)
-CitySearch · Hotfrog · Local.com · ShowMeLocal · EZLocal · USDirectory · iBegin · 2FindLocal · Hub.biz · Tuugo · Brownbook · Cylex · n49 · Storeboard
-> Legacy directory-blitz automation is retired. Use this locked checklist plus owner-approved vendor data room/change approvals for any long-tail citation work.
+1. The raw listing export as CSV or PDF.
+2. The exact directories they can update directly.
+3. Whether updates are permanent after canceling service.
+4. Whether they can lock the NAP exactly to the canonical block above.
+5. A no-auto-publish/no-GBP-edit commitment.
 
----
+Do not approve a subscription or blanket sync solely from the scan screenshot.
 
-## Verify the swap captures calls (after GBP shows 292-8802)
-```bash
-curl "https://hdcflshhomzildwqlmwh.supabase.co/functions/v1/lead-report?key=frame-roofing-2026" | python3 -m json.tool | head -50
+## Tier 1 fixes
+
+| Directory | Current evidence | Required action |
+|---|---|---|
+| BBB | Public page still surfaces `(435) 302-4422` as the primary phone and `(435) 292-8802` as other phone. | Make `(435) 292-8802` the primary/public phone. Keep legal name `Frame Restoration Utah LLC`. Confirm website points to `https://www.framerestorationutah.com/`. |
+| Yelp | Surefire screenshot shows `Frame Restoration`, correct address, wrong phone `(435) 302-4422`, and 0 reviews. | Claim/update to legal name, public phone `(435) 292-8802`, canonical website, and roofing category. |
+| Google Business Profile | Surefire scanner failed with a temporary problem, so the screenshot is not evidence of an error. | No automated edit. Landon/owner account only. Verify NAP manually before any change. No posts. |
+| Facebook | Surefire scanner failed with a temporary problem, so the screenshot is not evidence of an error. | Verify manually in the owner account. Match name, phone, address, and website. |
+| HomeAdvisor / Angi | Public source confirms the Heber City address; phone/status still needs owner-side check. | Verify in owner/vendor dashboard. Match canonical NAP if editable. |
+| Nextdoor | Historical docs reported old-phone drift. | Verify manually. Correct to public phone and canonical website if still wrong. |
+| BuildZoom | Important contractor citation. | Verify license/NAP. Correct website and public phone if editable. |
+
+## Tier 2 batch
+
+Claim or correct these after Tier 1 is clean:
+
+Apple Business Connect, Bing Places, Thumbtack, Houzz, Porch, GoHeberValley, Utah.com, CertainTeed dealer listing, Tamko dealer listing, Heber Valley Chamber, Salt Lake Chamber.
+
+## Tier 3 batch
+
+Use the canonical NAP block exactly:
+
+MapQuest, YellowPages, Superpages, Manta, Foursquare, ChamberofCommerce.com, ShowMeLocal, EZLocal, CitySquares, Tupalo, Navmii, USCity.net, 8coupons, GoLocal247, YellowPagesDirectory, Opendi, AroundMe, Brownbook, Cylex, Hotfrog, Local.com.
+
+## Owner packet
+
+Send Landon a short request, not a technical dump:
+
+```text
+Subject: Utah directory cleanup approval
+
+Landon,
+
+The Surefire/Yext scan found a real NAP problem, but the scanner overstated it because Google and Facebook failed to scan. The real fixes are: make 435-292-8802 the public phone everywhere, keep the legal directory name as Frame Restoration Utah LLC, and point listings to https://www.framerestorationutah.com/.
+
+Please send screenshots or login access for BBB, Yelp, Facebook, Nextdoor, HomeAdvisor/Angi, and BuildZoom so we can correct the listings without touching GBP posts.
+
+We will not auto-post to Utah GBP. This is directory cleanup only.
 ```
-New `call_logs` row should show `to_number = +14352928802`, `forwarded_to = +14353024422`, linked to an auto-created `leads` row.
 
-## Run order
-1. Confirm registered LLC name → **file DBA "Frame Roofing Utah."**
-2. Verify GBP phone = 292-8802; then edit GBP **name** (after DBA).
-3. Fix name + phone on BBB, Nextdoor, BuildZoom (verified); then check/fix HomeAdvisor, Yelp, FB/IG.
-4. Resolve `framerestorations.com/utah-home` (redirect or remove).
-5. Tier 2 claims → batch Tier 3–4.
+## Verification
+
+After each update, capture:
+
+- Directory URL
+- Screenshot of name, address, phone, website
+- Date submitted
+- Whether the directory says pending review
+- Follow-up date
+
+No item is marked fixed until the public listing shows the canonical NAP.

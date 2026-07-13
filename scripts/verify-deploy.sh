@@ -18,7 +18,7 @@
 
 set -euo pipefail
 
-PROD_URL="${1:-https://www.frameroofingutah.com/dashboard/dashboard.js}"
+PROD_URL="${1:-https://www.framerestorationutah.com/dashboard/dashboard.js}"
 WAIT_SECONDS="${2:-60}"
 LOCAL_FILE="$(cd "$(dirname "$0")/.." && pwd)/dashboard/dashboard.js"
 

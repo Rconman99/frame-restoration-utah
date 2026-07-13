@@ -1,15 +1,17 @@
 #!/usr/bin/env python3
-"""Swap every tel: href from Landon's direct line (+14353024422) to the Twilio
-tracking number (+14352928802). The display TEXT stays as branded
-'(435) 302-4422' — only the href changes. Twilio forwards to Landon via
-handle-call, so customer experience is identical, but now every call is
-logged and surfaces as a lead in /leads.
+"""Obsolete one-time migration: swap tel: hrefs from Landon's direct line to
+the Twilio tracking number.
 
-Touches: only the href attribute of <a tel:...> links and any sms: hrefs that
-point at the same Landon number. Leaves all visible 435-302-4422 text alone.
+This predates the current NAP rule. The public phone is now 435-292-8802 and
+the legacy 435-302-4422 number must never be published. The script is guarded
+behind --apply so it cannot be run accidentally from old instructions.
+
+Touches with --apply: only href attributes of <a tel:...> links and any sms:
+hrefs that point at the same Landon number. It does not rewrite visible text;
+run the public NAP audit after any intentional use.
 Skips: archive/, node_modules/, leads.html, dashboard/, data/, build-intelligence/
 """
-import os, re
+import os, re, sys
 
 ROOT = '/Users/agenticmac/projects/frame-restoration-utah'
 SKIP_DIRS = ('archive', 'node_modules', 'tmp-landon-apr20', 'data', 'screenshots',
@@ -50,6 +52,9 @@ def should_skip(path_rel):
     return any(path_rel.startswith(d + os.sep) or '/' + d + '/' in path_rel for d in SKIP_DIRS)
 
 def main():
+    if '--apply' not in sys.argv:
+        print("No changes. This obsolete migration is guarded; pass --apply only if you intentionally need to re-run the legacy href swap.")
+        return
     total_files = 0
     total_subs = 0
     detail = []
