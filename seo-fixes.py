@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-SEO Batch Fix Script for frameroofingutah.com
+SEO Batch Fix Script for www.framerestorationutah.com
 - Adds canonical tags to all pages
 - Fixes phone number in schema (435-302-4422 -> 435-292-8802)
 - Adds Open Graph tags to all pages
@@ -14,7 +14,7 @@ import re
 import glob
 
 BASE_DIR = "/Users/agenticmac/projects/frame-restoration-utah"
-DOMAIN = "https://frameroofingutah.com"
+DOMAIN = "https://www.framerestorationutah.com"
 
 # Pages to skip for canonical/OG (utility pages)
 SKIP_FILES = {"hero.html", "google-maps-pins.html", "Frame-Roofing-Directory-Cheat-Sheet.html", "Frame-Roofing-SEO-Audit-March2026.html"}
