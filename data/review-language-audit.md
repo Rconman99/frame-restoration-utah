@@ -1,6 +1,6 @@
 # Review Language Audit — Frame Roofing Utah
 
-**Date:** 2026-07-01
+**Date:** 2026-07-18
 **Reviews analyzed:** 30 (from /reviews.json)
 **Why this report exists:** Google AI Overviews pull from review language. Attributes our customers don't mention won't show up when AIO answers "best roofer Heber City" or "roof replacement Park City." This audit finds the gaps.
 
@@ -28,11 +28,11 @@
 - **Free Estimate / Inspection** — 3/30 reviews (10%)
 - **Storm / Hail / Leak** — 5/30 reviews (16%)
 
-## Neutral post-job review request template
+## Landon CTA template — neutral post-job text
 
-> hey [name], thanks again for trusting us with the roof. If you have 30 seconds to leave an honest Google review about your experience, good or bad, it helps future homeowners understand what working with us is like. No pressure — link here: [google review link]
+> hey [name], thanks again for going with us on the roof. if you have 30 seconds to leave an honest google review about your experience, good or bad, it helps future homeowners understand what working with us is like. no pressure — link here: [google review link]
 
-Send this consistently to eligible completed-job customers after the work is done, swapping `[name]` and pasting the Google review link. Do not filter by sentiment, offer incentives, request only positive feedback, or ask customers to mention specific keywords or attributes.
+Send this consistently to eligible completed-job customers, swapping `[name]` and pasting the Google review link. Do not filter by sentiment, offer incentives, request only positive feedback, or ask customers to mention specific keywords, attributes, people, products, or services.
 
 ## How this updates
 

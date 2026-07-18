@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Review Language Audit — find which AI-Overview-friendly attributes are
 missing from Frame Roofing Utah's Google review corpus, and generate a
-post-job CTA template Landon can text to satisfied customers to fill the gap.
+neutral post-job review request Landon can text to completed customers.
 
 Why this exists (the "Bodhi insight", 2026-05-10):
   Google's AI Overviews synthesize review *language* into their answer. The
@@ -14,7 +14,7 @@ How it works:
   1. Load /reviews.json (already populated by update-google-reviews.py)
   2. Score each AI-friendly attribute by % of reviews mentioning it
   3. Flag attributes below COVERAGE_THRESHOLD as gaps
-  4. Auto-generate a Landon CTA template targeting the top 3 gaps
+  4. Auto-generate a policy-safe Landon CTA template
   5. Write data/review-language-audit.{md,json}
 
 Outputs are write-only; the script never modifies reviews.json or pulls from
@@ -42,6 +42,14 @@ OUT_JSON = ROOT / "data" / "review-language-audit.json"
 
 # Below this share of reviews mentioning an attribute, flag it as a gap.
 COVERAGE_THRESHOLD = 0.30
+
+CTA_POLICY = {
+    "recipient_scope": "eligible completed-job customers",
+    "sentiment_filtering_allowed": False,
+    "incentives_allowed": False,
+    "positive_only_language_allowed": False,
+    "keyword_or_attribute_prompting_allowed": False,
+}
 
 # AI-Overview-friendly attribute taxonomy. Each entry is (label, patterns).
 # Patterns are matched case-insensitively against review text. Order = display
@@ -117,36 +125,17 @@ def gap_list(stats: list[dict]) -> list[dict]:
 
 
 def cta_template(gaps: list[dict]) -> str:
-    """Generate the iMessage-style CTA Landon sends post-job. Targets the top
-    3 lowest-coverage attributes that customers are likely to actually mention
-    if asked. Skips abstract ones like "Recommend Again" since those don't
-    work as a direct ask."""
-    askable_map = {
-        "Response Speed":        "how quickly we got out to your place",
-        "Communication":         "how we kept you updated through the job",
-        "Honest Pricing":        "the transparent pricing and no surprises",
-        "Financing / Insurance": "the financing options" if True else "the insurance claim help",
-        "Quality of Work":       "the quality of the finished roof",
-        "Cleanup":               "how the crew cleaned up afterward",
-        "Warranty / Trust":      "the warranty / that we stand behind the work",
-        "Free Estimate / Inspection": "the free estimate or inspection",
-        "Storm / Hail / Leak":   "fixing the storm damage / leak",
-        "Crew / Team":           "the crew",
-    }
-    asks = []
-    for g in gaps:
-        ask = askable_map.get(g["attribute"])
-        if ask:
-            asks.append(ask)
-        if len(asks) >= 3:
-            break
-    if not asks:
-        return "(no gaps — every AI-friendly attribute is already covered)"
-    asks_text = ", or ".join(asks)
+    """Generate the iMessage-style CTA Landon sends post-job.
+
+    Google Maps review policy allows neutral review requests for genuine
+    customer experiences, but not selective solicitation or requests that a
+    review include specific content. The gap list is for content/site strategy,
+    not for steering customer review language.
+    """
     return (
         "hey [name], thanks again for going with us on the roof. "
-        "if you have 30 seconds for a google review it would mean the world. "
-        f"if you can mention {asks_text} that helps a ton with how we show up online. "
+        "if you have 30 seconds to leave an honest google review about your experience, good or bad, "
+        "it helps future homeowners understand what working with us is like. "
         "no pressure — link here: [google review link]"
     )
 
@@ -177,11 +166,11 @@ def render_markdown(stats: list[dict], gaps: list[dict], cta: str, n_reviews: in
 
 {gap_lines}
 
-## Landon CTA template — post-job text to send happy customers
+## Landon CTA template — neutral post-job text
 
 > {cta}
 
-Send this to the next 5-10 customers after a successful job, swapping `[name]` and pasting the Google review link. The goal is to seed the missing attributes into the review corpus so AI Overviews see them.
+Send this consistently to eligible completed-job customers, swapping `[name]` and pasting the Google review link. Do not filter by sentiment, offer incentives, request only positive feedback, or ask customers to mention specific keywords, attributes, people, products, or services.
 
 ## How this updates
 
@@ -210,6 +199,7 @@ def main() -> int:
         "stats": stats,
         "gaps": [g["attribute"] for g in gaps],
         "cta_template": cta,
+        "cta_policy": CTA_POLICY,
     }
 
     if dry_run:
