@@ -32,7 +32,7 @@ const MAP = {
 
 // Match the parentOrganization object (single-level, no nested braces) and keep
 // its leading indentation so the inserted review aligns as a sibling property.
-const PARENT_RE = /^([ \t]*)"parentOrganization":\s*\{[^{}]*"url":\s*"https:\/\/www\.frameroofingutah\.com"\s*\}/m;
+const PARENT_RE = /^([ \t]*)"parentOrganization":\s*\{[^{}]*"url":\s*"https:\/\/www\.framerestorationutah\.com"\s*\}/m;
 
 let changed = 0;
 for (const [slug, author] of Object.entries(MAP)) {

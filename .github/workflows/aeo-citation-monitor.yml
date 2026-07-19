@@ -6,7 +6,7 @@ name: AEO citation monitor (Utah)
 #
 # Each run: SerpAPI sweep over the QUERIES panel (5 core + 7 city spokes added
 # 2026-07 in #152) — Local Pack / organic / AI-Overview citation check for
-# frameroofingutah.com — writes data/aeo-citations/<date>.{md,json} + trend/
+# framerestorationutah.com — writes data/aeo-citations/<date>.{md,json} + trend/
 # actions files and commits them. The local Ollama action-drafting section is
 # skipped in the cloud (optional); the SerpAPI citation scoring is unaffected.
 #

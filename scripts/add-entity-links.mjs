@@ -18,7 +18,7 @@ if (!links?.hasMap || !Array.isArray(links.sameAs)) { console.error('business.js
 
 // parentOrganization is the RoofingContractor node's last identity property; we
 // append after it (keeping its leading indent so siblings align).
-const PARENT_RE = /^([ \t]*)"parentOrganization":\s*\{[^{}]*"url":\s*"https:\/\/www\.frameroofingutah\.com"\s*\}/m;
+const PARENT_RE = /^([ \t]*)"parentOrganization":\s*\{[^{}]*"url":\s*"https:\/\/www\.framerestorationutah\.com"\s*\}/m;
 
 const files = fs.readdirSync(path.join(repo, 'locations')).filter((f) => f.endsWith('.html')).sort();
 let changed = 0;

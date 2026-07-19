@@ -14,7 +14,7 @@ Target: `/Users/agenticmac/projects/frame-restoration-utah`
 - Dirty worktree: no
 - Server: none detected
 - Server running: no
-- Production URL: https://www.frameroofingutah.com/
+- Production URL: https://www.framerestorationutah.com/
 - Preview URL: not provided
 
 ## Git State
