@@ -198,6 +198,9 @@
   function sendWebVital(name, value, phase) {
     if (!isFinite(value)) return;
     var metricValue = name === 'CLS' ? Number(value.toFixed(4)) : Math.round(value);
+    window.FrameWebVitalsLastSent = window.FrameWebVitalsLastSent || {};
+    if (window.FrameWebVitalsLastSent[name] === metricValue) return;
+    window.FrameWebVitalsLastSent[name] = metricValue;
     var payload = {
       market: 'utah',
       page: window.location.pathname,
@@ -258,16 +261,17 @@
       if (entry.interactionId && entry.duration > inp) inp = entry.duration;
     });
 
-    function flush(phase) {
+    function flush(phase, includeZeroCls) {
       if (lcpEntry) sendWebVital('LCP', lcpEntry.startTime, phase);
-      if (cls > 0) sendWebVital('CLS', cls, phase);
+      if (cls > 0 || includeZeroCls) sendWebVital('CLS', cls, phase);
       if (inp > 0) sendWebVital('INP', inp, phase);
     }
 
+    window.setTimeout(function () { flush('timed_snapshot', true); }, 5000);
     document.addEventListener('visibilitychange', function () {
-      if (document.visibilityState === 'hidden') flush('visibility_hidden');
+      if (document.visibilityState === 'hidden') flush('visibility_hidden', true);
     });
-    window.addEventListener('pagehide', function () { flush('pagehide'); });
+    window.addEventListener('pagehide', function () { flush('pagehide', true); });
   }
 
   observeWebVitals();
