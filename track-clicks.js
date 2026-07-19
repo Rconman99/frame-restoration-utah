@@ -135,13 +135,50 @@
     } catch (e) { /* no-op */ }
   }
 
-  function firePostHog(payload) {
+  function capturePostHog(eventName, payload, options) {
     try {
       if (window.posthog && typeof window.posthog.capture === 'function') {
-        var evt = payload.click_type === 'sms' ? 'sms_click' : 'phone_click';
-        window.posthog.capture(evt, payload);
+        window.posthog.capture(eventName, payload, options);
+        return true;
       }
     } catch (e) { /* no-op */ }
+    window.FramePostHogPending = window.FramePostHogPending || [];
+    if (window.FramePostHogPending.length < 60) {
+      window.FramePostHogPending.push({ eventName: eventName, payload: payload, options: options });
+    }
+    schedulePostHogFlush();
+    return false;
+  }
+
+  function flushPostHogPending() {
+    try {
+      if (!window.posthog || typeof window.posthog.capture !== 'function') return false;
+      var pending = window.FramePostHogPending || [];
+      window.FramePostHogPending = [];
+      pending.forEach(function (item) {
+        window.posthog.capture(item.eventName, item.payload, item.options);
+      });
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  function schedulePostHogFlush() {
+    if (window.FramePostHogFlushTimer) return;
+    var attempts = 0;
+    window.FramePostHogFlushTimer = window.setInterval(function () {
+      attempts += 1;
+      if (flushPostHogPending() || attempts >= 30) {
+        window.clearInterval(window.FramePostHogFlushTimer);
+        window.FramePostHogFlushTimer = null;
+      }
+    }, 1000);
+  }
+
+  function firePostHog(payload) {
+    var evt = payload.click_type === 'sms' ? 'sms_click' : 'phone_click';
+    capturePostHog(evt, payload, { transport: 'sendBeacon', send_instantly: true });
   }
 
   function fireDataLayer(payload) {
@@ -211,9 +248,7 @@
       source: 'performance_observer'
     };
     try {
-      if (window.posthog && typeof window.posthog.capture === 'function') {
-        window.posthog.capture('web_vital', payload);
-      }
+      capturePostHog('web_vital', payload, { transport: 'sendBeacon', send_instantly: true });
     } catch (e) { /* no-op */ }
     try {
       if (typeof window.gtag === 'function') window.gtag('event', 'web_vital', payload);
@@ -228,14 +263,18 @@
     if (window.FrameWebVitalsLoaded) return;
     window.FrameWebVitalsLoaded = true;
 
-    function observe(type, cb) {
+    function observe(type, cb, options) {
       try {
         if (!('PerformanceObserver' in window)) return;
         if (PerformanceObserver.supportedEntryTypes && PerformanceObserver.supportedEntryTypes.indexOf(type) === -1) return;
         var observer = new PerformanceObserver(function (list) {
           list.getEntries().forEach(cb);
         });
-        observer.observe({ type: type, buffered: true });
+        var observeOptions = { type: type, buffered: true };
+        if (options) {
+          Object.keys(options).forEach(function (key) { observeOptions[key] = options[key]; });
+        }
+        observer.observe(observeOptions);
       } catch (e) { /* unsupported metric observer */ }
     }
 
@@ -259,7 +298,7 @@
     var inp = 0;
     observe('event', function (entry) {
       if (entry.interactionId && entry.duration > inp) inp = entry.duration;
-    });
+    }, { durationThreshold: 16 });
 
     function flush(phase, includeZeroCls) {
       if (lcpEntry) sendWebVital('LCP', lcpEntry.startTime, phase);
@@ -269,9 +308,15 @@
 
     window.setTimeout(function () { flush('timed_snapshot', true); }, 5000);
     document.addEventListener('visibilitychange', function () {
-      if (document.visibilityState === 'hidden') flush('visibility_hidden', true);
+      if (document.visibilityState === 'hidden') {
+        flush('visibility_hidden', true);
+        flushPostHogPending();
+      }
     });
-    window.addEventListener('pagehide', function () { flush('pagehide', true); });
+    window.addEventListener('pagehide', function () {
+      flush('pagehide', true);
+      flushPostHogPending();
+    });
   }
 
   observeWebVitals();
