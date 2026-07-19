@@ -185,4 +185,90 @@
 
   // Expose for manual testing from console
   window.FrameClicks = { _send: sendBeacon, _build: buildPayload };
+
+  function vitalRating(name, value) {
+    if (name === 'CLS') return value <= 0.1 ? 'good' : value <= 0.25 ? 'needs_improvement' : 'poor';
+    if (name === 'INP') return value <= 200 ? 'good' : value <= 500 ? 'needs_improvement' : 'poor';
+    if (name === 'LCP') return value <= 2500 ? 'good' : value <= 4000 ? 'needs_improvement' : 'poor';
+    if (name === 'FCP') return value <= 1800 ? 'good' : value <= 3000 ? 'needs_improvement' : 'poor';
+    if (name === 'TTFB') return value <= 800 ? 'good' : value <= 1800 ? 'needs_improvement' : 'poor';
+    return 'unknown';
+  }
+
+  function sendWebVital(name, value, phase) {
+    if (!isFinite(value)) return;
+    var metricValue = name === 'CLS' ? Number(value.toFixed(4)) : Math.round(value);
+    var payload = {
+      market: 'utah',
+      page: window.location.pathname,
+      metric_name: name,
+      metric_value: metricValue,
+      metric_rating: vitalRating(name, value),
+      metric_phase: phase,
+      source: 'performance_observer'
+    };
+    try {
+      if (window.posthog && typeof window.posthog.capture === 'function') {
+        window.posthog.capture('web_vital', payload);
+      }
+    } catch (e) { /* no-op */ }
+    try {
+      if (typeof window.gtag === 'function') window.gtag('event', 'web_vital', payload);
+    } catch (e) { /* no-op */ }
+    try {
+      window.dataLayer = window.dataLayer || [];
+      window.dataLayer.push({ event: 'web_vital', metric_name: name, metric_value: metricValue, metric_rating: payload.metric_rating });
+    } catch (e) { /* no-op */ }
+  }
+
+  function observeWebVitals() {
+    if (window.FrameWebVitalsLoaded) return;
+    window.FrameWebVitalsLoaded = true;
+
+    function observe(type, cb) {
+      try {
+        if (!('PerformanceObserver' in window)) return;
+        if (PerformanceObserver.supportedEntryTypes && PerformanceObserver.supportedEntryTypes.indexOf(type) === -1) return;
+        var observer = new PerformanceObserver(function (list) {
+          list.getEntries().forEach(cb);
+        });
+        observer.observe({ type: type, buffered: true });
+      } catch (e) { /* unsupported metric observer */ }
+    }
+
+    try {
+      var nav = performance.getEntriesByType('navigation')[0];
+      if (nav) sendWebVital('TTFB', nav.responseStart - nav.requestStart, 'initial');
+    } catch (e) { /* no-op */ }
+
+    observe('paint', function (entry) {
+      if (entry.name === 'first-contentful-paint') sendWebVital('FCP', entry.startTime, 'initial');
+    });
+
+    var lcpEntry = null;
+    observe('largest-contentful-paint', function (entry) { lcpEntry = entry; });
+
+    var cls = 0;
+    observe('layout-shift', function (entry) {
+      if (!entry.hadRecentInput) cls += entry.value || 0;
+    });
+
+    var inp = 0;
+    observe('event', function (entry) {
+      if (entry.interactionId && entry.duration > inp) inp = entry.duration;
+    });
+
+    function flush(phase) {
+      if (lcpEntry) sendWebVital('LCP', lcpEntry.startTime, phase);
+      if (cls > 0) sendWebVital('CLS', cls, phase);
+      if (inp > 0) sendWebVital('INP', inp, phase);
+    }
+
+    document.addEventListener('visibilitychange', function () {
+      if (document.visibilityState === 'hidden') flush('visibility_hidden');
+    });
+    window.addEventListener('pagehide', function () { flush('pagehide'); });
+  }
+
+  observeWebVitals();
 })();
