@@ -69,7 +69,7 @@ find . -name "*.html" -not -path "./.git/*" -not -path "./archive/*" -not -path 
     # Replace in img src attributes
     sed -i '' -E 's|(src="[^"]*)\.(jpg|jpeg|png)"|\1.webp"|g' "$html"
     # Replace in og:image and twitter:image content attributes
-    sed -i '' -E 's|(content="https://www\.frameroofingutah\.com/images/[^"]*)\.(jpg|jpeg|png)"|\1.webp"|g' "$html"
+    sed -i '' -E 's|(content="https://www\.framerestorationutah\.com/images/[^"]*)\.(jpg|jpeg|png)"|\1.webp"|g' "$html"
     echo "  Updated: $html"
   fi
 done
