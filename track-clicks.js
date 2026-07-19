@@ -150,6 +150,82 @@
     return false;
   }
 
+  function postHogPublicConfig() {
+    try {
+      var init = window.posthog && Array.isArray(window.posthog._i) && window.posthog._i[0];
+      var token = init && init[0];
+      var config = init && init[1] && typeof init[1] === 'object' ? init[1] : {};
+      if (!token && window.posthog && window.posthog.config) token = window.posthog.config.token;
+      var apiHost = config.api_host || (window.posthog && window.posthog.config && window.posthog.config.api_host) || 'https://us.i.posthog.com';
+      if (!/^phc_/u.test(String(token || ''))) return null;
+      return { token: token, endpoint: String(apiHost).replace(/\/$/u, '') + '/i/v0/e/' };
+    } catch (e) {
+      return null;
+    }
+  }
+
+  function postHogDistinctId() {
+    try {
+      if (window.posthog && typeof window.posthog.get_distinct_id === 'function') {
+        var id = window.posthog.get_distinct_id();
+        if (id) return String(id);
+      }
+    } catch (e) { /* fall through */ }
+    try {
+      var key = 'frame_utah_ph_distinct_id';
+      var stored = window.localStorage && window.localStorage.getItem(key);
+      if (stored) return stored;
+      var generated = 'frame-utah-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 10);
+      if (window.localStorage) window.localStorage.setItem(key, generated);
+      return generated;
+    } catch (e) {
+      return 'frame-utah-' + Date.now().toString(36);
+    }
+  }
+
+  function capturePostHogDirect(eventName, payload) {
+    if (!/^https?:$/u.test(window.location.protocol)) return;
+    if (/^(localhost|127\.0\.0\.1)$/u.test(window.location.hostname)) return;
+    var config = postHogPublicConfig();
+    if (!config) return;
+    var properties = {};
+    Object.keys(payload || {}).forEach(function (key) { properties[key] = payload[key]; });
+    properties.market = properties.market || 'utah';
+    properties.transport = 'direct_beacon';
+    properties.$current_url = window.location.href.slice(0, 500);
+    properties.$host = window.location.host;
+    properties.$pathname = window.location.pathname;
+    properties.$process_person_profile = false;
+    var body;
+    try {
+      body = JSON.stringify({
+        api_key: config.token,
+        event: eventName,
+        distinct_id: postHogDistinctId(),
+        properties: properties,
+        timestamp: new Date().toISOString()
+      });
+    } catch (e) {
+      return;
+    }
+    try {
+      if (navigator.sendBeacon) {
+        navigator.sendBeacon(config.endpoint, new Blob([body], { type: 'application/json' }));
+        return;
+      }
+    } catch (e) { /* fall through */ }
+    try {
+      fetch(config.endpoint, {
+        method: 'POST',
+        body: body,
+        headers: { 'Content-Type': 'application/json' },
+        keepalive: true,
+        mode: 'cors',
+        credentials: 'omit'
+      }).catch(function () { /* fire and forget */ });
+    } catch (e) { /* no-op */ }
+  }
+
   function flushPostHogPending() {
     try {
       if (!window.posthog || typeof window.posthog.capture !== 'function') return false;
@@ -250,6 +326,7 @@
     try {
       capturePostHog('web_vital', payload, { transport: 'sendBeacon', send_instantly: true });
     } catch (e) { /* no-op */ }
+    capturePostHogDirect('web_vital', payload);
     try {
       if (typeof window.gtag === 'function') window.gtag('event', 'web_vital', payload);
     } catch (e) { /* no-op */ }
