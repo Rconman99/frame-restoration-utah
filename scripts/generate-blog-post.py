@@ -110,6 +110,13 @@ VALID_INTERNAL_PATHS = [
     "/blog", "/review",
 ]
 
+DEFAULT_AUTHORITATIVE_SOURCES = [
+    {"label": "National Weather Service Salt Lake City", "url": "https://www.weather.gov/slc/"},
+    {"label": "Utah Division of Professional Licensing", "url": "https://dopl.utah.gov/"},
+    {"label": "Utah Insurance Department", "url": "https://insurance.utah.gov/"},
+    {"label": "International Code Council", "url": "https://codes.iccsafe.org/"},
+]
+
 # ── Style presets for Higgsfield image prompts ──────────────────────
 STYLE_PRESETS = {
     "atmospheric": (
@@ -142,7 +149,7 @@ STYLE_PRESETS = {
 # ── Ollama ──────────────────────────────────────────────────────────
 OLLAMA_URL = os.environ.get("OLLAMA_URL", "http://localhost:11434")
 DEFAULT_MODEL = os.environ.get("OLLAMA_MODEL", "qwen3:8b")
-MIN_DRAFT_WORDS = int(os.environ.get("FRAME_BLOG_MIN_WORDS", "900"))
+MIN_DRAFT_WORDS = int(os.environ.get("FRAME_BLOG_MIN_WORDS", "1150"))
 OLLAMA_FORMAT = os.environ.get("FRAME_BLOG_OLLAMA_FORMAT", "json")
 BRAND_SUFFIX_RE = re.compile(r"\s*(?:\||-|–|—)\s*Frame (?:Roofing|Restoration) Utah\s*$", re.I)
 FORBIDDEN_DRAFT_PATTERNS = [
@@ -160,6 +167,10 @@ REVIEW_WARNING_PATTERNS = [
     ("invented response time", re.compile(r"\b(?:within|in)\s+\d+\s*(?:minutes?|mins?)\b|\b\d+\s*[- ]?minute\s+response\b", re.I)),
     ("unsupported exact local metric", re.compile(r"\b\d[\d,]*\s*(?:mph|pounds per square foot|psf|inches annually|feet elevation|foot elevation|ft elevation)\b|\b\d[\d,]*[-\s]?(?:foot|ft)\s+elevation\b", re.I)),
 ]
+
+
+class DraftParseError(ValueError):
+    """Raised when the local model returns malformed or truncated JSON."""
 
 
 def call_ollama(prompt: str, model: str = DEFAULT_MODEL, num_predict: int = 6000,
@@ -199,15 +210,21 @@ def extract_json(text: str) -> dict:
     """Best-effort JSON extraction (handles markdown fences + leading prose)."""
     try:
         return json.loads(text)
-    except json.JSONDecodeError:
+    except json.JSONDecodeError as first_error:
         cleaned = re.sub(r"^```(?:json)?\s*\n?", "", text).rstrip("` \n")
         try:
             return json.loads(cleaned)
-        except json.JSONDecodeError:
+        except json.JSONDecodeError as cleaned_error:
             start, end = text.find("{"), text.rfind("}") + 1
             if start >= 0 and end > start:
-                return json.loads(text[start:end])
-            sys.exit(f"ERROR: Could not parse JSON from Ollama output:\n{text[:500]}")
+                try:
+                    return json.loads(text[start:end])
+                except json.JSONDecodeError as sliced_error:
+                    msg = str(sliced_error)
+            else:
+                msg = str(cleaned_error or first_error)
+            snippet = text[:500].replace("\n", "\\n")
+            raise DraftParseError(f"{msg}; output starts: {snippet}")
 
 
 def normalize_manifest(manifest: dict, fallback_title: str) -> dict:
@@ -216,7 +233,38 @@ def normalize_manifest(manifest: dict, fallback_title: str) -> dict:
     manifest["title"] = BRAND_SUFFIX_RE.sub("", title).strip() or fallback_title
     manifest["slug"] = slugify(str(manifest.get("slug") or manifest["title"]))
     manifest["sections"] = normalize_sections(manifest.get("sections", []))
+    manifest["sources"] = normalize_sources(manifest.get("sources", []))
     return manifest
+
+
+def normalize_sources(sources: object) -> list[dict]:
+    """Keep model-provided sources when valid, then top up from safe defaults."""
+    normalized: list[dict] = []
+    seen: set[str] = set()
+
+    if isinstance(sources, list):
+        for source in sources:
+            if not isinstance(source, dict):
+                continue
+            label = str(source.get("label") or "").strip()
+            url = str(source.get("url") or "").strip()
+            if not label or not url.startswith("https://"):
+                continue
+            key = url.rstrip("/").lower()
+            if key in seen:
+                continue
+            normalized.append({"label": label, "url": url})
+            seen.add(key)
+
+    for source in DEFAULT_AUTHORITATIVE_SOURCES:
+        if len(normalized) >= 3:
+            break
+        key = source["url"].rstrip("/").lower()
+        if key not in seen:
+            normalized.append(source)
+            seen.add(key)
+
+    return normalized[:5]
 
 
 def normalize_sections(sections: object) -> list[dict]:
@@ -350,6 +398,28 @@ Rewrite the complete JSON from scratch. Hard minimums:
 - If financing must be mentioned, use only this neutral phrasing: "Financing may be available; ask during your free inspection for current options." Do not add rates, terms, lender names, down-payment copy, or "low-interest" language.
 
 Respond with ONLY valid JSON using the exact structure requested above.
+"""
+
+
+def json_retry_prompt(base_prompt: str, parse_error: str) -> str:
+    """Retry prompt for malformed/truncated JSON from local models."""
+    return f"""{base_prompt}
+
+The previous response was rejected because it was malformed or truncated JSON:
+{parse_error}
+
+Rewrite from scratch with a SMALLER, STRICT JSON response:
+- Exactly 5 H2 sections.
+- Exactly 6 paragraph objects total.
+- 4 FAQs, each 50-75 words.
+- 5 HowTo steps.
+- 1,150-1,350 total words across tldr, paragraph, FAQ, and HowTo text.
+- Keep every string on-topic and avoid unusually long sentences.
+- Escape quotation marks inside strings.
+- Do not include markdown fences, commentary, analysis, or trailing text.
+- Do not stop before the closing JSON brace.
+
+Respond with ONLY one valid JSON object using the exact structure requested above.
 """
 
 
@@ -772,11 +842,18 @@ def main():
     errors: list[str] = []
     warnings: list[str] = []
     active_prompt = prompt
-    for attempt in range(1, 3):
-        suffix = "" if attempt == 1 else " (quality retry)"
+    for attempt in range(1, 4):
+        suffix = "" if attempt == 1 else " (retry)"
         print(f"⏳ Drafting via Ollama ({args.ollama_model}){suffix}…", file=sys.stderr)
         raw = call_ollama(active_prompt, model=args.ollama_model)
-        candidate = normalize_manifest(extract_json(raw), args.keyword)
+        try:
+            candidate = normalize_manifest(extract_json(raw), args.keyword)
+        except DraftParseError as exc:
+            errors = [f"invalid JSON from Ollama: {exc}"]
+            print("⚠ Draft failed JSON parse:", file=sys.stderr)
+            print(f"  - {errors[0]}", file=sys.stderr)
+            active_prompt = json_retry_prompt(prompt, errors[0])
+            continue
         errors = validate_manifest(candidate)
         if not errors:
             manifest = candidate
@@ -792,7 +869,7 @@ def main():
         active_prompt = retry_prompt(prompt, errors)
 
     if manifest is None:
-        sys.exit("ERROR: Ollama draft failed quality gate after retry:\n- " + "\n- ".join(errors))
+        sys.exit("ERROR: Ollama draft failed after retries:\n- " + "\n- ".join(errors))
 
     # Annotate manifest with run metadata
     manifest["city_slug"] = args.city
