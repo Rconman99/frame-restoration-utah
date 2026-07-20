@@ -132,6 +132,20 @@ _strong_with_digit = re.compile(
 )
 _href_pattern = re.compile(r'href=["\']([^"\']+)["\']', re.IGNORECASE)
 _blockquote_pattern = re.compile(r"<blockquote\b", re.IGNORECASE)
+_noindex_pattern = re.compile(
+    r'<meta\b[^>]*name=["\']robots["\'][^>]*content=["\'][^"\']*\bnoindex\b',
+    re.IGNORECASE,
+)
+
+
+def is_noindex(html: str) -> bool:
+    """Return True when the page explicitly opts out of indexing."""
+    return bool(_noindex_pattern.search(html))
+
+
+def is_html_document(html: str) -> bool:
+    """Return True for standalone HTML documents, not reusable page fragments."""
+    return bool(re.search(r"<html\b", html, re.IGNORECASE))
 
 
 def extract_metrics(html: str) -> dict:
@@ -210,6 +224,12 @@ def main() -> int:
         try:
             html = html_file.read_text(encoding="utf-8", errors="ignore")
         except Exception:
+            continue
+        if not is_html_document(html):
+            skipped += 1
+            continue
+        if is_noindex(html):
+            skipped += 1
             continue
 
         metrics = extract_metrics(html)
