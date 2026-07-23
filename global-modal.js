@@ -6,6 +6,33 @@
 (function() {
   'use strict';
 
+  var booted = false;
+
+  function isModalTrigger(target) {
+    if (!target || !target.closest) return false;
+    var trigger = target.closest(
+      '.free-inspection-trigger,.nav-cta,a[href*="calendar.app.google"],a[href="#heroForm"]'
+    );
+    if (!trigger) return false;
+    if (trigger.matches && trigger.matches('a[href="#heroForm"]') && document.getElementById('heroForm')) {
+      return false;
+    }
+    return true;
+  }
+
+  function earlyTrigger(e) {
+    if (!isModalTrigger(e.target)) return;
+    e.preventDefault();
+    boot(true);
+  }
+
+  function boot(openAfterBoot) {
+    if (booted) {
+      if (openAfterBoot && window.FrameRestorationModal) window.FrameRestorationModal.open();
+      return;
+    }
+    booted = true;
+
   // ─── Inject CSS ───
   var css = document.createElement('style');
   css.textContent = [
@@ -414,6 +441,27 @@
   // sticky; an exit-intent layer there is noise.
   if (window.matchMedia && window.matchMedia('(max-width: 820px)').matches) {
     installExitIntent();
+  }
+
+  window.FrameRestorationModal = { open: openModal, close: closeModal };
+  document.removeEventListener('click', earlyTrigger, true);
+  if (openAfterBoot) openModal();
+  }
+
+  document.addEventListener('click', earlyTrigger, true);
+
+  function scheduleBoot() {
+    if ('requestIdleCallback' in window) {
+      window.requestIdleCallback(function() { boot(false); }, { timeout: 3500 });
+    } else {
+      window.setTimeout(function() { boot(false); }, 1800);
+    }
+  }
+
+  if (document.readyState === 'complete') {
+    scheduleBoot();
+  } else {
+    window.addEventListener('load', scheduleBoot, { once: true });
   }
 
 })();
