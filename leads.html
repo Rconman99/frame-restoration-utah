@@ -622,7 +622,8 @@ async function submitAddLead(){
 	  return id;
 	}
 	function growthStateFor(a){return growthStates[growthActionKey(a)]||null}
-	function growthStateIsHidden(st){return growthStorageReady&&st&&(st.state==="done"||(st.state==="snoozed"&&st.snoozed_until&&st.snoozed_until>dateKey(0)))}
+	function growthSnoozeIsActive(st){return !!(st&&st.state==="snoozed"&&st.snoozed_until&&st.snoozed_until>dateKey(0))}
+	function growthStateIsHidden(st){return growthStorageReady&&st&&(st.state==="done"||growthSnoozeIsActive(st))}
 	async function saveGrowthState(key,patch){
 	  if(!growthStorageReady){toast("Growth Queue migration is prepared but not applied yet.",true);return}
 	  var a=growthActionIndex[key]||{title:key,category:"Ops",priority:"P2"};
@@ -678,7 +679,7 @@ async function submitAddLead(){
 	  var quietIndex=INDEXING_QUEUE.filter(function(x){return !D.pageLead[pathOnly(x.url)]&&!D.pageClicks[pathOnly(x.url)]}).slice(0,5);
 	  if(quietIndex.length)addGrowthAction(actions,{id:"gsc-live-watch",priority:"P1",category:"Search",title:"Run Search Console live watch",detail:"Priority URLs with no attribution events: "+quietIndex.map(function(x){return x.label}).join(", ")+".",step:"Inspect/request indexing on quiet priority URLs and log indexed status at 24h, 72h, and 7d.",due:"today"});
 	  var google=(D.sourceCounts.organic_google||0)+(D.sourceCounts.google_ads||0)+(D.sourceCounts.gbp||0);
-	  addGrowthAction(actions,{id:"gbp-weekly-proof",priority:google<3?"P1":"P2",category:"GBP",title:"Publish GBP proof update",detail:"Google-attributed events in this window: "+google+".",step:"Post one approved real job photo/video update and confirm service/category fields.",due:"this week"});
+	  addGrowthAction(actions,{id:"gbp-weekly-proof",priority:google<3?"P1":"P2",category:"GBP",title:"Prepare GBP proof draft for Landon",detail:"Google-attributed events in this window: "+google+". Utah GBP posting remains paused.",step:"Prepare one policy-safe draft from approved job proof for Landon's review; do not publish or edit GBP.",due:"this week"});
 	  addGrowthAction(actions,{id:"ai-visibility-watch",priority:"P2",category:"AI Visibility",title:"Re-run Utah AI visibility watch",detail:"Keep checking whether AI/search surfaces cite Frame Restoration Utah for priority city and service queries.",step:"Run the approved visibility baseline and convert missing citation sources into proof, review, or citation tasks.",due:"this week"});
 	  var closed=leads.filter(function(r){return isClosedStatus(r.status)}),third=leads.filter(function(r){return statusOrNew(r.status)==="third_party"});
 	  if(third.length>=2||(closed.length&&third.length/closed.length>.25))addGrowthAction(actions,{id:"partner-filter",priority:"P2",category:"Lead Quality",title:"Tighten contractor / partner filtering",detail:third.length+" third-party/internal leads are stored.",step:"Look for repeated source pages, phone patterns, or message language and add clearer intake rules.",due:"next"});
@@ -687,7 +688,7 @@ async function submitAddLead(){
 	  return {actions:actions,failed:failed.length,untouched:untouched.length,reviewReady:reviewReady.length,proofReady:leads.filter(function(r){return statusOrNew(r.status)==="won"&&(r.city||cityFromPath(r.source_page||""))}).length};
 	}
 	function actionRow(a){
-	  var cls=a.priority.toLowerCase(),key=growthActionKey(a),st=growthStateFor(a)||{},snoozeActive=st.state==="snoozed"&&st.snoozed_until&&st.snoozed_until>dateKey(0),isDone=st.state==="done",disabled=growthStorageReady?"":" disabled";
+	  var cls=a.priority.toLowerCase(),key=growthActionKey(a),st=growthStateFor(a)||{},snoozeActive=growthSnoozeIsActive(st),isDone=st.state==="done",disabled=growthStorageReady?"":" disabled";
 	  // Row "target" = the short lead/page label (first segment of the detail); full detail lives in the expansion.
 	  var target=String(a.detail||"").split(" · ")[0];
 	  var h='<div class="gq-row '+cls+(isDone?" is-done":"")+'" data-gkey="'+esc(key)+'">';
@@ -735,12 +736,12 @@ async function submitAddLead(){
 	    P1:active.filter(function(a){return a.priority==="P1"}).length,
 	    P2:active.filter(function(a){return a.priority==="P2"}).length,
 	    mine:active.filter(function(a){return mineName&&gqState(a).assigned_to===mineName}).length,
-	    snoozed:allActions.filter(function(a){return gqState(a).state==="snoozed"}).length,
+	    snoozed:allActions.filter(function(a){return growthSnoozeIsActive(gqState(a))}).length,
 	    done:allActions.filter(function(a){return gqState(a).state==="done"}).length
 	  };
 	  // resolve the active filter tab into the shown set (list stays P0→P1→P2 then due-sorted)
 	  var shown;
-	  if(growthFilter==="snoozed")shown=allActions.filter(function(a){return gqState(a).state==="snoozed"});
+	  if(growthFilter==="snoozed")shown=allActions.filter(function(a){return growthSnoozeIsActive(gqState(a))});
 	  else if(growthFilter==="done")shown=allActions.filter(function(a){return gqState(a).state==="done"});
 	  else if(growthFilter==="P0"||growthFilter==="P1"||growthFilter==="P2")shown=active.filter(function(a){return a.priority===growthFilter});
 	  else if(growthFilter==="mine")shown=active.filter(function(a){return mineName&&gqState(a).assigned_to===mineName});
