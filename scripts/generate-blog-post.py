@@ -77,6 +77,23 @@ AUTHOR_NAME = "Landon Yokers"
 AUTHOR_TITLE = "Owner"
 POSTHOG_KEY = "phc_BnECzlZ2OeDujli2dbqcgGODXlv2tYERbp40dTF7UBV"
 
+
+def _load_shared_asset_versions() -> dict[str, str]:
+    """Immutable shared assets must use the current corpus-wide cache key."""
+    path = ROOT / "scripts" / "shared-asset-versions.json"
+    try:
+        versions = json.loads(path.read_text())
+        required = ("global.css", "global-modal.js")
+        if all(isinstance(versions.get(asset), str) and versions[asset] for asset in required):
+            return versions
+    except (OSError, json.JSONDecodeError):
+        pass
+    raise RuntimeError("scripts/shared-asset-versions.json is missing or invalid")
+
+
+SHARED_ASSET_VERSIONS = _load_shared_asset_versions()
+
+
 def _load_city_slugs() -> set[str]:
     """Load city whitelist from market-intel-allocation.json (single source of truth).
     Falls back to a small static list if the file is missing."""
@@ -699,8 +716,8 @@ def render_html(manifest: dict, image_url: Optional[str], image_local_path: Opti
   ]
   }}
   </script>
-  <link rel="stylesheet" href="/global.css?v={today.replace('-', '')}">
-  <script src="/global-modal.js" defer></script>
+  <link rel="stylesheet" href="/global.css?v={SHARED_ASSET_VERSIONS['global.css']}">
+  <script src="/global-modal.js?v={SHARED_ASSET_VERSIONS['global-modal.js']}" defer></script>
   <style>
     .blog-hero {{ min-height: 40vh; position: relative; display: flex; align-items: center; background: var(--navy); padding-top: 70px; }}
     .blog-hero-overlay {{ position: absolute; inset: 0; background: linear-gradient(135deg, rgba(11,64,96,0.96) 40%, rgba(11,64,96,0.8)); }}

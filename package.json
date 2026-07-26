@@ -14,7 +14,9 @@
     "blog:cron": "bash scripts/blog-cron.sh",
     "audit:gbp-copy": "node scripts/audit-gbp-copy.mjs",
     "audit:public-seo": "node scripts/audit-public-seo-surface.mjs && node scripts/validate-payson-storm-guide.mjs && node scripts/validate-draper-storm-guide.mjs && node scripts/validate-posthog-loader.mjs && npm run audit:mobile-ui",
-    "audit:mobile-ui": "node scripts/validate-mobile-ui-contract.mjs",
+    "audit:mobile-ui": "node scripts/validate-mobile-ui-contract.mjs && npm run audit:shared-assets",
+    "audit:shared-assets": "node scripts/sync-shared-asset-versions.mjs --check",
+    "sync:shared-assets": "node scripts/sync-shared-asset-versions.mjs --write",
     "test:mobile-ui": "node scripts/test-mobile-ui.mjs",
     "audit:payson-storm-guide": "node scripts/validate-payson-storm-guide.mjs",
     "audit:draper-storm-guide": "node scripts/validate-draper-storm-guide.mjs"
