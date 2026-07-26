@@ -153,7 +153,7 @@ footer p { font-size: 13px; margin-bottom: 8px; }
 footer a { color: var(--gold); text-decoration: none; }
 
 /* ─── STICKY MOBILE CALL + TEXT BAR (mobile only, shown ≤900px) ─── */
-.sticky-call { display: none; position: fixed; bottom: 0; left: 0; right: 0; z-index: 999; background: var(--navy); border-top: 2px solid var(--gold); padding: 6px 10px calc(6px + env(safe-area-inset-bottom, 0px)); transition: transform 180ms ease, visibility 180ms linear; will-change: transform; }
+.sticky-call { display: none; position: fixed; bottom: 0; left: 0; right: 0; z-index: 999; background: var(--navy); border-top: 2px solid var(--gold); padding: 6px 10px calc(6px + env(safe-area-inset-bottom, 0px)); transition: transform 180ms ease; will-change: transform; }
 .sticky-call[data-scroll-state="hidden"] { transform: translateY(100%); visibility: hidden; pointer-events: none; }
 .sticky-call-microcopy { display: none; }
 .sticky-call-actions { display: flex; gap: 8px; align-items: stretch; }

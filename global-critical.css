@@ -62,7 +62,7 @@ nav {
 .nav-call-mobile { display: none; align-items: center; justify-content: center; min-width: 44px; min-height: 44px; margin-left: auto; margin-right: 6px; color: var(--navy); border: 2px solid var(--navy); border-radius: 2px; padding: 6px; text-decoration: none; }
 .nav-call-mobile svg { width: 22px; height: 22px; }
 
-.sticky-call { display: none; position: fixed; bottom: 0; left: 0; right: 0; z-index: 999; background: var(--navy); border-top: 2px solid var(--gold); padding: 6px 10px calc(6px + env(safe-area-inset-bottom, 0px)); transition: transform 180ms ease, visibility 180ms linear; will-change: transform; }
+.sticky-call { display: none; position: fixed; bottom: 0; left: 0; right: 0; z-index: 999; background: var(--navy); border-top: 2px solid var(--gold); padding: 6px 10px calc(6px + env(safe-area-inset-bottom, 0px)); transition: transform 180ms ease; will-change: transform; }
 .sticky-call[data-scroll-state="hidden"] { transform: translateY(100%); visibility: hidden; pointer-events: none; }
 .sticky-call-microcopy { display: none; }
 .sticky-call-actions { display: flex; gap: 8px; align-items: stretch; }
