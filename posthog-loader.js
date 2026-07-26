@@ -15,7 +15,73 @@
   var HOST = 'https://us.i.posthog.com';
   var queue = window.FramePostHogPending = window.FramePostHogPending || [];
   var registered = {};
-  var stub = window.posthog = window.posthog || {};
+  var stub = window.posthog = window.posthog || [];
+  var pageviewSent = false;
+  var distinctId = getDistinctId();
+
+  function getDistinctId() {
+    var key = 'frame_utah_posthog_distinct_id';
+    try {
+      var stored = window.localStorage.getItem(key);
+      if (stored) return stored;
+      var generated = 'frame_' + (
+        window.crypto && typeof window.crypto.randomUUID === 'function'
+          ? window.crypto.randomUUID()
+          : Date.now().toString(36) + Math.random().toString(36).slice(2)
+      );
+      window.localStorage.setItem(key, generated);
+      return generated;
+    } catch (e) {
+      return 'frame_' + Date.now().toString(36) + Math.random().toString(36).slice(2);
+    }
+  }
+
+  function sendLightweightPageview() {
+    if (pageviewSent) return;
+
+    var body = JSON.stringify({
+      api_key: TOKEN,
+      event: '$pageview',
+      properties: {
+        distinct_id: distinctId,
+        token: TOKEN,
+        market: 'utah',
+        $current_url: window.location.href,
+        $host: window.location.host,
+        $pathname: window.location.pathname,
+        $referrer: document.referrer || '',
+        $lib: 'frame-lite',
+        $lib_version: '1'
+      }
+    });
+
+    var encodedBody = 'data=' + encodeURIComponent(window.btoa(
+      encodeURIComponent(body).replace(/%([0-9A-F]{2})/g, function (_, hex) {
+        return String.fromCharCode(parseInt(hex, 16));
+      })
+    ));
+    var endpoint = HOST + '/e/?compression=base64';
+
+    if (window.navigator && typeof window.navigator.sendBeacon === 'function') {
+      try {
+        pageviewSent = window.navigator.sendBeacon(
+          endpoint,
+          new Blob([encodedBody], { type: 'application/x-www-form-urlencoded' })
+        );
+      } catch (e) { /* fall through to fetch */ }
+    }
+
+    if (!pageviewSent && typeof window.fetch === 'function') {
+      pageviewSent = true;
+      window.fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: encodedBody,
+        keepalive: true,
+        credentials: 'omit'
+      }).catch(function () { /* best-effort analytics */ });
+    }
+  }
 
   if (typeof stub.capture !== 'function') {
     stub.capture = function (eventName, properties, options) {
@@ -40,13 +106,13 @@
     window.posthog.init(TOKEN, {
       api_host: HOST,
       autocapture: false,
-      capture_pageview: true,
+      capture_pageview: !pageviewSent,
       capture_pageleave: false,
       disable_surveys: true,
       disable_session_recording: true,
       person_profiles: 'identified_only'
     });
-    window.posthog.register(Object.assign({ market: 'utah' }, registered));
+    window.posthog.register(Object.assign({ market: 'utah', distinct_id: distinctId }, registered));
 
     queue.splice(0).forEach(function (item) {
       try { window.posthog.capture(item.eventName, item.properties, item.options); } catch (e) { /* no-op */ }
@@ -62,6 +128,9 @@
       }
     }, 3500);
   }
+
+  window.setTimeout(sendLightweightPageview, 3500);
+  window.addEventListener('pagehide', sendLightweightPageview, { once: true });
 
   if (document.readyState === 'complete') {
     schedule();
