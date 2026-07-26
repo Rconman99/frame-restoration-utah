@@ -13,8 +13,9 @@
     "blog:render": "python3 scripts/generate-blog-post.py --render",
     "blog:cron": "bash scripts/blog-cron.sh",
     "audit:gbp-copy": "node scripts/audit-gbp-copy.mjs",
-    "audit:public-seo": "node scripts/audit-public-seo-surface.mjs",
-    "audit:payson-storm-guide": "node scripts/validate-payson-storm-guide.mjs"
+    "audit:public-seo": "node scripts/audit-public-seo-surface.mjs && node scripts/validate-payson-storm-guide.mjs && node scripts/validate-draper-storm-guide.mjs",
+    "audit:payson-storm-guide": "node scripts/validate-payson-storm-guide.mjs",
+    "audit:draper-storm-guide": "node scripts/validate-draper-storm-guide.mjs"
   },
   "dependencies": {
     "playwright": "^1.59.1"
