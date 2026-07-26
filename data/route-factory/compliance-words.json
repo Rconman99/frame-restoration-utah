@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-05-30",
+  "updatedAt": "2026-07-26",
   "market": "UT",
   "purpose": "Site-wide compliance + AEO-concentration enforcement for Frame Restoration UT. Validator: scripts/audit-compliance-words.mjs. Legal basis: data/route-factory/UTAH-COMPLIANCE-LAW.md. Triggered pre-PR + CI on .html changes.",
   "lineage": {
@@ -17,8 +17,10 @@
     "projects/",
     "in-the-news/",
     "index.html",
-    "about.html"
+    "about.html",
+    "llms.txt"
   ],
+  "scanExtensions": [".html", ".txt"],
   "ignoreGlobs": [
     "data/",
     "scripts/",
@@ -55,7 +57,7 @@
       "exemptFiles": []
     },
     "claimHandling": {
-      "patterns": ["we handle your claim", "we'll handle your claim", "we will handle your claim", "we file your claim", "we'll file your claim", "we adjust your claim", "we settle your claim", "we'll settle your claim", "handle the claim for you", "file the claim for you", "we manage your insurance claim", "let us handle your claim", "manage your claim", "manage the claim", "manage your insurance claim", "manage the entire insurance claim", "manage the claim process", "manage the entire claim", "we handle the insurance", "handle all back-and-forth with your insurance", "handle the back-and-forth with your insurance", "handle all the back-and-forth", "fight for full coverage", "fight for what is owed", "fight for what's owed", "fight your insurance", "fight the insurance company", "work directly with your insurance company", "work directly with my insurance company", "handles the entire process", "handle the entire process", "handles the entire claim", "handle the entire claim", "handles the full claim", "handle the full claim", "we handle the rest", "fight for your full payout", "fight for your payout", "full insurance claim navigation", "maximize your payout", "maximize your coverage", "maximize your claim", "maximize your settlement", "maximize your recovery"],
+      "patterns": ["we handle your claim", "we'll handle your claim", "we will handle your claim", "we file your claim", "we'll file your claim", "we adjust your claim", "we settle your claim", "we'll settle your claim", "handle the claim for you", "file the claim for you", "we manage your insurance claim", "let us handle your claim", "manage your claim", "manage the claim", "manage your insurance claim", "manage the entire insurance claim", "manage the claim process", "manage the entire claim", "we handle the insurance", "handle all back-and-forth with your insurance", "handle the back-and-forth with your insurance", "handle all the back-and-forth", "fight for full coverage", "fight for what is owed", "fight for what's owed", "fight your insurance", "fight the insurance company", "work directly with your insurance company", "work directly with my insurance company", "handles the entire process", "handle the entire process", "handles the entire claim", "handle the entire claim", "handles the full claim", "handle the full claim", "we handle the rest", "fight for your full payout", "fight for your payout", "full insurance claim navigation", "full insurance-claim support", "supplemental-claim advocacy", "supplemental claim advocacy", "represents homeowners during insurance", "writes supplemental claims", "coordinates directly with major utah carriers", "maximize your payout", "maximize your coverage", "maximize your claim", "maximize your settlement", "maximize your recovery"],
       "maxPerFile": 0,
       "severity": "blocker",
       "reason": "First-person claim handling / advocacy describes licensed insurance adjusting (§31A-26-201). Includes 'manage/handle/fight for/work directly with' the claim or insurer on the homeowner's behalf. Scoped to FIRST-PERSON — third-person ('your insurer will settle your claim') is allowed. Safe: 'we document your storm/hail damage', 'we meet your adjuster on-site', 'we supply a line-item estimate the adjuster can read'.",

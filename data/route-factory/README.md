@@ -38,6 +38,7 @@ Runs the same acceptance gates before a batch becomes mergeable:
 - no Utah or disputed-photo leakage
 - no fake pricing, response-time, or claim-outcome promises
 - no forbidden compliance terms — `node scripts/audit-compliance-words.mjs <files>` returns 0 blockers ("public adjuster" + "negotiate" families are banned site-wide; insurance language is topic-conditional — soft-link to `/services/insurance-claims/` instead of repeating jargon)
+- `llms.txt` is a generated fact surface, not an AEO ranking tactic. Edit `data/route-factory/claim-registry.json`, then run `node scripts/audit-claim-registry.mjs --write`; CI requires byte-for-byte parity and verifies every registered claim's evidence/mirror contract.
 - sitemap entries exist for integrated routes
 - blog hub ItemList order matches visible resource-card order when the hub is touched
 - `git diff --check`
