@@ -300,22 +300,44 @@ def main() -> int:
             total = tc["good"] + tc["medium"] + tc["low"]
             md.append(f"| {t} | {tc['good']} | {tc['medium']} | {tc['low']} | {total} |")
 
-    md.extend([
-        "",
-        "## Top 30 refresh-priority pages",
-        "",
-        "Sorted by priority score = `(1.0 − combined/200w) × type-weight × visibility(log wc)`. Higher priority = higher refresh leverage.",
-        "",
-        "| Priority | Path | Type | Words | Stats | Cites | Combined/200w | Tier |",
-        "|---:|---|:---:|---:|---:|---:|---:|:---:|",
-    ])
     tier_emoji = {"good": "🟢", "medium": "🟡", "low": "🔴"}
-    for r in results[:30]:
-        md.append(
-            f"| {r['priority']} | `{r['path']}` | {r['type']} | "
-            f"{r['word_count']} | {r['stat_count']} | {r['citation_count']} | "
-            f"{r['combined_per_200w']} | {tier_emoji[r['tier']]} {r['tier']} |"
-        )
+    refresh_candidates = [r for r in results if r["priority"] > 0]
+    if refresh_candidates:
+        md.extend([
+            "",
+            "## Top 30 refresh-priority pages",
+            "",
+            "Sorted by priority score = `(1.0 − combined/200w) × type-weight × visibility(log wc)`. Higher priority = higher refresh leverage.",
+            "",
+            "| Priority | Path | Type | Words | Stats | Cites | Combined/200w | Tier |",
+            "|---:|---|:---:|---:|---:|---:|---:|:---:|",
+        ])
+        for r in refresh_candidates[:30]:
+            md.append(
+                f"| {r['priority']} | `{r['path']}` | {r['type']} | "
+                f"{r['word_count']} | {r['stat_count']} | {r['citation_count']} | "
+                f"{r['combined_per_200w']} | {tier_emoji[r['tier']]} {r['tier']} |"
+            )
+    else:
+        lowest_density = sorted(
+            [r for r in results if r["tier"] == "medium"],
+            key=lambda r: (r["combined_per_200w"], r["path"]),
+        )[:30]
+        md.extend([
+            "",
+            "## Lowest-density medium pages",
+            "",
+            "No page is below the 1.0/200w refresh target. These medium-tier pages are shown from lowest to highest density for optional improvement; they are not scored as active refresh priorities.",
+            "",
+            "| Path | Type | Words | Stats | Cites | Combined/200w | Tier |",
+            "|---|:---:|---:|---:|---:|---:|:---:|",
+        ])
+        for r in lowest_density:
+            md.append(
+                f"| `{r['path']}` | {r['type']} | {r['word_count']} | "
+                f"{r['stat_count']} | {r['citation_count']} | "
+                f"{r['combined_per_200w']} | {tier_emoji[r['tier']]} {r['tier']} |"
+            )
 
     md.extend([
         "",
@@ -347,11 +369,11 @@ def main() -> int:
         "",
         "## Refresh workflow",
         "",
-        "1. Pick the top page from the priority list",
-        "2. Read it; identify 3-5 paragraphs lacking a stat or citation",
-        "3. For each, add ONE `<strong>{number}</strong>` (real stat from a real source) PLUS a `<a href=\"{authoritative URL}\">` outbound link to that source",
+        "1. If active refresh priorities exist, pick the highest-scoring page; otherwise treat the lowest-density medium list as optional work",
+        "2. Read the page and identify 3-5 paragraphs lacking a useful fact or citation",
+        "3. Add only relevant sourced facts; do not add numbers solely to raise this score",
         "4. Bump `dateModified` in JSON-LD + visible 'Last updated' stamp",
-        "5. Re-run this audit; the page should drop off the top-30 list",
+        "5. Re-run this audit and confirm any active priority is cleared",
         "",
         "Aim for **2-3 high-priority pages per week** rather than batch-rewriting. Compounds across the catalog over a quarter.",
     ])
@@ -368,8 +390,16 @@ def main() -> int:
     print(f"✓ Report:  {md_path}")
     print(f"✓ JSON:    {json_path}")
     print()
-    print("Top 10 refresh targets:")
-    for r in results[:10]:
+    console_targets = refresh_candidates[:10]
+    if console_targets:
+        print("Top 10 refresh targets:")
+    else:
+        console_targets = sorted(
+            [r for r in results if r["tier"] == "medium"],
+            key=lambda r: (r["combined_per_200w"], r["path"]),
+        )[:10]
+        print("No pages are below the refresh target. Lowest-density medium pages:")
+    for r in console_targets:
         emoji = tier_emoji[r["tier"]]
         print(
             f"  {emoji} {r['priority']:>5.2f}  {r['path']:<60} "
