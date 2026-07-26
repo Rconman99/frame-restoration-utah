@@ -44,6 +44,13 @@ on:
       - 'scripts/audit-entity-consistency.mjs'
       - 'scripts/audit-doc-isolation.mjs'
       - 'scripts/audit-public-seo-surface.mjs'
+      - 'scripts/validate-mobile-ui-contract.mjs'
+      - 'scripts/test-mobile-ui.mjs'
+      - 'global.css'
+      - 'global-critical.css'
+      - 'global-modal.js'
+      - 'package.json'
+      - 'package-lock.json'
       - '**/*.md'
       - 'reviews.json'
       - 'data/reviews-full.json'
@@ -233,6 +240,22 @@ jobs:
           node-version: '20'
       - name: Fail on stale public SEO signals
         run: npm run audit:public-seo
+
+  mobile-ui-quality:
+    name: Mobile conversion UI quality (blocking)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+      - name: Install locked dependencies
+        run: npm ci
+      - name: Install Chromium for rendered QA
+        run: npx playwright install --with-deps chromium
+      - name: Verify mobile dock across representative routes and phone sizes
+        run: npm run test:mobile-ui
 
   review-integrity:
     name: Review & rating integrity (blocking)
