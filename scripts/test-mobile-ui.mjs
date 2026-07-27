@@ -1,11 +1,11 @@
 #!/usr/bin/env node
 /**
- * Rendered mobile UI gate for the shared Utah contact dock.
+ * Rendered responsive UI gate for the shared Utah navigation and contact dock.
  *
  * Serves the static site locally, renders representative customer routes at
- * narrow and tall phone sizes, and verifies that the dock is compact, reserves
- * its real height, hides during downward reading, returns on upward intent,
- * and never stacks with the retired mobile exit overlay.
+ * narrow and tall phone sizes, plus compact and full desktop widths. It verifies
+ * that the dock is compact and non-stacking and that the fixed header retains
+ * reliable, non-wrapping call, inspection, and menu targets at every breakpoint.
  */
 
 import assert from "node:assert/strict";
@@ -21,6 +21,11 @@ const viewports = [
   { width: 360, height: 740 },
   { width: 393, height: 852 },
   { width: 430, height: 932 },
+];
+const headerViewports = [
+  { width: 1024, height: 768, mode: "collapsed" },
+  { width: 1280, height: 800, mode: "compact" },
+  { width: 1440, height: 900, mode: "full" },
 ];
 const mimeTypes = {
   ".css": "text/css; charset=utf-8",
@@ -179,9 +184,103 @@ try {
       await page.close();
     }
   }
+
+  for (const viewport of headerViewports) {
+    const page = await browser.newPage({ viewport });
+    const pageErrors = [];
+    page.on("pageerror", (error) => pageErrors.push(error.message));
+    await page.goto(origin, { waitUntil: "domcontentloaded" });
+
+    const header = await page.evaluate(() => {
+      const links = document.querySelector(".nav-links");
+      const phone = document.querySelector(".nav-phone");
+      const cta = document.querySelector(".nav-cta");
+      const menu = document.querySelector("#menuBtn");
+      const mobileCall = document.querySelector(".nav-call-mobile");
+      const hitTarget = (element) => {
+        const rect = element.getBoundingClientRect();
+        const hit = document.elementFromPoint(
+          rect.left + rect.width / 2,
+          rect.top + rect.height / 2,
+        );
+        return hit?.closest("a,button") === element;
+      };
+      const dimensions = (element) => {
+        const rect = element.getBoundingClientRect();
+        return {
+          width: rect.width,
+          height: rect.height,
+          centerHitsTarget: hitTarget(element),
+        };
+      };
+      const nav = document.querySelector("nav");
+      return {
+        linksDisplay: getComputedStyle(links).display,
+        phone: dimensions(phone),
+        phoneWhiteSpace: getComputedStyle(phone).whiteSpace,
+        cta: dimensions(cta),
+        menu: dimensions(menu),
+        menuDisplay: getComputedStyle(menu).display,
+        mobileCall: dimensions(mobileCall),
+        mobileCallDisplay: getComputedStyle(mobileCall).display,
+        navOverflow: nav.scrollWidth - nav.clientWidth,
+      };
+    });
+
+    assert(header.navOverflow <= 1, `header overflows at ${viewport.width}px`);
+    if (viewport.mode === "collapsed") {
+      assert.equal(header.linksDisplay, "none", "tablet header must collapse crowded links");
+      assert.equal(header.menuDisplay, "flex", "tablet header must expose the menu control");
+      assert.equal(header.mobileCallDisplay, "flex", "tablet header must expose the call control");
+      assert(
+        header.menu.width >= 44 && header.menu.height >= 44 && header.menu.centerHitsTarget,
+        "tablet menu control must be a reliable 44px target",
+      );
+      assert(
+        header.mobileCall.width >= 44
+          && header.mobileCall.height >= 44
+          && header.mobileCall.centerHitsTarget,
+        "tablet call control must be a reliable 44px target",
+      );
+
+      await page.locator("#menuBtn").click();
+      const openMenu = await page.evaluate(() => {
+        const nav = document.querySelector("nav").getBoundingClientRect();
+        const links = document.querySelector(".nav-links").getBoundingClientRect();
+        return {
+          expanded: document.querySelector("#menuBtn").getAttribute("aria-expanded"),
+          top: links.top,
+          navBottom: nav.bottom,
+          width: links.width,
+        };
+      });
+      assert.equal(openMenu.expanded, "true", "tablet menu must report its expanded state");
+      assert(
+        openMenu.top + 1 >= openMenu.navBottom,
+        "expanded tablet menu must begin below the fixed header",
+      );
+      assert(openMenu.width <= viewport.width + 1, "expanded tablet menu must fit the viewport");
+    } else {
+      assert.equal(header.linksDisplay, "flex", "desktop header must retain its visible links");
+      assert.equal(header.phoneWhiteSpace, "nowrap", "desktop phone number must stay on one line");
+      assert(
+        header.phone.width >= 44
+          && header.phone.height >= 44
+          && header.phone.centerHitsTarget,
+        `desktop phone control must be a reliable 44px target at ${viewport.width}px`,
+      );
+      assert(
+        header.cta.width >= 44 && header.cta.height >= 44 && header.cta.centerHitsTarget,
+        `desktop inspection CTA must be a reliable 44px target at ${viewport.width}px`,
+      );
+    }
+    assert.deepEqual(pageErrors, [], `desktop header emitted browser errors: ${pageErrors.join("; ")}`);
+    checks += 1;
+    await page.close();
+  }
 } finally {
   await browser.close();
   await new Promise((resolveClose) => server.close(resolveClose));
 }
 
-console.log(`PASS rendered mobile UI: ${checks} route/viewport combinations`);
+console.log(`PASS rendered responsive UI: ${checks} route/viewport combinations`);
