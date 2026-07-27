@@ -34,6 +34,7 @@ Hard rules (encoded — do not change without reading CLAUDE.md):
 
 from __future__ import annotations
 import argparse
+import html
 import json
 import os
 import re
@@ -56,22 +57,33 @@ IMAGE_DIR.mkdir(parents=True, exist_ok=True)
 SITE = "https://www.framerestorationutah.com"
 
 
-def _load_brand() -> str:
-    """Canonical public brand — single source of truth is business.json.
-    Falls back to the historical literal if the field is missing/unreadable so
-    the generator never crashes on a malformed config. Reading it here means a
-    brand transition only has to change business.json; this generator follows."""
+def _load_business_identity() -> dict:
+    """Load the canonical public entity record used by generated blog pages."""
     p = ROOT / "data" / "route-factory" / "business.json"
     try:
-        return json.loads(p.read_text()).get("brand") or "Frame Restoration Utah"
+        data = json.loads(p.read_text())
+        if isinstance(data, dict):
+            return data
     except (OSError, json.JSONDecodeError):
-        return "Frame Restoration Utah"
+        pass
+    return {}
 
 
-BUSINESS_NAME = _load_brand()
-LEGAL_NAME = "Frame Restoration Utah LLC"
-PHONE_CALL = "435-292-8802"
-PHONE_TEL = "+14352928802"
+BUSINESS_IDENTITY = _load_business_identity()
+BUSINESS_NAME = BUSINESS_IDENTITY.get("brand") or "Frame Restoration Utah"
+LEGAL_NAME = BUSINESS_IDENTITY.get("legal_entity") or "Frame Restoration Utah LLC"
+PHONE_CALL = BUSINESS_IDENTITY.get("public_phone_display") or "435-292-8802"
+PHONE_TEL = BUSINESS_IDENTITY.get("public_phone_e164") or "+14352928802"
+PUBLIC_ADDRESS = BUSINESS_IDENTITY.get("public_address") or {
+    "street": "142 S Main St",
+    "locality": "Heber City",
+    "region": "UT",
+    "postal_code": "84032",
+    "country": "US",
+}
+ENTITY_LINKS = BUSINESS_IDENTITY.get("entity_links") or {}
+ORGANIZATION_ID = f"{SITE}/#organization"
+AUTHOR_ID = f"{SITE}/pages/about#landon-yokers"
 SCHEDULE_URL = "https://calendar.app.google/cR4bBSWfb9TQ28UF8"
 AUTHOR_NAME = "Landon Yokers"
 AUTHOR_TITLE = "Owner"
@@ -549,6 +561,26 @@ def render_html(manifest: dict, image_url: Optional[str], image_local_path: Opti
     city_slug = manifest.get("city_slug", "utah")
     city_label = "Utah" if city_slug == "utah" else city_slug.replace("-", " ").title()
     canonical = f"{SITE}/blog/{city_slug}/{slug}"
+    organization_schema = {
+        "@type": ["LocalBusiness", "RoofingContractor"],
+        "@id": ORGANIZATION_ID,
+        "name": BUSINESS_NAME,
+        "legalName": LEGAL_NAME,
+        "url": SITE,
+        "telephone": PHONE_TEL,
+        "address": {
+            "@type": "PostalAddress",
+            "streetAddress": PUBLIC_ADDRESS["street"],
+            "addressLocality": PUBLIC_ADDRESS["locality"],
+            "addressRegion": PUBLIC_ADDRESS["region"],
+            "postalCode": PUBLIC_ADDRESS["postal_code"],
+            "addressCountry": PUBLIC_ADDRESS["country"],
+        },
+        "hasMap": ENTITY_LINKS.get("hasMap"),
+        "sameAs": ENTITY_LINKS.get("sameAs", []),
+    }
+    organization_schema = {key: value for key, value in organization_schema.items() if value}
+    organization_schema_json = json.dumps(organization_schema, ensure_ascii=False)
 
     # Image source resolution:
     #   --image-url + --image-local → AI illustration (Higgsfield); ImageObject schema
@@ -627,6 +659,14 @@ def render_html(manifest: dict, image_url: Optional[str], image_local_path: Opti
             body_parts.append(f'<h3>{sec["text"]}</h3>')
         elif sec["type"] == "p":
             body_parts.append(f'<p>{linkify(sec["text"])}</p>')
+        elif sec["type"] == "blockquote":
+            quote = html.escape(sec.get("text", ""))
+            source_url = html.escape(sec.get("source_url", ""), quote=True)
+            source_label = html.escape(sec.get("source_label", "Source"))
+            body_parts.append(
+                f'<blockquote><p>“{quote}”</p>'
+                f'<cite>— <a href="{source_url}" target="_blank" rel="noopener">{source_label}</a></cite></blockquote>'
+            )
         elif sec["type"] == "checklist":
             num = sec.get("num", "01")
             body_parts.append(
@@ -694,14 +734,17 @@ def render_html(manifest: dict, image_url: Optional[str], image_local_path: Opti
       "dateModified": "{today}",
       "author": {{
         "@type": "Person",
+        "@id": "{AUTHOR_ID}",
         "name": "{AUTHOR_NAME}",
         "jobTitle": "{AUTHOR_TITLE}",
-        "worksFor": {{"@type": "Organization", "name": "{BUSINESS_NAME}", "url": "{SITE}"}}
+        "url": "{SITE}/pages/about",
+        "worksFor": {{"@id": "{ORGANIZATION_ID}"}}
       }},
-      "publisher": {{"@type": "Organization", "name": "{BUSINESS_NAME}", "url": "{SITE}"}},
+      "publisher": {{"@id": "{ORGANIZATION_ID}"}},
       "mainEntityOfPage": "{canonical}",
       "digitalSourceType": "https://cv.iptc.org/newscodes/digitalsourcetype/{'compositeSynthetic' if is_ai else 'humanWritten'}"{image_schema_block}
     }},
+    {organization_schema_json},
     {{
       "@type": "FAQPage",
       "mainEntity": [
@@ -732,6 +775,12 @@ def render_html(manifest: dict, image_url: Optional[str], image_local_path: Opti
     .blog-body ul, .blog-body ol {{ margin: 16px 0 24px 28px; }}
     .blog-body li {{ font-size: 16px; color: var(--gray); line-height: 1.85; margin-bottom: 8px; }}
     .blog-body strong {{ color: var(--dark); }}
+    .blog-body blockquote {{ background:#f4f8fb; border-left:4px solid var(--gold); margin:24px 0; padding:18px 22px; }}
+    .blog-body blockquote p {{ color:var(--dark); font-size:17px; margin:0 0 8px; }}
+    .blog-body blockquote cite {{ color:#4a5464; font-size:14px; }}
+    .blog-body blockquote cite a {{ color:var(--navy); font-weight:700; }}
+    .article-byline {{ background:#fff; border:1px solid #d7e0e7; border-left:4px solid var(--gold); border-radius:4px; color:#4a5464; font-size:14px; line-height:1.6; margin:0 0 24px; padding:12px 16px; }}
+    .article-byline a {{ color:var(--navy); font-weight:700; }}
     .tldr-box {{ background: #f4f8fb; border-left: 5px solid var(--gold); padding: 20px 24px; margin: 24px 0 40px; border-radius: 4px; }}
     .tldr-box p {{ margin: 0; font-size: 15px; color: var(--dark); line-height: 1.7; }}
     .tldr-box strong {{ color: var(--navy); letter-spacing: 0.5px; }}
@@ -744,6 +793,10 @@ def render_html(manifest: dict, image_url: Optional[str], image_local_path: Opti
     .blog-cta h2 {{ font-family: 'Archivo Black', sans-serif; font-size: clamp(26px, 3.5vw, 42px); color: var(--navy); text-transform: uppercase; margin-bottom: 14px; }}
     .blog-cta p {{ font-size: 18px; color: rgba(11,64,96,0.7); margin-bottom: 28px; }}
     .image-credit {{ font-size: 12px; color: rgba(0,0,0,0.5); text-align: right; margin-top: 4px; font-style: italic; }}
+    @media (max-width:900px) {{
+      nav {{ height:76px; }}
+      .nav-logo img {{ height:64px; max-width:210px; }}
+    }}
   </style>
   <script>
     !function(t,e){{var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){{function g(t,e){{var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){{t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}}}(p=t.createElement("script")).type="text/javascript",p.crossOrigin="anonymous",p.async=!0,p.src=s.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){{var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e}},u.people.toString=function(){{return u.toString(1)+".people (stub)"}},o="init capture register".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])}},e.__SV=1)}}(document,window.posthog||[]);
@@ -766,6 +819,7 @@ def render_html(manifest: dict, image_url: Optional[str], image_local_path: Opti
     <li><a href="tel:{PHONE_TEL}" class="nav-phone">{PHONE_CALL}</a></li>
     <li><a href="{SCHEDULE_URL}" target="_blank" rel="noopener" class="nav-cta">Free Inspection</a></li>
   </ul>
+  <a href="tel:{PHONE_TEL}" class="nav-call-mobile" data-cta="header-call" aria-label="Call {BUSINESS_NAME} at {PHONE_CALL}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 10.8 19.79 19.79 0 01.03 2.18 2 2 0 012 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 14.92z"/></svg></a>
   <button class="mobile-btn" id="menuBtn" aria-label="Toggle navigation"><span></span><span></span><span></span></button>
 </nav>
 
@@ -781,6 +835,7 @@ def render_html(manifest: dict, image_url: Optional[str], image_local_path: Opti
 </header>
 
 <article class="blog-body">
+  <p class="article-byline" aria-label="Article author and publisher">Written and reviewed by <a href="/pages/about">{AUTHOR_NAME}</a>, {AUTHOR_TITLE} of <a href="/">{BUSINESS_NAME}</a>. Published under {LEGAL_NAME}; Utah DOPL contractor #14256097-5501.</p>
   <figure class="blog-featured-image" style="margin:0 0 32px;border-radius:4px;overflow:hidden">
     <img src="{img_src}" alt="{image_alt}" width="780" height="440" style="width:100%;height:auto;display:block;object-fit:cover;max-height:400px" loading="eager" fetchpriority="high" />
     {f'<figcaption class="image-credit">{image_caption}</figcaption>' if image_caption else ''}
