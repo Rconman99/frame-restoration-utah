@@ -33,6 +33,9 @@ on:
   pull_request:
     paths:
       - '**/*.html'
+      - 'llms.txt'
+      - 'scripts/audit-claim-registry.mjs'
+      - 'scripts/validate-aeo-topic-portfolio.mjs'
       - 'scripts/audit-compliance-words.mjs'
       - 'scripts/audit-links.mjs'
       - 'scripts/audit-jsonld.mjs'
@@ -58,6 +61,7 @@ on:
       - 'reviews.json'
       - 'data/reviews-full.json'
       - 'data/route-factory/**'
+      - 'data/aeo/topic-portfolio-baseline.json'
       - '.vercelignore'
       - 'sitemap.xml'
       - '.github/workflows/compliance-gate.yml'
@@ -151,6 +155,28 @@ jobs:
         # exits 1 on any forbidden-word blocker; saturation stays a warning
         # unless --strict is added later.
         run: node scripts/audit-compliance-words.mjs
+
+  claim-registry:
+    name: Verified claim registry + llms.txt parity (blocking)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Fail on unverified, expired, conflicting, or drifted narrative claims
+        run: node scripts/audit-claim-registry.mjs
+
+  aeo-topic-portfolio:
+    name: AEO topic-portfolio measurement contract (blocking)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Require three topics, five intents, durable tags, and no page-fanout contract
+        run: node scripts/validate-aeo-topic-portfolio.mjs
 
   jsonld-validity:
     name: JSON-LD structured-data validity (blocking)

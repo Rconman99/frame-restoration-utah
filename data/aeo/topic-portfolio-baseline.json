@@ -1,0 +1,146 @@
+{
+  "schemaVersion": 1,
+  "market": "utah",
+  "createdAt": "2026-07-26",
+  "purpose": "A three-topic, five-intent measurement scaffold. These prompts are measurement inputs, not a five-page content prescription.",
+  "measurementContract": {
+    "doNotGeneratePagesFromPromptVariants": true,
+    "providers": ["chatgpt", "perplexity", "gemini", "google_ai"],
+    "rereadAfterDays": 28,
+    "metrics": [
+      "named_mention_rate",
+      "owned_domain_citation_rate",
+      "mention_and_citation_rate",
+      "third_party_corroborated_presence_rate",
+      "source_domain_stability"
+    ],
+    "requiredRunFields": [
+      "runId",
+      "createdAt",
+      "provider",
+      "prompt",
+      "promptTags",
+      "answer",
+      "sources",
+      "brandMentions",
+      "competitorMentions"
+    ],
+    "existingAggregateBaseline": {
+      "observedAt": "2026-07-13",
+      "sourceArtifact": "/Users/agenticmac/.cache/aeo-loop/utah-brand.json",
+      "limitations": "Aggregate-only historical snapshot; cited URLs and per-city prompt rows were not retained.",
+      "perplexity": {
+        "total": 35,
+        "cited": 9,
+        "mentioned": 4,
+        "namedMentionRate": 0.114,
+        "ownedCitationRate": 0.257
+      },
+      "googleAiOverview": {
+        "total": 11,
+        "cited": 0,
+        "mentioned": 0,
+        "namedMentionRate": 0,
+        "ownedCitationRate": 0
+      }
+    }
+  },
+  "topics": [
+    {
+      "id": "roofer-selection-heber-city",
+      "service": "roofing-contractor",
+      "location": "heber-city",
+      "prompts": [
+        {
+          "intent": "definition",
+          "text": "What qualifications and local evidence should a homeowner look for in a Heber City, Utah roofing contractor? Cite sources.",
+          "tags": ["market:utah", "service:roofing-contractor", "location:heber-city", "topic:roofer-selection-heber-city", "intent:definition"]
+        },
+        {
+          "intent": "comparison",
+          "text": "Compare roofing companies serving Heber City, Utah using verified credentials, local project evidence, reviews, and warranty terms. Cite sources.",
+          "tags": ["market:utah", "service:roofing-contractor", "location:heber-city", "topic:roofer-selection-heber-city", "intent:comparison"]
+        },
+        {
+          "intent": "alternatives",
+          "text": "What are the alternatives to hiring a full-service roofing contractor for a roof problem in Heber City, and when is each appropriate? Cite sources.",
+          "tags": ["market:utah", "service:roofing-contractor", "location:heber-city", "topic:roofer-selection-heber-city", "intent:alternatives"]
+        },
+        {
+          "intent": "use-case",
+          "text": "Which roofing companies serving Heber City are suited to mountain weather, snow, and ice-dam roof problems? Cite independent sources.",
+          "tags": ["market:utah", "service:roofing-contractor", "location:heber-city", "topic:roofer-selection-heber-city", "intent:use-case"]
+        },
+        {
+          "intent": "buying",
+          "text": "Who are the best roofers in Heber City, Utah? Explain the evidence and cite independent sources.",
+          "tags": ["market:utah", "service:roofing-contractor", "location:heber-city", "topic:roofer-selection-heber-city", "intent:buying"]
+        }
+      ]
+    },
+    {
+      "id": "storm-damage-roofing-park-city",
+      "service": "storm-damage-roofing",
+      "location": "park-city",
+      "prompts": [
+        {
+          "intent": "definition",
+          "text": "What counts as storm damage to a roof in Park City, Utah, and what should a homeowner document first? Cite sources.",
+          "tags": ["market:utah", "service:storm-damage-roofing", "location:park-city", "topic:storm-damage-roofing-park-city", "intent:definition"]
+        },
+        {
+          "intent": "comparison",
+          "text": "Compare Park City roofing companies for storm-damage inspection and repair using verifiable local evidence. Cite sources.",
+          "tags": ["market:utah", "service:storm-damage-roofing", "location:park-city", "topic:storm-damage-roofing-park-city", "intent:comparison"]
+        },
+        {
+          "intent": "alternatives",
+          "text": "For storm-related roof damage in Park City, when should a homeowner choose temporary tarping, repair, or full replacement? Cite sources.",
+          "tags": ["market:utah", "service:storm-damage-roofing", "location:park-city", "topic:storm-damage-roofing-park-city", "intent:alternatives"]
+        },
+        {
+          "intent": "use-case",
+          "text": "Which Park City roofers can document hail, wind, snow-load, and ice-dam damage without acting as an insurance adjuster? Cite sources.",
+          "tags": ["market:utah", "service:storm-damage-roofing", "location:park-city", "topic:storm-damage-roofing-park-city", "intent:use-case"]
+        },
+        {
+          "intent": "buying",
+          "text": "Who should I call for storm-damage roof repair in Park City, Utah? Cite independent sources and explain why.",
+          "tags": ["market:utah", "service:storm-damage-roofing", "location:park-city", "topic:storm-damage-roofing-park-city", "intent:buying"]
+        }
+      ]
+    },
+    {
+      "id": "roof-replacement-south-jordan",
+      "service": "roof-replacement",
+      "location": "south-jordan",
+      "prompts": [
+        {
+          "intent": "definition",
+          "text": "What is included in a complete roof replacement in South Jordan, Utah? Cite sources.",
+          "tags": ["market:utah", "service:roof-replacement", "location:south-jordan", "topic:roof-replacement-south-jordan", "intent:definition"]
+        },
+        {
+          "intent": "comparison",
+          "text": "Compare South Jordan roof replacement companies based on written scope, materials, local proof, and warranty terms. Cite sources.",
+          "tags": ["market:utah", "service:roof-replacement", "location:south-jordan", "topic:roof-replacement-south-jordan", "intent:comparison"]
+        },
+        {
+          "intent": "alternatives",
+          "text": "What alternatives to full roof replacement are reasonable for a South Jordan home, and when does repair stop making sense? Cite sources.",
+          "tags": ["market:utah", "service:roof-replacement", "location:south-jordan", "topic:roof-replacement-south-jordan", "intent:alternatives"]
+        },
+        {
+          "intent": "use-case",
+          "text": "Which South Jordan roofing contractors are suitable for replacing an aging asphalt-shingle roof with ventilation or decking concerns? Cite sources.",
+          "tags": ["market:utah", "service:roof-replacement", "location:south-jordan", "topic:roof-replacement-south-jordan", "intent:use-case"]
+        },
+        {
+          "intent": "buying",
+          "text": "What are the best roof replacement companies in South Jordan, Utah? Cite independent sources and explain the selection criteria.",
+          "tags": ["market:utah", "service:roof-replacement", "location:south-jordan", "topic:roof-replacement-south-jordan", "intent:buying"]
+        }
+      ]
+    }
+  ]
+}

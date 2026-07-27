@@ -1,0 +1,257 @@
+{
+  "schemaVersion": 1,
+  "market": "UT",
+  "reviewedAt": "2026-07-26",
+  "verificationScope": "Version 1 locks identity and service-route facts already present in approved repository sources. It intentionally omits pricing, payout, ranking, review-count, warranty, certification, and claim-outcome assertions until each has independent evidence and an owner-approved review date.",
+  "claims": [
+    {
+      "id": "identity.public_brand",
+      "label": "Public brand",
+      "value": "Frame Restoration Utah",
+      "status": "verified",
+      "verifiedBy": "migration-from-existing-source-of-truth",
+      "verifiedOn": "2026-07-26",
+      "expiresOn": null,
+      "evidence": [
+        {
+          "kind": "local-json",
+          "path": "data/route-factory/business.json",
+          "pointer": "/brand"
+        }
+      ],
+      "mirrors": [
+        {
+          "path": "data/route-factory/business.json",
+          "pointer": "/brand"
+        }
+      ],
+      "allowedSurfaces": ["llms.txt", "visible-copy", "structured-data", "directory-packet"],
+      "prohibitedVariants": ["Frame Roofing Utah as the legal entity"]
+    },
+    {
+      "id": "identity.legal_entity",
+      "label": "Legal entity",
+      "value": "Frame Restoration Utah LLC",
+      "status": "verified",
+      "verifiedBy": "migration-from-existing-source-of-truth",
+      "verifiedOn": "2026-07-26",
+      "expiresOn": null,
+      "evidence": [
+        {
+          "kind": "local-json",
+          "path": "data/route-factory/business.json",
+          "pointer": "/legal_entity"
+        }
+      ],
+      "mirrors": [
+        {
+          "path": "data/route-factory/business.json",
+          "pointer": "/legal_entity"
+        }
+      ],
+      "allowedSurfaces": ["llms.txt", "visible-copy", "structured-data", "directory-packet"],
+      "prohibitedVariants": []
+    },
+    {
+      "id": "identity.canonical_url",
+      "label": "Canonical website",
+      "value": "https://www.framerestorationutah.com",
+      "status": "verified",
+      "verifiedBy": "migration-from-existing-source-of-truth",
+      "verifiedOn": "2026-07-26",
+      "expiresOn": null,
+      "evidence": [
+        {
+          "kind": "local-json",
+          "path": "data/route-factory/business.json",
+          "pointer": "/canonical_host"
+        }
+      ],
+      "mirrors": [
+        {
+          "path": "data/route-factory/business.json",
+          "pointer": "/canonical_host",
+          "expected": "www.framerestorationutah.com"
+        }
+      ],
+      "allowedSurfaces": ["llms.txt", "visible-copy", "structured-data", "directory-packet"],
+      "prohibitedVariants": ["https://framerestorationutah.com"]
+    },
+    {
+      "id": "identity.public_phone",
+      "label": "Public phone",
+      "value": "435-292-8802",
+      "status": "verified",
+      "verifiedBy": "migration-from-existing-source-of-truth",
+      "verifiedOn": "2026-07-26",
+      "expiresOn": null,
+      "evidence": [
+        {
+          "kind": "local-json",
+          "path": "data/route-factory/business.json",
+          "pointer": "/public_phone_display"
+        }
+      ],
+      "mirrors": [
+        {
+          "path": "data/route-factory/business.json",
+          "pointer": "/public_phone_display"
+        }
+      ],
+      "allowedSurfaces": ["llms.txt", "visible-copy", "structured-data", "directory-packet"],
+      "prohibitedVariants": ["435-302-4422"]
+    },
+    {
+      "id": "identity.public_email",
+      "label": "Public email",
+      "value": "landon@framerestorations.com",
+      "status": "verified",
+      "verifiedBy": "migration-from-existing-source-of-truth",
+      "verifiedOn": "2026-07-26",
+      "expiresOn": null,
+      "evidence": [
+        {
+          "kind": "local-json",
+          "path": "data/route-factory/business.json",
+          "pointer": "/public_email"
+        }
+      ],
+      "mirrors": [
+        {
+          "path": "data/route-factory/business.json",
+          "pointer": "/public_email"
+        }
+      ],
+      "allowedSurfaces": ["llms.txt", "visible-copy", "structured-data", "directory-packet"],
+      "prohibitedVariants": []
+    },
+    {
+      "id": "identity.public_address",
+      "label": "Public address",
+      "value": "142 S Main St, Heber City, UT 84032",
+      "status": "verified",
+      "verifiedBy": "migration-from-existing-source-of-truth",
+      "verifiedOn": "2026-07-26",
+      "expiresOn": null,
+      "evidence": [
+        {
+          "kind": "local-json",
+          "path": "data/route-factory/business.json",
+          "pointer": "/public_address"
+        }
+      ],
+      "mirrors": [
+        {
+          "path": "data/route-factory/business.json",
+          "pointer": "/public_address/street",
+          "expected": "142 S Main St"
+        },
+        {
+          "path": "data/route-factory/business.json",
+          "pointer": "/public_address/locality",
+          "expected": "Heber City"
+        },
+        {
+          "path": "data/route-factory/business.json",
+          "pointer": "/public_address/region",
+          "expected": "UT"
+        },
+        {
+          "path": "data/route-factory/business.json",
+          "pointer": "/public_address/postal_code",
+          "expected": "84032"
+        }
+      ],
+      "allowedSurfaces": ["llms.txt", "visible-copy", "structured-data", "directory-packet"],
+      "prohibitedVariants": []
+    },
+    {
+      "id": "operations.summary",
+      "label": "Business summary",
+      "value": "Roofing contractor based in Heber City with published roofing service and Utah location pages.",
+      "status": "verified",
+      "verifiedBy": "repository-route-evidence",
+      "verifiedOn": "2026-07-26",
+      "expiresOn": null,
+      "evidence": [
+        {
+          "kind": "local-file",
+          "path": "index.html"
+        },
+        {
+          "kind": "local-file",
+          "path": "locations/heber-city.html"
+        }
+      ],
+      "mirrors": [],
+      "allowedSurfaces": ["llms.txt", "press-fact-sheet"],
+      "prohibitedVariants": ["serving every Utah community"]
+    },
+    {
+      "id": "operations.insurance_boundary",
+      "label": "Insurance-role boundary",
+      "value": "Frame documents observed roof conditions and provides roofing scopes. Coverage and claim decisions remain with the homeowner, carrier, and licensed insurance professionals.",
+      "status": "verified",
+      "verifiedBy": "utah-compliance-policy",
+      "verifiedOn": "2026-07-26",
+      "expiresOn": null,
+      "evidence": [
+        {
+          "kind": "local-file",
+          "path": "data/route-factory/UTAH-COMPLIANCE-LAW.md"
+        }
+      ],
+      "mirrors": [],
+      "allowedSurfaces": ["llms.txt", "visible-copy", "outreach-claims"],
+      "prohibitedVariants": ["supplemental-claim advocacy", "represents homeowners", "writes supplemental claims"]
+    }
+  ],
+  "services": [
+    {
+      "name": "Residential roofing",
+      "path": "/pages/residential-roofing",
+      "sourceFile": "pages/residential-roofing.html"
+    },
+    {
+      "name": "Commercial roofing",
+      "path": "/pages/commercial-roofing",
+      "sourceFile": "pages/commercial-roofing.html"
+    },
+    {
+      "name": "Roof repair",
+      "path": "/pages/roof-repair",
+      "sourceFile": "pages/roof-repair.html"
+    },
+    {
+      "name": "Roof replacement",
+      "path": "/pages/roof-replacement",
+      "sourceFile": "pages/roof-replacement.html"
+    },
+    {
+      "name": "Storm damage roofing",
+      "path": "/pages/storm-damage",
+      "sourceFile": "pages/storm-damage.html"
+    },
+    {
+      "name": "Emergency tarping",
+      "path": "/pages/emergency-tarping",
+      "sourceFile": "pages/emergency-tarping.html"
+    },
+    {
+      "name": "Gutters",
+      "path": "/pages/gutters",
+      "sourceFile": "pages/gutters.html"
+    }
+  ],
+  "surfacePolicy": {
+    "generatedSurfaces": ["llms.txt"],
+    "forbiddenUnregisteredTopics": [
+      "price ranges",
+      "insurance payout ranges",
+      "claim success predictions",
+      "third-party rankings",
+      "review counts",
+      "credentials not present in this registry"
+    ]
+  }
+}

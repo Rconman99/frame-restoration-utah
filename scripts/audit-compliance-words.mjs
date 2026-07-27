@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 /**
- * Compliance + AEO-saturation validator for Frame Restoration TX.
+ * Compliance + AEO-saturation validator for Frame Restoration Utah.
  *
  * Reads `data/route-factory/compliance-words.json` and walks the site's
- * scan roots, scoring each HTML file against:
+ * scan roots, scoring each configured public file against:
  *
  *   1. Forbidden words (HARD BLOCKER) — `public adjuster`, `negotiate` family.
  *      Any non-zero match in any non-exempt file fails the audit.
@@ -60,7 +60,15 @@ function isIgnored(relPath) {
   return false;
 }
 
-function walkHtml(root) {
+const scanExtensions = new Set(
+  (cfg.scanExtensions || ['.html']).map((ext) => ext.toLowerCase()),
+);
+
+function isScannableFile(filePath) {
+  return scanExtensions.has(path.extname(filePath).toLowerCase());
+}
+
+function walkScannable(root) {
   const out = [];
   const stack = [root];
   while (stack.length) {
@@ -71,7 +79,7 @@ function walkHtml(root) {
     if (isIgnored(rel)) continue;
     if (st.isDirectory()) {
       for (const child of fs.readdirSync(p)) stack.push(path.join(p, child));
-    } else if (st.isFile() && p.endsWith('.html')) {
+    } else if (st.isFile() && isScannableFile(p)) {
       out.push(rel);
     }
   }
@@ -85,8 +93,8 @@ function collectFiles() {
     const full = path.join(repoRoot, root);
     if (!fs.existsSync(full)) continue;
     const st = fs.statSync(full);
-    if (st.isDirectory()) for (const f of walkHtml(full)) set.add(f);
-    else if (root.endsWith('.html')) set.add(root);
+    if (st.isDirectory()) for (const f of walkScannable(full)) set.add(f);
+    else if (st.isFile() && isScannableFile(full)) set.add(root);
   }
   return [...set].sort();
 }
@@ -186,7 +194,7 @@ if (flags.json) {
     exitCode: findings.blocker.length || (flags.strict && findings.warn.length) ? 1 : 0,
   }, null, 2));
 } else {
-  const summary = `audited: ${files.length} HTML files`;
+  const summary = `audited: ${files.length} public files`;
   console.log(`\n=== compliance-words audit ===`);
   console.log(summary);
   console.log(`\nSite-wide totals:`);
