@@ -23,6 +23,7 @@ const viewports = [
   { width: 430, height: 932 },
 ];
 const headerViewports = [
+  { width: 320, height: 568, mode: "collapsed" },
   { width: 1024, height: 768, mode: "collapsed" },
   { width: 1280, height: 800, mode: "compact" },
   { width: 1440, height: 900, mode: "full" },
@@ -246,12 +247,17 @@ try {
       await page.locator("#menuBtn").click();
       const openMenu = await page.evaluate(() => {
         const nav = document.querySelector("nav").getBoundingClientRect();
-        const links = document.querySelector(".nav-links").getBoundingClientRect();
+        const linksElement = document.querySelector(".nav-links");
+        const links = linksElement.getBoundingClientRect();
         return {
           expanded: document.querySelector("#menuBtn").getAttribute("aria-expanded"),
           top: links.top,
+          bottom: links.bottom,
           navBottom: nav.bottom,
           width: links.width,
+          clientHeight: linksElement.clientHeight,
+          scrollHeight: linksElement.scrollHeight,
+          overflowY: getComputedStyle(linksElement).overflowY,
         };
       });
       assert.equal(openMenu.expanded, "true", "tablet menu must report its expanded state");
@@ -260,6 +266,19 @@ try {
         "expanded tablet menu must begin below the fixed header",
       );
       assert(openMenu.width <= viewport.width + 1, "expanded tablet menu must fit the viewport");
+      assert(
+        openMenu.bottom <= viewport.height + 1,
+        "expanded navigation must remain bounded by the viewport",
+      );
+      assert.equal(openMenu.overflowY, "auto", "expanded navigation must be independently scrollable");
+
+      const lastActionVisible = await page.evaluate(() => {
+        const links = document.querySelector(".nav-links");
+        links.scrollTop = links.scrollHeight;
+        const lastAction = links.querySelector("li:last-child a").getBoundingClientRect();
+        return lastAction.bottom <= window.innerHeight + 1;
+      });
+      assert(lastActionVisible, "every expanded-menu action must remain reachable");
     } else {
       assert.equal(header.linksDisplay, "flex", "desktop header must retain its visible links");
       assert.equal(header.phoneWhiteSpace, "nowrap", "desktop phone number must stay on one line");
