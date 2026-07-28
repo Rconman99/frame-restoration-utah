@@ -36,6 +36,7 @@ const POSTHOG_API_KEY = "phc_BnECzlZ2OeDujli2dbqcgGODXlv2tYERbp40dTF7UBV";
 // over-counts (a misroute or not-yet-mapped number is treated as not-Ryan's).
 const NUMBER_SOURCES: Record<string, { source: string; commission: boolean }> = {
   "+14352928802": { source: "google_website", commission: true }, // GBP + website NAP
+  "+14356108978": { source: "slc_backlink", commission: true }, // Contractor ReIndependence SLC tracking DID
   // "+1XXXXXXXXXX": { source: "directory", commission: false },   // ← directory tracking line (add once provisioned)
 };
 function classifyDialedNumber(toNumber: string): { source: string; commission: boolean } {
