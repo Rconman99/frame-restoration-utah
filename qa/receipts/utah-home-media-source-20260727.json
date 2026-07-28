@@ -1,14 +1,14 @@
 {
   "schema_version": "1.0",
   "contract": "frame-utah-home-media-source",
-  "contract_sha256": "5e3d9da406366398c430b018cbab1637fc3ef5b3e7ca5b748e43414cbd670323",
+  "contract_sha256": "ba200d91235dbe4d5b51ab32229996d72e43f7875fab2508c23c40c458d150d6",
   "contract_snapshot": {
     "schema_version": "1.0",
     "name": "frame-utah-home-media-source",
     "expected_serving_origin": "http://127.0.0.1:4173",
     "expected_canonical_origin": "https://www.framerestorationutah.com",
     "freshness_markers": [
-      "Fresh From Landon's Approved Media Folder",
+      "Recent Utah Project Media",
       "utah-july-2026-finished-roof-mountain-close-1600.webp",
       "wasatch-back-completed-roof-flyover-2026-06.mp4"
     ],
@@ -88,7 +88,7 @@
   },
   "stage": "source",
   "base_url": "http://127.0.0.1:4173",
-  "observed_at": "2026-07-28T05:28:57.005019Z",
+  "observed_at": "2026-07-28T06:54:50.337966Z",
   "verdict": "pass",
   "summary": {
     "checks": 44,
@@ -132,7 +132,7 @@
           "detail": "count=1 actual='https://www.framerestorationutah.com/' expected='https://www.framerestorationutah.com/'"
         },
         {
-          "name": "freshness:Fresh From Landon's Approved Media Folder",
+          "name": "freshness:Recent Utah Project Media",
           "pass": true,
           "detail": "marker present"
         },
@@ -223,10 +223,10 @@
         "final_url": "http://127.0.0.1:4173/",
         "redirects": 0,
         "headers": {
-          "content-length": "181382",
+          "content-length": "181108",
           "content-type": "text/html",
-          "date": "Tue, 28 Jul 2026 05:28:57 GMT",
-          "last-modified": "Tue, 28 Jul 2026 05:25:44 GMT",
+          "date": "Tue, 28 Jul 2026 06:54:50 GMT",
+          "last-modified": "Tue, 28 Jul 2026 06:54:20 GMT",
           "server": "SimpleHTTP/0.6 Python/3.14.6"
         }
       },
@@ -283,7 +283,7 @@
           "detail": "count=1 actual='https://www.framerestorationutah.com/' expected='https://www.framerestorationutah.com/'"
         },
         {
-          "name": "freshness:Fresh From Landon's Approved Media Folder",
+          "name": "freshness:Recent Utah Project Media",
           "pass": true,
           "detail": "marker present"
         },
@@ -374,10 +374,10 @@
         "final_url": "http://127.0.0.1:4173/",
         "redirects": 0,
         "headers": {
-          "content-length": "181382",
+          "content-length": "181108",
           "content-type": "text/html",
-          "date": "Tue, 28 Jul 2026 05:29:00 GMT",
-          "last-modified": "Tue, 28 Jul 2026 05:25:44 GMT",
+          "date": "Tue, 28 Jul 2026 06:54:53 GMT",
+          "last-modified": "Tue, 28 Jul 2026 06:54:20 GMT",
           "server": "SimpleHTTP/0.6 Python/3.14.6"
         }
       },
@@ -400,6 +400,6 @@
       }
     }
   ],
-  "duration_seconds": 5.721,
+  "duration_seconds": 5.415,
   "receipt_path": "/Users/agenticmac/projects/_wt-utah-landon-media-refresh-20260727/qa/receipts/utah-home-media-source-20260727.json"
 }
