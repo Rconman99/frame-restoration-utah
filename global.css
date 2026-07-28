@@ -167,9 +167,11 @@ footer a { color: var(--gold); text-decoration: none; }
 
 /* ─── RESPONSIVE (shared) ─── */
 @media (max-width: 900px) {
+  nav { height: 84px; }
+  .nav-logo img { height: 68px; }
   .nav-links { display: none; }
   .mobile-btn { display: flex; }
-  .nav-links.open { display: flex; flex-direction: column; position: fixed; top: calc(100px + env(safe-area-inset-top, 0px)); left: 0; right: 0; max-height: calc(100dvh - 100px - env(safe-area-inset-top, 0px)); overflow-y: auto; overscroll-behavior: contain; background: var(--navy); padding: 24px 5% 32px; gap: 20px; border-bottom: 2px solid var(--gold); z-index: 1000; }
+  .nav-links.open { display: flex; flex-direction: column; position: fixed; top: calc(84px + env(safe-area-inset-top, 0px)); left: 0; right: 0; max-height: calc(100dvh - 84px - env(safe-area-inset-top, 0px)); overflow-y: auto; overscroll-behavior: contain; background: var(--navy); padding: 24px 5% 32px; gap: 20px; border-bottom: 2px solid var(--gold); z-index: 1000; }
   .nav-links.open a { font-size: 18px; color: var(--white); min-height: 44px; display: flex; align-items: center; }
   .nav-links.open a:hover, .nav-links.open a:active { color: var(--gold); }
   .nav-links.open .nav-phone { color: var(--gold) !important; }
@@ -205,10 +207,12 @@ footer a { color: var(--gold); text-decoration: none; }
   .blog-card-thumb { flex: none; min-height: 160px; }
 }
 @media (min-width: 901px) and (max-width: 1100px) {
+  nav { height: 84px; }
+  .nav-logo img { height: 68px; }
   .nav-links { display: none; }
   .mobile-btn { display: flex; }
   .nav-call-mobile { display: inline-flex; }
-  .nav-links.open { display: flex; flex-direction: column; position: fixed; top: calc(100px + env(safe-area-inset-top, 0px)); left: 0; right: 0; max-height: calc(100dvh - 100px - env(safe-area-inset-top, 0px)); overflow-y: auto; overscroll-behavior: contain; background: var(--navy); padding: 24px 5% 32px; gap: 20px; border-bottom: 2px solid var(--gold); z-index: 1000; }
+  .nav-links.open { display: flex; flex-direction: column; position: fixed; top: calc(84px + env(safe-area-inset-top, 0px)); left: 0; right: 0; max-height: calc(100dvh - 84px - env(safe-area-inset-top, 0px)); overflow-y: auto; overscroll-behavior: contain; background: var(--navy); padding: 24px 5% 32px; gap: 20px; border-bottom: 2px solid var(--gold); z-index: 1000; }
   .nav-links.open a { font-size: 18px; color: var(--white); min-height: 44px; display: flex; align-items: center; }
   .nav-links.open a:hover, .nav-links.open a:active { color: var(--gold); }
   .nav-links.open .nav-phone { color: var(--gold) !important; }

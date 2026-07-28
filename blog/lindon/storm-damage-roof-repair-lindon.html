@@ -90,10 +90,7 @@
     .blog-cta p { font-size: 18px; color: rgba(11,64,96,0.7); margin-bottom: 28px; }
     .image-credit { font-size: 12px; color: rgba(0,0,0,0.5); text-align: right; margin-top: 4px; font-style: italic; }
   </style>
-  <script>
-    !function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.crossOrigin="anonymous",p.async=!0,p.src=s.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+".people (stub)"},o="init capture register".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
-    posthog.init('phc_BnECzlZ2OeDujli2dbqcgGODXlv2tYERbp40dTF7UBV',{api_host:'https://us.i.posthog.com', person_profiles: 'identified_only', disable_surveys: true})
-  </script>
+  <script src="/posthog-loader.js" defer></script>
 </head>
 <body>
 <nav>
@@ -111,6 +108,7 @@
     <li><a href="tel:+14352928802" class="nav-phone">435-292-8802</a></li>
     <li><a href="https://calendar.app.google/cR4bBSWfb9TQ28UF8" target="_blank" rel="noopener" class="nav-cta">Free Inspection</a></li>
   </ul>
+  <a href="tel:+14352928802" class="nav-call-mobile" data-cta="header-call" aria-label="Call Frame Restoration Utah at 435-292-8802"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 10.8 19.79 19.79 0 01.03 2.18 2 2 0 012 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 14.92z"/></svg></a>
   <button class="mobile-btn" id="menuBtn" aria-label="Toggle navigation"><span></span><span></span><span></span></button>
 </nav>
 
@@ -127,7 +125,7 @@
 
 <article class="blog-body">
   <figure class="blog-featured-image" style="margin:0 0 32px;border-radius:4px;overflow:hidden">
-    <img src="/images/projects/cities/heber-valley-drone-poster.webp" alt="Heber Valley Drone Poster — Frame Restoration Utah" width="780" height="440" style="width:100%;height:auto;display:block;object-fit:cover;max-height:400px" loading="eager" fetchpriority="high" />
+    <img src="/images/projects/heber-valley-drone-poster.webp" alt="Heber Valley Drone Poster — Frame Restoration Utah" width="780" height="440" style="width:100%;height:auto;display:block;object-fit:cover;max-height:400px" loading="eager" fetchpriority="high" />
 
   </figure>
 

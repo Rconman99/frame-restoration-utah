@@ -1,0 +1,1553 @@
+{
+  "schema_version": "1.0",
+  "contract": "frame-utah-lcp-field-hotspots-source",
+  "contract_sha256": "ea55312879024c224a9e9e1d2651744d943da104d6735d872fdcfd1e7f7a6024",
+  "contract_snapshot": {
+    "schema_version": "1.0",
+    "name": "frame-utah-lcp-field-hotspots-source",
+    "expected_serving_origin": "http://127.0.0.1:4173",
+    "expected_canonical_origin": "https://www.framerestorationutah.com",
+    "freshness_markers": [
+      "posthog-loader.js"
+    ],
+    "max_redirects": 0,
+    "min_touch_target_css_px": 44,
+    "max_fixed_viewport_ratio": 0.15,
+    "max_landscape_fixed_viewport_ratio": 0.24,
+    "stability_wait_ms": 500,
+    "readiness_selector": "main",
+    "viewports": [
+      {
+        "name": "small-320",
+        "width": 320,
+        "height": 568
+      },
+      {
+        "name": "landscape-740",
+        "width": 740,
+        "height": 360
+      }
+    ],
+    "routes": [
+      {
+        "path": "/",
+        "expected_canonical_path": "/",
+        "freshness_markers": [
+          "fetchpriority=\"high\""
+        ]
+      },
+      {
+        "path": "/pages/storm-damage.html",
+        "expected_canonical_path": "/pages/storm-damage",
+        "freshness_markers": [
+          "fetchpriority=\"high\""
+        ]
+      },
+      {
+        "path": "/locations/riverton.html",
+        "expected_canonical_path": "/locations/riverton",
+        "freshness_markers": [
+          "fetchpriority=\"high\""
+        ]
+      },
+      {
+        "path": "/locations/south-jordan.html",
+        "expected_canonical_path": "/locations/south-jordan",
+        "freshness_markers": [
+          "fetchpriority=\"high\""
+        ]
+      },
+      {
+        "path": "/blog/lindon/storm-damage-roof-repair-lindon.html",
+        "expected_canonical_path": "/blog/lindon/storm-damage-roof-repair-lindon",
+        "freshness_markers": [
+          "fetchpriority=\"high\""
+        ]
+      },
+      {
+        "path": "/blog/utah/utah-hail-season-roof-guide-2026.html",
+        "expected_canonical_path": "/blog/utah/utah-hail-season-roof-guide-2026"
+      }
+    ],
+    "critical_targets": [
+      {
+        "selector": "#menuBtn",
+        "max_viewport_width": 900
+      },
+      {
+        "selector": ".nav-call-mobile",
+        "expected_href_pattern": "^tel:\\+14352928802$"
+      }
+    ],
+    "fixed_elements": [
+      {
+        "selector": "nav",
+        "max_viewport_ratio": 0.15,
+        "max_landscape_viewport_ratio": 0.24
+      }
+    ],
+    "forbidden_visible_selectors": [
+      ".fr-modal-overlay.open"
+    ],
+    "max_console_errors": 0,
+    "max_page_errors": 0,
+    "allowed_console_error_patterns": [],
+    "canonical_policy": "match"
+  },
+  "stage": "source",
+  "base_url": "http://127.0.0.1:4173",
+  "observed_at": "2026-07-28T00:22:25.782611Z",
+  "verdict": "pass",
+  "summary": {
+    "checks": 190,
+    "failures": 0,
+    "routes": 6,
+    "viewports": 2
+  },
+  "runs": [
+    {
+      "route": "/",
+      "viewport": {
+        "name": "small-320",
+        "width": 320,
+        "height": 568
+      },
+      "url": "http://127.0.0.1:4173/",
+      "checks": [
+        {
+          "name": "http-200",
+          "pass": true,
+          "detail": "status=200"
+        },
+        {
+          "name": "redirect-budget",
+          "pass": true,
+          "detail": "redirects=0 cap=0"
+        },
+        {
+          "name": "serving-origin",
+          "pass": true,
+          "detail": "final=http://127.0.0.1:4173 expected=http://127.0.0.1:4173"
+        },
+        {
+          "name": "viewport-meta",
+          "pass": true,
+          "detail": "content='width=device-width, initial-scale=1.0, viewport-fit=cover'"
+        },
+        {
+          "name": "canonical",
+          "pass": true,
+          "detail": "count=1 actual='https://www.framerestorationutah.com/' expected='https://www.framerestorationutah.com/'"
+        },
+        {
+          "name": "freshness:posthog-loader.js",
+          "pass": true,
+          "detail": "marker present"
+        },
+        {
+          "name": "freshness:fetchpriority=\"high\"",
+          "pass": true,
+          "detail": "marker present"
+        },
+        {
+          "name": "horizontal-reflow",
+          "pass": true,
+          "detail": "scrollWidth=320 innerWidth=320"
+        },
+        {
+          "name": "critical-target:#menuBtn",
+          "pass": true,
+          "detail": "present, sized, hittable, and href-valid"
+        },
+        {
+          "name": "critical-target:.nav-call-mobile",
+          "pass": true,
+          "detail": "present, sized, hittable, and href-valid"
+        },
+        {
+          "name": "fixed-element:nav",
+          "pass": true,
+          "detail": "present and within orientation budget"
+        },
+        {
+          "name": "forbidden-visible:.fr-modal-overlay.open",
+          "pass": true,
+          "detail": "visible=0"
+        },
+        {
+          "name": "focus-not-obscured",
+          "pass": true,
+          "detail": "sampled keyboard focus is exposed"
+        },
+        {
+          "name": "forbidden-visible-post-focus:.fr-modal-overlay.open",
+          "pass": true,
+          "detail": "visible=0"
+        },
+        {
+          "name": "console-errors",
+          "pass": true,
+          "detail": "count=0 cap=0 errors=[] guard_suppressed=0"
+        },
+        {
+          "name": "page-errors",
+          "pass": true,
+          "detail": "count=0 cap=0 errors=[]"
+        }
+      ],
+      "failures": [],
+      "http": {
+        "status": 200,
+        "final_url": "http://127.0.0.1:4173/",
+        "redirects": 0,
+        "headers": {
+          "content-length": "179162",
+          "content-type": "text/html",
+          "date": "Tue, 28 Jul 2026 00:22:26 GMT",
+          "last-modified": "Tue, 28 Jul 2026 00:11:41 GMT",
+          "server": "SimpleHTTP/0.6 Python/3.14.6"
+        }
+      },
+      "network_guard": {
+        "mode": "read_only",
+        "auth_bootstrap_used": false,
+        "protection_bypass_used": false,
+        "service_workers_blocked": true,
+        "websockets_blocked": true,
+        "stability_wait_ms": 500,
+        "readiness_selector": "main",
+        "blocked_count": 0,
+        "blocked": [],
+        "console_errors_suppressed": 0
+      },
+      "screenshot": {
+        "path": "/Users/agenticmac/projects/_wt-utah-lcp-field-hotspots-20260727/qa/screenshots/utah-lcp-source-20260727-rerun/home--8a5edab28263--small-320.png",
+        "sha256": "6e3e70df0cb05d8dd861da519f1262f48d3b6276ecee29ead499e5566d763cc3",
+        "captured_scroll_y": 0
+      }
+    },
+    {
+      "route": "/",
+      "viewport": {
+        "name": "landscape-740",
+        "width": 740,
+        "height": 360
+      },
+      "url": "http://127.0.0.1:4173/",
+      "checks": [
+        {
+          "name": "http-200",
+          "pass": true,
+          "detail": "status=200"
+        },
+        {
+          "name": "redirect-budget",
+          "pass": true,
+          "detail": "redirects=0 cap=0"
+        },
+        {
+          "name": "serving-origin",
+          "pass": true,
+          "detail": "final=http://127.0.0.1:4173 expected=http://127.0.0.1:4173"
+        },
+        {
+          "name": "viewport-meta",
+          "pass": true,
+          "detail": "content='width=device-width, initial-scale=1.0, viewport-fit=cover'"
+        },
+        {
+          "name": "canonical",
+          "pass": true,
+          "detail": "count=1 actual='https://www.framerestorationutah.com/' expected='https://www.framerestorationutah.com/'"
+        },
+        {
+          "name": "freshness:posthog-loader.js",
+          "pass": true,
+          "detail": "marker present"
+        },
+        {
+          "name": "freshness:fetchpriority=\"high\"",
+          "pass": true,
+          "detail": "marker present"
+        },
+        {
+          "name": "horizontal-reflow",
+          "pass": true,
+          "detail": "scrollWidth=740 innerWidth=740"
+        },
+        {
+          "name": "critical-target:#menuBtn",
+          "pass": true,
+          "detail": "present, sized, hittable, and href-valid"
+        },
+        {
+          "name": "critical-target:.nav-call-mobile",
+          "pass": true,
+          "detail": "present, sized, hittable, and href-valid"
+        },
+        {
+          "name": "fixed-element:nav",
+          "pass": true,
+          "detail": "present and within orientation budget"
+        },
+        {
+          "name": "forbidden-visible:.fr-modal-overlay.open",
+          "pass": true,
+          "detail": "visible=0"
+        },
+        {
+          "name": "focus-not-obscured",
+          "pass": true,
+          "detail": "sampled keyboard focus is exposed"
+        },
+        {
+          "name": "forbidden-visible-post-focus:.fr-modal-overlay.open",
+          "pass": true,
+          "detail": "visible=0"
+        },
+        {
+          "name": "console-errors",
+          "pass": true,
+          "detail": "count=0 cap=0 errors=[] guard_suppressed=0"
+        },
+        {
+          "name": "page-errors",
+          "pass": true,
+          "detail": "count=0 cap=0 errors=[]"
+        }
+      ],
+      "failures": [],
+      "http": {
+        "status": 200,
+        "final_url": "http://127.0.0.1:4173/",
+        "redirects": 0,
+        "headers": {
+          "content-length": "179162",
+          "content-type": "text/html",
+          "date": "Tue, 28 Jul 2026 00:22:29 GMT",
+          "last-modified": "Tue, 28 Jul 2026 00:11:41 GMT",
+          "server": "SimpleHTTP/0.6 Python/3.14.6"
+        }
+      },
+      "network_guard": {
+        "mode": "read_only",
+        "auth_bootstrap_used": false,
+        "protection_bypass_used": false,
+        "service_workers_blocked": true,
+        "websockets_blocked": true,
+        "stability_wait_ms": 500,
+        "readiness_selector": "main",
+        "blocked_count": 0,
+        "blocked": [],
+        "console_errors_suppressed": 0
+      },
+      "screenshot": {
+        "path": "/Users/agenticmac/projects/_wt-utah-lcp-field-hotspots-20260727/qa/screenshots/utah-lcp-source-20260727-rerun/home--8a5edab28263--landscape-740.png",
+        "sha256": "5b5acacdaaebf5d75212b9a72f66d2f2310f2f41c1dddf8aaea2810b2c77c1fd",
+        "captured_scroll_y": 0
+      }
+    },
+    {
+      "route": "/pages/storm-damage.html",
+      "viewport": {
+        "name": "small-320",
+        "width": 320,
+        "height": 568
+      },
+      "url": "http://127.0.0.1:4173/pages/storm-damage.html",
+      "checks": [
+        {
+          "name": "http-200",
+          "pass": true,
+          "detail": "status=200"
+        },
+        {
+          "name": "redirect-budget",
+          "pass": true,
+          "detail": "redirects=0 cap=0"
+        },
+        {
+          "name": "serving-origin",
+          "pass": true,
+          "detail": "final=http://127.0.0.1:4173 expected=http://127.0.0.1:4173"
+        },
+        {
+          "name": "viewport-meta",
+          "pass": true,
+          "detail": "content='width=device-width, initial-scale=1.0'"
+        },
+        {
+          "name": "canonical",
+          "pass": true,
+          "detail": "count=1 actual='https://www.framerestorationutah.com/pages/storm-damage' expected='https://www.framerestorationutah.com/pages/storm-damage'"
+        },
+        {
+          "name": "freshness:posthog-loader.js",
+          "pass": true,
+          "detail": "marker present"
+        },
+        {
+          "name": "freshness:fetchpriority=\"high\"",
+          "pass": true,
+          "detail": "marker present"
+        },
+        {
+          "name": "horizontal-reflow",
+          "pass": true,
+          "detail": "scrollWidth=320 innerWidth=320"
+        },
+        {
+          "name": "critical-target:#menuBtn",
+          "pass": true,
+          "detail": "present, sized, hittable, and href-valid"
+        },
+        {
+          "name": "critical-target:.nav-call-mobile",
+          "pass": true,
+          "detail": "present, sized, hittable, and href-valid"
+        },
+        {
+          "name": "fixed-element:nav",
+          "pass": true,
+          "detail": "present and within orientation budget"
+        },
+        {
+          "name": "forbidden-visible:.fr-modal-overlay.open",
+          "pass": true,
+          "detail": "visible=0"
+        },
+        {
+          "name": "focus-not-obscured",
+          "pass": true,
+          "detail": "sampled keyboard focus is exposed"
+        },
+        {
+          "name": "forbidden-visible-post-focus:.fr-modal-overlay.open",
+          "pass": true,
+          "detail": "visible=0"
+        },
+        {
+          "name": "console-errors",
+          "pass": true,
+          "detail": "count=0 cap=0 errors=[] guard_suppressed=0"
+        },
+        {
+          "name": "page-errors",
+          "pass": true,
+          "detail": "count=0 cap=0 errors=[]"
+        }
+      ],
+      "failures": [],
+      "http": {
+        "status": 200,
+        "final_url": "http://127.0.0.1:4173/pages/storm-damage.html",
+        "redirects": 0,
+        "headers": {
+          "content-length": "35582",
+          "content-type": "text/html",
+          "date": "Tue, 28 Jul 2026 00:22:31 GMT",
+          "last-modified": "Tue, 28 Jul 2026 00:16:41 GMT",
+          "server": "SimpleHTTP/0.6 Python/3.14.6"
+        }
+      },
+      "network_guard": {
+        "mode": "read_only",
+        "auth_bootstrap_used": false,
+        "protection_bypass_used": false,
+        "service_workers_blocked": true,
+        "websockets_blocked": true,
+        "stability_wait_ms": 500,
+        "readiness_selector": "main",
+        "blocked_count": 0,
+        "blocked": [],
+        "console_errors_suppressed": 0
+      },
+      "screenshot": {
+        "path": "/Users/agenticmac/projects/_wt-utah-lcp-field-hotspots-20260727/qa/screenshots/utah-lcp-source-20260727-rerun/pages-storm-damage.html--5ae653f0d1dc--small-320.png",
+        "sha256": "fb1d1404db18a2bc110f70ef04450ee7993e7c001a281e4e66a88f287bf1e141",
+        "captured_scroll_y": 0
+      }
+    },
+    {
+      "route": "/pages/storm-damage.html",
+      "viewport": {
+        "name": "landscape-740",
+        "width": 740,
+        "height": 360
+      },
+      "url": "http://127.0.0.1:4173/pages/storm-damage.html",
+      "checks": [
+        {
+          "name": "http-200",
+          "pass": true,
+          "detail": "status=200"
+        },
+        {
+          "name": "redirect-budget",
+          "pass": true,
+          "detail": "redirects=0 cap=0"
+        },
+        {
+          "name": "serving-origin",
+          "pass": true,
+          "detail": "final=http://127.0.0.1:4173 expected=http://127.0.0.1:4173"
+        },
+        {
+          "name": "viewport-meta",
+          "pass": true,
+          "detail": "content='width=device-width, initial-scale=1.0'"
+        },
+        {
+          "name": "canonical",
+          "pass": true,
+          "detail": "count=1 actual='https://www.framerestorationutah.com/pages/storm-damage' expected='https://www.framerestorationutah.com/pages/storm-damage'"
+        },
+        {
+          "name": "freshness:posthog-loader.js",
+          "pass": true,
+          "detail": "marker present"
+        },
+        {
+          "name": "freshness:fetchpriority=\"high\"",
+          "pass": true,
+          "detail": "marker present"
+        },
+        {
+          "name": "horizontal-reflow",
+          "pass": true,
+          "detail": "scrollWidth=740 innerWidth=740"
+        },
+        {
+          "name": "critical-target:#menuBtn",
+          "pass": true,
+          "detail": "present, sized, hittable, and href-valid"
+        },
+        {
+          "name": "critical-target:.nav-call-mobile",
+          "pass": true,
+          "detail": "present, sized, hittable, and href-valid"
+        },
+        {
+          "name": "fixed-element:nav",
+          "pass": true,
+          "detail": "present and within orientation budget"
+        },
+        {
+          "name": "forbidden-visible:.fr-modal-overlay.open",
+          "pass": true,
+          "detail": "visible=0"
+        },
+        {
+          "name": "focus-not-obscured",
+          "pass": true,
+          "detail": "sampled keyboard focus is exposed"
+        },
+        {
+          "name": "forbidden-visible-post-focus:.fr-modal-overlay.open",
+          "pass": true,
+          "detail": "visible=0"
+        },
+        {
+          "name": "console-errors",
+          "pass": true,
+          "detail": "count=0 cap=0 errors=[] guard_suppressed=0"
+        },
+        {
+          "name": "page-errors",
+          "pass": true,
+          "detail": "count=0 cap=0 errors=[]"
+        }
+      ],
+      "failures": [],
+      "http": {
+        "status": 200,
+        "final_url": "http://127.0.0.1:4173/pages/storm-damage.html",
+        "redirects": 0,
+        "headers": {
+          "content-length": "35582",
+          "content-type": "text/html",
+          "date": "Tue, 28 Jul 2026 00:22:33 GMT",
+          "last-modified": "Tue, 28 Jul 2026 00:16:41 GMT",
+          "server": "SimpleHTTP/0.6 Python/3.14.6"
+        }
+      },
+      "network_guard": {
+        "mode": "read_only",
+        "auth_bootstrap_used": false,
+        "protection_bypass_used": false,
+        "service_workers_blocked": true,
+        "websockets_blocked": true,
+        "stability_wait_ms": 500,
+        "readiness_selector": "main",
+        "blocked_count": 0,
+        "blocked": [],
+        "console_errors_suppressed": 0
+      },
+      "screenshot": {
+        "path": "/Users/agenticmac/projects/_wt-utah-lcp-field-hotspots-20260727/qa/screenshots/utah-lcp-source-20260727-rerun/pages-storm-damage.html--5ae653f0d1dc--landscape-740.png",
+        "sha256": "4accd94cf8f891a2ed30912930262172dd6746f2a9eabd725e3f2b7a5005ff26",
+        "captured_scroll_y": 0
+      }
+    },
+    {
+      "route": "/locations/riverton.html",
+      "viewport": {
+        "name": "small-320",
+        "width": 320,
+        "height": 568
+      },
+      "url": "http://127.0.0.1:4173/locations/riverton.html",
+      "checks": [
+        {
+          "name": "http-200",
+          "pass": true,
+          "detail": "status=200"
+        },
+        {
+          "name": "redirect-budget",
+          "pass": true,
+          "detail": "redirects=0 cap=0"
+        },
+        {
+          "name": "serving-origin",
+          "pass": true,
+          "detail": "final=http://127.0.0.1:4173 expected=http://127.0.0.1:4173"
+        },
+        {
+          "name": "viewport-meta",
+          "pass": true,
+          "detail": "content='width=device-width, initial-scale=1.0'"
+        },
+        {
+          "name": "canonical",
+          "pass": true,
+          "detail": "count=1 actual='https://www.framerestorationutah.com/locations/riverton' expected='https://www.framerestorationutah.com/locations/riverton'"
+        },
+        {
+          "name": "freshness:posthog-loader.js",
+          "pass": true,
+          "detail": "marker present"
+        },
+        {
+          "name": "freshness:fetchpriority=\"high\"",
+          "pass": true,
+          "detail": "marker present"
+        },
+        {
+          "name": "horizontal-reflow",
+          "pass": true,
+          "detail": "scrollWidth=320 innerWidth=320"
+        },
+        {
+          "name": "critical-target:#menuBtn",
+          "pass": true,
+          "detail": "present, sized, hittable, and href-valid"
+        },
+        {
+          "name": "critical-target:.nav-call-mobile",
+          "pass": true,
+          "detail": "present, sized, hittable, and href-valid"
+        },
+        {
+          "name": "fixed-element:nav",
+          "pass": true,
+          "detail": "present and within orientation budget"
+        },
+        {
+          "name": "forbidden-visible:.fr-modal-overlay.open",
+          "pass": true,
+          "detail": "visible=0"
+        },
+        {
+          "name": "focus-not-obscured",
+          "pass": true,
+          "detail": "sampled keyboard focus is exposed"
+        },
+        {
+          "name": "forbidden-visible-post-focus:.fr-modal-overlay.open",
+          "pass": true,
+          "detail": "visible=0"
+        },
+        {
+          "name": "console-errors",
+          "pass": true,
+          "detail": "count=0 cap=0 errors=[] guard_suppressed=0"
+        },
+        {
+          "name": "page-errors",
+          "pass": true,
+          "detail": "count=0 cap=0 errors=[]"
+        }
+      ],
+      "failures": [],
+      "http": {
+        "status": 200,
+        "final_url": "http://127.0.0.1:4173/locations/riverton.html",
+        "redirects": 0,
+        "headers": {
+          "content-length": "41806",
+          "content-type": "text/html",
+          "date": "Tue, 28 Jul 2026 00:22:36 GMT",
+          "last-modified": "Tue, 28 Jul 2026 00:13:40 GMT",
+          "server": "SimpleHTTP/0.6 Python/3.14.6"
+        }
+      },
+      "network_guard": {
+        "mode": "read_only",
+        "auth_bootstrap_used": false,
+        "protection_bypass_used": false,
+        "service_workers_blocked": true,
+        "websockets_blocked": true,
+        "stability_wait_ms": 500,
+        "readiness_selector": "main",
+        "blocked_count": 0,
+        "blocked": [],
+        "console_errors_suppressed": 0
+      },
+      "screenshot": {
+        "path": "/Users/agenticmac/projects/_wt-utah-lcp-field-hotspots-20260727/qa/screenshots/utah-lcp-source-20260727-rerun/locations-riverton.html--faa2e8c94c58--small-320.png",
+        "sha256": "cf11f6537040a101c91472018c98f70c03f59bf55ac333cc5b96723f10a318eb",
+        "captured_scroll_y": 0
+      }
+    },
+    {
+      "route": "/locations/riverton.html",
+      "viewport": {
+        "name": "landscape-740",
+        "width": 740,
+        "height": 360
+      },
+      "url": "http://127.0.0.1:4173/locations/riverton.html",
+      "checks": [
+        {
+          "name": "http-200",
+          "pass": true,
+          "detail": "status=200"
+        },
+        {
+          "name": "redirect-budget",
+          "pass": true,
+          "detail": "redirects=0 cap=0"
+        },
+        {
+          "name": "serving-origin",
+          "pass": true,
+          "detail": "final=http://127.0.0.1:4173 expected=http://127.0.0.1:4173"
+        },
+        {
+          "name": "viewport-meta",
+          "pass": true,
+          "detail": "content='width=device-width, initial-scale=1.0'"
+        },
+        {
+          "name": "canonical",
+          "pass": true,
+          "detail": "count=1 actual='https://www.framerestorationutah.com/locations/riverton' expected='https://www.framerestorationutah.com/locations/riverton'"
+        },
+        {
+          "name": "freshness:posthog-loader.js",
+          "pass": true,
+          "detail": "marker present"
+        },
+        {
+          "name": "freshness:fetchpriority=\"high\"",
+          "pass": true,
+          "detail": "marker present"
+        },
+        {
+          "name": "horizontal-reflow",
+          "pass": true,
+          "detail": "scrollWidth=740 innerWidth=740"
+        },
+        {
+          "name": "critical-target:#menuBtn",
+          "pass": true,
+          "detail": "present, sized, hittable, and href-valid"
+        },
+        {
+          "name": "critical-target:.nav-call-mobile",
+          "pass": true,
+          "detail": "present, sized, hittable, and href-valid"
+        },
+        {
+          "name": "fixed-element:nav",
+          "pass": true,
+          "detail": "present and within orientation budget"
+        },
+        {
+          "name": "forbidden-visible:.fr-modal-overlay.open",
+          "pass": true,
+          "detail": "visible=0"
+        },
+        {
+          "name": "focus-not-obscured",
+          "pass": true,
+          "detail": "sampled keyboard focus is exposed"
+        },
+        {
+          "name": "forbidden-visible-post-focus:.fr-modal-overlay.open",
+          "pass": true,
+          "detail": "visible=0"
+        },
+        {
+          "name": "console-errors",
+          "pass": true,
+          "detail": "count=0 cap=0 errors=[] guard_suppressed=0"
+        },
+        {
+          "name": "page-errors",
+          "pass": true,
+          "detail": "count=0 cap=0 errors=[]"
+        }
+      ],
+      "failures": [],
+      "http": {
+        "status": 200,
+        "final_url": "http://127.0.0.1:4173/locations/riverton.html",
+        "redirects": 0,
+        "headers": {
+          "content-length": "41806",
+          "content-type": "text/html",
+          "date": "Tue, 28 Jul 2026 00:22:38 GMT",
+          "last-modified": "Tue, 28 Jul 2026 00:13:40 GMT",
+          "server": "SimpleHTTP/0.6 Python/3.14.6"
+        }
+      },
+      "network_guard": {
+        "mode": "read_only",
+        "auth_bootstrap_used": false,
+        "protection_bypass_used": false,
+        "service_workers_blocked": true,
+        "websockets_blocked": true,
+        "stability_wait_ms": 500,
+        "readiness_selector": "main",
+        "blocked_count": 0,
+        "blocked": [],
+        "console_errors_suppressed": 0
+      },
+      "screenshot": {
+        "path": "/Users/agenticmac/projects/_wt-utah-lcp-field-hotspots-20260727/qa/screenshots/utah-lcp-source-20260727-rerun/locations-riverton.html--faa2e8c94c58--landscape-740.png",
+        "sha256": "ccd75f5df3efb1ec95a91a2bce4f43cb2a04f17a35f23227be4b70cc709cf62c",
+        "captured_scroll_y": 0
+      }
+    },
+    {
+      "route": "/locations/south-jordan.html",
+      "viewport": {
+        "name": "small-320",
+        "width": 320,
+        "height": 568
+      },
+      "url": "http://127.0.0.1:4173/locations/south-jordan.html",
+      "checks": [
+        {
+          "name": "http-200",
+          "pass": true,
+          "detail": "status=200"
+        },
+        {
+          "name": "redirect-budget",
+          "pass": true,
+          "detail": "redirects=0 cap=0"
+        },
+        {
+          "name": "serving-origin",
+          "pass": true,
+          "detail": "final=http://127.0.0.1:4173 expected=http://127.0.0.1:4173"
+        },
+        {
+          "name": "viewport-meta",
+          "pass": true,
+          "detail": "content='width=device-width, initial-scale=1.0'"
+        },
+        {
+          "name": "canonical",
+          "pass": true,
+          "detail": "count=1 actual='https://www.framerestorationutah.com/locations/south-jordan' expected='https://www.framerestorationutah.com/locations/south-jordan'"
+        },
+        {
+          "name": "freshness:posthog-loader.js",
+          "pass": true,
+          "detail": "marker present"
+        },
+        {
+          "name": "freshness:fetchpriority=\"high\"",
+          "pass": true,
+          "detail": "marker present"
+        },
+        {
+          "name": "horizontal-reflow",
+          "pass": true,
+          "detail": "scrollWidth=320 innerWidth=320"
+        },
+        {
+          "name": "critical-target:#menuBtn",
+          "pass": true,
+          "detail": "present, sized, hittable, and href-valid"
+        },
+        {
+          "name": "critical-target:.nav-call-mobile",
+          "pass": true,
+          "detail": "present, sized, hittable, and href-valid"
+        },
+        {
+          "name": "fixed-element:nav",
+          "pass": true,
+          "detail": "present and within orientation budget"
+        },
+        {
+          "name": "forbidden-visible:.fr-modal-overlay.open",
+          "pass": true,
+          "detail": "visible=0"
+        },
+        {
+          "name": "focus-not-obscured",
+          "pass": true,
+          "detail": "sampled keyboard focus is exposed"
+        },
+        {
+          "name": "forbidden-visible-post-focus:.fr-modal-overlay.open",
+          "pass": true,
+          "detail": "visible=0"
+        },
+        {
+          "name": "console-errors",
+          "pass": true,
+          "detail": "count=0 cap=0 errors=[] guard_suppressed=0"
+        },
+        {
+          "name": "page-errors",
+          "pass": true,
+          "detail": "count=0 cap=0 errors=[]"
+        }
+      ],
+      "failures": [],
+      "http": {
+        "status": 200,
+        "final_url": "http://127.0.0.1:4173/locations/south-jordan.html",
+        "redirects": 0,
+        "headers": {
+          "content-length": "46766",
+          "content-type": "text/html",
+          "date": "Tue, 28 Jul 2026 00:22:40 GMT",
+          "last-modified": "Tue, 28 Jul 2026 00:13:40 GMT",
+          "server": "SimpleHTTP/0.6 Python/3.14.6"
+        }
+      },
+      "network_guard": {
+        "mode": "read_only",
+        "auth_bootstrap_used": false,
+        "protection_bypass_used": false,
+        "service_workers_blocked": true,
+        "websockets_blocked": true,
+        "stability_wait_ms": 500,
+        "readiness_selector": "main",
+        "blocked_count": 0,
+        "blocked": [],
+        "console_errors_suppressed": 0
+      },
+      "screenshot": {
+        "path": "/Users/agenticmac/projects/_wt-utah-lcp-field-hotspots-20260727/qa/screenshots/utah-lcp-source-20260727-rerun/locations-south-jordan.html--4065faf69bf1--small-320.png",
+        "sha256": "bba07d0b5c1d6c170667d15768f433bf81be1978905590ec491dbfb0c926890d",
+        "captured_scroll_y": 0
+      }
+    },
+    {
+      "route": "/locations/south-jordan.html",
+      "viewport": {
+        "name": "landscape-740",
+        "width": 740,
+        "height": 360
+      },
+      "url": "http://127.0.0.1:4173/locations/south-jordan.html",
+      "checks": [
+        {
+          "name": "http-200",
+          "pass": true,
+          "detail": "status=200"
+        },
+        {
+          "name": "redirect-budget",
+          "pass": true,
+          "detail": "redirects=0 cap=0"
+        },
+        {
+          "name": "serving-origin",
+          "pass": true,
+          "detail": "final=http://127.0.0.1:4173 expected=http://127.0.0.1:4173"
+        },
+        {
+          "name": "viewport-meta",
+          "pass": true,
+          "detail": "content='width=device-width, initial-scale=1.0'"
+        },
+        {
+          "name": "canonical",
+          "pass": true,
+          "detail": "count=1 actual='https://www.framerestorationutah.com/locations/south-jordan' expected='https://www.framerestorationutah.com/locations/south-jordan'"
+        },
+        {
+          "name": "freshness:posthog-loader.js",
+          "pass": true,
+          "detail": "marker present"
+        },
+        {
+          "name": "freshness:fetchpriority=\"high\"",
+          "pass": true,
+          "detail": "marker present"
+        },
+        {
+          "name": "horizontal-reflow",
+          "pass": true,
+          "detail": "scrollWidth=740 innerWidth=740"
+        },
+        {
+          "name": "critical-target:#menuBtn",
+          "pass": true,
+          "detail": "present, sized, hittable, and href-valid"
+        },
+        {
+          "name": "critical-target:.nav-call-mobile",
+          "pass": true,
+          "detail": "present, sized, hittable, and href-valid"
+        },
+        {
+          "name": "fixed-element:nav",
+          "pass": true,
+          "detail": "present and within orientation budget"
+        },
+        {
+          "name": "forbidden-visible:.fr-modal-overlay.open",
+          "pass": true,
+          "detail": "visible=0"
+        },
+        {
+          "name": "focus-not-obscured",
+          "pass": true,
+          "detail": "sampled keyboard focus is exposed"
+        },
+        {
+          "name": "forbidden-visible-post-focus:.fr-modal-overlay.open",
+          "pass": true,
+          "detail": "visible=0"
+        },
+        {
+          "name": "console-errors",
+          "pass": true,
+          "detail": "count=0 cap=0 errors=[] guard_suppressed=0"
+        },
+        {
+          "name": "page-errors",
+          "pass": true,
+          "detail": "count=0 cap=0 errors=[]"
+        }
+      ],
+      "failures": [],
+      "http": {
+        "status": 200,
+        "final_url": "http://127.0.0.1:4173/locations/south-jordan.html",
+        "redirects": 0,
+        "headers": {
+          "content-length": "46766",
+          "content-type": "text/html",
+          "date": "Tue, 28 Jul 2026 00:22:43 GMT",
+          "last-modified": "Tue, 28 Jul 2026 00:13:40 GMT",
+          "server": "SimpleHTTP/0.6 Python/3.14.6"
+        }
+      },
+      "network_guard": {
+        "mode": "read_only",
+        "auth_bootstrap_used": false,
+        "protection_bypass_used": false,
+        "service_workers_blocked": true,
+        "websockets_blocked": true,
+        "stability_wait_ms": 500,
+        "readiness_selector": "main",
+        "blocked_count": 0,
+        "blocked": [],
+        "console_errors_suppressed": 0
+      },
+      "screenshot": {
+        "path": "/Users/agenticmac/projects/_wt-utah-lcp-field-hotspots-20260727/qa/screenshots/utah-lcp-source-20260727-rerun/locations-south-jordan.html--4065faf69bf1--landscape-740.png",
+        "sha256": "a8848790f40d7e684fc2c5b6d215080cb9a3d5cf3a7a9d80a94b89e8e9fc642c",
+        "captured_scroll_y": 0
+      }
+    },
+    {
+      "route": "/blog/lindon/storm-damage-roof-repair-lindon.html",
+      "viewport": {
+        "name": "small-320",
+        "width": 320,
+        "height": 568
+      },
+      "url": "http://127.0.0.1:4173/blog/lindon/storm-damage-roof-repair-lindon.html",
+      "checks": [
+        {
+          "name": "http-200",
+          "pass": true,
+          "detail": "status=200"
+        },
+        {
+          "name": "redirect-budget",
+          "pass": true,
+          "detail": "redirects=0 cap=0"
+        },
+        {
+          "name": "serving-origin",
+          "pass": true,
+          "detail": "final=http://127.0.0.1:4173 expected=http://127.0.0.1:4173"
+        },
+        {
+          "name": "viewport-meta",
+          "pass": true,
+          "detail": "content='width=device-width, initial-scale=1.0'"
+        },
+        {
+          "name": "canonical",
+          "pass": true,
+          "detail": "count=1 actual='https://www.framerestorationutah.com/blog/lindon/storm-damage-roof-repair-lindon' expected='https://www.framerestorationutah.com/blog/lindon/storm-damage-roof-repair-lindon'"
+        },
+        {
+          "name": "freshness:posthog-loader.js",
+          "pass": true,
+          "detail": "marker present"
+        },
+        {
+          "name": "freshness:fetchpriority=\"high\"",
+          "pass": true,
+          "detail": "marker present"
+        },
+        {
+          "name": "horizontal-reflow",
+          "pass": true,
+          "detail": "scrollWidth=320 innerWidth=320"
+        },
+        {
+          "name": "critical-target:#menuBtn",
+          "pass": true,
+          "detail": "present, sized, hittable, and href-valid"
+        },
+        {
+          "name": "critical-target:.nav-call-mobile",
+          "pass": true,
+          "detail": "present, sized, hittable, and href-valid"
+        },
+        {
+          "name": "fixed-element:nav",
+          "pass": true,
+          "detail": "present and within orientation budget"
+        },
+        {
+          "name": "forbidden-visible:.fr-modal-overlay.open",
+          "pass": true,
+          "detail": "visible=0"
+        },
+        {
+          "name": "focus-not-obscured",
+          "pass": true,
+          "detail": "sampled keyboard focus is exposed"
+        },
+        {
+          "name": "forbidden-visible-post-focus:.fr-modal-overlay.open",
+          "pass": true,
+          "detail": "visible=0"
+        },
+        {
+          "name": "console-errors",
+          "pass": true,
+          "detail": "count=0 cap=0 errors=[] guard_suppressed=0"
+        },
+        {
+          "name": "page-errors",
+          "pass": true,
+          "detail": "count=0 cap=0 errors=[]"
+        }
+      ],
+      "failures": [],
+      "http": {
+        "status": 200,
+        "final_url": "http://127.0.0.1:4173/blog/lindon/storm-damage-roof-repair-lindon.html",
+        "redirects": 0,
+        "headers": {
+          "content-length": "24977",
+          "content-type": "text/html",
+          "date": "Tue, 28 Jul 2026 00:22:45 GMT",
+          "last-modified": "Tue, 28 Jul 2026 00:20:39 GMT",
+          "server": "SimpleHTTP/0.6 Python/3.14.6"
+        }
+      },
+      "network_guard": {
+        "mode": "read_only",
+        "auth_bootstrap_used": false,
+        "protection_bypass_used": false,
+        "service_workers_blocked": true,
+        "websockets_blocked": true,
+        "stability_wait_ms": 500,
+        "readiness_selector": "main",
+        "blocked_count": 0,
+        "blocked": [],
+        "console_errors_suppressed": 0
+      },
+      "screenshot": {
+        "path": "/Users/agenticmac/projects/_wt-utah-lcp-field-hotspots-20260727/qa/screenshots/utah-lcp-source-20260727-rerun/blog-lindon-storm-damage-roof-repair-lindon.html--22c2eda9ade1--small-320.png",
+        "sha256": "d1e10ca704bfb15253bc6b1203a307d8717a6c21e24a0f9207e25f289e1a89e2",
+        "captured_scroll_y": 0
+      }
+    },
+    {
+      "route": "/blog/lindon/storm-damage-roof-repair-lindon.html",
+      "viewport": {
+        "name": "landscape-740",
+        "width": 740,
+        "height": 360
+      },
+      "url": "http://127.0.0.1:4173/blog/lindon/storm-damage-roof-repair-lindon.html",
+      "checks": [
+        {
+          "name": "http-200",
+          "pass": true,
+          "detail": "status=200"
+        },
+        {
+          "name": "redirect-budget",
+          "pass": true,
+          "detail": "redirects=0 cap=0"
+        },
+        {
+          "name": "serving-origin",
+          "pass": true,
+          "detail": "final=http://127.0.0.1:4173 expected=http://127.0.0.1:4173"
+        },
+        {
+          "name": "viewport-meta",
+          "pass": true,
+          "detail": "content='width=device-width, initial-scale=1.0'"
+        },
+        {
+          "name": "canonical",
+          "pass": true,
+          "detail": "count=1 actual='https://www.framerestorationutah.com/blog/lindon/storm-damage-roof-repair-lindon' expected='https://www.framerestorationutah.com/blog/lindon/storm-damage-roof-repair-lindon'"
+        },
+        {
+          "name": "freshness:posthog-loader.js",
+          "pass": true,
+          "detail": "marker present"
+        },
+        {
+          "name": "freshness:fetchpriority=\"high\"",
+          "pass": true,
+          "detail": "marker present"
+        },
+        {
+          "name": "horizontal-reflow",
+          "pass": true,
+          "detail": "scrollWidth=740 innerWidth=740"
+        },
+        {
+          "name": "critical-target:#menuBtn",
+          "pass": true,
+          "detail": "present, sized, hittable, and href-valid"
+        },
+        {
+          "name": "critical-target:.nav-call-mobile",
+          "pass": true,
+          "detail": "present, sized, hittable, and href-valid"
+        },
+        {
+          "name": "fixed-element:nav",
+          "pass": true,
+          "detail": "present and within orientation budget"
+        },
+        {
+          "name": "forbidden-visible:.fr-modal-overlay.open",
+          "pass": true,
+          "detail": "visible=0"
+        },
+        {
+          "name": "focus-not-obscured",
+          "pass": true,
+          "detail": "sampled keyboard focus is exposed"
+        },
+        {
+          "name": "forbidden-visible-post-focus:.fr-modal-overlay.open",
+          "pass": true,
+          "detail": "visible=0"
+        },
+        {
+          "name": "console-errors",
+          "pass": true,
+          "detail": "count=0 cap=0 errors=[] guard_suppressed=0"
+        },
+        {
+          "name": "page-errors",
+          "pass": true,
+          "detail": "count=0 cap=0 errors=[]"
+        }
+      ],
+      "failures": [],
+      "http": {
+        "status": 200,
+        "final_url": "http://127.0.0.1:4173/blog/lindon/storm-damage-roof-repair-lindon.html",
+        "redirects": 0,
+        "headers": {
+          "content-length": "24977",
+          "content-type": "text/html",
+          "date": "Tue, 28 Jul 2026 00:22:47 GMT",
+          "last-modified": "Tue, 28 Jul 2026 00:20:39 GMT",
+          "server": "SimpleHTTP/0.6 Python/3.14.6"
+        }
+      },
+      "network_guard": {
+        "mode": "read_only",
+        "auth_bootstrap_used": false,
+        "protection_bypass_used": false,
+        "service_workers_blocked": true,
+        "websockets_blocked": true,
+        "stability_wait_ms": 500,
+        "readiness_selector": "main",
+        "blocked_count": 0,
+        "blocked": [],
+        "console_errors_suppressed": 0
+      },
+      "screenshot": {
+        "path": "/Users/agenticmac/projects/_wt-utah-lcp-field-hotspots-20260727/qa/screenshots/utah-lcp-source-20260727-rerun/blog-lindon-storm-damage-roof-repair-lindon.html--22c2eda9ade1--landscape-740.png",
+        "sha256": "c1268124a2d0853e05711f89ed1fdb02b3bba89e42d885d9c76978eb4ff51813",
+        "captured_scroll_y": 0
+      }
+    },
+    {
+      "route": "/blog/utah/utah-hail-season-roof-guide-2026.html",
+      "viewport": {
+        "name": "small-320",
+        "width": 320,
+        "height": 568
+      },
+      "url": "http://127.0.0.1:4173/blog/utah/utah-hail-season-roof-guide-2026.html",
+      "checks": [
+        {
+          "name": "http-200",
+          "pass": true,
+          "detail": "status=200"
+        },
+        {
+          "name": "redirect-budget",
+          "pass": true,
+          "detail": "redirects=0 cap=0"
+        },
+        {
+          "name": "serving-origin",
+          "pass": true,
+          "detail": "final=http://127.0.0.1:4173 expected=http://127.0.0.1:4173"
+        },
+        {
+          "name": "viewport-meta",
+          "pass": true,
+          "detail": "content='width=device-width, initial-scale=1.0'"
+        },
+        {
+          "name": "canonical",
+          "pass": true,
+          "detail": "count=1 actual='https://www.framerestorationutah.com/blog/utah/utah-hail-season-roof-guide-2026' expected='https://www.framerestorationutah.com/blog/utah/utah-hail-season-roof-guide-2026'"
+        },
+        {
+          "name": "freshness:posthog-loader.js",
+          "pass": true,
+          "detail": "marker present"
+        },
+        {
+          "name": "horizontal-reflow",
+          "pass": true,
+          "detail": "scrollWidth=328 innerWidth=328"
+        },
+        {
+          "name": "critical-target:#menuBtn",
+          "pass": true,
+          "detail": "present, sized, hittable, and href-valid"
+        },
+        {
+          "name": "critical-target:.nav-call-mobile",
+          "pass": true,
+          "detail": "present, sized, hittable, and href-valid"
+        },
+        {
+          "name": "fixed-element:nav",
+          "pass": true,
+          "detail": "present and within orientation budget"
+        },
+        {
+          "name": "forbidden-visible:.fr-modal-overlay.open",
+          "pass": true,
+          "detail": "visible=0"
+        },
+        {
+          "name": "focus-not-obscured",
+          "pass": true,
+          "detail": "sampled keyboard focus is exposed"
+        },
+        {
+          "name": "forbidden-visible-post-focus:.fr-modal-overlay.open",
+          "pass": true,
+          "detail": "visible=0"
+        },
+        {
+          "name": "console-errors",
+          "pass": true,
+          "detail": "count=0 cap=0 errors=[] guard_suppressed=0"
+        },
+        {
+          "name": "page-errors",
+          "pass": true,
+          "detail": "count=0 cap=0 errors=[]"
+        }
+      ],
+      "failures": [],
+      "http": {
+        "status": 200,
+        "final_url": "http://127.0.0.1:4173/blog/utah/utah-hail-season-roof-guide-2026.html",
+        "redirects": 0,
+        "headers": {
+          "content-length": "31871",
+          "content-type": "text/html",
+          "date": "Tue, 28 Jul 2026 00:22:50 GMT",
+          "last-modified": "Tue, 28 Jul 2026 00:12:44 GMT",
+          "server": "SimpleHTTP/0.6 Python/3.14.6"
+        }
+      },
+      "network_guard": {
+        "mode": "read_only",
+        "auth_bootstrap_used": false,
+        "protection_bypass_used": false,
+        "service_workers_blocked": true,
+        "websockets_blocked": true,
+        "stability_wait_ms": 500,
+        "readiness_selector": "main",
+        "blocked_count": 0,
+        "blocked": [],
+        "console_errors_suppressed": 0
+      },
+      "screenshot": {
+        "path": "/Users/agenticmac/projects/_wt-utah-lcp-field-hotspots-20260727/qa/screenshots/utah-lcp-source-20260727-rerun/blog-utah-utah-hail-season-roof-guide-2026.html--128a86e949c9--small-320.png",
+        "sha256": "49c8dc584510259dcc3867ace21ab0703602fe414868c0551b9110b0ef6149c3",
+        "captured_scroll_y": 0
+      }
+    },
+    {
+      "route": "/blog/utah/utah-hail-season-roof-guide-2026.html",
+      "viewport": {
+        "name": "landscape-740",
+        "width": 740,
+        "height": 360
+      },
+      "url": "http://127.0.0.1:4173/blog/utah/utah-hail-season-roof-guide-2026.html",
+      "checks": [
+        {
+          "name": "http-200",
+          "pass": true,
+          "detail": "status=200"
+        },
+        {
+          "name": "redirect-budget",
+          "pass": true,
+          "detail": "redirects=0 cap=0"
+        },
+        {
+          "name": "serving-origin",
+          "pass": true,
+          "detail": "final=http://127.0.0.1:4173 expected=http://127.0.0.1:4173"
+        },
+        {
+          "name": "viewport-meta",
+          "pass": true,
+          "detail": "content='width=device-width, initial-scale=1.0'"
+        },
+        {
+          "name": "canonical",
+          "pass": true,
+          "detail": "count=1 actual='https://www.framerestorationutah.com/blog/utah/utah-hail-season-roof-guide-2026' expected='https://www.framerestorationutah.com/blog/utah/utah-hail-season-roof-guide-2026'"
+        },
+        {
+          "name": "freshness:posthog-loader.js",
+          "pass": true,
+          "detail": "marker present"
+        },
+        {
+          "name": "horizontal-reflow",
+          "pass": true,
+          "detail": "scrollWidth=740 innerWidth=740"
+        },
+        {
+          "name": "critical-target:#menuBtn",
+          "pass": true,
+          "detail": "present, sized, hittable, and href-valid"
+        },
+        {
+          "name": "critical-target:.nav-call-mobile",
+          "pass": true,
+          "detail": "present, sized, hittable, and href-valid"
+        },
+        {
+          "name": "fixed-element:nav",
+          "pass": true,
+          "detail": "present and within orientation budget"
+        },
+        {
+          "name": "forbidden-visible:.fr-modal-overlay.open",
+          "pass": true,
+          "detail": "visible=0"
+        },
+        {
+          "name": "focus-not-obscured",
+          "pass": true,
+          "detail": "sampled keyboard focus is exposed"
+        },
+        {
+          "name": "forbidden-visible-post-focus:.fr-modal-overlay.open",
+          "pass": true,
+          "detail": "visible=0"
+        },
+        {
+          "name": "console-errors",
+          "pass": true,
+          "detail": "count=0 cap=0 errors=[] guard_suppressed=0"
+        },
+        {
+          "name": "page-errors",
+          "pass": true,
+          "detail": "count=0 cap=0 errors=[]"
+        }
+      ],
+      "failures": [],
+      "http": {
+        "status": 200,
+        "final_url": "http://127.0.0.1:4173/blog/utah/utah-hail-season-roof-guide-2026.html",
+        "redirects": 0,
+        "headers": {
+          "content-length": "31871",
+          "content-type": "text/html",
+          "date": "Tue, 28 Jul 2026 00:22:52 GMT",
+          "last-modified": "Tue, 28 Jul 2026 00:12:44 GMT",
+          "server": "SimpleHTTP/0.6 Python/3.14.6"
+        }
+      },
+      "network_guard": {
+        "mode": "read_only",
+        "auth_bootstrap_used": false,
+        "protection_bypass_used": false,
+        "service_workers_blocked": true,
+        "websockets_blocked": true,
+        "stability_wait_ms": 500,
+        "readiness_selector": "main",
+        "blocked_count": 0,
+        "blocked": [],
+        "console_errors_suppressed": 0
+      },
+      "screenshot": {
+        "path": "/Users/agenticmac/projects/_wt-utah-lcp-field-hotspots-20260727/qa/screenshots/utah-lcp-source-20260727-rerun/blog-utah-utah-hail-season-roof-guide-2026.html--128a86e949c9--landscape-740.png",
+        "sha256": "a580a26a12e1d70838127d04e20c94f8ad85dd310ff09d383eec285434f8c11f",
+        "captured_scroll_y": 0
+      }
+    }
+  ],
+  "duration_seconds": 28.895,
+  "receipt_path": "/Users/agenticmac/projects/_wt-utah-lcp-field-hotspots-20260727/qa/receipts/utah-lcp-source-20260727-rerun.json"
+}
