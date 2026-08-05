@@ -1,57 +1,101 @@
 {
   "last_run": {
-    "timestamp": "2026-07-05T00:00:00Z",
-    "date": "2026-07-05",
+    "timestamp": "2026-08-05T14:23:00Z",
+    "date": "2026-08-05",
     "routine": "aeo-citation-monitor",
     "outcome": "success",
-    "summary": "AEO citation monitor: 0/5 (regression from 1/5 on 2026-05-06). Frame Roofing not cited on any tracked query; Heber City fell from Local Pack #1 to not-in-top-10.",
-    "report_path": "data/aeo-citations/2026-07-05.md",
-    "commit": "dc99ba0",
-    "pushed": true
+    "summary": "AEO citation monitor: 2/5 (first improvement since monitoring began — up from 0/5 on 2026-07-05, 1/5 on 2026-05-06). Frame Restoration Utah newly cited on storm-damage-Park-City (auto-published blog post) + Utah insurance-claim guide. Blog auto-post workflow proved AIO-citable output but is currently disabled_manually — highest-impact action is re-enabling it.",
+    "report_path": "data/aeo-citations/2026-08-05.md",
+    "commit": "ea01ebc",
+    "pushed": true,
+    "first_scheduled_cron_fire": true,
+    "cron_schedule": "23 14 5 * *",
+    "workflow": ".github/workflows/aeo-citation-monitor.yml"
   },
   "score": {
-    "current": 0,
+    "current": 2,
     "max": 5,
-    "prior": 1,
-    "prior_date": "2026-05-06",
-    "delta": -1,
-    "trend": "regression"
+    "prior": 0,
+    "prior_date": "2026-07-05",
+    "delta": 2,
+    "trend": "improvement",
+    "history": [
+      { "date": "2026-05-06", "score": 1 },
+      { "date": "2026-07-05", "score": 0 },
+      { "date": "2026-08-05", "score": 2 }
+    ]
   },
+  "cited_this_cycle": [
+    {
+      "query": "storm damage roofing Park City",
+      "url": "https://www.framerestorationutah.com/blog/park-city/storm-damage-roof-repair-park-city",
+      "position": 3,
+      "provenance": "auto-published 2026-06-10 via blog-autopost.yml cron (commit 356a716, first [skip-review scheduled post])"
+    },
+    {
+      "query": "Utah roof insurance claim help",
+      "url": "https://www.framerestorationutah.com/blog/utah/utah-roof-insurance-claims-guide",
+      "position": 4,
+      "provenance": "existing statewide insurance guide"
+    }
+  ],
+  "still_failing": [
+    "best roofer Heber City Utah (was Local Pack #1 in May, absent since July)",
+    "roof replacement cost Utah 2026 (day +77 post-merge on cdee7de/PR #58 rewrite — hypothesis definitively failed)",
+    "licensed roofer Wasatch Front (M.W. Roofing owns anchor)"
+  ],
   "last_error": null,
   "pending_actions": [
     {
       "priority": "high",
-      "action": "Verify GBP listing is still live, unchanged, 5.0★, reviews still flowing — 2026-05-27 primary-phone edit and 2026-06-15 brand transition are the suspects for the Heber City Local Pack regression",
-      "owner": "Ryan"
+      "action": "Re-enable `Blog auto-post (Utah)` workflow — `gh workflow enable \"Blog auto-post (Utah)\"`. The workflow is disabled_manually since 7/20 (5 missed slots, 15 days without a post), but today's monitor confirmed its 2026-06-10 Park City auto-post is now cited in AI Overviews. The content engine is proven; re-enabling it is the single highest-impact action on today's board.",
+      "owner": "Ryan / Landon"
     },
     {
       "priority": "high",
-      "action": "Run scripts/aeo-aio-sweep.py 26-query panel to capture the failed-hypothesis data for the 2026-05-20 cost-page rewrite (cdee7de) — day +46 post-merge, first-citation target missed",
+      "action": "Restore SerpAPI plan — 3 consecutive CTA Liveness runs (7/20 / 7/27 / 8/3) failed HTTP 429; Google Reviews Sync failed 8/1 for the same reason; the owed scripts/aeo-aio-sweep.py failed-hypothesis run for the cost page is now blocked. One billing action clears three broken automations.",
       "owner": "Ryan"
     },
     {
       "priority": "medium",
-      "action": "Execute Pillar 1 off-page consensus loop (Yelp claim #1, BBB confirm, Nextdoor claim, GAF/CertainTeed installer-locator listings) per AEO-BUILDOUT-HANDOFF-2026-06-03.md",
+      "action": "Investigate Heber City regression (carried from 2026-07-05, still open). GBP live-listing health remains the first diagnostic. BigHorn's GAF Master Elite + new R&R Partner Roofing dedicated Heber-slug page are on-page pressure; NAP-directory sweep + Pillar 1 off-page consensus is off-page pressure.",
+      "owner": "Ryan"
+    },
+    {
+      "priority": "medium",
+      "action": "Verify title tag on /blog/utah/utah-roof-insurance-claims-guide — Google's AIO snippet showed 'Frame Restoration' not 'Frame Restoration Utah'. Confirm the tag matches the post-2026-06-15 brand transition (feadbe1); if stale, run a targeted brand sweep on the file.",
+      "owner": "Ryan"
+    },
+    {
+      "priority": "medium",
+      "action": "Expand tracked query panel to include the 6 SLV storm-damage subpages from PR #93 + Midvale (b85ddc0). The Park City citation this cycle suggests other city+storm-damage combinations are likely cited already but not visible in the current 5-query panel.",
+      "owner": "Ryan (or next AEO monitor iteration)"
+    },
+    {
+      "priority": "medium",
+      "action": "Execute Pillar 1 off-page consensus loop (Yelp claim #1, BBB confirm, Nextdoor claim, GAF/CertainTeed installer-locator listings, add RoofingScout aggregator to outreach list) per AEO-BUILDOUT-HANDOFF-2026-06-03.md — carried from prior cycles.",
       "owner": "Ryan / Landon"
     },
     {
       "priority": "medium",
-      "action": "Sweep NAP directory checklist (data/NAP-DIRECTORY-CHECKLIST-2026-06-01.md) — inconsistency is a plausible contributor to the Local Pack drop",
-      "owner": "Ryan"
-    },
-    {
-      "priority": "medium",
-      "action": "Build Park City storm-damage subpage (mirror the SLV storm-damage subpage pattern from PR #93 + Midvale b85ddc0) — Crown Roofing Park City has a dedicated exact-match domain winning that intent",
+      "action": "Sweep NAP directory checklist (data/NAP-DIRECTORY-CHECKLIST-2026-06-01.md) — carried from prior cycles, plausible contributor to the persistent Heber Local Pack absence.",
       "owner": "Ryan"
     }
   ],
   "threats_new_this_cycle": [
-    "BigHorn Roofing (GAF Master Elite credential dominates Heber City)",
-    "Crown Roofing Park City (dedicated PC exact-match domain)",
-    "M.W. Roofing (H1 anchor 'Wasatch Front #1')"
+    "R & R Partner Roofing (rr-partnerroofing.com — dedicated Heber-City-slug page)",
+    "Rooval Roofing (city-slug + /roof-replacement-cost-utah/ pattern matching Homer's cited URL)",
+    "Sky Ridge Roofing (escalating — was July insurance query, now ALSO August cost query with /blog/roof-cost-guide-utah-2026)",
+    "Action Roofing (actionroofingllc.com — '94+ communities' quantified-coverage framing on Wasatch Front query)",
+    "Cardinal Roofing (cardinalroofpro.com — 7-county owner-operated framing)",
+    "RoofingScout aggregator (roofingscout.com/utah — citation surface acquisition target)"
   ],
   "threats_persistent": [
-    "Homer Roofing (still owns cost + insurance queries — 2026-05-20 AIO experiment did not unseat)",
+    "BigHorn Roofing (GAF Master Elite credential still dominates Heber City)",
+    "Crown Roofing Park City (dedicated exact-match PC domain still cited on Park City query, even as Frame joined the list)",
+    "M.W. Roofing (H1 anchor 'Wasatch Front #1' unchanged)",
+    "Homer Roofing (still owns cost + insurance queries)",
     "roofingutah.com (still cited on storm + insurance)"
-  ]
+  ],
+  "threats_no_longer_visible": []
 }
