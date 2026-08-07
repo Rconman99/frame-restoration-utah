@@ -60,7 +60,19 @@ function isDeployed(rel) {
   let ignored = false;
   for (const m of ignoreMatchers) {
     const target = (m.hasSlash || m.isDir) ? rel : base;
-    const hit = m.isDir ? m.re.test(rel) : m.re.test(target);
+    let hit = m.isDir ? m.re.test(rel) : m.re.test(target);
+    // Gitignore-style patterns that match a directory also ignore everything
+    // below it. This matters for `data/*`: it matches each immediate child
+    // directory while later negations can still allow exact top-level feeds.
+    if (!hit && m.hasSlash && !m.isDir) {
+      const parts = rel.split('/');
+      for (let index = 1; index < parts.length; index += 1) {
+        if (m.re.test(parts.slice(0, index).join('/'))) {
+          hit = true;
+          break;
+        }
+      }
+    }
     if (hit) ignored = !m.neg ? true : false;
   }
   return !ignored;
@@ -77,24 +89,122 @@ function walk(dir, acc) {
   }
 }
 
+function walkFiles(dir, acc) {
+  for (const ent of fs.readdirSync(dir, { withFileTypes: true })) {
+    if (ent.name.startsWith('.git')) continue;
+    if (WALK_SKIP.has(ent.name)) continue;
+    const full = path.join(dir, ent.name);
+    if (ent.isDirectory()) walkFiles(full, acc);
+    else acc.push(path.relative(repoRoot, full));
+  }
+}
+
 const mdFiles = [];
 walk(repoRoot, mdFiles);
 mdFiles.sort();
 
 const exposed = mdFiles.filter((rel) => isDeployed(rel));
+const weeklyReportRoot = path.join(repoRoot, 'data', 'weekly-reports');
+const trackedSensitiveSnapshots = [];
+if (fs.existsSync(weeklyReportRoot)) {
+  walkFiles(weeklyReportRoot, trackedSensitiveSnapshots);
+}
+trackedSensitiveSnapshots.sort();
+const weeklyReportBoundaryMissing = isDeployed(
+  'data/weekly-reports/_deployment-boundary-sentinel.json',
+);
+
+const publicDataAllowlist = new Set([
+  'data/blog-quality-benchmark.json',
+  'data/blog-traction.json',
+]);
+const dataFiles = [];
+const dataRoot = path.join(repoRoot, 'data');
+if (fs.existsSync(dataRoot)) walkFiles(dataRoot, dataFiles);
+dataFiles.sort();
+const deployedDataFiles = dataFiles.filter((rel) => isDeployed(rel));
+const unexpectedDeployedData = deployedDataFiles.filter(
+  (rel) => !publicDataAllowlist.has(rel),
+);
+const missingPublicData = [...publicDataAllowlist].filter(
+  (rel) => !fs.existsSync(path.join(repoRoot, rel)) || !isDeployed(rel),
+);
+
+const allFiles = [];
+walkFiles(repoRoot, allFiles);
+const publicDataReferences = new Set();
+for (const rel of allFiles) {
+  if (!isDeployed(rel) || !/\.(?:html|js)$/i.test(rel)) continue;
+  const source = fs.readFileSync(path.join(repoRoot, rel), 'utf8');
+  for (const match of source.matchAll(/(?:^|["'`(])\/?(data\/[A-Za-z0-9._/-]+\.json)(?=[?"'`)])/g)) {
+    publicDataReferences.add(match[1]);
+  }
+}
+const unexpectedPublicDataReferences = [...publicDataReferences]
+  .filter((rel) => !publicDataAllowlist.has(rel))
+  .sort();
+const internalDeploySentinels = [
+  '.claude/settings.json',
+  '.github/workflows/compliance-gate.yml',
+  '.~lock.private.xlsx#',
+  'build-intelligence/customer-request-ledger.json',
+  'deno.lock',
+  'qa/receipts/private.json',
+  'screenshots/mobile-audit/diagnostics.json',
+  'state.json',
+];
+const exposedInternalSentinels = internalDeploySentinels.filter(isDeployed);
 
 console.log('\n=== Internal-documentation isolation ===');
 console.log(`scanned ${mdFiles.length} markdown files · ${mdFiles.length - exposed.length} correctly excluded from deploy`);
 
-if (exposed.length === 0) {
-  console.log('✓ no internal docs in the public build tree');
+if (
+  exposed.length === 0 &&
+  trackedSensitiveSnapshots.length === 0 &&
+  !weeklyReportBoundaryMissing &&
+  unexpectedDeployedData.length === 0 &&
+  missingPublicData.length === 0 &&
+  unexpectedPublicDataReferences.length === 0 &&
+  exposedInternalSentinels.length === 0
+) {
+  console.log(`✓ no internal docs or customer reporting snapshots in the public build tree; ${deployedDataFiles.length} allowlisted aggregate data feeds`);
   process.exit(0);
 }
 
-console.log(`${strict ? '🚨' : '⚠'} ${exposed.length} markdown file(s) WOULD deploy publicly${strict ? '' : ' (informational)'}:`);
-for (const rel of exposed.slice(0, 50)) {
-  console.log(`    ${rel}  →  https://www.framerestorationutah.com/${rel}`);
+if (exposed.length > 0) {
+  console.log(`${strict ? '🚨' : '⚠'} ${exposed.length} markdown file(s) WOULD deploy publicly${strict ? '' : ' (informational)'}:`);
+  for (const rel of exposed.slice(0, 50)) {
+    console.log(`    ${rel}  →  https://www.framerestorationutah.com/${rel}`);
+  }
+  if (exposed.length > 50) console.log(`    …and ${exposed.length - 50} more`);
+  console.log('  Fix: add a matching rule to .vercelignore (e.g. `*.md`), or `!file.md` to intentionally publish one.');
 }
-if (exposed.length > 50) console.log(`    …and ${exposed.length - 50} more`);
-console.log('  Fix: add a matching rule to .vercelignore (e.g. `*.md`), or `!file.md` to intentionally publish one.');
+
+if (weeklyReportBoundaryMissing) {
+  console.log(`${strict ? '🚨' : '⚠'} data/weekly-reports/ is not excluded by .vercelignore.`);
+}
+if (trackedSensitiveSnapshots.length > 0) {
+  console.log(`${strict ? '🚨' : '⚠'} ${trackedSensitiveSnapshots.length} customer reporting snapshot file(s) remain under data/weekly-reports/.`);
+  for (const rel of trackedSensitiveSnapshots.slice(0, 20)) {
+    console.log(`    ${rel}`);
+  }
+  console.log('  Fix: move customer-level reports to access-controlled storage; never commit them to this public repository.');
+}
+if (unexpectedDeployedData.length > 0) {
+  console.log(`${strict ? '🚨' : '⚠'} ${unexpectedDeployedData.length} non-allowlisted data file(s) would deploy publicly:`);
+  for (const rel of unexpectedDeployedData.slice(0, 50)) console.log(`    ${rel}`);
+  console.log('  Fix: keep `data/*` default-denied; add an exception only for an intentionally public aggregate feed.');
+}
+if (missingPublicData.length > 0) {
+  console.log(`${strict ? '🚨' : '⚠'} required aggregate dashboard feed(s) are missing or excluded:`);
+  for (const rel of missingPublicData) console.log(`    ${rel}`);
+}
+if (unexpectedPublicDataReferences.length > 0) {
+  console.log(`${strict ? '🚨' : '⚠'} deployed browser code references non-allowlisted data feed(s):`);
+  for (const rel of unexpectedPublicDataReferences) console.log(`    ${rel}`);
+}
+if (exposedInternalSentinels.length > 0) {
+  console.log(`${strict ? '🚨' : '⚠'} internal tooling/deployment path(s) are not excluded:`);
+  for (const rel of exposedInternalSentinels) console.log(`    ${rel}`);
+}
 process.exit(strict ? 1 : 0);
