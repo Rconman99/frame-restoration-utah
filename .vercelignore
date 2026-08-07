@@ -31,6 +31,8 @@
 # =============================================================================
 
 # Internal strategy / memory / AI context — never deploy
+.claude/
+.github/
 CLAUDE.md
 CONTINUE-FROM-HERE.md
 README.md
@@ -43,8 +45,13 @@ directory-blitz-prompt.md
 # Build / deploy artifacts from another tool (not this static site)
 package.json
 package-lock.json
+deno.lock
 node_modules/
 supabase/
+build-intelligence/
+qa/
+screenshots/
+state.json
 
 # Python scripts — dev-only
 *.py
@@ -59,13 +66,12 @@ tmp-*/
 assets/_backup-pre-enhancement-*/
 assets/_backup-2026-*/
 
-# Internal monitoring artifacts (AEO citation reports, action queues, trend
-# files). Read by scripts/aeo-citation-monitor.py for persistence across runs;
-# tracked in git for repo history but never deployed — this is competitive
-# analysis, not customer-facing content.
-data/aeo-citations/
-data/route-factory/
-data/image-registry.json
+# Default-deny the internal data tree. Only these two aggregate, non-customer
+# feeds are fetched by the authenticated dashboard. Root-level reviews.json is
+# intentionally public and is unaffected by this rule.
+data/*
+!data/blog-traction.json
+!data/blog-quality-benchmark.json
 
 # Internal-only HTML (audits, scratch redesigns, cheat sheets, trackers)
 index-redesign.html
@@ -110,6 +116,7 @@ Texas-*.html
 *.xlsx
 *.pptx
 *.pdf
+.~lock.*
 drive-photos.zip
 drive_contact.jpg
 iphone_contact.jpg
