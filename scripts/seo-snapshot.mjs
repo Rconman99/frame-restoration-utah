@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Daily SEO snapshot for Frame Restoration Utah TX — writes
+ * Daily SEO snapshot for Frame Restoration Utah — writes
  * data/seo/snapshots/<YYYY-MM-DD>.json in the seo-god snapshot contract shape,
  * from two sources: a live crawl (scripts/seo-crawl.mjs) and Google Search
  * Console (scripts/lib/gsc.mjs, optional).
@@ -10,7 +10,7 @@
  *   { date, source, site, crawl:{pages, issues}, ranks:[], gsc:{available,
  *     clicks28d, impressions28d, top_queries}, ai_visibility:{measured, ...} }
  * Extra keys this loop adds (documented in docs/seo/SEO-LOOP.md): gsc.by_date,
- * gsc.top_query_pages, gsc.window, gsc.reason, gsc.truncated, crawl.by_status,
+ * gsc.top_query_pages, gsc.top_pages, gsc.window, gsc.reason, gsc.truncated, crawl.by_status,
  * crawl.indexable_pages, crawl.fetched_at. Consumers must preserve keys they
  * do not recognise.
  *
@@ -80,7 +80,7 @@ export async function buildSnapshot({ site = DEFAULT_SITE, maxPages = 500, date,
   }
 
   // ---- GSC (optional — degrades to not-measured, never to zero-filled) ----
-  let gsc = { available: false, clicks28d: 0, impressions28d: 0, top_queries: [], reason: "not_configured" };
+  let gsc = { available: false, clicks28d: 0, impressions28d: 0, top_queries: [], top_pages: [], reason: "not_configured" };
   try {
     const sections = await fetchGscSections({ env });
     if (sections) {
@@ -91,12 +91,18 @@ export async function buildSnapshot({ site = DEFAULT_SITE, maxPages = 500, date,
         top_queries: sections.top_queries,
         by_date: sections.by_date,
         top_query_pages: sections.top_query_pages,
+        top_pages: sections.top_pages,
         window: sections.window,
         truncated: sections.truncated,
+        pages_truncated: sections.pages_truncated,
+        queries_seen: sections.queries_seen,
+        queries_stored: sections.queries_stored,
+        pages_seen: sections.pages_seen,
+        pages_stored: sections.pages_stored,
       };
     }
   } catch (err) {
-    gsc = { available: false, clicks28d: 0, impressions28d: 0, top_queries: [], reason: `api_error: ${err.message}` };
+    gsc = { available: false, clicks28d: 0, impressions28d: 0, top_queries: [], top_pages: [], reason: `api_error: ${err.message}` };
   }
 
   // ---- Ranks: tracked keywords with no measured position -> null, honestly ----

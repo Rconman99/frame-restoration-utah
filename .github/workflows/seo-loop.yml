@@ -32,16 +32,34 @@ on:
     - cron: '37 12 * * *'   # daily ~06:37 Denver (12:37 UTC in MDT) — before
                             # business hours, offset from the other crons
   workflow_dispatch:
+  pull_request:
+    paths:                  # the suite existed but nothing ran it — a green PR
+      - 'scripts/seo-*.mjs' # said nothing about whether the loop still worked
+      - 'scripts/lib/gsc.mjs'
+      - 'scripts/lib/gsc.test.mjs'
+      - '.github/workflows/seo-loop.yml'
 
 permissions:
   contents: write
 
 concurrency:
-  group: seo-loop-texas
+  group: seo-loop-utah-${{ github.event.pull_request.number || 'main' }}   # was seo-loop-texas, a porting slip
   cancel-in-progress: false
 
 jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Unit tests
+        run: node --test scripts/seo-diff.test.mjs scripts/seo-crawl.test.mjs scripts/lib/gsc.test.mjs
+
   measure:
+    needs: test               # a broken differ must not get to write a snapshot
+    if: github.event_name != 'pull_request'   # never push to main from a PR
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

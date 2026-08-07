@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { computeDiff, renderReadout, checkDeadman, expectedCtr } from "./seo-diff.mjs";
+import { computeDiff, renderReadout, checkDeadman, expectedCtr, silentPages, queryCoverageCaveat } from "./seo-diff.mjs";
 
 function snap(overrides = {}) {
   return {
@@ -122,6 +122,81 @@ test("experiment candidates: page-one low CTR with enough impressions, report-on
   assert.equal(c[0].expectedCtr, 0.025);
 });
 
+test("a page under a running experiment is suppressed, not recommended again", () => {
+  // The real 2026-08-07 case: the loop recommended rewriting /locations/allen
+  // while an experiment deployed 2026-07-26 was still running on that exact
+  // page. Acting on it would have destroyed the measurement mid-window.
+  const today = snap({
+    gsc: {
+      available: true,
+      clicks28d: 0,
+      impressions28d: 100,
+      top_queries: [
+        { query: "allen roof replacement", clicks: 0, impressions: 49, position: 8.9 },
+        { query: "colleyville roof replacement", clicks: 0, impressions: 42, position: 14.1 },
+      ],
+      top_query_pages: {
+        "allen roof replacement": "https://www.framerestorationutah.com/locations/allen",
+        "colleyville roof replacement": "https://www.framerestorationutah.com/locations/colleyville",
+      },
+    },
+  });
+  const experiments = [{
+    id: "texas-allen-roof-replacement-ctr-2026-07-26",
+    query: "allen roof replacement",
+    page: "https://www.framerestorationutah.com/locations/allen",
+    earliestEvaluationAt: "2026-08-24T00:00:00.000Z",
+  }];
+  const d = computeDiff(today, null, { experiments });
+
+  assert.equal(d.candidates.length, 1, "only the un-experimented page is actionable");
+  assert.equal(d.candidates[0].query, "colleyville roof replacement");
+  assert.equal(d.candidatesSuppressed.length, 1, "the held-back one is reported, never dropped");
+  assert.equal(d.candidatesSuppressed[0].experimentId, "texas-allen-roof-replacement-ctr-2026-07-26");
+
+  // The readout must SAY it withheld something — a silently shortened list
+  // reads as "nothing else qualified", which is a different and false claim.
+  const out = renderReadout(d, { now: new Date("2026-08-07T12:00:00Z") });
+  assert.match(out, /already under a running experiment/i);
+  assert.match(out, /texas-allen-roof-replacement-ctr-2026-07-26/);
+  assert.match(out, /2026-08-24/);
+});
+
+test("a sibling query on an experimented page is suppressed too", () => {
+  // An experiment rewrites the page title/description, which moves every query
+  // that page ranks for — so a different query on the same page is equally
+  // contaminated, even though the experiment names only one query.
+  const today = snap({
+    gsc: {
+      available: true,
+      clicks28d: 0,
+      impressions28d: 60,
+      top_queries: [{ query: "roof replacement allen tx", clicks: 0, impressions: 40, position: 7 }],
+      top_query_pages: { "roof replacement allen tx": "https://www.framerestorationutah.com/locations/allen/" },
+    },
+  });
+  const d = computeDiff(today, null, {
+    experiments: [{ id: "exp-allen", query: "allen roof replacement", page: "https://www.framerestorationutah.com/locations/allen" }],
+  });
+  assert.equal(d.candidates.length, 0, "matched on page despite a different query and trailing slash");
+  assert.equal(d.candidatesSuppressed.length, 1);
+});
+
+test("no experiments loaded -> behaviour is unchanged", () => {
+  const today = snap({
+    gsc: {
+      available: true,
+      clicks28d: 0,
+      impressions28d: 50,
+      top_queries: [{ query: "allen roof replacement", clicks: 0, impressions: 49, position: 8.9 }],
+      top_query_pages: {},
+    },
+  });
+  const d = computeDiff(today, null);
+  assert.equal(d.candidates.length, 1);
+  assert.equal(d.candidatesSuppressed.length, 0);
+});
+
 test("expectedCtr buckets match the Allen experiment scale", () => {
   assert.equal(expectedCtr(4), 0.05);
   assert.equal(expectedCtr(8.9), 0.025);
@@ -135,4 +210,63 @@ test("deadman fires past the threshold and stays quiet inside it", () => {
   assert.ok(fired.gapHours > 48);
   const readout = renderReadout(computeDiff(snap(), snap({ date: "2026-08-01" })), { deadman: fired });
   assert.match(readout, /A scheduled run appears to have been missed/);
+});
+
+test("silent pages: impressions with zero clicks, impressions-desc, capped with the remainder named", () => {
+  const top_pages = [{ page: "https://x/a", clicks: 0, impressions: 223, position: 42.1 }];
+  for (let i = 0; i < 12; i += 1) top_pages.push({ page: `https://x/p${i}`, clicks: 0, impressions: 60 + i, position: 30 });
+  top_pages.push({ page: "https://x/converting", clicks: 9, impressions: 900, position: 3 }); // has clicks -> excluded
+  top_pages.push({ page: "https://x/tiny", clicks: 0, impressions: 4, position: 80 }); // under threshold -> excluded
+  const d = computeDiff(snap({ gsc: { available: true, clicks28d: 9, impressions28d: 2000, top_queries: [], top_pages } }), null);
+  assert.equal(d.silentPages.measured, true);
+  assert.equal(d.silentPages.total, 13);
+  assert.equal(d.silentPages.rows.length, 10);
+  assert.equal(d.silentPages.rows[0].page, "https://x/a"); // sorted before the cap, not after
+  assert.ok(!d.silentPages.rows.some((r) => r.page === "https://x/converting"));
+  const out = renderReadout(d);
+  assert.match(out, /223 impr, 0 clicks, avg position 42\.1/);
+  assert.match(out, /and 3 more \(list capped at 10\)/);
+});
+
+test("silent pages: an older snapshot with no page dimension is NOT MEASURED, never zero", () => {
+  const d = computeDiff(snap({ gsc: { available: true, clicks28d: 5, impressions28d: 99, top_queries: [] } }), null);
+  assert.equal(d.silentPages.measured, false);
+  assert.equal(d.silentPages.rows.length, 0);
+  const out = renderReadout(d);
+  assert.match(out, /Not measured — page dimension not in this snapshot/);
+  assert.doesNotMatch(out, /zero clicks \(≥50 impr\)\n- None\./);
+});
+
+test("silent pages: measured but genuinely empty says None, not not-measured", () => {
+  const d = computeDiff(snap({ gsc: { available: true, clicks28d: 5, impressions28d: 99, top_queries: [], top_pages: [] } }), null);
+  assert.equal(d.silentPages.measured, true);
+  assert.match(renderReadout(d), /zero clicks[^\n]*\n- None\./);
+});
+
+test("truncation caveat counts storage drops, not just the fetch limit", () => {
+  // 400 fetched, 200 stored: the old `queryRows.length >= 1000` test called this
+  // untruncated and the readout claimed full coverage over half the data.
+  assert.equal(
+    queryCoverageCaveat({ truncated: true, queries_seen: 400, queries_stored: 200 }),
+    "showing 200 of 400 queries — arrivals outside that set are not visible",
+  );
+  // Fetch maxed out (rowLimit 5000): the true total is unknown, so the count is a floor.
+  assert.match(queryCoverageCaveat({ truncated: true, queries_seen: 5000, queries_stored: 400 }), /of at least 5000 queries/);
+  // A fetch that did NOT max out reports the exact total, with no "at least".
+  assert.doesNotMatch(queryCoverageCaveat({ truncated: true, queries_seen: 1000, queries_stored: 200 }), /at least/);
+  // Older snapshot with no counts still gets the plain sentence.
+  assert.equal(queryCoverageCaveat({ truncated: true }), "arrivals outside the stored query set are not visible");
+  assert.equal(queryCoverageCaveat({ truncated: false }), null);
+});
+
+test("coverage caveat states impression share, and rides the GSC totals line", () => {
+  const msg = queryCoverageCaveat({ truncated: true, queries_seen: 5000, queries_stored: 400, queries_stored_impressions: 2107, impressions28d: 85434 });
+  assert.equal(msg, "showing 400 of at least 5000 queries (2.5% of impressions) — arrivals outside that set are not visible");
+  // Absent counts (older snapshot) must not fabricate a percentage.
+  assert.doesNotMatch(queryCoverageCaveat({ truncated: true }), /%/);
+  // It must appear on a FIRST snapshot too, where the new-queries section cannot render.
+  const out = renderReadout(computeDiff(snap({
+    gsc: { available: true, clicks28d: 73, impressions28d: 85434, top_queries: [], top_pages: [], truncated: true, queries_seen: 5000, queries_stored: 400, queries_stored_impressions: 2107 },
+  }), null));
+  assert.match(out, /Query coverage: showing 400 of at least 5000 queries \(2\.5% of impressions\)/);
 });
