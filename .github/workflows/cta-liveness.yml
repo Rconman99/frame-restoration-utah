@@ -34,4 +34,6 @@ jobs:
       - name: Check live review page + GBP liveness
         env:
           SERPAPI_KEY: ${{ secrets.SERPAPI_KEY }}
+          DATAFORSEO_LOGIN: ${{ secrets.DATAFORSEO_LOGIN }}
+          DATAFORSEO_PASSWORD: ${{ secrets.DATAFORSEO_PASSWORD }}
         run: python3 scripts/check-cta-liveness.py
