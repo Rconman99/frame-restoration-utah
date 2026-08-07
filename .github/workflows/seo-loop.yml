@@ -1,0 +1,79 @@
+name: SEO loop (Utah)
+
+# The daily measure-and-diff half of the SEO loop (docs/seo/SEO-LOOP.md) —
+# method ported from the seo-god skill, implemented natively (no Docker, no
+# OpenSEO container, zero npm dependencies).
+#
+# Every run:
+#   1. scripts/seo-snapshot.mjs — live-crawls www.framerestorationutah.com (real
+#      status codes, redirect chains, noindex, thin content) + pulls Google
+#      Search Console when the GSC_SERVICE_ACCOUNT_JSON secret exists, and
+#      writes data/seo/snapshots/<date>.json. A failed crawl writes NO
+#      snapshot and fails the job — a fabricated "0 issues" snapshot would
+#      read as a clean bill of health in tomorrow's diff.
+#   2. scripts/seo-diff.mjs — regression-first diff vs the previous snapshot
+#      (regressions -> quick wins at positions 4-15 -> new queries), writes
+#      data/seo/readouts/<date>.md, and surfaces experiment candidates shaped
+#      for the frame-seo-experiment.v1 protocol. Report-only: this loop NEVER
+#      edits pages — content changes stay human decisions behind the
+#      compliance gate.
+#   3. Commits both. The readout also lands in the job summary.
+#
+# Deadman: the diff opens with a missed-run warning (+ a ::warning::
+# annotation) when the previous snapshot is >48h old, so a silently-dead
+# schedule surfaces in the next run's readout instead of never.
+#
+# Zero-secret degradation: without GSC_SERVICE_ACCOUNT_JSON the crawl half
+# still runs daily and GSC sections read "not measured" — never zero.
+# Setup for the secret: docs/seo/SEO-LOOP.md §GSC.
+
+on:
+  schedule:
+    - cron: '37 12 * * *'   # daily ~06:37 Denver (12:37 UTC in MDT) — before
+                            # business hours, offset from the other crons
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: seo-loop-texas
+  cancel-in-progress: false
+
+jobs:
+  measure:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Snapshot (crawl + GSC)
+        env:
+          GSC_SERVICE_ACCOUNT_JSON: ${{ secrets.GSC_SERVICE_ACCOUNT_JSON }}
+          GSC_SITE_URL: ${{ vars.GSC_SITE_URL }}
+        run: node scripts/seo-snapshot.mjs
+
+      - name: Diff + readout (regressions first)
+        run: node scripts/seo-diff.mjs | tee -a "$GITHUB_STEP_SUMMARY"
+
+      - name: Commit if changed
+        run: |
+          git config user.name "SEO Loop Bot"
+          git config user.email "seo-loop-bot@framerestorationutah.com"
+          git add data/seo/
+          if git diff --cached --quiet; then
+            echo "no snapshot changes"
+          else
+            git commit -m "chore(seo): daily snapshot + regression-first readout [skip ci]"
+            # Rebase-retry so an overlapping push to main (blog poster, traction
+            # refresh) can never drop this commit to a non-fast-forward error.
+            for i in 1 2 3 4 5; do
+              git pull --rebase --autostash origin main && git push origin HEAD:main && exit 0
+              echo "push race, retry $i"; sleep 7
+            done
+            echo "push failed after retries"; exit 1
+          fi
