@@ -301,7 +301,7 @@ Response shape:
       "jobs_due_next_30d": 1,
       "forecast_margin": 36000,
       "jobs": [
-        { "lead_id": 42, "name": "Greg Atkinson", "estimated_completion_date": "2026-06-05", "margin": 36000, "balance_due": 108000, "days_until": 19 }
+[REDACTED 2026-08-07: customer-identifying operational and financial detail removed from the public repository.]
       ]
     }
   },
@@ -332,7 +332,7 @@ New section in `/dashboard/`, between **Biggest Movers** and **Site Health**. Fo
 │  ⚠️ Insufficient data (N=1 won lead). Collecting baseline.                  │
 │                                                                            │
 │  🏆 TOP EARNERS                  💼 BOOKED, AWAITING PAY                    │
-│   /blog/.../storm-chaser            Greg Atkinson — $108k                   │
+[REDACTED 2026-08-07: customer-identifying operational and financial detail removed from the public repository.]
 │   $36k · 1 won · organic            est. complete 6/05 (T+19)               │
 │   ...                               ...                                     │
 │                                                                            │
@@ -345,7 +345,7 @@ New section in `/dashboard/`, between **Biggest Movers** and **Site Health**. Fo
 │   ...                                                                       │
 │                                                                            │
 │  🗓️ FORECAST NEXT 30 DAYS                                                   │
-│   1 job · $36k expected · Greg Atkinson 6/05                                │
+[REDACTED 2026-08-07: customer-identifying operational and financial detail removed from the public repository.]
 │                                                                            │
 │  Last-touch attribution. Source: leads + phone_clicks. Updated 2 min ago.   │
 └────────────────────────────────────────────────────────────────────────────┘
@@ -374,7 +374,7 @@ New section in `/dashboard/`, between **Biggest Movers** and **Site Health**. Fo
    - `ADD COLUMN IF NOT EXISTS estimated_completion_date date`
    - `ADD COLUMN IF NOT EXISTS final_payment_received_at timestamptz`
 2. Apply via `supabase db push --project-ref hdcflshhomzildwqlmwh`
-3. Backfill `final_payment_received_at` for Greg Atkinson if Landon confirms balance paid
+[REDACTED 2026-08-07: customer-identifying operational and financial detail removed from the public repository.]
 
 ### Phase 2 — Lead-crm v7 + leads.html
 1. Add `final_payment_received_at` + `estimated_completion_date` to lead-crm SELECT (line 71-78 area)
@@ -431,7 +431,7 @@ Ships when:
 | Limitation | Severity | Mitigation |
 |---|---|---|
 | Last-touch attribution only | Medium | Labeled in footer; v1 adds multi-touch via PostHog session join |
-| Greg Atkinson is the ONLY won lead with margin | High — sample of 1 | Tile shows "insufficient data" warning until N≥10 |
+[REDACTED 2026-08-07: customer-identifying operational and financial detail removed from the public repository.]
 | `final_payment_received_at` requires Landon discipline | High — single point of failure | Weekly reminder + "follow up" callout if won > 60 days unpaid |
 | `estimated_completion_date` requires Landon to set + adjust | Medium | Default suggestion = job_started_at + 14 days; surface past-due chip |
 | LLM referrers often strip referrer | Medium | Direct traffic partial proxy; Connor/Landon can manually tag known LLM-sourced leads in notes |

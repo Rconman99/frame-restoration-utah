@@ -29,6 +29,7 @@
 
 import fs from 'node:fs';
 import path from 'node:path';
+import { createHash } from 'node:crypto';
 
 const repoRoot = process.cwd();
 const strict = process.argv.includes('--strict');
@@ -132,6 +133,29 @@ const missingPublicData = [...publicDataAllowlist].filter(
 
 const allFiles = [];
 walkFiles(repoRoot, allFiles);
+const knownSensitiveLineHashes = new Set([
+  'bd2a65a4c00e897fe3e8d1800080d8eb493f65fca5759e9e0d0eafe2a136e3a6',
+  'e42b56acd93de8f06c5ef1d5609f6f8f4281eedb65b9ad1904e61d55058c4de3',
+  'b8ed9ada0fdfdd81f8fc7a5590aabae5b30e035220bde313a2ea2d8f5531703f',
+  '5a82aae321e45fb199098da205551d3299ac48c6534e00175b50ee81f15bb633',
+  '3fd59e8a4d6f7ac7d703ba3b348226e12cfee43af0735a53c68c4ea9d028f453',
+  '644aa4e1f2dccf88726a4b8f6f344ccf41f88a939ffa6422353be0e0dcca62ad',
+  'ee71b917dd829fc401bc81e315bf838e8d5ba25feb13348f041602a74b51ade5',
+  '12db1cb7665f4d6d88d16149c49e6de82f0cea3b91e64c4a41095fd7dae80937',
+  'c751d620266b1f5582b9d0fbb5b157f5cf92463ef42374c36e082bdc547b1da7',
+  '6afe7175940a6de55319c5e7922f36c3bf728a99fb80bfaa27c5a419b02d4e38',
+  '4f76e2b1950220f130b9263932f580b04dbf34cd3dec8c7f506511ee5350a0a7',
+]);
+const reintroducedSensitiveLines = [];
+for (const rel of allFiles.filter((candidate) => candidate.toLowerCase().endsWith('.md'))) {
+  const lines = fs.readFileSync(path.join(repoRoot, rel), 'utf8').split('\n');
+  lines.forEach((line, index) => {
+    const digest = createHash('sha256').update(`${line}\n`).digest('hex');
+    if (knownSensitiveLineHashes.has(digest)) {
+      reintroducedSensitiveLines.push(`${rel}:${index + 1}`);
+    }
+  });
+}
 const publicDataReferences = new Set();
 for (const rel of allFiles) {
   if (!isDeployed(rel) || !/\.(?:html|js)$/i.test(rel)) continue;
@@ -165,7 +189,8 @@ if (
   unexpectedDeployedData.length === 0 &&
   missingPublicData.length === 0 &&
   unexpectedPublicDataReferences.length === 0 &&
-  exposedInternalSentinels.length === 0
+  exposedInternalSentinels.length === 0 &&
+  reintroducedSensitiveLines.length === 0
 ) {
   console.log(`✓ no internal docs or customer reporting snapshots in the public build tree; ${deployedDataFiles.length} allowlisted aggregate data feeds`);
   process.exit(0);
@@ -206,5 +231,10 @@ if (unexpectedPublicDataReferences.length > 0) {
 if (exposedInternalSentinels.length > 0) {
   console.log(`${strict ? '🚨' : '⚠'} internal tooling/deployment path(s) are not excluded:`);
   for (const rel of exposedInternalSentinels) console.log(`    ${rel}`);
+}
+if (reintroducedSensitiveLines.length > 0) {
+  console.log(`${strict ? '🚨' : '⚠'} previously removed customer-detail line(s) were reintroduced:`);
+  for (const location of reintroducedSensitiveLines) console.log(`    ${location}`);
+  console.log('  Fix: keep customer identities and operational/financial rows in access-controlled storage, never tracked Markdown.');
 }
 process.exit(strict ? 1 : 0);
