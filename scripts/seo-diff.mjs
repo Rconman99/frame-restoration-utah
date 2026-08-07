@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Regression-first SEO diff for Frame Restoration Utah TX — compares today's
+ * Regression-first SEO diff for Frame Restoration Utah — compares today's
  * snapshot (data/seo/snapshots/<date>.json, written by seo-snapshot.mjs)
  * against the newest previous one and writes a dated readout to
  * data/seo/readouts/<date>.md.
@@ -50,6 +50,8 @@ const WOW_DROP_RATIO = 0.2;
 const QUICK_WIN_MIN_POS = 4;
 const QUICK_WIN_MAX_POS = 15;
 const CANDIDATE_MIN_IMPRESSIONS = 30;
+const SILENT_PAGE_MIN_IMPRESSIONS = 50;
+const SILENT_PAGE_MAX_ROWS = 10;
 
 /** Positional CTR expectation — same scale the Allen experiment used (0.025 @ pos 8.9). */
 export function expectedCtr(position) {
@@ -159,29 +161,158 @@ function newQueries(today, previous) {
     .filter((q) => !prevSet.has(q.query))
     .sort((a, b) => b.impressions - a.impressions)
     .slice(0, 10);
-  return { measured: true, rows, caveat: today.gsc.truncated ? "arrivals outside the top 200 are not visible" : null };
+  return { measured: true, rows, caveat: queryCoverageCaveat(today.gsc) };
 }
 
-/** Page-one queries whose measured CTR sits under the positional expectation — experiment fodder. */
-function experimentCandidates(today) {
-  if (!today.gsc?.available) return [];
-  return (today.gsc.top_queries || [])
+/**
+ * How much of the query set is actually visible in this snapshot.
+ *
+ * Older snapshots carry `truncated` but no counts, so fall back to the plain
+ * sentence rather than inventing numbers. `queries_seen` is itself capped by the
+ * fetch rowLimit, so when the fetch maxed out the true total is unknown and the
+ * caveat must say "at least".
+ */
+export function queryCoverageCaveat(gsc) {
+  if (!gsc?.truncated) return null;
+  const seen = gsc.queries_seen;
+  const stored = gsc.queries_stored;
+  if (!Number.isFinite(seen) || !Number.isFinite(stored) || seen <= stored) {
+    return "arrivals outside the stored query set are not visible";
+  }
+  const atLeast = seen >= 5000 ? "at least " : "";
+  // The row count understates the blindness. What matters is how much of the
+  // site's impressions those rows account for: Utah stored 200 rows covering
+  // 2.5% of its impressions, which reads very differently from "200 of 1000".
+  const imp = gsc.queries_stored_impressions;
+  const share =
+    Number.isFinite(imp) && gsc.impressions28d > 0 ? ` (${((imp / gsc.impressions28d) * 100).toFixed(1)}% of impressions)` : "";
+  return `showing ${stored} of ${atLeast}${seen} queries${share} — arrivals outside that set are not visible`;
+}
+
+/**
+ * Pages that earn impressions and no clicks at all.
+ *
+ * This is the one question a query-dimension pull cannot answer. Summing
+ * query rows by page does not substitute: the query pull is capped at the top
+ * 200 by clicks, so a page whose every query is a zero-click long-tail row is
+ * exactly the page most likely to be missing from it. Hence the page dimension.
+ *
+ * Report-only, and deliberately NOT an experiment candidate: zero clicks across
+ * a whole page is usually a ranking or local-entity problem, not a snippet
+ * problem, and a title rewrite aimed at it would be a guess. The loop's job here
+ * is to name the page and stop.
+ */
+export function silentPages(today) {
+  if (!today.gsc?.available) return { measured: false, rows: [], total: 0 };
+  const pages = today.gsc.top_pages;
+  // Snapshots written before the page dimension existed have no top_pages key at
+  // all. That is not "zero silent pages" — it is not measured, and it says so.
+  if (!Array.isArray(pages)) return { measured: false, rows: [], total: 0, reason: "page dimension not in this snapshot" };
+  const all = pages
+    .filter((p) => p.clicks === 0 && p.impressions >= SILENT_PAGE_MIN_IMPRESSIONS)
+    .sort((a, b) => b.impressions - a.impressions);
+  return { measured: true, rows: all.slice(0, SILENT_PAGE_MAX_ROWS), total: all.length };
+}
+
+/** Normalize a URL for comparison — trailing slash and scheme noise only. */
+function samePage(a, b) {
+  if (!a || !b) return false;
+  const norm = (u) => String(u).replace(/^https?:\/\//, "").replace(/\/+$/, "").toLowerCase();
+  return norm(a) === norm(b);
+}
+
+/**
+ * Is this query/page already under a running experiment?
+ *
+ * Matching on EITHER query or page, not both: an experiment rewrites a page's
+ * title/description, which moves every query that page ranks for — so a sibling
+ * query on the same page is equally contaminated and equally un-actionable.
+ */
+function activeExperimentFor(query, page, experiments) {
+  return (experiments || []).find(
+    (e) => (e.query && e.query.toLowerCase() === String(query).toLowerCase()) || samePage(e.page, page),
+  ) || null;
+}
+
+/**
+ * Page-one queries whose measured CTR sits under the positional expectation — experiment fodder.
+ *
+ * Candidates whose page is already under a RUNNING experiment are moved to
+ * `suppressed` rather than dropped. Recommending a title/meta rewrite on a page
+ * mid-experiment would destroy the measurement it is halfway through producing,
+ * and the compliance gate's audit-seo-experiments surfaceContract would reject
+ * the edit anyway. Reporting the suppression follows the same no-silent-caps
+ * rule as the issue-URL cap: a bounded readout must say what it bounded.
+ */
+function experimentCandidates(today, experiments = []) {
+  if (!today.gsc?.available) return { rows: [], suppressed: [] };
+  const scored = (today.gsc.top_queries || [])
     .filter((q) => q.position >= QUICK_WIN_MIN_POS && q.position <= QUICK_WIN_MAX_POS && q.impressions >= CANDIDATE_MIN_IMPRESSIONS)
     .map((q) => ({ ...q, ctr: q.impressions > 0 ? q.clicks / q.impressions : 0, expectedCtr: expectedCtr(q.position) }))
     .filter((q) => q.ctr < q.expectedCtr)
     .sort((a, b) => b.impressions - a.impressions)
-    .slice(0, 5)
     .map((q) => ({ ...q, page: today.gsc.top_query_pages?.[q.query] || null }));
+
+  const rows = [];
+  const suppressed = [];
+  for (const q of scored) {
+    const exp = activeExperimentFor(q.query, q.page, experiments);
+    if (exp) suppressed.push({ ...q, experimentId: exp.id, earliestEvaluationAt: exp.earliestEvaluationAt || null });
+    else if (rows.length < 5) rows.push(q);
+  }
+  return { rows, suppressed };
 }
 
-export function computeDiff(today, previous) {
+/**
+ * Running experiments from data/seo-experiments/*.json.
+ *
+ * Kept out of computeDiff so the diff stays pure and testable; the caller reads
+ * the directory and passes the result in. A malformed file is skipped rather
+ * than crashing the run — a bad experiment record must not cost us the day's
+ * measurement.
+ */
+export function readRunningExperiments(dir) {
+  let names = [];
+  try {
+    names = fs.readdirSync(dir).filter((n) => n.endsWith(".json"));
+  } catch {
+    return []; // no experiments directory in this market — fine
+  }
+  const out = [];
+  for (const name of names) {
+    try {
+      const e = JSON.parse(fs.readFileSync(path.join(dir, name), "utf8"));
+      if (e?.status !== "running") continue;
+      out.push({
+        id: e.id || name,
+        query: e.query || null,
+        page: e.page || null,
+        earliestEvaluationAt: e.measurement?.earliestEvaluationAt || null,
+      });
+    } catch {
+      console.error(`[seo-diff] skipping unreadable experiment ${name}`);
+    }
+  }
+  return out;
+}
+
+export function computeDiff(today, previous, { experiments = [] } = {}) {
+  const cand = experimentCandidates(today, experiments);
   if (!previous) {
-    return { first: true, today, quickWins: quickWins(today), candidates: experimentCandidates(today) };
+    return {
+      first: true,
+      today,
+      quickWins: quickWins(today),
+      silentPages: silentPages(today),
+      candidates: cand.rows,
+      candidatesSuppressed: cand.suppressed,
+    };
   }
   return {
     first: false,
     today,
     previous,
+    silentPages: silentPages(today),
     regressions: {
       rankDrops: rankDrops(today, previous),
       newErrorIssues: newErrorIssues(today, previous),
@@ -189,14 +320,19 @@ export function computeDiff(today, previous) {
     },
     quickWins: quickWins(today),
     newQueries: newQueries(today, previous),
-    candidates: experimentCandidates(today),
+    candidates: cand.rows,
+    candidatesSuppressed: cand.suppressed,
   };
 }
 
 function gscLine(s) {
   if (!s.gsc?.available) return `GSC: not measured (${s.gsc?.reason || "unavailable"})`;
   const w = s.gsc.window ? ` (${s.gsc.window.startDate} → ${s.gsc.window.endDate}; window ends ~3 days back)` : " (28 days)";
-  return `GSC: ${s.gsc.clicks28d} clicks / ${s.gsc.impressions28d} impressions${w}`;
+  // Coverage rides on the totals line, not just the new-queries section — that
+  // section needs two snapshots, and a first run with 2.5% query coverage must
+  // not read as a complete picture.
+  const cov = queryCoverageCaveat(s.gsc);
+  return `GSC: ${s.gsc.clicks28d} clicks / ${s.gsc.impressions28d} impressions${w}${cov ? `\nQuery coverage: ${cov}.` : ""}`;
 }
 
 export function renderReadout(diff, { deadman = null, now = new Date() } = {}) {
@@ -253,6 +389,36 @@ export function renderReadout(diff, { deadman = null, now = new Date() } = {}) {
     lines.push("", gscLine(s));
   }
 
+  // Pages measured as earning impressions and zero clicks. Rendered for the
+  // first snapshot too — it is an absolute, not a delta.
+  const sp = diff.silentPages;
+  if (sp) {
+    lines.push("", `### Pages earning impressions but zero clicks (≥${SILENT_PAGE_MIN_IMPRESSIONS} impr)`);
+    if (!sp.measured) {
+      lines.push(`- Not measured${sp.reason ? ` — ${sp.reason}` : " — needs Search Console"}.`);
+    } else if (sp.rows.length === 0) {
+      lines.push("- None.");
+    } else {
+      for (const p of sp.rows) {
+        lines.push(`- ${p.page} — ${p.impressions} impr, 0 clicks, avg position ${p.position}`);
+      }
+      if (sp.total > sp.rows.length) lines.push(`- …and ${sp.total - sp.rows.length} more (list capped at ${SILENT_PAGE_MAX_ROWS}).`);
+      lines.push("- Zero clicks across a whole page points at ranking or local-entity signals, not the snippet. Diagnose before editing.");
+    }
+  }
+
+  // Say what was withheld and why. A silently shortened list reads as "nothing
+  // else qualified", which is a different and false claim.
+  if (diff.candidatesSuppressed?.length > 0) {
+    lines.push("", "### Held back — already under a running experiment (do NOT edit these pages)");
+    for (const c of diff.candidatesSuppressed) {
+      lines.push(
+        `- "${c.query}" pos ${c.position}, ${c.impressions} impr — experiment \`${c.experimentId}\`` +
+          (c.earliestEvaluationAt ? `, earliest evaluation ${String(c.earliestEvaluationAt).slice(0, 10)}` : "") +
+          ". Rewriting the page now destroys the measurement in flight.",
+      );
+    }
+  }
   if (diff.candidates.length > 0) {
     lines.push("", "### Experiment candidates (frame-seo-experiment.v1 — human decision, behind the compliance gate)");
     for (const c of diff.candidates) {
@@ -289,7 +455,8 @@ async function main() {
   if (deadman && process.env.GITHUB_ACTIONS === "true") {
     console.log(`::warning::SEO loop missed a run — previous snapshot ${deadman.previousDate} (~${deadman.gapHours}h ago)`);
   }
-  const diff = computeDiff(today, previous);
+  const experiments = readRunningExperiments(path.join(root, "data", "seo-experiments"));
+  const diff = computeDiff(today, previous, { experiments });
   const readout = renderReadout(diff, { deadman });
 
   if (args.write) {

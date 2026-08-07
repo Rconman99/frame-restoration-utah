@@ -61,3 +61,40 @@ behind the compliance gate, not automation.
 
 `data/seo/keywords.json` as `{ "keywords": [...] }` (10–30 commercial-intent terms). Positions stay
 `null` — honest — until a rank source exists.
+
+## 2026-08-07 — ported from the shared loop method: page dimension + honest query coverage
+
+Ported wholesale. Nothing changed but the host and the Search Console property; the portable
+method lives in `shared/SEO-LOOP-METHOD.md`.
+
+**`gsc.top_pages` (added 2026-08-07)** is the `page` dimension pulled on its own: which URLs earn
+impressions and where they rank. The loop already fetched `query+page` but kept only a
+`query → page` string map, discarding every metric — so nothing downstream could answer "is this
+page invisible?". Summing the query rows by page is **not** a substitute even after the query
+storage fix below: those rows are still a bounded slice of the query set (≤400 of up to 5,000), and
+per-query positions cannot be averaged into a page position. The page dimension is the only source
+that answers the question directly. Snapshots written before this key exists report the page
+sections as **not measured**, not as zero.
+
+### Added honesty rules
+
+- **A cap counts as truncation wherever it happens.** `gsc.truncated` reports rows dropped by the
+  storage cap as well as by the fetch `rowLimit`. Until 2026-08-07 it tested only
+  `queryRows.length >= 1000`, so a 400-row pull stored 200 and still reported `truncated: false` —
+  the readout then implied full coverage over half the data. Where counts exist the caveat names
+  them ("showing 200 of 400"); a maxed-out fetch says "at least", because the true total is unknown.
+- **Coverage is reported as an impression share, not a row count.** "200 of 1000 queries" sounds
+  like most of the picture; the same slice covering **2.5% of impressions** does not. The caveat
+  rides the GSC totals line so it shows on a first snapshot too, where the new-queries section
+  cannot render.
+- **A clicks-ordered sample is not a sample.** The Search Analytics API only ever returns rows
+  clicks-desc and offers no sort control, so on a low-click site every zero-click query sinks below
+  every 1-click query no matter how many impressions it carries. `top_queries` therefore stores the
+  **union of the top 200 by clicks and the top 200 by impressions** (≤400 rows, impressions-desc):
+  clicks answer "what is working", impressions answer "what is invisible", and either ordering alone
+  loses one. The fetch also reaches `rowLimit: 5000`, because that zero-click volume lives in the
+  tail — at 1000 Utah's stored slice covered 2.5% of its impressions.
+
+**Two porting slips fixed here at the same time:** the workflow's concurrency group read
+`seo-loop-texas`, and CI never ran the unit tests in this repo either — so a green PR said
+nothing about whether the loop still worked.

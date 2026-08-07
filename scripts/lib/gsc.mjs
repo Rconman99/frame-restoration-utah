@@ -26,6 +26,12 @@ import crypto from "node:crypto";
 const SCOPE = "https://www.googleapis.com/auth/webmasters.readonly";
 const DEFAULT_SITE = "https://www.framerestorationutah.com/";
 
+// Fetch deep, store both orderings. The API returns clicks-desc with no sort
+// control, so the zero-click impression volume lives in the tail — 1000 was not
+// deep enough to reach it on a site with tens of thousands of impressions.
+const QUERY_FETCH_LIMIT = 5000;
+const QUERY_STORE_PER_ORDER = 200; // union of by-clicks and by-impressions, so <= 400 rows
+
 function b64url(input) {
   return Buffer.from(input).toString("base64url");
 }
@@ -103,9 +109,17 @@ export async function querySearchAnalytics(token, siteUrl, body, { fetchImpl = f
  *
  * Returns:
  *   by_date:      [{date, clicks, impressions}] sorted by date ascending
- *   top_queries:  first 200 rows by clicks desc {query, clicks, impressions, position(1dp)}
+ *   top_queries:  union of the top 200 by clicks and the top 200 by impressions
+ *                 (<=400 rows), impressions-desc. Clicks alone is a biased sample:
+ *                 the API only sorts clicks-desc, so zero-click queries sink below
+ *                 every 1-click one no matter how many impressions they carry.
  *   top_query_pages: { query: page } for top queries at position 4-15
- *   truncated:    true when the query pull hit its row limit (top 200 of more)
+ *   top_pages:    first 200 rows by impressions desc {page, clicks, impressions, position(1dp)}
+ *   truncated:    true when ANY query row was dropped — by the fetch limit or by
+ *                 the 200-row storage cap. Both are invisibility; only reporting the
+ *                 fetch limit would claim full coverage on a 400-row pull that stored 200.
+ *   queries_seen / queries_stored: the actual counts, so the readout can say how many
+ *                 were dropped instead of just that some were.
  *   window:       {startDate, endDate}
  */
 export async function fetchGscSections({ env = process.env, fetchImpl = fetch, now = new Date() } = {}) {
@@ -122,14 +136,44 @@ export async function fetchGscSections({ env = process.env, fetchImpl = fetch, n
     .map((r) => ({ date: r.keys[0], clicks: r.clicks || 0, impressions: r.impressions || 0 }))
     .sort((a, b) => a.date.localeCompare(b.date)); // rows arrive clicks-desc, NOT date-ordered
 
-  // G2: queries, clicks-desc.
-  const queryRows = await querySearchAnalytics(token, siteUrl, { ...common, dimensions: ["query"], rowLimit: 1000 }, { fetchImpl });
-  const top_queries = queryRows.slice(0, 200).map((r) => ({
+  // G2: queries. The API always orders clicks-desc and offers no sort control,
+  // so on a low-click site every zero-click query — however many impressions it
+  // carries — sinks below every 1-click query. Taking the first 200 rows was
+  // therefore a clicks-biased sample that hid exactly the invisible queries worth
+  // seeing: Utah's stored slice covered 2.5% of its impressions.
+  //
+  // Two fixes: fetch deeper (the tail is where the zero-click volume lives), and
+  // store the UNION of the top rows by clicks and by impressions. Clicks answer
+  // "what is working", impressions answer "what is invisible" — either ordering
+  // alone loses one of them.
+  const queryRows = await querySearchAnalytics(
+    token,
+    siteUrl,
+    { ...common, dimensions: ["query"], rowLimit: QUERY_FETCH_LIMIT },
+    { fetchImpl },
+  );
+  const asRow = (r) => ({
     query: r.keys[0],
     clicks: r.clicks || 0,
     impressions: r.impressions || 0,
     position: Math.round((r.position || 0) * 10) / 10,
-  }));
+  });
+  const byClicks = [...queryRows].sort((a, b) => (b.clicks || 0) - (a.clicks || 0)).slice(0, QUERY_STORE_PER_ORDER);
+  const byImpressions = [...queryRows].sort((a, b) => (b.impressions || 0) - (a.impressions || 0)).slice(0, QUERY_STORE_PER_ORDER);
+  const seen = new Set();
+  const top_queries = [];
+  for (const r of [...byClicks, ...byImpressions]) {
+    const q = r.keys[0];
+    if (seen.has(q)) continue;
+    seen.add(q);
+    top_queries.push(asRow(r));
+  }
+  top_queries.sort((a, b) => b.impressions - a.impressions || b.clicks - a.clicks);
+
+  // How much of the site's impressions the stored slice actually accounts for.
+  // GSC also withholds rare/anonymised queries, so this never reaches 100% — which
+  // is the point: state the coverage instead of implying the slice is the whole.
+  const storedImpressions = top_queries.reduce((n, r) => n + r.impressions, 0);
 
   // G3: query+page, to name the ranking page for quick-win rows (position 4-15).
   const pageRows = await querySearchAnalytics(
@@ -151,13 +195,43 @@ export async function fetchGscSections({ env = process.env, fetchImpl = fetch, n
     }
   }
 
+  // G4: the page dimension on its own. G3 above fetches query+page but keeps only a
+  // query->page string map, discarding every metric, so nothing downstream can answer
+  // "which pages earn impressions and where do they rank". Summing G3 by page is NOT a
+  // substitute: it covers only queries that made the top-200 cut, and per-query positions
+  // cannot be averaged into a page position. Ask GSC for the page dimension directly.
+  const rawPageRows = await querySearchAnalytics(
+    token,
+    siteUrl,
+    { ...common, dimensions: ["page"], rowLimit: 1000 },
+    { fetchImpl },
+  );
+  // Rows arrive clicks-desc. Sort by impressions before capping, or the cap silently
+  // drops the high-impression/zero-click pages — exactly the ones worth seeing.
+  const top_pages = rawPageRows
+    .map((r) => ({
+      page: r.keys[0],
+      clicks: r.clicks || 0,
+      impressions: r.impressions || 0,
+      position: Math.round((r.position || 0) * 10) / 10,
+    }))
+    .sort((a, b) => b.impressions - a.impressions || a.position - b.position)
+    .slice(0, 200);
+
   return {
     siteUrl,
     window,
     by_date,
     top_queries,
     top_query_pages,
-    truncated: queryRows.length >= 1000,
+    top_pages,
+    queries_seen: queryRows.length,
+    queries_stored: top_queries.length,
+    queries_stored_impressions: storedImpressions,
+    pages_seen: rawPageRows.length,
+    pages_stored: top_pages.length,
+    truncated: queryRows.length >= QUERY_FETCH_LIMIT || top_queries.length < queryRows.length,
+    pages_truncated: rawPageRows.length >= 1000 || top_pages.length < rawPageRows.length,
     clicks28d: by_date.reduce((n, r) => n + r.clicks, 0),
     impressions28d: by_date.reduce((n, r) => n + r.impressions, 0),
   };
