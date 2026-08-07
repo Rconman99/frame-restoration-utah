@@ -37,6 +37,7 @@ on:
       - 'scripts/seo-*.mjs' # said nothing about whether the loop still worked
       - 'scripts/lib/gsc.mjs'
       - 'scripts/lib/gsc.test.mjs'
+      - 'scripts/seo-snapshot.test.mjs'
       - '.github/workflows/seo-loop.yml'
 
 permissions:
@@ -55,7 +56,7 @@ jobs:
         with:
           node-version: '22'
       - name: Unit tests
-        run: node --test scripts/seo-diff.test.mjs scripts/seo-crawl.test.mjs scripts/lib/gsc.test.mjs
+        run: node --test scripts/seo-diff.test.mjs scripts/seo-crawl.test.mjs scripts/lib/gsc.test.mjs scripts/seo-snapshot.test.mjs
 
   measure:
     needs: test               # a broken differ must not get to write a snapshot
