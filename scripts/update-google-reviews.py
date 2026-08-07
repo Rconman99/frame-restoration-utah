@@ -1,14 +1,27 @@
 #!/usr/bin/env python3
 """Update Google review count + rating across the site.
 
-Hits SerpAPI's Google Maps engine to pull Frame Roofing Utah's current
-review count and rating, then regex-updates every live reference in
-index.html and pages/about.html.
+Pulls Frame Restoration Utah's current review count, rating, and review text,
+then regex-updates every live reference in index.html and pages/about.html.
+
+PROVIDER: DataForSEO by default, SerpAPI as fallback.
+  The SerpAPI Free Plan is 250 searches/month and has been fully exhausted
+  since ~2026-07-20, which killed this sync (no fresh review data reached
+  main since >=6/15) plus CTA Liveness in both UT and TX. DataForSEO bills
+  per-call from a prepaid balance with no monthly ceiling, and a single
+  reviews task returns BOTH the aggregate (rating + votes_count) AND the
+  individual review items -- so one ~$0.0015 call replaces the two separate
+  SerpAPI calls this script used to make.
 
 Environment:
-  SERPAPI_KEY       (required) — SerpAPI private key
-  SERPAPI_DATA_ID   (optional) — Google Maps data_id override; defaults to
-                                 Frame's: 0x874df59069be3e09:0x756332595f702acc
+  DATAFORSEO_LOGIN     — DataForSEO API login    (preferred provider)
+  DATAFORSEO_PASSWORD  — DataForSEO API password (preferred provider)
+  GOOGLE_CID           (optional) — decimal Google CID override; defaults to
+                                    Frame's 8458659884566588108
+  REVIEWS_PROVIDER     (optional) — force 'dataforseo' or 'serpapi'
+  SERPAPI_KEY          (fallback) — SerpAPI private key
+  SERPAPI_DATA_ID      (optional) — Google Maps data_id override; defaults to
+                                    0x874df59069be3e09:0x756332595f702acc
 
 Exit codes:
   0 = files updated (changed count or rating)
@@ -16,10 +29,12 @@ Exit codes:
   1 = error (API, parsing, env)
 """
 
+import base64
 import json
 import os
 import re
 import sys
+import time
 import urllib.parse
 import urllib.request
 from datetime import datetime
@@ -32,6 +47,17 @@ REVIEWS_FULL_JSON = ROOT / "data" / "reviews-full.json"  # audit-only, all revie
 
 # Frame Roofing Utah's stable Google Maps data_id — more reliable than text search.
 DEFAULT_DATA_ID = "0x874df59069be3e09:0x756332595f702acc"
+
+# DataForSEO addresses the same listing by decimal CID, which is just the second
+# half of the data_id in base 10. Derived (not hardcoded) so overriding
+# SERPAPI_DATA_ID keeps both providers pointed at the same listing.
+DEFAULT_CID = str(int(DEFAULT_DATA_ID.split(":")[1], 16))  # -> 8458659884566588108
+
+DATAFORSEO_BASE = "https://api.dataforseo.com/v3/business_data/google/reviews"
+# US location_code. A GBP is addressed by CID, so this only sets result locale.
+DATAFORSEO_LOCATION_CODE = 2840
+DATAFORSEO_POLL_ATTEMPTS = 24
+DATAFORSEO_POLL_SECONDS = 5
 
 # How many individual reviews to include in /reviews.json for the homepage carousel.
 REVIEWS_FEED_LIMIT = 8
@@ -48,7 +74,137 @@ TARGETS = [
 ]
 
 
+# --------------------------------------------------------------------------
+# DataForSEO provider
+#
+# One task_post -> poll -> task_get returns the aggregate AND the review items,
+# so the whole script needs a single provider round-trip per run. The result is
+# memoized in _DFS_CACHE because fetch_place(), fetch_reviews() and
+# fetch_all_reviews() are each called once per run and all want the same payload.
+# --------------------------------------------------------------------------
+
+_DFS_CACHE: dict | None = None
+
+
+def _dataforseo_enabled() -> bool:
+    """DataForSEO is used when creds exist, unless REVIEWS_PROVIDER forces otherwise."""
+    forced = (os.environ.get("REVIEWS_PROVIDER") or "").strip().lower()
+    if forced == "serpapi":
+        return False
+    if forced == "dataforseo":
+        return True
+    return bool(os.environ.get("DATAFORSEO_LOGIN") and os.environ.get("DATAFORSEO_PASSWORD"))
+
+
+def _dataforseo_request(url: str, payload: list | None = None) -> dict:
+    """POST (with payload) or GET against DataForSEO using HTTP Basic auth."""
+    login = os.environ.get("DATAFORSEO_LOGIN", "")
+    password = os.environ.get("DATAFORSEO_PASSWORD", "")
+    token = base64.b64encode(f"{login}:{password}".encode()).decode()
+    data = json.dumps(payload).encode() if payload is not None else None
+    req = urllib.request.Request(
+        url,
+        data=data,
+        headers={"Authorization": f"Basic {token}", "Content-Type": "application/json"},
+        method="POST" if payload is not None else "GET",
+    )
+    with urllib.request.urlopen(req, timeout=60) as resp:
+        return json.loads(resp.read())
+
+
+def _fetch_dataforseo(depth: int = REVIEWS_FULL_LIMIT) -> dict | None:
+    """Fetch aggregate + review items in one task. Returns None on any failure
+    so the caller can fall back to SerpAPI rather than publishing a false zero.
+
+    Shape: {"name","count","rating","place_id","items":[{author,rating,text,date}]}
+    """
+    global _DFS_CACHE
+    if _DFS_CACHE is not None:
+        return _DFS_CACHE
+
+    cid = os.environ.get("GOOGLE_CID", DEFAULT_CID)
+    payload = [{
+        "keyword": f"cid:{cid}",
+        "language_code": "en",
+        "location_code": DATAFORSEO_LOCATION_CODE,
+        "depth": depth,
+        "sort_by": "newest",
+    }]
+
+    try:
+        posted = _dataforseo_request(f"{DATAFORSEO_BASE}/task_post", payload)
+    except Exception as exc:  # noqa: BLE001 — any failure must fall back, not crash
+        print(f"WARN: DataForSEO task_post failed: {exc}")
+        return None
+
+    task = (posted.get("tasks") or [{}])[0]
+    task_id = task.get("id")
+    if not task_id:
+        print(f"WARN: DataForSEO task_post returned no id: "
+              f"{task.get('status_code')} {task.get('status_message')}")
+        return None
+
+    for _ in range(DATAFORSEO_POLL_ATTEMPTS):
+        time.sleep(DATAFORSEO_POLL_SECONDS)
+        try:
+            got = _dataforseo_request(f"{DATAFORSEO_BASE}/task_get/{task_id}")
+        except Exception as exc:  # noqa: BLE001
+            print(f"WARN: DataForSEO task_get failed: {exc}")
+            return None
+        t = (got.get("tasks") or [{}])[0]
+        if t.get("status_code") != 20000:
+            continue
+        results = t.get("result") or []
+        if not results:
+            continue
+
+        res = results[0]
+        rating = res.get("rating") or {}
+        votes = rating.get("votes_count")
+        value = rating.get("value")
+        if votes is None or value is None:
+            print("WARN: DataForSEO result missing rating/votes — not trusting it")
+            return None
+
+        items = []
+        for it in (res.get("items") or []):
+            text = (it.get("review_text") or "").strip()
+            items.append({
+                "author": it.get("profile_name") or "Google Reviewer",
+                "city": "",  # neither provider exposes reviewer location
+                "rating": int((it.get("rating") or {}).get("value") or 5),
+                "date": str(it.get("timestamp") or "")[:10],
+                "text": text,
+            })
+
+        _DFS_CACHE = {
+            # `or ""` not `.get(k, "")`: DataForSEO returns these keys present
+            # but null, so a plain default never fires and downstream string
+            # handling would receive None.
+            "name": res.get("title") or "",
+            "count": int(votes),
+            "rating": float(value),
+            "place_id": res.get("place_id") or "",
+            "items": items,
+        }
+        return _DFS_CACHE
+
+    print("WARN: DataForSEO task did not complete within the polling window")
+    return None
+
+
 def fetch_place() -> dict:
+    """Review count + rating. DataForSEO first, SerpAPI fallback."""
+    if _dataforseo_enabled():
+        dfs = _fetch_dataforseo()
+        if dfs:
+            print(f"OK: DataForSEO — {dfs['name']}: {dfs['count']} reviews, {dfs['rating']}")
+            return {k: dfs[k] for k in ("name", "count", "rating", "place_id")}
+        print("WARN: DataForSEO unavailable — falling back to SerpAPI")
+    return _fetch_place_serpapi()
+
+
+def _fetch_place_serpapi() -> dict:
     """Call SerpAPI's Google Maps engine for review count + rating."""
     api_key = os.environ.get("SERPAPI_KEY")
     data_id = os.environ.get("SERPAPI_DATA_ID", DEFAULT_DATA_ID)
@@ -86,6 +242,22 @@ def fetch_place() -> dict:
 
 
 def fetch_reviews(limit: int = REVIEWS_FEED_LIMIT) -> list[dict]:
+    """Reviews with text for the homepage carousel. DataForSEO first, SerpAPI fallback.
+
+    Same contract as before: list of {author, city, rating, date, text}, empty
+    list on failure so the caller preserves the existing reviews.json.
+    """
+    if _dataforseo_enabled():
+        dfs = _fetch_dataforseo()
+        if dfs:
+            # Star-only reviews carry no carousel value — same rule as the SerpAPI path.
+            with_text = [r for r in dfs["items"] if r["text"]]
+            return with_text[:limit]
+        print("WARN: DataForSEO unavailable for reviews feed — falling back to SerpAPI")
+    return _fetch_reviews_serpapi(limit)
+
+
+def _fetch_reviews_serpapi(limit: int = REVIEWS_FEED_LIMIT) -> list[dict]:
     """Call SerpAPI's google_maps_reviews engine for actual review text.
 
     Returns a list of {author, rating, text, date, city} dicts. Returns an
@@ -140,6 +312,25 @@ def fetch_reviews(limit: int = REVIEWS_FEED_LIMIT) -> list[dict]:
 
 
 def fetch_all_reviews(limit: int = REVIEWS_FULL_LIMIT) -> list[dict]:
+    """Full audit feed (text AND star-only). DataForSEO first, SerpAPI fallback.
+
+    Contract unchanged: {author, rating, date, text, has_text}, [] on failure.
+    """
+    if _dataforseo_enabled():
+        dfs = _fetch_dataforseo(depth=limit)
+        if dfs:
+            return [{
+                "author": r["author"],
+                "rating": r["rating"],
+                "date": r["date"],
+                "text": r["text"],
+                "has_text": bool(r["text"]),
+            } for r in dfs["items"]][:limit]
+        print("WARN: DataForSEO unavailable for audit feed — falling back to SerpAPI")
+    return _fetch_all_reviews_serpapi(limit)
+
+
+def _fetch_all_reviews_serpapi(limit: int = REVIEWS_FULL_LIMIT) -> list[dict]:
     """Pull EVERY review (text or no text), paginating SerpAPI, for the audit
     feed. Unlike fetch_reviews() this:
       - Does not slice the result down to the carousel limit
