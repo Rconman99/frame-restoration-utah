@@ -124,5 +124,11 @@ iphone_contact.jpg
 # Data files not meant for public serving
 # NOTE: reviews.json is REMOVED from this list — it's the live feed the homepage
 # carousel fetches. See the "DO NOT ADD" header at the top of this file.
+# SEO loop snapshots + readouts (docs/seo/SEO-LOOP.md). Committed for history,
+# never served: they carry Search Console query data that should stay out of
+# competitors' reach. Directory ignore, not an extension glob — nothing on the
+# site fetches this path.
+data/seo/
+
 .DS_Store
 *.swp
