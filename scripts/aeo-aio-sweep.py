@@ -28,6 +28,7 @@ from __future__ import annotations
 import hashlib
 import json
 import secrets
+import os
 import sys
 import time
 import urllib.parse
@@ -117,6 +118,10 @@ LAST_RUN_FILE = PROJECT_ROOT / "data" / ".last_run.json"
 
 # ─── Helpers ───────────────────────────────────────────────────────────────────
 def load_key() -> str:
+    # Cloud runners (GitHub Actions) supply the key via env; the Mac uses the file
+    env_key = os.environ.get("SERPAPI_KEY", "").strip()
+    if env_key:
+        return env_key
     if not ENV_FILE.exists():
         sys.exit(f"✗ Missing {ENV_FILE}")
     for line in ENV_FILE.read_text().splitlines():

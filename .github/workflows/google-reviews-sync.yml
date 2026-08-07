@@ -15,7 +15,9 @@ name: Google Reviews Sync
 
 on:
   schedule:
-    - cron: '17 13 1,15 * *'
+    # Weekly, Fridays ~7:17am Denver — upgraded from 1st+15th on 2026-08-07
+    # (SerpAPI Starter plan restored; review recency is the #1 Heber diagnostic).
+    - cron: '17 13 * * 5'
   workflow_dispatch:
 
 permissions:
