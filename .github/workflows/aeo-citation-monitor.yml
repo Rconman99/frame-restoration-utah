@@ -22,8 +22,10 @@ name: AEO citation monitor (Utah)
 
 on:
   schedule:
-    # 5th of each month ~8:23am Denver (14:23 UTC in MDT) — matches the launchd cadence.
-    - cron: '23 14 5 * *'
+    # Weekly, Tuesdays ~9:23am Denver (15:23 UTC) — upgraded from monthly on
+    # 2026-08-07 when the SerpAPI Starter plan (1,000/mo) restored headroom.
+    # Tuesday keeps it clear of the Monday workflow cluster (200/hr rate limit).
+    - cron: '23 15 * * 2'
   workflow_dispatch:
 
 permissions:

@@ -1,0 +1,57 @@
+name: AEO AIO sweep (Utah)
+
+# Weekly 26-query SerpAPI panel (QUERY_PANEL_V1) — the full AEO/AIO baseline
+# sweep that was blocked on quota from 2026-05 to 2026-08. Runs Wednesdays so
+# it stays clear of the Monday cluster and Tuesday's citation monitor
+# (SerpAPI account rate limit is 200/hr).
+#
+# Budget: ~40 SerpAPI calls/run (~170/mo). Combined with the weekly citation
+# monitor (~52/mo), weekly reviews sync (~9/mo) and CTA liveness (~4/mo), total
+# spend is ~235 of the 1,000/mo Starter plan.
+#
+# Fail-closed: the script exits non-zero on quota/preflight failure (it
+# requires a 50-search reserve), which fails this job and skips the commit —
+# a red run means "no data this week", never a poisoned baseline.
+
+on:
+  schedule:
+    - cron: '23 15 * * 3'   # Wednesdays ~9:23am Denver (15:23 UTC)
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: aeo-aio-sweep-utah
+  cancel-in-progress: false
+
+jobs:
+  sweep:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Configure git identity
+        run: |
+          git config user.name "AEO Monitor"
+          git config user.email "aeo-monitor@users.noreply.github.com"
+
+      - name: Run 26-query AIO sweep
+        env:
+          SERPAPI_KEY: ${{ secrets.SERPAPI_KEY }}
+        run: python3 scripts/aeo-aio-sweep.py
+
+      - name: Commit + push sweep results
+        run: |
+          git add data/
+          if git diff --cached --quiet; then
+            echo "No sweep output this run — nothing to commit."
+            exit 0
+          fi
+          TODAY=$(date +%F)
+          git commit -m "chore(aeo): AIO sweep ${TODAY} [cloud]"
+          git push
