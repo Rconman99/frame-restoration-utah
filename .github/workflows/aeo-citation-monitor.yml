@@ -13,6 +13,12 @@ name: AEO citation monitor (Utah)
 # Secrets: SERPAPI_KEY (required — already set). OPENROUTER_API_KEY (optional,
 # enables the Perplexity Sonar cross-check; set via the blog-autopost PR).
 # data/aeo-citations/ is .vercelignored, so committing it does not change the site.
+#
+# Fail-closed: if ANY SerpAPI query fails (429, quota, outage), the monitor
+# exits non-zero WITHOUT writing report/trend/action files — this job goes red
+# and the commit step below never runs. A red run means "no data this month",
+# never "cited in 0 of N". (The 2026-08-05 run swallowed 12 straight 429s,
+# exited success, and overwrote a real 2/5 report with a false 0/12.)
 
 on:
   schedule:

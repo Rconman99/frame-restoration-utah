@@ -141,14 +141,20 @@ def _serpapi_search_raw(query: str, api_key: str) -> dict:
         return json.loads(resp.read())
 
 
-def _serpapi_search(query: str, api_key: str) -> dict:
-    """Wrap retry-capable SerpAPI call; return {} on permanent failure so the
-    rest of the report still renders rather than blowing up the whole run."""
+def _serpapi_search(query: str, api_key: str) -> dict | None:
+    """Wrap retry-capable SerpAPI call; return None on permanent failure.
+    Callers must treat None as "no data" and abort the run — an empty dict
+    scores as "not cited" downstream, which turns an outage into a false zero."""
     try:
-        return _serpapi_search_raw(query, api_key)
+        data = _serpapi_search_raw(query, api_key)
     except (urllib.error.URLError, urllib.error.HTTPError, TimeoutError, json.JSONDecodeError) as e:
         print(f"  SerpAPI error for '{query}' (after retries): {e}", file=sys.stderr)
-        return {}
+        return None
+    if "error" in data:
+        # Quota exhaustion can come back as HTTP 200 with an error payload
+        print(f"  SerpAPI error for '{query}': {data['error']}", file=sys.stderr)
+        return None
+    return data
 
 
 def _perplexity_check(query: str, api_key: str) -> dict | None:
@@ -435,15 +441,43 @@ def main() -> int:
     OUT_DIR.mkdir(parents=True, exist_ok=True)
 
     rows = []
+    failed_queries: list[str] = []
     for q in QUERIES:
         print(f"→ {q}", file=sys.stderr)
         serp = _serpapi_search(q, serp_key)
+        if serp is None:
+            failed_queries.append(q)
+            continue
         analyzed = _analyze_serp(q, serp)
-        if openrouter_key:
+        # Skip paid Perplexity checks once the run is doomed — no report ships
+        if openrouter_key and not failed_queries:
             ppl = _perplexity_check(q, openrouter_key)
             if ppl:
                 analyzed["perplexity"] = ppl
         rows.append(analyzed)
+
+    if failed_queries:
+        # Fail closed: a report built on partial SERP data scores every failed
+        # query as "not cited", overwrites the day's report, and poisons
+        # _trend.json/_actions.json with a false zero. Write nothing; the
+        # non-zero exit fails the CI job so the commit step never runs.
+        print(
+            f"✗ SerpAPI returned no data for {len(failed_queries)} of "
+            f"{len(QUERIES)} queries — refusing to write a report:",
+            file=sys.stderr,
+        )
+        for q in failed_queries:
+            print(f"    - {q}", file=sys.stderr)
+        log_run(
+            "frame-roofing-aeo-monitor",
+            status="error",
+            runtime_sec=time.time() - started_at,
+            extra={
+                "failed_queries": failed_queries,
+                "queries_total": len(QUERIES),
+            },
+        )
+        return 2
 
     print("→ Drafting action items locally", file=sys.stderr)
     llm = _load_llm()
