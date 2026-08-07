@@ -40,8 +40,24 @@ try:
     _toolkit_loaded = True
 except ImportError:
     _toolkit_loaded = False
-    def with_retry(fn=None, **_):  # no-op fallback
-        return fn if fn else (lambda f: f)
+    # Cloud runners have no local toolkit, so this fallback must actually
+    # retry — a no-op here left GitHub runs with zero retries, and a single
+    # transient SerpAPI read-timeout failed the whole monthly run.
+    def with_retry(fn=None, *, attempts=3, base_delay=1.0, max_delay=8.0, **_):
+        def deco(f):
+            def wrapped(*args, **kwargs):
+                delay = base_delay
+                for attempt in range(attempts):
+                    try:
+                        return f(*args, **kwargs)
+                    except Exception as e:
+                        if attempt == attempts - 1:
+                            raise
+                        print(f"  retry {attempt + 1}/{attempts - 1} after {type(e).__name__}: {e}", file=sys.stderr)
+                        time.sleep(delay)
+                        delay = min(delay * 2, max_delay)
+            return wrapped
+        return deco(fn) if fn else deco
     def log_run(*a, **k): pass
     def estimate_savings(**k): return 0.0
     def validate_dict(d, s): return (True, [])
