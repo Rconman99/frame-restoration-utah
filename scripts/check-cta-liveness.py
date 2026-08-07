@@ -27,6 +27,7 @@ Usage:
   SERPAPI_KEY=... python3 scripts/check-cta-liveness.py
 """
 
+import base64
 import json
 import os
 import sys
@@ -95,6 +96,55 @@ def check_live_review_page(cfg: dict) -> list[str]:
     return fails
 
 
+
+def _dataforseo_gbp(cfg: dict, serpapi_error: str) -> list[str] | None:
+    """DataForSEO fallback when SerpAPI fails (quota/outage). Returns a
+    failures list (empty = listing verified live) or None when creds are
+    absent or the response is inconclusive — the caller then reports the
+    original SerpAPI failure, so worst case equals today's behavior."""
+    login = os.environ.get("DATAFORSEO_LOGIN", "")
+    password = os.environ.get("DATAFORSEO_PASSWORD", "")
+    if not (login and password):
+        return None
+    print(f"[B] SerpAPI failed ({serpapi_error}) — trying DataForSEO fallback")
+    cid = str(cfg.get("gbp", {}).get("cid", "")).strip()
+    if not cid:
+        return None
+    payload = json.dumps([{
+        "keyword": f"cid:{cid}",
+        "location_code": 2840,
+        "language_code": "en",
+    }]).encode()
+    auth = base64.b64encode(f"{login}:{password}".encode()).decode()
+    req = urllib.request.Request(
+        "https://api.dataforseo.com/v3/business_data/google/my_business_info/live",
+        data=payload,
+        headers={"Authorization": f"Basic {auth}", "Content-Type": "application/json"},
+    )
+    try:
+        with urllib.request.urlopen(req, timeout=45) as resp:
+            data = json.loads(resp.read())
+        item = data["tasks"][0]["result"][0]["items"][0]
+    except Exception as e:  # noqa: BLE001 — inconclusive, keep original failure
+        print(f"    DataForSEO fallback inconclusive: {e}")
+        return None
+    got_cid = str(item.get("cid", "")).strip()
+    if got_cid and got_cid != cid:
+        print(f"    DataForSEO returned cid {got_cid} != canonical {cid} — inconclusive")
+        return None
+    title = item.get("title", "")
+    reviews = (item.get("rating") or {}).get("votes_count")
+    print(f"[B] DataForSEO cid={cid} -> title={title!r} reviews={reviews}")
+    fails: list[str] = []
+    if not title:
+        fails.append(f"GBP cid {cid} returned NO business via DataForSEO (listing dead/suspended?)")
+    if not reviews or int(reviews) <= 0:
+        fails.append(f"GBP {title or cid} returned {reviews} reviews via DataForSEO (expected > 0)")
+    if not fails:
+        print(f"    ✓ GBP '{title}' is live with {reviews} reviews (via DataForSEO fallback)")
+    return fails
+
+
 def check_gbp_alive(cfg: dict) -> list[str]:
     """SerpAPI GBP liveness. Skipped (returns []) if no SERPAPI_KEY."""
     api_key = os.environ.get("SERPAPI_KEY")
@@ -114,10 +164,12 @@ def check_gbp_alive(cfg: dict) -> list[str]:
         with urllib.request.urlopen(url, timeout=20) as resp:
             data = json.loads(resp.read())
     except Exception as e:  # noqa: BLE001
-        return [f"SerpAPI request failed: {e}"]
+        fb = _dataforseo_gbp(cfg, str(e))
+        return fb if fb is not None else [f"SerpAPI request failed: {e}"]
 
     if "error" in data:
-        return [f"SerpAPI error: {data['error']}"]
+        fb = _dataforseo_gbp(cfg, str(data["error"]))
+        return fb if fb is not None else [f"SerpAPI error: {data['error']}"]
     place = data.get("place_results") or {}
     if not place:
         locals_ = data.get("local_results") or []
