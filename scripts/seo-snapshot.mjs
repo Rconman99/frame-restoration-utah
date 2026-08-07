@@ -70,11 +70,23 @@ function readKeywords() {
   }
 }
 
-export async function buildSnapshot({ site = DEFAULT_SITE, maxPages = 500, date, canonicalHost, env = process.env } = {}) {
+// crawlImpl / gscFetchImpl are seams for tests only; production always uses the
+// real crawler and the real fetch. Without them the crawl-to-snapshot path can
+// only be exercised against live network, which is why the field-drop bug this
+// file's test now covers went unnoticed by two passing unit suites.
+export async function buildSnapshot({
+  site = DEFAULT_SITE,
+  maxPages = 500,
+  date,
+  canonicalHost,
+  env = process.env,
+  crawlImpl = crawlSite,
+  gscFetchImpl,
+} = {}) {
   const snapDate = date || todayInDenver();
 
   // ---- Crawl (required — no crawl, no snapshot) ----
-  const crawl = await crawlSite({ site, maxPages, ...(canonicalHost ? { canonicalHost } : {}) });
+  const crawl = await crawlImpl({ site, maxPages, ...(canonicalHost ? { canonicalHost } : {}) });
   if (crawl.failed) {
     return { failed: true, reason: `crawl could not complete: ${crawl.reason}` };
   }
@@ -82,24 +94,17 @@ export async function buildSnapshot({ site = DEFAULT_SITE, maxPages = 500, date,
   // ---- GSC (optional — degrades to not-measured, never to zero-filled) ----
   let gsc = { available: false, clicks28d: 0, impressions28d: 0, top_queries: [], top_pages: [], reason: "not_configured" };
   try {
-    const sections = await fetchGscSections({ env });
+    const sections = await fetchGscSections({ env, ...(gscFetchImpl ? { fetchImpl: gscFetchImpl } : {}) });
     if (sections) {
-      gsc = {
-        available: true,
-        clicks28d: sections.clicks28d,
-        impressions28d: sections.impressions28d,
-        top_queries: sections.top_queries,
-        by_date: sections.by_date,
-        top_query_pages: sections.top_query_pages,
-        top_pages: sections.top_pages,
-        window: sections.window,
-        truncated: sections.truncated,
-        pages_truncated: sections.pages_truncated,
-        queries_seen: sections.queries_seen,
-        queries_stored: sections.queries_stored,
-        pages_seen: sections.pages_seen,
-        pages_stored: sections.pages_stored,
-      };
+      // Spread, do not enumerate. This was a hand-maintained field-by-field copy
+      // and it silently dropped `queries_stored_impressions` when that field was
+      // added — so the readout reported "showing 370 of 1426 queries" and omitted
+      // the impression share, which was the whole point of measuring it. Every
+      // field fetchGscSections returns is part of the snapshot contract; a new one
+      // must carry through by default rather than by being remembered here.
+      // `siteUrl` is kept deliberately: it records WHICH Search Console property
+      // produced the numbers, which is the provenance check for a four-market loop.
+      gsc = { available: true, ...sections };
     }
   } catch (err) {
     gsc = { available: false, clicks28d: 0, impressions28d: 0, top_queries: [], top_pages: [], reason: `api_error: ${err.message}` };
