@@ -84,16 +84,92 @@ TARGETS = [
 # --------------------------------------------------------------------------
 
 _DFS_CACHE: dict | None = None
+_QUOTA_CACHE: int | None = None
+_QUOTA_CHECKED = False
+
+# Below this many SerpAPI searches remaining, route to DataForSEO instead.
+# Rationale: the SerpAPI plan is PREPAID and use-it-or-lose-it, so spending it
+# first is free at the margin -- but running it to zero is exactly what took
+# four automations down for four weeks. The floor keeps a buffer for the
+# higher-value jobs (aeo-aio-sweep's own preflight reserves 50) while letting
+# DataForSEO absorb anything past it, so exhaustion becomes a routing decision
+# rather than an outage.
+SERPAPI_RESERVE_FLOOR = int(os.environ.get("SERPAPI_RESERVE_FLOOR", "50") or 50)
 
 
-def _dataforseo_enabled() -> bool:
-    """DataForSEO is used when creds exist, unless REVIEWS_PROVIDER forces otherwise."""
-    forced = (os.environ.get("REVIEWS_PROVIDER") or "").strip().lower()
-    if forced == "serpapi":
-        return False
-    if forced == "dataforseo":
-        return True
+def _dataforseo_available() -> bool:
+    """True when DataForSEO credentials are present."""
     return bool(os.environ.get("DATAFORSEO_LOGIN") and os.environ.get("DATAFORSEO_PASSWORD"))
+
+
+def serpapi_quota_left() -> int | None:
+    """Remaining SerpAPI searches this cycle, or None if it can't be determined.
+
+    Probing /account does NOT consume a search. None means "unknown" and is
+    treated as "assume healthy" -- a monitoring outage must not silently
+    reroute production traffic.
+    """
+    global _QUOTA_CACHE, _QUOTA_CHECKED
+    if _QUOTA_CHECKED:
+        return _QUOTA_CACHE
+    _QUOTA_CHECKED = True
+
+    api_key = os.environ.get("SERPAPI_KEY")
+    if not api_key:
+        return None
+    try:
+        url = f"https://serpapi.com/account?api_key={urllib.parse.quote(api_key)}"
+        with urllib.request.urlopen(url, timeout=20) as resp:
+            acct = json.loads(resp.read())
+    except Exception as exc:  # noqa: BLE001 — probe failure must not break the run
+        print(f"WARN: could not read SerpAPI quota: {exc}")
+        return None
+
+    left = acct.get("plan_searches_left")
+    total = acct.get("searches_per_month")
+    if not isinstance(left, int):
+        return None
+
+    _QUOTA_CACHE = left
+    pct = (left / total * 100) if isinstance(total, int) and total else 0.0
+    # Emit the numbers unconditionally so CI logs carry a consumption trail --
+    # the absence of exactly this is why exhaustion went unnoticed for weeks.
+    print(f"QUOTA: SerpAPI {left}/{total} searches left ({pct:.0f}%) "
+          f"on {acct.get('plan_name', 'unknown plan')}")
+    if pct <= 10:
+        print(f"::warning::SerpAPI quota CRITICAL — {left} searches left ({pct:.0f}%)")
+    elif pct <= 25:
+        print(f"::warning::SerpAPI quota low — {left} searches left ({pct:.0f}%)")
+    return left
+
+
+def choose_provider() -> str:
+    """Route this run to 'serpapi' or 'dataforseo'.
+
+    SerpAPI is preferred while quota is healthy because the plan is prepaid --
+    unused capacity is money already spent. DataForSEO takes over near the floor
+    and whenever SerpAPI is unusable, so a depleted plan degrades instead of failing.
+    """
+    forced = (os.environ.get("REVIEWS_PROVIDER") or "").strip().lower()
+    if forced in ("serpapi", "dataforseo"):
+        print(f"PROVIDER: {forced} (forced via REVIEWS_PROVIDER)")
+        return forced
+
+    has_serp = bool(os.environ.get("SERPAPI_KEY"))
+    has_dfs = _dataforseo_available()
+
+    if not has_serp:
+        print("PROVIDER: dataforseo (no SERPAPI_KEY)" if has_dfs
+              else "PROVIDER: serpapi (no credentials at all — will fail loudly)")
+        return "dataforseo" if has_dfs else "serpapi"
+
+    left = serpapi_quota_left()
+    if has_dfs and left is not None and left < SERPAPI_RESERVE_FLOOR:
+        print(f"PROVIDER: dataforseo (SerpAPI at {left}, below floor {SERPAPI_RESERVE_FLOOR})")
+        return "dataforseo"
+
+    print("PROVIDER: serpapi (prepaid quota healthy)")
+    return "serpapi"
 
 
 def _dataforseo_request(url: str, payload: list | None = None) -> dict:
@@ -194,14 +270,28 @@ def _fetch_dataforseo(depth: int = REVIEWS_FULL_LIMIT) -> dict | None:
 
 
 def fetch_place() -> dict:
-    """Review count + rating. DataForSEO first, SerpAPI fallback."""
-    if _dataforseo_enabled():
-        dfs = _fetch_dataforseo()
-        if dfs:
-            print(f"OK: DataForSEO — {dfs['name']}: {dfs['count']} reviews, {dfs['rating']}")
-            return {k: dfs[k] for k in ("name", "count", "rating", "place_id")}
+    """Review count + rating, routed by quota with fail-over in both directions."""
+    provider = choose_provider()
+
+    if provider == "serpapi":
+        try:
+            return _fetch_place_serpapi()
+        except (Exception, SystemExit) as exc:  # noqa: BLE001
+            # A 429 here is the exact failure that took this job down for weeks.
+            # Fail OVER, not closed — but say so loudly so it can't pass as healthy.
+            if not _dataforseo_available():
+                raise
+            print(f"::warning::SerpAPI failed ({exc}) — failing over to DataForSEO")
+
+    dfs = _fetch_dataforseo()
+    if dfs:
+        print(f"OK: DataForSEO — {dfs['name']}: {dfs['count']} reviews, {dfs['rating']}")
+        return {k: dfs[k] for k in ("name", "count", "rating", "place_id")}
+
+    if provider == "dataforseo":
         print("WARN: DataForSEO unavailable — falling back to SerpAPI")
-    return _fetch_place_serpapi()
+        return _fetch_place_serpapi()
+    raise SystemExit("ERROR: both SerpAPI and DataForSEO failed — refusing to publish a zero")
 
 
 def _fetch_place_serpapi() -> dict:
@@ -247,13 +337,19 @@ def fetch_reviews(limit: int = REVIEWS_FEED_LIMIT) -> list[dict]:
     Same contract as before: list of {author, city, rating, date, text}, empty
     list on failure so the caller preserves the existing reviews.json.
     """
-    if _dataforseo_enabled():
-        dfs = _fetch_dataforseo()
-        if dfs:
-            # Star-only reviews carry no carousel value — same rule as the SerpAPI path.
-            with_text = [r for r in dfs["items"] if r["text"]]
-            return with_text[:limit]
-        print("WARN: DataForSEO unavailable for reviews feed — falling back to SerpAPI")
+    # choose_provider() is memoized via the quota cache, so this costs nothing extra.
+    if choose_provider() == "serpapi":
+        feed = _fetch_reviews_serpapi(limit)
+        if feed or not _dataforseo_available():
+            return feed
+        print("WARN: SerpAPI returned no reviews — trying DataForSEO")
+
+    dfs = _fetch_dataforseo()
+    if dfs:
+        # Star-only reviews carry no carousel value — same rule as the SerpAPI path.
+        with_text = [r for r in dfs["items"] if r["text"]]
+        return with_text[:limit]
+    print("WARN: DataForSEO unavailable for reviews feed — falling back to SerpAPI")
     return _fetch_reviews_serpapi(limit)
 
 
@@ -316,17 +412,22 @@ def fetch_all_reviews(limit: int = REVIEWS_FULL_LIMIT) -> list[dict]:
 
     Contract unchanged: {author, rating, date, text, has_text}, [] on failure.
     """
-    if _dataforseo_enabled():
-        dfs = _fetch_dataforseo(depth=limit)
-        if dfs:
-            return [{
-                "author": r["author"],
-                "rating": r["rating"],
-                "date": r["date"],
-                "text": r["text"],
-                "has_text": bool(r["text"]),
-            } for r in dfs["items"]][:limit]
-        print("WARN: DataForSEO unavailable for audit feed — falling back to SerpAPI")
+    if choose_provider() == "serpapi":
+        full = _fetch_all_reviews_serpapi(limit)
+        if full or not _dataforseo_available():
+            return full
+        print("WARN: SerpAPI returned no audit rows — trying DataForSEO")
+
+    dfs = _fetch_dataforseo(depth=limit)
+    if dfs:
+        return [{
+            "author": r["author"],
+            "rating": r["rating"],
+            "date": r["date"],
+            "text": r["text"],
+            "has_text": bool(r["text"]),
+        } for r in dfs["items"]][:limit]
+    print("WARN: DataForSEO unavailable for audit feed — falling back to SerpAPI")
     return _fetch_all_reviews_serpapi(limit)
 
 
