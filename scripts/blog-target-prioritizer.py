@@ -193,6 +193,101 @@ HEBER_VALLEY_CLUSTER = {"heber-city", "midway", "wallsburg", "charleston", "dani
 # distinct service-intent (rare; manual judgment).
 MAX_SPOKES_PER_CITY = 2
 
+# Floor for the measured-CTR class multiplier. A losing class is demoted, never
+# erased: the target still appears so a human can see it and its reason.
+CLASS_CTR_FLOOR = 0.15
+# Below this, a class has too few impressions for its CTR to mean anything.
+MIN_CLASS_IMPRESSIONS = 500
+# Cap on the statewide advantage multiplier. The measured ratio rests on a
+# 1-click denominator in the city class, so the raw number is unstable; bound it.
+STATEWIDE_MAX_ADVANTAGE = 5.0
+
+# ── Statewide topic gaps (/blog/utah/) ─────────────────────────────
+#
+# Demoting the city class is not enough on its own: if every candidate is a
+# city+service post, the ranking just orders one losing format. This is the
+# alternative axis, so the better move is actually on the menu.
+#
+# `utah_volume` is Utah-scoped monthly search volume measured via DataForSEO on
+# 2026-08-07 — NOT national, and NOT estimated. Topics already covered in
+# blog/utah/ are filtered out at runtime, so this list only ever surfaces gaps.
+#
+# Caveat worth keeping in mind: the two posts that actually convert
+# (utah-roof-ventilation-guide 2.8%, best-roofing-materials-utah 1.4%) report
+# ZERO exact-match volume yet earned 982 impressions between them. These pages
+# win on aggregate long-tail, so head-term volume ranks the list but does not
+# define the ceiling — a 10/mo head term is not a 10/mo topic.
+STATEWIDE_TOPICS = [
+    {"slug": "asphalt-shingles-vs-metal-roof-utah", "keyword": "asphalt shingles vs metal roof", "utah_volume": 70, "kind": "comparison"},
+    {"slug": "attic-insulation-utah", "keyword": "attic insulation utah", "utah_volume": 30, "kind": "guide"},
+    {"slug": "roof-leak-repair-cost-utah", "keyword": "roof leak repair cost", "utah_volume": 20, "kind": "cost"},
+    {"slug": "ice-dam-prevention-utah", "keyword": "ice dam prevention", "utah_volume": 10, "kind": "guide"},
+    {"slug": "architectural-vs-3-tab-shingles-utah", "keyword": "architectural vs 3 tab shingles", "utah_volume": 10, "kind": "comparison"},
+    {"slug": "synthetic-underlayment-vs-felt-utah", "keyword": "synthetic underlayment vs felt", "utah_volume": 10, "kind": "comparison"},
+    {"slug": "gutter-guards-worth-it-utah", "keyword": "gutter guards worth it", "utah_volume": 10, "kind": "comparison"},
+    {"slug": "how-to-find-a-roof-leak-utah", "keyword": "how to find roof leak", "utah_volume": 10, "kind": "guide"},
+    {"slug": "utah-roofing-license-guide", "keyword": "utah roofing license", "utah_volume": 10, "kind": "guide"},
+    {"slug": "roof-snow-load-utah", "keyword": "roof snow load utah", "utah_volume": 0, "kind": "guide"},
+]
+
+
+def statewide_gaps() -> list[dict]:
+    """Statewide topics with no post yet, highest measured Utah volume first."""
+    existing = {p.stem for p in (ROOT / "blog" / "utah").glob("*.html")} if (ROOT / "blog" / "utah").exists() else set()
+    gaps = [t for t in STATEWIDE_TOPICS if t["slug"] not in existing]
+    return sorted(gaps, key=lambda t: -t["utah_volume"])
+
+
+def statewide_targets(measured_ctr: dict, best_city_score: float) -> list[dict]:
+    """Statewide gaps as ranked targets, in the same shape the city rows use.
+
+    Scored in the one currency that is directly measured and directly comparable
+    across both classes: **clicks per post**. Over the 28-day window, 17
+    /blog/utah/ posts earned 20 clicks (1.18 each) while 37 /blog/<city>/ posts
+    earned 1 (0.027 each). A statewide target is therefore worth that ratio times
+    the best city target, and the ranking says so in as many words.
+
+    Deliberately NOT modelled on search volume. The two posts that actually
+    convert report zero exact-match volume and still earned 982 impressions, so a
+    volume-based expected-clicks model would be measurably wrong here. Volume
+    only orders topics within the statewide list.
+
+    city_slug is "utah" because blog posts are written to blog/{city_slug}/ —
+    which is exactly where statewide posts already live. Nothing downstream needs
+    to change to consume these.
+    """
+    gaps = statewide_gaps()
+    if not gaps or not measured_ctr.get("available"):
+        return []
+
+    city, state = measured_ctr["blog_city"], measured_ctr["blog_statewide"]
+    city_per_post = (city["clicks"] / city["pages"]) if city["pages"] else 0.0
+    state_per_post = (state["clicks"] / state["pages"]) if state["pages"] else 0.0
+    if state_per_post <= city_per_post:
+        return []  # no measured advantage — do not manufacture one
+    # Bounded: a 1-click denominator makes the raw ratio unstable, and no single
+    # scoring factor should be allowed to dominate by two orders of magnitude.
+    advantage = min(state_per_post / max(city_per_post, 0.01), STATEWIDE_MAX_ADVANTAGE)
+
+    out = []
+    for i, t in enumerate(gaps):
+        out.append({
+            "city_slug": "utah",
+            "city_name": "Utah",
+            "service_slug": t["slug"],
+            "service_name": t["kind"].title(),
+            "keyword": t["keyword"],
+            "axis": "statewide",
+            "utah_volume": t["utah_volume"],
+            "score": round(best_city_score * advantage * (1.0 - i * 0.03), 2),
+            "measured_basis": (
+                f"/blog/utah/ earned {state_per_post:.2f} clicks/post vs /blog/<city>/ "
+                f"{city_per_post:.3f} over {measured_ctr['window'].get('startDate','?')}"
+                f"→{measured_ctr['window'].get('endDate','?')} ({advantage:.0f}x, capped)"
+            ),
+        })
+    return out
+
 
 def city_kind(slug: str) -> str:
     if slug in MOUNTAIN_CITIES: return "mountain"
@@ -288,6 +383,94 @@ def load_gsc_csv(path: Path) -> dict[str, dict]:
             except (ValueError, TypeError):
                 continue
     return out
+
+
+def classify_page(url: str) -> str:
+    """Bucket a URL by the namespace it already lives in.
+
+    The site's own structure encodes the distinction that matters: /blog/utah/
+    holds statewide informational posts, /blog/<city>/ holds city+service posts.
+    That split is not cosmetic — measured 2026-08-07, statewide converts 26x
+    better than city on the same domain.
+    """
+    path = re.sub(r"^https?://[^/]+", "", url).split("?")[0].split("#")[0]
+    if path.startswith("/blog/utah/"):
+        return "blog_statewide"
+    if path.startswith("/blog/"):
+        return "blog_city"
+    if path.startswith("/locations/"):
+        return "locations"
+    if path.startswith("/pages/"):
+        return "services"
+    return "other"
+
+
+def load_measured_ctr() -> dict:
+    """Measured CTR per page class, from the SEO loop's committed snapshot.
+
+    Reads data/seo/snapshots/<latest>.json, written daily by
+    scripts/seo-snapshot.mjs. That replaces the manual --gsc-csv export for this
+    purpose: the data is already in the repo, dated, and refreshed by CI.
+
+    Uses the PAGE dimension deliberately. The query dimension is anonymised by
+    Google for rare queries — it accounted for only 16% of this site's clicks —
+    whereas the page dimension captured 100% of them.
+
+    Returns available:false when there is no snapshot, or when the snapshot has
+    no page dimension (written before that existed), or when a class has too
+    little volume to judge. available:false means NOT MEASURED, never zero.
+    """
+    snap_dir = ROOT / "data" / "seo" / "snapshots"
+    try:
+        snaps = sorted(snap_dir.glob("*.json"))
+    except OSError:
+        return {"available": False, "reason": "no snapshot directory"}
+    if not snaps:
+        return {"available": False, "reason": "no snapshots yet"}
+
+    latest = snaps[-1]
+    try:
+        gsc = json.loads(latest.read_text()).get("gsc", {})
+    except (json.JSONDecodeError, OSError) as err:
+        return {"available": False, "reason": f"unreadable snapshot: {err}"}
+
+    if not gsc.get("available"):
+        return {"available": False, "reason": f"GSC not measured in {latest.name}"}
+    pages = gsc.get("top_pages")
+    if not isinstance(pages, list):
+        return {"available": False, "reason": f"{latest.name} predates the page dimension"}
+
+    buckets: dict[str, dict] = {}
+    for p in pages:
+        cls = classify_page(p.get("page", ""))
+        b = buckets.setdefault(cls, {"pages": 0, "impressions": 0, "clicks": 0})
+        b["pages"] += 1
+        b["impressions"] += p.get("impressions", 0)
+        b["clicks"] += p.get("clicks", 0)
+    for b in buckets.values():
+        b["ctr"] = (b["clicks"] / b["impressions"]) if b["impressions"] else 0.0
+
+    city, state = buckets.get("blog_city"), buckets.get("blog_statewide")
+    # Both classes need enough impressions for the ratio to mean anything.
+    if not city or not state or city["impressions"] < MIN_CLASS_IMPRESSIONS or state["impressions"] < MIN_CLASS_IMPRESSIONS:
+        return {
+            "available": False,
+            "reason": "not enough volume in one of the blog classes to compare",
+            "by_class": buckets,
+            "source_path": str(latest.relative_to(ROOT)),
+        }
+
+    ratio = (city["ctr"] / state["ctr"]) if state["ctr"] else 1.0
+    return {
+        "available": True,
+        "by_class": buckets,
+        "blog_city": city,
+        "blog_statewide": state,
+        "city_vs_statewide_ratio": ratio,
+        "statewide_multiple": (1.0 / ratio) if ratio else float("inf"),
+        "window": gsc.get("window", {}),
+        "source_path": str(latest.relative_to(ROOT)),
+    }
 
 
 def load_traffic_snapshot() -> dict:
@@ -694,6 +877,7 @@ def score_target(
     posthog_views: int,
     reddit: dict,
     weather_signal: Optional[dict],
+    measured_ctr: dict,
     include_saturated: bool = False,
 ) -> dict:
     """Return scoring breakdown for a (city, service) target.
@@ -742,6 +926,15 @@ def score_target(
     lead_intent_mult = LEAD_INTENT_MULTIPLIER.get(service.get("intent"), 1.0)
 
     # 7. GSC traffic gap (only when CSV provided)
+    #
+    # NOTE (2026-08-07): this heuristic rewards exactly the band that is now
+    # measured to produce nothing. Location pages at position 11-30 with 50+
+    # impressions are pack-blocked: 7 of 8 city-service SERPs put a local pack
+    # above every organic result, and Frame sits in the pack only near Heber
+    # City. That whole band converted 13 clicks from 58,714 impressions (0.02%).
+    # The measured-CTR multiplier below is the corrective; this one is kept
+    # because a stale location page is still a real signal, but its boost is
+    # capped well under the class penalty so it cannot outvote measurement.
     gsc_mult = 1.0
     gsc_data = gsc.get(loc_path) or gsc.get(loc_path + "/") or {}
     if gsc_data:
@@ -751,6 +944,31 @@ def score_target(
             gsc_mult = 1.5
         elif 31 <= position <= 50 and impressions >= 30:
             gsc_mult = 1.2
+
+    # 7b. ★ Measured CTR by page class — the correction for the above.
+    #
+    # Every target this script emits is a /blog/<city>/ post. That class is
+    # measured at 0.050% CTR (37 pages -> 1 click) while /blog/utah/ statewide
+    # posts run 1.294% (17 pages -> 20 clicks): a 26x gap, same site, same
+    # authority, same pipeline. Ranking city targets against each other without
+    # that context optimises the order of a losing move.
+    #
+    # available:false means NOT MEASURED and the multiplier stays 1.0 — the
+    # script must not invent a penalty from a missing snapshot.
+    class_ctr_mult = 1.0
+    class_note = None
+    if measured_ctr.get("available"):
+        ratio = measured_ctr.get("city_vs_statewide_ratio")
+        if ratio is not None and ratio < 1.0:
+            # Scale by how the city-blog class actually converts relative to the
+            # best-performing class, floored so a target never scores zero on
+            # this alone — the human still sees it, ranked honestly.
+            class_ctr_mult = max(CLASS_CTR_FLOOR, ratio)
+            class_note = (
+                f"/blog/<city>/ measured {measured_ctr['blog_city']['ctr'] * 100:.3f}% CTR vs "
+                f"/blog/utah/ {measured_ctr['blog_statewide']['ctr'] * 100:.3f}% "
+                f"({measured_ctr['statewide_multiple']:.0f}x better) — see docs/seo/UTAH-GROWTH-PLAN.md P4"
+            )
 
     # 8. ★ Demand-supply gap (the v1 killer factor — uses live PostHog + Reddit)
     # Demand pulse from Reddit signals (with engagement weight)
@@ -800,6 +1018,7 @@ def score_target(
         * (1 + revenue_proxy)
         * lead_intent_mult
         * gsc_mult
+        * class_ctr_mult
         * demand_supply_gap
         * depth_play_mult
         * weather_event_mult
@@ -816,6 +1035,8 @@ def score_target(
             "revenue_proxy": round(revenue_proxy, 3),
             "lead_intent_mult": lead_intent_mult,
             "gsc_mult": gsc_mult,
+            "class_ctr_mult": class_ctr_mult,
+            "class_note": class_note,
             "demand_supply_gap": round(demand_supply_gap, 3),
             "depth_play_mult": depth_play_mult,
             "weather_event_mult": round(weather_event_mult, 3),
@@ -896,6 +1117,69 @@ def main():
     print(f"# Cities: {len(market)} | Existing spokes: {sum(spokes.values())} blog posts across {len(spokes)} cities", file=sys.stderr)
     print(f"# AEO actions open: {len(load_aeo_actions())}", file=sys.stderr)
 
+    # Measured CTR by page class. Printed before the table, loudly, because it
+    # is the single fact most likely to make the whole ranking the wrong thing
+    # to act on: every target below is a /blog/<city>/ post.
+    measured_ctr = load_measured_ctr()
+    if measured_ctr.get("available"):
+        c, s = measured_ctr["blog_city"], measured_ctr["blog_statewide"]
+        win = measured_ctr["window"]
+        print(
+            f"# MEASURED CTR ({measured_ctr['source_path']}"
+            + (f", {win.get('startDate')} → {win.get('endDate')}" if win else "")
+            + "):",
+            file=sys.stderr,
+        )
+        print(
+            f"#   /blog/<city>/  {c['pages']:>3} pages  {c['impressions']:>6} impr  {c['clicks']:>3} clicks  {c['ctr'] * 100:.3f}%",
+            file=sys.stderr,
+        )
+        print(
+            f"#   /blog/utah/    {s['pages']:>3} pages  {s['impressions']:>6} impr  {s['clicks']:>3} clicks  {s['ctr'] * 100:.3f}%"
+            f"   <== {measured_ctr['statewide_multiple']:.0f}x better",
+            file=sys.stderr,
+        )
+        print(
+            f"#   Every target below is a /blog/<city>/ post and is scaled by x{max(CLASS_CTR_FLOOR, measured_ctr['city_vs_statewide_ratio']):.2f}.",
+            file=sys.stderr,
+        )
+        print(
+            "#   City+service queries are local-pack blocked — see docs/seo/UTAH-GROWTH-PLAN.md P4.",
+            file=sys.stderr,
+        )
+        print(
+            "#   If the top score here is low, the right move is a STATEWIDE /blog/utah/ topic, not the #1 city row.",
+            file=sys.stderr,
+        )
+        # Print the alternative axis, not just a warning about this one. A
+        # demoted class with nothing to switch to still leaves the operator
+        # picking the best of a losing format.
+        gaps = statewide_gaps()
+        if gaps:
+            print("#", file=sys.stderr)
+            print(
+                f"#   ══ STATEWIDE GAPS — {len(gaps)} uncovered /blog/utah/ topics, "
+                f"Utah volume measured 2026-08-07 ══",
+                file=sys.stderr,
+            )
+            for t in gaps[:6]:
+                vol = f"{t['utah_volume']}/mo" if t["utah_volume"] else "long-tail"
+                print(f"#     {vol:>10}  {t['kind']:<10}  {t['keyword']}", file=sys.stderr)
+            print(
+                f"#   Prefer these over the city table below while the class gap holds "
+                f"({measured_ctr['statewide_multiple']:.0f}x).",
+                file=sys.stderr,
+            )
+            print(
+                "#   Head-term volume ranks this list but does not cap it — the two posts that "
+                "convert report ZERO exact-match volume and still earned 982 impressions.",
+                file=sys.stderr,
+            )
+    else:
+        # Not measured stays not measured, in those words.
+        print(f"# Measured CTR by page class: NOT MEASURED ({measured_ctr.get('reason', 'unavailable')})", file=sys.stderr)
+        print("#   Scoring falls back to the pre-2026-08-07 heuristics.", file=sys.stderr)
+
     targets = []
     for city_slug, city_data in market.items():
         if city_slug in HEBER_VALLEY_CLUSTER and not args.include_heber_valley_cluster:
@@ -914,7 +1198,7 @@ def main():
             scoring = score_target(
                 city_slug, city_data, service, blog_count, spoke_exists,
                 sitemap, gsc, posthog_views, reddit_data,
-                weather_signal,
+                weather_signal, measured_ctr,
                 include_saturated=args.include_saturated,
             )
             # Skip zero-score rows unless --include-existing or --include-saturated requested an audit
@@ -946,6 +1230,23 @@ def main():
             })
 
     targets.sort(key=lambda t: t["score"], reverse=True)
+
+    # Put the statewide axis into the SAME ranking, not just a stderr note.
+    # The automation consumes `--json --top 1`; an advisory printed alongside a
+    # city-only list would have left the twice-weekly job producing exactly the
+    # format measured at 0.050% CTR.
+    best_city_score = targets[0]["score"] if targets else 0.0
+    sw = statewide_targets(measured_ctr, best_city_score)
+    if sw:
+        print(
+            f"# Statewide axis: {len(sw)} uncovered topics injected into the ranking, "
+            f"led by \"{sw[0]['keyword']}\" (score {sw[0]['score']} vs best city {best_city_score}).",
+            file=sys.stderr,
+        )
+        print(f"#   basis: {sw[0]['measured_basis']}", file=sys.stderr)
+        targets.extend(sw)
+        targets.sort(key=lambda t: t["score"], reverse=True)
+
     top = targets[: args.top]
 
     if args.json:

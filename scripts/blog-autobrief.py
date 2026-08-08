@@ -79,6 +79,39 @@ def brief_from_target(t: dict) -> dict:
     wx = t.get("weather_event") or {}
     weather_hook = (wx.get("event_context")
                     or f"Current Wasatch Front seasonal conditions relevant to {t.get('service_name','roofing')}.")
+
+    # Statewide targets (axis=statewide, city_slug="utah") are NOT a city. The
+    # city-shaped fact list would assert "Utah is a city in Utah" and instruct
+    # the writer to describe its housing stock and geography as a town's — a
+    # fabrication in the brief itself, before a word is drafted.
+    if t.get("axis") == "statewide" or t.get("city_slug") == "utah":
+        topic = t.get("keyword", "roofing")
+        return {
+            "city_slug": "utah",
+            "city_name": "Utah",
+            "zip": "",
+            "service_slug": service_slug,
+            "service_name": t.get("service_name", "Guide"),
+            "style": "atmospheric",
+            "keyword": topic,
+            "weather_hook": "",
+            "scope": "statewide",
+            "facts": [
+                "This is a STATEWIDE Utah guide, not a city page. Do not write about one town, do "
+                "not name a single city as the subject, and do not imply a service-area boundary.",
+                (f"Answer the question '{topic}' directly and early — this topic is chosen because "
+                 "statewide informational posts are the only format on this site with a measured "
+                 "click-through rate. Lead with the answer, then the reasoning."),
+                ("Ground it in conditions that genuinely apply across Utah: high-desert UV and "
+                 "temperature swing, snow load at elevation, ice damming, spring hail along the "
+                 "Wasatch Front. Do NOT fabricate statistics, prices, dollar ranges, award or "
+                 "certification claims, review counts, years-in-business, or any numeric claim you "
+                 "cannot support."),
+                CREDENTIAL_FACT,
+            ],
+            "internal_links": GENERAL_LINKS,
+        }
+
     return {
         "city_slug": t["city_slug"],
         "city_name": city,
