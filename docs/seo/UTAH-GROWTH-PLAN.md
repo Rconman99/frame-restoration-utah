@@ -109,24 +109,38 @@ volume** — plan by topic coverage.
 
 ## Plan
 
-### P1 — Reclaim stranded citations (owner action, small, highest confidence)
+### P1 — Reclaim stranded citations (owner action, small)
 
-The June domain migration left legitimate links pointing at the old host:
+**Corrected 2026-08-07 after checking the actual link records — see the note below. The two items
+differ in kind, and only one of them carries link equity.**
 
-- **`bbb.org` → `frameroofingutah.com`.** The homepage claims "BBB A+ Accredited" while the BBB
-  listing points at the old domain. Update the listing URL to `https://www.framerestorationutah.com`.
-- **`gohebervalley.com` → `frameroofingutah.com`.** Same fix.
+- **`gohebervalley.com` → `https://www.frameroofingutah.com/`** — `dofollow`, anchor "Website".
+  **This is the single legitimate equity-passing link Frame has anywhere.** Repointing it to
+  `https://www.framerestorationutah.com` is the highest-value item in this plan per minute spent.
+- **`bbb.org` → `https://www.frameroofingutah.com/`** — **`nofollow`**, anchor "Visit Website". It
+  passes no link equity, so repointing it is a **NAP/citation-consistency** action, not an authority
+  one. Still worth doing: citation consistency feeds local-pack *prominence*, which is the ranking
+  factor Frame is losing on. But do not expect a ranking lift from the link itself.
 
-These are 2 of the ~3 legitimate links Frame has anywhere. Repointing them is the cheapest real
-authority available.
+### P2 — Old-domain redirect chain — ~~our action~~ **NOT WORTH DOING. Superseded 2026-08-07.**
 
-### P2 — Fix the old-domain redirect chain (our action)
+The original entry said the apex `307 → 308` chain was worth fixing and was ours to fix. **Both
+claims were wrong.**
 
-`frameroofingutah.com` → **307 temporary** → `www.frameroofingutah.com` → 308 → new domain.
+**On impact:** every legitimate link points at the **`www`** form, which already gets a clean single
+**308** to the new domain and never touches the 307. The only links hitting the apex — and therefore
+the only ones going through the temporary hop — are `hostprinter.com`, `ggmap.us.com`,
+`bazerdaily.com` and `websitelaunches.com`, all spam. The 307 is doing no measurable harm, and
+arguably it is doing a small favour.
 
-A temporary first hop in a two-hop chain is the weakest way to pass equity, and it is the exact
-`redirect-chain` issue our own crawler flags. Make the apex hop a permanent single hop to the final
-destination.
+**On ownership:** it is not fixable from this repo. Neither redirect response carries this repo's
+`vercel.json` headers (no `X-Content-Type-Options`, no CSP, and the HSTS value is Vercel's default
+rather than ours), so both hops resolve at Vercel's edge **before the deployment runs** — a
+`vercel.json` redirect would never execute. The `frameroofingutah` project also sits in a different
+Vercel team from the rest of this stack.
+
+**Do not spend owner time on this.** Revisit only if a legitimate link is ever found pointing at the
+apex form.
 
 ### P3 — Earn the legitimate links that exist (owner-gated, we prepare the packet)
 
@@ -176,7 +190,22 @@ protocol the Allen experiment in the Texas market uses.
   makes CTR worse.
 - **No spam directories**, whatever competitors are doing.
 
+## Status
+
+- **P4 — SHIPPED** (PR #197). `blog-target-prioritizer.py` now scores on measured CTR read from the
+  SEO loop's committed snapshot, and injects statewide topics into the same ranking the autopost
+  workflow consumes. `--json --top 1` returns "asphalt shingles vs metal roof" instead of another
+  city storm post. 10 uncovered statewide topics queued.
+- **P2 — CLOSED, not worth doing.** See the correction above.
+- **P1, P3, P5** — open. P1 and P3 need owner logins; P5 should run as a `frame-seo-experiment.v1`.
+
 ## Verification
 
 Re-measure with the daily loop. The numbers to watch are **clicks and CTR by page type**, not
 impressions. Blog CTR (0.59%) is the benchmark to pull the rest of the site toward.
+
+**A caution learned while writing this plan:** two of its original claims did not survive contact
+with the underlying records. P2 was listed as ours to fix and worth doing; it is neither. The BBB
+link was implied to carry authority; it is `nofollow`. Both errors came from reasoning about a
+*summary* (referring-domain counts) instead of the *records* (per-link target URL and rel
+attribute). Check the record before assigning work.
