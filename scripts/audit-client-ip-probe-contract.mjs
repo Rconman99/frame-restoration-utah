@@ -16,7 +16,7 @@ const TRUSTED_SOURCE_PATHS = [
   "supabase/functions/handle-lead/DEPLOY.md",
 ];
 const EXPECTED_TEMPLATE_SHA256 =
-  "fc1d51bd82db11f80460ed15521395555d8d17ec3ff5d1a442f9c1fe51da4230";
+  "1a45cf1b9d7dcc7ca514ff334b81e93b5024ff45301489c1f4e9ed20535e0c53";
 const EXPECTED_DEPLOY_WORKFLOW_SHA256 =
   "31c21349e26413415d9359787821fd0ff56cca9c2f52e00d0f4941a55ee6c824";
 const EXPECTED_COMPLIANCE_WORKFLOW_SHA256 =
@@ -83,6 +83,39 @@ function hasTokens(tokens, required) {
 
 function hasAny(haystack, needles) {
   return needles.some((needle) => haystack.includes(needle));
+}
+
+function hasProbeMarker(value) {
+  const compact = skeleton(value);
+  const tokens = semanticTokens(value);
+  return hasAny(compact, ["clientipprobe", "leadintakev1"]) ||
+    hasTokens(tokens, ["client", "ip", "probe"]);
+}
+
+function indirectEnvAccessIn(value) {
+  const decoded = decodeEscapes(value);
+  const tokens = semanticTokens(decoded);
+  const bracketGlobal = /\bglobalThis\s*\[/i.test(decoded) &&
+    hasTokens(tokens, ["globalthis", "deno", "env", "get"]);
+  const reflectGlobal = /\bReflect\s*\.\s*get\s*\(/i.test(decoded) &&
+    hasTokens(tokens, ["reflect", "deno", "env", "get"]);
+  const alias = decoded.match(
+    /\b(?:const|let|var)\s+([A-Za-z_$][\w$]*)\s*=\s*Deno\s*;/,
+  )?.[1];
+  const aliasAccess = Boolean(
+    alias && new RegExp(
+      `\\b${alias.replace(/[$]/g, "\\$")}\\s*\\[\\s*[\"']env[\"']\\s*\\]\\s*\\[\\s*[\"']get[\"']`,
+      "i",
+    ).test(decoded),
+  );
+  const destructured =
+    /\{\s*env\s*\}\s*=\s*Deno\b[\s\S]{0,256}\benv\s*\.\s*get\s*\(/i
+      .test(decoded);
+  const bracketDeno =
+    /\bDeno\s*\[\s*["']env["']\s*\]\s*\[\s*["']get["']\s*\]/i
+      .test(decoded);
+  return bracketGlobal || reflectGlobal || aliasAccess || destructured ||
+    bracketDeno;
 }
 
 export function clientIpProbeTemplateViolations(source) {
@@ -430,7 +463,7 @@ function testSourceViolations(relative, source, trustedDigests) {
   const envReads = [...source.matchAll(/process\.env\.([A-Za-z0-9_]+)/g)]
     .map((match) => match[1]);
   if (
-    spawnCount !== 7 || nodeSpawnCount !== 5 ||
+    spawnCount !== 8 || nodeSpawnCount !== 6 ||
     !source.includes('spawnSync("ruby", ["-e", parser') ||
     !source.includes('spawnSync("git", ["ls-files", "-z"]') ||
     envReads.some((name) => name !== "PATH") ||
@@ -511,6 +544,12 @@ export function probeToolViolations(
     protectedViolations.push(`${relative}:escaped or assembled protected deploy`);
   }
   const decodedSource = decodeEscapes(source);
+  const sourceLines = decodedSource.replace(/\\\r?\n/g, " ").split(/\r?\n/);
+  const pathProbeAdjacent = hasProbeMarker(relative);
+  const probeRiskSegments = pathProbeAdjacent
+    ? sourceLines
+    : sourceLines.filter(hasProbeMarker);
+  const probeRiskCompacts = probeRiskSegments.map(skeleton);
   const semanticProtectedDeploy = [
     ...decodedSource.matchAll(
       /.{0,160}\bfunctions\b[\s\S]{0,100}\bdeploy\b[\s\S]{0,220}\b(?:handle-lead|lead-crm)\b/gi,
@@ -519,8 +558,6 @@ export function probeToolViolations(
     /(?:["']?\$(?:\{)?[A-Za-z_]|\bdocker\s+run\b|\b(?:npx|pnpm|yarn|bunx)\b|\b(?:spawn|exec|subprocess|system)\b|\[[^\]]*["'][^"']+["'][^\]]*\])/i
       .test(match[0])
   );
-  const probeAdjacent = hasAny(combined, ["clientipprobe", "leadintakev1"]) ||
-    hasTokens(tokens, ["client", "ip", "probe"]);
   const dangerous = [];
   for (const [label, needles] of [
     ["environment enumeration/alias", [
@@ -545,82 +582,63 @@ export function probeToolViolations(
     ]],
     ["runtime obfuscation", ["fromcharcode", "base64decode", "newfunction"]],
   ]) {
-    if (hasAny(combined, needles)) dangerous.push(label);
+    if (probeRiskCompacts.some((segment) => hasAny(segment, needles))) {
+      dangerous.push(label);
+    }
   }
-  if (/\b(?:eval|atob|Function)\s*\(|\.fromCharCode\s*\(/.test(source)) {
+  if (probeRiskSegments.some((segment) =>
+    /\b(?:eval|atob|Function)\s*\(|\.fromCharCode\s*\(/.test(segment)
+  )) {
     dangerous.push("runtime obfuscation");
   }
   const violations = [...protectedViolations];
   if (semanticProtectedDeploy) {
     violations.push(`${relative}:assembled protected deploy command`);
   }
-  const providerMutation = hasAny(combined, [
+  const providerMutation = probeRiskCompacts.some((segment) => hasAny(segment, [
     "supabasefunctionsdeploy",
     "supabasefunctionsdelete",
     "supabasesecretsset",
     "supabasesecretsunset",
-  ]);
-  const assembledProviderMutation = probeAdjacent && decodedSource
-    .replace(/\\\r?\n/g, " ")
-    .split(/\r?\n/)
-    .some((line) => {
+  ]));
+  const assembledProviderMutation = sourceLines.some((line) => {
       const lineTokens = semanticTokens(line);
       const providerTokens =
         hasTokens(lineTokens, ["supabase", "functions", "deploy"]) ||
         hasTokens(lineTokens, ["supabase", "functions", "delete"]) ||
         hasTokens(lineTokens, ["supabase", "secrets", "set"]) ||
         hasTokens(lineTokens, ["supabase", "secrets", "unset"]);
-      return providerTokens &&
+      return (pathProbeAdjacent || hasProbeMarker(line)) && providerTokens &&
         /\b(?:join|reverse|concat)\s*\(|\[[^\]]*["'][^"']+["'][^\]]*\]/i
           .test(line);
     });
-  const bracketGlobalEnv =
-    /\bglobalThis\s*\[/i.test(decodedSource) &&
-    hasTokens(tokens, ["globalthis", "deno", "env", "get"]);
-  const reflectGlobalEnv =
-    /\bReflect\s*\.\s*get\s*\(/i.test(decodedSource) &&
-    hasTokens(tokens, ["reflect", "deno", "env", "get"]);
-  const denoAliasEnv = (() => {
-    const alias = decodedSource.match(
-      /\b(?:const|let|var)\s+([A-Za-z_$][\w$]*)\s*=\s*Deno\s*;/,
-    )?.[1];
-    return Boolean(
-      alias && new RegExp(
-        `\\b${alias.replace(/[$]/g, "\\$")}\\s*\\[\\s*[\"']env[\"']\\s*\\]\\s*\\[\\s*[\"']get[\"']`,
-        "i",
-      ).test(decodedSource),
-    );
-  })();
-  const destructuredDenoEnv =
-    /\{\s*env\s*\}\s*=\s*Deno\b[\s\S]{0,256}\benv\s*\.\s*get\s*\(/i
-      .test(decodedSource);
-  const bracketDenoEnv =
-    /\bDeno\s*\[\s*["']env["']\s*\]\s*\[\s*["']get["']\s*\]/i
-      .test(decodedSource);
-  const indirectEnvAccess = bracketGlobalEnv || reflectGlobalEnv ||
-    denoAliasEnv || destructuredDenoEnv || bracketDenoEnv;
+  const indirectEnvAccess = indirectEnvAccessIn(decodedSource);
+  const probeIndirectEnvAccess = pathProbeAdjacent
+    ? indirectEnvAccess
+    : probeRiskSegments.some(indirectEnvAccessIn);
   const constructedRestrictedEnv = indirectEnvAccess &&
     (hasTokens(tokens, ["lead", "intake", "rate", "limit", "secret"]) ||
       hasTokens(tokens, ["supabase", "service", "role", "key"]));
   if (
-    (providerMutation && probeAdjacent) || assembledProviderMutation
+    providerMutation || assembledProviderMutation
   ) {
     violations.push(`${relative}:assembled protected/probe mutation capability`);
   }
   if (constructedRestrictedEnv) {
     violations.push(`${relative}:constructed restricted environment access`);
   }
-  if (probeAdjacent && indirectEnvAccess) {
+  if (probeIndirectEnvAccess) {
     violations.push(`${relative}:indirect probe environment access`);
   }
   if (
-    probeAdjacent &&
-    (hasTokens(tokens, ["deno", "connect"]) ||
-      hasTokens(tokens, ["deno", "connecttls"]))
+    probeRiskSegments.some((segment) => {
+      const segmentCompact = skeleton(segment);
+      return hasAny(segmentCompact, ["denoconnect", "denoconnecttls"]);
+    })
   ) {
     violations.push(`${relative}:indirect probe network access`);
   }
-  if (probeAdjacent && dangerous.length > 0) {
+  if (dangerous.length > 0) {
     violations.push(`${relative}:probe-adjacent ${dangerous.join(",")}`);
   }
   if (

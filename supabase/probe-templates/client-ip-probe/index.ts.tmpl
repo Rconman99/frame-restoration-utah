@@ -8,7 +8,8 @@ const TARGET_SOURCE_SHA = "__TARGET_SOURCE_SHA__";
 const AUTH_CONTEXT = "client-ip-probe-v1";
 const MAX_BODY_BYTES = 512;
 const MAX_CLOCK_SKEW_MS = 60_000;
-const CASE_ID = /^(?:ipv4|ipv6)-(?:baseline|forged-cf|forged-x-real-ip|forged-x-forwarded-for)$/;
+const CASE_ID =
+  /^(?:ipv4|ipv6)-(?:baseline|forged-cf|forged-x-real-ip|forged-x-forwarded-for)$/;
 const encoder = new TextEncoder();
 
 function json(status: number, body: Record<string, unknown>): Response {
@@ -107,7 +108,8 @@ async function authenticated(
     ["verify"],
   );
   const bodySha256 = await sha256Hex(body);
-  const message = `${AUTH_CONTEXT}\0auth\0${timestamp}\0${nonce}\0${bodySha256}`;
+  const message =
+    `${AUTH_CONTEXT}\0auth\0${timestamp}\0${nonce}\0${bodySha256}`;
   return await crypto.subtle.verify(
     "HMAC",
     key,

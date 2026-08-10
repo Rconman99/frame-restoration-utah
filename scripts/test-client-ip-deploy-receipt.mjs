@@ -1018,6 +1018,12 @@ assert.deepEqual(
   }),
   [],
 );
+const scannerCli = spawnSync(
+  process.execPath,
+  ["scripts/audit-client-ip-probe-contract.mjs"],
+  { cwd: root, encoding: "utf8" },
+);
+assert.equal(scannerCli.status, 0, scannerCli.stderr);
 for (const [relative, expectedDigest] of Object.entries(trustedManifest)) {
   const source = tracked.get(relative);
   assert.equal(typeof source, "string");
