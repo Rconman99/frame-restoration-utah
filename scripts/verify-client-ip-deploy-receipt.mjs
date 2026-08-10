@@ -244,11 +244,8 @@ export function verifyClientIpDeployReceipt({
       throw new Error(`client-IP receipt lacks passed ${name} canary evidence`);
     }
   }
-  if (
-    results?.ipv6_path !== "passed" &&
-    results?.ipv6_path !== "runner-ipv6-unavailable"
-  ) {
-    throw new Error("client-IP receipt lacks valid ipv6_path canary evidence");
+  if (results?.ipv6_path !== "passed") {
+    throw new Error("client-IP receipt lacks passed ipv6_path canary evidence");
   }
   if (
     receipt.cleanup?.probe_function_deleted !== true ||

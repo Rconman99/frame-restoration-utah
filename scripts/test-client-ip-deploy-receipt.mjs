@@ -83,21 +83,6 @@ assert.deepEqual(verify(), {
   extractorSha256: extractorDigest,
   probeVersion: 7,
 });
-assert.deepEqual(
-  verify({
-    payload: {
-      canary_results: {
-        ...payload().canary_results,
-        ipv6_path: "runner-ipv6-unavailable",
-      },
-    },
-  }),
-  {
-    required: true,
-    extractorSha256: extractorDigest,
-    probeVersion: 7,
-  },
-);
 const issued = issueClientIpDeployReceipt({
   deploySha: SHA,
   projectRef: PROJECT_REF,
@@ -256,6 +241,14 @@ const rejectionCases = [
       canary_results: { ...payload().canary_results, ipv6_path: "not-run" },
     },
   }, /ipv6_path/],
+  ["IPv6 runner unavailable", {
+    payload: {
+      canary_results: {
+        ...payload().canary_results,
+        ipv6_path: "runner-ipv6-unavailable",
+      },
+    },
+  }, /ipv6_path/],
   ["forged XFF changed identity", {
     payload: {
       canary_results: {
@@ -314,23 +307,8 @@ const receiptAt = steps.findIndex((step) =>
 );
 const deployAt = steps.findIndex((step) => step.name?.startsWith("Deploy "));
 assert(
-  mintAt > 0 && receiptAt > mintAt && deployAt > receiptAt,
-  "client-IP mint and receipt gate must precede deploy",
-);
-const mintStep = steps[mintAt];
-assert.equal(mintStep.if, undefined);
-assert.equal(mintStep["continue-on-error"], undefined);
-assert.equal(mintStep.env.FUNCTION_NAME, "${{ inputs.function }}");
-assert.equal(mintStep.env.DEPLOY_SHA, "${{ github.sha }}");
-assert.equal(mintStep.env.SUPABASE_PROJECT_REF, PROJECT_REF);
-assert.equal(mintStep.env.SUPABASE_ACCESS_TOKEN, "${{ secrets.SUPABASE_ACCESS_TOKEN }}");
-assert.equal(
-  mintStep.env.CLIENT_IP_DEPLOY_RECEIPT_HMAC_KEY,
-  "${{ secrets.CLIENT_IP_DEPLOY_RECEIPT_HMAC_KEY }}",
-);
-assert.equal(
-  mintStep.run.trim(),
-  "node scripts/issue-client-ip-deploy-receipt.mjs",
+  mintAt === -1 && receiptAt > 0 && deployAt > receiptAt,
+  "only the pre-issued client-IP receipt gate may precede deploy",
 );
 const receiptStep = steps[receiptAt];
 assert.equal(receiptStep.if, undefined);
@@ -340,7 +318,7 @@ assert.equal(receiptStep.env.DEPLOY_SHA, "${{ github.sha }}");
 assert.equal(receiptStep.env.SUPABASE_PROJECT_REF, PROJECT_REF);
 assert.equal(
   receiptStep.env.CLIENT_IP_DEPLOY_RECEIPT_TOKEN,
-  "${{ env.CLIENT_IP_DEPLOY_RECEIPT_TOKEN }}",
+  "${{ secrets.CLIENT_IP_DEPLOY_RECEIPT_TOKEN }}",
 );
 assert.equal(
   receiptStep.env.CLIENT_IP_DEPLOY_RECEIPT_HMAC_KEY,
@@ -352,23 +330,33 @@ assert.equal(
 );
 
 const verifier = read("scripts/verify-client-ip-deploy-receipt.mjs");
-const issuer = read("scripts/issue-client-ip-deploy-receipt.mjs");
-for (
-  const requiredText of [
-    "\"deploy\",",
-    "PROBE_NAME",
-    "\"delete\",",
-    "issueClientIpDeployReceipt",
-    "GITHUB_ENV",
-    "::add-mask::",
-    "raw_values_retained: false",
-  ]
-) {
-  assert(
-    issuer.includes(requiredText),
-    `client-IP issuer missing required contract text: ${requiredText}`,
+assert.equal(
+  fs.existsSync(path.join(root, "scripts/issue-client-ip-deploy-receipt.mjs")),
+  false,
+  "protected deploys must not include automatic public probe tooling",
+);
+const deployWorkflowSource = read(".github/workflows/deploy-edge-function.yml");
+for (const prohibitedText of [
+  "issue-client-ip-deploy-receipt.mjs",
+  "Mint live client-IP deployment evidence",
+  "runner-ipv6-unavailable",
+]) {
+  assert.equal(
+    deployWorkflowSource.includes(prohibitedText),
+    false,
+    `protected deploy workflow contains prohibited client-IP path: ${prohibitedText}`,
   );
 }
+assert.equal(
+  verifier.includes('results?.ipv6_path !== "passed"'),
+  true,
+  "client-IP verifier must require successful IPv6 evidence",
+);
+assert.equal(
+  verifier.includes("runner-ipv6-unavailable"),
+  false,
+  "client-IP verifier must not authorize unavailable IPv6 evidence",
+);
 assert.equal(
   verifier.includes("data/UTAH-SUPABASE-CLIENT-IP-HEADER-RECEIPT.md"),
   false,

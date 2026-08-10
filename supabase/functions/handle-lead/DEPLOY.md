@@ -127,10 +127,10 @@ issuance automatically and masks the token before placing it in `GITHUB_ENV`.
 Issue a new target-specific token for every manual/local dispatch because it
 expires within one hour and any live secret/function metadata change invalidates
 it. Rotate the HMAC key through the password manager and GitHub production
-environment after suspected exposure, signer access changes, or routine key rotation;
-every old token becomes invalid immediately. A worker/webhook deployment changes
-live function metadata, so capture again and issue a fresh `handler-ready`
-receipt before deploying `handle-lead`.
+environment after suspected exposure, signer access changes, or
+routine key rotation; every old token becomes invalid immediately. A worker/webhook
+deployment changes live function metadata, so capture again and issue a fresh
+`handler-ready` receipt before deploying `handle-lead`.
 
 ### Executable client-IP receipt path
 
@@ -139,7 +139,9 @@ mode-0600 JSON evidence file containing `probe_source_sha`,
 `probe_bundle_sha256`, `probe_function` (`client-ip-probe`, positive version,
 `ACTIVE_AT_CANARY`), `canary_checked_at`, the IPv4/IPv6/forged-header/key-shape
 results, and proof that the probe function and probe secrets were deleted. It
-must contain no raw address or secret. Set its path as
+must contain no raw address or secret. Both native network paths must report
+`passed`; an unavailable, skipped, or failed IPv6 path never authorizes a
+deployment. Set its path as
 `CLIENT_IP_CANARY_EVIDENCE_PATH`, inject the GitHub-only
 `CLIENT_IP_DEPLOY_RECEIPT_HMAC_KEY`, and run:
 
@@ -156,6 +158,9 @@ one-hour token, allowlists every nested evidence field so raw/debug extras canno
 enter the readable token, and never prints it. Store
 `CLIENT_IP_DEPLOY_RECEIPT_TOKEN` and the distinct
 `CLIENT_IP_DEPLOY_RECEIPT_HMAC_KEY` only in the GitHub production environment.
+The protected deploy workflow only verifies that pre-issued token: it must not
+deploy or delete a probe, expose the intake rate-limit secret to a probe, or
+mint client-IP evidence on a shared CI runner.
 Issue a new token for each protected SHA; rotate the HMAC key after exposure or
 signer access changes and remove all local evidence/token files after secret
 installation. `data/UTAH-SUPABASE-CLIENT-IP-HEADER-RECEIPT.md` remains an
