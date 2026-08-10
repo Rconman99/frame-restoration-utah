@@ -7,8 +7,6 @@
 -- only after recovery health passes. Keeping storage and activation separate
 -- still permits rollback between schema steps without dropping durable state.
 
-begin;
-
 alter table public.leads
   add column if not exists submission_key uuid,
   add column if not exists notified boolean,
@@ -1048,5 +1046,3 @@ comment on table public.lead_notification_events is
   'Replay-protected Resend delivery metadata. Unmatched early events remain unapplied for scheduled reconciliation; stores no email body or duplicated lead PII.';
 comment on column public.lead_notifications.health_acknowledged_at is
   'Operator acknowledgement for a durable notification health alarm. New adverse provider state clears this value.';
-
-commit;

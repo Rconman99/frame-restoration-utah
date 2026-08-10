@@ -8,8 +8,6 @@
 --      supabase/cutovers/20260807000200_live_dashboard_security_remediation.sql
 --      only after its zero-plaintext guard passes.
 
-begin;
-
 alter table public.report_access
   add column if not exists pin_hash text,
   add column if not exists session_version integer not null default 1;
@@ -359,5 +357,3 @@ comment on function public.migrate_dashboard_access_credential(uuid, text, text)
   'Service-role-only atomic plaintext-to-HMAC transition and bearer-session revocation.';
 comment on function public.set_dashboard_access_active(uuid, boolean) is
   'Service-role-only active-state transition; changed state atomically revokes prior bearer sessions.';
-
-commit;

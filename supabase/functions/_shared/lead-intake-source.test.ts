@@ -58,10 +58,9 @@ Deno.test("lead handler rejects abuse before classification or persistence", () 
   );
 });
 
-Deno.test("lead intake migration is additive, atomic, bounded, and service-role-only", () => {
+Deno.test("lead intake migration is additive, bounded, service-role-only, and CLI-transaction-owned", () => {
   for (
     const contract of [
-      "begin;",
       "create table if not exists public.lead_intake_rate_limits",
       "ip_hash ~ '^[0-9a-f]{64}$'",
       "create or replace function public.reserve_lead_intake_attempt",
@@ -74,11 +73,15 @@ Deno.test("lead intake migration is additive, atomic, bounded, and service-role-
       "revoke all on function public.reserve_lead_intake_attempt(text)",
       "grant execute on function public.reserve_lead_intake_attempt(text)",
       "to service_role",
-      "commit;",
     ]
   ) {
     assert(migration.includes(contract), `rate-limit SQL lacks ${contract}`);
   }
+  assert(
+    !/^\s*(?:begin(?:\s+(?:work|transaction))?|start\s+transaction|commit(?:\s+(?:work|transaction))?|rollback(?:\s+(?:work|transaction))?|end\s+(?:work|transaction))\s*;\s*$/im
+      .test(migration),
+    "rate-limit SQL can commit before the CLI migration-history insert",
+  );
   assert(
     migration.includes(
       "revoke all on table public.lead_intake_rate_limits",

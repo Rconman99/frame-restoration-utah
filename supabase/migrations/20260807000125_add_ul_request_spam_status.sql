@@ -1,8 +1,6 @@
 -- CRM status parity requested by the Utah sales operator: make UL requests and
 -- spam first-class lead statuses instead of redundant labels/tiers.
 
-begin;
-
 do $status_widen$
 begin
   if to_regclass('public.leads') is null then
@@ -29,5 +27,3 @@ begin
     );
 end
 $status_widen$;
-
-commit;

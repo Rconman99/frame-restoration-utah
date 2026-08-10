@@ -3,8 +3,6 @@
 -- service-role Edge Functions keep operating while the old direct-PostgREST
 -- dashboard is retired.
 
-begin;
-
 do $preflight$
 begin
   if to_regclass('public.app_config') is null
@@ -69,5 +67,3 @@ begin
   end loop;
 end
 $assertions$;
-
-commit;

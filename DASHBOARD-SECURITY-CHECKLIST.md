@@ -229,11 +229,32 @@ from live history. After merge, use the final `RELEASE_SHA` and the exact
 runner in `supabase/functions/handle-lead/DEPLOY.md`: pinned Supabase CLI 2.113.0
 must `init` a just-in-time empty workdir because no tracked
 `supabase/config.toml` exists, then `git archive` only the eight reviewed
-migrations and verify their SHA-256 manifest. Link only inside that workdir,
-retain the before-list, require the exact catalog-only `db query --linked` preflight to
-return `preflight_ok: true`, then run
-`supabase migration up --linked --include-all --yes`. Require the catalog
-postflight to return `postflight_ok: true` before retaining the after-list.
+migrations plus the immutable remote-history poison-pill guard template and
+verify their SHA-256 manifests. Link only inside that workdir, retain the
+JSON before-list, and require non-target remote history to equal the reviewed
+24-version baseline while target history is one of the nine exact ordered
+prefixes. Before the first linked list, secure one exclusive Utah
+migration-writer window through the final postflight/list, bind
+`UTAH_MIGRATION_EXCLUSIVE_WRITER_ACK` to the exact `RELEASE_SHA`, and stop if
+any operator, workflow, Studio action, CLI process, or automation could mutate
+the live schema or migration history concurrently. Require the catalog
+preflight to aggregate every direct migration-history row and prove exact
+equality with the 24-version baseline plus the target prefix; the CLI's
+formatted list alone is insufficient because it can omit an unparseable
+version. Require each prefix phase present and
+each suffix phase pristine. Move applied-prefix source SQL outside the active
+directory and replace it—plus every baseline version—with poison guards.
+Require an effective list with the exact baseline/prefix matched, zero
+remote-only, and only the exact target suffix local-only before running the
+pinned explicit binary with
+`supabase migration up --linked --include-all --yes`. Re-run the exact catalog
+preflight and prefix-specific 32-file manifest immediately before execution.
+Require both the structured JSON receipt and stderr apply lines to name only
+the exact pending suffix in order (or an explicit no-mutation skip at prefix
+eight). Then require the catalog postflight to return
+`postflight_ok: true` and the final list to contain 32 exact matches before
+retaining the after-list. A selected guard raises and aborts; it can never
+recreate a missing history row.
 Management API/raw SQL and migration repair are never completion substitutes.
 
 1. Back up schema/policies and capture current function versions/digests plus a

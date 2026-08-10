@@ -5,8 +5,6 @@
 -- Deploy/configure the worker + webhook after this migration, verify health,
 -- and deploy the submission-key-aware handler last.
 
-begin;
-
 do $preflight$
 begin
   if to_regclass('public.leads') is null
@@ -58,5 +56,3 @@ for each row execute function public.enqueue_lead_notifications();
 
 comment on function public.enqueue_lead_notifications() is
   'Cutover phase B: enqueue independent primary/backup owner email jobs for every non-spam lead.';
-
-commit;
