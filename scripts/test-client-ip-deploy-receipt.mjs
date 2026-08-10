@@ -20,17 +20,6 @@ import {
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const read = (relative) => fs.readFileSync(path.join(root, relative), "utf8");
-const textExtensions = new Set([
-  ".js",
-  ".md",
-  ".mjs",
-  ".py",
-  ".sh",
-  ".ts",
-  ".txt",
-  ".yaml",
-  ".yml",
-]);
 
 function trackedTextFiles() {
   const result = spawnSync("git", ["ls-files", "-z"], {
@@ -38,11 +27,16 @@ function trackedTextFiles() {
     encoding: "utf8",
   });
   assert.equal(result.status, 0, result.stderr);
-  return result.stdout.split("\0")
-    .filter(Boolean)
-    .filter((relative) => textExtensions.has(path.extname(relative)));
+  const sources = new Map();
+  for (const relative of result.stdout.split("\0").filter(Boolean)) {
+    const contents = fs.readFileSync(path.join(root, relative));
+    if (contents.includes(0)) continue;
+    sources.set(relative, contents.toString("utf8"));
+  }
+  return sources;
 }
-const trackedTextPaths = trackedTextFiles();
+const trackedTextSources = trackedTextFiles();
+const trackedTextPaths = [...trackedTextSources.keys()];
 const extractorSource = read("supabase/functions/_shared/client-ip.ts");
 const extractorDigest = crypto.createHash("sha256")
   .update(extractorSource)
@@ -408,16 +402,10 @@ assert.equal(
   false,
   "client-IP verifier must not authorize unavailable IPv6 evidence",
 );
-const scriptToolPaths = trackedTextPaths
-  .filter((relative) => relative.startsWith("scripts/"))
-  .filter((relative) =>
-    relative !== "scripts/test-client-ip-deploy-receipt.mjs"
-  );
-for (const toolPath of scriptToolPaths) {
-  const source = read(toolPath);
+function probeToolViolation(source) {
   const hasProbeMarker = source.includes("client-ip-probe") ||
     source.includes("lead-intake-v1");
-  if (!hasProbeMarker) continue;
+  if (!hasProbeMarker) return null;
   for (
     const prohibitedText of [
       "SUPABASE_ACCESS_TOKEN",
@@ -426,23 +414,52 @@ for (const toolPath of scriptToolPaths) {
       "--no-verify-jwt",
     ]
   ) {
-    assert.equal(
-      source.includes(prohibitedText),
-      false,
-      `${toolPath} combines client-IP probe logic with ${prohibitedText}`,
-    );
+    if (source.includes(prohibitedText)) return prohibitedText;
   }
-  assert.doesNotMatch(
-    source,
-    /supabase\s+functions\s+(?:deploy|delete)/,
-    `${toolPath} combines client-IP probe logic with live mutation`,
+  if (/supabase\s+functions\s+(?:deploy|delete)/.test(source)) {
+    return "live function mutation";
+  }
+  return null;
+}
+
+const scriptToolPaths = trackedTextPaths
+  .filter((relative) => relative.startsWith("scripts/"))
+  .filter((relative) =>
+    relative !== "scripts/test-client-ip-deploy-receipt.mjs"
+  );
+for (const toolPath of scriptToolPaths) {
+  assert.equal(
+    probeToolViolation(trackedTextSources.get(toolPath)),
+    null,
+    `${toolPath} combines client-IP probe logic with live capability`,
+  );
+}
+const unsafeProbeFixtures = [
+  ["client-ip-probe", "LEAD_INTAKE_RATE_LIMIT_SECRET"].join("\n"),
+  ["lead-intake-v1", "SUPABASE_ACCESS_TOKEN"].join("\n"),
+  ["client-ip-probe", "supabase", "functions", "deploy"].join(" "),
+];
+for (const fixture of unsafeProbeFixtures) {
+  assert.notEqual(
+    probeToolViolation(fixture),
+    null,
+    "renamed or nested probe tooling evades the live-capability scanner",
   );
 }
 const directProtectedDeploy =
-  /supabase\s+functions\s+deploy\s+(?:handle-lead|lead-crm)\b/;
+  /supabase\s+functions\s+deploy\s+["']?(?:handle-lead|lead-crm)["']?(?=\s|\\|$)/;
+for (
+  const fixture of [
+    ["supabase", "functions", "deploy", "handle-lead"].join(" "),
+    ["supabase", "functions", "deploy", '"handle-lead"'].join(" "),
+    ["supabase", "functions", "deploy", "'lead-crm'"].join(" "),
+  ]
+) {
+  assert.match(fixture, directProtectedDeploy);
+}
 for (const relative of trackedTextPaths) {
   assert.doesNotMatch(
-    read(relative),
+    trackedTextSources.get(relative),
     directProtectedDeploy,
     `${relative} documents a direct protected-function deploy bypass`,
   );

@@ -30,35 +30,12 @@ exact-main CI, and fresh signed receipts.
 - **`offline-conversion-sync` Supabase fn** — daily worker that reads `leads WHERE status='won' AND gclid IS NOT NULL AND uploaded_to_google_ads_at IS NULL`, batch-uploads via [Google Ads Offline Conversion Import API](https://developers.google.com/google-ads/api/docs/conversions/upload-clicks). Build target: this week.
 - **Dashboard Phase 3 ROAS panel** — depends on offline-conversion-sync. Build target: this week.
 
-## Rollback plan
+## Historical rollback instructions retired
 
-If anything breaks:
-
-1. **Migration rollback** (additive only, but if needed):
-   ```sql
-   alter table public.leads
-     drop column if exists gclid, drop column if exists fbclid,
-     drop column if exists msclkid, drop column if exists gbraid,
-     drop column if exists wbraid, drop column if exists utm_source,
-     drop column if exists utm_medium, drop column if exists utm_campaign,
-     drop column if exists utm_term, drop column if exists utm_content,
-     drop column if exists landing_page, drop column if exists referrer,
-     drop column if exists won_at,
-     drop column if exists uploaded_to_google_ads_at,
-     drop column if exists uploaded_to_meta_capi_at;
-   alter table public.leads drop constraint if exists leads_status_check;
-   ```
-
-2. **Edge function rollback**: revert the bad source on `main`, obtain fresh
-   signed receipts for that new exact-main SHA, and dispatch the protected
-   `deploy-edge-function.yml` workflow for `handle-lead`. Never bypass the gates
-   by deploying a historical checkout directly.
-
-3. **Frontend rollback**: `git revert` the PR — the `<script>` tag injection is reversible by deleting that one line from each HTML file (perl one-liner can do it):
-   ```bash
-   find . -name "*.html" -not -path "./archive/*" -exec \
-     perl -i -ne 'print unless m|<script src="/track-attribution.js" defer></script>|' {} \;
-   ```
+Do not execute selective schema drops, direct function redeploys, or bulk file
+rewrites from this record. Any current rollback must start with a reviewed
+forward repair or revert on `main` and follow the migration, receipt, deploy,
+and verification contracts in `supabase/functions/handle-lead/DEPLOY.md`.
 
 ## Open questions for next session
 
