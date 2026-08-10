@@ -164,6 +164,9 @@ const blockers = []; // {type, file, detail}
 const phoneChecks = (cfg.internal_phones_never_publish || []).map((p) => ({ display: p, re: phoneRegex(p) }));
 const wrongCids = new Set(cfg.known_wrong_listing_cids || []);
 const canonicalCid = cfg.gbp?.cid;
+// Real second offices have their own GBP listing; those cids are registered
+// explicitly in business.json (gbp.additional_location_cids) — anything else still blocks.
+const extraCids = new Set(cfg.gbp?.additional_location_cids || []);
 const canonicalDataId = (cfg.gbp?.data_id || '').toLowerCase();
 const canonicalPlaceId = cfg.gbp?.place_id;
 
@@ -199,7 +202,7 @@ for (const f of files) {
     if (cidM) {
       const cid = cidM[1];
       if (wrongCids.has(cid)) blockers.push({ type: 'WRONG-LISTING(dead)', file: rel, detail: `${href} — known-dead listing cid` });
-      else if (canonicalCid && cid !== canonicalCid) blockers.push({ type: 'WRONG-LISTING(cid)', file: rel, detail: `${href} — cid != canonical ${canonicalCid}` });
+      else if (canonicalCid && cid !== canonicalCid && !extraCids.has(cid)) blockers.push({ type: 'WRONG-LISTING(cid)', file: rel, detail: `${href} — cid != canonical ${canonicalCid}` });
     }
     if (isGoogleReview) {
       const pM = href.match(placeidRe);
