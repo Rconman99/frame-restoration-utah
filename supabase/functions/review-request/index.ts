@@ -8,7 +8,7 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const SUPABASE_URL = "https://hdcflshhomzildwqlmwh.supabase.co";
 const SUPABASE_SERVICE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") || "";
-const REVIEW_URL = "https://www.frameroofingutah.com/review.html";
+const REVIEW_URL = "https://www.framerestorationutah.com/review";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
