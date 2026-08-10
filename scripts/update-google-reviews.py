@@ -2,7 +2,9 @@
 """Update Google review count + rating across the site.
 
 Pulls Frame Restoration Utah's current review count, rating, and review text,
-then regex-updates every live reference in index.html and pages/about.html.
+then updates every visible live reference in index.html and pages/about.html.
+Review/rating structured data remains deliberately absent because first-party
+LocalBusiness review markup is self-serving under Google's review-snippet rules.
 
 PROVIDER: DataForSEO by default, SerpAPI as fallback.
   The SerpAPI Free Plan is 250 searches/month and has been fully exhausted
@@ -604,25 +606,35 @@ def update_file(path: Path, count: int, rating: float, dry_run: bool) -> bool:
     text = path.read_text(encoding="utf-8")
     original = text
 
-    # Schema reviewCount (unique to AggregateRating; Reviews don't have this field)
-    text = re.sub(r'("reviewCount":\s*")\d+(")', rf'\g<1>{count}\g<2>', text)
-
-    # Hero subtitle: "19 five-star reviews and counting"
-    text = re.sub(r'\d+ five-star reviews and counting',
-                  f'{count} five-star reviews and counting', text)
+    # Hero subtitle and review freshness marker.
+    text = re.sub(r'\d+ (?:five-star|Google) reviews and counting',
+                  f'{count} Google reviews and counting', text)
+    text = re.sub(r'data-surface-marker="google-reviews-\d+"',
+                  f'data-surface-marker="google-reviews-{count}"', text)
 
     # Link text: "See All 19 Google Reviews"
     text = re.sub(r'See All \d+ Google Reviews',
                   f'See All {count} Google Reviews', text)
 
-    # AggregateRating ratingValue — contextual match so we don't touch individual
-    # Review blocks (which also have ratingValue but shouldn't change).
+    # About-page trust labels: "34 Google Reviews" (without "See All").
+    # The digit lookbehind prevents a suffix match inside a multi-digit
+    # "See All 34" count after the full prefix match is excluded.
+    text = re.sub(r'(?<!See All )(?<!\d)\d+ Google Reviews',
+                  f'{count} Google Reviews', text)
+
     rating_str = f"{rating:.1f}"
-    text = re.sub(
-        r'("@type":\s*"AggregateRating"[\s\S]{0,200}?"ratingValue":\s*")[^"]+(")',
-        rf'\g<1>{rating_str}\g<2>',
-        text,
-    )
+    text = re.sub(r'\d(?:\.\d)? from \d+ Google reviews',
+                  f'{rating_str} from {count} Google reviews', text)
+    text = re.sub(r'(★★★★★ )\d(?:\.\d)?(?= &nbsp;See All)',
+                  rf'\g<1>{rating_str}', text)
+    text = re.sub(r'(<div class="(?:num|big)">)\d(?:\.\d)?(?=&#9733;)',
+                  rf'\g<1>{rating_str}', text)
+    text = re.sub(r'(data-target=")\d(?:\.\d)?("[^>]*>)\d(?:\.\d)?(?=<span class="stat-suffix">★)',
+                  rf'\g<1>{rating:g}\g<2>{rating_str}', text)
+    text = re.sub(r'\d(?:\.\d)? stars across homeowner reviews',
+                  f'{rating_str} stars across homeowner reviews', text)
+    text = re.sub(r'\d(?:\.\d)?-star rated',
+                  f'{rating_str}-star rated', text)
 
     if text == original:
         return False
@@ -632,12 +644,12 @@ def update_file(path: Path, count: int, rating: float, dry_run: bool) -> bool:
 
 
 def current_file_count() -> int | None:
-    """Read current reviewCount from index.html so GitHub Action can skip commit if unchanged."""
+    """Read the aggregate from reviews.json so no schema field is required."""
     try:
-        text = (ROOT / "index.html").read_text(encoding="utf-8")
-        m = re.search(r'"reviewCount":\s*"(\d+)"', text)
-        return int(m.group(1)) if m else None
-    except OSError:
+        data = json.loads(REVIEWS_JSON.read_text(encoding="utf-8"))
+        count = data.get("aggregate", {}).get("review_count")
+        return int(count) if count is not None else None
+    except (OSError, ValueError, TypeError, json.JSONDecodeError):
         return None
 
 
@@ -661,7 +673,7 @@ def main() -> int:
     file_count = current_file_count()
 
     print(f"SerpAPI: {place['name']} — {place['count']} reviews, {place['rating']} stars")
-    print(f"Current in index.html (schema): reviewCount={file_count}")
+    print(f"Current in reviews.json: review_count={file_count}")
 
     # Always run the replacements on every target. update_file() compares before/after
     # and returns True only if something actually changed. This self-heals partial-drift

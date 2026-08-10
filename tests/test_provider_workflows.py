@@ -400,16 +400,21 @@ class GoogleReviewsMutationTests(unittest.TestCase):
         self.full = self.root / "data" / "reviews-full.json"
         self.audit = self.root / "data" / "google-reviews.json"
         self.index.write_text(
-            '<script>{"@type":"AggregateRating","ratingValue":"4.9","reviewCount":"1"}</script>\n'
-            "1 five-star reviews and counting\nSee All 1 Google Reviews\n",
+            '<div data-surface-marker="google-reviews-1">1 Google reviews and counting</div>\n'
+            "★★★★★ 4.9 &nbsp;See All 1 Google Reviews\n",
             encoding="utf-8",
         )
         self.about.write_text(
-            '<script>{"@type":"AggregateRating","ratingValue":"4.9","reviewCount":"1"}</script>\n',
+            '<meta name="description" content="4.9-star rated">\n'
+            '<div class="hero-stat"><div class="num">4.9&#9733;</div><div class="lbl">1 Google Reviews</div></div>\n',
             encoding="utf-8",
         )
         self.feed.write_text(
-            json.dumps({"place_name": "Old", "reviews": [sample_review("Existing")]}),
+            json.dumps({
+                "place_name": "Old",
+                "aggregate": {"rating": 4.9, "review_count": 1},
+                "reviews": [sample_review("Existing")],
+            }),
             encoding="utf-8",
         )
         self.full.write_text('{"old":true}\n', encoding="utf-8")
@@ -424,6 +429,27 @@ class GoogleReviewsMutationTests(unittest.TestCase):
             AUDIT_LOG=self.audit,
         )
         self.constants.start()
+
+    def test_multi_digit_review_counts_do_not_suffix_match(self) -> None:
+        self.index.write_text(
+            '<div data-surface-marker="google-reviews-34">34 Google reviews and counting</div>\n'
+            "★★★★★ 5.0 &nbsp;See All 34 Google Reviews\n",
+            encoding="utf-8",
+        )
+        self.about.write_text(
+            '<div class="hero-stat"><div class="num">5.0&#9733;</div>'
+            '<div class="lbl">34 Google Reviews</div></div>\n',
+            encoding="utf-8",
+        )
+
+        self.assertFalse(reviews.update_file(self.index, 34, 5.0, dry_run=False))
+        self.assertTrue(reviews.update_file(self.index, 35, 5.0, dry_run=False))
+        self.assertTrue(reviews.update_file(self.about, 35, 5.0, dry_run=False))
+
+        index_text = self.index.read_text(encoding="utf-8")
+        self.assertIn("See All 35 Google Reviews", index_text)
+        self.assertNotIn("See All 335 Google Reviews", index_text)
+        self.assertIn("35 Google Reviews", self.about.read_text(encoding="utf-8"))
 
     def tearDown(self) -> None:
         self.constants.stop()
@@ -486,7 +512,11 @@ class GoogleReviewsMutationTests(unittest.TestCase):
         ):
             code = reviews.main()
         self.assertEqual(code, 0)
-        self.assertIn('"reviewCount":"2"', self.index.read_text(encoding="utf-8"))
+        self.assertIn('data-surface-marker="google-reviews-2"', self.index.read_text(encoding="utf-8"))
+        self.assertIn("See All 2 Google Reviews", self.index.read_text(encoding="utf-8"))
+        self.assertIn("5.0&#9733;", self.about.read_text(encoding="utf-8"))
+        self.assertIn("5.0-star rated", self.about.read_text(encoding="utf-8"))
+        self.assertIn("2 Google Reviews", self.about.read_text(encoding="utf-8"))
         self.assertEqual(json.loads(self.feed.read_text(encoding="utf-8"))["aggregate"]["review_count"], 2)
         self.assertEqual(json.loads(self.full.read_text(encoding="utf-8"))["reviews_fetched"], 2)
         audit = json.loads(self.audit.read_text(encoding="utf-8"))
@@ -511,6 +541,7 @@ class WorkflowContractTests(unittest.TestCase):
         self.assertIn('exit "$code"', workflow)
         self.assertIn("node scripts/audit-jsonld.mjs", workflow)
         self.assertIn("node scripts/audit-compliance-words.mjs --quiet", workflow)
+        self.assertIn("node scripts/audit-review-integrity.mjs --strict", workflow)
         self.assertNotIn("continue-on-error", workflow)
         self.assertNotIn("update-google-reviews.py || true", workflow)
 

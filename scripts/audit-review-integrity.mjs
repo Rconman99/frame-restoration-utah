@@ -2,28 +2,21 @@
 /**
  * Review & rating integrity gate for Frame Roofing Utah.
  *
- * Codifies the compliance line carried forward from commit 816c280, which had to
- * remove a *cloned* AggregateRating from 45 location pages: "Never re-clone a
- * sitewide rating onto city pages. All review/rating markup must come from real
- * google-reviews-sync data only. Fake/cloned ratings = hard block."
+ * Codifies the compliance line carried forward from commit 816c280 and Google's
+ * review-snippet policy. Frame may show its current, attributed Google rating and
+ * reviews visibly, but must not mark them up as a self-serving AggregateRating.
  *
  * Frame is a SINGLE-location business → ONE real Google Business Profile → ONE
- * real aggregate rating. That rating may live on the homepage when it is paired
- * with attributed reviews from the synchronized review pool. Replicating it onto
- * per-city pages is, by definition, the banned clone. The proven pattern (TX:
- * 0/45 AggregateRating, 45/45 Review — and the 2 clean UT pages) is:
- *   location pages carry individual <Review> markup from REAL reviewers, never
- *   an AggregateRating.
+ * real aggregate rating. The visible count/rating must match reviews.json on
+ * every page. Individual Review nodes must still map to the synchronized pool.
  *
  * Checks (BLOCK in --strict):
- *   1. NO-AGGREGATE-ON-CITY — any aggregateRating in a locations/*.html JSON-LD
- *                             block. This is the anti-clone rule (ref 816c280).
- *   2. NO-AGGREGATE-ABOUT  — About cannot carry a bare/self-serving aggregate.
- *   3. HOMEPAGE-EVIDENCE   — homepage aggregate must include attributed reviews.
- *   4. REAL-REVIEWERS-ONLY — any <Review> node whose author is NOT in the real
+ *   1. NO-SELF-SERVING-AGGREGATE — any aggregateRating in public HTML.
+ *   2. VISIBLE-COUNT-PARITY — visible Google review counts match reviews.json.
+ *   3. REAL-REVIEWERS-ONLY — any <Review> node whose author is NOT in the real
  *                             sync pool (reviews.json + data/reviews-full.json).
  *                             Catches fabricated/invented reviews.
- *   5. RATING-MATCHES-DATA — a matched reviewer's on-page reviewRating that
+ *   4. RATING-MATCHES-DATA — a matched reviewer's on-page reviewRating that
  *                             disagrees with their real rating (warning only —
  *                             a reviewer can have given any star value).
  *
@@ -43,6 +36,19 @@ import path from 'node:path';
 
 const repoRoot = process.cwd();
 const strict = process.argv.includes('--strict');
+const IGNORE_DIRS = new Set(['.git', '.github', '.vercel', 'archive', 'dashboard', 'docs', 'node_modules', 'qa', 'screenshots', 'vendor']);
+const VISIBLE_REVIEW_COUNT_PATTERNS = [
+  /\d(?:\.\d)? from (\d+) Google reviews/gi,
+  /(\d+) (?:five-star|Google) reviews and counting/gi,
+  /See All (\d+) Google Reviews/gi,
+  /<div class="lbl">(\d+) Google Reviews<\/div>/gi,
+];
+const VISIBLE_REVIEW_RATING_PATTERNS = [
+  /([1-5](?:\.\d)?) from \d+ Google reviews/gi,
+  /★★★★★ ([1-5](?:\.\d)?)\s*&nbsp;See All \d+ Google Reviews/gi,
+  /<div class="(?:num|big)">([1-5](?:\.\d)?)&#9733;<\/div>/gi,
+  /([1-5](?:\.\d)?)-star rated/gi,
+];
 
 // ---- real-review source of truth -----------------------------------------
 function loadRealAuthors() {
@@ -66,6 +72,28 @@ function loadRealAuthors() {
 
 function normName(s) {
   return String(s).normalize('NFKC').replace(/\s+/g, ' ').trim().toLowerCase();
+}
+
+function publicHtmlFiles(dir = repoRoot, out = []) {
+  for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+    if (entry.isDirectory() && IGNORE_DIRS.has(entry.name)) continue;
+    const full = path.join(dir, entry.name);
+    if (entry.isDirectory()) publicHtmlFiles(full, out);
+    else if (entry.name.endsWith('.html')) out.push(path.relative(repoRoot, full));
+  }
+  return out;
+}
+
+function loadAggregate() {
+  try {
+    const data = JSON.parse(fs.readFileSync(path.join(repoRoot, 'reviews.json'), 'utf8'));
+    return {
+      count: Number(data?.aggregate?.review_count),
+      rating: Number(data?.aggregate?.rating),
+    };
+  } catch {
+    return { count: NaN, rating: NaN };
+  }
 }
 
 // ---- JSON-LD extraction ----------------------------------------------------
@@ -159,14 +187,15 @@ for (const rel of files) {
       blockers.push({
         type: 'no-aggregate-on-city',
         file: rel,
-        detail: 'AggregateRating on a city page — clone risk. The evidenced GBP rating belongs only on the homepage (ref 816c280). Use individual <Review> markup here instead.',
+        detail: 'AggregateRating on a city page — self-serving clone risk. Keep the evidenced GBP rating visible and attributed instead.',
       });
     }
     auditReviewNodes(rel, acc.reviews);
   }
 }
 
-for (const rel of ['pages/about.html', 'index.html']) {
+const publicFiles = publicHtmlFiles().sort();
+for (const rel of publicFiles.filter((file) => !file.startsWith('locations/'))) {
   const full = path.join(repoRoot, rel);
   if (!fs.existsSync(full)) continue;
   const html = fs.readFileSync(full, 'utf8');
@@ -174,25 +203,59 @@ for (const rel of ['pages/about.html', 'index.html']) {
   for (const block of jsonLdBlocks(html)) {
     walk(block, acc);
   }
-  if (rel === 'pages/about.html' && acc.hasAggregate) {
+  if (acc.hasAggregate) {
     blockers.push({
-      type: 'no-aggregate-about',
+      type: 'no-self-serving-aggregate',
       file: rel,
-      detail: 'About carries a self-serving AggregateRating. Keep review evidence on the canonical homepage only.',
-    });
-  }
-  if (rel === 'index.html' && acc.hasAggregate && acc.reviews.length === 0) {
-    blockers.push({
-      type: 'homepage-evidence',
-      file: rel,
-      detail: 'Homepage AggregateRating has no attributed Review nodes from the synchronized review pool.',
+      detail: 'Public HTML carries a self-serving AggregateRating. Keep the synchronized GBP rating visible and attributed instead.',
     });
   }
   auditReviewNodes(rel, acc.reviews);
 }
 
+const aggregate = loadAggregate();
+if (!Number.isFinite(aggregate.count) || !Number.isFinite(aggregate.rating)) {
+  blockers.push({
+    type: 'review-source',
+    file: 'reviews.json',
+    detail: 'Missing numeric aggregate.review_count or aggregate.rating.',
+  });
+} else {
+  for (const rel of publicFiles) {
+    const html = fs.readFileSync(path.join(repoRoot, rel), 'utf8');
+    for (const pattern of VISIBLE_REVIEW_COUNT_PATTERNS) {
+      pattern.lastIndex = 0;
+      let match;
+      while ((match = pattern.exec(html)) !== null) {
+        const found = Number(match[1]);
+        if (found !== aggregate.count) {
+          blockers.push({
+            type: 'visible-count-parity',
+            file: rel,
+            detail: `Visible Google review count ${found} must match reviews.json aggregate ${aggregate.count}.`,
+          });
+        }
+      }
+    }
+    for (const pattern of VISIBLE_REVIEW_RATING_PATTERNS) {
+      pattern.lastIndex = 0;
+      let match;
+      while ((match = pattern.exec(html)) !== null) {
+        const found = Number(match[1]);
+        if (found !== aggregate.rating) {
+          blockers.push({
+            type: 'visible-rating-parity',
+            file: rel,
+            detail: `Visible Google rating ${found} must match reviews.json aggregate ${aggregate.rating}.`,
+          });
+        }
+      }
+    }
+  }
+}
+
 console.log('\n=== Review & rating integrity ===');
-console.log(`audited ${files.length} location pages + homepage/About · real-review pool: ${realAuthors.size} authors`);
+console.log(`audited ${publicFiles.length} public HTML files · real-review pool: ${realAuthors.size} authors`);
 
 if (warnings.length) {
   console.log(`\n⚠ ${warnings.length} warning(s):`);

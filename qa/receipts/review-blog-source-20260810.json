@@ -1,0 +1,737 @@
+{
+  "schema_version": "1.0",
+  "contract": "frame-utah-review-blog-source",
+  "contract_sha256": "511b9630653cee74c80fe47b57936a2c83da68c7557513cc7e11820c2380e37d",
+  "contract_snapshot": {
+    "schema_version": "1.0",
+    "name": "frame-utah-review-blog-source",
+    "expected_serving_origin": "http://127.0.0.1:4172",
+    "expected_canonical_origin": "https://www.framerestorationutah.com",
+    "freshness_markers": [
+      "review-schema-clean-20260810"
+    ],
+    "max_redirects": 0,
+    "min_touch_target_css_px": 44,
+    "max_fixed_viewport_ratio": 0.15,
+    "max_landscape_fixed_viewport_ratio": 0.24,
+    "stability_wait_ms": 500,
+    "readiness_selector": "article",
+    "viewports": [
+      {
+        "name": "small-320",
+        "width": 320,
+        "height": 568
+      },
+      {
+        "name": "android-360",
+        "width": 360,
+        "height": 800
+      },
+      {
+        "name": "iphone-393",
+        "width": 393,
+        "height": 852
+      },
+      {
+        "name": "large-430",
+        "width": 430,
+        "height": 932
+      },
+      {
+        "name": "landscape-740",
+        "width": 740,
+        "height": 360
+      }
+    ],
+    "routes": [
+      {
+        "path": "/blog/bountiful/roof-repair-vs-replacement.html",
+        "expected_canonical_path": "/blog/bountiful/roof-repair-vs-replacement"
+      }
+    ],
+    "critical_targets": [
+      {
+        "selector": "#menuBtn",
+        "max_viewport_width": 900
+      },
+      {
+        "selector": ".nav-call-mobile",
+        "expected_href_pattern": "^tel:\\+14352928802$",
+        "max_viewport_width": 900
+      },
+      {
+        "selector": ".sticky-call-phone",
+        "expected_href_pattern": "^tel:\\+14352928802$",
+        "max_viewport_width": 900
+      }
+    ],
+    "fixed_elements": [
+      {
+        "selector": "nav",
+        "max_viewport_ratio": 0.15,
+        "max_landscape_viewport_ratio": 0.24
+      },
+      {
+        "selector": ".sticky-call",
+        "max_viewport_ratio": 0.15,
+        "max_landscape_viewport_ratio": 0.24
+      }
+    ],
+    "forbidden_visible_selectors": [
+      ".fr-modal-overlay.open"
+    ],
+    "max_console_errors": 0,
+    "max_page_errors": 0,
+    "allowed_console_error_patterns": [],
+    "canonical_policy": "match"
+  },
+  "stage": "source",
+  "base_url": "http://127.0.0.1:4172",
+  "observed_at": "2026-08-10T20:51:15.357973Z",
+  "verdict": "pass",
+  "summary": {
+    "checks": 85,
+    "failures": 0,
+    "routes": 1,
+    "viewports": 5
+  },
+  "runs": [
+    {
+      "route": "/blog/bountiful/roof-repair-vs-replacement.html",
+      "viewport": {
+        "name": "small-320",
+        "width": 320,
+        "height": 568
+      },
+      "url": "http://127.0.0.1:4172/blog/bountiful/roof-repair-vs-replacement.html",
+      "checks": [
+        {
+          "name": "http-200",
+          "pass": true,
+          "detail": "status=200"
+        },
+        {
+          "name": "redirect-budget",
+          "pass": true,
+          "detail": "redirects=0 cap=0"
+        },
+        {
+          "name": "serving-origin",
+          "pass": true,
+          "detail": "final=http://127.0.0.1:4172 expected=http://127.0.0.1:4172"
+        },
+        {
+          "name": "viewport-meta",
+          "pass": true,
+          "detail": "content='width=device-width, initial-scale=1.0'"
+        },
+        {
+          "name": "canonical",
+          "pass": true,
+          "detail": "count=1 actual='https://www.framerestorationutah.com/blog/bountiful/roof-repair-vs-replacement' expected='https://www.framerestorationutah.com/blog/bountiful/roof-repair-vs-replacement'"
+        },
+        {
+          "name": "freshness:review-schema-clean-20260810",
+          "pass": true,
+          "detail": "marker present"
+        },
+        {
+          "name": "horizontal-reflow",
+          "pass": true,
+          "detail": "scrollWidth=320 innerWidth=320"
+        },
+        {
+          "name": "critical-target:#menuBtn",
+          "pass": true,
+          "detail": "present, sized, hittable, and href-valid"
+        },
+        {
+          "name": "critical-target:.nav-call-mobile",
+          "pass": true,
+          "detail": "present, sized, hittable, and href-valid"
+        },
+        {
+          "name": "critical-target:.sticky-call-phone",
+          "pass": true,
+          "detail": "present, sized, hittable, and href-valid"
+        },
+        {
+          "name": "fixed-element:nav",
+          "pass": true,
+          "detail": "present and within orientation budget"
+        },
+        {
+          "name": "fixed-element:.sticky-call",
+          "pass": true,
+          "detail": "present and within orientation budget"
+        },
+        {
+          "name": "forbidden-visible:.fr-modal-overlay.open",
+          "pass": true,
+          "detail": "visible=0"
+        },
+        {
+          "name": "focus-not-obscured",
+          "pass": true,
+          "detail": "sampled keyboard focus is exposed"
+        },
+        {
+          "name": "forbidden-visible-post-focus:.fr-modal-overlay.open",
+          "pass": true,
+          "detail": "visible=0"
+        },
+        {
+          "name": "console-errors",
+          "pass": true,
+          "detail": "count=0 cap=0 errors=[] guard_suppressed=0"
+        },
+        {
+          "name": "page-errors",
+          "pass": true,
+          "detail": "count=0 cap=0 errors=[]"
+        }
+      ],
+      "failures": [],
+      "http": {
+        "status": 200,
+        "final_url": "http://127.0.0.1:4172/blog/bountiful/roof-repair-vs-replacement.html",
+        "redirects": 0,
+        "headers": {
+          "content-length": "29991",
+          "content-type": "text/html",
+          "date": "Mon, 10 Aug 2026 20:51:15 GMT",
+          "last-modified": "Mon, 10 Aug 2026 20:50:40 GMT",
+          "server": "SimpleHTTP/0.6 Python/3.14.6"
+        }
+      },
+      "screenshot": {
+        "path": "/Users/agenticmac/projects/_wt-utah-review-sync-20260810/qa/screenshots/review-blog-source-20260810/blog-bountiful-roof-repair-vs-replacement.html--49c3818fac0f--small-320.png",
+        "sha256": "3d9cf2af3f96f398fb17bdf40c17c20dcdf4891f8924ef459486db800e23f6ad",
+        "captured_scroll_y": 0
+      },
+      "network_guard": {
+        "mode": "read_only",
+        "auth_bootstrap_used": false,
+        "protection_bypass_used": false,
+        "preview_toolbar_suppression_requested": false,
+        "service_workers_blocked": true,
+        "websockets_blocked": true,
+        "stability_wait_ms": 500,
+        "readiness_selector": "article",
+        "blocked_count": 0,
+        "blocked": [],
+        "console_errors_suppressed": 0
+      }
+    },
+    {
+      "route": "/blog/bountiful/roof-repair-vs-replacement.html",
+      "viewport": {
+        "name": "android-360",
+        "width": 360,
+        "height": 800
+      },
+      "url": "http://127.0.0.1:4172/blog/bountiful/roof-repair-vs-replacement.html",
+      "checks": [
+        {
+          "name": "http-200",
+          "pass": true,
+          "detail": "status=200"
+        },
+        {
+          "name": "redirect-budget",
+          "pass": true,
+          "detail": "redirects=0 cap=0"
+        },
+        {
+          "name": "serving-origin",
+          "pass": true,
+          "detail": "final=http://127.0.0.1:4172 expected=http://127.0.0.1:4172"
+        },
+        {
+          "name": "viewport-meta",
+          "pass": true,
+          "detail": "content='width=device-width, initial-scale=1.0'"
+        },
+        {
+          "name": "canonical",
+          "pass": true,
+          "detail": "count=1 actual='https://www.framerestorationutah.com/blog/bountiful/roof-repair-vs-replacement' expected='https://www.framerestorationutah.com/blog/bountiful/roof-repair-vs-replacement'"
+        },
+        {
+          "name": "freshness:review-schema-clean-20260810",
+          "pass": true,
+          "detail": "marker present"
+        },
+        {
+          "name": "horizontal-reflow",
+          "pass": true,
+          "detail": "scrollWidth=360 innerWidth=360"
+        },
+        {
+          "name": "critical-target:#menuBtn",
+          "pass": true,
+          "detail": "present, sized, hittable, and href-valid"
+        },
+        {
+          "name": "critical-target:.nav-call-mobile",
+          "pass": true,
+          "detail": "present, sized, hittable, and href-valid"
+        },
+        {
+          "name": "critical-target:.sticky-call-phone",
+          "pass": true,
+          "detail": "present, sized, hittable, and href-valid"
+        },
+        {
+          "name": "fixed-element:nav",
+          "pass": true,
+          "detail": "present and within orientation budget"
+        },
+        {
+          "name": "fixed-element:.sticky-call",
+          "pass": true,
+          "detail": "present and within orientation budget"
+        },
+        {
+          "name": "forbidden-visible:.fr-modal-overlay.open",
+          "pass": true,
+          "detail": "visible=0"
+        },
+        {
+          "name": "focus-not-obscured",
+          "pass": true,
+          "detail": "sampled keyboard focus is exposed"
+        },
+        {
+          "name": "forbidden-visible-post-focus:.fr-modal-overlay.open",
+          "pass": true,
+          "detail": "visible=0"
+        },
+        {
+          "name": "console-errors",
+          "pass": true,
+          "detail": "count=0 cap=0 errors=[] guard_suppressed=0"
+        },
+        {
+          "name": "page-errors",
+          "pass": true,
+          "detail": "count=0 cap=0 errors=[]"
+        }
+      ],
+      "failures": [],
+      "http": {
+        "status": 200,
+        "final_url": "http://127.0.0.1:4172/blog/bountiful/roof-repair-vs-replacement.html",
+        "redirects": 0,
+        "headers": {
+          "content-length": "29991",
+          "content-type": "text/html",
+          "date": "Mon, 10 Aug 2026 20:51:17 GMT",
+          "last-modified": "Mon, 10 Aug 2026 20:50:40 GMT",
+          "server": "SimpleHTTP/0.6 Python/3.14.6"
+        }
+      },
+      "screenshot": {
+        "path": "/Users/agenticmac/projects/_wt-utah-review-sync-20260810/qa/screenshots/review-blog-source-20260810/blog-bountiful-roof-repair-vs-replacement.html--49c3818fac0f--android-360.png",
+        "sha256": "2c2cb216361cfd4ebadf21a5bd434ce13dea42544de140f44f0a2992af4c2b5a",
+        "captured_scroll_y": 0
+      },
+      "network_guard": {
+        "mode": "read_only",
+        "auth_bootstrap_used": false,
+        "protection_bypass_used": false,
+        "preview_toolbar_suppression_requested": false,
+        "service_workers_blocked": true,
+        "websockets_blocked": true,
+        "stability_wait_ms": 500,
+        "readiness_selector": "article",
+        "blocked_count": 0,
+        "blocked": [],
+        "console_errors_suppressed": 0
+      }
+    },
+    {
+      "route": "/blog/bountiful/roof-repair-vs-replacement.html",
+      "viewport": {
+        "name": "iphone-393",
+        "width": 393,
+        "height": 852
+      },
+      "url": "http://127.0.0.1:4172/blog/bountiful/roof-repair-vs-replacement.html",
+      "checks": [
+        {
+          "name": "http-200",
+          "pass": true,
+          "detail": "status=200"
+        },
+        {
+          "name": "redirect-budget",
+          "pass": true,
+          "detail": "redirects=0 cap=0"
+        },
+        {
+          "name": "serving-origin",
+          "pass": true,
+          "detail": "final=http://127.0.0.1:4172 expected=http://127.0.0.1:4172"
+        },
+        {
+          "name": "viewport-meta",
+          "pass": true,
+          "detail": "content='width=device-width, initial-scale=1.0'"
+        },
+        {
+          "name": "canonical",
+          "pass": true,
+          "detail": "count=1 actual='https://www.framerestorationutah.com/blog/bountiful/roof-repair-vs-replacement' expected='https://www.framerestorationutah.com/blog/bountiful/roof-repair-vs-replacement'"
+        },
+        {
+          "name": "freshness:review-schema-clean-20260810",
+          "pass": true,
+          "detail": "marker present"
+        },
+        {
+          "name": "horizontal-reflow",
+          "pass": true,
+          "detail": "scrollWidth=393 innerWidth=393"
+        },
+        {
+          "name": "critical-target:#menuBtn",
+          "pass": true,
+          "detail": "present, sized, hittable, and href-valid"
+        },
+        {
+          "name": "critical-target:.nav-call-mobile",
+          "pass": true,
+          "detail": "present, sized, hittable, and href-valid"
+        },
+        {
+          "name": "critical-target:.sticky-call-phone",
+          "pass": true,
+          "detail": "present, sized, hittable, and href-valid"
+        },
+        {
+          "name": "fixed-element:nav",
+          "pass": true,
+          "detail": "present and within orientation budget"
+        },
+        {
+          "name": "fixed-element:.sticky-call",
+          "pass": true,
+          "detail": "present and within orientation budget"
+        },
+        {
+          "name": "forbidden-visible:.fr-modal-overlay.open",
+          "pass": true,
+          "detail": "visible=0"
+        },
+        {
+          "name": "focus-not-obscured",
+          "pass": true,
+          "detail": "sampled keyboard focus is exposed"
+        },
+        {
+          "name": "forbidden-visible-post-focus:.fr-modal-overlay.open",
+          "pass": true,
+          "detail": "visible=0"
+        },
+        {
+          "name": "console-errors",
+          "pass": true,
+          "detail": "count=0 cap=0 errors=[] guard_suppressed=0"
+        },
+        {
+          "name": "page-errors",
+          "pass": true,
+          "detail": "count=0 cap=0 errors=[]"
+        }
+      ],
+      "failures": [],
+      "http": {
+        "status": 200,
+        "final_url": "http://127.0.0.1:4172/blog/bountiful/roof-repair-vs-replacement.html",
+        "redirects": 0,
+        "headers": {
+          "content-length": "29991",
+          "content-type": "text/html",
+          "date": "Mon, 10 Aug 2026 20:51:20 GMT",
+          "last-modified": "Mon, 10 Aug 2026 20:50:40 GMT",
+          "server": "SimpleHTTP/0.6 Python/3.14.6"
+        }
+      },
+      "screenshot": {
+        "path": "/Users/agenticmac/projects/_wt-utah-review-sync-20260810/qa/screenshots/review-blog-source-20260810/blog-bountiful-roof-repair-vs-replacement.html--49c3818fac0f--iphone-393.png",
+        "sha256": "0a25fd583e6919cc6b1016d28498e30f91a39b2cdbec3e8e460012fbd3cb7658",
+        "captured_scroll_y": 0
+      },
+      "network_guard": {
+        "mode": "read_only",
+        "auth_bootstrap_used": false,
+        "protection_bypass_used": false,
+        "preview_toolbar_suppression_requested": false,
+        "service_workers_blocked": true,
+        "websockets_blocked": true,
+        "stability_wait_ms": 500,
+        "readiness_selector": "article",
+        "blocked_count": 0,
+        "blocked": [],
+        "console_errors_suppressed": 0
+      }
+    },
+    {
+      "route": "/blog/bountiful/roof-repair-vs-replacement.html",
+      "viewport": {
+        "name": "large-430",
+        "width": 430,
+        "height": 932
+      },
+      "url": "http://127.0.0.1:4172/blog/bountiful/roof-repair-vs-replacement.html",
+      "checks": [
+        {
+          "name": "http-200",
+          "pass": true,
+          "detail": "status=200"
+        },
+        {
+          "name": "redirect-budget",
+          "pass": true,
+          "detail": "redirects=0 cap=0"
+        },
+        {
+          "name": "serving-origin",
+          "pass": true,
+          "detail": "final=http://127.0.0.1:4172 expected=http://127.0.0.1:4172"
+        },
+        {
+          "name": "viewport-meta",
+          "pass": true,
+          "detail": "content='width=device-width, initial-scale=1.0'"
+        },
+        {
+          "name": "canonical",
+          "pass": true,
+          "detail": "count=1 actual='https://www.framerestorationutah.com/blog/bountiful/roof-repair-vs-replacement' expected='https://www.framerestorationutah.com/blog/bountiful/roof-repair-vs-replacement'"
+        },
+        {
+          "name": "freshness:review-schema-clean-20260810",
+          "pass": true,
+          "detail": "marker present"
+        },
+        {
+          "name": "horizontal-reflow",
+          "pass": true,
+          "detail": "scrollWidth=430 innerWidth=430"
+        },
+        {
+          "name": "critical-target:#menuBtn",
+          "pass": true,
+          "detail": "present, sized, hittable, and href-valid"
+        },
+        {
+          "name": "critical-target:.nav-call-mobile",
+          "pass": true,
+          "detail": "present, sized, hittable, and href-valid"
+        },
+        {
+          "name": "critical-target:.sticky-call-phone",
+          "pass": true,
+          "detail": "present, sized, hittable, and href-valid"
+        },
+        {
+          "name": "fixed-element:nav",
+          "pass": true,
+          "detail": "present and within orientation budget"
+        },
+        {
+          "name": "fixed-element:.sticky-call",
+          "pass": true,
+          "detail": "present and within orientation budget"
+        },
+        {
+          "name": "forbidden-visible:.fr-modal-overlay.open",
+          "pass": true,
+          "detail": "visible=0"
+        },
+        {
+          "name": "focus-not-obscured",
+          "pass": true,
+          "detail": "sampled keyboard focus is exposed"
+        },
+        {
+          "name": "forbidden-visible-post-focus:.fr-modal-overlay.open",
+          "pass": true,
+          "detail": "visible=0"
+        },
+        {
+          "name": "console-errors",
+          "pass": true,
+          "detail": "count=0 cap=0 errors=[] guard_suppressed=0"
+        },
+        {
+          "name": "page-errors",
+          "pass": true,
+          "detail": "count=0 cap=0 errors=[]"
+        }
+      ],
+      "failures": [],
+      "http": {
+        "status": 200,
+        "final_url": "http://127.0.0.1:4172/blog/bountiful/roof-repair-vs-replacement.html",
+        "redirects": 0,
+        "headers": {
+          "content-length": "29991",
+          "content-type": "text/html",
+          "date": "Mon, 10 Aug 2026 20:51:22 GMT",
+          "last-modified": "Mon, 10 Aug 2026 20:50:40 GMT",
+          "server": "SimpleHTTP/0.6 Python/3.14.6"
+        }
+      },
+      "screenshot": {
+        "path": "/Users/agenticmac/projects/_wt-utah-review-sync-20260810/qa/screenshots/review-blog-source-20260810/blog-bountiful-roof-repair-vs-replacement.html--49c3818fac0f--large-430.png",
+        "sha256": "7aafe106cf75f44196c5ae76c24bef26e59ad736bd53f2f0888bcece09d1b2f2",
+        "captured_scroll_y": 0
+      },
+      "network_guard": {
+        "mode": "read_only",
+        "auth_bootstrap_used": false,
+        "protection_bypass_used": false,
+        "preview_toolbar_suppression_requested": false,
+        "service_workers_blocked": true,
+        "websockets_blocked": true,
+        "stability_wait_ms": 500,
+        "readiness_selector": "article",
+        "blocked_count": 0,
+        "blocked": [],
+        "console_errors_suppressed": 0
+      }
+    },
+    {
+      "route": "/blog/bountiful/roof-repair-vs-replacement.html",
+      "viewport": {
+        "name": "landscape-740",
+        "width": 740,
+        "height": 360
+      },
+      "url": "http://127.0.0.1:4172/blog/bountiful/roof-repair-vs-replacement.html",
+      "checks": [
+        {
+          "name": "http-200",
+          "pass": true,
+          "detail": "status=200"
+        },
+        {
+          "name": "redirect-budget",
+          "pass": true,
+          "detail": "redirects=0 cap=0"
+        },
+        {
+          "name": "serving-origin",
+          "pass": true,
+          "detail": "final=http://127.0.0.1:4172 expected=http://127.0.0.1:4172"
+        },
+        {
+          "name": "viewport-meta",
+          "pass": true,
+          "detail": "content='width=device-width, initial-scale=1.0'"
+        },
+        {
+          "name": "canonical",
+          "pass": true,
+          "detail": "count=1 actual='https://www.framerestorationutah.com/blog/bountiful/roof-repair-vs-replacement' expected='https://www.framerestorationutah.com/blog/bountiful/roof-repair-vs-replacement'"
+        },
+        {
+          "name": "freshness:review-schema-clean-20260810",
+          "pass": true,
+          "detail": "marker present"
+        },
+        {
+          "name": "horizontal-reflow",
+          "pass": true,
+          "detail": "scrollWidth=740 innerWidth=740"
+        },
+        {
+          "name": "critical-target:#menuBtn",
+          "pass": true,
+          "detail": "present, sized, hittable, and href-valid"
+        },
+        {
+          "name": "critical-target:.nav-call-mobile",
+          "pass": true,
+          "detail": "present, sized, hittable, and href-valid"
+        },
+        {
+          "name": "critical-target:.sticky-call-phone",
+          "pass": true,
+          "detail": "present, sized, hittable, and href-valid"
+        },
+        {
+          "name": "fixed-element:nav",
+          "pass": true,
+          "detail": "present and within orientation budget"
+        },
+        {
+          "name": "fixed-element:.sticky-call",
+          "pass": true,
+          "detail": "present and within orientation budget"
+        },
+        {
+          "name": "forbidden-visible:.fr-modal-overlay.open",
+          "pass": true,
+          "detail": "visible=0"
+        },
+        {
+          "name": "focus-not-obscured",
+          "pass": true,
+          "detail": "sampled keyboard focus is exposed"
+        },
+        {
+          "name": "forbidden-visible-post-focus:.fr-modal-overlay.open",
+          "pass": true,
+          "detail": "visible=0"
+        },
+        {
+          "name": "console-errors",
+          "pass": true,
+          "detail": "count=0 cap=0 errors=[] guard_suppressed=0"
+        },
+        {
+          "name": "page-errors",
+          "pass": true,
+          "detail": "count=0 cap=0 errors=[]"
+        }
+      ],
+      "failures": [],
+      "http": {
+        "status": 200,
+        "final_url": "http://127.0.0.1:4172/blog/bountiful/roof-repair-vs-replacement.html",
+        "redirects": 0,
+        "headers": {
+          "content-length": "29991",
+          "content-type": "text/html",
+          "date": "Mon, 10 Aug 2026 20:51:24 GMT",
+          "last-modified": "Mon, 10 Aug 2026 20:50:40 GMT",
+          "server": "SimpleHTTP/0.6 Python/3.14.6"
+        }
+      },
+      "screenshot": {
+        "path": "/Users/agenticmac/projects/_wt-utah-review-sync-20260810/qa/screenshots/review-blog-source-20260810/blog-bountiful-roof-repair-vs-replacement.html--49c3818fac0f--landscape-740.png",
+        "sha256": "eb0570d48f2509e8cf804c3a861a20efea8d1142ce94014982783e8fd77b37b7",
+        "captured_scroll_y": 0
+      },
+      "network_guard": {
+        "mode": "read_only",
+        "auth_bootstrap_used": false,
+        "protection_bypass_used": false,
+        "preview_toolbar_suppression_requested": false,
+        "service_workers_blocked": true,
+        "websockets_blocked": true,
+        "stability_wait_ms": 500,
+        "readiness_selector": "article",
+        "blocked_count": 0,
+        "blocked": [],
+        "console_errors_suppressed": 0
+      }
+    }
+  ],
+  "duration_seconds": 11.7,
+  "receipt_path": "/Users/agenticmac/projects/_wt-utah-review-sync-20260810/qa/receipts/review-blog-source-20260810.json"
+}
