@@ -1,11 +1,12 @@
 #!/usr/bin/env node
 /**
- * Keep immutable shared CSS/JS URLs synchronized across every deployed HTML file.
+ * Keep explicit shared CSS/JS cache-buster URLs synchronized across every
+ * deployed HTML file.
  *
- * Vercel serves these assets with a one-year immutable cache. Any page that
- * references an old or unversioned URL can therefore keep stale conversion UI
- * on a customer's phone after a production deploy. Run with --write to update
- * the corpus; CI runs the default --check mode and fails closed on drift.
+ * Vercel now requires mutable JS/CSS to revalidate, while these version tokens
+ * also protect against stale intermediary/browser caches and make release
+ * receipts explicit. Run with --write to update the corpus; CI runs the default
+ * --check mode and fails closed on drift.
  */
 
 import { existsSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
@@ -130,5 +131,5 @@ if (failures.length) {
 }
 
 console.log(
-  `PASS shared asset versions: ${Object.keys(versions).length} immutable asset URL(s) are synchronized`,
+  `PASS shared asset versions: ${Object.keys(versions).length} cache-busted asset URL(s) are synchronized`,
 );

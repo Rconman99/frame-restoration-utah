@@ -12,6 +12,16 @@ import path from "node:path";
 const repoRoot = process.cwd();
 const failures = [];
 
+const internalArtifactDenylist = new Set([
+  "Frame-AEO-Master-Play.html",
+  "Frame-Innovation-Audit-2026-05-16.html",
+  "Frame-Reddit-AEO-Playbook.html",
+  "data/blog-published/roof-replacement-quote-checklist-utah-2026-skeleton-2026-05-09.html",
+  "images/projects/DieselEye_GTM_BusinessPlan.html",
+  "images/projects/DieselEye_Marketing_Funding_Sprint.html",
+  "images/projects/DieselEye_NextLevel_Roadmap.html",
+]);
+
 const textExt = new Set([".html", ".htm", ".xml", ".txt"]);
 const skipDirs = new Set(["node_modules", ".git", ".vercel", ".claude", "scripts"]);
 
@@ -64,6 +74,31 @@ function fail(message) {
 }
 
 const deployed = walk(repoRoot).sort();
+
+const homepage = fs.readFileSync(path.join(repoRoot, "index.html"), "utf8");
+const today = new Date();
+today.setUTCHours(23, 59, 59, 999);
+for (const match of homepage.matchAll(/service-card-caption[^>]*>[\s\S]*?(\d{2})\/(\d{2})\/(\d{2})<\/span>/giu)) {
+  const [, month, day, year] = match;
+  const captionDate = new Date(Date.UTC(2000 + Number(year), Number(month) - 1, Number(day)));
+  if (Number.isNaN(captionDate.getTime()) || captionDate > today) {
+    fail(`index.html contains an invalid or future-dated project caption: ${month}/${day}/${year}`);
+  }
+}
+if (!/aria-label="Mountain-Grade Roofing\. Valley-Wide\."/u.test(homepage)) {
+  fail("index.html hero heading lacks its whitespace-safe accessible name");
+}
+
+const roofRepair = fs.readFileSync(path.join(repoRoot, "pages/roof-repair.html"), "utf8");
+if (!/aria-label="Roof Repair Across Utah"/u.test(roofRepair)) {
+  fail("pages/roof-repair.html heading lacks its whitespace-safe accessible name");
+}
+
+for (const rel of deployed) {
+  if (internalArtifactDenylist.has(rel)) {
+    fail(`${rel} is an internal, unfinished, or cross-client artifact in the public build`);
+  }
+}
 
 for (const rel of deployed) {
   const text = fs.readFileSync(path.join(repoRoot, rel), "utf8");

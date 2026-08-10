@@ -10,7 +10,6 @@
  *     clientName: string,
  *     tagline: string,
  *     supabaseUrl: string,
- *     supabaseAnonKey: string,
  *     campaignKey: string,
  *     defaultDays: number,
  *     ranges: number[],          // e.g. [7, 14, 30, 90]
@@ -19,11 +18,11 @@
  *   }
  *
  * Edge function endpoint: {supabaseUrl}/functions/v1/weekly-report
- *   GET ?key=<campaignKey>&pin=<pin>&days=<days>
+ *   GET ?days=<days>, Authorization: Bearer <short-lived session>
  *   Returns: { user, summary, gap_summary, top_pages, location_performance, location_gaps, leads, calls, traffic_breakdown, traffic_sources, generated_at }
  *
- * Admin REST: {supabaseUrl}/rest/v1/report_access
- *   PIN-gated via RLS — see db/rls-policies.sql.
+ * Access administration: {supabaseUrl}/functions/v1/lead-crm
+ *   Admin-only actions; report_access is never queried from the browser.
  */
 
 (function () {
@@ -32,12 +31,16 @@
   var CFG = window.DASHBOARD_CONFIG || {};
   var API = CFG.supabaseUrl;
   var FAPI = API + '/functions/v1/weekly-report';
-  var SKEY = CFG.supabaseAnonKey;
-  var KEY = CFG.campaignKey;
+  var ACCESS_API = API + '/functions/v1/lead-crm';
+  var ROUTING_KEY = CFG.campaignKey;
+  var SESSION_STORAGE_KEY = 'frame.dashboard.session';
+  var escapeHtml = typeof window.__dashboardEscapeHtml === 'function'
+    ? window.__dashboardEscapeHtml
+    : function () { return ''; };
 
   var curD = CFG.defaultDays || 30;
   var pC = null, bC = null;
-  var PIN = '';
+  var SESSION_TOKEN = '';
   var CUR_USER = null;
 
   // ─── Auth ────────────────────────────────────────────────────────────
@@ -47,21 +50,29 @@
     var p = document.getElementById('pinInput').value.trim();
     if (!p) { document.getElementById('loginErr').textContent = 'Please enter a PIN'; return false; }
     document.getElementById('loginErr').textContent = '';
-    PIN = p;
-    fetch(FAPI + '?key=' + KEY + '&pin=' + encodeURIComponent(p) + '&days=1').then(function (r) {
-      if (r.status === 403) {
+    fetch(ACCESS_API + '?action=login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ routing_key: ROUTING_KEY, pin: p })
+    }).then(function (r) {
+      if (r.status === 401 || r.status === 403) {
         document.getElementById('loginErr').textContent = 'Invalid PIN. Try again.';
-        PIN = ''; return;
+        return;
       }
-      return r.json();
+      return r.json().then(function (d) {
+        if (!r.ok) throw new Error(d.message || d.error || 'Login failed');
+        return d;
+      });
     }).then(function (d) {
-      if (!d || d.error) return;
+      if (!d || d.error || !d.token) return;
+      SESSION_TOKEN = d.token;
       CUR_USER = d.user;
-      sessionStorage.setItem(KEY, p);
+      sessionStorage.setItem(SESSION_STORAGE_KEY, SESSION_TOKEN);
+      document.getElementById('pinInput').value = '';
       showReport();
       go(curD);
-    }).catch(function () {
-      document.getElementById('loginErr').textContent = 'Connection error. Try again.';
+    }).catch(function (error) {
+      document.getElementById('loginErr').textContent = error.message || 'Connection error. Try again.';
     });
     return false;
   }
@@ -73,27 +84,34 @@
       document.getElementById('userName').textContent = CUR_USER.name;
       document.getElementById('userRole').textContent = CUR_USER.role;
       if (CUR_USER.role === 'admin') document.getElementById('manageBtn').style.display = 'inline-block';
+      var crmBtn = document.getElementById('crmBtn');
+      if (crmBtn && (CUR_USER.role === 'sales' || CUR_USER.role === 'admin')) crmBtn.style.display = 'inline-block';
     }
   }
 
   function doLogout() {
-    sessionStorage.removeItem(KEY);
-    PIN = ''; CUR_USER = null;
+    sessionStorage.removeItem(SESSION_STORAGE_KEY);
+    SESSION_TOKEN = ''; CUR_USER = null;
     document.getElementById('reportWrap').style.display = 'none';
     document.getElementById('manageBtn').style.display = 'none';
+    var crmBtn = document.getElementById('crmBtn');
+    if (crmBtn) crmBtn.style.display = 'none';
+    document.getElementById('adminModal').classList.remove('show');
     document.getElementById('loginOverlay').style.display = 'flex';
     document.getElementById('pinInput').value = '';
     document.getElementById('loginErr').textContent = '';
     document.getElementById('pinInput').focus();
   }
 
-  // Auto-login if session has PIN
+  // Auto-login retains only the short-lived signed token, never a PIN/key.
   (function () {
-    var s = sessionStorage.getItem(KEY);
+    var s = sessionStorage.getItem(SESSION_STORAGE_KEY);
     if (s) {
-      PIN = s;
-      fetch(FAPI + '?key=' + KEY + '&pin=' + encodeURIComponent(s) + '&days=1').then(function (r) {
-        if (r.status === 403) { doLogout(); return; }
+      SESSION_TOKEN = s;
+      fetch(ACCESS_API + '?action=session', {
+        headers: { 'Authorization': 'Bearer ' + SESSION_TOKEN }
+      }).then(function (r) {
+        if (r.status === 401 || r.status === 403) { doLogout(); return; }
         return r.json();
       }).then(function (d) {
         if (!d || d.error) { doLogout(); return; }
@@ -120,10 +138,10 @@
     try {
       // Fetch current period + 2x period in parallel; derive prior by subtraction.
       var [currentR, doubleR] = await Promise.all([
-        fetch(FAPI + '?key=' + KEY + '&pin=' + encodeURIComponent(PIN) + '&days=' + days),
-        fetch(FAPI + '?key=' + KEY + '&pin=' + encodeURIComponent(PIN) + '&days=' + (days * 2)),
+        fetch(FAPI + '?days=' + days, { headers: { 'Authorization': 'Bearer ' + SESSION_TOKEN } }),
+        fetch(FAPI + '?days=' + (days * 2), { headers: { 'Authorization': 'Bearer ' + SESSION_TOKEN } }),
       ]);
-      if (currentR.status === 403) { doLogout(); return; }
+      if (currentR.status === 401 || currentR.status === 403) { doLogout(); return; }
       var D = await currentR.json();
       if (D.error) throw new Error(D.error);
       var D2 = doubleR.ok ? await doubleR.json() : null;
@@ -132,7 +150,7 @@
       var growth = computeGrowth(D, D2, days);
       render(D, growth);
     } catch (e) {
-      el.innerHTML = '<div class="ld" style="color:var(--red)">Error: ' + e.message + '</div>';
+      el.innerHTML = '<div class="ld" style="color:var(--red)">Error: ' + escapeHtml(e.message) + '</div>';
     }
   }
 
@@ -181,63 +199,155 @@
 
   // ─── Admin panel ─────────────────────────────────────────────────────
 
-  async function openAdmin() { document.getElementById('adminModal').classList.add('show'); await loadUsers(); }
+  async function openAdmin() {
+    if (!CUR_USER || CUR_USER.role !== 'admin') return;
+    document.getElementById('adminModal').classList.add('show');
+    await loadUsers();
+  }
   function closeAdmin() { document.getElementById('adminModal').classList.remove('show'); }
 
+  function setAdminMessage(message, isError) {
+    var el = document.getElementById('adminMsg');
+    el.textContent = message || '';
+    el.style.color = isError ? 'var(--red)' : 'var(--green)';
+  }
+
+  async function accessRequest(action, options) {
+    var url = ACCESS_API + '?action=' + encodeURIComponent(action);
+    var request = options || {};
+    request.headers = Object.assign({}, request.headers || {}, {
+      'Authorization': 'Bearer ' + SESSION_TOKEN
+    });
+    var r = await fetch(url, request);
+    var body = null;
+    try { body = await r.json(); } catch (_) { body = {}; }
+    if (r.status === 401) {
+      doLogout();
+      throw new Error('Your session expired. Sign in again.');
+    }
+    if (!r.ok) throw new Error(body.message || body.error || ('Request failed (' + r.status + ')'));
+    return body;
+  }
+
+  function appendTextCell(row, value, className) {
+    var cell = document.createElement('td');
+    if (className) cell.className = className;
+    cell.textContent = value == null ? '' : String(value);
+    row.appendChild(cell);
+    return cell;
+  }
+
   async function loadUsers() {
-    var r = await fetch(API + '/rest/v1/report_access?select=id,name,pin,role,active,last_accessed&order=created_at', {
-      headers: { 'apikey': SKEY, 'Authorization': 'Bearer ' + SKEY }
-    });
-    var users = await r.json();
     var tb = document.getElementById('accessBody');
-    tb.innerHTML = '';
-    users.forEach(function (u) {
-      var la = u.last_accessed ? new Date(u.last_accessed).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : 'Never';
-      var tr = document.createElement('tr');
-      tr.innerHTML = '<td>' + u.name + '</td><td style="font-family:monospace;color:var(--muted)">' + u.pin + '</td><td>' + u.role + '</td><td>' + (u.active ? '<span class="status-on">Active</span>' : '<span class="status-off">Disabled</span>') + '</td><td><button class="toggle-btn ' + (u.active ? 'on' : 'off') + '" onclick="window.__dashboard.toggleUser(\'' + u.id + '\',' + !u.active + ')">' + (u.active ? 'Disable' : 'Enable') + '</button></td>';
-      tb.appendChild(tr);
-    });
+    tb.replaceChildren();
+    setAdminMessage('Loading access list…', false);
+    try {
+      var result = await accessRequest('access_list');
+      (result.access || []).forEach(function (u) {
+        var tr = document.createElement('tr');
+        appendTextCell(tr, u.name);
+        appendTextCell(tr, u.role || 'invalid');
+
+        var statusCell = document.createElement('td');
+        var status = document.createElement('span');
+        status.className = u.active ? 'status-on' : 'status-off';
+        status.textContent = u.active ? 'Active' : 'Disabled';
+        statusCell.appendChild(status);
+        tr.appendChild(statusCell);
+
+        var lastAccessed = u.last_accessed
+          ? new Date(u.last_accessed).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+          : 'Never';
+        appendTextCell(tr, lastAccessed);
+
+        var credentialCell = document.createElement('td');
+        var reset = document.createElement('button');
+        reset.type = 'button';
+        reset.className = 'toggle-btn off';
+        reset.textContent = 'Reset PIN';
+        reset.addEventListener('click', function () { resetUserPin(u.id, u.name); });
+        credentialCell.appendChild(reset);
+        tr.appendChild(credentialCell);
+
+        var actionCell = document.createElement('td');
+        var toggle = document.createElement('button');
+        toggle.type = 'button';
+        toggle.className = 'toggle-btn ' + (u.active ? 'on' : 'off');
+        toggle.textContent = u.active ? 'Disable' : 'Enable';
+        toggle.addEventListener('click', function () { toggleUser(u.id, !u.active); });
+        actionCell.appendChild(toggle);
+        tr.appendChild(actionCell);
+        tb.appendChild(tr);
+      });
+      setAdminMessage('PINs are write-only and are never displayed.', false);
+    } catch (e) {
+      setAdminMessage(e.message || 'Could not load access list.', true);
+    }
   }
 
   async function toggleUser(id, active) {
-    await fetch(API + '/rest/v1/report_access?id=eq.' + id, {
-      method: 'PATCH',
-      headers: { 'apikey': SKEY, 'Authorization': 'Bearer ' + SKEY, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
-      body: JSON.stringify({ active: active })
-    });
-    loadUsers();
+    try {
+      await accessRequest('access_toggle', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: id, active: active })
+      });
+      await loadUsers();
+    } catch (e) {
+      setAdminMessage(e.message || 'Could not update access.', true);
+    }
+  }
+
+  async function resetUserPin(id, name) {
+    var pin = window.prompt('Enter a new 6-12 digit PIN for ' + String(name || 'this user') + ':');
+    if (pin === null) return;
+    if (!/^\d{6,12}$/.test(pin)) {
+      setAdminMessage('PIN must contain 6-12 digits.', true);
+      return;
+    }
+    try {
+      var result = await accessRequest('access_reset', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: id, pin: pin })
+      });
+      if (result.session_revoked) {
+        doLogout();
+        return;
+      }
+      setAdminMessage('PIN reset. The credential was not displayed or returned.', false);
+    } catch (e) {
+      setAdminMessage(e.message || 'Could not reset PIN.', true);
+    }
   }
 
   async function addUser() {
     var n = document.getElementById('newName').value.trim();
     var p = document.getElementById('newPin').value.trim();
-    if (!n || !p) {
-      document.getElementById('adminMsg').textContent = 'Name and PIN required';
-      document.getElementById('adminMsg').style.color = 'var(--red)';
+    var role = document.getElementById('newRole').value;
+    if (!n || !/^\d{6,12}$/.test(p)) {
+      setAdminMessage('Name and a 6-12 digit PIN are required.', true);
       return;
     }
-    var r = await fetch(API + '/rest/v1/report_access', {
-      method: 'POST',
-      headers: { 'apikey': SKEY, 'Authorization': 'Bearer ' + SKEY, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
-      body: JSON.stringify({ name: n, pin: p, role: 'viewer', campaign_key: KEY })
-    });
-    if (r.ok) {
+    try {
+      await accessRequest('access_create', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: n, pin: p, role: role })
+      });
       document.getElementById('newName').value = '';
       document.getElementById('newPin').value = '';
-      document.getElementById('adminMsg').textContent = n + ' added!';
-      document.getElementById('adminMsg').style.color = 'var(--green)';
-      loadUsers();
-    } else {
-      var e = await r.json();
-      document.getElementById('adminMsg').textContent = e.message || 'Error adding user';
-      document.getElementById('adminMsg').style.color = 'var(--red)';
+      setAdminMessage(n + ' added. The PIN is write-only.', false);
+      await loadUsers();
+    } catch (e) {
+      setAdminMessage(e.message || 'Error adding user.', true);
     }
   }
 
   // ─── Render ──────────────────────────────────────────────────────────
 
   function ins(t, tx, a) {
-    return '<div class="ib"><h3>' + t + '</h3><p>' + tx + '</p><p class="a">&rarr; ' + a + '</p></div>';
+    return '<div class="ib"><h3>' + escapeHtml(t) + '</h3><p>' + escapeHtml(tx) + '</p><p class="a">&rarr; ' + escapeHtml(a) + '</p></div>';
   }
 
   function render(D, growth) {
@@ -264,7 +374,7 @@
       if (k.growth !== undefined) {
         growthBadge = '<div style="font-size:.78rem;margin-top:2px">' + fmtGrowth(k.growth) + growthLabel + '</div>';
       }
-      h += '<div class="kc ' + k.c + '"><div class="v">' + k.v + '</div><div class="l">' + k.l + '</div>' + growthBadge + '</div>';
+      h += '<div class="kc ' + k.c + '"><div class="v">' + escapeHtml(k.v) + '</div><div class="l">' + escapeHtml(k.l) + '</div>' + growthBadge + '</div>';
     });
     h += '</div>';
 
@@ -273,7 +383,7 @@
     // ─── Biggest Movers section (driven by growth data) ───
     if (growth && Object.keys(growth.pages).length > 0) {
       var pageEntries = Object.entries(growth.pages).map(function (e) {
-        var path = e[0], g = e[1];
+        var path = String(e[0] || ''), g = e[1];
         var page = (D.top_pages || []).find(function (p) { return p.path === path; });
         var views = page ? page.views : 0;
         var nm = path === '/' ? 'Homepage' : path.replace(/^\//, '').replace(/\//g, ' / ');
@@ -291,7 +401,7 @@
       h += '<div class="cc"><h3 style="color:var(--green)">📈 Top Growers</h3>';
       if (winners.length) {
         winners.forEach(function (p) {
-          h += '<div style="margin-bottom:10px"><div style="font-size:.9rem">' + p.name + '</div><div style="font-size:.78rem;color:var(--muted)">' + p.views + ' views · ' + fmtGrowth(p.growth) + '</div></div>';
+          h += '<div style="margin-bottom:10px"><div style="font-size:.9rem">' + escapeHtml(p.name) + '</div><div style="font-size:.78rem;color:var(--muted)">' + escapeHtml(p.views) + ' views · ' + fmtGrowth(p.growth) + '</div></div>';
         });
       } else { h += '<div style="color:var(--muted);font-size:.85rem">No positive growth this period</div>'; }
       h += '</div>';
@@ -299,7 +409,7 @@
       h += '<div class="cc"><h3 style="color:var(--blue)">✨ Fresh Wins</h3>';
       if (freshes.length) {
         freshes.forEach(function (p) {
-          h += '<div style="margin-bottom:10px"><div style="font-size:.9rem">' + p.name + '</div><div style="font-size:.78rem;color:var(--muted)">' + p.views + ' views · NEW (no prior data)</div></div>';
+          h += '<div style="margin-bottom:10px"><div style="font-size:.9rem">' + escapeHtml(p.name) + '</div><div style="font-size:.78rem;color:var(--muted)">' + escapeHtml(p.views) + ' views · NEW (no prior data)</div></div>';
         });
       } else { h += '<div style="color:var(--muted);font-size:.85rem">No new pages this period</div>'; }
       h += '</div>';
@@ -307,7 +417,7 @@
       h += '<div class="cc"><h3 style="color:var(--red)">📉 Needs Attention</h3>';
       if (losers.length) {
         losers.forEach(function (p) {
-          h += '<div style="margin-bottom:10px"><div style="font-size:.9rem">' + p.name + '</div><div style="font-size:.78rem;color:var(--muted)">' + p.views + ' views · ' + fmtGrowth(p.growth) + '</div></div>';
+          h += '<div style="margin-bottom:10px"><div style="font-size:.9rem">' + escapeHtml(p.name) + '</div><div style="font-size:.78rem;color:var(--muted)">' + escapeHtml(p.views) + ' views · ' + fmtGrowth(p.growth) + '</div></div>';
         });
       } else { h += '<div style="color:var(--muted);font-size:.85rem">No declining pages — nice work!</div>'; }
       h += '</div>';
@@ -327,35 +437,36 @@
     if (tp.length) {
       tp.forEach(function (p) {
         var pct = S.total_pageviews > 0 ? (p.views / S.total_pageviews * 100).toFixed(1) : '0';
-        var nm = p.path === '/' ? 'Homepage' : p.path.replace(/^\//, '').replace(/\//g, ' / ');
+        var pagePath = String(p.path || '');
+        var nm = pagePath === '/' ? 'Homepage' : pagePath.replace(/^\//, '').replace(/\//g, ' / ');
         var growthCell = '';
         if (growth) {
           growthCell = '<td class="num">' + fmtGrowth(growth.pages[p.path]) + '</td>';
         }
-        h += '<tr><td>' + nm + '</td><td class="num">' + p.views + '</td><td class="num">' + pct + '%</td>' + growthCell + '</tr>';
+        h += '<tr><td>' + escapeHtml(nm) + '</td><td class="num">' + escapeHtml(p.views) + '</td><td class="num">' + escapeHtml(pct) + '%</td>' + growthCell + '</tr>';
       });
     } else {
       h += '<tr><td colspan="' + (growth ? 4 : 3) + '" style="color:var(--muted);text-align:center">Pageview data collecting</td></tr>';
     }
     h += '</tbody></table></div></div>';
 
-    h += '<div class="sec"><div class="st">Location Pages <span class="badge bgo">' + (G.coverage_pct || 0) + '% coverage</span></div><div class="cc"><h3>Green = 5+ views &middot; Orange = 2-4 &middot; Gray = 0</h3><div class="lg">';
+    h += '<div class="sec"><div class="st">Location Pages <span class="badge bgo">' + escapeHtml(G.coverage_pct || 0) + '% coverage</span></div><div class="cc"><h3>Green = 5+ views &middot; Orange = 2-4 &middot; Gray = 0</h3><div class="lg">';
     (D.location_performance || []).forEach(function (l) {
       var c = l.views >= 5 ? 'lh' : l.views >= 2 ? 'lw' : 'll';
-      h += '<span class="lc ' + c + '">' + l.location.replace(/-/g, ' ') + ' (' + l.views + ')</span>';
+      h += '<span class="lc ' + c + '">' + escapeHtml(String(l.location || '').replace(/-/g, ' ')) + ' (' + escapeHtml(l.views) + ')</span>';
     });
     (D.location_gaps || []).forEach(function (l) {
-      h += '<span class="lc ll">' + l.replace(/-/g, ' ') + '</span>';
+      h += '<span class="lc ll">' + escapeHtml(String(l || '').replace(/-/g, ' ')) + '</span>';
     });
     h += '</div></div></div>';
 
     h += '<div class="sec"><div class="st">Leads & Calls <span class="badge bg">conversion pipeline</span></div><div class="cg">';
     h += '<div class="cc"><h3>Recent Leads</h3><table><thead><tr><th>Name</th><th>Service</th><th>Source</th><th>Date</th></tr></thead><tbody>';
-    var rl = (D.leads || []).filter(function (l) { return !l.name || l.name.indexOf('TEST') === -1; });
+    var rl = (D.leads || []).filter(function (l) { return !l.name || String(l.name).indexOf('TEST') === -1; });
     if (rl.length) {
       rl.forEach(function (l) {
         var d = new Date(l.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-        h += '<tr><td>' + l.name + '</td><td>' + (l.service || '') + '</td><td>' + (l.source_page || '') + '</td><td>' + d + '</td></tr>';
+        h += '<tr><td>' + escapeHtml(l.name) + '</td><td>' + escapeHtml(l.service || '') + '</td><td>' + escapeHtml(l.source_page || '') + '</td><td>' + escapeHtml(d) + '</td></tr>';
       });
     } else {
       h += '<tr><td colspan="4" style="color:var(--muted);text-align:center">No leads this period</td></tr>';
@@ -368,7 +479,7 @@
       cl.forEach(function (c) {
         var d = new Date(c.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
         var dur = c.duration_seconds ? c.duration_seconds + 's' : '—';
-        h += '<tr><td>' + c.from_number + '</td><td>' + (c.city || 'Unknown') + '</td><td>' + dur + '</td><td>' + d + '</td></tr>';
+        h += '<tr><td>' + escapeHtml(c.from_number) + '</td><td>' + escapeHtml(c.city || 'Unknown') + '</td><td>' + escapeHtml(dur) + '</td><td>' + escapeHtml(d) + '</td></tr>';
       });
     } else {
       h += '<tr><td colspan="4" style="color:var(--muted);text-align:center">No calls this period</td></tr>';
@@ -469,8 +580,8 @@
   // Each tile is independent and silent-fails so the dashboard keeps working.
 
   function btScoreColor(s) { s = Number(s) || 0; if (s >= 85) return 'var(--green)'; if (s >= 70) return 'var(--gold)'; if (s >= 55) return 'var(--orange)'; return 'var(--red)'; }
-  function btFresh(d) { if (d == null) return '<span style="color:var(--muted)">—</span>'; var c = d <= 120 ? 'var(--green)' : d <= 240 ? 'var(--gold)' : 'var(--red)'; return '<span style="color:' + c + '">' + d + 'd</span>'; }
-  function btNz(v) { return (v == null) ? '<span style="color:var(--muted)">—</span>' : v; }
+  function btFresh(d) { if (d == null) return '<span style="color:var(--muted)">—</span>'; d = Number(d); if (!Number.isFinite(d)) return '<span style="color:var(--muted)">—</span>'; var c = d <= 120 ? 'var(--green)' : d <= 240 ? 'var(--gold)' : 'var(--red)'; return '<span style="color:' + c + '">' + escapeHtml(d) + 'd</span>'; }
+  function btNz(v) { return (v == null) ? '<span style="color:var(--muted)">—</span>' : escapeHtml(v); }
   function btEsc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
 
   async function loadBlogTraction() {
@@ -583,13 +694,13 @@
         var gap = (competitorTarget.count || 0) - count;
         var gapColor = gap > 0 ? 'var(--orange)' : 'var(--green)';
         html += '<div style="font-size:.78rem;margin-top:6px;padding-top:6px;border-top:1px solid var(--border)">';
-        html += 'vs ' + (competitorTarget.name || 'competitor') + ': <span style="color:' + gapColor + ';font-weight:600">' + (gap > 0 ? 'gap ' + gap : 'lead +' + Math.abs(gap)) + '</span>';
+        html += 'vs ' + escapeHtml(competitorTarget.name || 'competitor') + ': <span style="color:' + gapColor + ';font-weight:600">' + (gap > 0 ? 'gap ' + gap : 'lead +' + Math.abs(gap)) + '</span>';
         html += '</div>';
       }
       html += '</div>';
       el.innerHTML = html;
     } catch (e) {
-      el.innerHTML = '<div class="cc"><h3>⭐ Reviews Velocity</h3><div style="color:var(--muted);font-size:.85rem">No review feed at ' + path + '</div></div>';
+      el.innerHTML = '<div class="cc"><h3>⭐ Reviews Velocity</h3><div style="color:var(--muted);font-size:.85rem">No review feed at ' + escapeHtml(path) + '</div></div>';
     }
   }
 
@@ -680,7 +791,7 @@
       sessionStorage.setItem(cacheKey, JSON.stringify(data));
       renderCWV(el, data, origin);
     } catch (e) {
-      el.innerHTML = '<div class="cc"><h3>⚡ Core Web Vitals</h3><div style="color:var(--muted);font-size:.85rem">PSI error: ' + e.message + '</div></div>';
+      el.innerHTML = '<div class="cc"><h3>⚡ Core Web Vitals</h3><div style="color:var(--muted);font-size:.85rem">PSI error: ' + escapeHtml(e.message) + '</div></div>';
     }
   }
 
@@ -737,7 +848,7 @@
       });
 
       if (relevant.length === 0) {
-        el.innerHTML = '<div class="cc" style="border-left:3px solid var(--green)"><div style="display:flex;align-items:center;gap:10px"><span style="font-size:1.4rem">✅</span><div><div style="font-weight:600">No storm-driven alerts in service area (' + area + ')</div><div style="font-size:.85rem;color:var(--muted)">Storm-trigger reserve held; bid back to baseline.</div></div></div></div>';
+        el.innerHTML = '<div class="cc" style="border-left:3px solid var(--green)"><div style="display:flex;align-items:center;gap:10px"><span style="font-size:1.4rem">✅</span><div><div style="font-weight:600">No storm-driven alerts in service area (' + escapeHtml(area) + ')</div><div style="font-size:.85rem;color:var(--muted)">Storm-trigger reserve held; bid back to baseline.</div></div></div></div>';
         return;
       }
 
@@ -757,12 +868,12 @@
       html += '<div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">';
       html += '<span style="font-size:1.6rem">' + icon + '</span>';
       html += '<div style="flex:1">';
-      html += '<div style="font-weight:600;color:' + color + '">' + topAlert.event + ' — ' + topAlert.severity.toUpperCase() + '</div>';
-      html += '<div style="font-size:.85rem;color:var(--muted)">' + (topAlert.areaDesc || '').slice(0, 120) + '</div>';
+      html += '<div style="font-weight:600;color:' + color + '">' + escapeHtml(topAlert.event) + ' — ' + escapeHtml(topAlert.severity.toUpperCase()) + '</div>';
+      html += '<div style="font-size:.85rem;color:var(--muted)">' + escapeHtml((topAlert.areaDesc || '').slice(0, 120)) + '</div>';
       html += '</div>';
       html += '<div style="text-align:right;font-size:.78rem;color:var(--muted)">' + relevant.length + ' active</div>';
       html += '</div>';
-      html += '<div style="font-size:.85rem;color:var(--text);margin-bottom:6px">' + (topAlert.headline || '').slice(0, 200) + '</div>';
+      html += '<div style="font-size:.85rem;color:var(--text);margin-bottom:6px">' + escapeHtml((topAlert.headline || '').slice(0, 200)) + '</div>';
       html += '<div style="font-size:.78rem;color:var(--gold);font-weight:500">→ Storm-trigger reserve recommended: bid up Search +50%, deploy /storm-response landing page</div>';
       html += '</div>';
       el.innerHTML = html;
@@ -771,7 +882,30 @@
     }
   }
 
-  // Expose handlers used by inline onclick
+  function initializeDashboardUi() {
+    document.getElementById('loginForm').addEventListener('submit', doLogin);
+    document.getElementById('refreshBtn').addEventListener('click', function () { go(curD); });
+    document.getElementById('manageBtn').addEventListener('click', openAdmin);
+    document.getElementById('logoutBtn').addEventListener('click', doLogout);
+    document.getElementById('closeAdminBtn').addEventListener('click', closeAdmin);
+    document.getElementById('addUserBtn').addEventListener('click', addUser);
+
+    var ranges = CFG.ranges || [7, 14, 30, 90];
+    var defaultDays = CFG.defaultDays || 30;
+    var rangeBar = document.getElementById('rangeBar');
+    ranges.forEach(function (days) {
+      var button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'pb' + (days === defaultDays ? ' act' : '');
+      button.textContent = days + ' Days';
+      button.addEventListener('click', function () { sw(days, button); });
+      rangeBar.appendChild(button);
+    });
+  }
+
+  initializeDashboardUi();
+
+  // Expose a bounded compatibility surface for browser tests and legacy links.
   window.__dashboard = {
     doLogin: doLogin,
     doLogout: doLogout,
@@ -781,6 +915,7 @@
     closeAdmin: closeAdmin,
     addUser: addUser,
     toggleUser: toggleUser,
+    resetUserPin: resetUserPin,
     refresh: function () { go(curD); }
   };
 })();

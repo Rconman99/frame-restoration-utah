@@ -1,0 +1,11 @@
+# Intentional browser-visible, non-auth routing identifiers already present on
+# origin/main, plus deterministic test fixtures. Fingerprints are line-bound so
+# new or moved findings remain blocking. The PageSpeed browser key is public by
+# design and still requires its separate Google API/service restriction gate.
+dashboard/config.js:gcp-api-key:32
+dashboard/config.js:generic-api-key:9
+leads.html:generic-api-key:417
+seo-report.html:generic-api-key:104
+scripts/test-dashboard-session-client.mjs:generic-api-key:66
+supabase/functions/_shared/lead-notification.test.ts:generic-api-key:116
+supabase/functions/_shared/lead-notification.test.ts:generic-api-key:131

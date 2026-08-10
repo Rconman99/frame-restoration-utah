@@ -1,11 +1,14 @@
 name: Deploy UT Supabase Edge Function
 
 # Phase 4 of the TX→UT systems port. Manual-only. Deploys ONE edge function to the
-# Utah Supabase project (hdcflshhomzildwqlmwh) using the SUPABASE_ACCESS_TOKEN repo
-# secret, so deploys don't depend on a local CLI / MCP login being available.
+# Utah Supabase project (hdcflshhomzildwqlmwh) using the production environment's
+# SUPABASE_ACCESS_TOKEN, so deploys don't depend on a local CLI / MCP login.
 # workflow_dispatch only — never runs on push.
 #
-# Secret required: SUPABASE_ACCESS_TOKEN (repo Settings → Secrets → Actions).
+# Production environment secrets required: SUPABASE_ACCESS_TOKEN, dashboard
+# receipt token/key, owner-notification receipt token/key, client-IP receipt
+# token/key, LEAD_NOTIFICATION_WORKER_TOKEN, and RESEND_WEBHOOK_SECRET. Receipt
+# and canary secrets are never workflow inputs or command-line arguments.
 on:
   workflow_dispatch:
     inputs:
@@ -26,27 +29,239 @@ on:
           - handle-sms
           - outbound-call
           - send-message
-
+          - resend-webhook
+          - lead-notification-worker
+          - weekly-report
 permissions:
   contents: read
+  actions: read
+
+concurrency:
+  group: utah-production-edge-function-deploy
+  cancel-in-progress: false
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
+    environment:
+      name: Production – frame-restoration-utah
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Require the exact current main tip and green compliance
+        env:
+          GH_TOKEN: ${{ github.token }}
+          DEPLOY_SHA: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          [[ "$GITHUB_REF" == "refs/heads/main" ]] || {
+            echo "::error::Production deploys must be dispatched from refs/heads/main"
+            exit 1
+          }
+          [[ "$DEPLOY_SHA" =~ ^[0-9a-f]{40}$ ]] || {
+            echo "::error::Invalid deployment SHA"
+            exit 1
+          }
+          git fetch --no-tags origin refs/heads/main:refs/remotes/origin/main
+          MAIN_SHA="$(git rev-parse refs/remotes/origin/main)"
+          [[ "$DEPLOY_SHA" == "$MAIN_SHA" ]] || {
+            echo "::error::Selected SHA is not the current origin/main tip"
+            exit 1
+          }
+
+          RUNS_JSON="$(gh api --method GET \
+            "repos/$GITHUB_REPOSITORY/actions/workflows/compliance-gate.yml/runs" \
+            -f head_sha="$DEPLOY_SHA" -f event=push -f status=success -f per_page=20)"
+          RUN_ID="$(jq -er --arg sha "$DEPLOY_SHA" '
+            [.workflow_runs[]
+              | select(.head_sha == $sha and .head_branch == "main"
+                and .event == "push" and .status == "completed"
+                and .conclusion == "success")]
+            | sort_by(.run_number) | last | .id
+          ' <<<"$RUNS_JSON")" || {
+            echo "::error::No successful main-push Compliance Gate run exists for the exact deployment SHA"
+            exit 1
+          }
+          JOBS_JSON="$(gh api --method GET \
+            "repos/$GITHUB_REPOSITORY/actions/runs/$RUN_ID/jobs" -f per_page=100)"
+          jq -e '
+            (.jobs | length > 0)
+            and ([.jobs[] | select(.status != "completed" or .conclusion != "success")] | length == 0)
+            and ([.jobs[] | select(.name == "Dashboard session revocation + credential security (blocking)"
+              and .status == "completed" and .conclusion == "success")] | length == 1)
+          ' <<<"$JOBS_JSON" >/dev/null || {
+            echo "::error::Exact-SHA compliance jobs are incomplete, failed, skipped, or missing dashboard-security"
+            exit 1
+          }
       - uses: supabase/setup-cli@v1
         with:
-          version: latest
+          version: 2.112.0
       - name: Verify function source exists
         run: |
           test -f "supabase/functions/${{ inputs.function }}/index.ts" \
             || { echo "::error::supabase/functions/${{ inputs.function }}/index.ts not found"; exit 1; }
+      - name: Enforce fresh signed final-extractor client-IP canary receipt
+        env:
+          FUNCTION_NAME: ${{ inputs.function }}
+          DEPLOY_SHA: ${{ github.sha }}
+          SUPABASE_PROJECT_REF: hdcflshhomzildwqlmwh
+          CLIENT_IP_DEPLOY_RECEIPT_TOKEN: ${{ secrets.CLIENT_IP_DEPLOY_RECEIPT_TOKEN }}
+          CLIENT_IP_DEPLOY_RECEIPT_HMAC_KEY: ${{ secrets.CLIENT_IP_DEPLOY_RECEIPT_HMAC_KEY }}
+        run: node scripts/verify-client-ip-deploy-receipt.mjs
+      - name: Read live dashboard migration and secret state
+        env:
+          FUNCTION_NAME: ${{ inputs.function }}
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+          SUPABASE_PROJECT_REF: hdcflshhomzildwqlmwh
+        run: |
+          set -euo pipefail
+          MIGRATION_HISTORY_PATH="$RUNNER_TEMP/utah-dashboard-migrations.json"
+          SECRETS_METADATA_PATH="$RUNNER_TEMP/utah-edge-secrets.json"
+          echo "MIGRATION_HISTORY_PATH=$MIGRATION_HISTORY_PATH" >> "$GITHUB_ENV"
+          echo "SECRETS_METADATA_PATH=$SECRETS_METADATA_PATH" >> "$GITHUB_ENV"
+          if [[ "$FUNCTION_NAME" != "lead-crm" && "$FUNCTION_NAME" != "weekly-report" ]]; then
+            printf '[]\n' > "$MIGRATION_HISTORY_PATH"
+            printf '[]\n' > "$SECRETS_METADATA_PATH"
+            exit 0
+          fi
+          [[ -n "$SUPABASE_ACCESS_TOKEN" ]] || {
+            echo "::error::SUPABASE_ACCESS_TOKEN is missing from the production environment"
+            exit 1
+          }
+          curl --fail-with-body --silent --show-error --retry 3 \
+            --request POST \
+            --header "Authorization: Bearer $SUPABASE_ACCESS_TOKEN" \
+            --header "Content-Type: application/json" \
+            --header "User-Agent: SupabaseCLI/2.112.0" \
+            --data-binary @- \
+            "https://api.supabase.com/v1/projects/$SUPABASE_PROJECT_REF/database/query/read-only" \
+            > "$MIGRATION_HISTORY_PATH" <<'JSON'
+          {"query":"select m.version::text as version, not exists (select 1 from public.report_access as ra where ra.pin is not null) as report_access_pins_all_null, exists (select 1 from pg_catalog.pg_constraint as c where c.conrelid = 'public.report_access'::regclass and c.conname = 'report_access_plaintext_pin_forbidden_check' and c.contype = 'c' and c.convalidated) as plaintext_pin_constraint_present from supabase_migrations.schema_migrations as m where m.version::text in ('20260807000140','20260807000150') order by m.version::text","read_only":true}
+          JSON
+          supabase secrets list --project-ref "$SUPABASE_PROJECT_REF" --output json \
+            > "$SECRETS_METADATA_PATH"
+          chmod 600 "$MIGRATION_HISTORY_PATH" "$SECRETS_METADATA_PATH"
+      - name: Verify signed dashboard deployment evidence
+        env:
+          FUNCTION_NAME: ${{ inputs.function }}
+          DEPLOY_SHA: ${{ github.sha }}
+          SUPABASE_PROJECT_REF: hdcflshhomzildwqlmwh
+          DASHBOARD_DEPLOY_RECEIPT_TOKEN: ${{ secrets.DASHBOARD_DEPLOY_RECEIPT_TOKEN }}
+          DASHBOARD_DEPLOY_RECEIPT_HMAC_KEY: ${{ secrets.DASHBOARD_DEPLOY_RECEIPT_HMAC_KEY }}
+        run: node scripts/verify-dashboard-deploy-receipt.mjs
+      - name: Read live owner-notification migration, secret, and function state
+        env:
+          FUNCTION_NAME: ${{ inputs.function }}
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+          SUPABASE_PROJECT_REF: hdcflshhomzildwqlmwh
+        run: |
+          set -euo pipefail
+          NOTIFICATION_MIGRATION_HISTORY_PATH="$RUNNER_TEMP/utah-notification-migrations.json"
+          NOTIFICATION_SECRETS_METADATA_PATH="$RUNNER_TEMP/utah-notification-secrets.json"
+          NOTIFICATION_FUNCTIONS_METADATA_PATH="$RUNNER_TEMP/utah-notification-functions.json"
+          NOTIFICATION_CANARY_PATH="$RUNNER_TEMP/utah-notification-canaries.json"
+          echo "NOTIFICATION_MIGRATION_HISTORY_PATH=$NOTIFICATION_MIGRATION_HISTORY_PATH" >> "$GITHUB_ENV"
+          echo "NOTIFICATION_SECRETS_METADATA_PATH=$NOTIFICATION_SECRETS_METADATA_PATH" >> "$GITHUB_ENV"
+          echo "NOTIFICATION_FUNCTIONS_METADATA_PATH=$NOTIFICATION_FUNCTIONS_METADATA_PATH" >> "$GITHUB_ENV"
+          echo "NOTIFICATION_CANARY_PATH=$NOTIFICATION_CANARY_PATH" >> "$GITHUB_ENV"
+          if [[ "$FUNCTION_NAME" != "handle-lead" && "$FUNCTION_NAME" != "resend-webhook" && "$FUNCTION_NAME" != "lead-notification-worker" ]]; then
+            printf '[]\n' > "$NOTIFICATION_MIGRATION_HISTORY_PATH"
+            printf '[]\n' > "$NOTIFICATION_SECRETS_METADATA_PATH"
+            printf '[]\n' > "$NOTIFICATION_FUNCTIONS_METADATA_PATH"
+            printf '{}\n' > "$NOTIFICATION_CANARY_PATH"
+            exit 0
+          fi
+          [[ -n "$SUPABASE_ACCESS_TOKEN" ]] || {
+            echo "::error::SUPABASE_ACCESS_TOKEN is missing from the production environment"
+            exit 1
+          }
+          curl --fail-with-body --silent --show-error --retry 3 \
+            --request POST \
+            --header "Authorization: Bearer $SUPABASE_ACCESS_TOKEN" \
+            --header "Content-Type: application/json" \
+            --header "User-Agent: SupabaseCLI/2.112.0" \
+            --data-binary @- \
+            "https://api.supabase.com/v1/projects/$SUPABASE_PROJECT_REF/database/query/read-only" \
+            > "$NOTIFICATION_MIGRATION_HISTORY_PATH" <<'JSON'
+          {"query":"select version::text as version from supabase_migrations.schema_migrations where version::text in ('20260807000100','20260807000160','20260807000165') order by version::text","read_only":true}
+          JSON
+          supabase secrets list --project-ref "$SUPABASE_PROJECT_REF" --output json \
+            > "$NOTIFICATION_SECRETS_METADATA_PATH"
+          supabase functions list --project-ref "$SUPABASE_PROJECT_REF" --output json \
+            > "$NOTIFICATION_FUNCTIONS_METADATA_PATH"
+          printf '{}\n' > "$NOTIFICATION_CANARY_PATH"
+          chmod 600 \
+            "$NOTIFICATION_MIGRATION_HISTORY_PATH" \
+            "$NOTIFICATION_SECRETS_METADATA_PATH" \
+            "$NOTIFICATION_FUNCTIONS_METADATA_PATH" \
+            "$NOTIFICATION_CANARY_PATH"
+      - name: Run no-send owner-notification deployment canaries
+        env:
+          FUNCTION_NAME: ${{ inputs.function }}
+          SUPABASE_PROJECT_REF: hdcflshhomzildwqlmwh
+          LEAD_NOTIFICATION_WORKER_TOKEN: ${{ secrets.LEAD_NOTIFICATION_WORKER_TOKEN }}
+          RESEND_WEBHOOK_SECRET: ${{ secrets.RESEND_WEBHOOK_SECRET }}
+        run: node scripts/run-owner-notification-deploy-canaries.mjs
+      - name: Refresh live owner-notification metadata after canaries
+        env:
+          FUNCTION_NAME: ${{ inputs.function }}
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+          SUPABASE_PROJECT_REF: hdcflshhomzildwqlmwh
+        run: |
+          set -euo pipefail
+          if [[ "$FUNCTION_NAME" != "handle-lead" && "$FUNCTION_NAME" != "resend-webhook" && "$FUNCTION_NAME" != "lead-notification-worker" ]]; then
+            exit 0
+          fi
+          [[ -n "$SUPABASE_ACCESS_TOKEN" ]] || {
+            echo "::error::SUPABASE_ACCESS_TOKEN is missing from the production environment"
+            exit 1
+          }
+          umask 077
+          FRESH_MIGRATIONS="$RUNNER_TEMP/utah-notification-migrations-fresh.json"
+          FRESH_SECRETS="$RUNNER_TEMP/utah-notification-secrets-fresh.json"
+          FRESH_FUNCTIONS="$RUNNER_TEMP/utah-notification-functions-fresh.json"
+          curl --fail-with-body --silent --show-error --retry 3 \
+            --request POST \
+            --header "Authorization: Bearer $SUPABASE_ACCESS_TOKEN" \
+            --header "Content-Type: application/json" \
+            --header "User-Agent: SupabaseCLI/2.112.0" \
+            --data-binary @- \
+            "https://api.supabase.com/v1/projects/$SUPABASE_PROJECT_REF/database/query/read-only" \
+            > "$FRESH_MIGRATIONS" <<'JSON'
+          {"query":"select version::text as version from supabase_migrations.schema_migrations where version::text in ('20260807000100','20260807000160','20260807000165') order by version::text","read_only":true}
+          JSON
+          supabase secrets list --project-ref "$SUPABASE_PROJECT_REF" --output json \
+            > "$FRESH_SECRETS"
+          supabase functions list --project-ref "$SUPABASE_PROJECT_REF" --output json \
+            > "$FRESH_FUNCTIONS"
+          chmod 600 "$FRESH_MIGRATIONS" "$FRESH_SECRETS" "$FRESH_FUNCTIONS"
+          mv "$FRESH_MIGRATIONS" "$NOTIFICATION_MIGRATION_HISTORY_PATH"
+          mv "$FRESH_SECRETS" "$NOTIFICATION_SECRETS_METADATA_PATH"
+          mv "$FRESH_FUNCTIONS" "$NOTIFICATION_FUNCTIONS_METADATA_PATH"
+      - name: Verify signed live owner-notification deployment evidence
+        env:
+          FUNCTION_NAME: ${{ inputs.function }}
+          DEPLOY_SHA: ${{ github.sha }}
+          SUPABASE_PROJECT_REF: hdcflshhomzildwqlmwh
+          LEAD_NOTIFICATION_DEPLOY_RECEIPT_TOKEN: ${{ secrets.LEAD_NOTIFICATION_DEPLOY_RECEIPT_TOKEN }}
+          LEAD_NOTIFICATION_DEPLOY_RECEIPT_HMAC_KEY: ${{ secrets.LEAD_NOTIFICATION_DEPLOY_RECEIPT_HMAC_KEY }}
+        run: node scripts/verify-owner-notification-deploy-receipt.mjs
       - name: Deploy ${{ inputs.function }} to UT project
         env:
+          GH_TOKEN: ${{ github.token }}
+          DEPLOY_SHA: ${{ github.sha }}
           SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
         run: |
+          set -euo pipefail
+          LIVE_MAIN_SHA="$(gh api "repos/$GITHUB_REPOSITORY/git/ref/heads/main" --jq .object.sha)"
+          [[ "$LIVE_MAIN_SHA" == "$DEPLOY_SHA" ]] || {
+            echo "::error::origin/main moved after admission checks; dispatch a new deployment"
+            exit 1
+          }
           supabase functions deploy "${{ inputs.function }}" \
             --project-ref hdcflshhomzildwqlmwh \
             --no-verify-jwt --use-api

@@ -1,14 +1,23 @@
 // lead-crm — Frame Roofing Utah
 // ─────────────────────────────────────────────────────────────────────────────
-// PIN-gated CRM backend for /leads.html. Mirrors the weekly-report auth pattern
-// (same `key` + `pin` against `report_access` table). Uses service role
-// internally so the leads table never gets exposed to the anon key.
+// Session-gated CRM backend for /leads.html and dashboard access administration.
+// Login accepts the routing key + PIN in a POST body exactly once, upgrades a
+// matching legacy plaintext credential to HMAC form, and returns a short-lived
+// signed token. Every later action requires Authorization: Bearer.
 //
 // Endpoints (single function, dispatched by ?action=...):
-//   GET  ?action=list&key=...&pin=...
+//   POST ?action=login  body: { routing_key, pin }
+//        → { token, expires_in, user }
+//   GET  ?action=list   Authorization: Bearer <token>
 //        → { user, leads: [...] }   (all leads, all columns, newest first)
-//   POST ?action=update&key=...&pin=...   body: { id, status?, notes?, job_value?, commission? }
+//   POST ?action=update   Authorization: Bearer <token>
+//        body: { id, status?, notes?, job_value?, commission? }
 //        → { user, lead }           (returns updated row)
+//   Admin-only access_list/access_create/access_toggle/access_reset actions
+//        → never select or return an existing PIN.
+//
+// Role contract: viewer = weekly report only (rejected here), sales = CRM,
+// admin = CRM + access management. Unknown roles fail closed.
 //
 // Side effect: when status flips from non-won → won, won_at is set to NOW().
 //
@@ -17,7 +26,33 @@
 
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-import { failedAttemptRow, throttleAllows } from "../_shared/auth-throttle.ts";
+import {
+  AUTH_THROTTLE_RPC,
+  dashboardThrottleKey,
+  parseThrottleReservation,
+} from "../_shared/auth-throttle.ts";
+import {
+  actionAllowed,
+  normalizeAccessRole,
+  publicAccessUser,
+  validNewPin,
+} from "../_shared/crm-access.ts";
+import {
+  dashboardCredentialPepperReady,
+  hashDashboardPin,
+  legacyPinCandidate,
+  parseDashboardAuthRpcResult,
+} from "../_shared/dashboard-credential.ts";
+import {
+  bearerToken,
+  DASHBOARD_SESSION_TTL_SECONDS,
+  dashboardSessionMatchesVersion,
+  dashboardSessionSecretReady,
+  dashboardSessionVersion,
+  issueDashboardSession,
+  verifyDashboardSession,
+} from "../_shared/dashboard-session.ts";
+import { readBoundedJsonObject } from "../_shared/bounded-json.ts";
 
 const SUPABASE_URL = "https://hdcflshhomzildwqlmwh.supabase.co";
 const SUPABASE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
@@ -25,6 +60,10 @@ const SUPABASE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
 // the PIN (+ per-IP throttle below) is the real auth. Env-driven so it can be
 // rotated without a redeploy; unset = function disabled (fail closed).
 const API_KEY = Deno.env.get("LEAD_CRM_API_KEY") ?? "";
+const SESSION_SECRET = Deno.env.get("DASHBOARD_SESSION_SECRET") ?? "";
+const CREDENTIAL_PEPPER = Deno.env.get("DASHBOARD_CREDENTIAL_PEPPER") ?? "";
+const LOGIN_JSON_BODY_LIMIT_BYTES = 1024;
+const AUTHENTICATED_JSON_BODY_LIMIT_BYTES = 64 * 1024;
 
 const ALLOWED_STATUS = new Set([
   "new",
@@ -33,8 +72,24 @@ const ALLOWED_STATUS = new Set([
   "won",
   "lost",
   "third_party",
+  "ul_request",
+  "spam",
 ]);
 const ALLOWED_GROWTH_STATES = new Set(["open", "done", "snoozed"]);
+const KNOWN_ACTIONS = new Set([
+  "login",
+  "session",
+  "list",
+  "create",
+  "update",
+  "clicks",
+  "growth_state",
+  "growth_update",
+  "access_list",
+  "access_create",
+  "access_toggle",
+  "access_reset",
+]);
 
 const LEAD_SELECT_BASE = `
   id, created_at, name, email, phone, address, service, message,
@@ -49,7 +104,11 @@ const LEAD_SELECT_BASE = `
 const LEAD_SELECT_PARITY = `
   ${LEAD_SELECT_BASE},
   estimated_completion_date, final_payment_received_at,
-  notified, notified_at, notification_attempts, notification_error
+  notified, notified_at, notification_attempts, notification_error,
+  lead_notifications (
+    recipient_role, status, attempts, retryable, accepted_at, delivered_at,
+    last_event_at, last_error_code, last_error
+  )
 `;
 
 const OPTIONAL_LEAD_DEFAULTS = {
@@ -59,18 +118,57 @@ const OPTIONAL_LEAD_DEFAULTS = {
   notified_at: null,
   notification_attempts: 0,
   notification_error: null,
+  lead_notifications: [],
 };
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
-  "Access-Control-Allow-Headers": "Content-Type",
-};
+const ALLOWED_ORIGINS = new Set([
+  "https://www.framerestorationutah.com",
+  "https://framerestorationutah.com",
+]);
 
-function jsonResp(body: unknown, status = 200): Response {
+// Production origins are fixed. A bounded list of exact Vercel preview origins
+// may be enabled for QA; malformed values and wildcard hosts are ignored.
+for (
+  const candidate of (Deno.env.get("DASHBOARD_PREVIEW_ORIGINS") ?? "")
+    .split(",")
+    .map((part) => part.trim())
+    .filter(Boolean)
+) {
+  try {
+    const preview = new URL(candidate);
+    if (
+      preview.protocol === "https:" && preview.origin === candidate &&
+      preview.hostname.endsWith(".vercel.app")
+    ) {
+      ALLOWED_ORIGINS.add(preview.origin);
+    }
+  } catch {
+    // Invalid entries must not broaden the protected dashboard CORS surface.
+  }
+}
+
+function responseHeaders(req: Request): Record<string, string> {
+  const headers: Record<string, string> = {
+    "Content-Type": "application/json; charset=utf-8",
+    "Cache-Control": "no-store, private",
+    "Pragma": "no-cache",
+    "X-Content-Type-Options": "nosniff",
+    "Referrer-Policy": "no-referrer",
+    "Vary": "Origin",
+    "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+    "Access-Control-Allow-Headers": "Authorization, Content-Type",
+  };
+  const origin = req.headers.get("origin");
+  if (origin && ALLOWED_ORIGINS.has(origin)) {
+    headers["Access-Control-Allow-Origin"] = origin;
+  }
+  return headers;
+}
+
+function jsonResp(req: Request, body: unknown, status = 200): Response {
   return new Response(JSON.stringify(body), {
     status,
-    headers: { "Content-Type": "application/json", ...corsHeaders },
+    headers: responseHeaders(req),
   });
 }
 
@@ -79,6 +177,7 @@ function isMissingSchemaError(error: unknown): boolean {
   const msg = String(e?.message || "").toLowerCase();
   return e?.code === "42703" ||
     e?.code === "42P01" ||
+    e?.code === "PGRST202" ||
     e?.code === "PGRST204" ||
     msg.includes("does not exist") ||
     msg.includes("could not find") ||
@@ -147,117 +246,455 @@ function cleanActionKey(value: unknown): string | null {
   return /^[a-z0-9][a-z0-9._:/-]{1,239}$/i.test(key) ? key : null;
 }
 
+function cleanUuid(value: unknown): string | null {
+  const id = cleanText(value, 36);
+  return id &&
+      /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i
+        .test(id)
+    ? id
+    : null;
+}
+
 Deno.serve(async (req: Request) => {
+  const origin = req.headers.get("origin");
+  if (origin && !ALLOWED_ORIGINS.has(origin)) {
+    return jsonResp(req, { error: "origin_forbidden" }, 403);
+  }
   if (req.method === "OPTIONS") {
-    return new Response(null, { headers: corsHeaders });
+    return new Response(null, { headers: responseHeaders(req) });
   }
 
   const url = new URL(req.url);
-  if (!API_KEY) {
-    console.error(
-      "[lead-crm] LEAD_CRM_API_KEY not set — function disabled (fail closed)",
-    );
-    return jsonResp({ error: "not_configured" }, 503);
+  const action = url.searchParams.get("action") || "list";
+  if (!KNOWN_ACTIONS.has(action)) {
+    return jsonResp(req, { error: "unknown_action" }, 400);
   }
-  const key = url.searchParams.get("key");
-  if (key !== API_KEY) return jsonResp({ error: "unauthorized" }, 401);
-
-  const pin = url.searchParams.get("pin");
-  if (!pin) {
-    return jsonResp({ error: "invalid_pin", message: "PIN required." }, 403);
+  if (url.searchParams.has("key") || url.searchParams.has("pin")) {
+    return jsonResp(req, {
+      error: "credentials_in_url",
+      message: "Credentials must never be sent in a URL.",
+    }, 400);
+  }
+  if (
+    !API_KEY || !dashboardSessionSecretReady(SESSION_SECRET) ||
+    !dashboardCredentialPepperReady(CREDENTIAL_PEPPER) ||
+    SESSION_SECRET === CREDENTIAL_PEPPER
+  ) {
+    console.error(
+      "[lead-crm] routing key or distinct session/credential secrets not configured — disabled",
+    );
+    return jsonResp(req, { error: "not_configured" }, 503);
   }
 
   const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
-  // Per-IP PIN throttle (≤10 fails / 15 min — _shared/auth-throttle.ts, frozen
-  // by auth-throttle.test.ts). PINs are plaintext in a query string; before
-  // this, brute force was unthrottled.
-  const ip = (req.headers.get("x-forwarded-for") || "").split(",")[0].trim() ||
-    "unknown";
-  const now = Date.now();
-  const { data: attemptRow } = await supabase
-    .from("auth_attempts")
-    .select("ip, fail_count, window_start")
-    .eq("ip", ip)
-    .maybeSingle();
-  if (!throttleAllows(attemptRow, now)) {
-    return jsonResp({
-      error: "too_many_attempts",
-      message: "Too many PIN attempts. Try again later.",
-    }, 429);
+  let accessRow: {
+    id: string;
+    name: string;
+    role: unknown;
+    active: boolean;
+    session_version: number;
+  };
+
+  // ─── LOGIN ─────────────────────────────────────────────────────────────────
+  // Routing key + PIN are accepted only in a POST body. Every login POST first
+  // consumes one atomic per-IP throttle reservation, including successful and
+  // malformed attempts. A successful legacy plaintext match is upgraded to
+  // pin_hash before a token is issued.
+  if (action === "login") {
+    if (req.method !== "POST") {
+      return jsonResp(req, { error: "method_not_allowed" }, 405);
+    }
+
+    // reserve_dashboard_login_attempt is SECURITY DEFINER and callable only by
+    // service_role. Its INSERT .. ON CONFLICT update is the sole counter writer,
+    // so simultaneous attempts cannot lose increments. Any RPC/schema/response
+    // problem disables login instead of silently bypassing the throttle.
+    let throttleIdentity: { key: string; source: string };
+    try {
+      throttleIdentity = await dashboardThrottleKey(
+        SESSION_SECRET,
+        req.headers,
+      );
+    } catch (error) {
+      console.error("[lead-crm] login throttle identity failed:", error);
+      return jsonResp(req, { error: "auth_unavailable" }, 503);
+    }
+    console.log(
+      "[lead-crm] login throttle identity source:",
+      throttleIdentity.source,
+    );
+    const { data: throttleData, error: throttleError } = await supabase.rpc(
+      AUTH_THROTTLE_RPC,
+      { p_ip: throttleIdentity.key },
+    );
+    if (throttleError) {
+      console.error(
+        "[lead-crm] atomic login throttle reservation failed:",
+        throttleError,
+      );
+      return jsonResp(req, { error: "auth_unavailable" }, 503);
+    }
+    const reservation = parseThrottleReservation(throttleData);
+    if (!reservation) {
+      console.error("[lead-crm] atomic login throttle returned invalid data");
+      return jsonResp(req, { error: "auth_unavailable" }, 503);
+    }
+    if (!reservation.allowed) {
+      return jsonResp(req, {
+        error: "too_many_attempts",
+        message: "Too many login attempts. Try again later.",
+        retry_after_seconds: reservation.retry_after_seconds,
+      }, 429);
+    }
+    const bodyResult = await readBoundedJsonObject(
+      req,
+      LOGIN_JSON_BODY_LIMIT_BYTES,
+    );
+    if (!bodyResult.ok) {
+      return jsonResp(req, { error: bodyResult.error }, bodyResult.status);
+    }
+    const body = bodyResult.value;
+    const routingKey = cleanText(body.routing_key, 240);
+    const pin = cleanText(body.pin, 32);
+    if (routingKey !== API_KEY || !legacyPinCandidate(pin)) {
+      return jsonResp(req, { error: "invalid_credentials" }, 403);
+    }
+
+    const pinHash = await hashDashboardPin(CREDENTIAL_PEPPER, pin);
+    // Both the plaintext transition candidate and its HMAC stay in this RPC's
+    // POST body. PostgREST filters would put either value into a request URL.
+    const { data: authData, error: authError } = await supabase.rpc(
+      "authenticate_dashboard_access",
+      { p_pin: pin, p_pin_hash: pinHash },
+    );
+    if (authError) {
+      if (isMissingSchemaError(authError)) {
+        console.error("[lead-crm] dashboard credential RPC is not deployed");
+        return jsonResp(req, { error: "credential_schema_not_ready" }, 503);
+      }
+      console.error("[lead-crm] dashboard credential RPC failed:", authError);
+      return jsonResp(req, { error: "auth_unavailable" }, 503);
+    }
+    const authResult = parseDashboardAuthRpcResult(authData);
+    if (!authResult) {
+      console.error(
+        "[lead-crm] dashboard credential RPC returned invalid data",
+      );
+      return jsonResp(req, { error: "auth_unavailable" }, 503);
+    }
+    if (authResult.kind === "none") {
+      return jsonResp(req, { error: "invalid_credentials" }, 403);
+    }
+    const authenticated = authResult.identity;
+
+    if (!dashboardSessionVersion(authenticated.session_version)) {
+      console.error("[lead-crm] invalid report_access session_version");
+      return jsonResp(req, { error: "credential_schema_not_ready" }, 503);
+    }
+    const loginRole = normalizeAccessRole(authenticated.role);
+    if (!loginRole) {
+      console.error(
+        `[lead-crm] rejecting unsupported report_access role for id ${authenticated.id}`,
+      );
+      return jsonResp(req, { error: "role_not_configured" }, 403);
+    }
+    const token = await issueDashboardSession(
+      SESSION_SECRET,
+      authenticated.id,
+      authenticated.session_version,
+    );
+    return jsonResp(req, {
+      token,
+      token_type: "Bearer",
+      expires_in: DASHBOARD_SESSION_TTL_SECONDS,
+      user: { name: authenticated.name, role: loginRole },
+    });
   }
 
-  // PIN check — same shape as weekly-report
-  const { data: accessRow, error: accessErr } = await supabase
+  // ─── SESSION AUTHORIZATION ─────────────────────────────────────────────────
+  const token = bearerToken(req.headers.get("authorization"));
+  const claims = token
+    ? await verifyDashboardSession(SESSION_SECRET, token)
+    : null;
+  if (!claims) {
+    return jsonResp(req, { error: "invalid_session" }, 401);
+  }
+  const sessionLookup = await supabase
     .from("report_access")
-    .select("id, name, role, active")
-    .eq("pin", pin)
-    .single();
-  if (accessErr || !accessRow || !accessRow.active) {
-    const { error: throttleErr } = await supabase
-      .from("auth_attempts")
-      .upsert(failedAttemptRow(ip, attemptRow, now), { onConflict: "ip" });
-    if (throttleErr) {
-      console.error("[lead-crm] auth_attempts upsert failed:", throttleErr);
-    }
-    return jsonResp({
-      error: "invalid_pin",
-      message: "Invalid PIN. Access denied.",
+    .select("id, name, role, active, session_version")
+    .eq("id", claims.sub)
+    .maybeSingle();
+  if (sessionLookup.error) {
+    console.error(
+      "[lead-crm] session identity lookup failed:",
+      sessionLookup.error,
+    );
+    return jsonResp(req, { error: "auth_unavailable" }, 503);
+  }
+  if (
+    !sessionLookup.data?.active ||
+    !dashboardSessionMatchesVersion(
+      claims,
+      sessionLookup.data.session_version,
+    )
+  ) {
+    return jsonResp(req, { error: "invalid_session" }, 401);
+  }
+  accessRow = sessionLookup.data;
+
+  const role = normalizeAccessRole(accessRow.role);
+  if (!role) {
+    console.error(
+      `[lead-crm] rejecting unsupported report_access role for id ${accessRow.id}`,
+    );
+    return jsonResp(req, {
+      error: "role_not_configured",
+      message: "This account role is not configured for CRM access.",
     }, 403);
   }
-  // Successful auth clears the counter (best-effort).
-  if (attemptRow) {
-    supabase.from("auth_attempts").delete().eq("ip", ip).then(
-      ({ error }: { error: unknown }) => {
-        if (error) {
-          console.error("[lead-crm] auth_attempts clear failed:", error);
-        }
+  const user = { name: accessRow.name, role };
+  if (action === "session") return jsonResp(req, { user });
+  if (!actionAllowed(role, action)) {
+    return jsonResp(req, {
+      error: "role_forbidden",
+      message: role === "viewer"
+        ? "This PIN has report-only access. A sales or admin role is required for the CRM."
+        : "Administrator access is required for access management.",
+    }, 403);
+  }
+
+  // ─── ACCESS MANAGEMENT (admin only; authorization enforced above) ─────────
+  // All responses intentionally omit `pin`. Existing credentials must never be
+  // retrievable by a browser, including by an authenticated administrator.
+  if (action === "access_list") {
+    if (req.method !== "GET") {
+      return jsonResp(req, { error: "method_not_allowed" }, 405);
+    }
+    const { data: rows, error } = await supabase
+      .from("report_access")
+      .select("id, name, role, active, last_accessed, created_at")
+      .order("created_at", { ascending: true });
+    if (error) {
+      return jsonResp(req, { error: "db_error" }, 500);
+    }
+    return jsonResp(req, {
+      user,
+      access: (rows || []).map((row: Record<string, unknown>) =>
+        publicAccessUser(row)
+      ),
+    });
+  }
+
+  if (action === "access_create") {
+    if (req.method !== "POST") {
+      return jsonResp(req, { error: "method_not_allowed" }, 405);
+    }
+    const bodyResult = await readBoundedJsonObject(
+      req,
+      AUTHENTICATED_JSON_BODY_LIMIT_BYTES,
+    );
+    if (!bodyResult.ok) {
+      return jsonResp(req, { error: bodyResult.error }, bodyResult.status);
+    }
+    const body = bodyResult.value;
+    const name = cleanText(body.name, 120);
+    const newRole = normalizeAccessRole(body.role);
+    if (!name) {
+      return jsonResp(
+        req,
+        { error: "bad_name", message: "Name is required." },
+        400,
+      );
+    }
+    if (!newRole) {
+      return jsonResp(req, {
+        error: "bad_role",
+        message: "Role must be viewer, sales, or admin.",
+      }, 400);
+    }
+    if (!validNewPin(body.pin)) {
+      return jsonResp(req, {
+        error: "bad_pin",
+        message: "PIN must contain 6-12 digits.",
+      }, 400);
+    }
+    const pinHash = await hashDashboardPin(CREDENTIAL_PEPPER, body.pin);
+    const { data: createdId, error: createError } = await supabase.rpc(
+      "create_dashboard_access",
+      {
+        p_name: name,
+        p_role: newRole,
+        p_pin: body.pin,
+        p_pin_hash: pinHash,
       },
     );
+    if (createError) {
+      console.error("[lead-crm] access_create failed:", createError.code);
+      return jsonResp(req, {
+        error: createError.code === "23505" ? "pin_unavailable" : "db_error",
+        message: createError.code === "23505"
+          ? "Choose a different PIN."
+          : "Could not create access.",
+      }, createError.code === "23505" ? 409 : 500);
+    }
+    const id = cleanUuid(createdId);
+    if (!id) {
+      console.error("[lead-crm] access_create returned an invalid id");
+      return jsonResp(req, { error: "db_error" }, 500);
+    }
+    const { data: created, error } = await supabase
+      .from("report_access")
+      .select("id, name, role, active, last_accessed, created_at")
+      .eq("id", id)
+      .maybeSingle();
+    if (error) {
+      console.error("[lead-crm] access_create failed:", error.code);
+      return jsonResp(req, { error: "db_error" }, 500);
+    }
+    if (!created) {
+      return jsonResp(req, { error: "db_error" }, 500);
+    }
+    return jsonResp(req, { user, access: publicAccessUser(created) }, 201);
   }
-  // Don't block on this — failure to bump last_accessed is non-critical.
-  supabase.from("report_access").update({
-    last_accessed: new Date().toISOString(),
-  }).eq("id", accessRow.id);
 
-  const user = { name: accessRow.name, role: accessRow.role };
-  const action = url.searchParams.get("action") || "list";
+  if (action === "access_toggle") {
+    if (req.method !== "POST") {
+      return jsonResp(req, { error: "method_not_allowed" }, 405);
+    }
+    const bodyResult = await readBoundedJsonObject(
+      req,
+      AUTHENTICATED_JSON_BODY_LIMIT_BYTES,
+    );
+    if (!bodyResult.ok) {
+      return jsonResp(req, { error: bodyResult.error }, bodyResult.status);
+    }
+    const body = bodyResult.value;
+    const id = cleanUuid(body.id);
+    if (!id || typeof body.active !== "boolean") {
+      return jsonResp(req, { error: "bad_access_update" }, 400);
+    }
+    if (id === String(accessRow.id) && body.active === false) {
+      return jsonResp(req, {
+        error: "self_disable_blocked",
+        message: "You cannot disable your current administrator PIN.",
+      }, 409);
+    }
+    const { data: activeVersion, error: activeError } = await supabase.rpc(
+      "set_dashboard_access_active",
+      { p_id: id, p_active: body.active },
+    );
+    if (activeError) {
+      console.error("[lead-crm] access_toggle failed:", activeError.code);
+      return jsonResp(req, { error: "db_error" }, 500);
+    }
+    if (!dashboardSessionVersion(activeVersion)) {
+      return jsonResp(req, { error: "not_found" }, 404);
+    }
+    const { data: updated, error } = await supabase
+      .from("report_access")
+      .select("id, name, role, active, last_accessed, created_at")
+      .eq("id", id)
+      .maybeSingle();
+    if (error) return jsonResp(req, { error: "db_error" }, 500);
+    if (!updated) return jsonResp(req, { error: "not_found" }, 404);
+    return jsonResp(req, { user, access: publicAccessUser(updated) });
+  }
+
+  if (action === "access_reset") {
+    if (req.method !== "POST") {
+      return jsonResp(req, { error: "method_not_allowed" }, 405);
+    }
+    const bodyResult = await readBoundedJsonObject(
+      req,
+      AUTHENTICATED_JSON_BODY_LIMIT_BYTES,
+    );
+    if (!bodyResult.ok) {
+      return jsonResp(req, { error: bodyResult.error }, bodyResult.status);
+    }
+    const body = bodyResult.value;
+    const id = cleanUuid(body.id);
+    if (!id || !validNewPin(body.pin)) {
+      return jsonResp(req, {
+        error: "bad_pin_reset",
+        message: "A valid user and a 6-12 digit PIN are required.",
+      }, 400);
+    }
+    const pinHash = await hashDashboardPin(CREDENTIAL_PEPPER, body.pin);
+    const { data: resetVersion, error: resetError } = await supabase.rpc(
+      "reset_dashboard_access_credential",
+      { p_id: id, p_pin: body.pin, p_pin_hash: pinHash },
+    );
+    if (resetError) {
+      console.error("[lead-crm] access_reset failed:", resetError.code);
+      return jsonResp(req, {
+        error: resetError.code === "23505" ? "pin_unavailable" : "db_error",
+        message: resetError.code === "23505"
+          ? "Choose a different PIN."
+          : "Could not reset the PIN.",
+      }, resetError.code === "23505" ? 409 : 500);
+    }
+    if (!dashboardSessionVersion(resetVersion)) {
+      return jsonResp(req, { error: "not_found" }, 404);
+    }
+    const { data: updated, error } = await supabase
+      .from("report_access")
+      .select("id, name, role, active, last_accessed, created_at")
+      .eq("id", id)
+      .maybeSingle();
+    if (error) {
+      console.error("[lead-crm] access_reset reload failed:", error.code);
+      return jsonResp(req, { error: "db_error" }, 500);
+    }
+    if (!updated) return jsonResp(req, { error: "not_found" }, 404);
+    return jsonResp(req, {
+      user,
+      access: publicAccessUser(updated),
+      session_revoked: id === accessRow.id,
+    });
+  }
 
   // ─── LIST ──────────────────────────────────────────────────────────────────
   if (action === "list") {
     const result = await selectLeads(supabase);
     if (result.error) {
       return jsonResp(
+        req,
         { error: "db_error", message: result.error.message },
         500,
       );
     }
-    return jsonResp({
+    return jsonResp(req, {
       user,
       leads: result.leads,
-      schema: { crm_parity_ready: result.parityReady },
+      schema: {
+        crm_parity_ready: result.parityReady,
+        notification_outbox_ready: result.parityReady,
+      },
     });
   }
 
   // ─── UPDATE ────────────────────────────────────────────────────────────────
   if (action === "update") {
     if (req.method !== "POST") {
-      return jsonResp({
+      return jsonResp(req, {
         error: "method_not_allowed",
         message: "Use POST for action=update",
       }, 405);
     }
 
-    let body: any;
-    try {
-      body = await req.json();
-    } catch {
-      return jsonResp({ error: "bad_json" }, 400);
+    const bodyResult = await readBoundedJsonObject(
+      req,
+      AUTHENTICATED_JSON_BODY_LIMIT_BYTES,
+    );
+    if (!bodyResult.ok) {
+      return jsonResp(req, { error: bodyResult.error }, bodyResult.status);
     }
+    const body = bodyResult.value;
 
     const id = Number(body.id);
     if (!Number.isFinite(id) || id <= 0) {
-      return jsonResp({
+      return jsonResp(req, {
         error: "bad_id",
         message: "id must be a positive integer",
       }, 400);
@@ -268,7 +705,7 @@ Deno.serve(async (req: Request) => {
     if ("status" in body) {
       const s = String(body.status || "").toLowerCase();
       if (!ALLOWED_STATUS.has(s)) {
-        return jsonResp({
+        return jsonResp(req, {
           error: "bad_status",
           message: `status must be one of ${[...ALLOWED_STATUS].join(", ")}`,
         }, 400);
@@ -336,7 +773,7 @@ Deno.serve(async (req: Request) => {
     // recalculates automatically. Rule set by Ryan 2026-05-11; migration shipped same night.
 
     if (Object.keys(patch).length === 0) {
-      return jsonResp({ error: "nothing_to_update" }, 400);
+      return jsonResp(req, { error: "nothing_to_update" }, 400);
     }
 
     // Stamp won_at when transitioning to "won"
@@ -355,39 +792,41 @@ Deno.serve(async (req: Request) => {
       .select()
       .single();
     if (updErr) {
-      return jsonResp({ error: "db_error", message: updErr.message }, 500);
+      return jsonResp(req, { error: "db_error", message: updErr.message }, 500);
     }
 
-    return jsonResp({ user, lead: updated });
+    return jsonResp(req, { user, lead: updated });
   }
 
   // ─── CREATE (manual lead entry) ────────────────────────────────────────────
   if (action === "create") {
     if (req.method !== "POST") {
-      return jsonResp({
+      return jsonResp(req, {
         error: "method_not_allowed",
         message: "Use POST for action=create",
       }, 405);
     }
 
-    let body: any;
-    try {
-      body = await req.json();
-    } catch {
-      return jsonResp({ error: "bad_json" }, 400);
+    const bodyResult = await readBoundedJsonObject(
+      req,
+      AUTHENTICATED_JSON_BODY_LIMIT_BYTES,
+    );
+    if (!bodyResult.ok) {
+      return jsonResp(req, { error: bodyResult.error }, bodyResult.status);
     }
+    const body = bodyResult.value;
 
     const name = String(body.name || "").trim();
     if (!name) {
-      return jsonResp(
-        { error: "missing_name", message: "Name is required" },
-        400,
-      );
+      return jsonResp(req, {
+        error: "missing_name",
+        message: "Name is required",
+      }, 400);
     }
 
     const status = String(body.status || "new").toLowerCase();
     if (!ALLOWED_STATUS.has(status)) {
-      return jsonResp({
+      return jsonResp(req, {
         error: "bad_status",
         message: `status must be one of ${[...ALLOWED_STATUS].join(", ")}`,
       }, 400);
@@ -402,7 +841,9 @@ Deno.serve(async (req: Request) => {
       "spam",
       "unclassified",
     ]);
-    if (!allowedTiers.has(tier)) return jsonResp({ error: "bad_tier" }, 400);
+    if (!allowedTiers.has(tier)) {
+      return jsonResp(req, { error: "bad_tier" }, 400);
+    }
 
     const phone = body.phone ? String(body.phone).trim() : null;
     const email = body.email ? String(body.email).trim() : null;
@@ -421,10 +862,10 @@ Deno.serve(async (req: Request) => {
         : Number(body.margin);
 
     if (jobValue !== null && !Number.isFinite(jobValue)) {
-      return jsonResp({ error: "bad_job_value" }, 400);
+      return jsonResp(req, { error: "bad_job_value" }, 400);
     }
     if (margin !== null && !Number.isFinite(margin)) {
-      return jsonResp({ error: "bad_margin" }, 400);
+      return jsonResp(req, { error: "bad_margin" }, 400);
     }
 
     const insertRow: Record<string, unknown> = {
@@ -446,7 +887,7 @@ Deno.serve(async (req: Request) => {
     };
     if (status === "won") {
       insertRow.won_at = body.won_at
-        ? new Date(body.won_at).toISOString()
+        ? new Date(String(body.won_at)).toISOString()
         : new Date().toISOString();
     }
 
@@ -456,10 +897,10 @@ Deno.serve(async (req: Request) => {
       .select()
       .single();
     if (insErr) {
-      return jsonResp({ error: "db_error", message: insErr.message }, 500);
+      return jsonResp(req, { error: "db_error", message: insErr.message }, 500);
     }
 
-    return jsonResp({ user, lead: created });
+    return jsonResp(req, { user, lead: created });
   }
 
   // ─── CLICKS ────────────────────────────────────────────────────────────────
@@ -481,7 +922,11 @@ Deno.serve(async (req: Request) => {
       .order("created_at", { ascending: false })
       .limit(200);
     if (clicksErr) {
-      return jsonResp({ error: "db_error", message: clicksErr.message }, 500);
+      return jsonResp(
+        req,
+        { error: "db_error", message: clicksErr.message },
+        500,
+      );
     }
 
     const list = rows || [];
@@ -495,7 +940,7 @@ Deno.serve(async (req: Request) => {
       bySource[s][t]++;
     }
 
-    return jsonResp({
+    return jsonResp(req, {
       user,
       window_days: days,
       totals,
@@ -515,31 +960,33 @@ Deno.serve(async (req: Request) => {
       .limit(1000);
     if (error) {
       if (isMissingSchemaError(error)) {
-        return jsonResp({ user, storage_ready: false, actions: [] });
+        return jsonResp(req, { user, storage_ready: false, actions: [] });
       }
-      return jsonResp({ error: "db_error", message: error.message }, 500);
+      return jsonResp(req, { error: "db_error", message: error.message }, 500);
     }
-    return jsonResp({ user, storage_ready: true, actions: actions || [] });
+    return jsonResp(req, { user, storage_ready: true, actions: actions || [] });
   }
 
   if (action === "growth_update") {
     if (req.method !== "POST") {
-      return jsonResp({
+      return jsonResp(req, {
         error: "method_not_allowed",
         message: "Use POST for action=growth_update",
       }, 405);
     }
 
-    let body: any;
-    try {
-      body = await req.json();
-    } catch {
-      return jsonResp({ error: "bad_json" }, 400);
+    const bodyResult = await readBoundedJsonObject(
+      req,
+      AUTHENTICATED_JSON_BODY_LIMIT_BYTES,
+    );
+    if (!bodyResult.ok) {
+      return jsonResp(req, { error: bodyResult.error }, bodyResult.status);
     }
+    const body = bodyResult.value;
 
     const actionKey = cleanActionKey(body.action_key);
     if (!actionKey) {
-      return jsonResp({
+      return jsonResp(req, {
         error: "bad_action_key",
         message: "action_key must be 2-240 URL-safe characters.",
       }, 400);
@@ -547,7 +994,7 @@ Deno.serve(async (req: Request) => {
 
     const state = String(body.state || "open").toLowerCase();
     if (!ALLOWED_GROWTH_STATES.has(state)) {
-      return jsonResp({
+      return jsonResp(req, {
         error: "bad_growth_state",
         message: "state must be open, done, or snoozed",
       }, 400);
@@ -557,7 +1004,7 @@ Deno.serve(async (req: Request) => {
       ? dateOrNull(body.snoozed_until)
       : null;
     if (state === "snoozed" && !snoozedUntil) {
-      return jsonResp({
+      return jsonResp(req, {
         error: "bad_snooze_date",
         message: "snoozed_until must be YYYY-MM-DD when state=snoozed.",
       }, 400);
@@ -588,21 +1035,17 @@ Deno.serve(async (req: Request) => {
       .single();
     if (error) {
       if (isMissingSchemaError(error)) {
-        return jsonResp({
+        return jsonResp(req, {
           error: "storage_not_ready",
           message:
             "Apply the prepared growth_queue_actions migration before saving Growth Queue state.",
         }, 409);
       }
-      return jsonResp({ error: "db_error", message: error.message }, 500);
+      return jsonResp(req, { error: "db_error", message: error.message }, 500);
     }
 
-    return jsonResp({ user, action: saved });
+    return jsonResp(req, { user, action: saved });
   }
 
-  return jsonResp({
-    error: "unknown_action",
-    message:
-      `action must be 'list', 'create', 'update', 'clicks', 'growth_state', or 'growth_update' (got '${action}')`,
-  }, 400);
+  return jsonResp(req, { error: "unknown_action" }, 400);
 });

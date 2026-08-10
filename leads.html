@@ -75,6 +75,7 @@ td.name{font-weight:600;color:var(--text)}
 .b-new      {background:rgba(88,166,255,.16);color:var(--blue)}
 .b-contacted{background:rgba(188,140,255,.16);color:var(--purple)}
 	.b-estimated{background:rgba(210,153,34,.18);color:var(--orange)}
+	.b-ul_request{background:rgba(88,166,255,.18);color:var(--blue)}
 	.b-won      {background:rgba(63,185,80,.18);color:var(--green)}
 	.b-lost     {background:rgba(139,148,158,.18);color:var(--muted)}
 	.b-third_party{background:rgba(248,81,73,.12);color:#ff9b95}
@@ -191,7 +192,7 @@ footer{text-align:center;padding:24px;color:var(--muted);font-size:.78rem;border
     <div class="login-lock">🔒</div>
     <h1>Frame Restoration — Leads</h1>
     <div class="sub">Internal CRM · PIN required</div>
-    <form onsubmit="return doLogin(event)">
+    <form id="loginForm" onsubmit="return doLogin(event)">
       <input type="password" id="pinInput" placeholder="Enter PIN" autocomplete="off" autofocus>
       <button class="login-btn" type="submit">Sign In</button>
     </form>
@@ -249,6 +250,8 @@ footer{text-align:center;padding:24px;color:var(--muted);font-size:.78rem;border
 	    <span class="pb" data-status="new">New</span>
 	    <span class="pb" data-status="contacted">Contacted</span>
 	    <span class="pb" data-status="estimated">Estimated</span>
+	    <span class="pb" data-status="ul_request">UL Request</span>
+	    <span class="pb" data-status="spam">Spam</span>
 	    <span class="pb" data-status="won">Won</span>
 	    <span class="pb" data-status="lost">Lost</span>
 	    <span class="pb" data-status="third_party">Contractor / 3rd Party</span>
@@ -295,6 +298,8 @@ footer{text-align:center;padding:24px;color:var(--muted);font-size:.78rem;border
         <option value="new">New</option>
         <option value="contacted">Contacted</option>
 	        <option value="estimated">Estimated</option>
+	        <option value="ul_request">UL Request</option>
+	        <option value="spam">Spam</option>
 	        <option value="won">Won</option>
 	        <option value="lost">Lost</option>
 	        <option value="third_party">Contractor / 3rd Party</option>
@@ -379,6 +384,8 @@ footer{text-align:center;padding:24px;color:var(--muted);font-size:.78rem;border
         <option value="new">New</option>
         <option value="contacted">Contacted</option>
 	        <option value="estimated">Estimated</option>
+	        <option value="ul_request">UL Request</option>
+	        <option value="spam">Spam</option>
 	        <option value="won">Won</option>
 	        <option value="lost">Lost</option>
 	        <option value="third_party">Contractor / 3rd Party</option>
@@ -407,8 +414,9 @@ footer{text-align:center;padding:24px;color:var(--muted);font-size:.78rem;border
 
 <script>
 var API="https://hdcflshhomzildwqlmwh.supabase.co/functions/v1/lead-crm";
-var KEY="frame-roofing-2026";
-var PIN="";
+var ROUTING_KEY="frame-roofing-2026";
+var SESSION_STORAGE_KEY="frame.dashboard.session";
+var SESSION_TOKEN="";
 var CUR_USER=null;
 var leads=[];
 var filterStatus=localStorage.getItem("frame.leads.filter.status")||"all";
@@ -420,6 +428,7 @@ var sortDir=localStorage.getItem("frame.leads.sort.dir")||"desc";
 	var commTouched=false;
 	var clickData={totals:{call:0,sms:0},by_source:{},recent:[]};
 	var crmParityReady=true;
+	var notificationOutboxReady=true;
 	var growthStates={};
 	var growthStateLoaded=false;
 	var growthStorageReady=false;
@@ -443,20 +452,74 @@ var sortDir=localStorage.getItem("frame.leads.sort.dir")||"desc";
 	function fmtDate(s){if(!s)return"—";var d=new Date(s),now=new Date(),dd=Math.floor((now-d)/(86400000));if(dd===0)return d.toLocaleTimeString([],{hour:"numeric",minute:"2-digit"});if(dd===1)return"Yesterday";if(dd<7)return dd+"d ago";return d.toLocaleDateString([],{month:"short",day:"numeric"})}
 	function fmtMoney(n){if(n==null||isNaN(Number(n)))return"—";var v=Number(n);if(v===0)return"—";if(v>=1000)return"$"+(v/1000).toFixed(1).replace(/\.0$/,"")+"k";return"$"+v.toFixed(0)}
 	function statusOrNew(s){return s||"new"}
-	function statusLabel(s){return s==="third_party"?"Contractor / 3rd Party":statusOrNew(s)}
-	function isClosedStatus(s){return ["won","lost","third_party"].indexOf(statusOrNew(s))>=0}
-	function notificationFailed(r){return crmParityReady&&(Boolean(r.notification_error)||((Number(r.notification_attempts)||0)>0&&r.notified===false))}
+	function statusLabel(s){return s==="third_party"?"Contractor / 3rd Party":s==="ul_request"?"UL Request":s==="spam"?"Spam":statusOrNew(s)}
+	function isClosedStatus(s){return ["won","lost","third_party","spam"].indexOf(statusOrNew(s))>=0}
+	function notificationJobs(r){return Array.isArray(r&&r.lead_notifications)?r.lead_notifications:[]}
+	function notificationFor(r,role){var jobs=notificationJobs(r);for(var i=0;i<jobs.length;i++)if(jobs[i].recipient_role===role)return jobs[i];return null}
+	function notificationJobFailed(job){return Boolean(job)&&["delayed","bounced","complained","failed"].indexOf(job.status)>=0}
+	function notificationFailureIssues(r){
+	  var jobs=notificationJobs(r),issues=[],recipients=[["primary","Landon"],["backup","Backup"]];
+	  recipients.forEach(function(recipient){
+	    var job=notificationFor(r,recipient[0]);
+	    if(notificationJobFailed(job))issues.push({label:recipient[1],status:job.status,job:job});
+	    else if(notificationOutboxReady&&jobs.length&&!job)issues.push({label:recipient[1],status:"no receipt",job:null});
+	  });
+	  return issues;
+	}
+	function notificationFailureRoles(r){return notificationFailureIssues(r).map(function(issue){return issue.label})}
+	function legacyNotificationFailed(r){return notificationJobs(r).length===0&&crmParityReady&&(Boolean(r.notification_error)||((Number(r.notification_attempts)||0)>0&&r.notified===false))}
+	function notificationFailureSummary(r,includeError){
+	  var issues=notificationFailureIssues(r);
+	  if(issues.length)return issues.map(function(issue){
+	    var text=issue.label+": "+issue.status,job=issue.job;
+	    if(includeError&&job&&job.last_error_code)text+=" · "+job.last_error_code;
+	    if(includeError&&job&&job.last_error)text+=" · "+job.last_error;
+	    return text;
+	  }).join(" · ");
+	  if(legacyNotificationFailed(r))return "Legacy email: "+(r.notification_error||"failed");
+	  return "";
+	}
+	function notificationFailed(r){
+	  return notificationFailureRoles(r).length>0||legacyNotificationFailed(r);
+	}
 	function notificationBadge(r){
+	  var failureSummary=notificationFailureSummary(r,false);
+	  if(failureSummary)return '<span class="badge b-unnotified">'+esc(failureSummary)+'</span>';
+	  var primary=notificationFor(r,"primary");
+	  if(primary){
+	    if(primary.status==="delivered")return '<span class="badge b-notified">delivered</span>';
+	    if(primary.status==="accepted")return '<span class="badge b-manual">accepted</span>';
+	    return '<span class="badge b-manual">'+esc(primary.status||"pending")+'</span>';
+	  }
 	  if(!crmParityReady)return '<span class="badge b-manual">pending</span>';
-	  if(notificationFailed(r))return '<span class="badge b-unnotified">email failed</span>';
-	  if(r.notified===true)return '<span class="badge b-notified">sent</span>';
+	  if(r.notified===true)return '<span class="badge b-manual">accepted (legacy)</span>';
 	  return '<span class="badge b-manual">manual</span>';
+	}
+	function notificationDetail(job,label){
+	  if(!job)return esc(label)+': no outbox receipt';
+	  var stamp=job.delivered_at||job.last_event_at||job.accepted_at;
+	  return esc(label)+': <b>'+esc(job.status||"pending")+'</b>'
+	    +' · attempts: '+esc(job.attempts||0)
+	    +(stamp?' · '+esc(fmtDate(stamp)):"")
+	    +(job.last_error_code?' · '+esc(job.last_error_code):"")
+	    +(job.last_error?' · '+esc(job.last_error):"");
 	}
 	function syncSchemaBoundControls(){
 	  document.querySelectorAll('option[value="third_party"]').forEach(function(opt){opt.disabled=!crmParityReady});
 	}
+	function crmUrl(action,params){
+	  var url=API+"?action="+encodeURIComponent(action);
+	  Object.keys(params||{}).forEach(function(key){url+="&"+encodeURIComponent(key)+"="+encodeURIComponent(params[key])});
+	  return url;
+	}
+	function crmRequest(action,options,params){
+	  var request=options||{};
+	  request.headers=Object.assign({},request.headers||{}, {"Authorization":"Bearer "+SESSION_TOKEN});
+	  return fetch(crmUrl(action,params),request);
+	}
 	function applyListResponse(d){
 	  crmParityReady=!(d&&d.schema&&d.schema.crm_parity_ready===false);
+	  notificationOutboxReady=!(d&&d.schema&&d.schema.notification_outbox_ready===false);
 	  leads=d&&d.leads?d.leads:[];
 	  syncSchemaBoundControls();
 	}
@@ -466,15 +529,20 @@ function doLogin(e){
   var p=document.getElementById("pinInput").value.trim();
   if(!p){document.getElementById("loginErr").textContent="Please enter a PIN";return false}
   document.getElementById("loginErr").textContent="Checking…";
-  fetch(API+"?action=list&key="+KEY+"&pin="+encodeURIComponent(p))
-    .then(function(r){
-      if(r.status===403){document.getElementById("loginErr").textContent="Invalid PIN. Try again.";PIN="";return}
-      if(!r.ok){document.getElementById("loginErr").textContent="Server error ("+r.status+"). Try again.";return}
-      return r.json().then(function(d){
-        if(!d||d.error){document.getElementById("loginErr").textContent=d&&d.message?d.message:"Login failed.";return}
-	        PIN=p;CUR_USER=d.user;sessionStorage.setItem("frp",p);
-	        applyListResponse(d);showReport();loadGrowthStates().then(function(){render();loadClicks()});
-      });
+  fetch(crmUrl("login"),{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({routing_key:ROUTING_KEY,pin:p})})
+    .then(async function(r){
+      var d={};try{d=await r.json()}catch(_){}
+      if(!r.ok){document.getElementById("loginErr").textContent=r.status===401||r.status===403?"Invalid PIN. Try again.":(d.message||d.error||"Server error ("+r.status+"). Try again.");return}
+      if(!d.token||!d.user){document.getElementById("loginErr").textContent="Login failed.";return}
+      if(d.user.role!=="sales"&&d.user.role!=="admin"){
+        document.getElementById("loginErr").textContent="This PIN has report-only access. A sales or admin role is required for the CRM.";return
+      }
+	    SESSION_TOKEN=d.token;CUR_USER=d.user;
+	    var listResponse=await crmRequest("list");
+	    var listBody={};try{listBody=await listResponse.json()}catch(_){}
+	    if(!listResponse.ok||listBody.error){SESSION_TOKEN="";CUR_USER=null;document.getElementById("loginErr").textContent=listBody.message||listBody.error||"CRM access failed.";return}
+	    sessionStorage.setItem(SESSION_STORAGE_KEY,SESSION_TOKEN);document.getElementById("pinInput").value="";
+	    applyListResponse(listBody);showReport();loadGrowthStates().then(function(){render();loadClicks()});
     })
     .catch(function(){document.getElementById("loginErr").textContent="Network error. Try again."});
   return false;
@@ -488,7 +556,7 @@ function showReport(){
   }
 }
 function doLogout(){
-	  sessionStorage.removeItem("frp");PIN="";CUR_USER=null;leads=[];selectedId=null;growthStates={};growthStateLoaded=false;growthStorageReady=false;growthActionIndex={};
+	  sessionStorage.removeItem(SESSION_STORAGE_KEY);SESSION_TOKEN="";CUR_USER=null;leads=[];selectedId=null;growthStates={};growthStateLoaded=false;growthStorageReady=false;growthActionIndex={};
   document.getElementById("reportWrap").style.display="none";
   document.getElementById("loginOverlay").style.display="flex";
   document.getElementById("pinInput").value="";
@@ -497,11 +565,11 @@ function doLogout(){
 }
 // Auto-login on revisit
 (function(){
-  var s=sessionStorage.getItem("frp");
+  var s=sessionStorage.getItem(SESSION_STORAGE_KEY);
   if(s){
-    PIN=s;
-    fetch(API+"?action=list&key="+KEY+"&pin="+encodeURIComponent(s))
-      .then(function(r){if(r.status===403){doLogout();return}return r.json()})
+	SESSION_TOKEN=s;
+	crmRequest("list")
+	      .then(function(r){if(r.status===401||r.status===403){doLogout();return}return r.json()})
 	      .then(function(d){if(!d||d.error){doLogout();return}CUR_USER=d.user;applyListResponse(d);showReport();loadGrowthStates().then(function(){render();loadClicks()})})
       .catch(function(){doLogout()});
   }
@@ -509,8 +577,8 @@ function doLogout(){
 
 async function refresh(){
   try{
-    var r=await fetch(API+"?action=list&key="+KEY+"&pin="+encodeURIComponent(PIN));
-    if(r.status===403){doLogout();return}
+    var r=await crmRequest("list");
+    if(r.status===401||r.status===403){doLogout();return}
     var d=await r.json();
     if(d.error)throw new Error(d.message||d.error);
 	    applyListResponse(d);
@@ -558,8 +626,8 @@ async function submitAddLead(){
     notes:document.getElementById("add-notes").value.trim()||null
   };
   try{
-    var r=await fetch(API+"?action=create&key="+KEY+"&pin="+encodeURIComponent(PIN),{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)});
-    if(r.status===403){doLogout();return}
+    var r=await crmRequest("create",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)});
+    if(r.status===401||r.status===403){doLogout();return}
     var d=await r.json();
     if(d.error)throw new Error(d.message||d.error);
     toast("Lead saved · "+d.lead.name);
@@ -604,8 +672,8 @@ async function submitAddLead(){
 	}
 	async function loadGrowthStates(){
 	  try{
-	    var r=await fetch(API+"?action=growth_state&key="+KEY+"&pin="+encodeURIComponent(PIN));
-	    if(r.status===403){doLogout();return}
+	    var r=await crmRequest("growth_state");
+	    if(r.status===401||r.status===403){doLogout();return}
 	    var d=await r.json();
 	    if(d.error)throw new Error(d.message||d.error);
 	    hydrateGrowthStates(d.actions||[],d.storage_ready!==false);
@@ -639,8 +707,8 @@ async function submitAddLead(){
 	    priority:a.priority||"P2"
 	  };
 	  try{
-	    var r=await fetch(API+"?action=growth_update&key="+KEY+"&pin="+encodeURIComponent(PIN),{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)});
-	    if(r.status===403){doLogout();return}
+	    var r=await crmRequest("growth_update",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)});
+	    if(r.status===401||r.status===403){doLogout();return}
 	    var d=await r.json();
 	    if(!r.ok||d.error)throw new Error(d.message||d.error||("HTTP "+r.status));
 	    growthStates[d.action.action_key]=d.action;growthStateLoaded=true;renderGrowthQueue();toast("Growth action saved",false);
@@ -664,7 +732,7 @@ async function submitAddLead(){
 	function buildGrowthQueue(){
 	  var D=buildGrowthData(),actions=[];
 	  var failed=leads.filter(notificationFailed).sort(function(a,b){return new Date(b.created_at)-new Date(a.created_at)});
-	  failed.slice(0,8).forEach(function(r){addGrowthAction(actions,{id:"notify-"+r.id,priority:"P0",category:"Lead Ops",title:"Fix failed lead notification",detail:(r.name||"Unnamed lead")+" · "+fmtDate(r.created_at)+" · "+(r.notification_error||"email alert did not complete"),step:"Confirm sales received the lead, then resolve the Resend/email path.",leadId:r.id,due:"now"})});
+	  failed.slice(0,8).forEach(function(r){addGrowthAction(actions,{id:"notify-"+r.id,priority:"P0",category:"Lead Ops",title:"Fix failed lead notification",detail:(r.name||"Unnamed lead")+" · "+fmtDate(r.created_at)+" · "+(notificationFailureSummary(r,true)||"email alert did not complete"),step:"Confirm sales received the lead, then resolve the Resend/email path.",leadId:r.id,due:"now"})});
 	  var untouched=leads.filter(function(r){return statusOrNew(r.status)==="new"}).sort(function(a,b){return new Date(a.created_at)-new Date(b.created_at)});
 	  untouched.slice(0,12).forEach(function(r){var h=hoursSince(r.created_at),urgent=["emergency","urgent"].indexOf(r.tier)>=0;addGrowthAction(actions,{id:"touch-"+r.id,priority:urgent||h>=2?"P0":"P1",category:"Lead Ops",title:"First-touch new lead",detail:(r.name||"Unnamed lead")+" · "+(r.phone||r.email||"no contact shown")+" · "+(r.tier||"general")+" · "+Math.max(0,Math.round(h))+"h old",step:"Call, log the result, then move status to Contacted, Estimated, Won, Lost, or Contractor / 3rd Party.",leadId:r.id,due:urgent?"now":"today"})});
 	  leads.filter(function(r){var st=statusOrNew(r.status);return (st==="contacted"||st==="estimated")&&hoursSince(r.created_at)>48&&!isClosedStatus(st)}).slice(0,8).forEach(function(r){addGrowthAction(actions,{id:"stale-"+r.id,priority:"P1",category:"Pipeline",title:"Advance stale open lead",detail:(r.name||"Unnamed lead")+" has been "+statusLabel(r.status)+" for "+daysSince(r.created_at)+"d.",step:"Add the latest note and either estimate, close, or mark it as contractor / third-party noise.",leadId:r.id,due:"today"})});
@@ -764,8 +832,8 @@ async function submitAddLead(){
 
 	async function loadClicks(){
   try{
-    var r=await fetch(API+"?action=clicks&days=30&key="+KEY+"&pin="+encodeURIComponent(PIN));
-    if(r.status===403){doLogout();return}
+    var r=await crmRequest("clicks",{}, {days:30});
+    if(r.status===401||r.status===403){doLogout();return}
 	    var d=await r.json();
 	    if(d.error)throw new Error(d.message||d.error);
 	    clickData=d;
@@ -836,7 +904,7 @@ function computeKpis(rows){
 	  if(!failures.length){panel.style.display="none";host.innerHTML="";return}
 	  panel.style.display="block";
 	  host.innerHTML=failures.map(function(r){
-	    var msg=r.notification_error||"Email notification did not complete.";
+	    var msg=notificationFailureSummary(r,true)||"Email notification did not complete.";
 	    return '<div class="alert-row"><div>'+esc(fmtDate(r.created_at))+'</div><button type="button" onclick="openPanel('+Number(r.id)+')">'+esc(r.name||"Unnamed lead")+'</button><div title="'+esc(msg)+'">'+esc((msg||"").slice(0,48))+(msg&&msg.length>48?"…":"")+'</div></div>';
 	  }).join("");
 	}
@@ -913,14 +981,18 @@ function openPanel(id){
 	  document.getElementById("p-service").textContent=lead.service||"—";
 	  document.getElementById("p-message").textContent=lead.message||"(no message)";
 	  var n=document.getElementById("p-notification");
-	  if(!crmParityReady){
+	  var primaryNotification=notificationFor(lead,"primary");
+	  var backupNotification=notificationFor(lead,"backup");
+	  if(primaryNotification||backupNotification){
+	    n.innerHTML=notificationDetail(primaryNotification,"Landon")+'<br>'+notificationDetail(backupNotification,"Backup");
+	  }else if(!crmParityReady){
 	    n.textContent="Prepared migration not applied yet";
 	  }else if(notificationFailed(lead)){
 	    n.innerHTML='<span style="color:var(--red);font-weight:600">Failed</span>'
 	      +' · attempts: '+esc(lead.notification_attempts||0)
 	      +(lead.notification_error?' · '+esc(lead.notification_error):"");
 	  }else if(lead.notified===true){
-	    n.innerHTML='<span style="color:var(--green);font-weight:600">Sent</span>'
+	    n.innerHTML='<span style="font-weight:600">Accepted (legacy)</span>'
 	      +(lead.notified_at?' · '+esc(fmtDate(lead.notified_at)):"");
 	  }else{
 	    n.textContent="Manual/no email notification attempted";
@@ -1028,8 +1100,8 @@ async function save(){
 	    if(finalPmt.value||finalPmt.dataset.original)body.final_payment_received_at=finalPmt.value||null;
 	  }
   try{
-    var r=await fetch(API+"?action=update&key="+KEY+"&pin="+encodeURIComponent(PIN),{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)});
-    if(r.status===403){doLogout();return}
+    var r=await crmRequest("update",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)});
+    if(r.status===401||r.status===403){doLogout();return}
     var d=await r.json();
     if(!r.ok||d.error)throw new Error(d.message||d.error||("HTTP "+r.status));
     toast("Saved",false);

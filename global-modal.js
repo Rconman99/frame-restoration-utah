@@ -8,6 +8,25 @@
 
   var booted = false;
 
+  function createSubmissionKey() {
+    if (window.crypto && typeof window.crypto.randomUUID === 'function') {
+      return window.crypto.randomUUID();
+    }
+    var bytes = new Uint8Array(16);
+    if (window.crypto && typeof window.crypto.getRandomValues === 'function') {
+      window.crypto.getRandomValues(bytes);
+    } else {
+      for (var i = 0; i < bytes.length; i++) bytes[i] = Math.floor(Math.random() * 256);
+    }
+    bytes[6] = (bytes[6] & 15) | 64;
+    bytes[8] = (bytes[8] & 63) | 128;
+    var hex = Array.prototype.map.call(bytes, function(value) {
+      return value.toString(16).padStart(2, '0');
+    }).join('');
+    return hex.slice(0, 8) + '-' + hex.slice(8, 12) + '-' + hex.slice(12, 16) + '-' +
+      hex.slice(16, 20) + '-' + hex.slice(20);
+  }
+
   function isModalTrigger(target) {
     if (!target || !target.closest) return false;
     var trigger = target.closest(
@@ -80,7 +99,8 @@
     '  <div class="fr-modal-body" id="frModalBody">',
     '    <h2>Get Your Free Roof Inspection</h2>',
     '    <p>3 fields, 30 seconds. We\'ll call within 15 minutes during business hours.</p>',
-    '    <form id="frModalForm" data-endpoint="https://hdcflshhomzildwqlmwh.supabase.co/functions/v1/handle-lead">',
+    '    <form id="frModalForm" method="post" action="https://hdcflshhomzildwqlmwh.supabase.co/functions/v1/handle-lead" accept-charset="UTF-8" data-endpoint="https://hdcflshhomzildwqlmwh.supabase.co/functions/v1/handle-lead">',
+    '      <div aria-hidden="true" style="position:absolute;left:-10000px;width:1px;height:1px;overflow:hidden;"><label>Company website<input type="text" name="company_website" tabindex="-1" autocomplete="off"></label></div>',
     '      <div class="fr-modal-row"><input type="text" name="name" placeholder="Full Name" required autocomplete="name"></div>',
     '      <div class="fr-modal-row"><input type="tel" name="phone" placeholder="Mobile Phone" required autocomplete="tel"></div>',
     '      <div class="fr-modal-row"><input type="text" name="address" placeholder="Street Address (optional)" autocomplete="street-address"></div>',
@@ -259,6 +279,7 @@
   // ─── Form Submit ───
   var form = document.getElementById('frModalForm');
   if (form) {
+    form.dataset.submissionKey = form.dataset.submissionKey || createSubmissionKey();
     // form_start event — fires once per session on first field focus.
     // Mirrors the pattern on index.html heroForm + leadForm. Powers
     // form-abandonment recovery (Phase 1 Supabase fn matches form_start
@@ -286,6 +307,7 @@
       new FormData(form).forEach(function(v, k) { payload[k] = v; });
       payload.sms_consent = payload.sms_consent === 'yes';
       payload.source_page = window.location.pathname;
+      payload.submission_key = form.dataset.submissionKey;
 
       // Merge ad attribution (gclid/fbclid/utm_*) from /track-attribution.js
       if (window.FrameAttribution) {

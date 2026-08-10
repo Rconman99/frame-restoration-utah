@@ -599,8 +599,8 @@ def render_html(manifest: dict, image_url: Optional[str], image_local_path: Opti
         img_src = image_url
         is_ai = True
     else:
-        og_image = f"{SITE}/images/projects/cities/heber-valley-drone-poster.webp"
-        img_src = "/images/projects/cities/heber-valley-drone-poster.webp"
+        og_image = f"{SITE}/images/projects/heber-valley-drone-poster.webp"
+        img_src = "/images/projects/heber-valley-drone-poster.webp"
         is_ai = False
 
     # Image schema block — divergent based on AI vs real photo.
@@ -968,7 +968,7 @@ def main():
     print()
     print("Next: invoke the `frame-blog-publish` Claude skill to call Higgsfield + render HTML,")
     print("or run with --no-hero (uses fallback photo) and:")
-    print(f"  python3 {Path(__file__).name} --render --manifest {out_manifest} --image-local /images/projects/cities/heber-valley-drone-poster.webp")
+    print(f"  python3 {Path(__file__).name} --render --manifest {out_manifest} --image-local /images/projects/heber-valley-drone-poster.webp")
 
 
 if __name__ == "__main__":

@@ -31,7 +31,7 @@
         },
         {
           "key": "Content-Security-Policy",
-          "value": "default-src 'self'; script-src 'self' 'unsafe-inline' https://us.i.posthog.com https://us-assets.i.posthog.com https://cdnjs.cloudflare.com https://api.mapbox.com; worker-src 'self' blob:; child-src blob:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://api.mapbox.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: blob: https://www.framerestorationutah.com https://*.mapbox.com; frame-src https://www.google.com; connect-src 'self' https://us.i.posthog.com https://*.supabase.co https://hdcflshhomzildwqlmwh.supabase.co https://api.mapbox.com https://events.mapbox.com https://*.tiles.mapbox.com"
+          "value": "default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'self'; form-action 'self' https://hdcflshhomzildwqlmwh.supabase.co; script-src 'self' 'unsafe-inline' https://us.i.posthog.com https://us-assets.i.posthog.com https://cdnjs.cloudflare.com https://api.mapbox.com; worker-src 'self' blob:; child-src blob:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://api.mapbox.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: blob: https://www.framerestorationutah.com https://cdnjs.cloudflare.com https://*.tile.openstreetmap.org https://*.mapbox.com; frame-src https://www.google.com; connect-src 'self' https://us.i.posthog.com https://hdcflshhomzildwqlmwh.supabase.co https://api.mapbox.com https://events.mapbox.com https://*.tiles.mapbox.com https://api.weather.gov https://www.googleapis.com"
         }
       ]
     },
@@ -58,7 +58,7 @@
       "headers": [
         {
           "key": "Cache-Control",
-          "value": "public, max-age=31536000, immutable"
+          "value": "public, max-age=0, must-revalidate"
         }
       ]
     },
@@ -67,7 +67,7 @@
       "headers": [
         {
           "key": "Cache-Control",
-          "value": "public, max-age=31536000, immutable"
+          "value": "public, max-age=0, must-revalidate"
         }
       ]
     }
@@ -89,6 +89,11 @@
       "source": "/pages/storm-damage-restoration",
       "destination": "/pages/storm-damage",
       "permanent": true
+    },
+    {
+      "source": "/seo-report",
+      "destination": "/dashboard",
+      "permanent": false
     },
     {
       "source": "/:city/storm-damage-restoration",

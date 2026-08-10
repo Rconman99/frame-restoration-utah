@@ -4,35 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="robots" content="noindex,nofollow">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; script-src 'self' https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' https://hdcflshhomzildwqlmwh.supabase.co https://api.weather.gov https://www.googleapis.com; font-src 'self' data:; form-action 'self'">
   <title>Frame Restoration Utah — SEO & Lead Attribution Tracker</title>
 
-  <!-- Brand-accent injection (build-time substitution) -->
-  <style>:root { --brand-accent: #c8a951; }</style>
-
   <link rel="stylesheet" href="/dashboard/dashboard.css">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
-
-  <!-- Per-client config (build-time substitution) -->
-  <script>
-    window.DASHBOARD_CONFIG = {
-      clientName:         "Frame Restoration Utah",
-      tagline:            "SEO & Lead Attribution Tracker",
-      client:             { name: "Frame Restoration Utah", domain: "www.framerestorationutah.com" },
-      supabaseUrl:        "https://hdcflshhomzildwqlmwh.supabase.co",
-      supabaseAnonKey:    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhkY2Zsc2hob216aWxkd3FsbXdoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDI3NjI3NjQsImV4cCI6MjA1ODMzODc2NH0.kWSlGEtBgPFOx5eq8MYGz3VDqhAdqQTdGVlQqdRuzXk",
-      campaignKey:        "frame-roofing-2026",
-      defaultDays:        30,
-      ranges:             [7,30,60,90],
-      footerLinks:        [{"label":"PostHog Dashboard","url":"https://us.posthog.com/project/333074"}],
-      builderAttribution: "Built by Ryan Conwell",
-      dataSources: {
-        stormWatch: { enabled: true, area: "UT" },
-        reviews:    { enabled: true, feedPath: "/reviews.json", competitorTarget: { name: "roofingutah.com", count: 54 } },
-        sitemap:    { enabled: true, url: "/sitemap.xml" },
-        psi:        { enabled: true, origin: "https://www.framerestorationutah.com", strategy: "mobile", apiKey: "AIzaSyBcqIurJqIrnaf9V1adhN-UuSgvjcQjwgU" }
-      }
-    };
-  </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js" integrity="sha384-bs/nf9FbdNouRbMiFcrcZfLXYPKiPaGVGplVbv7dLGECccEXDW+S3zjqSKR5ZEaD" crossorigin="anonymous"></script>
+  <script src="/dashboard/config.js"></script>
   <script src="/track-attribution.js" defer></script>
 </head>
 <body>
@@ -43,7 +20,7 @@
     <div class="login-lock">&#128274;</div>
     <h1>Frame Restoration Utah</h1>
     <p class="sub">SEO & Lead Attribution Tracker</p>
-    <form id="loginForm" onsubmit="return window.__dashboard.doLogin(event)">
+    <form id="loginForm">
       <input type="password" id="pinInput" placeholder="Enter PIN" autocomplete="off" autofocus>
       <button type="submit" class="login-btn">Unlock Report</button>
     </form>
@@ -65,10 +42,11 @@
         <span class="user-name" id="userName"></span>
         <span class="user-role" id="userRole"></span>
       </div>
-      <div style="margin-top:6px">
-        <button class="rb" onclick="window.__dashboard.refresh()">&#x21bb; Refresh</button>
-        <button class="sm-btn" id="manageBtn" onclick="window.__dashboard.openAdmin()" style="display:none">Manage Users</button>
-        <button class="sm-btn red" onclick="window.__dashboard.doLogout()">Logout</button>
+      <div class="header-actions">
+        <button class="rb" id="refreshBtn">&#x21bb; Refresh</button>
+        <a class="sm-btn crm-link" id="crmBtn" href="/leads">&rarr; Leads CRM</a>
+        <button class="sm-btn initially-hidden" id="manageBtn">Manage Users</button>
+        <button class="sm-btn red" id="logoutBtn">Logout</button>
       </div>
     </div>
   </div>
@@ -88,38 +66,28 @@
 <!-- Admin Modal -->
 <div class="modal-bg" id="adminModal">
   <div class="modal">
-    <button class="close-btn" onclick="window.__dashboard.closeAdmin()">&times;</button>
+    <button class="close-btn" id="closeAdminBtn">&times;</button>
     <h2>Manage Report Access</h2>
     <table id="accessTable">
-      <thead><tr><th>Name</th><th>PIN</th><th>Role</th><th>Status</th><th></th></tr></thead>
+      <thead><tr><th>Name</th><th>Role</th><th>Status</th><th>Last used</th><th>Credentials</th><th></th></tr></thead>
       <tbody id="accessBody"></tbody>
     </table>
-    <h3 style="font-size:.95rem;color:var(--muted);margin:16px 0 8px">Add New User</h3>
+    <h3 class="admin-subheading">Add New User</h3>
     <div class="add-row">
       <input type="text" id="newName" placeholder="Name">
-      <input type="text" id="newPin" placeholder="PIN code">
-      <button onclick="window.__dashboard.addUser()">Add</button>
+      <select id="newRole" aria-label="Access role">
+        <option value="viewer">Viewer — report only</option>
+        <option value="sales">Sales — CRM</option>
+        <option value="admin">Admin — manage access</option>
+      </select>
+      <input type="password" id="newPin" placeholder="6-12 digit PIN" inputmode="numeric" autocomplete="new-password">
+      <button id="addUserBtn">Add</button>
     </div>
-    <div id="adminMsg" style="color:var(--green);font-size:.85rem;margin-top:10px;min-height:20px"></div>
+    <div id="adminMsg" class="admin-message"></div>
   </div>
 </div>
 
-<!-- Build the time-range buttons from config.ranges -->
-<script>
-(function () {
-  var ranges = (window.DASHBOARD_CONFIG && window.DASHBOARD_CONFIG.ranges) || [7, 14, 30, 90];
-  var def    = (window.DASHBOARD_CONFIG && window.DASHBOARD_CONFIG.defaultDays) || 30;
-  var bar = document.getElementById('rangeBar');
-  ranges.forEach(function (d) {
-    var b = document.createElement('button');
-    b.className = 'pb' + (d === def ? ' act' : '');
-    b.textContent = d + ' Days';
-    b.onclick = function () { window.__dashboard.sw(d, b); };
-    bar.appendChild(b);
-  });
-})();
-</script>
-
+<script src="/dashboard/safe-html.js"></script>
 <script src="/dashboard/dashboard.js"></script>
 
 </body>

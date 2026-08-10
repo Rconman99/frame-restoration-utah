@@ -1,0 +1,41 @@
+name: Utah Lead Notification Recovery
+
+on:
+  schedule:
+    - cron: '*/10 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: utah-lead-notification-recovery
+  cancel-in-progress: false
+
+jobs:
+  recover:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Retry pending or interrupted owner notifications
+        env:
+          WORKER_TOKEN: ${{ secrets.LEAD_NOTIFICATION_WORKER_TOKEN }}
+        run: |
+          test -n "$WORKER_TOKEN" || { echo "::error::LEAD_NOTIFICATION_WORKER_TOKEN is missing"; exit 1; }
+          RESPONSE_FILE="$(mktemp)"
+          trap 'rm -f "$RESPONSE_FILE"' EXIT
+          if ! HTTP_STATUS="$(curl --silent --show-error \
+              --output "$RESPONSE_FILE" \
+              --write-out "%{http_code}" \
+              --request POST \
+              --header "Authorization: Bearer $WORKER_TOKEN" \
+              --header "x-frame-worker-mode: recover" \
+              https://hdcflshhomzildwqlmwh.supabase.co/functions/v1/lead-notification-worker)"; then
+            echo "::error::Lead notification worker request failed before an HTTP receipt was returned"
+            exit 1
+          fi
+          cat "$RESPONSE_FILE"
+          if [[ "$HTTP_STATUS" -lt 200 || "$HTTP_STATUS" -ge 300 ]]; then
+            echo "::error::Lead notification worker is unhealthy (HTTP $HTTP_STATUS); inspect the persisted terminal/exhausted counts above"
+            exit 1
+          fi

@@ -21,8 +21,8 @@ name: Compliance Gate
 #   the TX→UT port). RATCHET: remove continue-on-error once 45/45 location pages pass.
 # - review-integrity: BLOCKING (added 2026-06-03) — the dedicated anti-clone gate.
 #   Location pages may carry individual <Review> markup from REAL reviewers only
-#   (reviews.json / data/reviews-full.json), and NEVER an AggregateRating (the single
-#   sitewide GBP rating belongs only on homepage/About). Codifies the compliance line
+#   (reviews.json / data/reviews-full.json), and NEVER an AggregateRating. The single
+#   evidenced GBP rating belongs only on the homepage. Codifies the compliance line
 #   from commit 816c280 and gates the top-10-cities Review-schema rollout.
 #
 # NOTE: media-provenance (TX media-clearance gate) is intentionally omitted — it
@@ -39,6 +39,7 @@ on:
       - 'scripts/audit-compliance-words.mjs'
       - 'scripts/audit-links.mjs'
       - 'scripts/audit-jsonld.mjs'
+      - 'scripts/repair-faq-visibility.mjs'
       - 'scripts/audit-city-quality.mjs'
       - 'scripts/audit-cta-integrity.mjs'
       - 'scripts/audit-gbp-copy.mjs'
@@ -47,14 +48,31 @@ on:
       - 'scripts/audit-entity-consistency.mjs'
       - 'scripts/audit-doc-isolation.mjs'
       - 'scripts/audit-public-seo-surface.mjs'
+      - 'scripts/audit-static-assets.mjs'
+      - 'scripts/audit-csp-contract.mjs'
       - 'scripts/validate-mobile-ui-contract.mjs'
+      - 'scripts/validate-mobile-contact-corpus.mjs'
       - 'scripts/test-mobile-ui.mjs'
+      - 'scripts/normalize-mobile-cta.py'
+      - 'scripts/test-lead-form-submit.mjs'
+      - 'scripts/audit-dashboard-security.mjs'
+      - 'scripts/test-dashboard-session-client.mjs'
+      - 'scripts/verify-dashboard-deploy-receipt.mjs'
+      - 'scripts/test-dashboard-deploy-receipt.mjs'
+      - 'scripts/verify-client-ip-deploy-receipt.mjs'
+      - 'scripts/test-client-ip-deploy-receipt.mjs'
+      - 'scripts/verify-owner-notification-deploy-receipt.mjs'
+      - 'scripts/run-owner-notification-deploy-canaries.mjs'
+      - 'scripts/test-owner-notification-deploy-receipt.mjs'
+      - 'scripts/check-cta-liveness.py'
+      - 'scripts/update-google-reviews.py'
       - 'scripts/sync-shared-asset-versions.mjs'
       - 'scripts/shared-asset-versions.json'
       - 'scripts/generate-blog-post.py'
       - 'global.css'
       - 'global-critical.css'
       - 'global-modal.js'
+      - 'images/**'
       - 'package.json'
       - 'package-lock.json'
       - '**/*.md'
@@ -64,10 +82,22 @@ on:
       - 'data/weekly-reports/**'
       - 'data/aeo/topic-portfolio-baseline.json'
       - '.vercelignore'
+      - 'vercel.json'
       - 'sitemap.xml'
       - '.github/workflows/compliance-gate.yml'
-      - 'supabase/functions/handle-lead/**'
+      - '.github/workflows/deploy-edge-function.yml'
+      - 'supabase/functions/**'
       - 'supabase/functions/lead-crm/**'
+      - 'supabase/functions/weekly-report/**'
+      - 'supabase/functions/_shared/crm-access.ts'
+      - 'supabase/functions/_shared/crm-access.test.ts'
+      - 'supabase/functions/_shared/dashboard-session.ts'
+      - 'supabase/functions/_shared/dashboard-session.test.ts'
+      - 'supabase/functions/_shared/dashboard-credential.ts'
+      - 'supabase/functions/_shared/dashboard-credential.test.ts'
+      - 'supabase/functions/resend-webhook/**'
+      - 'supabase/functions/lead-notification-worker/**'
+      - '.github/workflows/lead-notification-worker.yml'
       - 'supabase/functions/_shared/lead-sms.ts'
       - 'supabase/functions/_shared/lead-sms.test.ts'
       - 'supabase/functions/_shared/auth-throttle.ts'
@@ -77,6 +107,23 @@ on:
       - 'supabase/functions/_shared/classify-inbound.test.ts'
       - 'supabase/functions/_shared/lead-tier.ts'
       - 'supabase/functions/_shared/lead-tier.test.ts'
+      - 'supabase/functions/_shared/lead-notification.ts'
+      - 'supabase/functions/_shared/lead-notification.test.ts'
+      - 'supabase/functions/_shared/lead-notification-source.test.ts'
+      - 'supabase/functions/_shared/lead-request.ts'
+      - 'supabase/functions/_shared/lead-request.test.ts'
+      - 'supabase/functions/_shared/client-ip.ts'
+      - 'supabase/functions/_shared/client-ip.test.ts'
+      - 'supabase/functions/_shared/lead-intake-rate-limit.ts'
+      - 'supabase/functions/_shared/lead-intake-rate-limit.test.ts'
+      - 'supabase/functions/_shared/lead-intake-source.test.ts'
+      - 'supabase/migrations/**'
+      - 'dashboard/**'
+      - 'tests/test_provider_workflows.py'
+      - '.github/workflows/blog-autopost.yml'
+      - '.github/workflows/blog-traction.yml'
+      - '.github/workflows/google-reviews-sync.yml'
+      - '.github/workflows/cta-liveness.yml'
   push:
     branches: [main]
 
@@ -84,6 +131,51 @@ permissions:
   contents: read
 
 jobs:
+  provider-workflow-regressions:
+    name: Provider workflow fail-closed regressions (blocking)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Exercise provider outages, atomic snapshots, and workflow contracts
+        run: python3 tests/test_provider_workflows.py
+
+  edge-function-compile:
+    name: Supabase Edge entrypoint typecheck (blocking)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.x
+      - name: Typecheck every deployed Edge Function entrypoint
+        run: deno check --frozen --node-modules-dir=auto supabase/functions/*/index.ts
+
+  static-assets:
+    name: Sitemap static asset integrity (blocking)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - run: node scripts/audit-static-assets.mjs
+
+  lead-form-single-submit:
+    name: Lead form single-submit contract (blocking)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - run: npm run test:lead-form
+
   lead-sms-contract:
     name: Lead SMS consent + A2P message contract (blocking)
     runs-on: ubuntu-latest
@@ -95,14 +187,42 @@ jobs:
     # "Reply STOP to opt out." line + the business number, no Utah forbidden
     # term (same canonical compliance-words.json as the site gate), and the
     # TCPA consent gate (no sms_consent → NO auto-text). auth-throttle.test.ts
-    # freezes the lead-crm per-IP PIN throttle (≤10 fails / 15 min).
+    # freezes the adapter for the database-atomic per-IP login throttle (the
+    # first 10 total attempts / fixed 15-minute window may continue; successful
+    # logins never reset it). audit:dashboard-security freezes the RPC itself.
     steps:
       - uses: actions/checkout@v4
       - uses: denoland/setup-deno@v2
         with:
           deno-version: v2.x
       - name: Run SMS contract + auth-throttle fixtures
-        run: deno test supabase/functions/_shared/lead-sms.test.ts supabase/functions/_shared/auth-throttle.test.ts
+        run: deno test supabase/functions/_shared/lead-sms.test.ts supabase/functions/_shared/auth-throttle.test.ts supabase/functions/_shared/client-ip.test.ts supabase/functions/_shared/lead-intake-rate-limit.test.ts supabase/functions/_shared/lead-notification.test.ts supabase/functions/_shared/lead-request.test.ts supabase/functions/_shared/webhook-request.test.ts
+      - name: Verify notification worker/scheduler secret parity
+        run: deno test --allow-read=supabase/functions/lead-notification-worker/index.ts,supabase/functions/handle-lead/index.ts,supabase/functions/handle-lead/DEPLOY.md,supabase/functions/resend-webhook/index.ts,supabase/functions/_shared/webhook-request.ts,.github/workflows/lead-notification-worker.yml,.github/workflows/deploy-edge-function.yml,supabase/migrations/20260807000100_lead_notification_outbox.sql,supabase/migrations/20260807000165_activate_lead_notification_outbox.sql,DASHBOARD-SECURITY-CHECKLIST.md supabase/functions/_shared/lead-notification-source.test.ts
+      - name: Verify lead-intake abuse controls and public form parity
+        run: deno test --allow-read=supabase/functions/handle-lead/index.ts,supabase/migrations/20260807000160_lead_intake_rate_limit.sql,index.html,hero.html,global-modal.js supabase/functions/_shared/lead-intake-source.test.ts
+
+  dashboard-security:
+    name: Dashboard session revocation + credential security (blocking)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.x
+      - name: Reject browser PIN leaks and unsafe access management
+        run: npm run audit:dashboard-security
+      - name: Reject dashboard deploys without a complete rollout receipt
+        run: node scripts/test-dashboard-deploy-receipt.mjs
+      - name: Reject intake and CRM deploys without a fresh client-IP canary receipt
+        run: node scripts/test-client-ip-deploy-receipt.mjs
+      - name: Run dashboard authorization and session-version fixtures
+        run: deno test --allow-read=locations supabase/functions/_shared/crm-access.test.ts supabase/functions/_shared/dashboard-session.test.ts supabase/functions/_shared/dashboard-credential.test.ts supabase/functions/weekly-report/report-contract.test.ts
+      - name: Reject recovered or URL-borne weekly-report credentials
+        run: deno test --allow-read=supabase/functions/weekly-report/index.ts,scripts/refresh-traffic-snapshot.sh supabase/functions/weekly-report/source-security.test.ts
 
   relay-classification:
     name: SMS relay classification eval (blocking)
@@ -189,6 +309,9 @@ jobs:
           node-version: '20'
       - name: Parse all JSON-LD blocks (fails on any invalid block)
         run: node scripts/audit-jsonld.mjs
+      - name: Require every FAQ schema question to be visible
+        run: npm run audit:faq-parity
+
 
   link-integrity:
     name: Internal link integrity (blocking)
@@ -288,6 +411,8 @@ jobs:
         run: npm run audit:mobile-ui
       - name: Verify mobile dock across representative routes and phone sizes
         run: npm run test:mobile-ui
+      - name: Verify dashboard bearer session and stored-XSS browser flow
+        run: npm run test:dashboard-session-client
 
   review-integrity:
     name: Review & rating integrity (blocking)
