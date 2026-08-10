@@ -32,6 +32,7 @@ name: Compliance Gate
 on:
   pull_request:
     paths:
+      - '**'
       - '**/*.html'
       - 'llms.txt'
       - 'scripts/audit-claim-registry.mjs'
@@ -218,14 +219,14 @@ jobs:
       - uses: denoland/setup-deno@v2
         with:
           deno-version: v2.x
+      - name: Reject unsafe client-IP probe sources and live mutation tooling
+        run: node scripts/audit-client-ip-probe-contract.mjs
+      - name: Reject intake and CRM deploys without a fresh client-IP canary receipt
+        run: node scripts/test-client-ip-deploy-receipt.mjs
       - name: Reject browser PIN leaks and unsafe access management
         run: npm run audit:dashboard-security
       - name: Reject dashboard deploys without a complete rollout receipt
         run: node scripts/test-dashboard-deploy-receipt.mjs
-      - name: Reject unsafe client-IP probe sources and live mutation tooling
-        run: npm run audit:client-ip-probe
-      - name: Reject intake and CRM deploys without a fresh client-IP canary receipt
-        run: node scripts/test-client-ip-deploy-receipt.mjs
       - name: Run dashboard authorization and session-version fixtures
         run: deno test --allow-read=locations supabase/functions/_shared/crm-access.test.ts supabase/functions/_shared/dashboard-session.test.ts supabase/functions/_shared/dashboard-credential.test.ts supabase/functions/weekly-report/report-contract.test.ts
       - name: Reject recovered or URL-borne weekly-report credentials

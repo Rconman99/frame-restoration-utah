@@ -85,13 +85,79 @@ function recursiveFiles(directory, prefix = "") {
     const absolute = path.join(directory, entry.name);
     if (entry.isDirectory()) files.push(...recursiveFiles(absolute, relative));
     else if (entry.isFile()) files.push(relative);
-    else throw new Error(`unsupported downloaded source entry: ${relative}`);
+    else throw new Error(`unsupported captured source entry: ${relative}`);
   }
   return files.sort((left, right) => left.localeCompare(right, "en"));
 }
 
-export function downloadedClientIpProbeManifest(downloadRoot) {
-  const functionsRoot = path.resolve(downloadRoot, "supabase/functions");
+function realDirectoryIdentity(root, label) {
+  const absolute = path.resolve(root);
+  const metadata = fs.lstatSync(absolute);
+  if (!metadata.isDirectory() || metadata.isSymbolicLink()) {
+    throw new Error(`${label} must be a real existing directory`);
+  }
+  const realpath = fs.realpathSync(absolute);
+  const realMetadata = fs.statSync(realpath);
+  return { realpath, device: realMetadata.dev, inode: realMetadata.ino };
+}
+
+function artifactTreeIdentity(root, label) {
+  const identity = realDirectoryIdentity(root, label);
+  let parent = identity.realpath;
+  for (const segment of ["supabase", "functions"]) {
+    parent = path.join(parent, segment);
+    const metadata = fs.lstatSync(parent);
+    if (!metadata.isDirectory() || metadata.isSymbolicLink()) {
+      throw new Error(`${label} ${segment} ancestry must be real directories`);
+    }
+    const realParent = fs.realpathSync(parent);
+    if (!nestedPath(identity.realpath, realParent)) {
+      throw new Error(`${label} artifact ancestry escapes its root`);
+    }
+  }
+  return identity;
+}
+
+function nestedPath(left, right) {
+  const relative = path.relative(left, right);
+  return relative === "" ||
+    (!relative.startsWith("..") && !path.isAbsolute(relative));
+}
+
+export function assertDisjointArtifactRoots(renderRoot, capturedSourceRoot) {
+  const rendered = artifactTreeIdentity(renderRoot, "render root");
+  const captured = artifactTreeIdentity(
+    capturedSourceRoot,
+    "captured source root",
+  );
+  if (
+    nestedPath(rendered.realpath, captured.realpath) ||
+    nestedPath(captured.realpath, rendered.realpath) ||
+    (rendered.device === captured.device && rendered.inode === captured.inode)
+  ) {
+    throw new Error("render and captured-source roots must be disjoint");
+  }
+  for (const relative of [RENDERED_PROBE_PATH, RENDERED_EXTRACTOR_PATH]) {
+    const renderedFile = fs.statSync(path.join(rendered.realpath, relative));
+    const capturedFile = fs.statSync(path.join(captured.realpath, relative));
+    if (
+      renderedFile.dev === capturedFile.dev &&
+      renderedFile.ino === capturedFile.ino
+    ) {
+      throw new Error(
+        `captured source must not hard-link rendered artifact: ${relative}`,
+      );
+    }
+  }
+  return {
+    rootsDisjoint: true,
+    artifactFilesInodeDisjoint: true,
+  };
+}
+
+function clientIpProbeArtifactManifest(artifactRoot, label) {
+  const identity = artifactTreeIdentity(artifactRoot, label);
+  const functionsRoot = path.join(identity.realpath, "supabase/functions");
   const expectedPaths = [
     "_shared/client-ip.ts",
     "client-ip-probe/index.ts",
@@ -99,16 +165,52 @@ export function downloadedClientIpProbeManifest(downloadRoot) {
   const actualPaths = recursiveFiles(functionsRoot);
   if (JSON.stringify(actualPaths) !== JSON.stringify(expectedPaths)) {
     throw new Error(
-      `downloaded client-IP source file set differs: ${actualPaths.join(",")}`,
+      `${label} client-IP source file set differs: ${actualPaths.join(",")}`,
     );
   }
   const files = Object.fromEntries(
-    actualPaths.map((relative) => [
-      relative,
-      fs.readFileSync(path.join(functionsRoot, relative), "utf8"),
-    ]),
+    actualPaths.map((relative) => {
+      const absolute = path.join(functionsRoot, relative);
+      const before = fs.lstatSync(absolute);
+      if (
+        !before.isFile() || before.isSymbolicLink() ||
+        (before.mode & 0o777) !== 0o600 || before.nlink !== 1
+      ) {
+        throw new Error(
+          `${label} must contain a unique mode-0600 regular file: ${relative}`,
+        );
+      }
+      const descriptor = fs.openSync(
+        absolute,
+        fs.constants.O_RDONLY | fs.constants.O_NOFOLLOW,
+      );
+      try {
+        const metadata = fs.fstatSync(descriptor);
+        if (
+          metadata.dev !== before.dev || metadata.ino !== before.ino ||
+          !metadata.isFile() || (metadata.mode & 0o777) !== 0o600 ||
+          metadata.nlink !== 1
+        ) {
+          throw new Error(`${label} artifact changed during secure open: ${relative}`);
+        }
+        return [relative, fs.readFileSync(descriptor, "utf8")];
+      } finally {
+        fs.closeSync(descriptor);
+      }
+    }),
   );
   return sourceManifest(files);
+}
+
+export function renderedClientIpProbeManifest(renderRoot) {
+  return clientIpProbeArtifactManifest(renderRoot, "render root");
+}
+
+export function capturedClientIpProbeManifest(capturedSourceRoot) {
+  return clientIpProbeArtifactManifest(
+    capturedSourceRoot,
+    "captured source root",
+  );
 }
 
 function requireArgument(args, name) {
@@ -134,13 +236,11 @@ if (invokedAsScript) {
       extractorSource,
     });
     const renderRootIndex = args.indexOf("--render-root");
-    const downloadRootIndex = args.indexOf("--verify-download-root");
-    if ((renderRootIndex === -1) === (downloadRootIndex === -1)) {
-      throw new Error(
-        "choose exactly one of --render-root or --verify-download-root",
-      );
+    const capturedRootIndex = args.indexOf("--verify-captured-source-root");
+    if (renderRootIndex === -1) {
+      throw new Error("--render-root is required");
     }
-    if (renderRootIndex !== -1) {
+    if (capturedRootIndex === -1) {
       const renderRoot = path.resolve(requireArgument(args, "--render-root"));
       const renderRootMetadata = fs.lstatSync(renderRoot);
       if (
@@ -168,18 +268,31 @@ if (invokedAsScript) {
         expected_source_manifest_sha256: expected.sourceManifestSha256,
       }));
     } else {
-      const downloaded = downloadedClientIpProbeManifest(
-        requireArgument(args, "--verify-download-root"),
+      const renderRoot = requireArgument(args, "--render-root");
+      const capturedSourceRoot = requireArgument(
+        args,
+        "--verify-captured-source-root",
       );
-      if (downloaded.sha256 !== expected.sourceManifestSha256) {
+      const disjoint = assertDisjointArtifactRoots(
+        renderRoot,
+        capturedSourceRoot,
+      );
+      const rendered = renderedClientIpProbeManifest(renderRoot);
+      const captured = capturedClientIpProbeManifest(capturedSourceRoot);
+      if (
+        rendered.sha256 !== expected.sourceManifestSha256 ||
+        captured.sha256 !== expected.sourceManifestSha256
+      ) {
         throw new Error(
-          "downloaded live client-IP source manifest differs from expected render",
+          "rendered or operator-captured client-IP source manifest differs from expected",
         );
       }
       console.log(JSON.stringify({
         target_source_sha: expected.targetSourceSha,
-        downloaded_live_source_manifest_sha256: downloaded.sha256,
+        operator_captured_source_manifest_sha256: captured.sha256,
         matches_expected_source_manifest: true,
+        render_and_capture_roots_disjoint: disjoint.rootsDisjoint,
+        artifact_files_inode_disjoint: disjoint.artifactFilesInodeDisjoint,
       }));
     }
   } catch (error) {

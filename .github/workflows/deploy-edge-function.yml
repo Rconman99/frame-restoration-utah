@@ -54,6 +54,19 @@ jobs:
           ref: ${{ github.sha }}
           fetch-depth: 0
           persist-credentials: false
+      - name: Require the exact production function allowlist
+        env:
+          FUNCTION_NAME: ${{ inputs.function }}
+        run: |
+          set -euo pipefail
+          case "$FUNCTION_NAME" in
+            track-click|handle-lead|lead-crm|review-request|handle-call|handle-sms|outbound-call|send-message|resend-webhook|lead-notification-worker|weekly-report)
+              ;;
+            *)
+              echo "::error::Function is not in the reviewed production deploy allowlist"
+              exit 1
+              ;;
+          esac
       - name: Require the exact current main tip and green compliance
         env:
           GH_TOKEN: ${{ github.token }}
