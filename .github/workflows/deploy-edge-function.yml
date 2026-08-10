@@ -7,8 +7,9 @@ name: Deploy UT Supabase Edge Function
 #
 # Production environment secrets required: SUPABASE_ACCESS_TOKEN, dashboard
 # receipt token/key, owner-notification receipt HMAC key, client-IP receipt
-# token/key, LEAD_NOTIFICATION_WORKER_TOKEN, and RESEND_WEBHOOK_SECRET. The
-# client-IP token is issued separately from controlled dual-stack evidence; the
+# token, and LEAD_NOTIFICATION_WORKER_TOKEN. The client-IP Ed25519 public key
+# is a Production environment variable; no private signing key enters CI.
+# The client-IP token is issued separately from controlled dual-stack evidence; the
 # owner-notification token is minted here from fresh no-send evidence. Receipt
 # keys and canary secrets are never workflow inputs or command-line arguments.
 on:
@@ -34,6 +35,10 @@ on:
           - resend-webhook
           - lead-notification-worker
           - weekly-report
+      receipt_nonce:
+        description: "Exact nonce embedded in the single-use client-IP receipt"
+        required: true
+        type: string
 permissions:
   contents: read
   actions: read
@@ -43,17 +48,31 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  deploy:
+  admission:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     environment:
       name: Production – frame-restoration-utah
     steps:
-      - uses: actions/checkout@v4
+      # actions/checkout v4, immutable official commit.
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
           ref: ${{ github.sha }}
           fetch-depth: 0
           persist-credentials: false
+      - name: Require the exact production function allowlist
+        env:
+          FUNCTION_NAME: ${{ inputs.function }}
+        run: |
+          set -euo pipefail
+          case "$FUNCTION_NAME" in
+            track-click|handle-lead|lead-crm|review-request|handle-call|handle-sms|outbound-call|send-message|resend-webhook|lead-notification-worker|weekly-report)
+              ;;
+            *)
+              echo "::error::Function is not in the reviewed production deploy allowlist"
+              exit 1
+              ;;
+          esac
       - name: Require the exact current main tip and green compliance
         env:
           GH_TOKEN: ${{ github.token }}
@@ -99,21 +118,14 @@ jobs:
             echo "::error::Exact-SHA compliance jobs are incomplete, failed, skipped, or missing dashboard-security"
             exit 1
           }
-      - uses: supabase/setup-cli@v1
+      # supabase/setup-cli v1, immutable official commit; CLI stays exact below.
+      - uses: supabase/setup-cli@ab058987d8d6c725971f6cf9d0b5c98467e30bd1
         with:
           version: 2.113.0
       - name: Verify function source exists
         run: |
           test -f "supabase/functions/${{ inputs.function }}/index.ts" \
             || { echo "::error::supabase/functions/${{ inputs.function }}/index.ts not found"; exit 1; }
-      - name: Enforce fresh signed final-extractor client-IP canary receipt
-        env:
-          FUNCTION_NAME: ${{ inputs.function }}
-          DEPLOY_SHA: ${{ github.sha }}
-          SUPABASE_PROJECT_REF: hdcflshhomzildwqlmwh
-          CLIENT_IP_DEPLOY_RECEIPT_TOKEN: ${{ secrets.CLIENT_IP_DEPLOY_RECEIPT_TOKEN }}
-          CLIENT_IP_DEPLOY_RECEIPT_HMAC_KEY: ${{ secrets.CLIENT_IP_DEPLOY_RECEIPT_HMAC_KEY }}
-        run: node scripts/verify-client-ip-deploy-receipt.mjs
       - name: Read live dashboard migration and secret state
         env:
           FUNCTION_NAME: ${{ inputs.function }}
@@ -274,18 +286,104 @@ jobs:
           LEAD_NOTIFICATION_DEPLOY_RECEIPT_TOKEN: ${{ env.LEAD_NOTIFICATION_DEPLOY_RECEIPT_TOKEN }}
           LEAD_NOTIFICATION_DEPLOY_RECEIPT_HMAC_KEY: ${{ secrets.LEAD_NOTIFICATION_DEPLOY_RECEIPT_HMAC_KEY }}
         run: node scripts/verify-owner-notification-deploy-receipt.mjs
+
+  # Fresh job boundary: repository-controlled admission/canary/verifier code
+  # cannot persist shell environment or command-path hooks into the production
+  # deployment shell.
+  deploy:
+    needs: admission
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment:
+      name: Production – frame-restoration-utah
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: supabase/setup-cli@ab058987d8d6c725971f6cf9d0b5c98467e30bd1
+        with:
+          version: 2.113.0
+      - name: Verify function source exists in fresh deploy job
+        run: |
+          test -f "supabase/functions/${{ inputs.function }}/index.ts" \
+            || { echo "::error::supabase/functions/${{ inputs.function }}/index.ts not found"; exit 1; }
       - name: Deploy ${{ inputs.function }} to UT project
         env:
+          FUNCTION_NAME: ${{ inputs.function }}
           GH_TOKEN: ${{ github.token }}
           DEPLOY_SHA: ${{ github.sha }}
           SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+          SUPABASE_PROJECT_REF: hdcflshhomzildwqlmwh
+          CLIENT_IP_DEPLOY_DISPATCH_NONCE: ${{ inputs.receipt_nonce }}
+          CLIENT_IP_DEPLOY_RECEIPT_TOKEN: ${{ secrets.CLIENT_IP_DEPLOY_RECEIPT_TOKEN }}
+          CLIENT_IP_DEPLOY_RECEIPT_PUBLIC_KEY_SPKI_DER_BASE64: ${{ vars.CLIENT_IP_DEPLOY_RECEIPT_PUBLIC_KEY_SPKI_DER_BASE64 }}
         run: |
           set -euo pipefail
-          LIVE_MAIN_SHA="$(gh api "repos/$GITHUB_REPOSITORY/git/ref/heads/main" --jq .object.sha)"
-          [[ "$LIVE_MAIN_SHA" == "$DEPLOY_SHA" ]] || {
-            echo "::error::origin/main moved after admission checks; dispatch a new deployment"
+          umask 077
+          SUPABASE_TOKEN_VALUE="${SUPABASE_ACCESS_TOKEN:?SUPABASE_ACCESS_TOKEN is missing}"
+          GH_TOKEN_VALUE="${GH_TOKEN:?GH_TOKEN is missing}"
+          RECEIPT_TOKEN_VALUE="$CLIENT_IP_DEPLOY_RECEIPT_TOKEN"
+          RECEIPT_PUBLIC_KEY_VALUE="$CLIENT_IP_DEPLOY_RECEIPT_PUBLIC_KEY_SPKI_DER_BASE64"
+          unset \
+            SUPABASE_ACCESS_TOKEN \
+            GH_TOKEN \
+            CLIENT_IP_DEPLOY_RECEIPT_TOKEN \
+            CLIENT_IP_DEPLOY_RECEIPT_PUBLIC_KEY_SPKI_DER_BASE64
+          [[ "$(git rev-parse HEAD)" == "$DEPLOY_SHA" ]] || {
+            echo "::error::checked-out worktree is not the exact deployment SHA"
             exit 1
           }
-          supabase functions deploy "${{ inputs.function }}" \
-            --project-ref hdcflshhomzildwqlmwh \
+          [[ -z "$(git status --porcelain=v1 --untracked-files=all)" ]] || {
+            echo "::error::deployment worktree is dirty"
+            exit 1
+          }
+          git diff --exit-code -- .
+          git diff --cached --exit-code -- .
+          env -i PATH="$PATH" HOME="$HOME" \
+            node scripts/audit-client-ip-probe-contract.mjs
+          [[ "$(git rev-parse HEAD)" == "$DEPLOY_SHA" ]] || {
+            echo "::error::scanner changed the checked-out deployment SHA"
+            exit 1
+          }
+          [[ -z "$(git status --porcelain=v1 --untracked-files=all)" ]] || {
+            echo "::error::scanner changed the deployment worktree"
+            exit 1
+          }
+          git diff --exit-code -- .
+          git diff --cached --exit-code -- .
+          LIVE_MAIN_SHA="$(GH_TOKEN="$GH_TOKEN_VALUE" gh api \
+            "repos/$GITHUB_REPOSITORY/git/ref/heads/main" --jq .object.sha)"
+          [[ "$LIVE_MAIN_SHA" == "$DEPLOY_SHA" ]] || {
+            echo "::error::origin/main moved after final source integrity checks"
+            exit 1
+          }
+
+          CLIENT_IP_FINAL_FUNCTIONS_PATH="$RUNNER_TEMP/utah-client-ip-final-functions.json"
+          CLIENT_IP_FINAL_SECRETS_PATH="$RUNNER_TEMP/utah-client-ip-final-secrets.json"
+          export CLIENT_IP_FINAL_FUNCTIONS_PATH CLIENT_IP_FINAL_SECRETS_PATH
+          trap 'rm -f "$CLIENT_IP_FINAL_FUNCTIONS_PATH" "$CLIENT_IP_FINAL_SECRETS_PATH"' EXIT
+          SUPABASE_ACCESS_TOKEN="$SUPABASE_TOKEN_VALUE" \
+            supabase functions list --project-ref "$SUPABASE_PROJECT_REF" --output json \
+            > "$CLIENT_IP_FINAL_FUNCTIONS_PATH"
+          SUPABASE_ACCESS_TOKEN="$SUPABASE_TOKEN_VALUE" \
+            supabase secrets list --project-ref "$SUPABASE_PROJECT_REF" --output json \
+            > "$CLIENT_IP_FINAL_SECRETS_PATH"
+          chmod 600 "$CLIENT_IP_FINAL_FUNCTIONS_PATH" "$CLIENT_IP_FINAL_SECRETS_PATH"
+          env -i \
+            PATH="$PATH" \
+            HOME="$HOME" \
+            FUNCTION_NAME="$FUNCTION_NAME" \
+            DEPLOY_SHA="$DEPLOY_SHA" \
+            SUPABASE_PROJECT_REF="$SUPABASE_PROJECT_REF" \
+            CLIENT_IP_DEPLOY_DISPATCH_NONCE="$CLIENT_IP_DEPLOY_DISPATCH_NONCE" \
+            CLIENT_IP_DEPLOY_RECEIPT_TOKEN="$RECEIPT_TOKEN_VALUE" \
+            CLIENT_IP_DEPLOY_RECEIPT_PUBLIC_KEY_SPKI_DER_BASE64="$RECEIPT_PUBLIC_KEY_VALUE" \
+            CLIENT_IP_FINAL_FUNCTIONS_PATH="$CLIENT_IP_FINAL_FUNCTIONS_PATH" \
+            CLIENT_IP_FINAL_SECRETS_PATH="$CLIENT_IP_FINAL_SECRETS_PATH" \
+            node scripts/verify-client-ip-deploy-receipt.mjs
+          SUPABASE_ACCESS_TOKEN="$SUPABASE_TOKEN_VALUE" \
+            supabase functions deploy "${{ inputs.function }}" \
+            --project-ref "$SUPABASE_PROJECT_REF" \
             --no-verify-jwt --use-api

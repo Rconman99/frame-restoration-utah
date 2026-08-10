@@ -1,0 +1,175 @@
+import {
+  clientIpIdentity,
+  ipHashSecretReady,
+  keyedClientIpHash,
+} from "../_shared/client-ip.ts";
+
+const TARGET_SOURCE_SHA = "__TARGET_SOURCE_SHA__";
+const AUTH_CONTEXT = "client-ip-probe-v1";
+const MAX_BODY_BYTES = 512;
+const MAX_CLOCK_SKEW_MS = 60_000;
+const CASE_ID =
+  /^(?:ipv4|ipv6)-(?:baseline|forged-cf|forged-x-real-ip|forged-x-forwarded-for)$/;
+const encoder = new TextEncoder();
+
+function json(status: number, body: Record<string, unknown>): Response {
+  return new Response(JSON.stringify(body), {
+    status,
+    headers: {
+      "content-type": "application/json; charset=utf-8",
+      "cache-control": "no-store",
+    },
+  });
+}
+
+function unauthorized(): Response {
+  return json(401, { error: "unauthorized" });
+}
+
+function hexBytes(value: string): Uint8Array<ArrayBuffer> | null {
+  if (!/^[0-9a-f]{64}$/.test(value)) return null;
+  const bytes = new Uint8Array(value.length / 2);
+  for (let index = 0; index < bytes.length; index += 1) {
+    bytes[index] = Number.parseInt(value.slice(index * 2, index * 2 + 2), 16);
+  }
+  return bytes;
+}
+
+async function sha256Hex(value: string): Promise<string> {
+  const digest = new Uint8Array(
+    await crypto.subtle.digest("SHA-256", encoder.encode(value)),
+  );
+  return Array.from(digest, (byte) => byte.toString(16).padStart(2, "0")).join(
+    "",
+  );
+}
+
+async function readBoundedBody(request: Request): Promise<string | null> {
+  const declaredLength = request.headers.get("content-length");
+  if (
+    declaredLength !== null &&
+    (!/^\d+$/.test(declaredLength) || Number(declaredLength) > MAX_BODY_BYTES)
+  ) {
+    return null;
+  }
+  if (!request.body) return "";
+  const reader = request.body.getReader();
+  const chunks: Uint8Array[] = [];
+  let totalBytes = 0;
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    totalBytes += value.byteLength;
+    if (totalBytes > MAX_BODY_BYTES) {
+      await reader.cancel();
+      return null;
+    }
+    chunks.push(value);
+  }
+  const body = new Uint8Array(totalBytes);
+  let offset = 0;
+  for (const chunk of chunks) {
+    body.set(chunk, offset);
+    offset += chunk.byteLength;
+  }
+  try {
+    return new TextDecoder("utf-8", { fatal: true }).decode(body);
+  } catch {
+    return null;
+  }
+}
+
+async function authenticated(
+  request: Request,
+  body: string,
+  workerToken: string,
+): Promise<boolean> {
+  const timestamp = request.headers.get("x-frame-probe-timestamp") ?? "";
+  const nonce = request.headers.get("x-frame-probe-nonce") ?? "";
+  const supplied = hexBytes(
+    request.headers.get("x-frame-probe-signature") ?? "",
+  );
+  if (!/^\d{13}$/.test(timestamp) || !/^[A-Za-z0-9_-]{16,64}$/.test(nonce)) {
+    return false;
+  }
+  const timestampMs = Number(timestamp);
+  if (
+    !Number.isSafeInteger(timestampMs) ||
+    Math.abs(Date.now() - timestampMs) > MAX_CLOCK_SKEW_MS ||
+    !supplied
+  ) {
+    return false;
+  }
+  const key = await crypto.subtle.importKey(
+    "raw",
+    encoder.encode(workerToken),
+    { name: "HMAC", hash: "SHA-256" },
+    false,
+    ["verify"],
+  );
+  const bodySha256 = await sha256Hex(body);
+  const message =
+    `${AUTH_CONTEXT}\0auth\0${timestamp}\0${nonce}\0${bodySha256}`;
+  return await crypto.subtle.verify(
+    "HMAC",
+    key,
+    supplied,
+    encoder.encode(message),
+  );
+}
+
+Deno.serve(async (request) => {
+  if (request.method !== "POST") return unauthorized();
+
+  const workerToken = Deno.env.get("LEAD_NOTIFICATION_WORKER_TOKEN") ?? "";
+  const deploymentId = Deno.env.get("DENO_DEPLOYMENT_ID") ?? "";
+  const body = await readBoundedBody(request);
+  if (
+    !ipHashSecretReady(workerToken) ||
+    body === null ||
+    !(await authenticated(request, body, workerToken))
+  ) {
+    return unauthorized();
+  }
+
+  let parsed: unknown;
+  try {
+    parsed = JSON.parse(body);
+  } catch {
+    return json(400, { error: "invalid_request" });
+  }
+  if (
+    !parsed || typeof parsed !== "object" || Array.isArray(parsed) ||
+    Object.keys(parsed).length !== 1 ||
+    !("case_id" in parsed) ||
+    typeof parsed.case_id !== "string" ||
+    !CASE_ID.test(parsed.case_id)
+  ) {
+    return json(400, { error: "invalid_request" });
+  }
+
+  const identity = clientIpIdentity(request.headers);
+  if (!identity) {
+    return json(422, {
+      ok: false,
+      error: "trusted_client_ip_unavailable",
+      case_id: parsed.case_id,
+      target_source_sha: TARGET_SOURCE_SHA,
+      deployment_id: deploymentId,
+    });
+  }
+  const fingerprint = await keyedClientIpHash(
+    workerToken,
+    AUTH_CONTEXT,
+    identity,
+  );
+  return json(200, {
+    ok: true,
+    case_id: parsed.case_id,
+    target_source_sha: TARGET_SOURCE_SHA,
+    deployment_id: deploymentId,
+    source: identity.source,
+    observed_family: identity.ip.includes(":") ? "ipv6" : "ipv4",
+    fingerprint,
+  });
+});

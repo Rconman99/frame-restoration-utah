@@ -32,6 +32,7 @@ name: Compliance Gate
 on:
   pull_request:
     paths:
+      - '**'
       - '**/*.html'
       - 'llms.txt'
       - 'scripts/audit-claim-registry.mjs'
@@ -62,6 +63,9 @@ on:
       - 'scripts/**'
       - 'scripts/verify-client-ip-deploy-receipt.mjs'
       - 'scripts/test-client-ip-deploy-receipt.mjs'
+      - 'scripts/render-client-ip-probe.mjs'
+      - 'scripts/audit-client-ip-probe-contract.mjs'
+      - 'supabase/probe-templates/**'
       - 'scripts/verify-owner-notification-deploy-receipt.mjs'
       - 'scripts/run-owner-notification-deploy-canaries.mjs'
       - 'scripts/test-owner-notification-deploy-receipt.mjs'
@@ -137,8 +141,8 @@ jobs:
     name: Provider workflow fail-closed regressions (blocking)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
         with:
           python-version: '3.12'
       - name: Exercise provider outages, atomic snapshots, and workflow contracts
@@ -148,8 +152,8 @@ jobs:
     name: Supabase Edge entrypoint typecheck (blocking)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: denoland/setup-deno@v2
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - uses: denoland/setup-deno@22d081ff2d3a40755e97629de92e3bcbfa7cf2ed
         with:
           deno-version: v2.x
       - name: Typecheck every deployed Edge Function entrypoint
@@ -159,8 +163,8 @@ jobs:
     name: Sitemap static asset integrity (blocking)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
         with:
           node-version: '20'
       - run: node scripts/audit-static-assets.mjs
@@ -169,8 +173,8 @@ jobs:
     name: Lead form single-submit contract (blocking)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
         with:
           node-version: '20'
           cache: npm
@@ -193,8 +197,8 @@ jobs:
     # first 10 total attempts / fixed 15-minute window may continue; successful
     # logins never reset it). audit:dashboard-security freezes the RPC itself.
     steps:
-      - uses: actions/checkout@v4
-      - uses: denoland/setup-deno@v2
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - uses: denoland/setup-deno@22d081ff2d3a40755e97629de92e3bcbfa7cf2ed
         with:
           deno-version: v2.x
       - name: Run SMS contract + auth-throttle fixtures
@@ -208,19 +212,21 @@ jobs:
     name: Dashboard session revocation + credential security (blocking)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
         with:
           node-version: '20'
-      - uses: denoland/setup-deno@v2
+      - uses: denoland/setup-deno@22d081ff2d3a40755e97629de92e3bcbfa7cf2ed
         with:
           deno-version: v2.x
+      - name: Reject unsafe client-IP probe sources and live mutation tooling
+        run: node scripts/audit-client-ip-probe-contract.mjs
+      - name: Reject intake and CRM deploys without a fresh client-IP canary receipt
+        run: node scripts/test-client-ip-deploy-receipt.mjs
       - name: Reject browser PIN leaks and unsafe access management
         run: npm run audit:dashboard-security
       - name: Reject dashboard deploys without a complete rollout receipt
         run: node scripts/test-dashboard-deploy-receipt.mjs
-      - name: Reject intake and CRM deploys without a fresh client-IP canary receipt
-        run: node scripts/test-client-ip-deploy-receipt.mjs
       - name: Run dashboard authorization and session-version fixtures
         run: deno test --allow-read=locations supabase/functions/_shared/crm-access.test.ts supabase/functions/_shared/dashboard-session.test.ts supabase/functions/_shared/dashboard-credential.test.ts supabase/functions/weekly-report/report-contract.test.ts
       - name: Reject recovered or URL-borne weekly-report credentials
@@ -239,8 +245,8 @@ jobs:
     # ship. Behavior-preserving extraction — no routing change shipped with the
     # port. Deno = same runtime that deploys.
     steps:
-      - uses: actions/checkout@v4
-      - uses: denoland/setup-deno@v2
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - uses: denoland/setup-deno@22d081ff2d3a40755e97629de92e3bcbfa7cf2ed
         with:
           deno-version: v2.x
       - name: Run relay classification fixtures
@@ -259,8 +265,8 @@ jobs:
     # (handle-lead imports them): heuristicClassify + coerceLlmClassification (the
     # parse contract) + fallbackClassification. Behavior-preserving extraction.
     steps:
-      - uses: actions/checkout@v4
-      - uses: denoland/setup-deno@v2
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - uses: denoland/setup-deno@22d081ff2d3a40755e97629de92e3bcbfa7cf2ed
         with:
           deno-version: v2.x
       - name: Run lead tier classification fixtures
@@ -270,8 +276,8 @@ jobs:
     name: Forbidden-word + saturation audit (blocking)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
         with:
           node-version: '20'
       - name: Run compliance-words validator
@@ -283,8 +289,8 @@ jobs:
     name: Verified claim registry + llms.txt parity (blocking)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
         with:
           node-version: '20'
       - name: Fail on unverified, expired, conflicting, or drifted narrative claims
@@ -294,8 +300,8 @@ jobs:
     name: AEO topic-portfolio measurement contract (blocking)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
         with:
           node-version: '20'
       - name: Require three topics, five intents, durable tags, and no page-fanout contract
@@ -305,8 +311,8 @@ jobs:
     name: JSON-LD structured-data validity (blocking)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
         with:
           node-version: '20'
       - name: Parse all JSON-LD blocks (fails on any invalid block)
@@ -322,8 +328,8 @@ jobs:
     # pages (the rest were archive/draft noise; scanner now scopes to served
     # pages). Now blocking, like TX.
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
         with:
           node-version: '20'
       - name: Fail on broken internal links
@@ -339,8 +345,8 @@ jobs:
     # review CTAs. Added 2026-06-01 after a review CTA shipped pointing at a dead
     # Google listing (cid 16833…) — this gate makes that class un-mergeable.
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
         with:
           node-version: '20'
       - name: Fail on CTA / external-link integrity violations
@@ -354,8 +360,8 @@ jobs:
     # deepened past the 500-unique-word floor in PR #72). Now BLOCKING — a thin
     # or templated location page can no longer silently ship.
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
         with:
           node-version: '20'
       - name: Corpus-level location-page quality report
@@ -374,8 +380,8 @@ jobs:
     # data/route-factory/gbp-copy.json. Passes clean on main as of 2026-06-02
     # (post-#71 scrub; only promo-in-post WARNs remain, which are non-blocking).
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
         with:
           node-version: '20'
       - name: Fail on GBP-copy compliance violations
@@ -389,8 +395,8 @@ jobs:
     # references, legacy internal phone leaks, and sitemap URLs that point at
     # noindex pages.
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
         with:
           node-version: '20'
       - name: Fail on stale public SEO signals
@@ -400,8 +406,8 @@ jobs:
     name: Mobile conversion UI quality (blocking)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
         with:
           node-version: '20'
           cache: npm
@@ -427,8 +433,8 @@ jobs:
     # banned clone. Makes "fake/cloned rating" un-mergeable. Required before the
     # top-10-cities Review-schema rollout so that work can't re-introduce a clone.
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
         with:
           node-version: '20'
       - name: Fail on cloned ratings or fabricated reviews
@@ -444,8 +450,8 @@ jobs:
     # drift (a new page missing them, an altered/stray profile URL). A new
     # location page can no longer ship without consistent entity links.
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
         with:
           node-version: '20'
       - name: Fail on missing or drifted hasMap/sameAs
@@ -462,8 +468,8 @@ jobs:
     # handoff/plan docs can't leak if someone drops `*.md` or adds a doc in an
     # un-ignored spot.
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
         with:
           node-version: '20'
       - name: Fail if any internal doc would deploy publicly

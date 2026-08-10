@@ -576,7 +576,8 @@ assert.equal(
   workflow.on.workflow_dispatch.inputs.lead_notification_cutover,
   undefined,
 );
-const steps = workflow.jobs.deploy.steps;
+const steps = workflow.jobs.admission.steps;
+assert.equal(workflow.jobs.deploy.needs, "admission");
 for (const step of steps) {
   assert.equal(
     step.if,
@@ -603,11 +604,13 @@ const mintAt = index(
 const receiptAt = index(
   "Verify signed live owner-notification deployment evidence",
 );
-const deployAt = steps.findIndex((step) => step.name?.startsWith("Deploy "));
+const deployAt = workflow.jobs.deploy.steps.findIndex((step) =>
+  step.name?.startsWith("Deploy ")
+);
 assert(
   liveAt > 0 && canaryAt > liveAt && refreshAt > canaryAt &&
     mintAt > refreshAt && receiptAt > mintAt &&
-    deployAt > receiptAt,
+    deployAt > 0,
 );
 const liveState = checkedShell(steps[liveAt]);
 assert.match(liveState, /database\/query\/read-only/);
@@ -736,5 +739,5 @@ for (
 }
 
 console.log(
-  "Owner-notification deploy gate passed: signed/live phase evidence, no-send canaries, parsed workflow, and worker isolation.",
+  "Owner-notification deploy gate offline fixtures passed: signed phase-evidence fixtures, no-send canary fixtures, parsed workflow, and worker isolation. This is not live deployment proof.",
 );

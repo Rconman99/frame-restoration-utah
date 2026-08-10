@@ -4,9 +4,13 @@
 > `20260807000160_lead_intake_rate_limit.sql` and set a distinct
 > `LEAD_INTAKE_RATE_LIMIT_SECRET` of at least 32 bytes before deploying v10.
 > Do not deploy the IP-keyed throttle until the production environment holds a
-> fresh HMAC-signed client-IP receipt bound to the exact main SHA, Utah project,
-> current `_shared/client-ip.ts` digest, deployed probe bundle/version, and
-> passed canary/cleanup results. The Markdown receipt under `data/` is INVALID
+> fresh Ed25519-signed client-IP receipt v3 bound to one exact protected
+> function, dispatch nonce, main SHA, Utah project, current
+> `_shared/client-ip.ts`, committed probe template, derived wrapper,
+> signer-attested operator-captured source/`.ezbr` bytes, runtime function
+> identity, complete dual-stack matrix, and artifact-derived
+> restoration/cleanup proof.
+> The Markdown receipt under `data/` is INVALID
 > historical evidence and never authorizes a deploy. The only trusted identity
 > is canonical `cf-connecting-ip`; missing/malformed CF identity fails closed,
 > and `x-real-ip`/`x-forwarded-for` never select a client.
@@ -134,37 +138,247 @@ deployment changes live function metadata, so capture again and issue a fresh
 
 ### Executable client-IP receipt path
 
-After a non-public probe built from the exact `DEPLOY_SHA`, save one sanitized
-mode-0600 JSON evidence file containing `probe_source_sha`,
-`probe_bundle_sha256`, `probe_function` (`client-ip-probe`, positive version,
-`ACTIVE_AT_CANARY`), `canary_checked_at`, the IPv4/IPv6/forged-header/key-shape
-results, and proof that the probe function and probe secrets were deleted. It
-must contain no raw address or secret. Both native network paths must report
-`passed`; an unavailable, skipped, or failed IPv6 path never authorizes a
-deployment. Set its path as
-`CLIENT_IP_CANARY_EVIDENCE_PATH`, inject the GitHub-only
-`CLIENT_IP_DEPLOY_RECEIPT_HMAC_KEY`, and run:
+Receipt v3 deliberately distinguishes the target commit from the ephemeral
+probe wrapper. `target_function` is exactly one of `handle-lead` or `lead-crm`,
+`dispatch_nonce` is a new 32–128 character URL-safe nonce for one manual
+dispatch, and `target_source_sha` is the exact 40-character `DEPLOY_SHA`. One
+token cannot authorize both protected functions or a different dispatch. The
+wrapper is **derived** from the committed
+`supabase/probe-templates/client-ip-probe/index.ts.tmpl`; it is not claimed to
+be a literal file in that commit. From the exact clean target checkout, render
+the wrapper and exact shared extractor into a new empty isolated directory:
 
 ```bash
-node scripts/verify-client-ip-deploy-receipt.mjs --issue \
-  "$CLIENT_IP_RECEIPT_OUTPUT"
-gh secret set CLIENT_IP_DEPLOY_RECEIPT_TOKEN \
-  --env 'Production – frame-restoration-utah' < "$CLIENT_IP_RECEIPT_OUTPUT"
+node scripts/render-client-ip-probe.mjs \
+  --deploy-sha "$DEPLOY_SHA" \
+  --render-root "$PROBE_RENDER_ROOT"
 ```
 
-The issuer computes the current extractor digest itself, binds both source SHAs
-to `DEPLOY_SHA`, validates the full canary/cleanup contract, self-verifies the
-one-hour token, allowlists every nested evidence field so raw/debug extras cannot
-enter the readable token, and never prints it. Store
-`CLIENT_IP_DEPLOY_RECEIPT_TOKEN` and the distinct
-`CLIENT_IP_DEPLOY_RECEIPT_HMAC_KEY` only in the GitHub production environment.
-The protected deploy workflow only verifies that pre-issued token: it must not
-deploy or delete a probe, expose the intake rate-limit secret to a probe, or
-mint client-IP evidence on a shared CI runner.
-Issue a new token for each protected SHA; rotate the HMAC key after exposure or
-signer access changes and remove all local evidence/token files after secret
-installation. `data/UTAH-SUPABASE-CLIENT-IP-HEADER-RECEIPT.md` remains an
-INVALID historical record and is not read by the deploy verifier.
+The renderer fails on an existing output file and reports only
+`probe_template_sha256`, `rendered_wrapper_sha256`, and
+`expected_source_manifest_sha256`. It has no network, Supabase credential,
+deploy, delete, or secret-mutation capability. The receipt verifier recomputes
+all three values from the checked-out template, exact `DEPLOY_SHA`, and
+`supabase/functions/_shared/client-ip.ts`; an operator-entered digest is not
+trusted.
+
+Use a dedicated, owner-authorized operator lane outside the protected deploy
+workflow. Establish one **exclusive mutation window** before the first live
+function/secret metadata capture and keep it through probe deletion, postflight,
+and ephemeral-compute teardown. During that window no other operator, workflow,
+Studio session, or automation may deploy/delete an Edge function or mutate Edge
+secrets. Stop if exclusivity cannot be established.
+
+All operator inputs below are new, unique, nonsymlink mode-0600 files. Keep raw
+artifacts through issuance and the one authorized dispatch, then remove them
+with the token. The issuer canonicalizes and hashes the complete structures
+itself. It rejects duplicate JSON object keys before parsing every JSON
+artifact, duplicate function slugs/IDs, duplicate secret names, path aliases,
+hard links, extra response fields, plaintext secret values, and an input over
+its bounded size.
+
+1. Capture full preflight function and secret metadata. A function capture has
+   exact top-level fields `capture_version`, `captured_at`, `project_ref`,
+   `capture_method`, `functions`, and `probe_ezbr_sha256`; the preflight bundle
+   field is `null`. A secret capture has `capture_version`, `captured_at`,
+   `project_ref`, `capture_method`, and the complete `secrets` array. Point
+   `CLIENT_IP_FUNCTIONS_PRE_PATH` and `CLIENT_IP_SECRETS_PRE_PATH` at those raw
+   files. Every secret-metadata row has exactly `name`, `value`, and
+   `updated_at`; despite the provider field name, `value` must be its lowercase
+   64-hex provider digest. The issuer rejects any extra field or nondigest value,
+   so these artifacts contain provider digests, never plaintext secret values.
+2. Capture the full DigitalOcean Droplet list before creation in
+   `CLIENT_IP_COMPUTE_PRE_PATH`, then create one separately approved ephemeral
+   runner and capture the full created-state list in
+   `CLIENT_IP_COMPUTE_CREATED_PATH`. Each compute file has exact fields
+   `capture_version`, `captured_at`, `capture_method`, `droplets`, and
+   `created_droplet_id`. The created snapshot records the one exact ID; the
+   preflight snapshot records `null`.
+3. Deploy only the isolated derived `client-ip-probe` source from that runner.
+   Do not deploy either protected target. Do not add, rotate, delete, or mutate a
+   probe secret. Supabase Edge secrets are project-scoped, so this receipt does
+   **not** claim the runtime lacked access to other project secrets. The exact
+   pinned template reads only `LEAD_NOTIFICATION_WORKER_TOKEN` and
+   `DENO_DEPLOYMENT_ID`; it never enumerates the environment or opens outbound
+   network/process primitives.
+4. Capture full canary function and secret metadata in
+   `CLIENT_IP_FUNCTIONS_CANARY_PATH` and `CLIENT_IP_SECRETS_CANARY_PATH`. The
+   actual function row must have literal slug `client-ip-probe`, a unique UUID,
+   positive version, literal provider status `ACTIVE`, and `ezbr_sha256` equal to
+   the operator-captured `.ezbr` byte digest at the capture top level. Save the
+   actual bundle bytes separately at `CLIENT_IP_PROBE_EZBR_CANARY_PATH`; the
+   issuer hashes that mode-0600 binary itself and rejects a metadata-only digest.
+   The issuer computes the Management API tuple hash. `DENO_DEPLOYMENT_ID` is independently
+   derived from successful response artifacts and must equal
+   `project_ref_function_id_version`.
+5. In a second new isolated directory, capture the deployed source with pinned
+   Supabase CLI 2.113.0 and the API unbundling path:
+
+   ```bash
+   "$SUPABASE_BIN" --workdir "$PROBE_CAPTURE_ROOT" functions download \
+     client-ip-probe --project-ref hdcflshhomzildwqlmwh --use-api
+   node scripts/render-client-ip-probe.mjs \
+     --deploy-sha "$DEPLOY_SHA" \
+     --render-root "$PROBE_RENDER_ROOT" \
+     --verify-captured-source-root "$PROBE_CAPTURE_ROOT"
+   ```
+
+   Both trees must have real, nonsymlink `supabase/functions` ancestry, unique
+   mode-0600 files, disjoint roots/inodes, and no hard-linked artifacts. The
+   operator-captured tree must exactly equal the recomputed render. The receipt
+   records `operator_captured_source_manifest_sha256` and scope
+   `signer-attested-operator-capture`. That proves byte equality to the signer;
+   the local verifier does **not independently verify** that the platform or CLI
+   produced the captured directory.
+6. Authenticate with HMAC-SHA-256 using the existing worker-token key and exact
+   context `client-ip-probe-v1`. Each body is the exact compact JSON
+   `{"case_id":"<family>-<case>"}`. Send a 13-digit millisecond timestamp,
+   16–64 character random URL-safe nonce, and lowercase-hex signature in
+   `x-frame-probe-timestamp`, `x-frame-probe-nonce`, and
+   `x-frame-probe-signature`. The signed bytes are exactly
+   `client-ip-probe-v1\0auth\0<timestamp>\0<nonce>\0<lowercase SHA-256 of body>`;
+   the HMAC key is `LEAD_NOTIFICATION_WORKER_TOKEN` and must never be printed.
+   Run **8 authenticated** matrix requests: four
+   over native IPv4 and the same four over native IPv6 — baseline, forged
+   `cf-connecting-ip`, forged `x-real-ip`, and forged `x-forwarded-for`. Both
+   baseline paths must report `passed`, canonical source `cf-connecting-ip`, and
+   a 64-lowercase-hex raw-free fingerprint. The forged CF result must be
+   `gateway-overwritten-selected-fingerprint-unchanged`; both other forged-header
+   results must also leave the selected fingerprint unchanged. Each HTTP 200
+   body has the exact keys `ok`, `case_id`, `target_source_sha`, `deployment_id`,
+   `source`, `observed_family`, and `fingerprint`. `observed_family` must equal the
+   native IPv4/IPv6 lane, and the two baseline fingerprints must differ. The
+   template bounds the streamed body at 512 bytes before JSON parsing. Then run
+   **2 negative-auth** requests, one
+   without a signature and one with an invalid signature. Both must return the
+   exact body `{"error":"unauthorized"}` with HTTP 401 and no metadata. The
+   signed count is therefore **10 total**; never overload
+   the authenticated count of 8 to hide the two negative checks. An unavailable,
+   skipped, or failed IPv6 path never authorizes deployment.
+   Every request observation must be no more than 60 seconds after its signed
+   request timestamp (the verifier currently enforces a stricter 30-second
+   ceiling). For every request, save three separate mode-0600 files: the exact
+   request artifact, status JSON (`status`, `observed_at`), and raw response body. The
+   request artifact records the method, literal probe slug, transport family,
+   exact compact body plus its SHA-256, and the exact allowlisted header set.
+   Baselines carry no forged header; each forged case carries exactly its named
+   header; authenticated cases carry a shaped signature; missing-signature
+   carries `null`; invalid-signature carries the fixed all-zero value. Put all
+   three absolute explicit paths (`request_path`, `status_path`,
+   `response_path`) in the exact ten-case manifest at
+   `CLIENT_IP_REQUEST_ARTIFACT_MANIFEST_PATH`. The issuer verifies unique nonces
+   and request/status timing, compares fingerprints transiently, and never
+   embeds request headers or a fingerprint in the readable signed token. It
+   signs per-case request shape, status, family, target SHA, runtime binding,
+   and derived outcome.
+7. Immediately before deletion, refresh the full function and secret metadata
+   into `CLIENT_IP_FUNCTIONS_DELETE_RECHECK_PATH` and
+   `CLIENT_IP_SECRETS_DELETE_RECHECK_PATH`. The function catalog and exact ACTIVE
+   tuple/bundle must equal the canary capture. Capture the recheck bundle bytes
+   independently at `CLIENT_IP_PROBE_EZBR_DELETE_RECHECK_PATH`; both byte hashes
+   must equal the tuple metadata. Every secret snapshot (pre,
+   canary, recheck, post) must be identical. Delete using the literal probe slug
+   only (`literal-slug-only`), never an ID, prefix, glob, or list-derived target.
+   This is a **non-atomic** slug deletion: an exact tuple recheck immediately
+   before deletion narrows but cannot eliminate the check/delete TOCTOU window.
+   Record the deletion time no more than 60 seconds after the tuple recheck.
+8. Capture full postflight function and secret metadata in
+   `CLIENT_IP_FUNCTIONS_POST_PATH` and `CLIENT_IP_SECRETS_POST_PATH`. The probe
+   must be absent and the full postflight function catalog must equal preflight.
+   Destroy the exact created Droplet and capture the full list in
+   `CLIENT_IP_COMPUTE_POST_PATH`; it must equal compute preflight and omit the
+   created ID. This is how the issuer derives probe deletion, zero secret
+   mutation, and ephemeral-compute destruction rather than copying those labels.
+
+Save one mode-0600 operator attestation at
+`CLIENT_IP_OPERATOR_ATTESTATION_PATH`. It contains only the exclusive-window
+timestamps, deletion time, `literal-slug-only` scope, literal deletion target,
+and the statement that no probe-secret mutation was performed. It contains no
+hashes, request outcomes, function state, or cleanup booleans; those are derived
+from the raw artifacts above. The signed receipt is sanitized and embeds no raw
+address, fingerprint, secret, or raw artifact. It says artifact origin is
+signer-attested and not independently verified, and makes no claim about
+Cloudflare, Supabase, or DigitalOcean log retention.
+
+The scanner and workflow hashes prevent accidental or unreviewed drift only
+when the exact checked SHA is actually executed. They are not self-protecting
+against an authorized maintainer who can modify the workflow, scanner, tests,
+and trusted manifest in the same change. Every receipt therefore states that
+workflow/scanner integrity relies on authorized human review and merge plus
+exact-SHA verification; it explicitly does not claim that same-repository CI
+mutation is self-protected or that external branch protection was independently
+verified. Do not issue or consume a receipt without that review trust boundary.
+
+Export every explicit path before issuance:
+
+```bash
+export CLIENT_IP_FUNCTIONS_PRE_PATH CLIENT_IP_FUNCTIONS_CANARY_PATH
+export CLIENT_IP_FUNCTIONS_DELETE_RECHECK_PATH CLIENT_IP_FUNCTIONS_POST_PATH
+export CLIENT_IP_PROBE_EZBR_CANARY_PATH CLIENT_IP_PROBE_EZBR_DELETE_RECHECK_PATH
+export CLIENT_IP_SECRETS_PRE_PATH CLIENT_IP_SECRETS_CANARY_PATH
+export CLIENT_IP_SECRETS_DELETE_RECHECK_PATH CLIENT_IP_SECRETS_POST_PATH
+export CLIENT_IP_COMPUTE_PRE_PATH CLIENT_IP_COMPUTE_CREATED_PATH
+export CLIENT_IP_COMPUTE_POST_PATH CLIENT_IP_RENDER_ROOT
+export CLIENT_IP_CAPTURED_SOURCE_ROOT CLIENT_IP_REQUEST_ARTIFACT_MANIFEST_PATH
+export CLIENT_IP_OPERATOR_ATTESTATION_PATH
+```
+
+Set `FUNCTION_NAME` to one exact protected function, generate a new dispatch
+nonce outside CI, and set `CLIENT_IP_DEPLOY_DISPATCH_NONCE` to that value. Before
+the private key enters the process environment, run the Node-built-in-only trust
+root so no unreviewed repository module executes first:
+
+```bash
+node scripts/audit-client-ip-probe-contract.mjs
+```
+
+After that passes, an authorized offline signer injects its Ed25519 private key as canonical
+PKCS8 DER-base64 only in
+`CLIENT_IP_DEPLOY_RECEIPT_PRIVATE_KEY_PKCS8_DER_BASE64` and runs:
+
+```bash
+node scripts/issue-client-ip-deploy-receipt.mjs "$CLIENT_IP_RECEIPT_OUTPUT"
+gh secret set CLIENT_IP_DEPLOY_RECEIPT_TOKEN \
+  --env 'Production – frame-restoration-utah' < "$CLIENT_IP_RECEIPT_OUTPUT"
+gh workflow run deploy-edge-function.yml --ref main \
+  -f function="$FUNCTION_NAME" \
+  -f receipt_nonce="$CLIENT_IP_DEPLOY_DISPATCH_NONCE"
+```
+
+The issuer computes the template/render/extractor/source-manifest digests,
+canonical metadata hashes, ACTIVE tuple, Management API tuple hash, runtime
+bindings, request outcomes, restoration, and compute teardown itself. It
+validates the evidence while building the payload, allowlists every nested
+field so raw/debug extras cannot enter the readable token, signs it, and never
+prints the token or private key. The private PKCS8 key is issuer-only and must
+never enter GitHub Actions, Supabase, the repository, an evidence artifact, or
+the verifier process. Only the canonical SPKI DER-base64 public key reaches the
+verifier, through the Production environment variable
+`CLIENT_IP_DEPLOY_RECEIPT_PUBLIC_KEY_SPKI_DER_BASE64`. Do not generate or store
+a production signing key as part of this code change; provisioning and custody
+require a separate owner-authorized offline ceremony.
+
+Store only the single-use `CLIENT_IP_DEPLOY_RECEIPT_TOKEN` as a Production
+environment secret. It expires no more than 15 minutes after issuance and must
+reach the protected deploy command within that window. The protected deploy
+workflow reruns the repository scanner and clean/exact-SHA worktree checks,
+then captures final live `supabase functions list --output json` and `supabase
+secrets list --output json` metadata, verifies those exact canonical hashes and
+probe absence against the signed postflight through new mode-0600
+`CLIENT_IP_FINAL_FUNCTIONS_PATH` and `CLIENT_IP_FINAL_SECRETS_PATH` files, and
+deploys in that same fail-closed shell step. The verifier accepts no CLI
+arguments and has no issuance/private-key path. The workflow must not
+deploy or delete a probe, mutate any probe secret, expose the intake rate-limit
+secret through probe source, or mint client-IP evidence on a shared CI runner.
+Issue a new token and nonce for every function/SHA/dispatch. Immediately remove
+the Production token after that one run succeeds or fails, and remove all local
+receipt/evidence files; never retry or reuse it. Replace the public key through
+the separate owner-authorized key-rotation procedure after signer compromise or
+custody changes. `node scripts/test-client-ip-deploy-receipt.mjs` exercises
+offline generated fixture keys and fixture artifacts only; a passing test is
+not live Supabase, dual-stack, cleanup, or deployment proof.
+`data/UTAH-SUPABASE-CLIENT-IP-HEADER-RECEIPT.md` remains an INVALID historical
+record and is not read by the deploy verifier.
 
 Required rollout order (do not reorder):
 
@@ -1010,7 +1224,8 @@ receipts are installed, dispatch the protected workflow:
 gh workflow run deploy-edge-function.yml \
   --repo Rconman99/frame-restoration-utah \
   --ref main \
-  -f function=handle-lead
+  -f function=handle-lead \
+  -f receipt_nonce="$CLIENT_IP_DEPLOY_DISPATCH_NONCE"
 ```
 
 The workflow rechecks exact-main identity immediately before deployment. The
