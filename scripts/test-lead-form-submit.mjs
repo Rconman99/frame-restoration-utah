@@ -35,6 +35,18 @@ function resolveRequestPath(rawUrl) {
   return absolute;
 }
 
+async function requirePostCount(posts, expected, label) {
+  const deadline = Date.now() + 5_000;
+  while (posts.length < expected && Date.now() < deadline) {
+    await new Promise((resolveWait) => setTimeout(resolveWait, 25));
+  }
+  assert.equal(
+    posts.length,
+    expected,
+    `${label} emitted ${posts.length} lead POSTs; expected ${expected}`,
+  );
+}
+
 const server = createServer((request, response) => {
   const path = resolveRequestPath(request.url || "/");
   if (!path || !existsSync(path) || !statSync(path).isFile()) {
@@ -119,9 +131,7 @@ try {
       await form.locator(`[name="${name}"]`).fill(value);
     }
     await form.locator('button[type="submit"]').click();
-    await page.waitForTimeout(300);
-
-    assert.equal(posts.length, 1, `${fixture.id} emitted ${posts.length} lead POSTs for one submit`);
+    await requirePostCount(posts, 1, `${fixture.id} first submit`);
     assert.equal(posts[0].method, "POST", `${fixture.id} must POST`);
     assert.equal(posts[0].body.source_page, "/", `${fixture.id} must report its source page`);
     assert.equal(posts[0].body.company_website, "", `${fixture.id} must preserve the blank honeypot`);
@@ -129,8 +139,7 @@ try {
     assert.match(posts[0].body.submission_key, /^[0-9a-f-]{36}$/iu, `${fixture.id} must send an idempotency key`);
 
     await form.locator('button[type="submit"]').click();
-    await page.waitForTimeout(300);
-    assert.equal(posts.length, 2, `${fixture.id} retry must emit one additional POST`);
+    await requirePostCount(posts, 2, `${fixture.id} retry`);
     assert.equal(
       posts[1].body.submission_key,
       posts[0].body.submission_key,
@@ -175,9 +184,7 @@ try {
       await form.locator(`[name="${name}"]`).fill(value);
     }
     await form.locator('button[type="submit"]').click();
-    await page.waitForTimeout(100);
-
-    assert.equal(posts.length, 1, `${fixture.id} no-script fallback must emit one request`);
+    await requirePostCount(posts, 1, `${fixture.id} no-script fallback`);
     assert.equal(posts[0].method, "POST", `${fixture.id} no-script fallback must POST`);
     assert.equal(posts[0].url.search, "", `${fixture.id} must not put lead PII in the URL`);
     assert.match(
