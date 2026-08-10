@@ -99,7 +99,7 @@ jobs:
           }
       - uses: supabase/setup-cli@v1
         with:
-          version: 2.112.0
+          version: 2.113.0
       - name: Verify function source exists
         run: |
           test -f "supabase/functions/${{ inputs.function }}/index.ts" \
@@ -136,7 +136,7 @@ jobs:
             --request POST \
             --header "Authorization: Bearer $SUPABASE_ACCESS_TOKEN" \
             --header "Content-Type: application/json" \
-            --header "User-Agent: SupabaseCLI/2.112.0" \
+            --header "User-Agent: SupabaseCLI/2.113.0" \
             --data-binary @- \
             "https://api.supabase.com/v1/projects/$SUPABASE_PROJECT_REF/database/query/read-only" \
             > "$MIGRATION_HISTORY_PATH" <<'JSON'
@@ -183,7 +183,7 @@ jobs:
             --request POST \
             --header "Authorization: Bearer $SUPABASE_ACCESS_TOKEN" \
             --header "Content-Type: application/json" \
-            --header "User-Agent: SupabaseCLI/2.112.0" \
+            --header "User-Agent: SupabaseCLI/2.113.0" \
             --data-binary @- \
             "https://api.supabase.com/v1/projects/$SUPABASE_PROJECT_REF/database/query/read-only" \
             > "$NOTIFICATION_MIGRATION_HISTORY_PATH" <<'JSON'
@@ -228,7 +228,7 @@ jobs:
             --request POST \
             --header "Authorization: Bearer $SUPABASE_ACCESS_TOKEN" \
             --header "Content-Type: application/json" \
-            --header "User-Agent: SupabaseCLI/2.112.0" \
+            --header "User-Agent: SupabaseCLI/2.113.0" \
             --data-binary @- \
             "https://api.supabase.com/v1/projects/$SUPABASE_PROJECT_REF/database/query/read-only" \
             > "$FRESH_MIGRATIONS" <<'JSON'

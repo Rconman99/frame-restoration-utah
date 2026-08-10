@@ -93,7 +93,7 @@ client-IP, worker, webhook, and intake secrets.
 
 ### Executable owner-notification receipt path
 
-Run from the exact clean merged main checkout with pinned Supabase CLI 2.112.0.
+Run from the exact clean merged main checkout with pinned Supabase CLI 2.113.0.
 Inject access/HMAC/canary secrets from the password manager into environment
 variables without echoing them. Never put a secret or token in argv, shell
 history, a JSON evidence file, or logs.
@@ -209,16 +209,20 @@ Required rollout order (do not reorder):
 Run this only after the reviewed pull request is merged. `RELEASE_SHA` must be
 the full 40-character final merge commit on `origin/main`, never a branch-head,
 preview, or dirty-worktree SHA. The approved mutating runner is the pinned
-Supabase CLI 2.112.0 migration subsystem. The full repository checkout is
+Supabase CLI 2.113.0 migration subsystem. The full repository checkout is
 **forbidden** as the runner workdir: it contains 25 other migration versions
 absent from live history. `--include-all` against that tree could apply them.
 
 Instead, create a just-in-time isolated workdir from the immutable merged Git
 object. This repository does not track `supabase/config.toml`; generate a
-runner-only config inside the empty workdir with pinned CLI 2.112.0, then
+runner-only config inside the empty workdir with pinned CLI 2.113.0, then
 archive only the eight reviewed migrations. Mechanically compare every
 migration basename and SHA-256 before linking. Do not substitute working-tree
 files, a copied directory, a config-file archive assumption, or a broad glob.
+CLI 2.112.0 is explicitly forbidden because its generated Management API
+schema rejects valid offset timestamps during `link`; 2.113.0 contains the
+upstream parser fix. Use the official 2.113.0 release for the entire runner,
+not the bundled internal `supabase-go` compatibility binary.
 
 ```bash
 export RELEASE_SHA='<full-40-character-final-merged-main-commit>'
@@ -237,10 +241,15 @@ git merge-base --is-ancestor "$RELEASE_SHA" origin/main || {
 }
 
 cli_version="$(supabase --version | head -n 1)"
-test "$cli_version" = '2.112.0' || {
-  printf 'Hard stop: Supabase CLI 2.112.0 is required; found %s.\n' "$cli_version" >&2
+test "$cli_version" = '2.113.0' || {
+  printf 'Hard stop: Supabase CLI 2.113.0 is required; found %s.\n' "$cli_version" >&2
   exit 1
 }
+test -n "${SUPABASE_ACCESS_TOKEN:-}" || {
+  printf 'Hard stop: inject the Supabase access token from approved secret storage.\n' >&2
+  exit 1
+}
+export SUPABASE_NO_KEYRING=1
 
 UTAH_MIGRATION_WORKDIR="$(mktemp -d "${TMPDIR:-/tmp}/utah-release-migrations.XXXXXX")"
 test -d "$UTAH_MIGRATION_WORKDIR"
@@ -295,6 +304,13 @@ postflight below. Management API/raw SQL execution, SQL Editor execution,
 test ! -e supabase/.temp/project-ref
 supabase link --project-ref hdcflshhomzildwqlmwh --yes
 test "$(cat supabase/.temp/project-ref)" = 'hdcflshhomzildwqlmwh'
+test -s supabase/.temp/pooler-url
+node <<'NODE'
+const fs = require("node:fs");
+const url = new URL(fs.readFileSync("supabase/.temp/pooler-url", "utf8").trim());
+if (url.protocol !== "postgresql:" || url.password !== "") process.exit(1);
+if (!decodeURIComponent(url.username).endsWith(".hdcflshhomzildwqlmwh")) process.exit(1);
+NODE
 supabase migration list --linked | tee migration-list.before.txt
 
 preflight_json="$(

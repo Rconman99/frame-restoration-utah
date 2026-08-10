@@ -226,7 +226,7 @@ a broad or dirty tree, paste migration SQL into the console, or use migration
 repair to make selective raw SQL look applied. The full repository is forbidden
 as the runner workdir because it contains 25 other migration versions absent
 from live history. After merge, use the final `RELEASE_SHA` and the exact
-runner in `supabase/functions/handle-lead/DEPLOY.md`: pinned Supabase CLI 2.112.0
+runner in `supabase/functions/handle-lead/DEPLOY.md`: pinned Supabase CLI 2.113.0
 must `init` a just-in-time empty workdir because no tracked
 `supabase/config.toml` exists, then `git archive` only the eight reviewed
 migrations and verify their SHA-256 manifest. Link only inside that workdir,
