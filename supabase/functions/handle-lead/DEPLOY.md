@@ -84,12 +84,13 @@ Required Supabase Edge secret names are
 secret storage.
 
 The GitHub environment `Production – frame-restoration-utah` must contain
-`SUPABASE_ACCESS_TOKEN`, `LEAD_NOTIFICATION_DEPLOY_RECEIPT_TOKEN`,
-`LEAD_NOTIFICATION_DEPLOY_RECEIPT_HMAC_KEY`,
-`LEAD_NOTIFICATION_WORKER_TOKEN`, and `RESEND_WEBHOOK_SECRET`. The last two
-must match their Supabase Edge values so the fresh canaries authenticate. The
-receipt key/token are GitHub-only and must be distinct from dashboard,
-client-IP, worker, webhook, and intake secrets.
+`SUPABASE_ACCESS_TOKEN`, `LEAD_NOTIFICATION_DEPLOY_RECEIPT_HMAC_KEY`,
+`LEAD_NOTIFICATION_WORKER_TOKEN`, and `RESEND_WEBHOOK_SECRET`. The worker and
+webhook secrets must match their Supabase Edge values so the fresh canaries
+authenticate. The receipt HMAC key is GitHub-only and must be distinct from
+dashboard, client-IP, worker, webhook, and intake secrets. The workflow mints a
+short-lived `LEAD_NOTIFICATION_DEPLOY_RECEIPT_TOKEN` from fresh live evidence on
+each dispatch instead of relying on a stored static token.
 
 ### Executable owner-notification receipt path
 
@@ -120,21 +121,16 @@ node scripts/verify-owner-notification-deploy-receipt.mjs --issue \
 
 The issuer consumes the captured live files and canary evidence from the named
 environment paths, builds the phase payload itself, self-verifies it, and
-writes the token only to the new mode-0600 file. It never prints the token.
-Install it without terminal output, then delete the local token/evidence files:
-
-```bash
-gh secret set LEAD_NOTIFICATION_DEPLOY_RECEIPT_TOKEN \
-  --env 'Production – frame-restoration-utah' < "$NOTIFICATION_RECEIPT_OUTPUT"
-```
-
-Issue a new target-specific token for every dispatch because it expires within
-one hour and any live secret/function metadata change invalidates it. Rotate the
-HMAC key through the password manager and GitHub production environment after
-suspected exposure, signer access changes, or routine key rotation; every old
-token becomes invalid immediately. A worker/webhook deployment changes live
-function metadata, so capture again and issue a fresh `handler-ready` receipt
-before deploying `handle-lead`.
+writes the token only to the new mode-0600 file. It never prints the token. In
+GitHub Actions, `.github/workflows/deploy-edge-function.yml` performs this
+issuance automatically and masks the token before placing it in `GITHUB_ENV`.
+Issue a new target-specific token for every manual/local dispatch because it
+expires within one hour and any live secret/function metadata change invalidates
+it. Rotate the HMAC key through the password manager and GitHub production
+environment after suspected exposure, signer access changes, or routine key rotation;
+every old token becomes invalid immediately. A worker/webhook deployment changes
+live function metadata, so capture again and issue a fresh `handler-ready`
+receipt before deploying `handle-lead`.
 
 ### Executable client-IP receipt path
 
