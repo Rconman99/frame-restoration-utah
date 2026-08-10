@@ -6,8 +6,6 @@
 -- Successful logins intentionally do not reset the counter, preventing one
 -- valid low-privilege credential from reopening an IP's brute-force budget.
 
-begin;
-
 comment on table public.auth_attempts is
   'Service-role-only fixed-window dashboard login-attempt counters keyed by a context-separated HMAC of the canonical client IP. fail_count is retained for migration compatibility but counts every login attempt, not only failures.';
 
@@ -84,5 +82,3 @@ grant execute on function public.reserve_dashboard_login_attempt(text)
 
 comment on function public.reserve_dashboard_login_attempt(text) is
   'Atomically reserves one of 10 dashboard login attempts per canonical-IP HMAC per fixed 15-minute window, while deleting expired counters. Service role only.';
-
-commit;

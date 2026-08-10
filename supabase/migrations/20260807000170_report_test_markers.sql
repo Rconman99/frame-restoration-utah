@@ -4,8 +4,6 @@
 -- a controlled end-to-end receipt row after the test completes, and reporting
 -- excludes only this boolean marker plus the known operator call identity.
 
-begin;
-
 alter table public.leads
   add column if not exists is_test boolean not null default false;
 
@@ -23,5 +21,3 @@ comment on column public.leads.is_test is
 
 comment on column public.call_logs.is_test is
   'Explicit operator-controlled marker for synthetic end-to-end calls; never inferred from PII.';
-
-commit;

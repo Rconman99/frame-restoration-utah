@@ -2,8 +2,6 @@
 -- no trigger or existing table behavior changes. The Edge Function persists a
 -- context-keyed HMAC of the canonical platform client IP, never the raw IP.
 
-begin;
-
 create table if not exists public.lead_intake_rate_limits (
   ip_hash text primary key check (ip_hash ~ '^[0-9a-f]{64}$'),
   request_count integer not null default 1 check (request_count >= 1),
@@ -89,5 +87,3 @@ comment on table public.lead_intake_rate_limits is
   'Service-role-only fixed-window public lead submission counters keyed by a context-separated canonical-IP HMAC.';
 comment on function public.reserve_lead_intake_attempt(text) is
   'Atomically allows five public lead attempts per canonical-IP HMAC per fixed 15-minute window and deletes expired counters.';
-
-commit;

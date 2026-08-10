@@ -22,15 +22,31 @@ const deployWorkflow = await Deno.readTextFile(
     import.meta.url,
   ),
 );
-const outboxSchema = await Deno.readTextFile(
-  new URL(
-    "../../../supabase/migrations/20260807000100_lead_notification_outbox.sql",
-    import.meta.url,
+const reviewedMigrationBasenames = [
+  "20260807000090_emergency_dashboard_secret_containment.sql",
+  "20260807000100_lead_notification_outbox.sql",
+  "20260807000125_add_ul_request_spam_status.sql",
+  "20260807000140_atomic_dashboard_auth_throttle.sql",
+  "20260807000150_dashboard_session_credentials.sql",
+  "20260807000160_lead_intake_rate_limit.sql",
+  "20260807000165_activate_lead_notification_outbox.sql",
+  "20260807000170_report_test_markers.sql",
+] as const;
+const reviewedMigrationSources = await Promise.all(
+  reviewedMigrationBasenames.map(async (basename) =>
+    [
+      basename,
+      await Deno.readTextFile(
+        new URL(`../../../supabase/migrations/${basename}`, import.meta.url),
+      ),
+    ] as const
   ),
 );
-const outboxActivation = await Deno.readTextFile(
+const outboxSchema = reviewedMigrationSources[1][1];
+const outboxActivation = reviewedMigrationSources[6][1];
+const remoteAppliedHistoryGuard = await Deno.readTextFile(
   new URL(
-    "../../../supabase/migrations/20260807000165_activate_lead_notification_outbox.sql",
+    "../../../supabase/migration-baselines/remote-applied-history-guard.sql",
     import.meta.url,
   ),
 );
@@ -306,6 +322,23 @@ Deno.test("runbooks freeze scoped senders and selective migration order", () => 
   }
 });
 
+Deno.test("reviewed migration batch delegates transaction ownership to the CLI", () => {
+  const topLevelTransactionControl =
+    /^\s*(?:begin(?:\s+(?:work|transaction))?|start\s+transaction|commit(?:\s+(?:work|transaction))?|rollback(?:\s+(?:work|transaction))?|end\s+(?:work|transaction))\s*;\s*$/im;
+  const transactionFlushingStatement =
+    /\b(?:create\s+(?:unique\s+)?index\s+concurrently|reindex\b[^;]*\bconcurrently|vacuum|alter\s+system|cluster)\b/i;
+  for (const [basename, source] of reviewedMigrationSources) {
+    assert(
+      !topLevelTransactionControl.test(source),
+      `${basename} can commit schema before the CLI migration-history insert`,
+    );
+    assert(
+      !transactionFlushingStatement.test(source),
+      `${basename} can force the CLI to commit before its migration-history insert`,
+    );
+  }
+});
+
 Deno.test("migration runner is release-bound, isolated, and catalog-gated", async () => {
   for (
     const contract of [
@@ -313,17 +346,30 @@ Deno.test("migration runner is release-bound, isolated, and catalog-gated", asyn
       "git merge-base --is-ancestor",
       "Supabase CLI 2.113.0 is required",
       "SUPABASE_NO_KEYRING=1",
+      "SUPABASE_BIN",
+      "set SUPABASE_BIN to the reviewed official CLI path",
+      "supabase-go",
+      "expected_supabase_bin_sha256",
+      "macOS arm64 only",
+      "exclusive Utah migration-writer window",
+      "UTAH_MIGRATION_EXCLUSIVE_WRITER_ACK",
+      'UTAH_MIGRATION_EXCLUSIVE_WRITER_ACK:-}" = "$RELEASE_SHA"',
       "pooler-url",
       "mktemp -d",
-      'supabase init --workdir "$UTAH_MIGRATION_WORKDIR"',
+      '"$SUPABASE_BIN" init --workdir "$UTAH_MIGRATION_WORKDIR"',
       "git archive --format=tar",
       "full repository checkout is",
       "25 other migration versions",
-      "supabase link --project-ref hdcflshhomzildwqlmwh --yes",
-      "supabase migration list --linked",
-      "supabase --agent no -o json db query --linked",
+      '"$SUPABASE_BIN" link --project-ref hdcflshhomzildwqlmwh --yes',
+      '"$SUPABASE_BIN" --agent no --output-format json migration list --linked',
+      '"$SUPABASE_BIN" --agent no -o json db query --linked',
+      "migration-list.before.json",
+      "migration-list.effective-before.json",
+      "remote_applied_history_guard.sql",
+      "expected_remote_versions",
+      "exact matched prefix plus pending suffix",
       "preflight_ok == true",
-      "supabase migration up --linked --include-all --yes",
+      "migration up --linked --include-all --yes",
       "postflight_ok == true",
       "supabase_migrations.schema_migrations",
       "Management API/raw SQL",
@@ -347,41 +393,11 @@ Deno.test("migration runner is release-bound, isolated, and catalog-gated", asyn
     manifestStart + manifestMarker.length,
     manifestEnd,
   );
-  const outboxDigest = await sha256Hex(outboxSchema);
-  const reviewedMigrations = [
-    [
-      "20260807000090_emergency_dashboard_secret_containment.sql",
-      "90a34fb0ce2e42011b0d07be11ffeaea0a70c1f7da182e27d92a8ec46195b6e0",
-    ],
-    [
-      "20260807000100_lead_notification_outbox.sql",
-      outboxDigest,
-    ],
-    [
-      "20260807000125_add_ul_request_spam_status.sql",
-      "183f9509fcf1526d6751fe092c89ba92f581cf3da31110652ecd0aecabcc1ebd",
-    ],
-    [
-      "20260807000140_atomic_dashboard_auth_throttle.sql",
-      "a8b7c3bc7e46aa6db335b54f87ca4b56c0b62bec60622961f3ae621219c6ed12",
-    ],
-    [
-      "20260807000150_dashboard_session_credentials.sql",
-      "e1a6e75142e577768b6ce8a970daafb437471a52ef989450f755e1b514105500",
-    ],
-    [
-      "20260807000160_lead_intake_rate_limit.sql",
-      "ae794b134334db1dfe01a99dd42d4027613aa55b94060a582978154d25dab723",
-    ],
-    [
-      "20260807000165_activate_lead_notification_outbox.sql",
-      "0e53b586dceca55e94cec08fa08f16028e2e59d414a5398e2391851892311a60",
-    ],
-    [
-      "20260807000170_report_test_markers.sql",
-      "f58b6377df70b94218cc0fdf887e16052287c5bb3d6cf12661a2d235dbf27099",
-    ],
-  ] as const;
+  const reviewedMigrations = await Promise.all(
+    reviewedMigrationSources.map(async ([basename, source]) =>
+      [basename, await sha256Hex(source)] as const
+    ),
+  );
   for (const [basename, digest] of reviewedMigrations) {
     assert(
       releaseManifest.includes(
@@ -390,10 +406,134 @@ Deno.test("migration runner is release-bound, isolated, and catalog-gated", asyn
       `migration runner does not freeze ${basename}`,
     );
   }
+  assert(
+    deployGuide.includes(
+      "expected_supabase_bin_sha256='ad4957e507ffc178fa27dd9256eb666f34bade172058b66e97f230413564494a'",
+    ),
+    "migration runner does not pin the reviewed official macOS arm64 CLI binary",
+  );
+
+  const guardDigest = await sha256Hex(remoteAppliedHistoryGuard);
+  assert(
+    remoteAppliedHistoryGuard.toLowerCase().includes("raise exception") &&
+      remoteAppliedHistoryGuard.includes("UTAH_REMOTE_HISTORY_GUARD_SELECTED"),
+    "remote-history guard does not fail closed when selected",
+  );
+  assert(
+    deployGuide.includes(
+      "supabase/migration-baselines/remote-applied-history-guard.sql",
+    ),
+    "migration runner does not archive the immutable history guard",
+  );
+  assert(
+    deployGuide.includes(
+      `expected_guard_template_sha256='${guardDigest}'`,
+    ),
+    "migration runner does not freeze the history guard digest",
+  );
+  const complianceWorkflow = await Deno.readTextFile(
+    new URL("../../../.github/workflows/compliance-gate.yml", import.meta.url),
+  );
+  assert(
+    complianceWorkflow.includes("'supabase/migration-baselines/**'") &&
+      complianceWorkflow.includes(
+        "supabase/migration-baselines/remote-applied-history-guard.sql",
+      ) &&
+      reviewedMigrationBasenames.every((basename) =>
+        complianceWorkflow.includes(`supabase/migrations/${basename}`)
+      ),
+    "compliance gate neither triggers on nor grants read access to the history guard",
+  );
+
+  const remoteVersionsMarker = `expected_remote_versions="$(cat <<'VERSIONS'\n`;
+  const remoteVersionsStart = deployGuide.indexOf(remoteVersionsMarker);
+  const remoteVersionsEnd = deployGuide.indexOf(
+    "\nVERSIONS\n)",
+    remoteVersionsStart,
+  );
+  assert(
+    remoteVersionsStart >= 0 && remoteVersionsEnd > remoteVersionsStart,
+    "migration runner lacks its exact remote-history baseline",
+  );
+  const remoteVersions = deployGuide.slice(
+    remoteVersionsStart + remoteVersionsMarker.length,
+    remoteVersionsEnd,
+  ).split("\n");
+  const expectedRemoteVersions = [
+    "20260320023416",
+    "20260320023541",
+    "20260320202722",
+    "20260320202912",
+    "20260320210930",
+    "20260409044027",
+    "20260410182354",
+    "20260411003850",
+    "20260411004150",
+    "20260427211024",
+    "20260427211116",
+    "20260427211814",
+    "20260427214847",
+    "20260427223827",
+    "20260427223851",
+    "20260507211125",
+    "20260508000203",
+    "20260511015537",
+    "20260511220802",
+    "20260512005558",
+    "20260527064542",
+    "20260608205857",
+    "20260610",
+    "20260807000095",
+  ];
+  assert(
+    JSON.stringify(remoteVersions) === JSON.stringify(expectedRemoteVersions),
+    "migration runner remote-history baseline differs from the reviewed exact set",
+  );
+  const remoteVersionsDigest = await sha256Hex(
+    `${remoteVersions.join("\n")}\n`,
+  );
+  assert(
+    deployGuide.includes(
+      `expected_remote_versions_sha256='${remoteVersionsDigest}'`,
+    ),
+    "migration runner does not freeze the remote-history baseline digest",
+  );
+  const targetVersions = reviewedMigrations.map(([basename]) =>
+    basename.slice(0, basename.indexOf("_"))
+  );
+  for (
+    let prefixLength = 0;
+    prefixLength <= reviewedMigrations.length;
+    prefixLength++
+  ) {
+    const fullManifestLines = [
+      ...[...remoteVersions, ...targetVersions.slice(0, prefixLength)].map(
+        (version) =>
+          `${guardDigest}  supabase/migrations/${version}_remote_applied_history_guard.sql`,
+      ),
+      ...reviewedMigrations.slice(prefixLength).map(([basename, digest]) =>
+        `${digest}  supabase/migrations/${basename}`
+      ),
+    ].sort((left, right) => {
+      const leftPath = left.slice(left.indexOf("  ") + 2);
+      const rightPath = right.slice(right.indexOf("  ") + 2);
+      return leftPath < rightPath ? -1 : leftPath > rightPath ? 1 : 0;
+    });
+    const fullManifestDigest = await sha256Hex(
+      `${fullManifestLines.join("\n")}\n`,
+    );
+    assert(
+      deployGuide.includes(
+        `${prefixLength}) expected_full_manifest_sha256='${fullManifestDigest}'`,
+      ),
+      `migration runner does not freeze the prefix-${prefixLength} 32-file manifest digest`,
+    );
+  }
 
   for (
     const preflightContract of [
-      "target_history_empty",
+      "all_history_versions",
+      "target_history_versions",
       "containment_00095_recorded",
       "phase_00090_schema_ahead_exact",
       "phase_00100_pristine",
@@ -403,6 +543,8 @@ Deno.test("migration runner is release-bound, isolated, and catalog-gated", asyn
       "phase_00160_pristine",
       "phase_00165_pristine",
       "phase_00170_pristine",
+      "expected_applied_target_versions_json",
+      "evaluate_catalog_preflight",
     ]
   ) {
     assert(
@@ -412,8 +554,6 @@ Deno.test("migration runner is release-bound, isolated, and catalog-gated", asyn
   }
   for (
     const postflightContract of [
-      "target_history_complete",
-      "phase_00090_present",
       "phase_00100_present",
       "phase_00125_present",
       "phase_00140_present",
@@ -421,6 +561,7 @@ Deno.test("migration runner is release-bound, isolated, and catalog-gated", asyn
       "phase_00160_present",
       "phase_00165_present",
       "phase_00170_present",
+      "postflight_ok:.preflight_ok",
     ]
   ) {
     assert(
@@ -428,19 +569,37 @@ Deno.test("migration runner is release-bound, isolated, and catalog-gated", asyn
       `catalog postflight lacks ${postflightContract}`,
     );
   }
+  assert(
+    deployGuide.includes(
+      "$state.all_history_versions == (($expected_baseline + $expected_history) | sort)",
+    ) &&
+      deployGuide.includes(
+        '--argjson expected_baseline "$expected_remote_versions_json"',
+      ),
+    "catalog gate does not compare every direct history row with the exact baseline and target prefix",
+  );
+  assert(
+    deployGuide.includes("not like '%ul_request%'") &&
+      deployGuide.includes("like '%ul_request%'") &&
+      !deployGuide.includes("credential_created_at") &&
+      deployGuide.includes("report_access_pin_hash_key") &&
+      deployGuide.includes("column_name='pin' and is_nullable='YES'"),
+    "catalog phase checks do not match the exact 00125/00150 migration contracts",
+  );
 
   assert(
     !deployGuide.includes("UTAH_DATABASE_URL") &&
       !deployGuide.includes("psql ") &&
+      !deployGuide.includes("command -v supabase") &&
       !deployGuide.includes("supabase migration up --linked --yes"),
-    "migration runner still permits a database URL, psql, or unbounded migration up",
+    "migration runner still permits a database URL, psql, implicit CLI, or unbounded migration up",
   );
   const runner = deployGuide.slice(
     deployGuide.indexOf("### Migration execution and history receipt"),
     deployGuide.indexOf("### Resend webhook registration receipt"),
   );
   const init = runner.indexOf(
-    'supabase init --workdir "$UTAH_MIGRATION_WORKDIR"',
+    '"$SUPABASE_BIN" init --workdir "$UTAH_MIGRATION_WORKDIR"',
   );
   const archive = runner.indexOf("git archive --format=tar");
   const archiveEnd = runner.indexOf("| tar -xf", archive);
@@ -449,24 +608,56 @@ Deno.test("migration runner is release-bound, isolated, and catalog-gated", asyn
       !runner.slice(archive, archiveEnd).includes("supabase/config.toml"),
     "migration runner archives a nonexistent config instead of initializing one",
   );
-  const beforeList = runner.indexOf("migration-list.before.txt");
+  for (
+    const guardContract of [
+      "exactly 32 regular SQL files",
+      "duplicate migration versions are forbidden",
+      "expected_full_manifest_sha256",
+      "verify_runner_file_shape",
+      "catalog-preflight.final.json",
+      "migration-up.stdout.json",
+      "migration-up.stderr.txt",
+      '.applied | map(split("/")[-1])',
+      "remote_applied_history_guard.sql",
+      "supabase/reviewed-targets",
+      "expected_applied_target_versions_json",
+      "expected_pending_target_versions_json",
+      "migration_up_skipped=exact_target_history_already_complete",
+      "target history is not an exact ordered prefix",
+    ]
+  ) {
+    assert(
+      runner.includes(guardContract),
+      `migration runner lacks fail-closed contract ${guardContract}`,
+    );
+  }
+  const beforeList = runner.indexOf("migration-list.before.json");
   const preflight = runner.indexOf("preflight_json=");
-  const apply = runner.indexOf(
-    "supabase migration up --linked --include-all --yes",
-  );
+  const effectiveList = runner.indexOf("migration-list.effective-before.json");
+  const finalPreflight = runner.indexOf("final_preflight_json=");
+  const apply = runner.indexOf("migration up --linked --include-all --yes");
   const postflight = runner.indexOf("postflight_json=");
-  const afterList = runner.indexOf("migration-list.after.txt");
+  const afterList = runner.indexOf("migration-list.after.json");
   assert(
-    beforeList >= 0 && beforeList < preflight && preflight < apply &&
+    beforeList >= 0 && beforeList < preflight && preflight < effectiveList &&
+      effectiveList < finalPreflight && finalPreflight < apply &&
       apply < postflight && postflight < afterList,
-    "migration runner does not enforce list/preflight/apply/postflight/list order",
+    "migration runner does not enforce list/preflight/guarded-list/final-preflight/apply/postflight/list order",
   );
   assert(
     dashboardChecklist.includes(
       "supabase migration up --linked --include-all --yes",
     ) && dashboardChecklist.includes("final `RELEASE_SHA`") &&
+      dashboardChecklist.includes("exclusive Utah") &&
+      dashboardChecklist.includes("UTAH_MIGRATION_EXCLUSIVE_WRITER_ACK") &&
       dashboardChecklist.includes("postflight_ok: true"),
     "dashboard rollout does not point to the isolated release migration runner",
+  );
+  assert(
+    deployGuide.includes(
+      "Keep\n   `UTAH_LEAD_RESEND_SMS_FROM` absent while Utah SMS is paused",
+    ),
+    "Utah rollout does not keep the SMS sender absent while SMS is paused",
   );
 });
 

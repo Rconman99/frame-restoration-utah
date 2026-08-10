@@ -184,17 +184,17 @@ Required rollout order (do not reorder):
    and is not part of this migration batch.
 3. Set `LEAD_INTAKE_RATE_LIMIT_SECRET` (distinct random 32–1024 byte value),
    `UTAH_LEAD_RESEND_API_KEY`, `UTAH_LEAD_RESEND_FROM`,
-   `UTAH_LEAD_RESEND_SMS_FROM`, `RESEND_WEBHOOK_SECRET`, and
-   `LEAD_NOTIFICATION_WORKER_TOKEN`. Put the same worker token in the GitHub
-   Actions secret; never print values. No generic or literal sender fallback is
-   accepted.
-4. In Resend, resolve both scoped sender values and confirm each domain is
-   verified and sending-enabled in the Utah account. The owner sender is core
-   readiness. The Verizon SMS sender is auxiliary: if it is missing or invalid,
-   that alert may fail but primary and backup owner email must still run. Do not
-   infer verification from website DNS or a redirect. Also verify the primary
-   and backup recipient secret names resolve to the intended inboxes without
-   printing their values; one invalid recipient must not block the other lane.
+   `RESEND_WEBHOOK_SECRET`, and `LEAD_NOTIFICATION_WORKER_TOKEN`. Put the same
+   worker token in the GitHub Actions secret; never print values. Keep
+   `UTAH_LEAD_RESEND_SMS_FROM` absent while Utah SMS is paused. No generic or
+   literal sender fallback is accepted.
+4. In Resend, resolve the Utah owner sender and confirm its domain is
+   verified and sending-enabled in the Utah account. Keep the auxiliary Verizon SMS
+   sender unresolved and unconfigured while Utah SMS is paused; its absence
+   must not block either owner-email lane. Do not infer sender verification from
+   website DNS or a redirect. Also verify the primary and backup recipient
+   secret names resolve to the intended inboxes without printing their values;
+   one invalid recipient must not block the other lane.
 5. Deploy `resend-webhook` and `lead-notification-worker`, then invoke the
    recovery workflow. Its JSON must report `healthy:true` with HTTP 200. A
    missing scoped key/owner sender stays red even when the queue is empty.
@@ -216,13 +216,24 @@ absent from live history. `--include-all` against that tree could apply them.
 Instead, create a just-in-time isolated workdir from the immutable merged Git
 object. This repository does not track `supabase/config.toml`; generate a
 runner-only config inside the empty workdir with pinned CLI 2.113.0, then
-archive only the eight reviewed migrations. Mechanically compare every
-migration basename and SHA-256 before linking. Do not substitute working-tree
-files, a copied directory, a config-file archive assumption, or a broad glob.
+archive only the eight reviewed migrations plus the immutable remote-history
+guard template. Mechanically compare every migration basename and SHA-256
+before linking. Do not substitute working-tree files, a copied directory, a
+config-file archive assumption, or a broad glob.
 CLI 2.112.0 is explicitly forbidden because its generated Management API
 schema rejects valid offset timestamps during `link`; 2.113.0 contains the
 upstream parser fix. Use the official 2.113.0 release for the entire runner,
 not the bundled internal `supabase-go` compatibility binary.
+
+Establish one exclusive Utah migration-writer window before the initial
+linked migration list and keep it through the catalog postflight and final
+migration list. No other operator, workflow, Supabase Studio action, CLI
+process, or automation may apply, repair, revert, squash, or otherwise change
+migration history or the public schema during that window. Stop if exclusivity
+cannot be confirmed; the exact-prefix recovery path handles an earlier partial
+run, but it is not a substitute for serializing live schema writers. After
+securing the window, set `UTAH_MIGRATION_EXCLUSIVE_WRITER_ACK` to the exact
+`RELEASE_SHA` without printing it.
 
 ```bash
 export RELEASE_SHA='<full-40-character-final-merged-main-commit>'
@@ -240,20 +251,43 @@ git merge-base --is-ancestor "$RELEASE_SHA" origin/main || {
   exit 1
 }
 
-cli_version="$(supabase --version | head -n 1)"
+test -n "${SUPABASE_BIN:-}" || {
+  printf 'Hard stop: set SUPABASE_BIN to the reviewed official CLI path.\n' >&2
+  exit 1
+}
+test -x "$SUPABASE_BIN"
+test "$(basename "$SUPABASE_BIN")" != 'supabase-go' || {
+  printf 'Hard stop: the internal supabase-go compatibility binary is forbidden.\n' >&2
+  exit 1
+}
+cli_version="$("$SUPABASE_BIN" --version | head -n 1)"
 test "$cli_version" = '2.113.0' || {
   printf 'Hard stop: Supabase CLI 2.113.0 is required; found %s.\n' "$cli_version" >&2
+  exit 1
+}
+test "$(uname -s)" = 'Darwin' && test "$(uname -m)" = 'arm64' || {
+  printf 'Hard stop: this reviewed binary receipt is for macOS arm64 only.\n' >&2
+  exit 1
+}
+expected_supabase_bin_sha256='ad4957e507ffc178fa27dd9256eb666f34bade172058b66e97f230413564494a'
+test "$(shasum -a 256 "$SUPABASE_BIN" | awk '{print $1}')" = \
+  "$expected_supabase_bin_sha256" || {
+  printf 'Hard stop: Supabase CLI binary digest differs from the reviewed official release.\n' >&2
   exit 1
 }
 test -n "${SUPABASE_ACCESS_TOKEN:-}" || {
   printf 'Hard stop: inject the Supabase access token from approved secret storage.\n' >&2
   exit 1
 }
+test "${UTAH_MIGRATION_EXCLUSIVE_WRITER_ACK:-}" = "$RELEASE_SHA" || {
+  printf 'Hard stop: secure the exclusive migration-writer window and bind its acknowledgement to RELEASE_SHA.\n' >&2
+  exit 1
+}
 export SUPABASE_NO_KEYRING=1
 
 UTAH_MIGRATION_WORKDIR="$(mktemp -d "${TMPDIR:-/tmp}/utah-release-migrations.XXXXXX")"
 test -d "$UTAH_MIGRATION_WORKDIR"
-supabase init --workdir "$UTAH_MIGRATION_WORKDIR"
+"$SUPABASE_BIN" init --workdir "$UTAH_MIGRATION_WORKDIR"
 test -f "$UTAH_MIGRATION_WORKDIR/supabase/config.toml"
 git archive --format=tar "$RELEASE_SHA" -- \
   supabase/migrations/20260807000090_emergency_dashboard_secret_containment.sql \
@@ -264,17 +298,18 @@ git archive --format=tar "$RELEASE_SHA" -- \
   supabase/migrations/20260807000160_lead_intake_rate_limit.sql \
   supabase/migrations/20260807000165_activate_lead_notification_outbox.sql \
   supabase/migrations/20260807000170_report_test_markers.sql \
+  supabase/migration-baselines/remote-applied-history-guard.sql \
   | tar -xf - -C "$UTAH_MIGRATION_WORKDIR"
 
 expected_manifest="$(cat <<'MANIFEST'
-90a34fb0ce2e42011b0d07be11ffeaea0a70c1f7da182e27d92a8ec46195b6e0  supabase/migrations/20260807000090_emergency_dashboard_secret_containment.sql
-b459852f1f11b15644267012c0efda8c74b75e44c1195c806c5d0b42aae27e62  supabase/migrations/20260807000100_lead_notification_outbox.sql
-183f9509fcf1526d6751fe092c89ba92f581cf3da31110652ecd0aecabcc1ebd  supabase/migrations/20260807000125_add_ul_request_spam_status.sql
-a8b7c3bc7e46aa6db335b54f87ca4b56c0b62bec60622961f3ae621219c6ed12  supabase/migrations/20260807000140_atomic_dashboard_auth_throttle.sql
-e1a6e75142e577768b6ce8a970daafb437471a52ef989450f755e1b514105500  supabase/migrations/20260807000150_dashboard_session_credentials.sql
-ae794b134334db1dfe01a99dd42d4027613aa55b94060a582978154d25dab723  supabase/migrations/20260807000160_lead_intake_rate_limit.sql
-0e53b586dceca55e94cec08fa08f16028e2e59d414a5398e2391851892311a60  supabase/migrations/20260807000165_activate_lead_notification_outbox.sql
-f58b6377df70b94218cc0fdf887e16052287c5bb3d6cf12661a2d235dbf27099  supabase/migrations/20260807000170_report_test_markers.sql
+c5b2d6839fff7a58c2479ca227d705d06bd3c0005cde1b64301798de2c8e82cf  supabase/migrations/20260807000090_emergency_dashboard_secret_containment.sql
+23de8f91fcc1e123261580f27cc57d4822737bb7d206d1745088f23dc9787a69  supabase/migrations/20260807000100_lead_notification_outbox.sql
+f1deab2f83d4fc961b19a615f2b7c1d893dc487680e065f22f963688d5194774  supabase/migrations/20260807000125_add_ul_request_spam_status.sql
+1045a6444faa50f57bba0628f2d7091ee53ebdfa69d40183054b14d93d565c61  supabase/migrations/20260807000140_atomic_dashboard_auth_throttle.sql
+d022f9066adedd7e7714e448f8e1ed3c9a082f82961e94222d018356a72fc43a  supabase/migrations/20260807000150_dashboard_session_credentials.sql
+99d6907507dbfce9fe328a0d93276debdb34fe585cd9c194d24c5c230c8450df  supabase/migrations/20260807000160_lead_intake_rate_limit.sql
+4d320eda3252121085470e395bb672612908cfd73e52f7d82c8a81f5a01477c1  supabase/migrations/20260807000165_activate_lead_notification_outbox.sql
+509eed1c02d8b697c679c811d20bb85eaa261be5e2af34eb663bef2f8e73ca6e  supabase/migrations/20260807000170_report_test_markers.sql
 MANIFEST
 )"
 actual_manifest="$(
@@ -287,6 +322,16 @@ actual_manifest="$(
 test "$actual_manifest" = "$expected_manifest" || {
   printf 'Hard stop: release migration basenames or hashes differ from the reviewed eight.\n%s\n' \
     "$actual_manifest" >&2
+  exit 1
+}
+expected_guard_template_sha256='d770275383205c9012ad693400724e529e6dae90619d658a35b762dda8015752'
+actual_guard_template_sha256="$(
+  shasum -a 256 \
+    "$UTAH_MIGRATION_WORKDIR/supabase/migration-baselines/remote-applied-history-guard.sql" |
+    awk '{print $1}'
+)"
+test "$actual_guard_template_sha256" = "$expected_guard_template_sha256" || {
+  printf 'Hard stop: remote-history guard template digest differs from reviewed main.\n' >&2
   exit 1
 }
 printf 'release_sha=%s\n%s\nworkdir=%s\n' \
@@ -302,7 +347,7 @@ postflight below. Management API/raw SQL execution, SQL Editor execution,
 
 ```bash
 test ! -e supabase/.temp/project-ref
-supabase link --project-ref hdcflshhomzildwqlmwh --yes
+"$SUPABASE_BIN" link --project-ref hdcflshhomzildwqlmwh --yes
 test "$(cat supabase/.temp/project-ref)" = 'hdcflshhomzildwqlmwh'
 test -s supabase/.temp/pooler-url
 node <<'NODE'
@@ -311,13 +356,134 @@ const url = new URL(fs.readFileSync("supabase/.temp/pooler-url", "utf8").trim())
 if (url.protocol !== "postgresql:" || url.password !== "") process.exit(1);
 if (!decodeURIComponent(url.username).endsWith(".hdcflshhomzildwqlmwh")) process.exit(1);
 NODE
-supabase migration list --linked | tee migration-list.before.txt
+"$SUPABASE_BIN" --agent no --output-format json migration list --linked \
+  | tee migration-list.before.json
 
-preflight_json="$(
-  supabase --agent no -o json db query --linked <<'SQL'
+expected_remote_versions="$(cat <<'VERSIONS'
+20260320023416
+20260320023541
+20260320202722
+20260320202912
+20260320210930
+20260409044027
+20260410182354
+20260411003850
+20260411004150
+20260427211024
+20260427211116
+20260427211814
+20260427214847
+20260427223827
+20260427223851
+20260507211125
+20260508000203
+20260511015537
+20260511220802
+20260512005558
+20260527064542
+20260608205857
+20260610
+20260807000095
+VERSIONS
+)"
+expected_target_versions="$(cat <<'VERSIONS'
+20260807000090
+20260807000100
+20260807000125
+20260807000140
+20260807000150
+20260807000160
+20260807000165
+20260807000170
+VERSIONS
+)"
+expected_remote_versions_sha256='dbb75c1ba1d5ce73fffa167e68781afb0e379fa2c2e2ffe3b0a4d3dac0e4b43c'
+expected_remote_versions_json="$(
+  printf '%s\n' "$expected_remote_versions" |
+    jq -Rsc 'split("\n") | map(select(length > 0))'
+)"
+expected_target_versions_json="$(
+  printf '%s\n' "$expected_target_versions" |
+    jq -Rsc 'split("\n") | map(select(length > 0))'
+)"
+test "$(printf '%s\n' "$expected_remote_versions" | shasum -a 256 | awk '{print $1}')" = \
+  "$expected_remote_versions_sha256" || {
+  printf 'Hard stop: reviewed remote-history baseline digest differs.\n' >&2
+  exit 1
+}
+test -z "$(
+  comm -12 \
+    <(printf '%s\n' "$expected_remote_versions" | LC_ALL=C sort) \
+    <(printf '%s\n' "$expected_target_versions" | LC_ALL=C sort)
+)" || {
+  printf 'Hard stop: remote-history guards overlap executable target versions.\n' >&2
+  exit 1
+}
+
+actual_remote_versions_json="$(
+  jq -c '[.migrations[] | select(.remote != "") | .remote] | unique | sort' \
+    migration-list.before.json
+)"
+actual_applied_target_versions_json="$(
+  jq -c --argjson targets "$expected_target_versions_json" '
+    [.migrations[] | select(.remote != "") | .remote as $version
+      | select($targets | index($version)) | $version] | unique | sort
+  ' migration-list.before.json
+)"
+applied_target_count="$(jq -er 'length' <<<"$actual_applied_target_versions_json")"
+test "$applied_target_count" -ge 0 && test "$applied_target_count" -le 8
+expected_applied_target_versions_json="$(
+  jq -c --argjson count "$applied_target_count" '.[0:$count]' \
+    <<<"$expected_target_versions_json"
+)"
+test "$actual_applied_target_versions_json" = "$expected_applied_target_versions_json" || {
+  printf 'Hard stop: target history is not an exact ordered prefix of the reviewed eight.\n' >&2
+  exit 1
+}
+expected_pending_target_versions_json="$(
+  jq -c --argjson count "$applied_target_count" '.[$count:]' \
+    <<<"$expected_target_versions_json"
+)"
+pending_target_count="$(jq -er 'length' <<<"$expected_pending_target_versions_json")"
+actual_pending_target_versions_json="$(
+  jq -c '[.migrations[] | select(.local != "" and .remote == "") | .local] | unique | sort' \
+    migration-list.before.json
+)"
+test "$actual_pending_target_versions_json" = "$expected_pending_target_versions_json" || {
+  printf 'Hard stop: local-only target history is not the exact pending suffix.\n' >&2
+  exit 1
+}
+expected_current_remote_versions_json="$(
+  jq -cn \
+    --argjson baseline "$expected_remote_versions_json" \
+    --argjson applied "$expected_applied_target_versions_json" \
+    '$baseline + $applied | sort'
+)"
+test "$actual_remote_versions_json" = "$expected_current_remote_versions_json" || {
+  printf 'Hard stop: non-target remote history differs from the reviewed 24-version baseline.\n' >&2
+  exit 1
+}
+jq -e \
+  --argjson baseline "$expected_remote_versions_json" \
+  --argjson applied "$expected_applied_target_versions_json" \
+  --argjson pending "$expected_pending_target_versions_json" '
+  .migrations as $m
+  | ([$m[] | select(.local == "" and .remote != "") | .remote] | sort) == $baseline
+    and ([$m[] | select(.local != "" and .remote == "") | .local] | sort) == $pending
+    and ([$m[] | select(.local != "" and .remote != "") | .local] | sort) == $applied
+    and all($m[]; (.local == "" or .remote == "" or .local == .remote))
+    and (($m | length) == 32)
+' migration-list.before.json >/dev/null || {
+  printf 'Hard stop: initial migration reconciliation is not baseline plus exact target prefix/suffix.\n' >&2
+  exit 1
+}
+
+run_catalog_preflight() {
+  "$SUPABASE_BIN" --agent no -o json db query --linked <<'SQL'
 with s as (
   select
-    (select count(*)=0 from supabase_migrations.schema_migrations where version=any(array['20260807000090','20260807000100','20260807000125','20260807000140','20260807000150','20260807000160','20260807000165','20260807000170'])) as target_history_empty,
+    (select coalesce(jsonb_agg(version order by version),'[]'::jsonb) from supabase_migrations.schema_migrations) as all_history_versions,
+    (select coalesce(jsonb_agg(version order by version),'[]'::jsonb) from supabase_migrations.schema_migrations where version=any(array['20260807000090','20260807000100','20260807000125','20260807000140','20260807000150','20260807000160','20260807000165','20260807000170'])) as target_history_versions,
     (select count(*)=1 from supabase_migrations.schema_migrations where version='20260807000095') as containment_00095_recorded,
     ((select relrowsecurity from pg_class where oid='public.app_config'::regclass)
       and (select relrowsecurity from pg_class where oid='public.report_access'::regclass)
@@ -330,19 +496,96 @@ with s as (
       and not exists(select 1 from pg_policies where schemaname='public' and tablename in ('app_config','report_access'))) as phase_00090_schema_ahead_exact,
     (to_regclass('public.lead_notifications') is null and to_regclass('public.lead_notification_events') is null
       and not exists(select 1 from information_schema.columns where table_schema='public' and table_name='leads' and column_name='submission_key')
-      and not exists(select 1 from pg_proc p join pg_namespace n on n.oid=p.pronamespace where n.nspname='public' and p.proname in ('claim_lead_notification','complete_lead_notification_claim','exhaust_lead_notification_claims','resend_notification_status_rank','reconcile_resend_notification_events','apply_resend_notification_event'))) as phase_00100_pristine,
-    exists(select 1 from pg_constraint c where c.conrelid='public.leads'::regclass and c.conname='leads_status_check' and lower(pg_get_constraintdef(c.oid)) not like '%ul request%' and lower(pg_get_constraintdef(c.oid)) not like '%spam%') as phase_00125_pristine,
-    (to_regclass('public.auth_attempts') is not null and to_regprocedure('public.reserve_dashboard_login_attempt(text)') is null) as phase_00140_pristine,
+      and not exists(select 1 from pg_proc p join pg_namespace n on n.oid=p.pronamespace where n.nspname='public' and p.proname in ('claim_lead_notification','complete_lead_notification_claim','exhaust_lead_notification_claims','resend_notification_status_rank','reconcile_resend_notification_events','apply_resend_notification_event'))
+      and not exists(select 1 from pg_class c join pg_namespace n on n.oid=c.relnamespace where n.nspname='public' and c.relname in ('leads_submission_key_uidx','lead_notifications_retry_idx','lead_notifications_provider_id_idx','lead_notifications_unacknowledged_health_idx','lead_notifications_idempotency_key_uidx','lead_notifications_route_uidx'))) as phase_00100_pristine,
+    (to_regclass('public.lead_notifications') is not null and to_regclass('public.lead_notification_events') is not null
+      and coalesce((select relrowsecurity from pg_class where oid=to_regclass('public.lead_notifications')),false) and coalesce((select relrowsecurity from pg_class where oid=to_regclass('public.lead_notification_events')),false)
+      and exists(select 1 from information_schema.columns where table_schema='public' and table_name='leads' and column_name='submission_key')
+      and (select count(*)=6 from pg_constraint where conname in ('lead_notifications_pkey','lead_notifications_lead_id_fkey','lead_notifications_values_check','lead_notifications_delivery_contract_check','lead_notification_events_pkey','lead_notification_events_values_check') and conrelid in (to_regclass('public.lead_notifications'),to_regclass('public.lead_notification_events')))
+      and (select count(distinct p.proname)=6 and count(*)=6 from pg_proc p join pg_namespace n on n.oid=p.pronamespace where n.nspname='public' and p.proname in ('claim_lead_notification','complete_lead_notification_claim','exhaust_lead_notification_claims','resend_notification_status_rank','reconcile_resend_notification_events','apply_resend_notification_event'))
+      and exists(select 1 from pg_indexes where schemaname='public' and tablename='leads' and indexname='leads_submission_key_uidx' and lower(indexdef) like 'create unique index%' and lower(indexdef) like '%(submission_key)%' and lower(indexdef) like '%where (submission_key is not null)%')
+      and exists(select 1 from pg_indexes where schemaname='public' and tablename='lead_notifications' and indexname='lead_notifications_retry_idx' and lower(indexdef) like '%(next_attempt_at, created_at)%' and lower(indexdef) like '%status = any%')
+      and exists(select 1 from pg_indexes where schemaname='public' and tablename='lead_notifications' and indexname='lead_notifications_provider_id_idx' and lower(indexdef) like '%(provider_message_id)%' and lower(indexdef) like '%where (provider_message_id is not null)%')
+      and exists(select 1 from pg_indexes where schemaname='public' and tablename='lead_notifications' and indexname='lead_notifications_unacknowledged_health_idx' and lower(indexdef) like '%(status, retryable, updated_at)%' and lower(indexdef) like '%where (health_acknowledged_at is null)%')
+      and exists(select 1 from pg_indexes where schemaname='public' and tablename='lead_notifications' and indexname='lead_notifications_idempotency_key_uidx' and lower(indexdef) like 'create unique index%' and lower(indexdef) like '%(idempotency_key)%')
+      and exists(select 1 from pg_indexes where schemaname='public' and tablename='lead_notifications' and indexname='lead_notifications_route_uidx' and lower(indexdef) like 'create unique index%' and lower(indexdef) like '%(lead_id, recipient_role, channel)%')) as phase_00100_present,
+    exists(select 1 from pg_constraint c where c.conrelid='public.leads'::regclass and c.conname='leads_status_check' and lower(pg_get_constraintdef(c.oid)) not like '%ul_request%' and lower(pg_get_constraintdef(c.oid)) not like '%spam%') as phase_00125_pristine,
+    exists(select 1 from pg_constraint c where c.conrelid='public.leads'::regclass and c.conname='leads_status_check' and lower(pg_get_constraintdef(c.oid)) like '%ul_request%' and lower(pg_get_constraintdef(c.oid)) like '%spam%') as phase_00125_present,
+    (to_regclass('public.auth_attempts') is not null
+      and coalesce((select relrowsecurity from pg_class where oid=to_regclass('public.auth_attempts')),false)
+      and (select count(*)=3 from information_schema.columns where table_schema='public' and table_name='auth_attempts' and column_name in ('ip','fail_count','window_start'))
+      and exists(select 1 from pg_constraint where conrelid='public.auth_attempts'::regclass and contype='p' and lower(pg_get_constraintdef(oid)) like 'primary key (ip)%')
+      and to_regclass('public.auth_attempts_window_start_idx') is null
+      and to_regprocedure('public.reserve_dashboard_login_attempt(text)') is null) as phase_00140_pristine,
+    (to_regclass('public.auth_attempts') is not null
+      and coalesce((select relrowsecurity from pg_class where oid=to_regclass('public.auth_attempts')),false)
+      and (select count(*)=3 from information_schema.columns where table_schema='public' and table_name='auth_attempts' and column_name in ('ip','fail_count','window_start'))
+      and exists(select 1 from pg_indexes where schemaname='public' and tablename='auth_attempts' and indexname='auth_attempts_window_start_idx' and lower(indexdef) like '%(window_start)%')
+      and to_regprocedure('public.reserve_dashboard_login_attempt(text)') is not null) as phase_00140_present,
     (to_regclass('public.report_access') is not null
-      and not exists(select 1 from information_schema.columns where table_schema='public' and table_name='report_access' and column_name in ('pin_hash','credential_created_at','session_version'))
+      and not exists(select 1 from information_schema.columns where table_schema='public' and table_name='report_access' and column_name in ('pin_hash','session_version'))
+      and to_regclass('public.report_access_pin_hash_key') is null
+      and not exists(select 1 from pg_constraint where conrelid='public.report_access'::regclass and conname in ('report_access_credential_present_check','report_access_pin_hash_format_check','report_access_session_version_check'))
       and not exists(select 1 from pg_proc p join pg_namespace n on n.oid=p.pronamespace where n.nspname='public' and p.proname in ('authenticate_dashboard_access','create_dashboard_access','reset_dashboard_access_credential','migrate_dashboard_access_credential','set_dashboard_access_active'))) as phase_00150_pristine,
-    (to_regclass('public.lead_intake_rate_limits') is null and to_regprocedure('public.reserve_lead_intake_attempt(text)') is null) as phase_00160_pristine,
+    ((select count(*)=2 from information_schema.columns where table_schema='public' and table_name='report_access' and column_name in ('pin_hash','session_version'))
+      and exists(select 1 from information_schema.columns where table_schema='public' and table_name='report_access' and column_name='pin' and is_nullable='YES')
+      and exists(select 1 from pg_indexes where schemaname='public' and tablename='report_access' and indexname='report_access_pin_hash_key' and lower(indexdef) like 'create unique index%' and lower(indexdef) like '%(pin_hash)%' and lower(indexdef) like '%where (pin_hash is not null)%')
+      and exists(select 1 from pg_constraint where conrelid='public.report_access'::regclass and conname='report_access_credential_present_check' and lower(pg_get_constraintdef(oid)) like '%pin_hash is not null%' and lower(pg_get_constraintdef(oid)) like '%pin is not null%')
+      and exists(select 1 from pg_constraint where conrelid='public.report_access'::regclass and conname='report_access_pin_hash_format_check' and lower(pg_get_constraintdef(oid)) like '%pin_hash is null%' and pg_get_constraintdef(oid) like '%^[0-9a-f]{64}$%')
+      and exists(select 1 from pg_constraint where conrelid='public.report_access'::regclass and conname='report_access_session_version_check' and lower(pg_get_constraintdef(oid)) like '%session_version >= 1%' and lower(pg_get_constraintdef(oid)) like '%session_version <= 2147483647%')
+      and (select count(distinct p.proname)=5 and count(*)=5 from pg_proc p join pg_namespace n on n.oid=p.pronamespace where n.nspname='public' and p.proname in ('authenticate_dashboard_access','create_dashboard_access','reset_dashboard_access_credential','migrate_dashboard_access_credential','set_dashboard_access_active'))) as phase_00150_present,
+    (to_regclass('public.lead_intake_rate_limits') is null
+      and to_regclass('public.lead_intake_rate_limits_window_start_idx') is null
+      and to_regprocedure('public.reserve_lead_intake_attempt(text)') is null) as phase_00160_pristine,
+    (to_regclass('public.lead_intake_rate_limits') is not null
+      and coalesce((select relrowsecurity from pg_class where oid=to_regclass('public.lead_intake_rate_limits')),false)
+      and exists(select 1 from pg_indexes where schemaname='public' and tablename='lead_intake_rate_limits' and indexname='lead_intake_rate_limits_window_start_idx' and lower(indexdef) like '%(window_start)%')
+      and to_regprocedure('public.reserve_lead_intake_attempt(text)') is not null) as phase_00160_present,
     (to_regprocedure('public.enqueue_lead_notifications()') is null and not exists(select 1 from pg_trigger where tgname='leads_enqueue_notifications' and not tgisinternal)) as phase_00165_pristine,
-    not exists(select 1 from information_schema.columns where table_schema='public' and ((table_name='leads' and column_name='is_test') or (table_name='call_logs' and column_name='is_test'))) as phase_00170_pristine
+    (to_regprocedure('public.enqueue_lead_notifications()') is not null and exists(select 1 from pg_trigger where tgrelid='public.leads'::regclass and tgname='leads_enqueue_notifications' and not tgisinternal and tgenabled in ('O','A'))) as phase_00165_present,
+    (not exists(select 1 from information_schema.columns where table_schema='public' and ((table_name='leads' and column_name='is_test') or (table_name='call_logs' and column_name='is_test')))
+      and to_regclass('public.leads_is_test_created_at_idx') is null
+      and to_regclass('public.call_logs_is_test_created_at_idx') is null) as phase_00170_pristine,
+    ((select count(*)=2 from information_schema.columns where table_schema='public' and ((table_name='leads' and column_name='is_test') or (table_name='call_logs' and column_name='is_test')) and data_type='boolean' and is_nullable='NO' and column_default='false')
+      and exists(select 1 from pg_indexes where schemaname='public' and tablename='leads' and indexname='leads_is_test_created_at_idx' and lower(indexdef) like '%(is_test, created_at desc)%')
+      and exists(select 1 from pg_indexes where schemaname='public' and tablename='call_logs' and indexname='call_logs_is_test_created_at_idx' and lower(indexdef) like '%(is_test, created_at desc)%')) as phase_00170_present
 )
-select *, (target_history_empty and containment_00095_recorded and phase_00090_schema_ahead_exact and phase_00100_pristine and phase_00125_pristine and phase_00140_pristine and phase_00150_pristine and phase_00160_pristine and phase_00165_pristine and phase_00170_pristine) as preflight_ok from s;
+select * from s;
 SQL
-)"
+}
+evaluate_catalog_preflight() {
+  jq -c \
+    --argjson expected_baseline "$expected_remote_versions_json" \
+    --argjson expected_history "$expected_applied_target_versions_json" \
+    --argjson applied_count "$applied_target_count" '
+    if type != "array" or length != 1 then error("unexpected catalog row shape")
+    else
+      .[0] as $state
+      | [
+          {pristine:$state.phase_00100_pristine,present:$state.phase_00100_present},
+          {pristine:$state.phase_00125_pristine,present:$state.phase_00125_present},
+          {pristine:$state.phase_00140_pristine,present:$state.phase_00140_present},
+          {pristine:$state.phase_00150_pristine,present:$state.phase_00150_present},
+          {pristine:$state.phase_00160_pristine,present:$state.phase_00160_present},
+          {pristine:$state.phase_00165_pristine,present:$state.phase_00165_present},
+          {pristine:$state.phase_00170_pristine,present:$state.phase_00170_present}
+        ] as $phases
+      | (
+          $state.all_history_versions == (($expected_baseline + $expected_history) | sort)
+          and $state.target_history_versions == $expected_history
+          and $state.containment_00095_recorded == true
+          and $state.phase_00090_schema_ahead_exact == true
+          and all(range(0; ($phases | length)); . as $index
+            | if ($index + 1) < $applied_count
+              then $phases[$index].present == true
+              else $phases[$index].pristine == true
+              end)
+        ) as $ok
+      | [$state + {preflight_ok:$ok}]
+    end
+  '
+}
+preflight_json="$(run_catalog_preflight | evaluate_catalog_preflight)"
 printf '%s\n' "$preflight_json" | tee catalog-preflight.json
 jq -e 'type == "array" and length == 1 and .[0].preflight_ok == true' \
   <<<"$preflight_json" >/dev/null || {
@@ -351,24 +594,249 @@ jq -e 'type == "array" and length == 1 and .[0].preflight_ok == true' \
 }
 ```
 
-The preflight must return `preflight_ok: true`: all eight target history rows
-are absent, containment `00095` is recorded, the already-contained `00090`
-schema is exact, and phases `00100`–`00170` are otherwise pristine. Any false,
-null, extra row, query error, or unexpected object is a hard stop.
+The preflight must return `preflight_ok: true`. Direct catalog history—not only
+the CLI's formatted list—must equal the exact 24-version baseline plus one of
+the nine exact ordered prefixes of the reviewed eight. This direct equality is
+required because the CLI formatter can omit history versions it cannot parse.
+Containment `00095` must remain recorded and the already-contained `00090`
+schema must remain exact. Every phase in the recorded prefix must match its
+exact present contract; every phase in the pending suffix must remain pristine.
+Any false, null, extra row, non-prefix history, query error, or unexpected
+object is a hard stop. This makes an ambiguous or failed prior run resumable
+without history repair or raw SQL.
 
-Only after that pass, re-check the immutable manifest and execute the exact
-eight-file archive through the migration subsystem. `--include-all` is required
-because these reviewed versions precede entries already in remote history.
+Only after that pass, reconcile the CLI's local view of the exact 24-version
+baseline plus any exact applied target prefix. CLI 2.113.0 rejects a remote
+version missing locally before it considers `--include-all`. Move reviewed SQL
+for the already-applied target prefix outside the active migrations directory,
+then copy the immutable poison-pill guard template to one runner-local filename
+for every baseline and applied-prefix version. Matching rows are skipped. If
+any row disappears or the CLI ever selects a guard, its `RAISE EXCEPTION`
+aborts instead of replaying SQL or creating a history-only success. These
+guards exist only inside the disposable runner.
+
+Then require the effective list to contain the exact baseline plus target
+prefix as matches, zero remote-only versions, and only the reviewed pending
+suffix as local-only. Re-check the prefix-specific 32-file manifest immediately
+before invoking the migration subsystem. `--include-all` is required because
+the reviewed targets precede entries already in remote history.
 
 ```bash
-manifest_before_apply="$(
-  find supabase/migrations -type f -print | LC_ALL=C sort |
-    while IFS= read -r migration_file; do
-      shasum -a 256 "$migration_file"
-    done
+guard_template='supabase/migration-baselines/remote-applied-history-guard.sql'
+test "$(shasum -a 256 "$guard_template" | awk '{print $1}')" = \
+  "$expected_guard_template_sha256"
+
+# Real SQL for an already-applied target prefix must not remain active. If a
+# history row disappears in the final race window, its poison guard must abort
+# instead of replaying the migration. The reviewed bytes were already verified
+# above; retain moved prefix sources outside the active migrations directory.
+mkdir -p supabase/reviewed-targets
+while IFS= read -r applied_version; do
+  test -n "$applied_version"
+  applied_source="$(
+    find supabase/migrations -mindepth 1 -maxdepth 1 -type f \
+      -name "${applied_version}_*.sql" -print
+  )"
+  test -n "$applied_source" && test "$(printf '%s\n' "$applied_source" | wc -l | tr -d '[:space:]')" = '1' || {
+    printf 'Hard stop: applied target prefix does not map to one reviewed source file.\n' >&2
+    exit 1
+  }
+  mv "$applied_source" "supabase/reviewed-targets/${applied_source##*/}"
+done < <(jq -r '.[]' <<<"$expected_applied_target_versions_json")
+
+expected_guard_versions="$(
+  jq -nr \
+    --argjson baseline "$expected_remote_versions_json" \
+    --argjson applied "$expected_applied_target_versions_json" \
+    '$baseline + $applied | .[]'
 )"
-test "$manifest_before_apply" = "$expected_manifest"
-supabase migration up --linked --include-all --yes | tee migration-up.txt
+while IFS= read -r remote_version; do
+  case "$remote_version" in
+    ''|*[!0-9]*) printf 'Hard stop: invalid remote history version.\n' >&2; exit 1 ;;
+  esac
+  guard_path="supabase/migrations/${remote_version}_remote_applied_history_guard.sql"
+  test ! -e "$guard_path"
+  cp "$guard_template" "$guard_path"
+  cmp -s "$guard_template" "$guard_path"
+done <<<"$expected_guard_versions"
+
+expected_guard_manifest="$(
+  while IFS= read -r remote_version; do
+    printf '%s  supabase/migrations/%s_remote_applied_history_guard.sql\n' \
+      "$expected_guard_template_sha256" "$remote_version"
+  done <<<"$expected_guard_versions"
+)"
+expected_pending_manifest="$(
+  printf '%s\n' "$expected_manifest" |
+    awk -v skip="$applied_target_count" 'NR > skip'
+)"
+expected_full_manifest="$(
+  {
+    printf '%s\n' "$expected_guard_manifest"
+    test -z "$expected_pending_manifest" || printf '%s\n' "$expected_pending_manifest"
+  } | LC_ALL=C sort -k2,2
+)"
+case "$applied_target_count" in
+  0) expected_full_manifest_sha256='1a7c360f4447cb629a8741f28aef2df0053a119cdc9d798c477b912acaca9dc1' ;;
+  1) expected_full_manifest_sha256='24cf2fbb23a414180357e933dd970d582e242d1492d65675670dd3208e9cec4e' ;;
+  2) expected_full_manifest_sha256='bf2b620cafe1a1e9203b6721f73730f605fd090b5e61fe6a5630c11c4492dee4' ;;
+  3) expected_full_manifest_sha256='e9138fd5a86b2c94d7265da57b4a31926f4c7fcc6ccdefd434f3f18623aa0c33' ;;
+  4) expected_full_manifest_sha256='151a284ba758caece899cc8a75623ee62e20c6eeda76c1101c924392fb8c4170' ;;
+  5) expected_full_manifest_sha256='f020b7bf92767beae1c472de84dd21235efbd488d1755876c2140db5335dd7dc' ;;
+  6) expected_full_manifest_sha256='2b0868d16152d16d3314748697614479718889d21f8bd236aa475dd3478e754d' ;;
+  7) expected_full_manifest_sha256='f07d4c202a94353b43392675f3a93c33d35671459952eef76ec31986e27fb918' ;;
+  8) expected_full_manifest_sha256='2efa9d33b97460b53983fbba1538c539de4dd4af69e51a1113b0ca7ce5d16677' ;;
+  *) printf 'Hard stop: impossible applied target prefix count.\n' >&2; exit 1 ;;
+esac
+test "$(printf '%s\n' "$expected_full_manifest" | shasum -a 256 | awk '{print $1}')" = \
+  "$expected_full_manifest_sha256"
+
+verify_runner_file_shape() {
+  test -z "$(
+    find supabase/migrations -mindepth 1 ! -type f -print -quit
+  )" || {
+    printf 'Hard stop: migration runner contains a symlink, directory, or special entry.\n' >&2
+    return 1
+  }
+  migration_file_count="$(
+    find supabase/migrations -mindepth 1 -maxdepth 1 -type f -name '*.sql' |
+      wc -l | tr -d '[:space:]'
+  )"
+  test "$migration_file_count" = '32' || {
+    printf 'Hard stop: migration runner must contain exactly 32 regular SQL files.\n' >&2
+    return 1
+  }
+  parsed_versions="$(
+    find supabase/migrations -mindepth 1 -maxdepth 1 -type f -name '*.sql' -print |
+      LC_ALL=C sort |
+      while IFS= read -r migration_file; do
+        filename="${migration_file##*/}"
+        version="${filename%%_*}"
+        case "$filename:$version" in
+          [0-9]*_*.sql:[0-9]*) ;;
+          *) printf 'Hard stop: invalid migration filename: %s\n' "$filename" >&2; exit 1 ;;
+        esac
+        case "$version" in
+          *[!0-9]*) printf 'Hard stop: invalid migration version: %s\n' "$version" >&2; exit 1 ;;
+        esac
+        printf '%s\n' "$version"
+      done
+  )"
+  test "$(printf '%s\n' "$parsed_versions" | wc -l | tr -d '[:space:]')" = '32'
+  test "$(printf '%s\n' "$parsed_versions" | LC_ALL=C sort -u | wc -l | tr -d '[:space:]')" = '32' || {
+    printf 'Hard stop: duplicate migration versions are forbidden.\n' >&2
+    return 1
+  }
+  actual_full_manifest="$(
+    find supabase/migrations -mindepth 1 -maxdepth 1 -type f -name '*.sql' -print |
+      LC_ALL=C sort |
+      while IFS= read -r migration_file; do
+        shasum -a 256 "$migration_file"
+      done
+  )"
+  test "$actual_full_manifest" = "$expected_full_manifest" || {
+    printf 'Hard stop: exact 32-file migration manifest differs from reviewed main.\n' >&2
+    return 1
+  }
+  test "$(printf '%s\n' "$actual_full_manifest" | shasum -a 256 | awk '{print $1}')" = \
+    "$expected_full_manifest_sha256" || {
+    printf 'Hard stop: exact 32-file migration manifest digest differs.\n' >&2
+    return 1
+  }
+}
+verify_runner_file_shape
+
+"$SUPABASE_BIN" --agent no --output-format json migration list --linked \
+  | tee migration-list.effective-before.json
+effective_remote_versions_json="$(
+  jq -c '[.migrations[] | select(.remote != "") | .remote] | unique | sort' \
+    migration-list.effective-before.json
+)"
+effective_pending_versions_json="$(
+  jq -c '[.migrations[] | select(.local != "" and .remote == "") | .local] | unique | sort' \
+    migration-list.effective-before.json
+)"
+test "$effective_remote_versions_json" = "$expected_current_remote_versions_json"
+test "$effective_pending_versions_json" = "$expected_pending_target_versions_json"
+jq -e \
+  --argjson matched "$expected_current_remote_versions_json" \
+  --argjson pending "$expected_pending_target_versions_json" '
+  .migrations as $m
+  | (($m | length) == 32)
+    and ([ $m[] | select(.local == "" and .remote != "") ] | length) == 0
+    and ([$m[] | select(.local != "" and .remote == "") | .local] | sort) == $pending
+    and ([$m[] | select(.local != "" and .remote != "" and .local == .remote) | .local] | sort) == $matched
+    and all($m[]; (.local == "" or .remote == "" or .local == .remote))
+' migration-list.effective-before.json >/dev/null || {
+  printf 'Hard stop: guarded migration reconciliation is not exact matched prefix plus pending suffix.\n' >&2
+  exit 1
+}
+
+final_preflight_json="$(run_catalog_preflight | evaluate_catalog_preflight)"
+printf '%s\n' "$final_preflight_json" | tee catalog-preflight.final.json
+jq -e 'type == "array" and length == 1 and .[0].preflight_ok == true' \
+  <<<"$final_preflight_json" >/dev/null || {
+  printf 'Hard stop: final catalog preflight did not return preflight_ok=true.\n' >&2
+  exit 1
+}
+verify_runner_file_shape
+
+expected_target_basenames="$(cat <<'BASENAMES'
+20260807000090_emergency_dashboard_secret_containment.sql
+20260807000100_lead_notification_outbox.sql
+20260807000125_add_ul_request_spam_status.sql
+20260807000140_atomic_dashboard_auth_throttle.sql
+20260807000150_dashboard_session_credentials.sql
+20260807000160_lead_intake_rate_limit.sql
+20260807000165_activate_lead_notification_outbox.sql
+20260807000170_report_test_markers.sql
+BASENAMES
+)"
+expected_pending_target_basenames="$(
+  printf '%s\n' "$expected_target_basenames" |
+    awk -v skip="$applied_target_count" 'NR > skip'
+)"
+if test "$pending_target_count" = '0'; then
+  printf 'migration_up_skipped=exact_target_history_already_complete\n' \
+    | tee migration-up.skipped.txt
+else
+  migration_exit=0
+  "$SUPABASE_BIN" --agent no --output-format json \
+    migration up --linked --include-all --yes \
+    >migration-up.stdout.json 2>migration-up.stderr.txt || migration_exit=$?
+  test "$migration_exit" = '0' || {
+    printf 'Hard stop: migration up failed; retain both output receipts and do not repair history.\n' >&2
+    exit "$migration_exit"
+  }
+  jq -e --argjson expected_count "$pending_target_count" '
+    type == "object"
+    and .message == "Migrations applied"
+    and (.applied | type == "array" and length == $expected_count)
+  ' migration-up.stdout.json >/dev/null || {
+    printf 'Hard stop: migration up did not return the exact structured success shape.\n' >&2
+    exit 1
+  }
+  json_applied_basenames="$(
+    jq -er '.applied | map(split("/")[-1]) | .[]' migration-up.stdout.json
+  )"
+  test "$json_applied_basenames" = "$expected_pending_target_basenames" || {
+    printf 'Hard stop: structured migration receipt differs from the reviewed pending suffix.\n' >&2
+    exit 1
+  }
+  stderr_applied_basenames="$(
+    sed -n 's/^Applying migration \([^[:space:]]*\)\.\.\.$/\1/p' \
+      migration-up.stderr.txt
+  )"
+  test "$stderr_applied_basenames" = "$expected_pending_target_basenames" || {
+    printf 'Hard stop: stderr migration receipt differs from the reviewed pending suffix.\n' >&2
+    exit 1
+  }
+  if grep -Fq 'remote_applied_history_guard.sql' \
+    migration-up.stdout.json migration-up.stderr.txt; then
+    printf 'Hard stop: a remote-history guard was selected.\n' >&2
+    exit 1
+  fi
+fi
 ```
 
 If migration execution stops or returns non-zero, stop the rollout. Do not use
@@ -382,34 +850,12 @@ not a substitute for the schema-contract checks.
 
 ```bash
 postflight_json="$(
-  supabase --agent no -o json db query --linked <<'SQL'
-with s as (
- select
-  (select count(distinct version)=8 from supabase_migrations.schema_migrations where version=any(array['20260807000090','20260807000100','20260807000125','20260807000140','20260807000150','20260807000160','20260807000165','20260807000170'])) as target_history_complete,
-  (select count(*)=1 from supabase_migrations.schema_migrations where version='20260807000095') as containment_00095_recorded,
-  (coalesce((select relrowsecurity from pg_class where oid=to_regclass('public.app_config')),false) and coalesce((select relrowsecurity from pg_class where oid=to_regclass('public.report_access')),false)
-   and not has_table_privilege('anon','public.app_config','select,insert,update,delete') and not has_table_privilege('authenticated','public.app_config','select,insert,update,delete')
-   and not has_table_privilege('anon','public.report_access','select,insert,update,delete') and not has_table_privilege('authenticated','public.report_access','select,insert,update,delete')
-   and has_table_privilege('service_role','public.app_config','select,insert,update,delete') and has_table_privilege('service_role','public.report_access','select,insert,update,delete')
-   and not exists(select 1 from pg_policies where schemaname='public' and tablename in ('app_config','report_access'))) as phase_00090_present,
-  (to_regclass('public.lead_notifications') is not null and to_regclass('public.lead_notification_events') is not null
-   and coalesce((select relrowsecurity from pg_class where oid=to_regclass('public.lead_notifications')),false) and coalesce((select relrowsecurity from pg_class where oid=to_regclass('public.lead_notification_events')),false)
-   and exists(select 1 from information_schema.columns where table_schema='public' and table_name='leads' and column_name='submission_key')
-   and (select count(*)=6 from pg_constraint where conname in ('lead_notifications_pkey','lead_notifications_lead_id_fkey','lead_notifications_values_check','lead_notifications_delivery_contract_check','lead_notification_events_pkey','lead_notification_events_values_check') and conrelid in (to_regclass('public.lead_notifications'),to_regclass('public.lead_notification_events')))
-   and (select count(distinct p.proname)=6 and count(*)=6 from pg_proc p join pg_namespace n on n.oid=p.pronamespace where n.nspname='public' and p.proname in ('claim_lead_notification','complete_lead_notification_claim','exhaust_lead_notification_claims','resend_notification_status_rank','reconcile_resend_notification_events','apply_resend_notification_event'))
-   and (select count(*)=6 from pg_indexes where schemaname='public' and indexname in ('leads_submission_key_uidx','lead_notifications_retry_idx','lead_notifications_provider_id_idx','lead_notifications_unacknowledged_health_idx','lead_notifications_idempotency_key_uidx','lead_notifications_route_uidx'))) as phase_00100_present,
-  exists(select 1 from pg_constraint c where c.conrelid='public.leads'::regclass and c.conname='leads_status_check' and lower(pg_get_constraintdef(c.oid)) like '%ul request%' and lower(pg_get_constraintdef(c.oid)) like '%spam%') as phase_00125_present,
-  to_regprocedure('public.reserve_dashboard_login_attempt(text)') is not null as phase_00140_present,
-  ((select count(*)=3 from information_schema.columns where table_schema='public' and table_name='report_access' and column_name in ('pin_hash','credential_created_at','session_version'))
-   and (select count(distinct p.proname)=5 and count(*)=5 from pg_proc p join pg_namespace n on n.oid=p.pronamespace where n.nspname='public' and p.proname in ('authenticate_dashboard_access','create_dashboard_access','reset_dashboard_access_credential','migrate_dashboard_access_credential','set_dashboard_access_active'))
-   and (select count(*)=3 from pg_constraint where conrelid=to_regclass('public.report_access') and conname in ('report_access_credential_present_check','report_access_pin_hash_format_check','report_access_session_version_check'))) as phase_00150_present,
-  (to_regclass('public.lead_intake_rate_limits') is not null and coalesce((select relrowsecurity from pg_class where oid=to_regclass('public.lead_intake_rate_limits')),false) and to_regprocedure('public.reserve_lead_intake_attempt(text)') is not null and exists(select 1 from pg_indexes where schemaname='public' and indexname='lead_intake_rate_limits_window_start_idx')) as phase_00160_present,
-  (to_regprocedure('public.enqueue_lead_notifications()') is not null and exists(select 1 from pg_trigger where tgrelid='public.leads'::regclass and tgname='leads_enqueue_notifications' and not tgisinternal and tgenabled in ('O','A'))) as phase_00165_present,
-  ((select count(*)=2 from information_schema.columns where table_schema='public' and ((table_name='leads' and column_name='is_test') or (table_name='call_logs' and column_name='is_test')))
-   and (select count(*)=2 from pg_indexes where schemaname='public' and indexname in ('leads_is_test_created_at_idx','call_logs_is_test_created_at_idx'))) as phase_00170_present
-)
-select *, (target_history_complete and containment_00095_recorded and phase_00090_present and phase_00100_present and phase_00125_present and phase_00140_present and phase_00150_present and phase_00160_present and phase_00165_present and phase_00170_present) as postflight_ok from s;
-SQL
+  (
+    expected_applied_target_versions_json="$expected_target_versions_json"
+    applied_target_count=8
+    run_catalog_preflight | evaluate_catalog_preflight |
+      jq -c 'map(. + {postflight_ok:.preflight_ok} | del(.preflight_ok))'
+  )
 )"
 printf '%s\n' "$postflight_json" | tee catalog-postflight.json
 jq -e 'type == "array" and length == 1 and .[0].postflight_ok == true' \
@@ -417,12 +863,33 @@ jq -e 'type == "array" and length == 1 and .[0].postflight_ok == true' \
   printf 'Hard stop: catalog postflight did not return postflight_ok=true.\n' >&2
   exit 1
 }
-supabase migration list --linked | tee migration-list.after.txt
+"$SUPABASE_BIN" --agent no --output-format json migration list --linked \
+  | tee migration-list.after.json
+expected_final_versions="$(
+  printf '%s\n%s\n' "$expected_remote_versions" "$expected_target_versions" |
+    LC_ALL=C sort
+)"
+actual_final_versions="$(
+  jq -er '.migrations | map(select(.remote != "") | .remote) | unique | sort | .[]' \
+    migration-list.after.json
+)"
+test "$actual_final_versions" = "$expected_final_versions"
+jq -e '
+  (.migrations | length) == 32
+  and ([.migrations[] | select(.local == "" or .remote == "" or .local != .remote)] | length) == 0
+' migration-list.after.json >/dev/null || {
+  printf 'Hard stop: final migration history is not the exact 32-version matched set.\n' >&2
+  exit 1
+}
 ```
 
-Copy the release manifest, both migration lists, migration output, and catalog
-JSON receipts into the approved change record before removing the isolated
-workdir. The receipts contain catalog metadata only; review them before storage.
+Copy the release and guard-template manifests, prefix-specific 32-file manifest,
+all three migration lists, both migration output streams (or the explicit
+already-complete skip receipt), both preflight receipts, and the postflight
+receipt into the approved change record before removing the isolated workdir.
+The receipts contain catalog metadata only; review them before storage.
+Release the exclusive migration-writer window only after those receipts are
+retained, then unset `UTAH_MIGRATION_EXCLUSIVE_WRITER_ACK`.
 
 ### Resend webhook registration receipt
 
