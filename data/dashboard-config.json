@@ -12,8 +12,7 @@
   },
   "supabase": {
     "projectId": "",
-    "url": "https://hdcflshhomzildwqlmwh.supabase.co",
-    "anonKey": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhkY2Zsc2hob216aWxkd3FsbXdoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDI3NjI3NjQsImV4cCI6MjA1ODMzODc2NH0.kWSlGEtBgPFOx5eq8MYGz3VDqhAdqQTdGVlQqdRuzXk"
+    "url": "https://hdcflshhomzildwqlmwh.supabase.co"
   },
   "dashboard": {
     "campaignKey": "frame-roofing-2026",
@@ -34,10 +33,9 @@
   "dataSources": {
     "supabase": {
       "enabled": true,
-      "tables": [
-        "leads",
-        "calls",
-        "report_access"
+      "edgeFunctions": [
+        "weekly-report",
+        "lead-crm"
       ]
     },
     "stormWatch": {

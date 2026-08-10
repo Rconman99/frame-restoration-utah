@@ -8,8 +8,8 @@
  * google-reviews-sync data only. Fake/cloned ratings = hard block."
  *
  * Frame is a SINGLE-location business → ONE real Google Business Profile → ONE
- * real aggregate rating. That rating legitimately lives on the homepage + About
- * (sourced from reviews.json by google-reviews-sync.yml). Replicating it onto
+ * real aggregate rating. That rating may live on the homepage when it is paired
+ * with attributed reviews from the synchronized review pool. Replicating it onto
  * per-city pages is, by definition, the banned clone. The proven pattern (TX:
  * 0/45 AggregateRating, 45/45 Review — and the 2 clean UT pages) is:
  *   location pages carry individual <Review> markup from REAL reviewers, never
@@ -18,10 +18,12 @@
  * Checks (BLOCK in --strict):
  *   1. NO-AGGREGATE-ON-CITY — any aggregateRating in a locations/*.html JSON-LD
  *                             block. This is the anti-clone rule (ref 816c280).
- *   2. REAL-REVIEWERS-ONLY  — any <Review> node whose author is NOT in the real
+ *   2. NO-AGGREGATE-ABOUT  — About cannot carry a bare/self-serving aggregate.
+ *   3. HOMEPAGE-EVIDENCE   — homepage aggregate must include attributed reviews.
+ *   4. REAL-REVIEWERS-ONLY — any <Review> node whose author is NOT in the real
  *                             sync pool (reviews.json + data/reviews-full.json).
  *                             Catches fabricated/invented reviews.
- *   3. RATING-MATCHES-DATA  — a matched reviewer's on-page reviewRating that
+ *   5. RATING-MATCHES-DATA — a matched reviewer's on-page reviewRating that
  *                             disagrees with their real rating (warning only —
  *                             a reviewer can have given any star value).
  *
@@ -120,6 +122,33 @@ const realAuthors = loadRealAuthors();
 const blockers = [];
 const warnings = [];
 
+function auditReviewNodes(rel, reviews) {
+  for (const review of reviews) {
+    const rawName = reviewAuthorName(review);
+    const name = normName(rawName);
+    if (!name) {
+      blockers.push({ type: 'real-reviewers-only', file: rel, detail: '<Review> with no author name — cannot verify against sync data.' });
+      continue;
+    }
+    if (!realAuthors.has(name)) {
+      blockers.push({
+        type: 'real-reviewers-only',
+        file: rel,
+        detail: `<Review> author "${rawName}" is not in the real sync pool (reviews.json / data/reviews-full.json). Fabricated reviews are a hard block.`,
+      });
+      continue;
+    }
+    const onPage = reviewRatingValue(review);
+    const realRatings = realAuthors.get(name);
+    if (onPage !== undefined && realRatings.size && !realRatings.has(onPage)) {
+      warnings.push({
+        file: rel,
+        detail: `<Review> by "${rawName}" shows ratingValue ${onPage}, but sync data has ${[...realRatings].join('/')} — verify it matches the real review.`,
+      });
+    }
+  }
+}
+
 for (const rel of files) {
   const html = fs.readFileSync(path.join(repoRoot, rel), 'utf8');
   for (const block of jsonLdBlocks(html)) {
@@ -130,39 +159,40 @@ for (const rel of files) {
       blockers.push({
         type: 'no-aggregate-on-city',
         file: rel,
-        detail: 'AggregateRating on a city page — clone risk. The single GBP rating belongs only on homepage/About (ref 816c280). Use individual <Review> markup here instead.',
+        detail: 'AggregateRating on a city page — clone risk. The evidenced GBP rating belongs only on the homepage (ref 816c280). Use individual <Review> markup here instead.',
       });
     }
-
-    for (const review of acc.reviews) {
-      const rawName = reviewAuthorName(review);
-      const name = normName(rawName);
-      if (!name) {
-        blockers.push({ type: 'real-reviewers-only', file: rel, detail: '<Review> with no author name — cannot verify against sync data.' });
-        continue;
-      }
-      if (!realAuthors.has(name)) {
-        blockers.push({
-          type: 'real-reviewers-only',
-          file: rel,
-          detail: `<Review> author "${rawName}" is not in the real sync pool (reviews.json / data/reviews-full.json). Fabricated reviews are a hard block.`,
-        });
-        continue;
-      }
-      const onPage = reviewRatingValue(review);
-      const realRatings = realAuthors.get(name);
-      if (onPage !== undefined && realRatings.size && !realRatings.has(onPage)) {
-        warnings.push({
-          file: rel,
-          detail: `<Review> by "${rawName}" shows ratingValue ${onPage}, but sync data has ${[...realRatings].join('/')} — verify it matches the real review.`,
-        });
-      }
-    }
+    auditReviewNodes(rel, acc.reviews);
   }
 }
 
+for (const rel of ['pages/about.html', 'index.html']) {
+  const full = path.join(repoRoot, rel);
+  if (!fs.existsSync(full)) continue;
+  const html = fs.readFileSync(full, 'utf8');
+  const acc = { hasAggregate: false, reviews: [] };
+  for (const block of jsonLdBlocks(html)) {
+    walk(block, acc);
+  }
+  if (rel === 'pages/about.html' && acc.hasAggregate) {
+    blockers.push({
+      type: 'no-aggregate-about',
+      file: rel,
+      detail: 'About carries a self-serving AggregateRating. Keep review evidence on the canonical homepage only.',
+    });
+  }
+  if (rel === 'index.html' && acc.hasAggregate && acc.reviews.length === 0) {
+    blockers.push({
+      type: 'homepage-evidence',
+      file: rel,
+      detail: 'Homepage AggregateRating has no attributed Review nodes from the synchronized review pool.',
+    });
+  }
+  auditReviewNodes(rel, acc.reviews);
+}
+
 console.log('\n=== Review & rating integrity ===');
-console.log(`audited ${files.length} location pages · real-review pool: ${realAuthors.size} authors`);
+console.log(`audited ${files.length} location pages + homepage/About · real-review pool: ${realAuthors.size} authors`);
 
 if (warnings.length) {
   console.log(`\n⚠ ${warnings.length} warning(s):`);

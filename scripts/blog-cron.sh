@@ -230,7 +230,7 @@ if [ "$AUTO_RENDER" = "1" ]; then
   python3 scripts/generate-blog-post.py \
     --render \
     --manifest "$manifest" \
-    --image-local /images/projects/cities/heber-valley-drone-poster.webp >>"$LOG" 2>&1
+    --image-local /images/projects/heber-valley-drone-poster.webp >>"$LOG" 2>&1
   render_exit=$?
   if [ "$render_exit" -ne 0 ]; then
     log "x Render failed (exit=$render_exit). Manifest remains at $manifest."
@@ -240,7 +240,7 @@ if [ "$AUTO_RENDER" = "1" ]; then
   log "✓ Rendered HTML for $manifest"
 else
   log "Next render command:"
-  log "  cd $REPO && python3 scripts/generate-blog-post.py --render --manifest $manifest --image-local /images/projects/cities/heber-valley-drone-poster.webp"
+  log "  cd $REPO && python3 scripts/generate-blog-post.py --render --manifest $manifest --image-local /images/projects/heber-valley-drone-poster.webp"
 fi
 
 finish "ok"

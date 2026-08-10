@@ -47,16 +47,24 @@ Deno.test("every customer auto-reply carries the A2P STOP line", () => {
 
 Deno.test("every customer auto-reply shows the public business number", () => {
   for (const tier of TIERS) {
-    assertStringIncludes(customerAutoReply(tier, ""), SMS_BUSINESS_PHONE, `tier=${tier}`);
+    assertStringIncludes(
+      customerAutoReply(tier, ""),
+      SMS_BUSINESS_PHONE,
+      `tier=${tier}`,
+    );
   }
 });
 
 Deno.test("no Utah forbidden term in any customer or owner message", () => {
-  assert(FORBIDDEN.length > 0, "canonical wordlist must yield blocker patterns");
+  assert(
+    FORBIDDEN.length > 0,
+    "canonical wordlist must yield blocker patterns",
+  );
   for (const tier of TIERS) {
     const messages = [
       customerAutoReply(tier, "Sam").toLowerCase(),
-      smsForLandon(tier, "Sam Smith", "+14355551234", "roof leak", "test").toLowerCase(),
+      smsForLandon(tier, "Sam Smith", "+14355551234", "roof leak", "test")
+        .toLowerCase(),
     ];
     for (const msg of messages) {
       for (const { key, pattern } of FORBIDDEN) {
@@ -70,22 +78,44 @@ Deno.test("no Utah forbidden term in any customer or owner message", () => {
 });
 
 Deno.test("owner alert urgency routing is preserved", () => {
-  assertStringIncludes(smsForLandon("emergency", "S", "p", "svc", "r"), "🚨 EMERGENCY");
-  assertStringIncludes(smsForLandon("emergency", "S", "p", "svc", "r"), "Call NOW");
-  assertStringIncludes(smsForLandon("urgent", "S", "p", "svc", "r"), "🔥 URGENT");
-  assertStringIncludes(smsForLandon("scheduled", "S", "p", "svc", "r"), "NEW LEAD");
+  assertStringIncludes(
+    smsForLandon("emergency", "S", "p", "svc", "r"),
+    "🚨 EMERGENCY",
+  );
+  assertStringIncludes(
+    smsForLandon("emergency", "S", "p", "svc", "r"),
+    "Call NOW",
+  );
+  assertStringIncludes(
+    smsForLandon("urgent", "S", "p", "svc", "r"),
+    "🔥 URGENT",
+  );
+  assertStringIncludes(
+    smsForLandon("scheduled", "S", "p", "svc", "r"),
+    "NEW LEAD",
+  );
 });
 
 Deno.test("consent gate: no consent → NO auto-text (the TCPA fence)", () => {
-  assertEquals(shouldSendCustomerAutoText(undefined, "+14355551234").send, false);
+  assertEquals(
+    shouldSendCustomerAutoText(undefined, "+14355551234").send,
+    false,
+  );
   assertEquals(shouldSendCustomerAutoText(false, "+14355551234").send, false);
   assertEquals(shouldSendCustomerAutoText("", "+14355551234").send, false);
-  assertEquals(shouldSendCustomerAutoText(undefined, "+14355551234").reason, "no_consent");
+  assertEquals(
+    shouldSendCustomerAutoText(undefined, "+14355551234").reason,
+    "no_consent",
+  );
 });
 
 Deno.test("consent gate: explicit opt-in forms all pass, but only with a phone", () => {
-  for (const yes of [true, "true", "on", "1", 1]) {
-    assertEquals(shouldSendCustomerAutoText(yes, "+14355551234").send, true, String(yes));
+  for (const yes of [true, "true", "yes", "on", "1", 1]) {
+    assertEquals(
+      shouldSendCustomerAutoText(yes, "+14355551234").send,
+      true,
+      String(yes),
+    );
   }
   const noPhone = shouldSendCustomerAutoText(true, null);
   assertEquals(noPhone.send, false);

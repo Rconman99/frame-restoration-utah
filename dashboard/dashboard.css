@@ -2,12 +2,14 @@
  * RCBuild-Kit Client Dashboard — base stylesheet
  *
  * Vendored from Frame Roofing Utah's seo-report.html (2026-04-27).
- * Brand-accent color is injected inline in index.html via :root { --brand-accent: ... }.
+ * Brand-accent color is part of the external stylesheet so the authenticated
+ * dashboard can reject inline scripts with a route-specific CSP.
  *
  * Color tokens — dark theme by default. Override --brand-accent per client;
  * the rest of the palette stays fixed for visual consistency across clients.
  */
 :root {
+  --brand-accent: #c8a951;
   --bg: #0d1117;
   --card: #161b22;
   --border: #30363d;
@@ -101,6 +103,9 @@ body {
           background: transparent; color: var(--muted); cursor: pointer; font-size: 0.85rem; }
 .sm-btn:hover { border-color: var(--blue); color: var(--blue); }
 .sm-btn.red:hover { border-color: var(--red); color: var(--red); }
+.header-actions { margin-top: 6px; }
+.crm-link { display: none; border-color: var(--gold); color: var(--gold); }
+.initially-hidden { display: none; }
 
 /* Content area */
 #ct { padding: 24px; }
@@ -171,6 +176,8 @@ footer a { color: var(--blue); text-decoration: none; }
   padding: 32px; max-width: 500px; width: 90%; max-height: 80vh; overflow-y: auto;
 }
 .modal h2 { font-size: 1.2rem; color: var(--gold); margin-bottom: 16px; }
+.admin-subheading { font-size: .95rem; color: var(--muted); margin: 16px 0 8px; }
+.admin-message { color: var(--green); font-size: .85rem; margin-top: 10px; min-height: 20px; }
 .modal .close-btn {
   float: right; background: none; border: none; color: var(--muted);
   font-size: 1.4rem; cursor: pointer;
@@ -181,11 +188,11 @@ footer a { color: var(--blue); text-decoration: none; }
 .modal td .status-off { color: var(--red); }
 
 .add-row { display: flex; gap: 8px; margin-top: 12px; }
-.add-row input {
+.add-row input, .add-row select {
   flex: 1; padding: 10px; border: 1px solid var(--border); border-radius: 8px;
   background: var(--bg); color: var(--text); font-size: 0.9rem; outline: none;
 }
-.add-row input:focus { border-color: var(--gold); }
+.add-row input:focus, .add-row select:focus { border-color: var(--gold); }
 .add-row button {
   padding: 10px 20px; border: none; border-radius: 8px;
   background: var(--gold); color: var(--bg);

@@ -2,7 +2,8 @@
 """
 Normalize the mobile conversion CTAs site-wide (idempotent).
 
-Two changes per customer-facing page:
+Three changes per customer-facing page:
+  0. Ensure the shared stylesheet and modal/interaction script are present.
   1. Replace the legacy single-link `.sticky-call` bar with the canonical
      dual Call + Text bar (microcopy + two equal-width buttons). Styling lives
      in global.css; this only swaps the markup.
@@ -10,9 +11,8 @@ Two changes per customer-facing page:
      before the hamburger `.mobile-btn`, so mobile users can call without
      opening the menu.
 
-Selection: any page that already carries a `.sticky-call` bar (that set IS the
-customer-facing template — internal/app pages have none), plus four bar-less
-customer pages that link global.css. Internal/non-deployed paths are excluded.
+Selection: every local page in sitemap.xml, plus four intentional customer
+pages that are not indexed. Internal/non-deployed paths are excluded.
 
 Idempotent: re-running is a no-op. Phone stays the public NAP 435-292-8802
 (tel:/sms:+14352928802). No SMS-consent copy is touched.
@@ -54,6 +54,8 @@ MOBILE_BTN_RE = re.compile(r'<button(?=[^>]*class="(?:mobile|menu)-btn")')
 
 # Bar-less customer pages to also receive the sticky bar (before </body>).
 EXPLICIT_ADD = {"thank-you.html", "privacy.html", "terms.html", "review.html"}
+GLOBAL_CSS = '<link rel="stylesheet" href="/global.css?v=20260727b">'
+GLOBAL_MODAL = '<script src="/global-modal.js?v=20260726a" defer></script>'
 
 # Path fragments that mark internal / non-deployed pages — never touch.
 EXCLUDE_FRAGMENTS = ("/archive/", "/dashboard/", "/build-intelligence/", "/data/",
@@ -74,22 +76,24 @@ def process(path: Path) -> str:
     has_sticky = 'class="sticky-call"' in html
     rel = str(path.relative_to(ROOT))
 
+    # 0) Shared assets. Five older sitemap templates predate both files.
+    if 'global.css' not in html:
+        marker = '<style>' if '<style>' in html else '</head>'
+        html = html.replace(marker, GLOBAL_CSS + '\n' + marker, 1)
+    if 'global-modal.js' not in html:
+        html = html.replace('</head>', '  ' + GLOBAL_MODAL + '\n</head>', 1)
+
     # 1) Sticky bar
     if has_sticky:
         if 'data-cta="mobile-sms"' not in html:        # not yet normalized
             html, n = STICKY_RE.subn(STICKY_BAR, html, count=1)
             if n == 0:
                 return "skip(sticky-regex-miss)"
-    elif rel in EXPLICIT_ADD:
-        if 'global.css' not in html:
-            return "skip(no-global-css)"
+    else:
         if '</body>' not in html:
             return "skip(no-body)"
         head, tail = html.rsplit('</body>', 1)
         html = head + STICKY_BAR + "\n</body>" + tail
-    else:
-        return "skip(not-customer-page)"
-
     # 2) Header tap-to-call button (only where a hamburger exists)
     if 'class="nav-call-mobile"' not in html and MOBILE_BTN_RE.search(html):
         html = MOBILE_BTN_RE.sub(HEADER_BTN + '<button', html, count=1)
@@ -102,13 +106,22 @@ def process(path: Path) -> str:
 
 def main():
     apply = "--apply" in sys.argv
-    targets = []
-    for path in ROOT.rglob("*.html"):
-        if is_excluded(path):
-            continue
-        rel = str(path.relative_to(ROOT))
-        if 'class="sticky-call"' in path.read_text(encoding="utf-8") or rel in EXPLICIT_ADD:
-            targets.append(path)
+    sitemap = (ROOT / "sitemap.xml").read_text(encoding="utf-8")
+    sitemap_paths = set()
+    for url_path in re.findall(r'<loc>https://www\.framerestorationutah\.com/?(.*?)</loc>', sitemap):
+        clean = url_path.strip('/')
+        candidates = [ROOT / "index.html"] if not clean else [
+            ROOT / f"{clean}.html", ROOT / clean / "index.html", ROOT / clean,
+        ]
+        local = next((candidate for candidate in candidates if candidate.is_file()), None)
+        if local and not is_excluded(local):
+            sitemap_paths.add(local)
+
+    targets = set(sitemap_paths)
+    for rel in EXPLICIT_ADD:
+        path = ROOT / rel
+        if path.is_file() and not is_excluded(path):
+            targets.add(path)
 
     results = {}
     updated = []
@@ -119,12 +132,12 @@ def main():
             # dry run: compute outcome without writing
             html = path.read_text(encoding="utf-8")
             rel = str(path.relative_to(ROOT))
-            if 'data-cta="mobile-sms"' in html:
+            if ('data-cta="mobile-sms"' in html and 'global.css' in html
+                    and 'global-modal.js' in html
+                    and ('class="nav-call-mobile"' in html or not MOBILE_BTN_RE.search(html))):
                 r = "already-normalized"
-            elif 'class="sticky-call"' in html or rel in EXPLICIT_ADD:
-                r = "would-update"
             else:
-                r = "skip"
+                r = "would-update"
         results[r] = results.get(r, 0) + 1
         if r in ("UPDATED", "would-update"):
             updated.append(str(path.relative_to(ROOT)))

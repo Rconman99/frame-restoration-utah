@@ -16,7 +16,14 @@ import { fileURLToPath } from "node:url";
 import { chromium } from "playwright";
 
 const root = resolve(fileURLToPath(new URL("..", import.meta.url)));
-const routes = ["/", "/locations/sandy", "/pages/roof-repair", "/blog/utah/how-to-choose-a-roofer-utah"];
+const routes = [
+  "/",
+  "/locations/sandy",
+  "/pages/roof-repair",
+  "/blog/utah/how-to-choose-a-roofer-utah",
+  "/blog/ogden/wind-damage-roof-repair",
+  "/blog/alpine/roof-replacement-alpine-utah",
+];
 const viewports = [
   { width: 360, height: 740 },
   { width: 393, height: 852 },

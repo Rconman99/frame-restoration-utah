@@ -80,7 +80,9 @@
       <div class="hero-form-card" aria-label="Request a free roof inspection">
         <h2>Get Your Free Roof Inspection</h2>
         <p>No pressure, no obligation. A specialist will call you within 15 minutes during business hours.</p>
-        <form id="heroForm" class="hero-form" data-endpoint="https://hdcflshhomzildwqlmwh.supabase.co/functions/v1/handle-lead">
+        <form id="heroForm" class="hero-form" method="post" action="https://hdcflshhomzildwqlmwh.supabase.co/functions/v1/handle-lead" accept-charset="UTF-8" data-endpoint="https://hdcflshhomzildwqlmwh.supabase.co/functions/v1/handle-lead">
+          <input type="hidden" name="source_page" value="/hero">
+          <div aria-hidden="true" style="position:absolute;left:-10000px;width:1px;height:1px;overflow:hidden;"><label>Company website<input type="text" name="company_website" tabindex="-1" autocomplete="off"></label></div>
           <div class="form-row"><input type="text" name="name" placeholder="Full Name" required autocomplete="name"></div>
           <div class="form-row"><input type="tel" name="phone" placeholder="Mobile Phone" required autocomplete="tel"></div>
           <div class="form-row"><input type="email" name="email" placeholder="Email Address" required autocomplete="email"></div>

@@ -71,7 +71,7 @@ npm run blog:next            # prints literal `npm run blog:draft -- ...` for #1
 ```bash
 # One-time setup if not already done:
 mkdir -p ~/.config/frame-utah
-echo 'FRAME_REPORT_PIN=frame2026' > ~/.config/frame-utah/.env
+echo 'FRAME_REPORT_PIN=[REDACTED-ROTATE-OUT-OF-BAND]' > ~/.config/frame-utah/.env
 chmod 600 ~/.config/frame-utah/.env
 
 # Then any time:
@@ -129,7 +129,7 @@ npm run blog:render -- \
 - **Higgsfield** balance: ~1,100 credits, resets ~2026-05-18 (use-it-or-lose-it). 0 spent today (all posts used real photos).
 - **OpenRouter key** in Supabase `app_config.OPENROUTER_API_KEY` — fixed today (was doubled `sk-or-sk-or-` prefix). **Flagged for rotation** per parallel-session log.
 - **Supabase service-role key** — flagged for rotation per parallel-session log.
-- **FRAME_REPORT_PIN** = `frame2026` (admin role), `landon26` (viewer role). Both in `report_access` table.
+- **FRAME_REPORT_PIN** values were removed from this public repository. Rotate the exposed legacy PINs out-of-band, then store replacements only in an approved secret manager. Roles remain `admin` and `viewer` until the controlled role review promotes CRM users to `sales`.
 - **PostHog project** 333074, key embedded in `weekly-report` edge function source.
 
 ## 🧠 STRATEGIC INSIGHT (from /innovate research today)

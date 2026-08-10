@@ -23,6 +23,7 @@ export function shouldSendCustomerAutoText(
   normalizedPhone: string | null,
 ): { send: boolean; reason: string } {
   const consent = smsConsent === true || smsConsent === "true" ||
+    smsConsent === "yes" ||
     smsConsent === "on" || smsConsent === "1" || smsConsent === 1;
   if (!consent) return { send: false, reason: "no_consent" };
   if (!normalizedPhone) return { send: false, reason: "no_valid_phone" };

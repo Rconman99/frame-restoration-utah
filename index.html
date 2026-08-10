@@ -1114,7 +1114,7 @@
       .area-chip { padding: 14px 16px; min-height: 48px; }
     }
   </style>
-  <script src="/global-modal.js?v=20260726a" defer></script>
+  <script src="/global-modal.js?v=20260807b" defer></script>
 <script src="/posthog-loader.js" defer></script>
   <script src="/track-attribution.js" defer></script>
   <script src="/track-clicks.js?v=2" defer></script>
@@ -1161,7 +1161,7 @@
   <div class="hero-content">
     <div class="hero-badge">&#9733;&#9733;&#9733;&#9733;&#9733; 5.0 from 30 Google reviews &bull; A+ BBB &bull; Serving 45+ Utah Cities</div>
     <span class="hero-brand">Frame Restoration Utah</span>
-    <h1>Mountain-Grade Roofing.<br><span>Valley-Wide.</span></h1>
+          <h1 aria-label="Mountain-Grade Roofing. Valley-Wide.">Mountain-Grade Roofing.<br><span>Valley-Wide.</span></h1>
     <p>Frame Restoration Utah is a family-owned, licensed roofing contractor based in Heber City. BBB A+ Accredited &middot; Licensed &amp; Insured &middot; 10 years workmanship warranty &middot; Serving the Wasatch Front from Park City to Provo.</p>
     <div class="hero-layout">
       <div class="hero-left">
@@ -1179,7 +1179,9 @@
       <div class="hero-form-card" aria-label="Request a free roof inspection">
         <h2>Get Your Free Roof Inspection</h2>
         <p>3 fields, 30 seconds (address optional). We'll call you back within 15 minutes during business hours.</p>
-        <form id="heroForm" class="hero-form" data-endpoint="https://hdcflshhomzildwqlmwh.supabase.co/functions/v1/handle-lead">
+        <form id="heroForm" class="hero-form" method="post" action="https://hdcflshhomzildwqlmwh.supabase.co/functions/v1/handle-lead" accept-charset="UTF-8" data-endpoint="https://hdcflshhomzildwqlmwh.supabase.co/functions/v1/handle-lead">
+          <input type="hidden" name="source_page" value="/">
+          <div aria-hidden="true" style="position:absolute;left:-10000px;width:1px;height:1px;overflow:hidden;"><label>Company website<input type="text" name="company_website" tabindex="-1" autocomplete="off"></label></div>
           <div class="form-row"><input type="text" name="name" placeholder="Full Name" required autocomplete="name"></div>
           <div class="form-row"><input type="tel" name="phone" placeholder="Mobile Phone" required autocomplete="tel"></div>
           <div class="form-row"><input type="text" name="address" placeholder="Street Address (optional)" autocomplete="street-address"></div>
@@ -1529,7 +1531,7 @@
     <a href="/pages/storm-damage" class="service-card-link">
       <div class="service-card reveal">
         <img src="/images/services/storm-damage.webp" alt="Storm damage roof tear-off in South Jordan Utah with material delivery in progress" class="service-card-img" width="1200" height="680" loading="lazy" />
-        <span class="service-card-caption"><svg viewBox="0 0 24 24" fill="#E1B969" aria-hidden="true"><path d="M12 2C7.58 2 4 5.58 4 10c0 5.25 7 12 8 12s8-6.75 8-12c0-4.42-3.58-8-8-8zm0 11a3 3 0 110-6 3 3 0 010 6z"/></svg>South Jordan, UT · 11/16/26</span>
+        <span class="service-card-caption"><svg viewBox="0 0 24 24" fill="#E1B969" aria-hidden="true"><path d="M12 2C7.58 2 4 5.58 4 10c0 5.25 7 12 8 12s8-6.75 8-12c0-4.42-3.58-8-8-8zm0 11a3 3 0 110-6 3 3 0 010 6z"/></svg>South Jordan, UT · 11/16/25</span>
         <div class="service-card-body">
           <div class="service-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="#E1B969" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
           <h3>Storm Damage Restoration</h3>
@@ -1561,7 +1563,7 @@
     <a href="/pages/water-fire-flood-restoration" class="service-card-link">
       <div class="service-card reveal">
         <img src="/images/services/restoration.webp" alt="Frame Restoration crew performing active roof restoration and tear-off in Salt Lake City Utah" class="service-card-img" width="1200" height="680" loading="lazy" />
-        <span class="service-card-caption"><svg viewBox="0 0 24 24" fill="#E1B969" aria-hidden="true"><path d="M12 2C7.58 2 4 5.58 4 10c0 5.25 7 12 8 12s8-6.75 8-12c0-4.42-3.58-8-8-8zm0 11a3 3 0 110-6 3 3 0 010 6z"/></svg>Salt Lake City, UT · 11/24/26</span>
+        <span class="service-card-caption"><svg viewBox="0 0 24 24" fill="#E1B969" aria-hidden="true"><path d="M12 2C7.58 2 4 5.58 4 10c0 5.25 7 12 8 12s8-6.75 8-12c0-4.42-3.58-8-8-8zm0 11a3 3 0 110-6 3 3 0 010 6z"/></svg>Salt Lake City, UT · 11/24/25</span>
         <div class="service-card-body">
           <div class="service-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="#E1B969" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg></div>
           <h3>Water, Fire &amp; Flood Restoration</h3>
@@ -2017,13 +2019,15 @@
     </div>
     <div class="reveal">
       <!-- Contact Form — Supabase edge function -->
-      <form class="contact-form" id="leadForm" data-endpoint="https://hdcflshhomzildwqlmwh.supabase.co/functions/v1/handle-lead">
+      <form class="contact-form" id="leadForm" method="post" action="https://hdcflshhomzildwqlmwh.supabase.co/functions/v1/handle-lead" accept-charset="UTF-8" data-endpoint="https://hdcflshhomzildwqlmwh.supabase.co/functions/v1/handle-lead">
+        <input type="hidden" name="source_page" value="/">
+        <div aria-hidden="true" style="position:absolute;left:-10000px;width:1px;height:1px;overflow:hidden;"><label>Company website<input type="text" name="company_website" tabindex="-1" autocomplete="off"></label></div>
         <h3>Request a Free Inspection</h3>
         <p style="font-size:14px;color:var(--gray);margin:-6px 0 18px;">3 quick fields (address optional). We'll call you back within 15 minutes during business hours.</p>
         <div class="form-group"><label for="fname">Full Name</label><input type="text" id="fname" name="first_name" placeholder="John Smith" required autocomplete="name" /></div>
         <div class="form-group"><label for="phone">Phone Number</label><input type="tel" id="phone" name="phone" placeholder="(435) 292-8802" required autocomplete="tel" /></div>
         <div class="form-group"><label for="address">Street Address <span style="color:var(--gray);font-weight:400;font-size:12px">(optional)</span></label><input type="text" id="address" name="address" placeholder="123 Main St, City" autocomplete="street-address" /></div>
-        <div class="form-group"><label for="city">ZIP Code</label><input type="text" id="city" name="city" placeholder="84032" required autocomplete="postal-code" inputmode="numeric" pattern="[0-9]{5}" maxlength="5" /></div>
+        <div class="form-group"><label for="contactZip">ZIP Code</label><input type="text" id="contactZip" name="zip" placeholder="84032" required autocomplete="postal-code" inputmode="numeric" pattern="[0-9]{5}" maxlength="5" /></div>
         <details class="form-optional" style="margin:8px 0 4px;font-size:14px;">
           <summary style="cursor:pointer;list-style:none;padding:10px 0;color:#0B4060;font-weight:700;">+ Add details (optional — helps us prep)</summary>
           <div class="form-group" style="margin-top:10px"><label for="lname" style="font-weight:500">Last Name <span style="color:var(--gray);font-weight:400;font-size:12px">(optional)</span></label><input type="text" id="lname" name="last_name" placeholder="Smith" autocomplete="family-name" /></div>
@@ -2160,6 +2164,24 @@
   // Wait for DOM ready — replaces broken defer on inline script
   document.addEventListener('DOMContentLoaded', function() {
 
+    // One stable key per form attempt chain. A network timeout can prompt a
+    // customer retry; the backend uses this key to return the same lead instead
+    // of creating or notifying twice.
+    function leadSubmissionKey(form) {
+      if (form.dataset.submissionKey) return form.dataset.submissionKey;
+      var key;
+      if (window.crypto && typeof window.crypto.randomUUID === 'function') {
+        key = window.crypto.randomUUID();
+      } else {
+        key = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+          var r = Math.random() * 16 | 0;
+          return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+        });
+      }
+      form.dataset.submissionKey = key;
+      return key;
+    }
+
     // Mobile nav toggle (null-safe — script runs on pages without these IDs)
     var menuBtn = document.getElementById('menuBtn');
     var navLinks = document.getElementById('navLinks');
@@ -2243,6 +2265,7 @@
         new FormData(heroForm).forEach(function(v, k) { payload[k] = v; });
         payload.sms_consent = payload.sms_consent === 'yes';
         payload.source_page = window.location.pathname;
+        payload.submission_key = leadSubmissionKey(heroForm);
 
         // Merge ad attribution (gclid/fbclid/utm_*) from /track-attribution.js
         if (window.FrameAttribution) {
@@ -2293,6 +2316,7 @@
         new FormData(leadForm).forEach(function(v, k) { payload[k] = v; });
         payload.sms_consent = payload.sms_consent === 'yes';
         payload.source_page = window.location.pathname;
+        payload.submission_key = leadSubmissionKey(leadForm);
 
         // Merge ad attribution (gclid/fbclid/utm_*) from /track-attribution.js
         if (window.FrameAttribution) {
@@ -2382,46 +2406,6 @@
         if (entries[0].isIntersecting) animateCounters();
       }, { threshold: 0.3 }).observe(statsSection);
     }
-  })();
-  </script>
-
-  <!-- Lead Form Handler — sends to Supabase edge function -->
-  <script>
-  (function() {
-    document.querySelectorAll('form[data-endpoint]').forEach(function(form) {
-      form.addEventListener('submit', async function(e) {
-        e.preventDefault();
-        var btn = form.querySelector('button[type=submit]');
-        var originalText = btn.textContent;
-        btn.textContent = 'Sending...';
-        btn.disabled = true;
-
-        var data = {};
-        new FormData(form).forEach(function(val, key) { data[key] = val; });
-        data.sms_consent = data.sms_consent === 'yes';
-        data.source_page = window.location.pathname;
-
-        try {
-          var res = await fetch(form.dataset.endpoint, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(data)
-          });
-          var result = await res.json();
-          if (result.success) {
-            form.innerHTML = '<div style="text-align:center;padding:40px 20px"><h3 style="color:var(--gold);margin-bottom:12px">Thank You!</h3><p style="color:var(--white,#333)">We received your request and will call you shortly.</p></div>';
-          } else {
-            btn.textContent = 'Try Again';
-            btn.disabled = false;
-            alert('Something went wrong. Please call us at 435-292-8802.');
-          }
-        } catch (err) {
-          btn.textContent = originalText;
-          btn.disabled = false;
-          alert('Connection error. Please call us at 435-292-8802.');
-        }
-      });
-    });
   })();
   </script>
 

@@ -48,7 +48,7 @@ CITY_IMAGE_DIR = ROOT / "images" / "projects" / "cities"
 RUN_LOG = Path.home() / ".cache" / "frame-restoration-utah-blog-publish.jsonl"
 
 SITE = "https://www.framerestorationutah.com"
-FALLBACK_IMAGE = "/images/projects/cities/heber-valley-drone-poster.webp"
+FALLBACK_IMAGE = "/images/projects/heber-valley-drone-poster.webp"
 COMMIT_AUTHOR = "Blog Bot <blog-bot@framerestorationutah.com>"
 
 # ── Compliance hard-fence (beyond the CI gates — unreviewed auto-publish) ──
