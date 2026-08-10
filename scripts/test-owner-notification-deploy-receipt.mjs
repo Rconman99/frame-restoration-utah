@@ -7,6 +7,7 @@ import path from "node:path";
 import { spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import {
+  HANDLER_SMS_PAUSE_SECRETS,
   issueOwnerNotificationDeployReceipt,
   NOTIFICATION_FUNCTIONS,
   OWNER_NOTIFICATION_PHASES,
@@ -105,6 +106,9 @@ function payload(targetFunction = "lead-notification-worker", overrides = {}) {
         "resend-webhook": deploymentId("resend-webhook"),
       }
       : null,
+    sms_pause_required_absent: targetFunction === "handle-lead"
+      ? [...HANDLER_SMS_PAUSE_SECRETS]
+      : null,
     canary_contract_version: 1,
     ...overrides,
   };
@@ -184,6 +188,10 @@ const issued = issueOwnerNotificationDeployReceipt({
 });
 assert.equal(issued.payload.target_function, "handle-lead");
 assert.equal(issued.payload.phase, OWNER_NOTIFICATION_PHASES.handler);
+assert.deepEqual(
+  issued.payload.sms_pause_required_absent,
+  [...HANDLER_SMS_PAUSE_SECRETS],
+);
 assert.equal(typeof issued.token, "string");
 
 const ownerCliTemp = fs.mkdtempSync(
@@ -270,6 +278,24 @@ assert.deepEqual(
   verifyOwnerNotificationDeployReceipt({ functionName: "track-click" }),
   { required: false, phase: "not-applicable" },
 );
+for (const forbiddenSmsSecret of HANDLER_SMS_PAUSE_SECRETS) {
+  assert.throws(
+    () =>
+      verify("handle-lead", {
+        arguments: {
+          secretsMetadata: [
+            ...secrets,
+            {
+              name: forbiddenSmsSecret,
+              value: "present-digest",
+              updated_at: NOW.toISOString(),
+            },
+          ],
+        },
+      }),
+    new RegExp(`${forbiddenSmsSecret} must remain absent`),
+  );
+}
 
 const rejectionCases = [
   ["missing migration", {
@@ -331,6 +357,11 @@ const rejectionCases = [
     "wrong phase",
     { payload: { phase: OWNER_NOTIFICATION_PHASES.handler } },
     /requires the infrastructure-ready/,
+  ],
+  [
+    "wrong SMS pause contract",
+    { payload: { sms_pause_required_absent: [] } },
+    /wrong Utah SMS pause contract/,
   ],
 ];
 for (const [label, options, pattern] of rejectionCases) {

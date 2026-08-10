@@ -187,8 +187,9 @@ Required rollout order (do not reorder):
    `UTAH_LEAD_RESEND_API_KEY`, `UTAH_LEAD_RESEND_FROM`,
    `RESEND_WEBHOOK_SECRET`, and `LEAD_NOTIFICATION_WORKER_TOKEN`. Put the same
    worker token in the GitHub Actions secret; never print values. Keep
-   `UTAH_LEAD_RESEND_SMS_FROM` absent while Utah SMS is paused. No generic or
-   literal sender fallback is accepted.
+   `UTAH_LEAD_RESEND_SMS_FROM` and `UTAH_LEAD_SMS_ENABLED` absent while Utah
+   SMS is paused. Twilio credentials alone never activate a send. No generic
+   or literal sender fallback is accepted.
 4. In Resend, resolve the Utah owner sender and confirm its domain is
    verified and sending-enabled in the Utah account. Keep the auxiliary Verizon SMS
    sender unresolved and unconfigured while Utah SMS is paused; its absence
@@ -949,10 +950,10 @@ Lead-intake LLM classifier. Every form submission now gets a `tier`:
 
 | Tier | What it means | What changes |
 |---|---|---|
-| `emergency` | Active leak, water inside, structural risk | 🚨 SMS to Landon, `[EMERGENCY]` email subject, customer auto-text says "calling within 15 min" |
-| `urgent` | Recent storm/hail damage, insurance with timeline pressure | 🔥 SMS, `[URGENT]` email, customer auto-text says "calling within the hour" |
+| `emergency` | Active leak, water inside, structural risk | `[EMERGENCY]` email subject; SMS copy stays dormant while the market-wide pause is active |
+| `urgent` | Recent storm/hail damage, insurance with timeline pressure | `[URGENT]` email subject; SMS copy stays dormant while the market-wide pause is active |
 | `scheduled` | Quote request, planning a project | Standard notification (current v6 behavior) |
-| `general` | Vague info question, browsing | `[INFO]` email, customer auto-text says "back to you within one business day" |
+| `general` | Vague info question, browsing | `[INFO]` email; customer SMS copy stays dormant while the market-wide pause is active |
 | `spam` | Bot, off-topic, gibberish | **Silent drop.** Saved to DB only. No email. No SMS. |
 
 Classifier picks the tier in two passes:
@@ -1001,97 +1002,45 @@ To swap models later, just `UPDATE app_config SET value = 'new/model-slug' WHERE
 
 ## Deploy
 
-From the Frame Utah repo root:
+Direct workstation deploys are prohibited for `handle-lead`. After the exact
+current `main` Compliance Gate is green and fresh client-IP/owner-notification
+receipts are installed, dispatch the protected workflow:
 
 ```bash
-cd ~/projects/frame-restoration-utah
-supabase functions deploy handle-lead --project-ref hdcflshhomzildwqlmwh --no-verify-jwt
+gh workflow run deploy-edge-function.yml \
+  --repo Rconman99/frame-restoration-utah \
+  --ref main \
+  -f function=handle-lead
 ```
 
-The form posts unauthenticated from the browser. The v10 server-side honeypot,
+The workflow rechecks exact-main identity immediately before deployment. The
+form posts unauthenticated from the browser. The v10 server-side honeypot,
 bounded parser, contact validation, atomic IP-HMAC throttle, and spam classifier
 are the abuse controls; the public endpoint intentionally does not require JWT.
 
 ---
 
-## Test (after deploy)
+## Controlled test (after a gated deploy)
 
-Five payloads — one per tier. Run from any terminal. Each should:
-- Return `{"success":true,"message":"Lead received!"}`
-- Land in the `leads` table with the expected tier
-- Trigger (or NOT trigger, for spam) the right notifications
+Do not run the retired five-payload live matrix. After exact-main deployment,
+submit one controlled lead from a real production form with `sms_consent=false`.
+Before submitting, independently verify that both `UTAH_LEAD_SMS_ENABLED` and
+`UTAH_LEAD_RESEND_SMS_FROM` are absent. Retain evidence for the persisted lead,
+both owner-email jobs, provider acceptance/delivery webhooks, both controlled
+inboxes, and a healthy worker run. The SMS attempt count must remain zero.
 
-The fictional NANP number below passes server validation. Use a test phone you
-control only when you intentionally want to exercise SMS.
-
-```bash
-ENDPOINT="https://hdcflshhomzildwqlmwh.supabase.co/functions/v1/handle-lead"
-
-# 1. EMERGENCY — heuristic short-circuit (issue=leak)
-curl -X POST "$ENDPOINT" -H "Content-Type: application/json" -d '{
-  "name":"Test Emergency","phone":"4355550100","zip":"84032",
-  "issue":"leak","source_page":"/test"
-}'
-
-# 2. URGENT — heuristic (issue=hail)
-curl -X POST "$ENDPOINT" -H "Content-Type: application/json" -d '{
-  "name":"Test Urgent","phone":"4355550100","zip":"84032",
-  "issue":"hail","source_page":"/test"
-}'
-
-# 3. SCHEDULED — heuristic (issue=insurance)
-curl -X POST "$ENDPOINT" -H "Content-Type: application/json" -d '{
-  "name":"Test Scheduled","phone":"4355550100","zip":"84032",
-  "issue":"insurance","source_page":"/test"
-}'
-
-# 4. EMERGENCY via LLM — long free-text overrides dropdown
-curl -X POST "$ENDPOINT" -H "Content-Type: application/json" -d '{
-  "name":"Test LLM","phone":"4355550100","zip":"84032",
-  "issue":"other",
-  "message":"Roof is actively leaking right now, water dripping into living room ceiling, can someone come today??",
-  "source_page":"/test"
-}'
-
-# 5. SPAM — should silently drop (no email, no SMS, but row in DB)
-curl -X POST "$ENDPOINT" -H "Content-Type: application/json" -d '{
-  "name":"Bot McBot","phone":"4355550100","zip":"84032",
-  "message":"Buy cheap viagra now click here http://spam.example.com",
-  "source_page":"/test"
-}'
-```
-
-### Verify in DB
-
-```sql
-SELECT id, created_at, name, tier, tier_reason, tier_confidence, tier_classifier
-FROM public.leads
-WHERE name LIKE 'Test%' OR name LIKE 'Bot%'
-ORDER BY created_at DESC LIMIT 10;
-```
-
-Expected:
-- Tests 1-3: `tier_classifier = 'heuristic'`, `tier_confidence = NULL`
-- Test 4: `tier = 'emergency'`, `tier_classifier = 'google/gemini-2.0-flash-001'`, confidence 0.7-1.0
-- Test 5: `tier = 'spam'`, `tier_classifier = 'google/gemini-2.0-flash-001'`
-
-### Verify notifications
-
-- Tests 1-4: Landon should receive SMS (Verizon gateway) within ~15s. Subject prefix shows the tier.
-- Test 5: Landon should receive **nothing**. Lead is in DB only.
-
-### Cleanup test rows
-
-```sql
-DELETE FROM public.leads WHERE name LIKE 'Test%' OR name LIKE 'Bot%';
-```
+Use only contact details controlled by the operator, never a fictional or
+third-party phone number. Delete or clearly mark the controlled row only after
+all durable email evidence has been reconciled.
 
 ---
 
 ## Rollback
 
-If something breaks, redeploy the exact pre-change Edge Function version from
-the rollout receipt. Do not pull an unknown historical version from live state.
+If something breaks, revert the bad source through a reviewed PR on `main`, wait
+for exact-main Compliance Gate success, issue fresh client-IP and
+owner-notification receipts for that new SHA, and dispatch the protected deploy
+workflow. Never redeploy a historical checkout or bypass the receipt gates.
 
 The additive rate-limit table/RPC can remain in place during a code rollback;
 it has no trigger and changes no existing lead-table behavior.
@@ -1102,8 +1051,13 @@ it has no trigger and changes no existing lead-table behavior.
 
 - Form endpoint URL — same
 - Existing leads — none of them get reclassified retroactively (would need a backfill script if desired)
-- Twilio — LIVE as of 2026-06-01 (10DLC approved; all four `TWILIO_*` creds set in `app_config`). Owner SMS + customer speed-to-lead auto-text both fire through Twilio. Verizon vtext gateway remains as a redundant owner-alert path, no longer the sole channel.
-- Resend remains the durable owner-email provider; Twilio remains independent.
+- Twilio credentials remain provisioned, but all Utah SMS delivery is paused and
+  fail-closed while `UTAH_LEAD_SMS_ENABLED` and `UTAH_LEAD_RESEND_SMS_FROM` are
+  absent. Owner alerts and customer auto-texts stay off even if `TWILIO_*`
+  values remain in `app_config`.
+- Resend remains the durable owner-email provider. SMS activation requires a
+  separate owner-approved rollout, explicit enable flag, sender validation, and
+  fresh send receipts.
 
 ---
 

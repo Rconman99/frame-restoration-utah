@@ -13,65 +13,14 @@ Phase 0 of the closed-loop ROAS engine. All changes additive — no behavior bre
 | `global-modal.js` (modified) | Modal form: same attribution merge + redirect to `/thank-you?lead=success&form=modal`. |
 | 134 HTML pages (modified) | `<script src="/track-attribution.js" defer></script>` injected before `</head>`. |
 
-## Deploy order (do these in sequence)
+## Historical rollout state — do not execute
 
-### 1. Apply the migration (Supabase, ~10 sec)
-
-Either via Supabase CLI:
-```bash
-supabase db push --project-ref hdcflshhomzildwqlmwh
-```
-Or paste the SQL body into the [SQL editor](https://supabase.com/dashboard/project/hdcflshhomzildwqlmwh/sql) and run.
-
-Verify:
-```sql
-\d public.leads
--- Should show: gclid, fbclid, msclkid, gbraid, wbraid,
--- utm_source/medium/campaign/term/content,
--- landing_page, referrer, won_at,
--- uploaded_to_google_ads_at, uploaded_to_meta_capi_at
-```
-
-### 2. Deploy the edge function (Supabase, ~20 sec)
-
-```bash
-cd ~/projects/frame-restoration-utah
-supabase functions deploy handle-lead \
-  --project-ref hdcflshhomzildwqlmwh \
-  --no-verify-jwt
-```
-
-### 3. Push the frontend (Vercel auto-deploys from main)
-
-```bash
-git checkout -b feat/attribution-capture
-git add track-attribution.js global-modal.js index.html supabase/
-git commit -m "feat(attribution): wire gclid/fbclid/utm capture + thank-you redirect"
-git push -u origin feat/attribution-capture
-gh pr create --fill --auto --squash
-```
-
-### 4. End-to-end smoke test (~2 min, after Vercel deploys preview)
-
-Append a fake gclid to the preview URL and submit the form:
-
-```
-https://{preview-url}.vercel.app/?gclid=test_gclid_abc&utm_source=google&utm_medium=cpc&utm_campaign=heber-storm-test
-```
-
-Expected:
-1. Form submits successfully
-2. Redirects to `/thank-you?lead=success&form=hero`
-3. Supabase shows a new row in `leads` with `gclid='test_gclid_abc'`, `utm_source='google'`, `utm_medium='cpc'`, `utm_campaign='heber-storm-test'`
-
-Run this query in SQL editor:
-```sql
-select id, created_at, name, gclid, utm_source, utm_medium, utm_campaign, landing_page
-from public.leads
-order by created_at desc limit 5;
-```
-
-If the gclid lands correctly → ship to main. If not → check browser console for `track-attribution.js` errors before merging.
+The attribution migration, handler change, frontend change, and original smoke
+test were completed in 2026. No command in this record authorizes a current
+production mutation or lead submission. Future Utah migration, protected
+function deployment, rollback, and controlled-test work must use
+`supabase/functions/handle-lead/DEPLOY.md`, the canonical clean repository,
+exact-main CI, and fresh signed receipts.
 
 ## What's NOT in this PR (intentional, Phase 1+)
 
@@ -81,32 +30,12 @@ If the gclid lands correctly → ship to main. If not → check browser console 
 - **`offline-conversion-sync` Supabase fn** — daily worker that reads `leads WHERE status='won' AND gclid IS NOT NULL AND uploaded_to_google_ads_at IS NULL`, batch-uploads via [Google Ads Offline Conversion Import API](https://developers.google.com/google-ads/api/docs/conversions/upload-clicks). Build target: this week.
 - **Dashboard Phase 3 ROAS panel** — depends on offline-conversion-sync. Build target: this week.
 
-## Rollback plan
+## Historical rollback instructions retired
 
-If anything breaks:
-
-1. **Migration rollback** (additive only, but if needed):
-   ```sql
-   alter table public.leads
-     drop column if exists gclid, drop column if exists fbclid,
-     drop column if exists msclkid, drop column if exists gbraid,
-     drop column if exists wbraid, drop column if exists utm_source,
-     drop column if exists utm_medium, drop column if exists utm_campaign,
-     drop column if exists utm_term, drop column if exists utm_content,
-     drop column if exists landing_page, drop column if exists referrer,
-     drop column if exists won_at,
-     drop column if exists uploaded_to_google_ads_at,
-     drop column if exists uploaded_to_meta_capi_at;
-   alter table public.leads drop constraint if exists leads_status_check;
-   ```
-
-2. **Edge function rollback**: redeploy the prior version via `supabase functions deploy handle-lead --project-ref hdcflshhomzildwqlmwh --no-verify-jwt` from the previous git SHA.
-
-3. **Frontend rollback**: `git revert` the PR — the `<script>` tag injection is reversible by deleting that one line from each HTML file (perl one-liner can do it):
-   ```bash
-   find . -name "*.html" -not -path "./archive/*" -exec \
-     perl -i -ne 'print unless m|<script src="/track-attribution.js" defer></script>|' {} \;
-   ```
+Do not execute selective schema drops, direct function redeploys, or bulk file
+rewrites from this record. Any current rollback must start with a reviewed
+forward repair or revert on `main` and follow the migration, receipt, deploy,
+and verification contracts in `supabase/functions/handle-lead/DEPLOY.md`.
 
 ## Open questions for next session
 

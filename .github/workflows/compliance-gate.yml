@@ -59,6 +59,7 @@ on:
       - 'scripts/test-dashboard-session-client.mjs'
       - 'scripts/verify-dashboard-deploy-receipt.mjs'
       - 'scripts/test-dashboard-deploy-receipt.mjs'
+      - 'scripts/**'
       - 'scripts/verify-client-ip-deploy-receipt.mjs'
       - 'scripts/test-client-ip-deploy-receipt.mjs'
       - 'scripts/verify-owner-notification-deploy-receipt.mjs'

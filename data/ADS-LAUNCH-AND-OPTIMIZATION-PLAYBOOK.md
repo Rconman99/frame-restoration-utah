@@ -102,7 +102,9 @@ The 2026-05-10 v8 edge function uses Resend (`leads@frameroofingutah.com`) for o
   - DKIM record(s) (TXT at the Resend-provided selector hostname — the value is a long base64 string)
   - DMARC record (optional, TXT at `_dmarc`)
 - [ ] Click **Verify** in Resend dashboard → domain shows **Verified ✓** typically within 5-30 min (DNS propagation can take up to 24 hrs in edge cases)
-- [ ] Once verified, set the Deno secret: `supabase secrets set RESEND_API_KEY=re_YOUR_KEY --project-ref hdcflshhomzildwqlmwh` and confirm with a test send before deploying v8
+- [x] Historical rollout complete. Current Utah-scoped Resend credentials are
+  governed by `supabase/functions/handle-lead/DEPLOY.md`; never set the retired
+  generic `RESEND_API_KEY` from this playbook or send an ungated test.
 
 ### 1.7 — Landon checklist summary
 
@@ -119,32 +121,21 @@ The 2026-05-10 v8 edge function uses Resend (`leads@frameroofingutah.com`) for o
 
 ---
 
-## Part 2 — Ryan's wiring (already mostly built, just needs deployment)
+## Part 2 — Ryan's wiring (historical rollout complete)
 
-### 2.1 — Apply pending migration + deploy v8 edge fn (~5 min, BLOCKS EVERYTHING ELSE)
+### 2.1 — Attribution migration and edge-function rollout
 
-Per `supabase/migrations/DEPLOY-attribution.md`:
+The original 2026-05 workstation commands are retired and must not be rerun.
+Do not work from `~/projects/frame-restoration-utah`, set the obsolete generic
+`RESEND_API_KEY`, run a broad database push, paste migration SQL into Studio, or
+deploy a protected function directly.
 
-```bash
-cd ~/projects/frame-restoration-utah
-
-# v8 also added RESEND_API_KEY as a required Deno secret (per the v8 header comment)
-supabase secrets set RESEND_API_KEY=re_YOUR_KEY --project-ref hdcflshhomzildwqlmwh
-
-# Apply the attribution-columns migration
-supabase db push --project-ref hdcflshhomzildwqlmwh
-
-# Deploy v8 handle-lead with both v7 classifier + v8 Resend + 2026-05-10 attribution capture
-supabase functions deploy handle-lead --project-ref hdcflshhomzildwqlmwh --no-verify-jwt
-```
-
-Verify via SQL:
-```sql
-\d public.leads
--- Should show gclid, fbclid, msclkid, gbraid, wbraid, utm_*, landing_page, referrer, won_at, uploaded_to_*_at
-```
-
-**You are done when:** `\d public.leads` shows all 15 new columns + `leads_status_check` constraint, AND a smoke-test POST to handle-lead returns 200 AND v8 outbound email path delivers a test message via Resend to landon@framerestorations.com (check inbox + Resend dashboard).
+Current Utah migration and `handle-lead` procedures live only in
+`supabase/functions/handle-lead/DEPLOY.md`. They require the canonical clean
+repository, the isolated reviewed migration runner when a migration is actually
+pending, exact-main CI, fresh signed receipts, and the protected GitHub deploy
+workflow. A production smoke test is a separate controlled action and must not
+be inferred from this historical ads playbook.
 
 ### 2.2 — PR the frontend changes
 
@@ -157,7 +148,10 @@ git push -u origin feat/attribution-and-ads-launch
 gh pr create --fill --auto --squash
 ```
 
-**You are done when:** PR is merged to main, Vercel production deploy is green, AND a fake-`gclid` form submit on the live site lands a row in `leads` with `gclid` populated (confirms end-to-end client→edge fn pipeline survived the deploy).
+**You are done when:** PR is merged to main and the Vercel production deploy is
+green. Do not create a lead from this historical checklist; the only production
+lead proof is the single controlled `sms_consent=false` procedure in the
+canonical `handle-lead` runbook.
 
 ### 2.3 — GTM container build (~30 min, post-Landon-invite)
 
@@ -165,24 +159,14 @@ Per `data/SETUP-GTM-CONTAINER.md` Steps 1-7. Configures the 4 tags: Conversion L
 
 **You are done when:** All 4 tags fire in GTM Preview mode on a `form_submit` event, AND the container is **Published** (not just saved as a workspace draft — paused publish means tags don't fire in production).
 
-### 2.4 — Test the conversion pipeline end-to-end (~10 min)
+### 2.4 — Validate conversion configuration without creating leads
 
-After GTM is published:
-
-1. Hit a Vercel preview URL with fake UTM:
-   ```
-   https://{preview-url}.vercel.app/?gclid=test_2026_05_10&utm_source=google&utm_medium=cpc&utm_campaign=heber-storm-test
-   ```
-2. Submit the hero form with throwaway info
-3. Verify in 4 places:
-   - **Supabase** — new row in `leads` with `gclid='test_2026_05_10'`, `utm_source='google'`, etc.
-   - **GTM Preview mode** — `form_submit` event fired → Google Ads + Meta tags both fired
-   - **Google Ads → Tools → Conversions** — conversion count ticks up within ~3 hours
-   - **Meta Events Manager → Test Events** — `Lead` event appears within ~60 seconds
-
-If any of those four checks fails, fix before launching real spend.
-
-**You are done when:** All 4 verification checkpoints pass for a single fake-attribution form submit (Supabase row + GTM Preview + Google Ads Conversions count + Meta Events Manager Test Events). Document the pass in the PR description as a smoke-test receipt.
+Use GTM Preview's synthetic event tooling plus the Google Ads and Meta provider
+test/sandbox interfaces. Do not submit a production or preview lead form, use
+throwaway contact details, or create extra rows in `leads`. The sole production
+form proof is the canonical one-lead `sms_consent=false` procedure, executed
+only after the handler has passed its deployment receipts and SMS-attempt count
+is known to remain zero.
 
 ### 2.5 — Required before scaling: call tracking
 
@@ -218,7 +202,8 @@ Frame already has `public.call_logs` table wired (per schema audit). Phase 0 doe
 
 Use the wait to:
 - Run Part 2 (Ryan's wiring) — get attribution + GTM live
-- Smoke-test conversion pipeline with fake clicks
+- Validate conversion configuration through GTM/provider test modes without
+  creating a lead
 - Pre-build Google Search campaigns in **paused** state (campaign structure below)
 
 ### Day 0 (launch day, when LSA verification clears)
@@ -405,7 +390,10 @@ Without matching `event_name` + `event_id`, Meta will count both the Pixel Lead 
 
 **Schema additions required before this fn ships** — see Section 4.6.
 
-**You are done when:** A closed-won test lead with both `gclid` + email/phone successfully uploads via Mode A (verify in Google Ads → Conversions → "Conversion goals" → conversion count ticks up within 24h with "Imported" attribution) AND a closed-won test lead WITHOUT `gclid` successfully matches via Mode B (Enhanced Conversions for Leads — verify in Google Ads → Conversions → "Diagnostics" shows match rate >0%) AND a Meta CAPI `Lead` event with matching `event_id` appears in Events Manager → Test Events with no "Duplicate" warning.
+**You are done when:** Provider sandbox fixtures cover both click-ID and enhanced
+conversion modes, and a Meta test event with a matching `event_id` appears with
+no duplicate warning. Do not create closed-won production lead rows for this
+playbook check.
 
 ### 4.3 — Cannibalization detector
 
@@ -473,7 +461,10 @@ The 2026-05-10 migration covered the click-ID + UTM capture. Phase 1 needs more 
 
 Update `track-attribution.js` to capture `gclsrc` from URL (same pattern as gclid). Update form handlers to generate `event_id = crypto.randomUUID()` on submit and merge into payload (browser Pixel call must use the same value — see Section 4.2 Meta CAPI block).
 
-**You are done when:** Migration `20260512_lead_lifecycle_fields.sql` is applied, handle-lead persists `event_id` end-to-end (form-side UUID matches the row), `track-attribution.js` captures `gclsrc`, and a new test lead row carries `event_id` + nullable lifecycle fields without breaking the existing tier classifier.
+**You are done when:** The reviewed migration path is complete and automated
+contract fixtures prove that `event_id`, `gclsrc`, nullable lifecycle fields,
+and the tier classifier remain compatible. Do not create an extra production
+lead row for this check.
 
 ### 4.7 — Daily sync health check
 

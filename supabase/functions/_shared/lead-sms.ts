@@ -6,15 +6,22 @@
 //   • every customer auto-reply now ends with the A2P "Reply STOP to opt out."
 //     line — this number runs on an approved 10DLC campaign and the first
 //     business-initiated text must carry opt-out language.
+//   • smsDeliveryEnabled() is the market-wide operational kill switch. It is
+//     fail-closed: only the exact string "true" enables any Utah SMS path.
 //   • shouldSendCustomerAutoText() is the TCPA consent gate: the form's
 //     sms_consent checkbox was previously collected and IGNORED. No consent →
-//     no auto-text, full stop. (Owner alerts to Landon are business-internal
-//     and unaffected.)
+//     no auto-text, full stop. Both gates must pass for a customer auto-text.
 
 export type Tier = "emergency" | "urgent" | "scheduled" | "general" | "spam";
 
 export const SMS_BUSINESS_PHONE = "(435) 292-8802";
 const STOP_LINE = "Reply STOP to opt out.";
+
+/** Operational gate for every Utah SMS path, including internal owner alerts.
+ * Absence, whitespace, case variants, booleans, and all other values stay off. */
+export function smsDeliveryEnabled(value: unknown): boolean {
+  return value === "true";
+}
 
 /** TCPA gate: business-initiated text to a customer requires their explicit
  * opt-in AND a usable phone. Anything else → no send (caller logs why). */

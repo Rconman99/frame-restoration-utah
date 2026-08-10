@@ -20,6 +20,23 @@ import {
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const read = (relative) => fs.readFileSync(path.join(root, relative), "utf8");
+
+function trackedTextFiles() {
+  const result = spawnSync("git", ["ls-files", "-z"], {
+    cwd: root,
+    encoding: "utf8",
+  });
+  assert.equal(result.status, 0, result.stderr);
+  const sources = new Map();
+  for (const relative of result.stdout.split("\0").filter(Boolean)) {
+    const contents = fs.readFileSync(path.join(root, relative));
+    if (contents.includes(0)) continue;
+    sources.set(relative, contents.toString("utf8"));
+  }
+  return sources;
+}
+const trackedTextSources = trackedTextFiles();
+const trackedTextPaths = [...trackedTextSources.keys()];
 const extractorSource = read("supabase/functions/_shared/client-ip.ts");
 const extractorDigest = crypto.createHash("sha256")
   .update(extractorSource)
@@ -310,6 +327,32 @@ assert(
   mintAt === -1 && receiptAt > 0 && deployAt > receiptAt,
   "only the pre-issued client-IP receipt gate may precede deploy",
 );
+for (const step of steps.slice(0, deployAt)) {
+  const source = JSON.stringify(step);
+  for (
+    const prohibited of [
+      /client-ip-probe/i,
+      /issueClientIpDeployReceipt/,
+      /LEAD_INTAKE_RATE_LIMIT_SECRET/,
+      /lead-intake-v1/,
+      /supabase\s+functions\s+(?:deploy|delete)/,
+    ]
+  ) {
+    assert.doesNotMatch(
+      source,
+      prohibited,
+      `pre-deploy step ${
+        step.name ?? "unnamed"
+      } contains client-IP probe behavior`,
+    );
+  }
+  assert.equal(
+    source.includes("CLIENT_IP_DEPLOY_RECEIPT_TOKEN") &&
+      source.includes("GITHUB_ENV"),
+    false,
+    `pre-deploy step ${step.name ?? "unnamed"} mints the client-IP token in CI`,
+  );
+}
 const receiptStep = steps[receiptAt];
 assert.equal(receiptStep.if, undefined);
 assert.equal(receiptStep["continue-on-error"], undefined);
@@ -336,11 +379,13 @@ assert.equal(
   "protected deploys must not include automatic public probe tooling",
 );
 const deployWorkflowSource = read(".github/workflows/deploy-edge-function.yml");
-for (const prohibitedText of [
-  "issue-client-ip-deploy-receipt.mjs",
-  "Mint live client-IP deployment evidence",
-  "runner-ipv6-unavailable",
-]) {
+for (
+  const prohibitedText of [
+    "issue-client-ip-deploy-receipt.mjs",
+    "Mint live client-IP deployment evidence",
+    "runner-ipv6-unavailable",
+  ]
+) {
   assert.equal(
     deployWorkflowSource.includes(prohibitedText),
     false,
@@ -357,6 +402,79 @@ assert.equal(
   false,
   "client-IP verifier must not authorize unavailable IPv6 evidence",
 );
+function probeToolViolation(source) {
+  const hasProbeMarker = source.includes("client-ip-probe") ||
+    source.includes("lead-intake-v1");
+  if (!hasProbeMarker) return null;
+  for (
+    const prohibitedText of [
+      "SUPABASE_ACCESS_TOKEN",
+      "LEAD_INTAKE_RATE_LIMIT_SECRET",
+      "GITHUB_ENV",
+      "--no-verify-jwt",
+    ]
+  ) {
+    if (source.includes(prohibitedText)) return prohibitedText;
+  }
+  if (
+    /supabase(?:\s|\\\s*)+functions(?:\s|\\\s*)+(?:deploy|delete)/.test(
+      source,
+    )
+  ) {
+    return "live function mutation";
+  }
+  return null;
+}
+
+const scriptToolPaths = trackedTextPaths
+  .filter((relative) => relative.startsWith("scripts/"))
+  .filter((relative) =>
+    relative !== "scripts/test-client-ip-deploy-receipt.mjs"
+  );
+for (const toolPath of scriptToolPaths) {
+  assert.equal(
+    probeToolViolation(trackedTextSources.get(toolPath)),
+    null,
+    `${toolPath} combines client-IP probe logic with live capability`,
+  );
+}
+const unsafeProbeFixtures = [
+  ["client-ip-probe", "LEAD_INTAKE_RATE_LIMIT_SECRET"].join("\n"),
+  ["lead-intake-v1", "SUPABASE_ACCESS_TOKEN"].join("\n"),
+  ["client-ip-probe", "supabase", "functions", "deploy"].join(" "),
+  [
+    "client-ip-probe",
+    ["supabase", "functions", "deploy"].join("\\\n  "),
+  ].join("\n"),
+];
+for (const fixture of unsafeProbeFixtures) {
+  assert.notEqual(
+    probeToolViolation(fixture),
+    null,
+    "renamed or nested probe tooling evades the live-capability scanner",
+  );
+}
+const directProtectedDeploy =
+  /supabase(?:\s|\\\s*)+functions(?:\s|\\\s*)+deploy(?:\s|\\\s*)+["']?(?:handle-lead|lead-crm)["']?(?=\s|\\|$)/;
+for (
+  const fixture of [
+    ["supabase", "functions", "deploy", "handle-lead"].join(" "),
+    ["supabase", "functions", "deploy", '"handle-lead"'].join(" "),
+    ["supabase", "functions", "deploy", "'lead-crm'"].join(" "),
+    ["supabase", "functions deploy handle-lead"].join("\\\n  "),
+    ["supabase functions", "deploy handle-lead"].join("\\\n  "),
+    ["supabase functions deploy", '"handle-lead"'].join("\\\n  "),
+  ]
+) {
+  assert.match(fixture, directProtectedDeploy);
+}
+for (const relative of trackedTextPaths) {
+  assert.doesNotMatch(
+    trackedTextSources.get(relative),
+    directProtectedDeploy,
+    `${relative} documents a direct protected-function deploy bypass`,
+  );
+}
 assert.equal(
   verifier.includes("data/UTAH-SUPABASE-CLIENT-IP-HEADER-RECEIPT.md"),
   false,
@@ -387,6 +505,10 @@ assert(
   compliance.on.pull_request.paths.includes(
     "scripts/verify-client-ip-deploy-receipt.mjs",
   ),
+);
+assert(
+  compliance.on.pull_request.paths.includes("scripts/**"),
+  "client-IP tooling additions do not trigger the blocking compliance gate",
 );
 const dashboardSteps = compliance.jobs["dashboard-security"].steps;
 assert(

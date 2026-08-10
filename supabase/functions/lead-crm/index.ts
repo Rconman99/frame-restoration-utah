@@ -21,8 +21,9 @@
 //
 // Side effect: when status flips from non-won → won, won_at is set to NOW().
 //
-// Deploy:
-//   supabase functions deploy lead-crm --project-ref hdcflshhomzildwqlmwh --no-verify-jwt
+// Protected deploys run only through .github/workflows/deploy-edge-function.yml
+// after exact-main CI and the signed client-IP/dashboard receipt gates. Never
+// deploy lead-crm directly.
 
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
