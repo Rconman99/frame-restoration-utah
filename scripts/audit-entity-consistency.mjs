@@ -23,6 +23,9 @@ const strict = process.argv.includes('--strict');
 const { entity_links: keystone } = JSON.parse(fs.readFileSync(path.join(repo, 'data/route-factory/business.json'), 'utf8'));
 const wantMap = keystone?.hasMap;
 const wantSame = new Set(keystone?.sameAs || []);
+// A page whose NAP is a real second office carries THAT office's GBP map identity
+// (entity_links.location_overrides["<file>"].hasMap); anything unlisted keeps the keystone.
+const mapOverrides = keystone?.location_overrides || {};
 
 function jsonLdBlocks(html) {
   const out = [];
@@ -51,8 +54,9 @@ for (const f of files) {
   for (const b of jsonLdBlocks(html)) { node = findPrimary(b); if (node) break; }
   if (!node) { blockers.push({ file: f, detail: 'no primary RoofingContractor node found' }); continue; }
 
+  const wantMapFor = mapOverrides[f]?.hasMap || wantMap;
   if (!node.hasMap) blockers.push({ file: f, detail: 'missing hasMap' });
-  else if (node.hasMap !== wantMap) blockers.push({ file: f, detail: `hasMap "${node.hasMap}" != keystone "${wantMap}"` });
+  else if (node.hasMap !== wantMapFor) blockers.push({ file: f, detail: `hasMap "${node.hasMap}" != expected "${wantMapFor}"` });
 
   const same = Array.isArray(node.sameAs) ? node.sameAs : (node.sameAs ? [node.sameAs] : null);
   if (!same) { blockers.push({ file: f, detail: 'missing sameAs' }); continue; }
