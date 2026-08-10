@@ -57,20 +57,18 @@ const howToNode = ldJsonBlocks
   .flatMap((block) => block["@graph"] ?? [block])
   .find((node) => node["@type"] === "HowTo");
 
-assert.ok(howToNode, "HowTo schema must be present");
-assert.ok(
-  !Object.hasOwn(howToNode, "totalTime"),
-  "HowTo must not claim an unsupported total duration",
+// Google retired HowTo rich results; the schema was removed site-wide and must
+// stay out, while the visible step-by-step guidance stays for readers and AI answers.
+assert.equal(
+  howToNode,
+  undefined,
+  "Deprecated HowTo schema must stay removed",
 );
 
-const schemaSteps = howToNode.step.map((item) => ({
-  name: normalize(item.name),
-  text: normalize(item.text),
-}));
 const visibleHowToMatch = html.match(
   /<ol class="howto-steps">([\s\S]*?)<\/ol>/i,
 );
-assert.ok(visibleHowToMatch, "Visible HowTo steps must be present");
+assert.ok(visibleHowToMatch, "Visible step-by-step guidance must remain present");
 const visibleSteps = [
   ...visibleHowToMatch[1].matchAll(
     /<li><h3>([\s\S]*?)<\/h3><p>([\s\S]*?)<\/p><\/li>/gi,
@@ -79,10 +77,9 @@ const visibleSteps = [
   name: normalize(match[1]),
   text: normalize(match[2]),
 }));
-assert.deepEqual(
-  visibleSteps,
-  schemaSteps,
-  "Visible HowTo steps and HowTo schema must match exactly",
+assert.ok(
+  visibleSteps.length >= 3,
+  "Visible step-by-step guidance must not be emptied",
 );
 
 const bannedClaims = [
@@ -148,5 +145,5 @@ assert.ok(
 await access(path.join(repoRoot, featuredImageMatch[1].slice(1)));
 
 console.log(
-  `Payson storm guide contract PASS (${visibleFaqs.length} FAQ pairs, ${visibleSteps.length} HowTo steps, ${requiredSources.length} primary sources, ${numericEvidence.length} sourced numeric facts, featured image present)`,
+  `Payson storm guide contract PASS (${visibleFaqs.length} FAQ pairs, ${visibleSteps.length} visible steps, ${requiredSources.length} primary sources, ${numericEvidence.length} sourced numeric facts, featured image present)`,
 );
