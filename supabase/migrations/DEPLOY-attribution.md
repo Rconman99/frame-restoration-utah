@@ -32,14 +32,18 @@ Verify:
 -- uploaded_to_google_ads_at, uploaded_to_meta_capi_at
 ```
 
-### 2. Deploy the edge function (Supabase, ~20 sec)
+### 2. Deploy the edge function through the protected workflow
 
 ```bash
-cd ~/projects/frame-restoration-utah
-supabase functions deploy handle-lead \
-  --project-ref hdcflshhomzildwqlmwh \
-  --no-verify-jwt
+gh workflow run deploy-edge-function.yml \
+  --repo Rconman99/frame-restoration-utah \
+  --ref main \
+  -f function=handle-lead
 ```
+
+This historical attribution rollout now inherits the current exact-main CI,
+client-IP receipt, and owner-notification receipt gates. Never deploy the
+protected handler directly from a workstation.
 
 ### 3. Push the frontend (Vercel auto-deploys from main)
 
@@ -100,7 +104,10 @@ If anything breaks:
    alter table public.leads drop constraint if exists leads_status_check;
    ```
 
-2. **Edge function rollback**: redeploy the prior version via `supabase functions deploy handle-lead --project-ref hdcflshhomzildwqlmwh --no-verify-jwt` from the previous git SHA.
+2. **Edge function rollback**: revert the bad source on `main`, obtain fresh
+   signed receipts for that new exact-main SHA, and dispatch the protected
+   `deploy-edge-function.yml` workflow for `handle-lead`. Never bypass the gates
+   by deploying a historical checkout directly.
 
 3. **Frontend rollback**: `git revert` the PR — the `<script>` tag injection is reversible by deleting that one line from each HTML file (perl one-liner can do it):
    ```bash

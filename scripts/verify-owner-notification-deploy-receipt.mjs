@@ -36,6 +36,10 @@ const BASE_REQUIRED_SECRETS = Object.freeze([
   "LEAD_NOTIFICATION_WORKER_TOKEN",
   "RESEND_WEBHOOK_SECRET",
 ]);
+export const HANDLER_SMS_PAUSE_SECRETS = Object.freeze([
+  "UTAH_LEAD_SMS_ENABLED",
+  "UTAH_LEAD_RESEND_SMS_FROM",
+]);
 
 function requireString(value, label) {
   if (typeof value !== "string" || value.length === 0) {
@@ -173,6 +177,17 @@ function requiredSecretsFor(functionName) {
   return required;
 }
 
+function enforceHandlerSmsPause(functionName, liveSecrets) {
+  if (functionName !== "handle-lead") return;
+  for (const name of HANDLER_SMS_PAUSE_SECRETS) {
+    if (liveSecrets.has(name)) {
+      throw new Error(
+        `live Edge secret ${name} must remain absent while Utah SMS is paused`,
+      );
+    }
+  }
+}
+
 function parseSignedReceipt(token, hmacKey) {
   const key = Buffer.from(
     requireString(hmacKey, "owner-notification receipt HMAC key"),
@@ -262,6 +277,7 @@ export function issueOwnerNotificationDeployReceipt({
     }
   }
   const liveSecrets = parseSecretMetadata(secretsMetadata);
+  enforceHandlerSmsPause(functionName, liveSecrets);
   const requiredSecrets = requiredSecretsFor(functionName);
   for (const name of requiredSecrets) {
     if (!liveSecrets.has(name)) {
@@ -292,6 +308,9 @@ export function issueOwnerNotificationDeployReceipt({
     live_function_metadata: receiptFunctionSnapshot(liveFunctions),
     verified_canary_deployments: functionName === "handle-lead"
       ? canaryDeploymentSnapshot(canaryEvidence)
+      : null,
+    sms_pause_required_absent: functionName === "handle-lead"
+      ? [...HANDLER_SMS_PAUSE_SECRETS]
       : null,
     canary_contract_version: 1,
   };
@@ -423,6 +442,7 @@ export function verifyOwnerNotificationDeployReceipt({
   }
 
   const liveSecrets = parseSecretMetadata(secretsMetadata);
+  enforceHandlerSmsPause(functionName, liveSecrets);
   const requiredSecrets = requiredSecretsFor(functionName);
   for (const name of requiredSecrets) {
     if (!liveSecrets.has(name)) {
@@ -497,6 +517,18 @@ export function verifyOwnerNotificationDeployReceipt({
   if (receipt.canary_contract_version !== 1) {
     throw new Error(
       "owner-notification receipt has the wrong canary contract version",
+    );
+  }
+
+  const expectedSmsPause = functionName === "handle-lead"
+    ? [...HANDLER_SMS_PAUSE_SECRETS]
+    : null;
+  if (
+    canonicalJson(receipt.sms_pause_required_absent) !==
+      canonicalJson(expectedSmsPause)
+  ) {
+    throw new Error(
+      "owner-notification receipt has the wrong Utah SMS pause contract",
     );
   }
 

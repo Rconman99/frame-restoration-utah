@@ -18,6 +18,7 @@ import {
   customerAutoReply,
   shouldSendCustomerAutoText,
   SMS_BUSINESS_PHONE,
+  smsDeliveryEnabled,
   smsForLandon,
   type Tier,
 } from "./lead-sms.ts";
@@ -34,6 +35,25 @@ const FORBIDDEN: { key: string; pattern: string }[] = Object.entries(
   .flatMap(([key, rule]) => rule.patterns.map((pattern) => ({ key, pattern })));
 
 const TIERS: Tier[] = ["emergency", "urgent", "scheduled", "general", "spam"];
+
+Deno.test("Utah SMS delivery is fail-closed behind an exact opt-in", () => {
+  for (
+    const disabled of [
+      undefined,
+      null,
+      false,
+      true,
+      "",
+      "false",
+      "TRUE",
+      " true ",
+      "1",
+    ]
+  ) {
+    assertEquals(smsDeliveryEnabled(disabled), false, String(disabled));
+  }
+  assertEquals(smsDeliveryEnabled("true"), true);
+});
 
 Deno.test("every customer auto-reply carries the A2P STOP line", () => {
   for (const tier of TIERS) {

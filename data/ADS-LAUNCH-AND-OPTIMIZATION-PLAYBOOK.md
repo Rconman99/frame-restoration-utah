@@ -134,9 +134,12 @@ supabase secrets set RESEND_API_KEY=re_YOUR_KEY --project-ref hdcflshhomzildwqlm
 # Apply the attribution-columns migration
 supabase db push --project-ref hdcflshhomzildwqlmwh
 
-# Deploy v8 handle-lead with both v7 classifier + v8 Resend + 2026-05-10 attribution capture
-supabase functions deploy handle-lead --project-ref hdcflshhomzildwqlmwh --no-verify-jwt
+# Deploy only after current exact-main CI and signed receipts pass
+gh workflow run deploy-edge-function.yml --repo Rconman99/frame-restoration-utah --ref main -f function=handle-lead
 ```
+
+The direct workstation deploy path in the original 2026-05 rollout is retired.
+Do not bypass the current client-IP and owner-notification deployment gates.
 
 Verify via SQL:
 ```sql

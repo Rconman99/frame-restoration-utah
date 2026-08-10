@@ -6,7 +6,9 @@
 //   20260610) and refuses the customer auto-text without it. The SMS message
 //   builders moved to _shared/lead-sms.ts (every auto-reply now ends with the
 //   A2P "Reply STOP to opt out." line) and are frozen by lead-sms.test.ts —
-//   the blocking lead-sms-contract CI job. Owner alerts to Landon unchanged.
+//   the blocking lead-sms-contract CI job. All Utah SMS paths are additionally
+//   fail-closed behind UTAH_LEAD_SMS_ENABLED="true"; it remains absent while
+//   Utah SMS is paused.
 // v8 (2026-05-10): Replace Formspree with Resend for outbound email.
 //   Formspree's free tier (50/mo) was being burned at 2x per lead — once for
 //   Landon's notification email, once for the Verizon SMS gateway. Resend's
@@ -18,12 +20,14 @@
 // Source-of-truth for this function lives in this canonical repository:
 //   ~/.frame-automation/repos/frame-restoration-utah/supabase/functions/handle-lead/index.ts
 //
-// Deploy:
-//   supabase functions deploy handle-lead --project-ref hdcflshhomzildwqlmwh --no-verify-jwt
+// Protected deploys run only through .github/workflows/deploy-edge-function.yml
+// after exact-main CI and signed client-IP/owner-notification receipt gates.
+// Never deploy handle-lead directly; see DEPLOY.md.
 //
 // Required Deno secrets (set via `supabase secrets set KEY=val --project-ref hdcflshhomzildwqlmwh`):
 //   UTAH_LEAD_RESEND_API_KEY (Utah-scoped; no generic-key fallback).
 //   LEAD_INTAKE_RATE_LIMIT_SECRET (distinct random value, at least 32 bytes).
+//   UTAH_LEAD_SMS_ENABLED (optional; only exact "true" enables any SMS path).
 //   OPENROUTER_API_KEY  ← from v7. Without it, classifier silently falls back to 'scheduled'.
 //   OPENROUTER_MODEL    ← optional. Defaults to google/gemini-2.0-flash-001 if unset.
 //
@@ -42,6 +46,7 @@ import {
 import {
   customerAutoReply,
   shouldSendCustomerAutoText,
+  smsDeliveryEnabled,
   smsForLandon,
 } from "../_shared/lead-sms.ts";
 import {
@@ -90,6 +95,9 @@ const LANDON_PHONE = "+14353024422";
 const DEFAULT_CLASSIFIER_MODEL = "google/gemini-2.0-flash-001";
 const CLASSIFIER_TIMEOUT_MS = 3000;
 const NOTIFICATION_SETTINGS = notificationSettings((key) => Deno.env.get(key));
+const UTAH_LEAD_SMS_ENABLED = smsDeliveryEnabled(
+  Deno.env.get("UTAH_LEAD_SMS_ENABLED"),
+);
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -790,64 +798,63 @@ Deno.serve(async (req: Request) => {
     // email above, but must never double-text a homeowner or duplicate a Sheet
     // row. Email remains the durable recovery channel for ambiguous retries.
     if (freshInsert) {
-      // 5. SMS Landon — Verizon gateway + Twilio (when configured)
-      const smsBody = smsForLandon(
-        effectiveTier,
-        persistedLead.name,
-        persistedLead.phone || "",
-        persistedLead.service || "Not specified",
-        persistedLead.tierReason || "(not classified)",
-      );
+      // 5. Utah SMS is paused unless an operator deliberately sets the exact
+      // enable flag. This gate covers both internal owner alerts and customer
+      // auto-texts; Twilio credentials alone can never activate sending.
       const smsPromises: Promise<any>[] = [];
-
-      smsPromises.push(
-        sendVerizonGatewaySMS(
-          LANDON_PHONE,
-          smsBody,
-          persistedLead.submissionKey,
-        )
-          .then((ok) =>
-            console.log("Verizon→Landon:", ok ? "accepted" : "failed")
+      if (UTAH_LEAD_SMS_ENABLED) {
+        const smsBody = smsForLandon(
+          effectiveTier,
+          persistedLead.name,
+          persistedLead.phone || "",
+          persistedLead.service || "Not specified",
+          persistedLead.tierReason || "(not classified)",
+        );
+        smsPromises.push(
+          sendVerizonGatewaySMS(
+            LANDON_PHONE,
+            smsBody,
+            persistedLead.submissionKey,
           )
-          .catch((e) => console.error("Verizon→Landon error:", e)),
-      );
-
-      if (config.TWILIO_ACCOUNT_SID) {
-        smsPromises.push(
-          sendTwilioSMS(config, LANDON_PHONE, smsBody)
             .then((ok) =>
-              console.log("Twilio→Landon:", ok ? "queued" : "rejected")
+              console.log("Verizon→Landon:", ok ? "accepted" : "failed")
             )
-            .catch((e) => console.error("Twilio→Landon error:", e)),
+            .catch((e) => console.error("Verizon→Landon error:", e)),
         );
-      }
 
-      // 6. Speed-to-lead auto-text to customer (tier-personalized).
-      const customerPhone = phone || null;
-      const consentGate = shouldSendCustomerAutoText(
-        sms_consent,
-        customerPhone,
-      );
-      if (consentGate.send && config.TWILIO_ACCOUNT_SID) {
-        const autoReplyBody = customerAutoReply(effectiveTier, firstName);
-        smsPromises.push(
-          sendTwilioSMS(config, customerPhone!, autoReplyBody)
-            .then((ok) =>
-              console.log(
-                "Auto-text→customer:",
-                customerPhone,
-                ok ? "sent" : "failed",
+        if (config.TWILIO_ACCOUNT_SID) {
+          smsPromises.push(
+            sendTwilioSMS(config, LANDON_PHONE, smsBody)
+              .then((ok) =>
+                console.log("Twilio→Landon:", ok ? "queued" : "rejected")
               )
-            )
-            .catch((e) => console.error("Auto-text error:", e)),
+              .catch((e) => console.error("Twilio→Landon error:", e)),
+          );
+        }
+
+        // 6. Speed-to-lead auto-text additionally requires explicit consent.
+        const customerPhone = phone || null;
+        const consentGate = shouldSendCustomerAutoText(
+          sms_consent,
+          customerPhone,
         );
+        if (consentGate.send && config.TWILIO_ACCOUNT_SID) {
+          const autoReplyBody = customerAutoReply(effectiveTier, firstName);
+          smsPromises.push(
+            sendTwilioSMS(config, customerPhone!, autoReplyBody)
+              .then((ok) =>
+                console.log("Auto-text→customer:", ok ? "sent" : "failed")
+              )
+              .catch((e) => console.error("Auto-text error:", e)),
+          );
+        } else {
+          console.log(
+            "Auto-text skipped:",
+            consentGate.send ? "no Twilio config" : consentGate.reason,
+          );
+        }
       } else {
-        console.log(
-          "Auto-text skipped:",
-          consentGate.send ? "no Twilio config" : consentGate.reason,
-          "| phone:",
-          customerPhone || "(invalid)",
-        );
+        console.log("Utah SMS paused: UTAH_LEAD_SMS_ENABLED is not true");
       }
 
       await Promise.allSettled(smsPromises);

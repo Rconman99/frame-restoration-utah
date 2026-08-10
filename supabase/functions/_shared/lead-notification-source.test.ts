@@ -657,9 +657,45 @@ Deno.test("migration runner is release-bound, isolated, and catalog-gated", asyn
   );
   assert(
     deployGuide.includes(
-      "Keep\n   `UTAH_LEAD_RESEND_SMS_FROM` absent while Utah SMS is paused",
+      "Keep\n   `UTAH_LEAD_RESEND_SMS_FROM` and `UTAH_LEAD_SMS_ENABLED` absent while Utah",
     ),
     "Utah rollout does not keep the SMS sender absent while SMS is paused",
+  );
+  assert(
+    deployGuide.includes("`UTAH_LEAD_SMS_ENABLED` absent while Utah") &&
+      deployGuide.includes("Twilio credentials alone never activate a send"),
+    "Utah rollout does not keep the market-wide SMS enable flag absent",
+  );
+});
+
+Deno.test("Utah SMS pause gates every owner and customer send", () => {
+  assert(
+    handleLead.includes(
+      'const UTAH_LEAD_SMS_ENABLED = smsDeliveryEnabled(\n  Deno.env.get("UTAH_LEAD_SMS_ENABLED"),\n);',
+    ),
+    "handler does not derive the fail-closed Utah SMS flag",
+  );
+  const gateStart = handleLead.indexOf("if (UTAH_LEAD_SMS_ENABLED) {");
+  const gateEnd = handleLead.indexOf(
+    "await Promise.allSettled(smsPromises)",
+    gateStart,
+  );
+  assert(
+    gateStart >= 0 && gateEnd > gateStart,
+    "Utah SMS send gate is missing",
+  );
+  const gatedSms = handleLead.slice(gateStart, gateEnd);
+  for (const sendPath of ["sendVerizonGatewaySMS", "sendTwilioSMS"]) {
+    assert(
+      gatedSms.includes(sendPath),
+      `${sendPath} is not contained by the Utah SMS enable gate`,
+    );
+  }
+  assert(
+    handleLead.includes(
+      "Utah SMS paused: UTAH_LEAD_SMS_ENABLED is not true",
+    ),
+    "handler does not make the paused path observable",
   );
 });
 
