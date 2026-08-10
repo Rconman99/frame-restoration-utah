@@ -1,0 +1,97 @@
+{
+  "artifact": "frame-seo-experiment",
+  "version": "frame-seo-experiment.v1",
+  "id": "utah-homepage-commercial-title-2026-08-09",
+  "market": "utah",
+  "status": "running",
+  "page": "https://www.framerestorationutah.com/",
+  "query": "roofing companies utah",
+  "sourceActionId": "utah-growth-plan-p5-homepage-title",
+  "baseline": {
+    "sourceArtifact": "frame-seo-loop",
+    "sourceReceipt": "data/seo/snapshots/2026-08-09.json",
+    "window": {
+      "start": "2026-07-10",
+      "end": "2026-08-06",
+      "searchType": "web",
+      "dataState": "final"
+    },
+    "homepage": {
+      "clicks": 9,
+      "impressions": 4429,
+      "averagePosition": 16.8,
+      "note": "Homepage result from the measured Utah growth plan; current 2026-08-09 snapshot reports 73 clicks / 124,764 impressions sitewide."
+    },
+    "sitewide": {
+      "clicks": 73,
+      "impressions": 124764,
+      "ctr": 0.000585,
+      "reason": "Homepage title lacked commercial terms despite high commercial roofing query demand."
+    }
+  },
+  "hypothesis": "Aligning the homepage title and social metadata to a clear Utah roofing-company intent will improve qualified clicks and CTR without adding claims, changing visible hero copy, or changing any GBP surface.",
+  "changeSet": {
+    "type": "homepage-search-intent-alignment",
+    "files": [
+      "index.html"
+    ],
+    "newTitle": "Utah Roofing Company | Frame Restoration Utah",
+    "newDescription": "Utah roofing company for roof repair, roof replacement, storm damage documentation, inspections, and free estimates across the Wasatch Front.",
+    "surfaceContract": [
+      {
+        "label": "document title",
+        "file": "index.html",
+        "before": "Frame Restoration Utah | Mountain-Grade Roofing, Valley-Wide",
+        "variant": "Utah Roofing Company | Frame Restoration Utah",
+        "occurrences": 1
+      },
+      {
+        "label": "Open Graph title",
+        "file": "index.html",
+        "before": "Frame Restoration Utah | Mountain-Grade Roofing, Valley-Wide",
+        "variant": "Utah Roofing Company | Frame Restoration Utah",
+        "occurrences": 1
+      },
+      {
+        "label": "Twitter title",
+        "file": "index.html",
+        "before": "Frame Restoration Utah | Mountain-Grade Roofing, Valley-Wide",
+        "variant": "Utah Roofing Company | Frame Restoration Utah",
+        "occurrences": 1
+      },
+      {
+        "label": "search and social descriptions",
+        "file": "index.html",
+        "before": "Mountain-grade roofing across Utah's Wasatch Front. Family-owned, BBB A+ Accredited, 10-year workmanship warranty. Free inspection \u2014 435-292-8802.",
+        "variant": "Utah roofing company for roof repair, roof replacement, storm damage documentation, inspections, and free estimates across the Wasatch Front.",
+        "occurrences": 3
+      }
+    ]
+  },
+  "rollback": {
+    "title": "Frame Restoration Utah | Mountain-Grade Roofing, Valley-Wide",
+    "description": "Mountain-grade roofing across Utah's Wasatch Front. Family-owned, BBB A+ Accredited, 10-year workmanship warranty. Free inspection \u2014 435-292-8802."
+  },
+  "measurement": {
+    "startsAfterProductionDeployment": true,
+    "evaluationWindowDays": 28,
+    "minimumHomepageImpressions": 1000,
+    "deployedAt": null,
+    "earliestEvaluationAt": "2026-09-08T00:00:00.000Z",
+    "keepWhen": {
+      "homepageCtrImprovesRelative": true,
+      "orHomepageAveragePositionImprovement": 2,
+      "andNoCrawlOrIndexRegression": true
+    },
+    "decidedAt": null,
+    "result": null,
+    "decision": "pending"
+  },
+  "publicSideEffects": [],
+  "prohibitedSideEffects": [
+    "no GBP posts or GBP profile edits",
+    "no directory submissions",
+    "no new reviews, ratings, or certification claims",
+    "no new location pages"
+  ]
+}
