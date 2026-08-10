@@ -291,13 +291,31 @@ function parseWorkflow(relative) {
 
 const workflow = parseWorkflow(".github/workflows/deploy-edge-function.yml");
 const steps = workflow.jobs.deploy.steps;
+const mintAt = steps.findIndex((step) =>
+  step.name === "Mint live client-IP deployment evidence"
+);
 const receiptAt = steps.findIndex((step) =>
   step.name === "Enforce fresh signed final-extractor client-IP canary receipt"
 );
 const deployAt = steps.findIndex((step) => step.name?.startsWith("Deploy "));
 assert(
-  receiptAt > 0 && deployAt > receiptAt,
-  "client-IP receipt gate must precede deploy",
+  mintAt > 0 && receiptAt > mintAt && deployAt > receiptAt,
+  "client-IP mint and receipt gate must precede deploy",
+);
+const mintStep = steps[mintAt];
+assert.equal(mintStep.if, undefined);
+assert.equal(mintStep["continue-on-error"], undefined);
+assert.equal(mintStep.env.FUNCTION_NAME, "${{ inputs.function }}");
+assert.equal(mintStep.env.DEPLOY_SHA, "${{ github.sha }}");
+assert.equal(mintStep.env.SUPABASE_PROJECT_REF, PROJECT_REF);
+assert.equal(mintStep.env.SUPABASE_ACCESS_TOKEN, "${{ secrets.SUPABASE_ACCESS_TOKEN }}");
+assert.equal(
+  mintStep.env.CLIENT_IP_DEPLOY_RECEIPT_HMAC_KEY,
+  "${{ secrets.CLIENT_IP_DEPLOY_RECEIPT_HMAC_KEY }}",
+);
+assert.equal(
+  mintStep.run.trim(),
+  "node scripts/issue-client-ip-deploy-receipt.mjs",
 );
 const receiptStep = steps[receiptAt];
 assert.equal(receiptStep.if, undefined);
@@ -307,7 +325,7 @@ assert.equal(receiptStep.env.DEPLOY_SHA, "${{ github.sha }}");
 assert.equal(receiptStep.env.SUPABASE_PROJECT_REF, PROJECT_REF);
 assert.equal(
   receiptStep.env.CLIENT_IP_DEPLOY_RECEIPT_TOKEN,
-  "${{ secrets.CLIENT_IP_DEPLOY_RECEIPT_TOKEN }}",
+  "${{ env.CLIENT_IP_DEPLOY_RECEIPT_TOKEN }}",
 );
 assert.equal(
   receiptStep.env.CLIENT_IP_DEPLOY_RECEIPT_HMAC_KEY,
@@ -319,6 +337,23 @@ assert.equal(
 );
 
 const verifier = read("scripts/verify-client-ip-deploy-receipt.mjs");
+const issuer = read("scripts/issue-client-ip-deploy-receipt.mjs");
+for (
+  const requiredText of [
+    "\"deploy\",",
+    "PROBE_NAME",
+    "\"delete\",",
+    "issueClientIpDeployReceipt",
+    "GITHUB_ENV",
+    "::add-mask::",
+    "raw_values_retained: false",
+  ]
+) {
+  assert(
+    issuer.includes(requiredText),
+    `client-IP issuer missing required contract text: ${requiredText}`,
+  );
+}
 assert.equal(
   verifier.includes("data/UTAH-SUPABASE-CLIENT-IP-HEADER-RECEIPT.md"),
   false,
