@@ -151,7 +151,7 @@ jobs:
         with:
           deno-version: v2.x
       - name: Typecheck every deployed Edge Function entrypoint
-        run: deno check supabase/functions/*/index.ts
+        run: deno check --frozen --node-modules-dir=auto supabase/functions/*/index.ts
 
   static-assets:
     name: Sitemap static asset integrity (blocking)
@@ -173,6 +173,7 @@ jobs:
           node-version: '20'
           cache: npm
       - run: npm ci
+      - run: npx playwright install --with-deps chromium
       - run: npm run test:lead-form
 
   lead-sms-contract:

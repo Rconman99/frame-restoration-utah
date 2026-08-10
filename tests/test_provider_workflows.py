@@ -54,6 +54,35 @@ cta = load_script("utah_cta_liveness", "scripts/check-cta-liveness.py")
 reviews = load_script("utah_google_reviews", "scripts/update-google-reviews.py")
 
 
+class ComplianceWorkflowDependencyTests(unittest.TestCase):
+    """Freeze clean-runner dependencies for blocking browser and Deno jobs."""
+
+    @classmethod
+    def setUpClass(cls) -> None:
+        cls.workflow = (REPO / ".github/workflows/compliance-gate.yml").read_text(
+            encoding="utf-8"
+        )
+
+    def job_source(self, name: str, next_name: str) -> str:
+        start = self.workflow.index(f"  {name}:")
+        end = self.workflow.index(f"\n  {next_name}:", start)
+        return self.workflow[start:end]
+
+    def test_edge_typecheck_installs_locked_npm_dependencies(self) -> None:
+        job = self.job_source("edge-function-compile", "static-assets")
+        self.assertIn(
+            "deno check --frozen --node-modules-dir=auto "
+            "supabase/functions/*/index.ts",
+            job,
+        )
+
+    def test_lead_form_installs_chromium_before_browser_test(self) -> None:
+        job = self.job_source("lead-form-single-submit", "lead-sms-contract")
+        install = job.index("npx playwright install --with-deps chromium")
+        test = job.index("npm run test:lead-form")
+        self.assertLess(install, test)
+
+
 def sample_cfg() -> dict:
     return {
         "brand": "Frame Restoration Utah",
