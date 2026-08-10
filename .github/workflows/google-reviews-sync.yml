@@ -66,6 +66,7 @@ jobs:
           # Verify the synced result against the ported gates before proposing it.
           node scripts/audit-jsonld.mjs
           node scripts/audit-compliance-words.mjs --quiet
+          node scripts/audit-review-integrity.mjs --strict
           node scripts/audit-links.mjs   # advisory
 
           if git diff --quiet; then
@@ -85,12 +86,12 @@ jobs:
           if gh pr view "$BRANCH" >/dev/null 2>&1; then
             gh pr edit "$BRANCH" \
               --title "chore(reviews): sync Google review state" \
-              --body "Automated Google review sync from SerpAPI (Utah scraper). Updates reviews.json + visible/schema review count and rating on the homepage and About page. Draft PR for review; no auto-merge."
+              --body "Automated Google review sync from SerpAPI (Utah scraper). Updates reviews.json plus visible review counts and rating on the homepage and About page. Draft PR for review; no auto-merge."
           else
             gh pr create \
               --draft \
               --base main \
               --head "$BRANCH" \
               --title "chore(reviews): sync Google review state" \
-              --body "Automated Google review sync from SerpAPI (Utah scraper). Updates reviews.json + visible/schema review count and rating on the homepage and About page. Draft PR for review; no auto-merge."
+              --body "Automated Google review sync from SerpAPI (Utah scraper). Updates reviews.json plus visible review counts and rating on the homepage and About page. Draft PR for review; no auto-merge."
           fi
