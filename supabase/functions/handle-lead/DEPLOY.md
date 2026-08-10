@@ -953,7 +953,7 @@ Lead-intake LLM classifier. Every form submission now gets a `tier`:
 | `emergency` | Active leak, water inside, structural risk | `[EMERGENCY]` email subject; SMS copy stays dormant while the market-wide pause is active |
 | `urgent` | Recent storm/hail damage, insurance with timeline pressure | `[URGENT]` email subject; SMS copy stays dormant while the market-wide pause is active |
 | `scheduled` | Quote request, planning a project | Standard notification (current v6 behavior) |
-| `general` | Vague info question, browsing | `[INFO]` email, customer auto-text says "back to you within one business day" |
+| `general` | Vague info question, browsing | `[INFO]` email; customer SMS copy stays dormant while the market-wide pause is active |
 | `spam` | Bot, off-topic, gibberish | **Silent drop.** Saved to DB only. No email. No SMS. |
 
 Classifier picks the tier in two passes:
@@ -1037,8 +1037,10 @@ all durable email evidence has been reconciled.
 
 ## Rollback
 
-If something breaks, redeploy the exact pre-change Edge Function version from
-the rollout receipt. Do not pull an unknown historical version from live state.
+If something breaks, revert the bad source through a reviewed PR on `main`, wait
+for exact-main Compliance Gate success, issue fresh client-IP and
+owner-notification receipts for that new SHA, and dispatch the protected deploy
+workflow. Never redeploy a historical checkout or bypass the receipt gates.
 
 The additive rate-limit table/RPC can remain in place during a code rollback;
 it has no trigger and changes no existing lead-table behavior.

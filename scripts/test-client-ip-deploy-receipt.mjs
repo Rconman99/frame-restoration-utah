@@ -20,18 +20,29 @@ import {
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const read = (relative) => fs.readFileSync(path.join(root, relative), "utf8");
-const textExtensions = new Set([".md", ".mjs", ".ts", ".yaml", ".yml"]);
+const textExtensions = new Set([
+  ".js",
+  ".md",
+  ".mjs",
+  ".py",
+  ".sh",
+  ".ts",
+  ".txt",
+  ".yaml",
+  ".yml",
+]);
 
-function textFiles(relativeDirectory) {
-  const absoluteDirectory = path.join(root, relativeDirectory);
-  const found = [];
-  for (const entry of fs.readdirSync(absoluteDirectory, { withFileTypes: true })) {
-    const relative = path.join(relativeDirectory, entry.name);
-    if (entry.isDirectory()) found.push(...textFiles(relative));
-    else if (textExtensions.has(path.extname(entry.name))) found.push(relative);
-  }
-  return found;
+function trackedTextFiles() {
+  const result = spawnSync("git", ["ls-files", "-z"], {
+    cwd: root,
+    encoding: "utf8",
+  });
+  assert.equal(result.status, 0, result.stderr);
+  return result.stdout.split("\0")
+    .filter(Boolean)
+    .filter((relative) => textExtensions.has(path.extname(relative)));
 }
+const trackedTextPaths = trackedTextFiles();
 const extractorSource = read("supabase/functions/_shared/client-ip.ts");
 const extractorDigest = crypto.createHash("sha256")
   .update(extractorSource)
@@ -324,17 +335,21 @@ assert(
 );
 for (const step of steps.slice(0, deployAt)) {
   const source = JSON.stringify(step);
-  for (const prohibited of [
-    /client-ip-probe/i,
-    /issueClientIpDeployReceipt/,
-    /LEAD_INTAKE_RATE_LIMIT_SECRET/,
-    /lead-intake-v1/,
-    /supabase\s+functions\s+(?:deploy|delete)/,
-  ]) {
+  for (
+    const prohibited of [
+      /client-ip-probe/i,
+      /issueClientIpDeployReceipt/,
+      /LEAD_INTAKE_RATE_LIMIT_SECRET/,
+      /lead-intake-v1/,
+      /supabase\s+functions\s+(?:deploy|delete)/,
+    ]
+  ) {
     assert.doesNotMatch(
       source,
       prohibited,
-      `pre-deploy step ${step.name ?? "unnamed"} contains client-IP probe behavior`,
+      `pre-deploy step ${
+        step.name ?? "unnamed"
+      } contains client-IP probe behavior`,
     );
   }
   assert.equal(
@@ -370,11 +385,13 @@ assert.equal(
   "protected deploys must not include automatic public probe tooling",
 );
 const deployWorkflowSource = read(".github/workflows/deploy-edge-function.yml");
-for (const prohibitedText of [
-  "issue-client-ip-deploy-receipt.mjs",
-  "Mint live client-IP deployment evidence",
-  "runner-ipv6-unavailable",
-]) {
+for (
+  const prohibitedText of [
+    "issue-client-ip-deploy-receipt.mjs",
+    "Mint live client-IP deployment evidence",
+    "runner-ipv6-unavailable",
+  ]
+) {
   assert.equal(
     deployWorkflowSource.includes(prohibitedText),
     false,
@@ -391,37 +408,39 @@ assert.equal(
   false,
   "client-IP verifier must not authorize unavailable IPv6 evidence",
 );
-const clientIpToolPaths = fs.readdirSync(path.join(root, "scripts"))
-  .filter((name) => name.includes("client-ip") && name.endsWith(".mjs"))
-  .filter((name) => name !== "test-client-ip-deploy-receipt.mjs");
-for (const toolPath of clientIpToolPaths) {
-  const source = read(path.join("scripts", toolPath));
-  for (const prohibitedText of [
-    "SUPABASE_ACCESS_TOKEN",
-    "LEAD_INTAKE_RATE_LIMIT_SECRET",
-    "lead-intake-v1",
-    "GITHUB_ENV",
-    "--no-verify-jwt",
-  ]) {
+const scriptToolPaths = trackedTextPaths
+  .filter((relative) => relative.startsWith("scripts/"))
+  .filter((relative) =>
+    relative !== "scripts/test-client-ip-deploy-receipt.mjs"
+  );
+for (const toolPath of scriptToolPaths) {
+  const source = read(toolPath);
+  const hasProbeMarker = source.includes("client-ip-probe") ||
+    source.includes("lead-intake-v1");
+  if (!hasProbeMarker) continue;
+  for (
+    const prohibitedText of [
+      "SUPABASE_ACCESS_TOKEN",
+      "LEAD_INTAKE_RATE_LIMIT_SECRET",
+      "GITHUB_ENV",
+      "--no-verify-jwt",
+    ]
+  ) {
     assert.equal(
       source.includes(prohibitedText),
       false,
-      `${toolPath} contains prohibited live-probe capability: ${prohibitedText}`,
+      `${toolPath} combines client-IP probe logic with ${prohibitedText}`,
     );
   }
   assert.doesNotMatch(
     source,
     /supabase\s+functions\s+(?:deploy|delete)/,
-    `${toolPath} can mutate a live probe function`,
+    `${toolPath} combines client-IP probe logic with live mutation`,
   );
 }
 const directProtectedDeploy =
   /supabase\s+functions\s+deploy\s+(?:handle-lead|lead-crm)\b/;
-for (const relative of [
-  ...textFiles("supabase/functions"),
-  ...textFiles("supabase/migrations"),
-  ...textFiles("data"),
-]) {
+for (const relative of trackedTextPaths) {
   assert.doesNotMatch(
     read(relative),
     directProtectedDeploy,
@@ -460,7 +479,7 @@ assert(
   ),
 );
 assert(
-  compliance.on.pull_request.paths.includes("scripts/*client-ip*.mjs"),
+  compliance.on.pull_request.paths.includes("scripts/**"),
   "client-IP tooling additions do not trigger the blocking compliance gate",
 );
 const dashboardSteps = compliance.jobs["dashboard-security"].steps;

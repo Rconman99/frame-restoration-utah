@@ -102,7 +102,9 @@ The 2026-05-10 v8 edge function uses Resend (`leads@frameroofingutah.com`) for o
   - DKIM record(s) (TXT at the Resend-provided selector hostname — the value is a long base64 string)
   - DMARC record (optional, TXT at `_dmarc`)
 - [ ] Click **Verify** in Resend dashboard → domain shows **Verified ✓** typically within 5-30 min (DNS propagation can take up to 24 hrs in edge cases)
-- [ ] Once verified, set the Deno secret: `supabase secrets set RESEND_API_KEY=re_YOUR_KEY --project-ref hdcflshhomzildwqlmwh` and confirm with a test send before deploying v8
+- [x] Historical rollout complete. Current Utah-scoped Resend credentials are
+  governed by `supabase/functions/handle-lead/DEPLOY.md`; never set the retired
+  generic `RESEND_API_KEY` from this playbook or send an ungated test.
 
 ### 1.7 — Landon checklist summary
 
@@ -119,35 +121,21 @@ The 2026-05-10 v8 edge function uses Resend (`leads@frameroofingutah.com`) for o
 
 ---
 
-## Part 2 — Ryan's wiring (already mostly built, just needs deployment)
+## Part 2 — Ryan's wiring (historical rollout complete)
 
-### 2.1 — Apply pending migration + deploy v8 edge fn (~5 min, BLOCKS EVERYTHING ELSE)
+### 2.1 — Attribution migration and edge-function rollout
 
-Per `supabase/migrations/DEPLOY-attribution.md`:
+The original 2026-05 workstation commands are retired and must not be rerun.
+Do not work from `~/projects/frame-restoration-utah`, set the obsolete generic
+`RESEND_API_KEY`, run a broad database push, paste migration SQL into Studio, or
+deploy a protected function directly.
 
-```bash
-cd ~/projects/frame-restoration-utah
-
-# v8 also added RESEND_API_KEY as a required Deno secret (per the v8 header comment)
-supabase secrets set RESEND_API_KEY=re_YOUR_KEY --project-ref hdcflshhomzildwqlmwh
-
-# Apply the attribution-columns migration
-supabase db push --project-ref hdcflshhomzildwqlmwh
-
-# Deploy only after current exact-main CI and signed receipts pass
-gh workflow run deploy-edge-function.yml --repo Rconman99/frame-restoration-utah --ref main -f function=handle-lead
-```
-
-The direct workstation deploy path in the original 2026-05 rollout is retired.
-Do not bypass the current client-IP and owner-notification deployment gates.
-
-Verify via SQL:
-```sql
-\d public.leads
--- Should show gclid, fbclid, msclkid, gbraid, wbraid, utm_*, landing_page, referrer, won_at, uploaded_to_*_at
-```
-
-**You are done when:** `\d public.leads` shows all 15 new columns + `leads_status_check` constraint, AND a smoke-test POST to handle-lead returns 200 AND v8 outbound email path delivers a test message via Resend to landon@framerestorations.com (check inbox + Resend dashboard).
+Current Utah migration and `handle-lead` procedures live only in
+`supabase/functions/handle-lead/DEPLOY.md`. They require the canonical clean
+repository, the isolated reviewed migration runner when a migration is actually
+pending, exact-main CI, fresh signed receipts, and the protected GitHub deploy
+workflow. A production smoke test is a separate controlled action and must not
+be inferred from this historical ads playbook.
 
 ### 2.2 — PR the frontend changes
 
