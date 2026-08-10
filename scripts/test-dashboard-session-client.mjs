@@ -11,6 +11,26 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const tainted = '<img src=x onerror="globalThis.__dashboardStolen=1">';
 const sessionToken = 'header_payload.signature_part.session_signature';
 const requests = [];
+const canonicalRoutes = new Map([
+  ['review.html', 'https://www.framerestorationutah.com/review'],
+  ['dashboard/index.html', 'https://www.framerestorationutah.com/dashboard'],
+  ['leads.html', 'https://www.framerestorationutah.com/leads'],
+]);
+const loginViewports = [
+  { width: 320, height: 568 },
+  { width: 360, height: 800 },
+  { width: 393, height: 852 },
+  { width: 430, height: 932 },
+  { width: 740, height: 360 },
+];
+
+for (const [relative, expected] of canonicalRoutes) {
+  const markup = fs.readFileSync(path.resolve(root, relative), 'utf8');
+  const canonicalTags = (markup.match(/<link\b[^>]*\brel=["']canonical["'][^>]*>/giu) || []);
+  assert.equal(canonicalTags.length, 1, `${relative} must expose exactly one canonical`);
+  const href = canonicalTags[0].match(/\bhref=["']([^"']+)["']/iu)?.[1];
+  assert.equal(href, expected, `${relative} canonical must match its clean production route`);
+}
 
 const contentTypes = {
   '.css': 'text/css; charset=utf-8',
@@ -315,6 +335,37 @@ try {
 
   await page.evaluate(() => sessionStorage.removeItem('frame.dashboard.session'));
   await page.goto(`http://127.0.0.1:${address.port}/leads.html`, { waitUntil: 'domcontentloaded' });
+  for (const viewport of loginViewports) {
+    await page.setViewportSize(viewport);
+    await page.goto(`http://127.0.0.1:${address.port}/leads.html`, { waitUntil: 'domcontentloaded' });
+    await page.locator('#pinInput').focus();
+    const closedPanels = await page.locator('.panel').evaluateAll((panels) => panels.map((panel) => ({
+      inert: panel.hasAttribute('inert'),
+      ariaHidden: panel.getAttribute('aria-hidden'),
+    })));
+    assert(
+      closedPanels.every((panel) => panel.inert && panel.ariaHidden === 'true'),
+      `closed CRM panels remain keyboard-accessible at ${viewport.width}x${viewport.height}`,
+    );
+    for (let step = 0; step < 12; step += 1) {
+      await page.keyboard.press('Tab');
+      const focus = await page.evaluate(() => ({
+        insideLogin: document.getElementById('loginOverlay').contains(document.activeElement),
+        insidePanel: Boolean(document.activeElement.closest?.('.panel')),
+      }));
+      assert.equal(
+        focus.insideLogin,
+        true,
+        `login focus escaped at ${viewport.width}x${viewport.height}, step ${step + 1}`,
+      );
+      assert.equal(
+        focus.insidePanel,
+        false,
+        `closed panel received focus at ${viewport.width}x${viewport.height}, step ${step + 1}`,
+      );
+    }
+  }
+  await page.setViewportSize({ width: 1280, height: 720 });
   await page.fill('#pinInput', '654321');
   await page.click('button.login-btn[type="submit"]');
   await page.waitForFunction((value) => document.getElementById('ct').textContent.includes(value), tainted);
@@ -333,10 +384,15 @@ try {
   assert.match(successfulOutboxRow, /delivered/i, 'successful outbox badge lost authoritative delivery state');
   assert.doesNotMatch(successfulOutboxRow, /failed|bounced|complained|no receipt/i, 'successful outbox badge used stale legacy failure fields');
   await page.locator('#ct tr.row[data-id="1"]').click();
+  assert.equal(await page.locator('#panel').getAttribute('inert'), null, 'open lead panel remained inert');
+  assert.equal(await page.locator('#panel').getAttribute('aria-hidden'), null, 'open lead panel remained hidden from assistive technology');
   assert.match(await page.locator('#p-notification').innerText(), /Landon: delivered/i, 'lead panel hid Landon delivery state');
   assert.match(await page.locator('#p-notification').innerText(), /Backup: bounced/i, 'lead panel hid backup delivery state');
   assert.equal(await page.locator('#p-notification img').count(), 0, 'notification error created an element');
   assert.equal(await page.evaluate(() => globalThis.__dashboardStolen), undefined, 'tainted handler executed after cross-surface render');
+  await page.locator('#panel-close').click();
+  assert.equal(await page.locator('#panel').getAttribute('aria-hidden'), 'true', 'closed lead panel remained exposed to assistive technology');
+  assert.equal(await page.locator('#panel').getAttribute('inert'), '', 'closed lead panel remained keyboard-accessible');
 
   for (const request of requests) {
     const url = new URL(request.url);
