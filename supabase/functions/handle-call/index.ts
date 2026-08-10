@@ -37,6 +37,7 @@ const POSTHOG_API_KEY = "phc_BnECzlZ2OeDujli2dbqcgGODXlv2tYERbp40dTF7UBV";
 const NUMBER_SOURCES: Record<string, { source: string; commission: boolean }> = {
   "+14352928802": { source: "google_website", commission: true }, // GBP + website NAP
   "+14356108978": { source: "slc_backlink", commission: true }, // Contractor ReIndependence SLC tracking DID
+  "+18015152898": { source: "slc_gbp", commission: true }, // SLC office GBP tracking DID (purchased 2026-08-10)
   // "+1XXXXXXXXXX": { source: "directory", commission: false },   // ← directory tracking line (add once provisioned)
 };
 function classifyDialedNumber(toNumber: string): { source: string; commission: boolean } {
