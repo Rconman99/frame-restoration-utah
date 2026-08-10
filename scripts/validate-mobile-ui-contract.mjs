@@ -16,6 +16,7 @@ const files = {
   critical: readFileSync(resolve(root, "global-critical.css"), "utf8"),
   full: readFileSync(resolve(root, "global.css"), "utf8"),
   behavior: readFileSync(resolve(root, "global-modal.js"), "utf8"),
+  home: readFileSync(resolve(root, "index.html"), "utf8"),
   about: readFileSync(resolve(root, "pages", "about.html"), "utf8"),
 };
 
@@ -24,13 +25,15 @@ function requireNeedle(sourceName, needle, description) {
   if (!files[sourceName].includes(needle)) failures.push(`${sourceName}: ${description}`);
 }
 
-for (const needle of [
-  "document.addEventListener('focusin'",
-  "targetRect.top < navRect.bottom",
-  "targetRect.bottom > dockRect.top",
-  "window.scrollBy(0, targetRect.bottom - dockRect.top + 16)",
-]) {
-  requireNeedle("about", needle, `missing About-page keyboard focus settlement: ${needle}`);
+for (const sourceName of ["home", "about"]) {
+  for (const needle of [
+    "document.addEventListener('focusin'",
+    "targetRect.top < navRect.bottom",
+    "targetRect.bottom > dockRect.top",
+    "window.scrollBy(0, targetRect.bottom - dockRect.top + 16)",
+  ]) {
+    requireNeedle(sourceName, needle, `missing page keyboard focus settlement: ${needle}`);
+  }
 }
 
 for (const sourceName of ["critical", "full"]) {

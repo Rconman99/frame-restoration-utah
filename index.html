@@ -2163,6 +2163,27 @@
   </div>
 </div>
 
+<script>
+// Keep keyboard focus above the fixed mobile nav/contact dock in short landscape viewports.
+document.addEventListener('focusin', function(event) {
+  if (window.innerWidth > 900) return;
+  var target = event.target;
+  var nav = document.querySelector('nav');
+  var dock = document.querySelector('.sticky-call');
+  if (!(target instanceof HTMLElement) || !nav || !dock || nav.contains(target) || dock.contains(target)) return;
+  window.requestAnimationFrame(function() {
+    var targetRect = target.getBoundingClientRect();
+    var navRect = nav.getBoundingClientRect();
+    var dockRect = dock.getBoundingClientRect();
+    if (targetRect.top < navRect.bottom && targetRect.bottom > navRect.top) {
+      window.scrollBy(0, targetRect.top - navRect.bottom - 16);
+    } else if (targetRect.bottom > dockRect.top && targetRect.top < dockRect.bottom) {
+      window.scrollBy(0, targetRect.bottom - dockRect.top + 16);
+    }
+  });
+});
+</script>
+
 <!-- FIX 1+4: Complete JS, no defer on inline scripts (defer only works on external src scripts) -->
 <script>
   // Scroll to top on load — prevents iOS/mobile opening mid-page

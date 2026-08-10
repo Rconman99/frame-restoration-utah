@@ -15,7 +15,12 @@ import { extname, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 import { chromium } from "playwright";
 
-const root = resolve(fileURLToPath(new URL("..", import.meta.url)));
+const defaultRoot = resolve(fileURLToPath(new URL("..", import.meta.url)));
+const root = resolve(process.env.FRAME_UI_SITE_ROOT || defaultRoot);
+assert(
+  existsSync(resolve(root, "index.html")),
+  `FRAME_UI_SITE_ROOT must contain index.html: ${root}`,
+);
 const routes = [
   "/",
   "/locations/sandy",
@@ -77,9 +82,12 @@ const address = server.address();
 assert(address && typeof address === "object");
 const origin = `http://127.0.0.1:${address.port}`;
 const systemChrome = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
+const configuredChrome = process.env.FRAME_UI_CHROMIUM_EXECUTABLE;
 const browser = await chromium.launch({
   headless: true,
-  ...(existsSync(systemChrome) ? { executablePath: systemChrome } : {}),
+  ...(configuredChrome
+    ? { executablePath: configuredChrome }
+    : (existsSync(systemChrome) ? { executablePath: systemChrome } : {})),
 });
 let checks = 0;
 
@@ -301,6 +309,94 @@ try {
       );
     }
     assert.deepEqual(pageErrors, [], `desktop header emitted browser errors: ${pageErrors.join("; ")}`);
+    checks += 1;
+    await page.close();
+  }
+
+  // Regression for the landscape keyboard-focus defect caught in production:
+  // the homepage video could receive focus while its only visible slice sat
+  // behind the fixed contact dock. Recreate that geometry directly, focus the
+  // escaped control, wait for focus settlement, and require a hittable slice.
+  {
+    const viewport = { width: 740, height: 360 };
+    const page = await browser.newPage({ viewport });
+    await page.goto(origin, { waitUntil: "load" });
+    await page.addStyleTag({
+      content: `
+        html { scroll-behavior: auto !important; }
+        .sticky-call {
+          opacity: 1 !important;
+          pointer-events: auto !important;
+          transform: none !important;
+          visibility: visible !important;
+        }
+      `,
+    });
+    await page.evaluate(() => {
+      const video = document.querySelector("#video-showcase video");
+      const dock = document.querySelector(".sticky-call");
+      if (!(video instanceof HTMLVideoElement) || !(dock instanceof HTMLElement)) {
+        throw new Error("homepage video or fixed contact dock is missing");
+      }
+      document.querySelector("#menuBtn")?.focus({ preventScroll: true });
+      const videoRect = video.getBoundingClientRect();
+      const dockRect = dock.getBoundingClientRect();
+      window.scrollBy(0, videoRect.top - dockRect.top - 2);
+      dock.setAttribute("data-scroll-state", "visible");
+      dock.setAttribute("aria-hidden", "false");
+      video.focus({ preventScroll: true });
+    });
+    await page.evaluate(() => new Promise((resolveFrame) => {
+      let previousScrollY = window.scrollY;
+      let stableFrames = 0;
+      const sample = () => {
+        const currentScrollY = window.scrollY;
+        stableFrames = Math.abs(currentScrollY - previousScrollY) < 0.5
+          ? stableFrames + 1
+          : 0;
+        previousScrollY = currentScrollY;
+        if (stableFrames >= 3) {
+          resolveFrame();
+          return;
+        }
+        requestAnimationFrame(sample);
+      };
+      requestAnimationFrame(sample);
+    }));
+
+    const result = await page.evaluate(() => {
+      const element = document.activeElement;
+      if (!element?.matches("#video-showcase video")) return null;
+      const rects = [...element.getClientRects()].filter((rect) => (
+        rect.width > 0
+        && rect.height > 0
+        && rect.right > 0
+        && rect.bottom > 0
+        && rect.left < innerWidth
+        && rect.top < innerHeight
+      ));
+      const fractions = [0.1, 0.3, 0.5, 0.7, 0.9];
+      const points = rects.flatMap((rect) => {
+        const left = Math.max(0, rect.left);
+        const top = Math.max(0, rect.top);
+        const right = Math.min(innerWidth, rect.right);
+        const bottom = Math.min(innerHeight, rect.bottom);
+        if (right <= left || bottom <= top) return [];
+        return fractions.flatMap((xFraction) => fractions.map((yFraction) => [
+          left + (right - left) * xFraction,
+          top + (bottom - top) * yFraction,
+        ]));
+      });
+      return {
+        exposed: points.some(([x, y]) => {
+          const top = document.elementFromPoint(x, y);
+          return top && (top === element || element.contains(top));
+        }),
+        label: element.getAttribute("aria-label") || "homepage video",
+      };
+    });
+    assert(result, "landscape focus regression did not focus #video-showcase video");
+    assert(result.exposed, `landscape keyboard focus fully obscured: ${result.label}`);
     checks += 1;
     await page.close();
   }
