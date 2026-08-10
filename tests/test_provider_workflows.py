@@ -78,8 +78,10 @@ class ComplianceWorkflowDependencyTests(unittest.TestCase):
 
     def test_lead_form_installs_chromium_before_browser_test(self) -> None:
         job = self.job_source("lead-form-single-submit", "lead-sms-contract")
+        npm_ci = job.index("npm ci")
         install = job.index("npx playwright install --with-deps chromium")
         test = job.index("npm run test:lead-form")
+        self.assertLess(npm_ci, install)
         self.assertLess(install, test)
 
 
