@@ -21,6 +21,7 @@
     "audit:static-assets": "node scripts/audit-static-assets.mjs",
     "audit:faq-parity": "node scripts/repair-faq-visibility.mjs --check",
     "audit:dashboard-security": "node scripts/audit-dashboard-security.mjs",
+    "audit:client-ip-probe": "node scripts/audit-client-ip-probe-contract.mjs",
     "audit:mobile-ui": "node scripts/validate-mobile-ui-contract.mjs && node scripts/validate-mobile-contact-corpus.mjs && npm run audit:shared-assets",
     "audit:shared-assets": "node scripts/sync-shared-asset-versions.mjs --check",
     "sync:shared-assets": "node scripts/sync-shared-asset-versions.mjs --write",

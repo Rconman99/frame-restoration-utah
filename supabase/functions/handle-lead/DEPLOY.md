@@ -4,9 +4,11 @@
 > `20260807000160_lead_intake_rate_limit.sql` and set a distinct
 > `LEAD_INTAKE_RATE_LIMIT_SECRET` of at least 32 bytes before deploying v10.
 > Do not deploy the IP-keyed throttle until the production environment holds a
-> fresh HMAC-signed client-IP receipt bound to the exact main SHA, Utah project,
-> current `_shared/client-ip.ts` digest, deployed probe bundle/version, and
-> passed canary/cleanup results. The Markdown receipt under `data/` is INVALID
+> fresh HMAC-signed client-IP receipt v2 bound to the exact main SHA, Utah
+> project, current `_shared/client-ip.ts`, committed probe template, derived
+> wrapper, downloaded live source manifest, real live `.ezbr` bundle, runtime
+> function identity, complete dual-stack matrix, and restoration/cleanup proof.
+> The Markdown receipt under `data/` is INVALID
 > historical evidence and never authorizes a deploy. The only trusted identity
 > is canonical `cf-connecting-ip`; missing/malformed CF identity fails closed,
 > and `x-real-ip`/`x-forwarded-for` never select a client.
@@ -134,16 +136,114 @@ deployment changes live function metadata, so capture again and issue a fresh
 
 ### Executable client-IP receipt path
 
-After a non-public probe built from the exact `DEPLOY_SHA`, save one sanitized
-mode-0600 JSON evidence file containing `probe_source_sha`,
-`probe_bundle_sha256`, `probe_function` (`client-ip-probe`, positive version,
-`ACTIVE_AT_CANARY`), `canary_checked_at`, the IPv4/IPv6/forged-header/key-shape
-results, and proof that the probe function and probe secrets were deleted. It
-must contain no raw address or secret. Both native network paths must report
-`passed`; an unavailable, skipped, or failed IPv6 path never authorizes a
-deployment. Set its path as
-`CLIENT_IP_CANARY_EVIDENCE_PATH`, inject the GitHub-only
-`CLIENT_IP_DEPLOY_RECEIPT_HMAC_KEY`, and run:
+Receipt v2 deliberately distinguishes the target commit from the ephemeral
+probe wrapper. `target_source_sha` is the exact 40-character `DEPLOY_SHA`. The
+wrapper is **derived** from the committed
+`supabase/probe-templates/client-ip-probe/index.ts.tmpl`; it is not claimed to
+   be a literal file in that commit. From the exact clean target checkout, render
+   the wrapper and exact shared extractor into a new empty isolated directory:
+
+```bash
+node scripts/render-client-ip-probe.mjs \
+  --deploy-sha "$DEPLOY_SHA" \
+  --render-root "$PROBE_RENDER_ROOT"
+```
+
+The renderer fails on an existing output file and reports only
+`probe_template_sha256`, `rendered_wrapper_sha256`, and
+`expected_source_manifest_sha256`. It has no network, Supabase credential,
+deploy, delete, or secret-mutation capability. The receipt verifier recomputes
+all three values from the checked-out template, exact `DEPLOY_SHA`, and
+`supabase/functions/_shared/client-ip.ts`; an operator-entered digest is not
+trusted.
+
+Use a dedicated, owner-authorized operator lane outside the protected deploy
+workflow. Establish one **exclusive mutation window** before the first live
+function/secret metadata capture and keep it through probe deletion, postflight,
+and ephemeral-compute teardown. During that window no other operator, workflow,
+Studio session, or automation may deploy/delete an Edge function or mutate Edge
+secrets. Stop if exclusivity cannot be established.
+
+1. Capture the full preflight outputs of `supabase functions list --output
+   json` and `supabase secrets list --output json` into mode-0600 files. Produce
+   their SHA-256 values from canonical `jq -S -c` JSON. These are complete
+   metadata receipts, not selected-name lists. Secret metadata contains digests,
+   not secret values.
+2. Deploy only the isolated derived `client-ip-probe` source through the
+   separately approved ephemeral runner. Do not deploy either protected target.
+   Do not add, rotate, delete, or otherwise mutate a probe secret. Supabase Edge
+   secrets are project-scoped, so this receipt does **not** claim the runtime had
+   no access to other project secrets. Instead, the committed template and
+   blocking scanner prove that probe source reads only
+   `LEAD_NOTIFICATION_WORKER_TOKEN` and `DENO_DEPLOYMENT_ID`; it never reads
+   `LEAD_INTAKE_RATE_LIMIT_SECRET`, `SUPABASE_SERVICE_ROLE_KEY`, or
+   `Deno.env.toObject()`.
+3. Capture the live function tuple: literal slug `client-ip-probe`, UUID function
+   ID, positive version, active-at-canary state, runtime `DENO_DEPLOYMENT_ID`,
+   and the SHA-256 of the **real live `.ezbr` bundle bytes**. The runtime ID must
+   be exactly `project_ref_function_id_version`; a local wrapper digest is not an
+   `.ezbr` digest and cannot substitute for it.
+4. In a second new isolated directory, download the deployed source with pinned
+   Supabase CLI 2.113.0 and the read-only API unbundling path:
+
+   ```bash
+   "$SUPABASE_BIN" --workdir "$PROBE_DOWNLOAD_ROOT" functions download \
+     client-ip-probe --project-ref hdcflshhomzildwqlmwh --use-api
+   node scripts/render-client-ip-probe.mjs \
+     --deploy-sha "$DEPLOY_SHA" \
+     --verify-download-root "$PROBE_DOWNLOAD_ROOT"
+   ```
+
+   The downloaded tree must contain exactly the rendered wrapper and shared
+   extractor. Record `downloaded_live_source_manifest_sha256`; it must equal the
+   recomputed `expected_source_manifest_sha256` byte-for-byte.
+5. Authenticate with HMAC-SHA-256 using the existing worker-token key and exact
+   context `client-ip-probe-v1`. Each body is the exact compact JSON
+   `{"case_id":"<family>-<case>"}`. Send a 13-digit millisecond timestamp,
+   16–64 character random URL-safe nonce, and lowercase-hex signature in
+   `x-frame-probe-timestamp`, `x-frame-probe-nonce`, and
+   `x-frame-probe-signature`. The signed bytes are exactly
+   `client-ip-probe-v1\0auth\0<timestamp>\0<nonce>\0<lowercase SHA-256 of body>`;
+   the HMAC key is `LEAD_NOTIFICATION_WORKER_TOKEN` and must never be printed.
+   Run **8 authenticated** matrix requests: four
+   over native IPv4 and the same four over native IPv6 — baseline, forged
+   `cf-connecting-ip`, forged `x-real-ip`, and forged `x-forwarded-for`. Both
+   baseline paths must report `passed`, canonical source `cf-connecting-ip`, and
+   a 64-lowercase-hex raw-free fingerprint. The forged CF result must be
+   `rejected-or-overwritten`; both other forged-header results must leave the
+   selected fingerprint unchanged. Then run **2 negative-auth** requests, one
+   without a signature and one with an invalid signature. Both must return the
+   same generic HTTP 401 with no source, fingerprint, target SHA, deployment ID,
+   or other metadata. The signed count is therefore **10 total**; never overload
+   the authenticated count of 8 to hide the two negative checks. An unavailable,
+   skipped, or failed IPv6 path never authorizes deployment.
+6. Immediately before deletion, refresh live function metadata and recheck the
+   exact tuple `(slug, function ID, version, status, DENO_DEPLOYMENT_ID, live
+   ezbr SHA-256)` against the canaried tuple. Abort on any mismatch. Delete using the
+   literal probe slug only (`slug-only` scope); do not derive or broaden the
+   target from list output, an ID, a prefix, or a glob. Record the deletion time;
+   it must be no more than 60 seconds after the tuple recheck.
+7. Capture full canonical postflight function and secret metadata. Their
+   SHA-256 values must exactly equal their respective preflight SHA-256 values.
+   This proves the function catalog was restored and no probe-secret mutation
+   occurred during the exclusive window. Destroy the isolated runner and all
+   other **ephemeral compute**, then end the exclusive window.
+
+Save one new mode-0600 sanitized evidence JSON file. It must include
+`target_source_sha`; all source-binding digests including
+`downloaded_live_source_manifest_sha256`; `live_ezbr_bundle_sha256`; the full
+probe function/runtime tuple; the exact worker-token HMAC source contract; the
+8+2 request counts and complete per-family four-case matrix; both full pre/post
+   metadata digest pairs and equality flags; the timed exclusive window, exact
+   delete recheck and deletion time, `slug-only` scope, and zero probe-secret mutations; plus probe
+deletion and ephemeral-compute destruction. `evidence_policy` must state that
+the signed evidence is sanitized, contains no raw address or secret, and that
+no raw probe/operator artifact was retained. That statement is intentionally
+limited to probe/operator artifacts; it makes no claim about independent
+Cloudflare or Supabase platform-log retention.
+
+Set the evidence path as `CLIENT_IP_CANARY_EVIDENCE_PATH`, inject the
+GitHub-only `CLIENT_IP_DEPLOY_RECEIPT_HMAC_KEY`, and run:
 
 ```bash
 node scripts/verify-client-ip-deploy-receipt.mjs --issue \
@@ -152,15 +252,15 @@ gh secret set CLIENT_IP_DEPLOY_RECEIPT_TOKEN \
   --env 'Production – frame-restoration-utah' < "$CLIENT_IP_RECEIPT_OUTPUT"
 ```
 
-The issuer computes the current extractor digest itself, binds both source SHAs
-to `DEPLOY_SHA`, validates the full canary/cleanup contract, self-verifies the
-one-hour token, allowlists every nested evidence field so raw/debug extras cannot
-enter the readable token, and never prints it. Store
+The issuer computes the template/render/extractor/source-manifest digests itself,
+validates the full receipt v2 contract, self-verifies the one-hour token,
+allowlists every nested evidence field so raw/debug extras cannot enter the
+readable token, and never prints it. Store
 `CLIENT_IP_DEPLOY_RECEIPT_TOKEN` and the distinct
 `CLIENT_IP_DEPLOY_RECEIPT_HMAC_KEY` only in the GitHub production environment.
 The protected deploy workflow only verifies that pre-issued token: it must not
-deploy or delete a probe, expose the intake rate-limit secret to a probe, or
-mint client-IP evidence on a shared CI runner.
+deploy or delete a probe, mutate any probe secret, expose the intake rate-limit
+secret through probe source, or mint client-IP evidence on a shared CI runner.
 Issue a new token for each protected SHA; rotate the HMAC key after exposure or
 signer access changes and remove all local evidence/token files after secret
 installation. `data/UTAH-SUPABASE-CLIENT-IP-HEADER-RECEIPT.md` remains an

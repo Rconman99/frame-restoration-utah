@@ -62,6 +62,9 @@ on:
       - 'scripts/**'
       - 'scripts/verify-client-ip-deploy-receipt.mjs'
       - 'scripts/test-client-ip-deploy-receipt.mjs'
+      - 'scripts/render-client-ip-probe.mjs'
+      - 'scripts/audit-client-ip-probe-contract.mjs'
+      - 'supabase/probe-templates/**'
       - 'scripts/verify-owner-notification-deploy-receipt.mjs'
       - 'scripts/run-owner-notification-deploy-canaries.mjs'
       - 'scripts/test-owner-notification-deploy-receipt.mjs'
@@ -219,6 +222,8 @@ jobs:
         run: npm run audit:dashboard-security
       - name: Reject dashboard deploys without a complete rollout receipt
         run: node scripts/test-dashboard-deploy-receipt.mjs
+      - name: Reject unsafe client-IP probe sources and live mutation tooling
+        run: npm run audit:client-ip-probe
       - name: Reject intake and CRM deploys without a fresh client-IP canary receipt
         run: node scripts/test-client-ip-deploy-receipt.mjs
       - name: Run dashboard authorization and session-version fixtures
