@@ -83,6 +83,21 @@ assert.deepEqual(verify(), {
   extractorSha256: extractorDigest,
   probeVersion: 7,
 });
+assert.deepEqual(
+  verify({
+    payload: {
+      canary_results: {
+        ...payload().canary_results,
+        ipv6_path: "runner-ipv6-unavailable",
+      },
+    },
+  }),
+  {
+    required: true,
+    extractorSha256: extractorDigest,
+    probeVersion: 7,
+  },
+);
 const issued = issueClientIpDeployReceipt({
   deploySha: SHA,
   projectRef: PROJECT_REF,
