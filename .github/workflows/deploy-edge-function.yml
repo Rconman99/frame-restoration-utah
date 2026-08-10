@@ -104,12 +104,20 @@ jobs:
         run: |
           test -f "supabase/functions/${{ inputs.function }}/index.ts" \
             || { echo "::error::supabase/functions/${{ inputs.function }}/index.ts not found"; exit 1; }
+      - name: Mint live client-IP deployment evidence
+        env:
+          FUNCTION_NAME: ${{ inputs.function }}
+          DEPLOY_SHA: ${{ github.sha }}
+          SUPABASE_PROJECT_REF: hdcflshhomzildwqlmwh
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+          CLIENT_IP_DEPLOY_RECEIPT_HMAC_KEY: ${{ secrets.CLIENT_IP_DEPLOY_RECEIPT_HMAC_KEY }}
+        run: node scripts/issue-client-ip-deploy-receipt.mjs
       - name: Enforce fresh signed final-extractor client-IP canary receipt
         env:
           FUNCTION_NAME: ${{ inputs.function }}
           DEPLOY_SHA: ${{ github.sha }}
           SUPABASE_PROJECT_REF: hdcflshhomzildwqlmwh
-          CLIENT_IP_DEPLOY_RECEIPT_TOKEN: ${{ secrets.CLIENT_IP_DEPLOY_RECEIPT_TOKEN }}
+          CLIENT_IP_DEPLOY_RECEIPT_TOKEN: ${{ env.CLIENT_IP_DEPLOY_RECEIPT_TOKEN }}
           CLIENT_IP_DEPLOY_RECEIPT_HMAC_KEY: ${{ secrets.CLIENT_IP_DEPLOY_RECEIPT_HMAC_KEY }}
         run: node scripts/verify-client-ip-deploy-receipt.mjs
       - name: Read live dashboard migration and secret state
