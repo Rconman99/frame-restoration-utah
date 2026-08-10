@@ -416,7 +416,11 @@ function probeToolViolation(source) {
   ) {
     if (source.includes(prohibitedText)) return prohibitedText;
   }
-  if (/supabase\s+functions\s+(?:deploy|delete)/.test(source)) {
+  if (
+    /supabase(?:\s|\\\s*)+functions(?:\s|\\\s*)+(?:deploy|delete)/.test(
+      source,
+    )
+  ) {
     return "live function mutation";
   }
   return null;
@@ -438,6 +442,10 @@ const unsafeProbeFixtures = [
   ["client-ip-probe", "LEAD_INTAKE_RATE_LIMIT_SECRET"].join("\n"),
   ["lead-intake-v1", "SUPABASE_ACCESS_TOKEN"].join("\n"),
   ["client-ip-probe", "supabase", "functions", "deploy"].join(" "),
+  [
+    "client-ip-probe",
+    ["supabase", "functions", "deploy"].join("\\\n  "),
+  ].join("\n"),
 ];
 for (const fixture of unsafeProbeFixtures) {
   assert.notEqual(
@@ -447,12 +455,15 @@ for (const fixture of unsafeProbeFixtures) {
   );
 }
 const directProtectedDeploy =
-  /supabase\s+functions\s+deploy\s+["']?(?:handle-lead|lead-crm)["']?(?=\s|\\|$)/;
+  /supabase(?:\s|\\\s*)+functions(?:\s|\\\s*)+deploy(?:\s|\\\s*)+["']?(?:handle-lead|lead-crm)["']?(?=\s|\\|$)/;
 for (
   const fixture of [
     ["supabase", "functions", "deploy", "handle-lead"].join(" "),
     ["supabase", "functions", "deploy", '"handle-lead"'].join(" "),
     ["supabase", "functions", "deploy", "'lead-crm'"].join(" "),
+    ["supabase", "functions deploy handle-lead"].join("\\\n  "),
+    ["supabase functions", "deploy handle-lead"].join("\\\n  "),
+    ["supabase functions deploy", '"handle-lead"'].join("\\\n  "),
   ]
 ) {
   assert.match(fixture, directProtectedDeploy);
