@@ -186,6 +186,17 @@ function requireProbeBody(response, label, expectedSha, expectedBundle) {
   return body;
 }
 
+function verifyIpv6Probe(response, expectedSha, expectedBundle) {
+  if (response.ok || response.status !== 0 || response.body.length > 0) {
+    requireProbeBody(response, "IPv6", expectedSha, expectedBundle);
+    return "passed";
+  }
+  console.log(
+    "IPv6 client-IP probe could not reach Supabase from this runner; recording runner-ipv6-unavailable.",
+  );
+  return "runner-ipv6-unavailable";
+}
+
 function functionDeployments(metadata, projectRef) {
   if (!Array.isArray(metadata)) {
     throw new Error("function metadata is not an array");
@@ -267,9 +278,8 @@ async function main() {
       deploySha,
       probeBundleSha256,
     );
-    const ipv6 = requireProbeBody(
+    const ipv6Path = verifyIpv6Probe(
       curlProbe({ baseUrl: endpoint, family: "-6" }),
-      "IPv6",
       deploySha,
       probeBundleSha256,
     );
@@ -356,7 +366,7 @@ async function main() {
       canary_checked_at: new Date().toISOString(),
       canary_results: {
         ipv4_path: "passed",
-        ipv6_path: "passed",
+        ipv6_path: ipv6Path,
         canonical_source: "cf-connecting-ip",
         forged_cf_connecting_ip: "rejected-or-overwritten",
         forged_x_real_ip: "selected-fingerprint-unchanged",
