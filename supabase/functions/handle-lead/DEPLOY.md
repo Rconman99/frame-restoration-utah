@@ -4,10 +4,11 @@
 > `20260807000160_lead_intake_rate_limit.sql` and set a distinct
 > `LEAD_INTAKE_RATE_LIMIT_SECRET` of at least 32 bytes before deploying v10.
 > Do not deploy the IP-keyed throttle until the production environment holds a
-> fresh HMAC-signed client-IP receipt v2 bound to the exact main SHA, Utah
-> project, current `_shared/client-ip.ts`, committed probe template, derived
-> wrapper, signer-attested operator-captured source/`.ezbr` bytes, runtime
-> function identity, complete dual-stack matrix, and artifact-derived
+> fresh Ed25519-signed client-IP receipt v3 bound to one exact protected
+> function, dispatch nonce, main SHA, Utah project, current
+> `_shared/client-ip.ts`, committed probe template, derived wrapper,
+> signer-attested operator-captured source/`.ezbr` bytes, runtime function
+> identity, complete dual-stack matrix, and artifact-derived
 > restoration/cleanup proof.
 > The Markdown receipt under `data/` is INVALID
 > historical evidence and never authorizes a deploy. The only trusted identity
@@ -137,8 +138,11 @@ deployment changes live function metadata, so capture again and issue a fresh
 
 ### Executable client-IP receipt path
 
-Receipt v2 deliberately distinguishes the target commit from the ephemeral
-probe wrapper. `target_source_sha` is the exact 40-character `DEPLOY_SHA`. The
+Receipt v3 deliberately distinguishes the target commit from the ephemeral
+probe wrapper. `target_function` is exactly one of `handle-lead` or `lead-crm`,
+`dispatch_nonce` is a new 32–128 character URL-safe nonce for one manual
+dispatch, and `target_source_sha` is the exact 40-character `DEPLOY_SHA`. One
+token cannot authorize both protected functions or a different dispatch. The
 wrapper is **derived** from the committed
 `supabase/probe-templates/client-ip-probe/index.ts.tmpl`; it is not claimed to
 be a literal file in that commit. From the exact clean target checkout, render
@@ -166,10 +170,12 @@ Studio session, or automation may deploy/delete an Edge function or mutate Edge
 secrets. Stop if exclusivity cannot be established.
 
 All operator inputs below are new, unique, nonsymlink mode-0600 files. Keep raw
-artifacts through issuance; remove them only after the signed token is installed.
-The issuer canonicalizes and hashes the complete structures itself. It rejects
-duplicate function slugs/IDs, duplicate secret names, path aliases, hard links,
-extra response fields, and an input over its bounded size.
+artifacts through issuance and the one authorized dispatch, then remove them
+with the token. The issuer canonicalizes and hashes the complete structures
+itself. It rejects duplicate JSON object keys before parsing every JSON
+artifact, duplicate function slugs/IDs, duplicate secret names, path aliases,
+hard links, extra response fields, plaintext secret values, and an input over
+its bounded size.
 
 1. Capture full preflight function and secret metadata. A function capture has
    exact top-level fields `capture_version`, `captured_at`, `project_ref`,
@@ -249,8 +255,10 @@ extra response fields, and an input over its bounded size.
    signed count is therefore **10 total**; never overload
    the authenticated count of 8 to hide the two negative checks. An unavailable,
    skipped, or failed IPv6 path never authorizes deployment.
-   For every request, save three separate mode-0600 files: the exact request
-   artifact, status JSON (`status`, `observed_at`), and raw response body. The
+   Every request observation must be no more than 60 seconds after its signed
+   request timestamp (the verifier currently enforces a stricter 30-second
+   ceiling). For every request, save three separate mode-0600 files: the exact
+   request artifact, status JSON (`status`, `observed_at`), and raw response body. The
    request artifact records the method, literal probe slug, transport family,
    exact compact body plus its SHA-256, and the exact allowlisted header set.
    Baselines carry no forged header; each forged case carries exactly its named
@@ -315,29 +323,62 @@ export CLIENT_IP_CAPTURED_SOURCE_ROOT CLIENT_IP_REQUEST_ARTIFACT_MANIFEST_PATH
 export CLIENT_IP_OPERATOR_ATTESTATION_PATH
 ```
 
-Inject the GitHub-only `CLIENT_IP_DEPLOY_RECEIPT_HMAC_KEY`, then run:
+Set `FUNCTION_NAME` to one exact protected function, generate a new dispatch
+nonce outside CI, and set `CLIENT_IP_DEPLOY_DISPATCH_NONCE` to that value. Before
+the private key enters the process environment, run the Node-built-in-only trust
+root so no unreviewed repository module executes first:
 
 ```bash
-node scripts/verify-client-ip-deploy-receipt.mjs --issue \
-  "$CLIENT_IP_RECEIPT_OUTPUT"
+node scripts/audit-client-ip-probe-contract.mjs
+```
+
+After that passes, an authorized offline signer injects its Ed25519 private key as canonical
+PKCS8 DER-base64 only in
+`CLIENT_IP_DEPLOY_RECEIPT_PRIVATE_KEY_PKCS8_DER_BASE64` and runs:
+
+```bash
+node scripts/issue-client-ip-deploy-receipt.mjs "$CLIENT_IP_RECEIPT_OUTPUT"
 gh secret set CLIENT_IP_DEPLOY_RECEIPT_TOKEN \
   --env 'Production – frame-restoration-utah' < "$CLIENT_IP_RECEIPT_OUTPUT"
+gh workflow run deploy-edge-function.yml --ref main \
+  -f function="$FUNCTION_NAME" \
+  -f receipt_nonce="$CLIENT_IP_DEPLOY_DISPATCH_NONCE"
 ```
 
 The issuer computes the template/render/extractor/source-manifest digests,
 canonical metadata hashes, ACTIVE tuple, Management API tuple hash, runtime
 bindings, request outcomes, restoration, and compute teardown itself. It
-self-verifies the one-hour token, allowlists every nested field so raw/debug
-extras cannot enter the readable token, and never prints it. Store
-`CLIENT_IP_DEPLOY_RECEIPT_TOKEN` and the distinct
-`CLIENT_IP_DEPLOY_RECEIPT_HMAC_KEY` only in the GitHub production environment.
-The protected deploy workflow only verifies that pre-issued token: it must not
+validates the evidence while building the payload, allowlists every nested
+field so raw/debug extras cannot enter the readable token, signs it, and never
+prints the token or private key. The private PKCS8 key is issuer-only and must
+never enter GitHub Actions, Supabase, the repository, an evidence artifact, or
+the verifier process. Only the canonical SPKI DER-base64 public key reaches the
+verifier, through the Production environment variable
+`CLIENT_IP_DEPLOY_RECEIPT_PUBLIC_KEY_SPKI_DER_BASE64`. Do not generate or store
+a production signing key as part of this code change; provisioning and custody
+require a separate owner-authorized offline ceremony.
+
+Store only the single-use `CLIENT_IP_DEPLOY_RECEIPT_TOKEN` as a Production
+environment secret. It expires no more than 15 minutes after issuance and must
+reach the protected deploy command within that window. The protected deploy
+workflow reruns the repository scanner and clean/exact-SHA worktree checks,
+then captures final live `supabase functions list --output json` and `supabase
+secrets list --output json` metadata, verifies those exact canonical hashes and
+probe absence against the signed postflight through new mode-0600
+`CLIENT_IP_FINAL_FUNCTIONS_PATH` and `CLIENT_IP_FINAL_SECRETS_PATH` files, and
+deploys in that same fail-closed shell step. The verifier accepts no CLI
+arguments and has no issuance/private-key path. The workflow must not
 deploy or delete a probe, mutate any probe secret, expose the intake rate-limit
 secret through probe source, or mint client-IP evidence on a shared CI runner.
-Issue a new token for each protected SHA; rotate the HMAC key after exposure or
-signer access changes and remove all local evidence/token files after secret
-installation. `data/UTAH-SUPABASE-CLIENT-IP-HEADER-RECEIPT.md` remains an
-INVALID historical record and is not read by the deploy verifier.
+Issue a new token and nonce for every function/SHA/dispatch. Immediately remove
+the Production token after that one run succeeds or fails, and remove all local
+receipt/evidence files; never retry or reuse it. Replace the public key through
+the separate owner-authorized key-rotation procedure after signer compromise or
+custody changes. `node scripts/test-client-ip-deploy-receipt.mjs` exercises
+offline generated fixture keys and fixture artifacts only; a passing test is
+not live Supabase, dual-stack, cleanup, or deployment proof.
+`data/UTAH-SUPABASE-CLIENT-IP-HEADER-RECEIPT.md` remains an INVALID historical
+record and is not read by the deploy verifier.
 
 Required rollout order (do not reorder):
 
@@ -1183,7 +1224,8 @@ receipts are installed, dispatch the protected workflow:
 gh workflow run deploy-edge-function.yml \
   --repo Rconman99/frame-restoration-utah \
   --ref main \
-  -f function=handle-lead
+  -f function=handle-lead \
+  -f receipt_nonce="$CLIENT_IP_DEPLOY_DISPATCH_NONCE"
 ```
 
 The workflow rechecks exact-main identity immediately before deployment. The

@@ -19,8 +19,8 @@ import {
 
 const PROTECTED_FUNCTIONS = new Set(["handle-lead", "lead-crm"]);
 const PROBE_SLUG = "client-ip-probe";
-const MAX_RECEIPT_LIFETIME_MS = 60 * 60 * 1000;
-const MAX_CANARY_AGE_MS = 60 * 60 * 1000;
+const MAX_RECEIPT_LIFETIME_MS = 15 * 60 * 1000;
+const MAX_CANARY_AGE_MS = 15 * 60 * 1000;
 const MAX_CLOCK_SKEW_MS = 5 * 60 * 1000;
 // Stay strictly inside the probe's 60-second authentication freshness window so
 // a generic 401 proves the tested signature condition, not an expired request.
@@ -31,6 +31,7 @@ const MAX_RESPONSE_BYTES = 2 * 1024;
 const MAX_EZBR_BYTES = 64 * 1024 * 1024;
 const SHA256 = /^[0-9a-f]{64}$/;
 const FULL_SHA = /^[0-9a-f]{40}$/;
+const DISPATCH_NONCE = /^[A-Za-z0-9_-]{32,128}$/;
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/;
 const POSITIVE_CASES = [
   "ipv4-baseline",
@@ -119,6 +120,117 @@ function canonicalUnorderedRows(rows, label) {
   return `${JSON.stringify(serialized.map((row) => JSON.parse(row)))}\n`;
 }
 
+export function parseJsonWithoutDuplicateKeys(text, label = "JSON artifact") {
+  if (typeof text !== "string") throw new Error(`${label} must be UTF-8 text`);
+  let index = 0;
+  const fail = () => {
+    throw new Error(`${label} is invalid or contains duplicate object keys`);
+  };
+  const whitespace = () => {
+    while (/[\t\n\r ]/.test(text[index] ?? "")) index += 1;
+  };
+  const stringValue = () => {
+    if (text[index] !== '"') fail();
+    const start = index;
+    index += 1;
+    while (index < text.length) {
+      const character = text[index];
+      if (character === '"') {
+        index += 1;
+        try {
+          return JSON.parse(text.slice(start, index));
+        } catch {
+          fail();
+        }
+      }
+      if (character === "\\") {
+        index += 1;
+        const escape = text[index];
+        if (escape === "u") {
+          if (!/^[0-9a-fA-F]{4}$/.test(text.slice(index + 1, index + 5))) fail();
+          index += 5;
+          continue;
+        }
+        if (!/["\\/bfnrt]/.test(escape ?? "")) fail();
+        index += 1;
+        continue;
+      }
+      if (character.charCodeAt(0) < 0x20) fail();
+      index += 1;
+    }
+    fail();
+  };
+  const value = () => {
+    whitespace();
+    const character = text[index];
+    if (character === "{") {
+      index += 1;
+      whitespace();
+      const keys = new Set();
+      if (text[index] === "}") {
+        index += 1;
+        return;
+      }
+      while (true) {
+        whitespace();
+        const key = stringValue();
+        if (keys.has(key)) fail();
+        keys.add(key);
+        whitespace();
+        if (text[index] !== ":") fail();
+        index += 1;
+        value();
+        whitespace();
+        if (text[index] === "}") {
+          index += 1;
+          return;
+        }
+        if (text[index] !== ",") fail();
+        index += 1;
+      }
+    }
+    if (character === "[") {
+      index += 1;
+      whitespace();
+      if (text[index] === "]") {
+        index += 1;
+        return;
+      }
+      while (true) {
+        value();
+        whitespace();
+        if (text[index] === "]") {
+          index += 1;
+          return;
+        }
+        if (text[index] !== ",") fail();
+        index += 1;
+      }
+    }
+    if (character === '"') {
+      stringValue();
+      return;
+    }
+    const remainder = text.slice(index);
+    const literal = remainder.match(/^(?:true|false|null)/)?.[0];
+    if (literal) {
+      index += literal.length;
+      return;
+    }
+    const number = remainder.match(/^-?(?:0|[1-9]\d*)(?:\.\d+)?(?:[eE][+-]?\d+)?/)?.[0];
+    if (!number) fail();
+    index += number.length;
+  };
+  value();
+  whitespace();
+  if (index !== text.length) fail();
+  try {
+    return JSON.parse(text);
+  } catch {
+    fail();
+  }
+}
+
 function readSecureBuffer(filePath, label, maxBytes = MAX_ARTIFACT_BYTES) {
   const absolute = path.resolve(requireString(filePath, `${label} path`));
   const before = fs.lstatSync(absolute);
@@ -162,7 +274,10 @@ function readSecureText(filePath, label, maxBytes = MAX_ARTIFACT_BYTES) {
 function readSecureJson(filePath, label, maxBytes = MAX_ARTIFACT_BYTES) {
   const artifact = readSecureText(filePath, label, maxBytes);
   try {
-    return { ...artifact, value: JSON.parse(artifact.text) };
+    return {
+      ...artifact,
+      value: parseJsonWithoutDuplicateKeys(artifact.text, label),
+    };
   } catch (error) {
     throw new Error(`${label} is not valid JSON: ${error.message}`);
   }
@@ -283,6 +398,72 @@ function secretCapture(filePath, label, projectRef) {
     canonicalSecrets,
     secretsSha256: sha256(canonicalSecrets),
   };
+}
+
+function finalFunctionState(filePath) {
+  const artifact = readSecureJson(
+    filePath,
+    "final live Supabase function metadata",
+  );
+  if (!Array.isArray(artifact.value)) {
+    throw new Error("final live Supabase function metadata must be an array");
+  }
+  const seenSlugs = new Set();
+  const seenIds = new Set();
+  for (const [index, row] of artifact.value.entries()) {
+    const entry = requirePlainObject(
+      row,
+      `final live Supabase function metadata[${index}]`,
+    );
+    const slug = requireString(
+      entry.slug ?? entry.name,
+      `final live Supabase function metadata[${index}].slug`,
+    );
+    const id = requireString(
+      entry.id,
+      `final live Supabase function metadata[${index}].id`,
+    );
+    if (seenSlugs.has(slug) || seenIds.has(id)) {
+      throw new Error("final live Supabase function metadata has duplicate slug or ID");
+    }
+    seenSlugs.add(slug);
+    seenIds.add(id);
+  }
+  if (seenSlugs.has(PROBE_SLUG)) {
+    throw new Error("client-IP probe remains present in final live function metadata");
+  }
+  const canonical = canonicalUnorderedRows(
+    artifact.value,
+    "final live Supabase functions",
+  );
+  return { sha256: sha256(canonical), artifact };
+}
+
+function finalSecretState(filePath) {
+  const artifact = readSecureJson(
+    filePath,
+    "final live Supabase secret metadata",
+  );
+  if (!Array.isArray(artifact.value)) {
+    throw new Error("final live Supabase secret metadata must be an array");
+  }
+  const seenNames = new Set();
+  for (const [index, row] of artifact.value.entries()) {
+    const label = `final live Supabase secret metadata[${index}]`;
+    const secret = assertExactKeys(row, ["name", "value", "updated_at"], label);
+    const name = requireString(secret.name, `${label}.name`);
+    if (!/^[A-Z][A-Z0-9_]{0,127}$/.test(name) || seenNames.has(name)) {
+      throw new Error("final live Supabase secret metadata has invalid/duplicate name");
+    }
+    seenNames.add(name);
+    requireDigest(secret.value, `${label}.value provider digest`);
+    parseIsoTimestamp(secret.updated_at, `${label}.updated_at`);
+  }
+  const canonical = canonicalUnorderedRows(
+    artifact.value,
+    "final live Supabase secrets",
+  );
+  return { sha256: sha256(canonical), artifact };
 }
 
 function exactProbeTuple(capture, projectRef, label) {
@@ -594,7 +775,10 @@ function readRequestArtifacts(manifest, deploySha, deploymentId) {
     }
     let body;
     try {
-      body = JSON.parse(responseArtifact.text);
+      body = parseJsonWithoutDuplicateKeys(
+        responseArtifact.text,
+        `client-IP ${caseId} response`,
+      );
     } catch (error) {
       throw new Error(`client-IP ${caseId} response is not JSON: ${error.message}`);
     }
@@ -767,31 +951,60 @@ function decodeBase64Url(value, label) {
   return decoded;
 }
 
-function parseSignedReceipt(token, hmacKey) {
-  const key = Buffer.from(
-    requireString(hmacKey, "client-IP receipt HMAC key"),
-    "utf8",
-  );
-  if (key.length < 32) {
-    throw new Error("client-IP receipt HMAC key must be at least 32 bytes");
+function decodeBase64Der(value, label) {
+  requireString(value, label);
+  if (!/^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$/.test(value)) {
+    throw new Error(`${label} is not canonical DER base64`);
   }
+  const decoded = Buffer.from(value, "base64");
+  if (decoded.length === 0 || decoded.toString("base64") !== value) {
+    throw new Error(`${label} is not canonical DER base64`);
+  }
+  return decoded;
+}
+
+function parseSignedReceipt(token, publicKeySpkiDerBase64) {
   const parts = requireString(token, "signed client-IP deployment receipt").split(".");
   if (parts.length !== 2) {
     throw new Error("signed client-IP deployment receipt has an invalid format");
   }
   const [encodedPayload, encodedSignature] = parts;
   const supplied = decodeBase64Url(encodedSignature, "client-IP receipt signature");
-  const expected = crypto.createHmac("sha256", key).update(encodedPayload).digest();
+  if (supplied.length !== 64) {
+    throw new Error("client-IP deployment receipt signature is invalid");
+  }
+  let publicKey;
+  try {
+    const publicKeyDer = decodeBase64Der(
+      publicKeySpkiDerBase64,
+      "client-IP receipt Ed25519 public key",
+    );
+    publicKey = crypto.createPublicKey({
+      key: publicKeyDer,
+      format: "der",
+      type: "spki",
+    });
+    if (
+      !Buffer.from(
+        publicKey.export({ format: "der", type: "spki" }),
+      ).equals(publicKeyDer)
+    ) {
+      throw new Error("client-IP receipt public key is not canonical public-key DER");
+    }
+  } catch (error) {
+    throw new Error(`client-IP receipt public key is invalid: ${error.message}`);
+  }
   if (
-    supplied.length !== expected.length ||
-    !crypto.timingSafeEqual(supplied, expected)
+    publicKey.asymmetricKeyType !== "ed25519" ||
+    !crypto.verify(null, Buffer.from(encodedPayload, "utf8"), publicKey, supplied)
   ) {
     throw new Error("client-IP deployment receipt signature is invalid");
   }
   try {
     return requirePlainObject(
-      JSON.parse(
+      parseJsonWithoutDuplicateKeys(
         decodeBase64Url(encodedPayload, "client-IP receipt payload").toString("utf8"),
+        "client-IP receipt payload",
       ),
       "client-IP receipt payload",
     );
@@ -800,29 +1013,22 @@ function parseSignedReceipt(token, hmacKey) {
   }
 }
 
-export function signClientIpDeployReceipt(payload, hmacKey) {
-  const key = Buffer.from(
-    requireString(hmacKey, "client-IP receipt HMAC key"),
-    "utf8",
-  );
-  if (key.length < 32) {
-    throw new Error("client-IP receipt HMAC key must be at least 32 bytes");
-  }
-  const encodedPayload = Buffer.from(JSON.stringify(payload)).toString("base64url");
-  const signature = crypto.createHmac("sha256", key).update(encodedPayload)
-    .digest("base64url");
-  return `${encodedPayload}.${signature}`;
-}
-
-export function issueClientIpDeployReceipt({
+export function buildClientIpDeployReceiptPayload({
+  targetFunction,
+  dispatchNonce,
   deploySha,
   projectRef,
   extractorSource,
   probeTemplateSource,
   artifactPaths,
-  receiptHmacKey,
   now = new Date(),
 }) {
+  if (!PROTECTED_FUNCTIONS.has(targetFunction)) {
+    throw new Error("client-IP receipt issuer requires one exact protected function");
+  }
+  if (!DISPATCH_NONCE.test(dispatchNonce ?? "")) {
+    throw new Error("client-IP receipt issuer requires a 32-128 character dispatch nonce");
+  }
   if (!FULL_SHA.test(deploySha ?? "")) {
     throw new Error("client-IP receipt issuer requires the exact target SHA");
   }
@@ -1079,9 +1285,12 @@ export function issueClientIpDeployReceipt({
   }
 
   const payload = {
-    receipt_version: 2,
+    receipt_version: 3,
+    receipt_signature_scheme: "ed25519",
     project_ref: projectRef,
+    target_function: targetFunction,
     target_source_sha: deploySha,
+    dispatch_nonce: dispatchNonce,
     ci_trust_boundary: {
       integrity_basis: "authorized-human-review-and-exact-sha-verification",
       authorized_human_review_and_merge_required: true,
@@ -1182,18 +1391,7 @@ export function issueClientIpDeployReceipt({
       ephemeral_compute_destroyed: true,
     },
   };
-  const token = signClientIpDeployReceipt(payload, receiptHmacKey);
-  verifyClientIpDeployReceipt({
-    functionName: "handle-lead",
-    deploySha,
-    projectRef,
-    extractorSource,
-    probeTemplateSource,
-    receiptToken: token,
-    receiptHmacKey,
-    now,
-  });
-  return { payload, token };
+  return { payload };
 }
 
 function verifySignedPositiveCase(item, label, family, deploySha, deploymentId, outcome) {
@@ -1287,17 +1485,23 @@ function verifyNegativeAuth(result, label) {
 
 export function verifyClientIpDeployReceipt({
   functionName,
+  dispatchNonce,
   deploySha,
   projectRef,
   extractorSource,
   probeTemplateSource,
   receiptToken,
-  receiptHmacKey,
+  publicKeySpkiDerBase64,
+  finalFunctionsPath,
+  finalSecretsPath,
   now = new Date(),
 }) {
   if (!PROTECTED_FUNCTIONS.has(functionName)) return { required: false };
   if (!FULL_SHA.test(deploySha ?? "")) {
     throw new Error("client-IP receipt requires the exact 40-character deploy SHA");
+  }
+  if (!DISPATCH_NONCE.test(dispatchNonce ?? "")) {
+    throw new Error("client-IP receipt requires the exact dispatch nonce");
   }
   requireString(projectRef, "Supabase project ref");
   const templateViolations = clientIpProbeTemplateViolations(
@@ -1313,13 +1517,16 @@ export function verifyClientIpDeployReceipt({
     templateSource: probeTemplateSource,
     extractorSource: requireString(extractorSource, "client-IP extractor source"),
   });
-  const receipt = parseSignedReceipt(receiptToken, receiptHmacKey);
+  const receipt = parseSignedReceipt(receiptToken, publicKeySpkiDerBase64);
   assertExactKeys(
     receipt,
     [
       "receipt_version",
+      "receipt_signature_scheme",
       "project_ref",
+      "target_function",
       "target_source_sha",
+      "dispatch_nonce",
       "ci_trust_boundary",
       "source_binding",
       "operator_captured_ezbr_bundle_sha256",
@@ -1336,12 +1543,23 @@ export function verifyClientIpDeployReceipt({
     ],
     "client-IP receipt",
   );
-  if (receipt.receipt_version !== 2) throw new Error("unsupported client-IP receipt version");
+  if (
+    receipt.receipt_version !== 3 ||
+    receipt.receipt_signature_scheme !== "ed25519"
+  ) {
+    throw new Error("unsupported client-IP receipt version/signature scheme");
+  }
   if (receipt.project_ref !== projectRef) {
     throw new Error("client-IP receipt project does not match deploy project");
   }
+  if (receipt.target_function !== functionName) {
+    throw new Error("client-IP receipt is not bound to this protected function");
+  }
   if (receipt.target_source_sha !== deploySha) {
     throw new Error("client-IP receipt is not bound to the exact target source SHA");
+  }
+  if (receipt.dispatch_nonce !== dispatchNonce) {
+    throw new Error("client-IP receipt dispatch nonce does not match this run");
   }
 
   const trustBoundary = assertExactKeys(
@@ -1492,12 +1710,13 @@ export function verifyClientIpDeployReceipt({
   const nowMs = now.getTime();
   if (
     issuedAt > nowMs + MAX_CLOCK_SKEW_MS || expiresAt <= nowMs ||
+    expiresAt > nowMs + MAX_RECEIPT_LIFETIME_MS ||
     checkedAt > nowMs + MAX_CLOCK_SKEW_MS || nowMs - checkedAt > MAX_CANARY_AGE_MS
   ) {
     throw new Error("client-IP receipt or canary is stale or future-dated");
   }
   if (expiresAt <= issuedAt || expiresAt - issuedAt > MAX_RECEIPT_LIFETIME_MS) {
-    throw new Error("client-IP receipt lifetime must be positive and no more than one hour");
+    throw new Error("client-IP receipt lifetime must be positive and no more than 15 minutes");
   }
   if (checkedAt > issuedAt + MAX_CLOCK_SKEW_MS) {
     throw new Error("client-IP receipt was issued before its canary completed");
@@ -1595,6 +1814,20 @@ export function verifyClientIpDeployReceipt({
     metadata.ephemeral_compute_created_then_absent !== true
   ) {
     throw new Error("client-IP receipt lacks artifact-derived metadata restoration");
+  }
+  const finalFunctions = finalFunctionState(finalFunctionsPath);
+  const finalSecrets = finalSecretState(finalSecretsPath);
+  assertUniqueInputInodes([
+    { ...finalFunctions.artifact, label: "final live function metadata" },
+    { ...finalSecrets.artifact, label: "final live secret metadata" },
+  ]);
+  if (
+    finalFunctions.sha256 !== metadata.functions_post_sha256 ||
+    finalSecrets.sha256 !== metadata.secrets_post_sha256
+  ) {
+    throw new Error(
+      "final live Supabase function/secret metadata differs from signed postflight",
+    );
   }
 
   const mutation = assertExactKeys(
@@ -1708,6 +1941,8 @@ export function verifyClientIpDeployReceipt({
 
   return {
     required: true,
+    targetFunction: functionName,
+    dispatchNonce,
     extractorSha256: expectedArtifacts.extractorSha256,
     probeId: probe.id,
     probeVersion: probe.version,
@@ -1721,65 +1956,27 @@ const invokedAsScript = process.argv[1] &&
 
 if (invokedAsScript) {
   try {
+    if (process.argv.length !== 2) {
+      throw new Error("client-IP verifier accepts no command-line arguments");
+    }
     const extractorSource = fs.readFileSync(CLIENT_IP_EXTRACTOR_PATH, "utf8");
     const probeTemplateSource = fs.readFileSync(CLIENT_IP_PROBE_TEMPLATE_PATH, "utf8");
-    if (process.argv[2] === "--issue") {
-      const outputPath = requireString(process.argv[3], "receipt token output path");
-      const issued = issueClientIpDeployReceipt({
-        deploySha: process.env.DEPLOY_SHA ?? "",
-        projectRef: process.env.SUPABASE_PROJECT_REF ?? "",
-        extractorSource,
-        probeTemplateSource,
-        artifactPaths: {
-          functions_pre_path: process.env.CLIENT_IP_FUNCTIONS_PRE_PATH ?? "",
-          functions_canary_path: process.env.CLIENT_IP_FUNCTIONS_CANARY_PATH ?? "",
-          functions_delete_recheck_path:
-            process.env.CLIENT_IP_FUNCTIONS_DELETE_RECHECK_PATH ?? "",
-          functions_post_path: process.env.CLIENT_IP_FUNCTIONS_POST_PATH ?? "",
-          probe_ezbr_canary_path:
-            process.env.CLIENT_IP_PROBE_EZBR_CANARY_PATH ?? "",
-          probe_ezbr_delete_recheck_path:
-            process.env.CLIENT_IP_PROBE_EZBR_DELETE_RECHECK_PATH ?? "",
-          secrets_pre_path: process.env.CLIENT_IP_SECRETS_PRE_PATH ?? "",
-          secrets_canary_path:
-            process.env.CLIENT_IP_SECRETS_CANARY_PATH ?? "",
-          secrets_delete_recheck_path:
-            process.env.CLIENT_IP_SECRETS_DELETE_RECHECK_PATH ?? "",
-          secrets_post_path: process.env.CLIENT_IP_SECRETS_POST_PATH ?? "",
-          compute_pre_path: process.env.CLIENT_IP_COMPUTE_PRE_PATH ?? "",
-          compute_created_path:
-            process.env.CLIENT_IP_COMPUTE_CREATED_PATH ?? "",
-          compute_post_path: process.env.CLIENT_IP_COMPUTE_POST_PATH ?? "",
-          render_root: process.env.CLIENT_IP_RENDER_ROOT ?? "",
-          captured_source_root:
-            process.env.CLIENT_IP_CAPTURED_SOURCE_ROOT ?? "",
-          request_artifact_manifest_path:
-            process.env.CLIENT_IP_REQUEST_ARTIFACT_MANIFEST_PATH ?? "",
-          operator_attestation_path:
-            process.env.CLIENT_IP_OPERATOR_ATTESTATION_PATH ?? "",
-        },
-        receiptHmacKey: process.env.CLIENT_IP_DEPLOY_RECEIPT_HMAC_KEY ?? "",
-      });
-      fs.writeFileSync(outputPath, `${issued.token}\n`, {
-        mode: 0o600,
-        flag: "wx",
-      });
-      fs.chmodSync(outputPath, 0o600);
-      console.log("Validated artifact-derived client-IP receipt v2 written to a new mode-0600 file.");
-      process.exit(0);
-    }
     const result = verifyClientIpDeployReceipt({
       functionName: process.env.FUNCTION_NAME ?? "",
+      dispatchNonce: process.env.CLIENT_IP_DEPLOY_DISPATCH_NONCE ?? "",
       deploySha: process.env.DEPLOY_SHA ?? "",
       projectRef: process.env.SUPABASE_PROJECT_REF ?? "",
       extractorSource,
       probeTemplateSource,
       receiptToken: process.env.CLIENT_IP_DEPLOY_RECEIPT_TOKEN ?? "",
-      receiptHmacKey: process.env.CLIENT_IP_DEPLOY_RECEIPT_HMAC_KEY ?? "",
+      publicKeySpkiDerBase64:
+        process.env.CLIENT_IP_DEPLOY_RECEIPT_PUBLIC_KEY_SPKI_DER_BASE64 ?? "",
+      finalFunctionsPath: process.env.CLIENT_IP_FINAL_FUNCTIONS_PATH ?? "",
+      finalSecretsPath: process.env.CLIENT_IP_FINAL_SECRETS_PATH ?? "",
     });
     console.log(
       result.required
-        ? `Signed client-IP deployment evidence v2 passed (extractor ${result.extractorSha256}, probe ${result.probeId} v${result.probeVersion}, operator-captured ezbr ${result.operatorCapturedEzbrSha256}).`
+        ? `Ed25519 client-IP deployment receipt passed for ${result.targetFunction} (extractor ${result.extractorSha256}, probe ${result.probeId} v${result.probeVersion}).`
         : "Client-IP deployment evidence is not required for this function.",
     );
   } catch (error) {

@@ -150,33 +150,39 @@ function checkedShell(step) {
 
 const workflow = parseWorkflow(".github/workflows/deploy-edge-function.yml");
 const deploy = workflow.jobs.deploy;
+const admission = workflow.jobs.admission;
 assert.equal(deploy.environment.name, "Production – frame-restoration-utah");
+assert.equal(admission.environment.name, "Production – frame-restoration-utah");
+assert.equal(deploy.needs, "admission");
 assert.equal(workflow.permissions.actions, "read");
 assert.equal(deploy.if, undefined, "deploy job must not have a conditional bypass");
 assert.equal(deploy["continue-on-error"], undefined);
 assert.equal(workflow.on.workflow_dispatch.inputs.dashboard_deploy_receipt, undefined);
-for (const step of deploy.steps) {
+for (const step of [...admission.steps, ...deploy.steps]) {
   assert.equal(step.if, undefined, `${step.name ?? step.uses} must not be conditionally bypassed`);
   assert.equal(step["continue-on-error"], undefined, `${step.name ?? step.uses} must fail closed`);
 }
-const setupCli = deploy.steps.find((step) => step.uses === "supabase/setup-cli@v1");
+const setupCli = deploy.steps.find((step) =>
+  step.uses ===
+    "supabase/setup-cli@ab058987d8d6c725971f6cf9d0b5c98467e30bd1"
+);
 assert.equal(setupCli.with.version, "2.113.0");
 
-const stepIndex = (name) => deploy.steps.findIndex((step) => step.name === name);
+const stepIndex = (name) => admission.steps.findIndex((step) => step.name === name);
 const admissionAt = stepIndex("Require the exact current main tip and green compliance");
 const liveStateAt = stepIndex("Read live dashboard migration and secret state");
 const receiptAt = stepIndex("Verify signed dashboard deployment evidence");
 const deployAt = deploy.steps.findIndex((step) => step.name?.startsWith("Deploy "));
-assert(admissionAt > 0 && liveStateAt > admissionAt && receiptAt > liveStateAt && deployAt > receiptAt);
+assert(admissionAt > 0 && liveStateAt > admissionAt && receiptAt > liveStateAt && deployAt > 0);
 
-const admission = checkedShell(deploy.steps[admissionAt]);
-assert.match(admission, /\[\[ "\$GITHUB_REF" == "refs\/heads\/main" \]\]/);
-assert.match(admission, /git fetch --no-tags origin refs\/heads\/main:refs\/remotes\/origin\/main/);
-assert.match(admission, /actions\/workflows\/compliance-gate\.yml\/runs/);
-assert.match(admission, /\.head_sha == \$sha[\s\S]*\.event == "push"[\s\S]*\.conclusion == "success"/);
-assert.match(admission, /Dashboard session revocation \+ credential security \(blocking\)/);
+const admissionShell = checkedShell(admission.steps[admissionAt]);
+assert.match(admissionShell, /\[\[ "\$GITHUB_REF" == "refs\/heads\/main" \]\]/);
+assert.match(admissionShell, /git fetch --no-tags origin refs\/heads\/main:refs\/remotes\/origin\/main/);
+assert.match(admissionShell, /actions\/workflows\/compliance-gate\.yml\/runs/);
+assert.match(admissionShell, /\.head_sha == \$sha[\s\S]*\.event == "push"[\s\S]*\.conclusion == "success"/);
+assert.match(admissionShell, /Dashboard session revocation \+ credential security \(blocking\)/);
 
-const liveState = checkedShell(deploy.steps[liveStateAt]);
+const liveState = checkedShell(admission.steps[liveStateAt]);
 assert.match(liveState, /database\/query\/read-only/);
 assert.match(liveState, /"read_only":true/);
 assert.match(liveState, /User-Agent: SupabaseCLI\/2\.113\.0/);
@@ -186,7 +192,7 @@ assert.match(liveState, /plaintext_pin_constraint_present/);
 assert.match(liveState, /supabase secrets list --project-ref "\$SUPABASE_PROJECT_REF" --output json/);
 for (const version of REQUIRED_DASHBOARD_MIGRATIONS) assert.match(liveState, new RegExp(`'${version}'`));
 
-const receiptStep = deploy.steps[receiptAt];
+const receiptStep = admission.steps[receiptAt];
 assert.equal(receiptStep.env.DASHBOARD_DEPLOY_RECEIPT_TOKEN, "${{ secrets.DASHBOARD_DEPLOY_RECEIPT_TOKEN }}");
 assert.equal(receiptStep.env.DASHBOARD_DEPLOY_RECEIPT_HMAC_KEY, "${{ secrets.DASHBOARD_DEPLOY_RECEIPT_HMAC_KEY }}");
 assert.equal(checkedShell(receiptStep).trim(), "node scripts/verify-dashboard-deploy-receipt.mjs");

