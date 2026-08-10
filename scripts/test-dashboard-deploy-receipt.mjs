@@ -160,7 +160,7 @@ for (const step of deploy.steps) {
   assert.equal(step["continue-on-error"], undefined, `${step.name ?? step.uses} must fail closed`);
 }
 const setupCli = deploy.steps.find((step) => step.uses === "supabase/setup-cli@v1");
-assert.equal(setupCli.with.version, "2.112.0");
+assert.equal(setupCli.with.version, "2.113.0");
 
 const stepIndex = (name) => deploy.steps.findIndex((step) => step.name === name);
 const admissionAt = stepIndex("Require the exact current main tip and green compliance");
@@ -179,7 +179,7 @@ assert.match(admission, /Dashboard session revocation \+ credential security \(b
 const liveState = checkedShell(deploy.steps[liveStateAt]);
 assert.match(liveState, /database\/query\/read-only/);
 assert.match(liveState, /"read_only":true/);
-assert.match(liveState, /User-Agent: SupabaseCLI\/2\.112\.0/);
+assert.match(liveState, /User-Agent: SupabaseCLI\/2\.113\.0/);
 assert.match(liveState, /report_access_pins_all_null/);
 assert.match(liveState, /report_access_plaintext_pin_forbidden_check/);
 assert.match(liveState, /plaintext_pin_constraint_present/);

@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
+<link rel="canonical" href="https://www.framerestorationutah.com/leads">
 <title>Frame Restoration Utah — Leads CRM</title>
 <style>
 :root{--bg:#0d1117;--card:#161b22;--border:#30363d;--text:#e6edf3;--muted:#8b949e;--gold:#c8a951;--green:#3fb950;--blue:#58a6ff;--purple:#bc8cff;--red:#f85149;--orange:#d29922;--card-hi:#1c232c}
@@ -187,10 +188,10 @@ footer{text-align:center;padding:24px;color:var(--muted);font-size:.78rem;border
 </head>
 <body>
 
-<div id="loginOverlay">
+<div id="loginOverlay" role="dialog" aria-modal="true" aria-labelledby="loginHeading">
   <div class="login-box">
     <div class="login-lock">🔒</div>
-    <h1>Frame Restoration — Leads</h1>
+    <h1 id="loginHeading">Frame Restoration — Leads</h1>
     <div class="sub">Internal CRM · PIN required</div>
     <form id="loginForm" onsubmit="return doLogin(event)">
       <input type="password" id="pinInput" placeholder="Enter PIN" autocomplete="off" autofocus>
@@ -200,7 +201,7 @@ footer{text-align:center;padding:24px;color:var(--muted);font-size:.78rem;border
   </div>
 </div>
 
-<div id="reportWrap">
+<div id="reportWrap" inert aria-hidden="true">
   <div class="hdr">
     <h1>Frame Restoration<span class="sep">·</span>Leads</h1>
     <div class="meta">
@@ -276,7 +277,7 @@ footer{text-align:center;padding:24px;color:var(--muted);font-size:.78rem;border
 </div>
 
 <div class="backdrop" id="backdrop"></div>
-<div class="panel" id="panel">
+<div class="panel" id="panel" inert aria-hidden="true">
   <button class="panel-close" id="panel-close">×</button>
   <h2 id="p-name">—</h2>
   <div class="pmeta" id="p-meta">—</div>
@@ -348,7 +349,7 @@ footer{text-align:center;padding:24px;color:var(--muted);font-size:.78rem;border
 </div>
 
 <!-- Add Lead panel -->
-<div class="panel" id="addPanel" style="display:none">
+<div class="panel" id="addPanel" style="display:none" inert aria-hidden="true">
   <button class="panel-close" onclick="closeAddLead()">×</button>
   <h2 style="color:var(--gold)">+ Add Lead</h2>
   <div class="pmeta">Manual entry · won contracts, walk-ins, phone calls — anything that didn't come through the website form</div>
@@ -523,6 +524,37 @@ var sortDir=localStorage.getItem("frame.leads.sort.dir")||"desc";
 	  leads=d&&d.leads?d.leads:[];
 	  syncSchemaBoundControls();
 	}
+	function setRegionInteractive(element, interactive){
+	  if(interactive){
+	    element.removeAttribute("inert");
+	    element.removeAttribute("aria-hidden");
+	  }else{
+	    element.setAttribute("inert","");
+	    element.setAttribute("aria-hidden","true");
+	  }
+	}
+	function setLoginVisible(visible){
+	  var overlay=document.getElementById("loginOverlay"),report=document.getElementById("reportWrap");
+	  overlay.style.display=visible?"flex":"none";
+	  report.style.display=visible?"none":"block";
+	  setRegionInteractive(overlay,visible);
+	  setRegionInteractive(report,!visible);
+	}
+	function setPanelInteractive(panel,interactive){
+	  setRegionInteractive(panel,interactive);
+	  panel.classList.toggle("open",interactive);
+	}
+	function trapLoginFocus(e){
+	  if(e.key!=="Tab")return;
+	  var overlay=document.getElementById("loginOverlay");
+	  if(getComputedStyle(overlay).display==="none")return;
+	  var controls=Array.from(overlay.querySelectorAll('input:not([disabled]),button:not([disabled]),a[href],[tabindex]:not([tabindex="-1"])'));
+	  if(!controls.length)return;
+	  var first=controls[0],last=controls[controls.length-1],active=document.activeElement;
+	  if(e.shiftKey&&(active===first||!overlay.contains(active))){e.preventDefault();last.focus()}
+	  else if(!e.shiftKey&&(active===last||!overlay.contains(active))){e.preventDefault();first.focus()}
+	}
+	document.getElementById("loginOverlay").addEventListener("keydown",trapLoginFocus);
 
 function doLogin(e){
   e.preventDefault();
@@ -548,8 +580,7 @@ function doLogin(e){
   return false;
 }
 function showReport(){
-  document.getElementById("loginOverlay").style.display="none";
-  document.getElementById("reportWrap").style.display="block";
+  setLoginVisible(false);
   if(CUR_USER){
     document.getElementById("userName").textContent=CUR_USER.name;
     document.getElementById("userRole").textContent=CUR_USER.role;
@@ -557,8 +588,10 @@ function showReport(){
 }
 function doLogout(){
 	  sessionStorage.removeItem(SESSION_STORAGE_KEY);SESSION_TOKEN="";CUR_USER=null;leads=[];selectedId=null;growthStates={};growthStateLoaded=false;growthStorageReady=false;growthActionIndex={};
-  document.getElementById("reportWrap").style.display="none";
-  document.getElementById("loginOverlay").style.display="flex";
+  setPanelInteractive(document.getElementById("panel"),false);
+  var addPanel=document.getElementById("addPanel");setPanelInteractive(addPanel,false);addPanel.style.display="none";
+  document.getElementById("backdrop").classList.remove("show");
+  setLoginVisible(true);
   document.getElementById("pinInput").value="";
   document.getElementById("loginErr").textContent="";
   document.getElementById("pinInput").focus();
@@ -598,12 +631,12 @@ function openAddLead(){
   panel.style.display="block";
   // Force a reflow so the transition fires
   void panel.offsetWidth;
-  panel.classList.add("open");
+  setPanelInteractive(panel,true);
   setTimeout(function(){document.getElementById("add-name").focus()},150);
 }
 function closeAddLead(){
   var panel=document.getElementById("addPanel");
-  panel.classList.remove("open");
+  setPanelInteractive(panel,false);
   document.getElementById("backdrop").classList.remove("show");
   setTimeout(function(){panel.style.display="none"},300);
 }
@@ -1031,7 +1064,7 @@ function openPanel(id){
   togglePipeline(statusOrNew(lead.status));
   renderReviewStatus(lead);
 
-  document.getElementById("panel").classList.add("open");
+  setPanelInteractive(document.getElementById("panel"),true);
   document.getElementById("backdrop").classList.add("show");
   render();
 }
@@ -1054,7 +1087,7 @@ function renderReviewStatus(lead){
     el.textContent=d>0?("Review request scheduled in "+d+" day(s)."):"Review request should fire on next daily cron tick.";
   }
 }
-function closePanel(){selectedId=null;document.getElementById("panel").classList.remove("open");document.getElementById("backdrop").classList.remove("show");render()}
+function closePanel(){selectedId=null;setPanelInteractive(document.getElementById("panel"),false);document.getElementById("backdrop").classList.remove("show");render()}
 document.getElementById("panel-close").addEventListener("click",closePanel);
 document.getElementById("backdrop").addEventListener("click",function(){
   if(document.getElementById("addPanel").classList.contains("open")) closeAddLead();

@@ -311,7 +311,9 @@ Deno.test("migration runner is release-bound, isolated, and catalog-gated", asyn
     const contract of [
       "RELEASE_SHA",
       "git merge-base --is-ancestor",
-      "Supabase CLI 2.112.0 is required",
+      "Supabase CLI 2.113.0 is required",
+      "SUPABASE_NO_KEYRING=1",
+      "pooler-url",
       "mktemp -d",
       'supabase init --workdir "$UTAH_MIGRATION_WORKDIR"',
       "git archive --format=tar",

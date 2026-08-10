@@ -35,6 +35,27 @@ function resolveRequestPath(rawUrl) {
   return absolute;
 }
 
+async function requireOneAdditionalPost(posts, label, submit) {
+  const baseline = posts.length;
+  await submit();
+  const deadline = Date.now() + 5_000;
+  while (posts.length === baseline && Date.now() < deadline) {
+    await new Promise((resolveWait) => setTimeout(resolveWait, 25));
+  }
+  assert.equal(
+    posts.length,
+    baseline + 1,
+    `${label} emitted ${posts.length - baseline} new lead POSTs; expected 1`,
+  );
+  await new Promise((resolveWait) => setTimeout(resolveWait, 500));
+  assert.equal(
+    posts.length,
+    baseline + 1,
+    `${label} emitted a delayed duplicate lead POST`,
+  );
+  return baseline;
+}
+
 const server = createServer((request, response) => {
   const path = resolveRequestPath(request.url || "/");
   if (!path || !existsSync(path) || !statSync(path).isFile()) {
@@ -118,22 +139,25 @@ try {
     for (const [name, value] of Object.entries(fixture.fields)) {
       await form.locator(`[name="${name}"]`).fill(value);
     }
-    await form.locator('button[type="submit"]').click();
-    await page.waitForTimeout(300);
+    const firstPostIndex = await requireOneAdditionalPost(
+      posts,
+      `${fixture.id} first submit`,
+      () => form.locator('button[type="submit"]').click(),
+    );
+    assert.equal(posts[firstPostIndex].method, "POST", `${fixture.id} must POST`);
+    assert.equal(posts[firstPostIndex].body.source_page, "/", `${fixture.id} must report its source page`);
+    assert.equal(posts[firstPostIndex].body.company_website, "", `${fixture.id} must preserve the blank honeypot`);
+    assert.equal(posts[firstPostIndex].body.sms_consent, false, `${fixture.id} must preserve optional SMS consent`);
+    assert.match(posts[firstPostIndex].body.submission_key, /^[0-9a-f-]{36}$/iu, `${fixture.id} must send an idempotency key`);
 
-    assert.equal(posts.length, 1, `${fixture.id} emitted ${posts.length} lead POSTs for one submit`);
-    assert.equal(posts[0].method, "POST", `${fixture.id} must POST`);
-    assert.equal(posts[0].body.source_page, "/", `${fixture.id} must report its source page`);
-    assert.equal(posts[0].body.company_website, "", `${fixture.id} must preserve the blank honeypot`);
-    assert.equal(posts[0].body.sms_consent, false, `${fixture.id} must preserve optional SMS consent`);
-    assert.match(posts[0].body.submission_key, /^[0-9a-f-]{36}$/iu, `${fixture.id} must send an idempotency key`);
-
-    await form.locator('button[type="submit"]').click();
-    await page.waitForTimeout(300);
-    assert.equal(posts.length, 2, `${fixture.id} retry must emit one additional POST`);
+    const retryPostIndex = await requireOneAdditionalPost(
+      posts,
+      `${fixture.id} retry`,
+      () => form.locator('button[type="submit"]').click(),
+    );
     assert.equal(
-      posts[1].body.submission_key,
-      posts[0].body.submission_key,
+      posts[retryPostIndex].body.submission_key,
+      posts[firstPostIndex].body.submission_key,
       `${fixture.id} must retain its idempotency key across an ambiguous retry`,
     );
     await page.close();
@@ -174,18 +198,19 @@ try {
     for (const [name, value] of Object.entries(fixture.fields)) {
       await form.locator(`[name="${name}"]`).fill(value);
     }
-    await form.locator('button[type="submit"]').click();
-    await page.waitForTimeout(100);
-
-    assert.equal(posts.length, 1, `${fixture.id} no-script fallback must emit one request`);
-    assert.equal(posts[0].method, "POST", `${fixture.id} no-script fallback must POST`);
-    assert.equal(posts[0].url.search, "", `${fixture.id} must not put lead PII in the URL`);
+    const fallbackPostIndex = await requireOneAdditionalPost(
+      posts,
+      `${fixture.id} no-script fallback`,
+      () => form.locator('button[type="submit"]').click(),
+    );
+    assert.equal(posts[fallbackPostIndex].method, "POST", `${fixture.id} no-script fallback must POST`);
+    assert.equal(posts[fallbackPostIndex].url.search, "", `${fixture.id} must not put lead PII in the URL`);
     assert.match(
-      posts[0].contentType,
+      posts[fallbackPostIndex].contentType,
       /^application\/x-www-form-urlencoded/iu,
       `${fixture.id} fallback encoding changed`,
     );
-    const payload = new URLSearchParams(posts[0].body);
+    const payload = new URLSearchParams(posts[fallbackPostIndex].body);
     assert.equal(payload.get("source_page"), "/", `${fixture.id} fallback source is missing`);
     assert.equal(payload.get("phone"), "4355550100", `${fixture.id} fallback body lost the phone`);
     assert.equal(payload.get("company_website"), "", `${fixture.id} fallback body lost the honeypot`);
