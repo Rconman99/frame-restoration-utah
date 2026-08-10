@@ -6,8 +6,9 @@ name: Deploy UT Supabase Edge Function
 # workflow_dispatch only — never runs on push.
 #
 # Production environment secrets required: SUPABASE_ACCESS_TOKEN, dashboard
-# receipt token/key, owner-notification receipt token/key, client-IP receipt
-# token/key, LEAD_NOTIFICATION_WORKER_TOKEN, and RESEND_WEBHOOK_SECRET. Receipt
+# receipt token/key, owner-notification receipt HMAC key, client-IP receipt
+# HMAC key, LEAD_NOTIFICATION_WORKER_TOKEN, and RESEND_WEBHOOK_SECRET. Receipt
+# tokens are minted inside this workflow from fresh live evidence; receipt keys
 # and canary secrets are never workflow inputs or command-line arguments.
 on:
   workflow_dispatch:
@@ -250,12 +251,34 @@ jobs:
           mv "$FRESH_MIGRATIONS" "$NOTIFICATION_MIGRATION_HISTORY_PATH"
           mv "$FRESH_SECRETS" "$NOTIFICATION_SECRETS_METADATA_PATH"
           mv "$FRESH_FUNCTIONS" "$NOTIFICATION_FUNCTIONS_METADATA_PATH"
+      - name: Mint signed live owner-notification deployment evidence
+        env:
+          FUNCTION_NAME: ${{ inputs.function }}
+          DEPLOY_SHA: ${{ github.sha }}
+          SUPABASE_PROJECT_REF: hdcflshhomzildwqlmwh
+          LEAD_NOTIFICATION_DEPLOY_RECEIPT_HMAC_KEY: ${{ secrets.LEAD_NOTIFICATION_DEPLOY_RECEIPT_HMAC_KEY }}
+        run: |
+          set -euo pipefail
+          if [[ "$FUNCTION_NAME" != "handle-lead" && "$FUNCTION_NAME" != "resend-webhook" && "$FUNCTION_NAME" != "lead-notification-worker" ]]; then
+            echo "Owner-notification deployment evidence is not required for this function."
+            exit 0
+          fi
+          RECEIPT_PATH="$RUNNER_TEMP/utah-owner-notification-deploy-receipt.token"
+          node scripts/verify-owner-notification-deploy-receipt.mjs --issue "$RECEIPT_PATH"
+          RECEIPT_TOKEN="$(tr -d '\r\n' < "$RECEIPT_PATH")"
+          [[ -n "$RECEIPT_TOKEN" ]] || {
+            echo "::error::owner-notification receipt issuer produced an empty token"
+            exit 1
+          }
+          echo "::add-mask::$RECEIPT_TOKEN"
+          printf 'LEAD_NOTIFICATION_DEPLOY_RECEIPT_TOKEN=%s\n' "$RECEIPT_TOKEN" >> "$GITHUB_ENV"
+          rm -f "$RECEIPT_PATH"
       - name: Verify signed live owner-notification deployment evidence
         env:
           FUNCTION_NAME: ${{ inputs.function }}
           DEPLOY_SHA: ${{ github.sha }}
           SUPABASE_PROJECT_REF: hdcflshhomzildwqlmwh
-          LEAD_NOTIFICATION_DEPLOY_RECEIPT_TOKEN: ${{ secrets.LEAD_NOTIFICATION_DEPLOY_RECEIPT_TOKEN }}
+          LEAD_NOTIFICATION_DEPLOY_RECEIPT_TOKEN: ${{ env.LEAD_NOTIFICATION_DEPLOY_RECEIPT_TOKEN }}
           LEAD_NOTIFICATION_DEPLOY_RECEIPT_HMAC_KEY: ${{ secrets.LEAD_NOTIFICATION_DEPLOY_RECEIPT_HMAC_KEY }}
         run: node scripts/verify-owner-notification-deploy-receipt.mjs
       - name: Deploy ${{ inputs.function }} to UT project

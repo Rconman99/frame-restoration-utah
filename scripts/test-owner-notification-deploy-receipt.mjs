@@ -566,13 +566,16 @@ const canaryAt = index("Run no-send owner-notification deployment canaries");
 const refreshAt = index(
   "Refresh live owner-notification metadata after canaries",
 );
+const mintAt = index(
+  "Mint signed live owner-notification deployment evidence",
+);
 const receiptAt = index(
   "Verify signed live owner-notification deployment evidence",
 );
 const deployAt = steps.findIndex((step) => step.name?.startsWith("Deploy "));
 assert(
   liveAt > 0 && canaryAt > liveAt && refreshAt > canaryAt &&
-    receiptAt > refreshAt &&
+    mintAt > refreshAt && receiptAt > mintAt &&
     deployAt > receiptAt,
 );
 const liveState = checkedShell(steps[liveAt]);
@@ -600,9 +603,27 @@ assert.match(refreshedState, /database\/query\/read-only/);
 assert.match(refreshedState, /supabase secrets list/);
 assert.match(refreshedState, /supabase functions list/);
 assert.match(refreshedState, /mv .*NOTIFICATION_FUNCTIONS_METADATA_PATH/);
+const mintState = checkedShell(steps[mintAt]);
+assert.match(
+  mintState,
+  /verify-owner-notification-deploy-receipt\.mjs --issue/,
+);
+assert.match(mintState, /::add-mask::/);
+assert.match(mintState, /GITHUB_ENV/);
+assert.equal(steps[mintAt].env.FUNCTION_NAME, "${{ inputs.function }}");
+assert.equal(steps[mintAt].env.DEPLOY_SHA, "${{ github.sha }}");
+assert.equal(steps[mintAt].env.SUPABASE_PROJECT_REF, PROJECT_REF);
+assert.equal(
+  steps[mintAt].env.LEAD_NOTIFICATION_DEPLOY_RECEIPT_HMAC_KEY,
+  "${{ secrets.LEAD_NOTIFICATION_DEPLOY_RECEIPT_HMAC_KEY }}",
+);
 assert.equal(
   checkedShell(steps[receiptAt]).trim(),
   "node scripts/verify-owner-notification-deploy-receipt.mjs",
+);
+assert.equal(
+  steps[receiptAt].env.LEAD_NOTIFICATION_DEPLOY_RECEIPT_TOKEN,
+  "${{ env.LEAD_NOTIFICATION_DEPLOY_RECEIPT_TOKEN }}",
 );
 
 const recoveryWorkflow = parseWorkflow(
