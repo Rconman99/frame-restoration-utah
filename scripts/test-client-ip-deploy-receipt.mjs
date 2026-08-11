@@ -91,7 +91,11 @@ const OTHER_PUBLIC_KEY_SPKI_DER_BASE64 = crypto.generateKeyPairSync("ed25519")
   .publicKey.export({ format: "der", type: "spki" }).toString("base64");
 const NOW = new Date();
 const EZBR_BYTES = Buffer.from("fixture-ezbr-bundle-bytes\0binary\xff", "latin1");
-const EZBR_SHA256 = crypto.createHash("sha256").update(EZBR_BYTES).digest("hex");
+const MANAGEMENT_API_BODY_SHA256 = crypto.createHash("sha256")
+  .update(EZBR_BYTES).digest("hex");
+// Supabase's function row hashes the compressed upload representation while
+// the Management API body endpoint returns a repacked ESZIP representation.
+const PROVIDER_EZBR_SHA256 = "e".repeat(64);
 const IPV4_FINGERPRINT = "1".repeat(64);
 const IPV6_FINGERPRINT = "2".repeat(64);
 const artifacts = expectedClientIpProbeArtifacts({
@@ -212,7 +216,7 @@ function buildRawArtifacts(tempRoot, now = NOW) {
     version: PROBE_VERSION,
     status: "ACTIVE",
     verify_jwt: false,
-    ezbr_sha256: EZBR_SHA256,
+    ezbr_sha256: PROVIDER_EZBR_SHA256,
   };
   const canaryFunctions = [...baseFunctions, probe];
   const secrets = [
@@ -236,11 +240,11 @@ function buildRawArtifacts(tempRoot, now = NOW) {
     ),
     functionsCanary: writeJson0600(
       path.join(tempRoot, "functions-canary.json"),
-      functionCapture(at(-700), canaryFunctions, EZBR_SHA256),
+      functionCapture(at(-700), canaryFunctions, MANAGEMENT_API_BODY_SHA256),
     ),
     functionsRecheck: writeJson0600(
       path.join(tempRoot, "functions-recheck.json"),
-      functionCapture(at(-500), canaryFunctions, EZBR_SHA256),
+      functionCapture(at(-500), canaryFunctions, MANAGEMENT_API_BODY_SHA256),
     ),
     functionsPost: writeJson0600(
       path.join(tempRoot, "functions-post.json"),
@@ -1243,6 +1247,18 @@ try {
   assert.equal(issued.payload.dispatch_nonce, DISPATCH_NONCE);
   assert.equal(issued.payload.probe_function.status, "ACTIVE");
   assert.equal(
+    issued.payload.probe_function.ezbr_sha256,
+    PROVIDER_EZBR_SHA256,
+  );
+  assert.equal(
+    issued.payload.probe_function.management_api_body_sha256,
+    MANAGEMENT_API_BODY_SHA256,
+  );
+  assert.notEqual(
+    issued.payload.probe_function.ezbr_sha256,
+    issued.payload.probe_function.management_api_body_sha256,
+  );
+  assert.equal(
     issued.payload.source_binding.artifact_provenance_scope,
     "signer-attested-operator-capture",
   );
@@ -1274,7 +1290,7 @@ try {
     probeId: PROBE_ID,
     probeVersion: PROBE_VERSION,
     sourceManifestSha256: artifacts.sourceManifestSha256,
-    operatorCapturedEzbrSha256: EZBR_SHA256,
+    operatorCapturedEzbrSha256: MANAGEMENT_API_BODY_SHA256,
   });
   assert.throws(
     () => verifyPayload(issued.payload, NOW, { functionName: "lead-crm" }),
@@ -1356,6 +1372,8 @@ try {
     ["source origin overclaim", (p) => p.source_binding.platform_origin_independently_verified = true, /provenance scope/],
     ["captured source drift", (p) => p.source_binding.operator_captured_source_manifest_sha256 = "d".repeat(64), /differs from exact source/],
     ["synthetic status", (p) => p.probe_function.status = "ACTIVE_AT_CANARY", /actual ACTIVE/],
+    ["provider bundle digest", (p) => p.probe_function.ezbr_sha256 = "d".repeat(64), /management tuple differs/],
+    ["Management API body digest", (p) => p.probe_function.management_api_body_sha256 = "d".repeat(64), /body\/provider-management tuple differs/],
     ["tuple digest", (p) => p.probe_function.management_api_tuple_sha256 = "d".repeat(64), /management tuple differs/],
     ["case family", (p) => p.requests.matrix.ipv4.baseline.observed_family = "ipv6", /family\/runtime binding/],
     ["case status", (p) => p.requests.matrix.ipv6.forged_x_real_ip.status = 204, /family\/runtime binding/],
@@ -1383,10 +1401,10 @@ try {
   withJsonMutation(raw.files.functionsCanary, (value) => {
     value.functions.find((row) => row.slug === "client-ip-probe").ezbr_sha256 =
       "d".repeat(64);
-  }, () => assert.throws(() => issue(raw), /row ezbr digest differs/));
+  }, () => assert.throws(() => issue(raw), /delete recheck does not match/));
   const originalEzbr = fs.readFileSync(raw.files.ezbrRecheck);
   write0600(raw.files.ezbrRecheck, Buffer.concat([originalEzbr, Buffer.from([0])]));
-  assert.throws(() => issue(raw), /ezbr bundle bytes differ/);
+  assert.throws(() => issue(raw), /Management API body bytes differ/);
   write0600(raw.files.ezbrRecheck, originalEzbr);
   withJsonMutation(raw.files.functionsCanary, (value) => {
     value.functions.push({ ...value.functions[0] });
@@ -1400,9 +1418,9 @@ try {
       id: PROBE_ID,
       version: PROBE_VERSION,
       status: "ACTIVE",
-      ezbr_sha256: EZBR_SHA256,
+      ezbr_sha256: PROVIDER_EZBR_SHA256,
     });
-    value.probe_ezbr_sha256 = EZBR_SHA256;
+    value.probe_ezbr_sha256 = MANAGEMENT_API_BODY_SHA256;
   }, () => assert.throws(() => issue(raw), /absent from preflight and postflight/));
   withJsonMutation(raw.files.secretsCanary, (value) => {
     value.secrets[0].value = "5".repeat(64);

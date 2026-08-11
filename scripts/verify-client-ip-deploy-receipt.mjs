@@ -478,23 +478,25 @@ function exactProbeTuple(capture, projectRef, label) {
   ) {
     throw new Error(`${label} lacks the actual ACTIVE probe tuple`);
   }
-  const ezbrSha256 = requireDigest(
-    capture.probeEzbrSha256,
-    `${label} operator-captured ezbr SHA-256`,
+  const providerEzbrSha256 = requireDigest(
+    probe.ezbr_sha256,
+    `${label} provider ezbr SHA-256`,
   );
-  if (probe.ezbr_sha256 !== ezbrSha256) {
-    throw new Error(`${label} probe row ezbr digest differs from captured bundle`);
-  }
+  const managementApiBodySha256 = requireDigest(
+    capture.probeEzbrSha256,
+    `${label} operator-captured Management API body SHA-256`,
+  );
   const tuple = {
     project_ref: projectRef,
     slug: probe.slug,
     id: probe.id,
     version: probe.version,
     status: probe.status,
-    ezbr_sha256: ezbrSha256,
+    ezbr_sha256: providerEzbrSha256,
   };
   return {
     ...tuple,
+    managementApiBodySha256,
     tupleSha256: sha256(canonicalJson(tuple, `${label} management API tuple`)),
   };
 }
@@ -1114,7 +1116,9 @@ export function buildClientIpDeployReceiptPayload({
     ezbrRecheckSha256 !== functionsRecheck.probeEzbrSha256 ||
     ezbrCanarySha256 !== ezbrRecheckSha256
   ) {
-    throw new Error("captured ezbr bundle bytes differ from function metadata/recheck");
+    throw new Error(
+      "captured Management API body bytes differ from capture metadata/recheck",
+    );
   }
   const secretsPre = secretCapture(
     paths.secrets_pre_path,
@@ -1309,7 +1313,8 @@ export function buildClientIpDeployReceiptPayload({
       render_and_capture_roots_disjoint: rootBinding.rootsDisjoint,
       artifact_files_inode_disjoint: rootBinding.artifactFilesInodeDisjoint,
     },
-    operator_captured_ezbr_bundle_sha256: canaryTuple.ezbr_sha256,
+    operator_captured_ezbr_bundle_sha256:
+      canaryTuple.managementApiBodySha256,
     probe_function: {
       slug: canaryTuple.slug,
       id: canaryTuple.id,
@@ -1317,7 +1322,8 @@ export function buildClientIpDeployReceiptPayload({
       status: canaryTuple.status,
       deno_deployment_id: deploymentId,
       ezbr_sha256: canaryTuple.ezbr_sha256,
-      ezbr_bytes_hashed_by_issuer: true,
+      management_api_body_sha256: canaryTuple.managementApiBodySha256,
+      management_api_body_bytes_hashed_by_issuer: true,
       management_api_tuple_sha256: canaryTuple.tupleSha256,
     },
     auth: {
@@ -1374,8 +1380,9 @@ export function buildClientIpDeployReceiptPayload({
         version: recheckTuple.version,
         status: recheckTuple.status,
         deno_deployment_id: deploymentId,
-        operator_captured_ezbr_bundle_sha256: recheckTuple.ezbr_sha256,
-        ezbr_bytes_hashed_by_issuer: true,
+        operator_captured_ezbr_bundle_sha256:
+          recheckTuple.managementApiBodySha256,
+        management_api_body_bytes_hashed_by_issuer: true,
         management_api_tuple_sha256: recheckTuple.tupleSha256,
       },
     },
@@ -1635,7 +1642,8 @@ export function verifyClientIpDeployReceipt({
       "status",
       "deno_deployment_id",
       "ezbr_sha256",
-      "ezbr_bytes_hashed_by_issuer",
+      "management_api_body_sha256",
+      "management_api_body_bytes_hashed_by_issuer",
       "management_api_tuple_sha256",
     ],
     "client-IP probe function",
@@ -1653,6 +1661,10 @@ export function verifyClientIpDeployReceipt({
   }
   requireDigest(probe.ezbr_sha256, "client-IP probe ezbr SHA-256");
   requireDigest(
+    probe.management_api_body_sha256,
+    "client-IP Management API body SHA-256",
+  );
+  requireDigest(
     probe.management_api_tuple_sha256,
     "client-IP management API tuple SHA-256",
   );
@@ -1665,12 +1677,15 @@ export function verifyClientIpDeployReceipt({
     ezbr_sha256: probe.ezbr_sha256,
   };
   if (
-    probe.ezbr_sha256 !== receipt.operator_captured_ezbr_bundle_sha256 ||
-    probe.ezbr_bytes_hashed_by_issuer !== true ||
+    probe.management_api_body_sha256 !==
+      receipt.operator_captured_ezbr_bundle_sha256 ||
+    probe.management_api_body_bytes_hashed_by_issuer !== true ||
     probe.management_api_tuple_sha256 !==
       sha256(canonicalJson(tuple, "receipt management API tuple"))
   ) {
-    throw new Error("client-IP receipt probe bundle/management tuple differs");
+    throw new Error(
+      "client-IP receipt probe body/provider-management tuple differs",
+    );
   }
 
   const auth = assertExactKeys(
@@ -1890,7 +1905,7 @@ export function verifyClientIpDeployReceipt({
       "status",
       "deno_deployment_id",
       "operator_captured_ezbr_bundle_sha256",
-      "ezbr_bytes_hashed_by_issuer",
+      "management_api_body_bytes_hashed_by_issuer",
       "management_api_tuple_sha256",
     ],
     "client-IP delete tuple recheck",
@@ -1899,8 +1914,9 @@ export function verifyClientIpDeployReceipt({
     deleteRecheck.slug !== probe.slug || deleteRecheck.id !== probe.id ||
     deleteRecheck.version !== probe.version || deleteRecheck.status !== probe.status ||
     deleteRecheck.deno_deployment_id !== probe.deno_deployment_id ||
-    deleteRecheck.operator_captured_ezbr_bundle_sha256 !== probe.ezbr_sha256 ||
-    deleteRecheck.ezbr_bytes_hashed_by_issuer !== true ||
+    deleteRecheck.operator_captured_ezbr_bundle_sha256 !==
+      probe.management_api_body_sha256 ||
+    deleteRecheck.management_api_body_bytes_hashed_by_issuer !== true ||
     deleteRecheck.management_api_tuple_sha256 !== probe.management_api_tuple_sha256
   ) {
     throw new Error("client-IP delete tuple does not match the exact ACTIVE canaried probe");
