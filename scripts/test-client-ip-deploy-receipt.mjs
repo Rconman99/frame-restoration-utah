@@ -309,6 +309,7 @@ function buildRawArtifacts(tempRoot, now = NOW) {
     "ipv6-forged-x-forwarded-for",
   ]) {
     const family = caseId.startsWith("ipv4-") ? "ipv4" : "ipv6";
+    const gatewayRejected = caseId.endsWith("forged-cf");
     const caseRoot = path.join(tempRoot, "requests", caseId);
     const requestAt = now.getTime() + requestOffset * 1000;
     const forgedHeaders = {
@@ -348,20 +349,25 @@ function buildRawArtifacts(tempRoot, now = NOW) {
         },
       }),
       status_path: writeJson0600(path.join(caseRoot, "status.json"), {
-        status: 200,
+        status: gatewayRejected ? 403 : 200,
         observed_at: new Date(requestAt + 100).toISOString(),
       }),
-      response_path: writeJson0600(path.join(caseRoot, "response.json"), {
-        ok: true,
-        case_id: caseId,
-        target_source_sha: SHA,
-        deployment_id: DEPLOYMENT_ID,
-        source: "cf-connecting-ip",
-        observed_family: family,
-        fingerprint: family === "ipv4"
-          ? IPV4_FINGERPRINT
-          : IPV6_FINGERPRINT,
-      }),
+      response_path: gatewayRejected
+        ? write0600(
+          path.join(caseRoot, "response.json"),
+          "error code: 1000\n",
+        )
+        : writeJson0600(path.join(caseRoot, "response.json"), {
+          ok: true,
+          case_id: caseId,
+          target_source_sha: SHA,
+          deployment_id: DEPLOYMENT_ID,
+          source: "cf-connecting-ip",
+          observed_family: family,
+          fingerprint: family === "ipv4"
+            ? IPV4_FINGERPRINT
+            : IPV6_FINGERPRINT,
+        }),
     };
     requestOffset += 1;
   }
@@ -1378,6 +1384,8 @@ try {
     ["case family", (p) => p.requests.matrix.ipv4.baseline.observed_family = "ipv6", /family\/runtime binding/],
     ["case status", (p) => p.requests.matrix.ipv6.forged_x_real_ip.status = 204, /family\/runtime binding/],
     ["case target", (p) => p.requests.matrix.ipv4.forged_x_forwarded_for.target_source_sha = OTHER_SHA, /family\/runtime binding/],
+    ["gateway status", (p) => p.requests.matrix.ipv4.forged_cf_connecting_ip.status = 200, /gateway rejection binding/],
+    ["gateway family", (p) => p.requests.matrix.ipv6.forged_cf_connecting_ip.transport_family = "ipv4", /gateway rejection binding/],
     ["fingerprint smuggling", (p) => p.requests.matrix.ipv4.baseline.fingerprint = IPV4_FINGERPRINT, /schema differs/],
     ["metadata restoration", (p) => p.metadata_integrity.secrets_canary_sha256 = "d".repeat(64), /metadata restoration/],
     ["future effective lifetime", (p) => {
@@ -1514,6 +1522,15 @@ try {
   write0600(negativePath, '{"error":"unauthorized"}\n');
   assert.throws(() => issue(raw), /exact generic HTTP 401 body/);
   write0600(negativePath, negativeBody);
+  const gatewayPath = raw.requestPaths["ipv4-forged-cf"].response_path;
+  const gatewayBody = fs.readFileSync(gatewayPath);
+  write0600(gatewayPath, "error code: 1000");
+  assert.throws(() => issue(raw), /exact gateway HTTP 403 rejection/);
+  write0600(gatewayPath, gatewayBody);
+  const gatewayStatusPath = raw.requestPaths["ipv6-forged-cf"].status_path;
+  withJsonMutation(gatewayStatusPath, (value) => {
+    value.status = 200;
+  }, () => assert.throws(() => issue(raw), /exact gateway HTTP 403 rejection/));
   const statusPath = raw.requestPaths["ipv4-baseline"].status_path;
   withJsonMutation(statusPath, (value) => {
     value.status = 201;
@@ -1544,7 +1561,8 @@ try {
     ...Object.entries(raw.requestPaths).flatMap(([caseId, paths]) => [
       paths.request_path,
       paths.status_path,
-      ...(caseId.startsWith("ipv4-") || caseId.startsWith("ipv6-")
+      ...((caseId.startsWith("ipv4-") || caseId.startsWith("ipv6-")) &&
+          !caseId.endsWith("forged-cf")
         ? [paths.response_path]
         : []),
     ]),

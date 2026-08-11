@@ -221,7 +221,7 @@ its bounded size.
    `probe_function.management_api_body_sha256` repeats the body digest under an
    explicit name.
    `DENO_DEPLOYMENT_ID` is independently
-   derived from successful response artifacts and must equal
+   derived from the six function-success response artifacts and must equal
    `project_ref_function_id_version`.
 5. In a second new isolated directory, capture the deployed source with pinned
    Supabase CLI 2.113.0 and the API unbundling path:
@@ -254,13 +254,16 @@ its bounded size.
    over native IPv4 and the same four over native IPv6 — baseline, forged
    `cf-connecting-ip`, forged `x-real-ip`, and forged `x-forwarded-for`. Both
    baseline paths must report `passed`, canonical source `cf-connecting-ip`, and
-   a 64-lowercase-hex raw-free fingerprint. The forged CF result must be
-   `gateway-overwritten-selected-fingerprint-unchanged`; both other forged-header
-   results must also leave the selected fingerprint unchanged. Each HTTP 200
-   body has the exact keys `ok`, `case_id`, `target_source_sha`, `deployment_id`,
-   `source`, `observed_family`, and `fingerprint`. `observed_family` must equal the
-   native IPv4/IPv6 lane, and the two baseline fingerprints must differ. The
-   template bounds the streamed body at 512 bytes before JSON parsing. Then run
+   a 64-lowercase-hex raw-free fingerprint. Cloudflare rejects a caller-supplied
+   `cf-connecting-ip` before the function runs; both forged-CF cases must return
+   exact HTTP 403 with the exact raw body `error code: 1000\n`, outcome
+   `gateway-rejected-forged-cf-connecting-ip`, and no function metadata. The
+   forged `x-real-ip` and `x-forwarded-for` cases must reach the function and
+   leave the selected fingerprint unchanged. Each of those six HTTP 200 bodies
+   has the exact keys `ok`, `case_id`, `target_source_sha`, `deployment_id`,
+   `source`, `observed_family`, and `fingerprint`. `observed_family` must equal
+   the native IPv4/IPv6 lane, and the two baseline fingerprints must differ.
+   The template bounds the streamed body at 512 bytes before JSON parsing. Then run
    **2 negative-auth** requests, one
    without a signature and one with an invalid signature. Both must return the
    exact body `{"error":"unauthorized"}` with HTTP 401 and no metadata. The
@@ -279,10 +282,12 @@ its bounded size.
    three absolute explicit paths (`request_path`, `status_path`,
    `response_path`) in the exact ten-case manifest at
    `CLIENT_IP_REQUEST_ARTIFACT_MANIFEST_PATH`. The issuer verifies unique nonces
-   and request/status timing, compares fingerprints transiently, and never
+   and request/status timing, verifies the two exact gateway rejections,
+   compares the six function-success fingerprints transiently, and never
    embeds request headers or a fingerprint in the readable signed token. It
-   signs per-case request shape, status, family, target SHA, runtime binding,
-   and derived outcome.
+   signs per-case request shape, status, transport family, and derived outcome.
+   Function-success cases additionally bind target SHA/runtime; gateway-rejected
+   cases instead bind the exact body and the absence of function metadata.
 7. Immediately before deletion, refresh the full function and secret metadata
    into `CLIENT_IP_FUNCTIONS_DELETE_RECHECK_PATH` and
    `CLIENT_IP_SECRETS_DELETE_RECHECK_PATH`. The function catalog and exact ACTIVE
