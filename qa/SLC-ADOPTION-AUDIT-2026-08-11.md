@@ -20,13 +20,14 @@ post.
 - Perplexity Search: Frame named in 0/3 and cited in 0/3.
 - Gemini: unmeasured. The Frame enterprise account presents first-use Terms &
   Privacy acceptance; no consent was granted.
-- Google mobile organic, depth 30: the existing live SLC route ranked 25 for
-  `roof repair salt lake city` and 21 for `roof replacement salt lake city`;
+- Google mobile organic, depth 30: the existing live SLC route ranked 23 for
+  `roof repair salt lake city` and 24 for `roof replacement salt lake city`;
   `roofing contractor salt lake city` did not place the site in the top 30.
 - AI Overviews: present for `roofing contractor salt lake city`, with Frame not
   cited; absent on the other two initial fixed-panel queries.
-- Map-pack presence was observed, but Frame's SLC pack rank is unmeasured because
-  the evidence contract does not yet contain the exact SLC CID or public phone.
+- Map-pack attribution is measured with the proven SLC CID. Three of the four
+  mobile queries displayed a local pack; Frame's CID appeared in none of the
+  returned pack results.
 
 The canonical machine-readable receipt lives in Command Center's city-page
 generator measurement directory. The city note remains `partial`, which is a
@@ -63,9 +64,11 @@ promotion-blocking state rather than a passing baseline.
 2. The schema and office block identify `3920 S 1500 E, Salt Lake City`, while
    the site footer identifies `142 S Main St, Heber City` (lines 50-57, 392-395,
    and 679-680).
-3. The Salt Lake City `RoofingContractor` graph links a CID and then includes
-   Heber Yelp, tourism, BBB, Angi, Thumbtack, Nextdoor, and Google Maps records
-   in `sameAs` (lines 31-155). Those URLs cannot prove an exact SLC entity.
+3. CID `5689850818145735734` is now proven for the Salt Lake-area profile by a
+   matching 2026-08-10 manager-grant email and 2026-07-13 setup guide. However,
+   the same `RoofingContractor` graph still includes Heber Yelp, tourism, BBB,
+   Angi, Thumbtack, Nextdoor, and Google Maps records in `sameAs` (lines 31-155).
+   Those Heber URLs do not belong in the SLC entity graph.
 4. The account boundary supplied by the owner is SLC = `ryan@frame`; Heber is a
    separate Utah profile under `ryanconwell99`. The page must not collapse those
    into one local identity.
@@ -93,9 +96,10 @@ This is an evidence finding, not a conclusion that every claim is false.
 
 ## Adoption sequence
 
-1. Under the SLC `ryan@frame` account, verify and record one exact public entity:
-   GBP CID, business name, public phone, address or service-area status, hours,
-   and public Maps URL. Do not reuse Heber evidence.
+1. Under the SLC Frame account, finish the exact public entity record. The CID
+   and manager grant are proven; the live business name, public phone, address
+   or service-area status, hours, and public Maps URL still need direct proof.
+   Do not reuse Heber evidence.
 2. Replace every SLC page identity surface in one change: metadata, header and
    mobile calls, office/NAP block, LocalBusiness schema, `hasMap`, `sameAs`,
    footer context, and review attribution.
@@ -105,8 +109,8 @@ This is an evidence finding, not a conclusion that every claim is false.
 4. Verify every selected project asset and caption as truthful Salt Lake City or
    clearly described regional proof.
 5. Complete the fixed named-citation panel. Gemini remains explicitly unmeasured
-   until the owner accepts its first-use terms; map-pack attribution remains
-   unmeasured until the SLC identity is verified.
+   until the owner accepts its first-use terms. Map-pack attribution can use the
+   now-proven CID, while customer-facing NAP still waits for the remaining fields.
 6. Record owner approval, then run the source gate and full five-viewport receipt
    against an immutable deployed preview with the intended freshness marker.
 7. Only after all blocking checks pass, use the separately authorized merge and

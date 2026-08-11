@@ -1,14 +1,14 @@
 {
   "artifact": "frame-city-page-generator",
   "version": 1,
-  "generatedAt": "2026-08-11T18:25:52.177Z",
+  "generatedAt": "2026-08-11T18:45:14.559Z",
   "mode": "preview_only",
   "status": "draft_ready",
   "source": {
     "client": "Frame",
     "cityNote": "10-Clients/Frame/Cities/Salt Lake City.md",
     "pageNote": "10-Clients/Frame/Pages/salt-lake-city-roofing.md",
-    "sourceHash": "d9b4cd5d5ccf25a19a414c7605e447d5ef6b2a6d7b75cd9b985ba37c452b5752"
+    "sourceHash": "aa914572c9850266a8345b2c8581061c46d126ebd8d93559160ce55b90be35c2"
   },
   "destination": {
     "market": "utah",
@@ -29,13 +29,15 @@
     "contentWordCount": 1340,
     "proofAssetCount": 3,
     "evidenceSourceCount": 4,
-    "candidateHash": "5d270c94e84fa1d443bccc9fa64955a39fa12bf764432f708d8f775dc2f254d3",
+    "candidateHash": "ee2c29b9db301599167d0f87ce544a30483756b79f5ba77fdb43d1c6775ee32f",
     "generatorStatus": "preview_ready",
     "publicationApproval": "pending",
     "cityProofStatus": "pending",
     "localIdentityStatus": "pending",
     "measurementKey": "utah::roofing-contractor-salt-lake-city",
     "measurementBaselineStatus": "partial",
+    "gbpCidPresent": true,
+    "publicPhonePresent": false,
     "previewReady": true,
     "promotionReady": false
   },
@@ -58,7 +60,7 @@
     {
       "id": "local-identity",
       "status": "blocked",
-      "detail": "Exact city GBP CID and public phone are still pending; draft renders no contact CTA or LocalBusiness schema."
+      "detail": "GBP CID is proven; public phone and verified identity status remain pending. Draft renders no contact CTA or LocalBusiness schema."
     },
     {
       "id": "city-proof",
