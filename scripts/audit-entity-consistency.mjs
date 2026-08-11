@@ -5,7 +5,8 @@
  * AI engines only resolve a citation to ONE business when its identity links
  * agree across every page (and the third-party directories). This asserts that
  * every locations/*.html primary RoofingContractor node carries hasMap + sameAs
- * EXACTLY matching the keystone in data/route-factory/business.json -> entity_links.
+ * EXACTLY matching the keystone in data/route-factory/business.json -> entity_links,
+ * or a complete per-location override for a separately verified GBP identity.
  * Drift (a page missing them, a stray/altered URL, a missing profile) = block.
  *
  * Checks (BLOCK in --strict):
@@ -23,9 +24,10 @@ const strict = process.argv.includes('--strict');
 const { entity_links: keystone } = JSON.parse(fs.readFileSync(path.join(repo, 'data/route-factory/business.json'), 'utf8'));
 const wantMap = keystone?.hasMap;
 const wantSame = new Set(keystone?.sameAs || []);
-// A page whose NAP is a real second office carries THAT office's GBP map identity
-// (entity_links.location_overrides["<file>"].hasMap); anything unlisted keeps the keystone.
-const mapOverrides = keystone?.location_overrides || {};
+// A page with a separately verified GBP identity may override BOTH hasMap and
+// sameAs. Keeping this as one complete override prevents a second profile from
+// inheriting the Heber listing/directory graph by accident.
+const locationOverrides = keystone?.location_overrides || {};
 
 function jsonLdBlocks(html) {
   const out = [];
@@ -54,21 +56,23 @@ for (const f of files) {
   for (const b of jsonLdBlocks(html)) { node = findPrimary(b); if (node) break; }
   if (!node) { blockers.push({ file: f, detail: 'no primary RoofingContractor node found' }); continue; }
 
-  const wantMapFor = mapOverrides[f]?.hasMap || wantMap;
+  const override = locationOverrides[f] || {};
+  const wantMapFor = override.hasMap || wantMap;
+  const wantSameFor = new Set(override.sameAs || [...wantSame]);
   if (!node.hasMap) blockers.push({ file: f, detail: 'missing hasMap' });
   else if (node.hasMap !== wantMapFor) blockers.push({ file: f, detail: `hasMap "${node.hasMap}" != expected "${wantMapFor}"` });
 
   const same = Array.isArray(node.sameAs) ? node.sameAs : (node.sameAs ? [node.sameAs] : null);
   if (!same) { blockers.push({ file: f, detail: 'missing sameAs' }); continue; }
   const have = new Set(same);
-  const missing = [...wantSame].filter((u) => !have.has(u));
-  const extra = [...have].filter((u) => !wantSame.has(u));
+  const missing = [...wantSameFor].filter((u) => !have.has(u));
+  const extra = [...have].filter((u) => !wantSameFor.has(u));
   if (missing.length) blockers.push({ file: f, detail: `sameAs missing: ${missing.join(', ')}` });
   if (extra.length) blockers.push({ file: f, detail: `sameAs has non-canonical entries: ${extra.join(', ')}` });
 }
 
 console.log('\n=== Entity consistency (hasMap + sameAs) ===');
-console.log(`audited ${files.length} location pages · keystone: ${wantSame.size} sameAs + hasMap`);
+console.log(`audited ${files.length} location pages · keystone: ${wantSame.size} sameAs + hasMap · overrides: ${Object.keys(locationOverrides).length}`);
 if (blockers.length === 0) { console.log('✓ all pages match the business.json keystone'); process.exit(0); }
 console.log(`${strict ? '🚨' : '⚠'} ${blockers.length} blocker(s)${strict ? '' : ' (informational)'}:`);
 for (const b of blockers.slice(0, 50)) console.log(`    ${b.file}: ${b.detail}`);

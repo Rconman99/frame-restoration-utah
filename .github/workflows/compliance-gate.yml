@@ -457,6 +457,21 @@ jobs:
       - name: Fail on missing or drifted hasMap/sameAs
         run: node scripts/audit-entity-consistency.mjs --strict
 
+  slc-identity:
+    name: SLC live GBP identity + claim boundary (blocking)
+    runs-on: ubuntu-latest
+    # Regression for the 2026-08-11 production drift: the SLC page combined a
+    # staged 801 DID/address with the live 435 service-area profile and inherited
+    # Heber-only entity URLs. This check binds the route to the read-only verified
+    # CID/phone/hours/no-storefront record and blocks the removed unsupported claims.
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '20'
+      - name: Fail on SLC identity or claim drift
+        run: npm run audit:slc-identity
+
   doc-isolation:
     name: Internal-doc isolation (blocking)
     runs-on: ubuntu-latest

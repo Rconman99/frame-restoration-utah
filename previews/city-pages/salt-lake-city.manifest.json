@@ -1,14 +1,14 @@
 {
   "artifact": "frame-city-page-generator",
   "version": 1,
-  "generatedAt": "2026-08-11T18:45:14.559Z",
+  "generatedAt": "2026-08-11T19:32:27.469Z",
   "mode": "preview_only",
   "status": "draft_ready",
   "source": {
     "client": "Frame",
     "cityNote": "10-Clients/Frame/Cities/Salt Lake City.md",
     "pageNote": "10-Clients/Frame/Pages/salt-lake-city-roofing.md",
-    "sourceHash": "aa914572c9850266a8345b2c8581061c46d126ebd8d93559160ce55b90be35c2"
+    "sourceHash": "3991da440e1d53c5b13cdf4e1986d9a74194e70567e638f057341f842230643f"
   },
   "destination": {
     "market": "utah",
@@ -19,25 +19,26 @@
     "previewPath": "previews/city-pages/salt-lake-city.html",
     "previewManifestPath": "previews/city-pages/salt-lake-city.manifest.json",
     "existingLiveRoute": true,
-    "existingLiveHash": "8c46d24de026c513e193ea53271012f2a56a4cc39d592be1f42e9d1e0330020e"
+    "existingLiveHash": "2c75eb249df23a04b5523655b493e608e5d357b58ce481779f3c655a5b6dbc9d"
   },
   "candidate": {
     "city": "Salt Lake City",
     "state": "UT",
     "slug": "salt-lake-city",
     "marker": "frame-city-generator-v1:salt-lake-city",
+    "identityMarker": "frame-city-generator-identity-v1:5689850818145735734",
     "contentWordCount": 1340,
     "proofAssetCount": 3,
     "evidenceSourceCount": 4,
-    "candidateHash": "ee2c29b9db301599167d0f87ce544a30483756b79f5ba77fdb43d1c6775ee32f",
+    "candidateHash": "053ef1dfa295154809b6f182c6d3f43423c36f40ce8cb44f9bd44eab393e7a55",
     "generatorStatus": "preview_ready",
-    "publicationApproval": "pending",
-    "cityProofStatus": "pending",
-    "localIdentityStatus": "pending",
+    "publicationApproval": "approved",
+    "cityProofStatus": "verified",
+    "localIdentityStatus": "verified",
     "measurementKey": "utah::roofing-contractor-salt-lake-city",
     "measurementBaselineStatus": "partial",
     "gbpCidPresent": true,
-    "publicPhonePresent": false,
+    "publicPhonePresent": true,
     "previewReady": true,
     "promotionReady": false
   },
@@ -59,18 +60,18 @@
     },
     {
       "id": "local-identity",
-      "status": "blocked",
-      "detail": "GBP CID is proven; public phone and verified identity status remain pending. Draft renders no contact CTA or LocalBusiness schema."
+      "status": "pass",
+      "detail": "Exact city GBP identity is verified."
     },
     {
       "id": "city-proof",
-      "status": "blocked",
-      "detail": "Published assets are available for layout, but city-specific proof review is still pending."
+      "status": "pass",
+      "detail": "Selected assets were reviewed with their city-specific or explicitly regional proof boundary preserved."
     },
     {
       "id": "owner-approval",
-      "status": "blocked",
-      "detail": "Publication approval remains pending."
+      "status": "pass",
+      "detail": "Publication approval is recorded in the city note."
     },
     {
       "id": "measurement-baseline",

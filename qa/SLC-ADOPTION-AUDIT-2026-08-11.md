@@ -2,11 +2,12 @@
 
 ## Decision
 
-Do not replace or republish the live page yet. Keep the current route, canonical,
-navigation, and service-intent structure, but adopt the generated draft's sourced
-local guidance after the Salt Lake City business identity is verified as one
-complete record. The live page currently mixes Salt Lake City and Heber identity
-signals, so promotion remains blocked.
+Keep the current route, canonical, navigation, and service-intent structure. The
+Salt Lake City identity has now been verified as one complete read-only record,
+and the adoption patch replaces the staged office/DID assumptions with that live
+record while importing the generated draft's sourced local guidance. Promotion
+still depends on source and immutable-preview gates; Google profile edits remain
+outside this change.
 
 This audit is read-only with respect to the live route. It does not authorize a
 deployment, Google Business Profile change, review edit, indexing request, or GBP
@@ -73,6 +74,30 @@ promotion-blocking state rather than a passing baseline.
    separate Utah profile under `ryanconwell99`. The page must not collapse those
    into one local identity.
 
+## Read-only live identity verification — completed 2026-08-11
+
+Google Search's owner panel and Business Information dialog were inspected under
+`ryan@framerestorations.com`; no field was edited or submitted.
+
+| Field | Verified live value |
+|---|---|
+| Business name | `Frame Restoration Utah LLC.` |
+| CID | `5689850818145735734` |
+| Public phone | `(435) 292-8802` |
+| Website | `https://www.framerestorationutah.com/salt-lake-city` |
+| Location type | Service-area business; `No location; deliveries and home services only` |
+| Saved service area | `Millcreek, UT, USA` |
+| Hours | Mon–Fri 8:00 AM–7:00 PM; Sat 8:00 AM–6:00 PM; Sun closed |
+| Public Maps identity | `https://www.google.com/maps?cid=5689850818145735734` |
+| Manager boundary | `ryan@framerestorations.com`; Google displayed `You manage this Business Profile` |
+
+The first three owner-uploaded Google profile photos were also visually checked:
+one tear-off view and two completed residential roof views. The live-page project
+assets were separately reviewed at full resolution. Repository provenance marks
+the SLC and Holladay images as real city jobs; the Millcreek commercial image is
+kept as regional proof under its existing catalog label rather than presented as
+Salt Lake City-specific proof.
+
 ## Claims requiring proof or safer copy before adoption
 
 The following live-page claims are not accepted as verified by the current SLC
@@ -96,17 +121,15 @@ This is an evidence finding, not a conclusion that every claim is false.
 
 ## Adoption sequence
 
-1. Under the SLC Frame account, finish the exact public entity record. The CID
-   and manager grant are proven; the live business name, public phone, address
-   or service-area status, hours, and public Maps URL still need direct proof.
-   Do not reuse Heber evidence.
-2. Replace every SLC page identity surface in one change: metadata, header and
+1. [x] Under the SLC Frame account, verify the exact public entity record without
+   editing it. The complete record is captured above and does not reuse Heber.
+2. [x] Replace every SLC page identity surface in one change: metadata, header and
    mobile calls, office/NAP block, LocalBusiness schema, `hasMap`, `sameAs`,
    footer context, and review attribution.
-3. Move the draft's sourced permit, historic-review, property-checklist, and
+3. [x] Move the draft's sourced permit, historic-review, property-checklist, and
    carrier-safe content into the established live layout. Remove or qualify each
    unsupported claim listed above.
-4. Verify every selected project asset and caption as truthful Salt Lake City or
+4. [x] Verify every selected project asset and caption as truthful Salt Lake City or
    clearly described regional proof.
 5. Complete the fixed named-citation panel. Gemini remains explicitly unmeasured
    until the owner accepts its first-use terms. Map-pack attribution can use the
@@ -119,5 +142,5 @@ This is an evidence finding, not a conclusion that every claim is false.
 
 ## Current gate result
 
-`BLOCKED — adoption plan ready; exact SLC identity, asset proof, complete
-measurement panel, and owner publication approval are still required.`
+`IN PROGRESS — identity, claim, and asset adoption patch complete; source,
+immutable-preview, merge, production, and post-change measurement gates remain.`
