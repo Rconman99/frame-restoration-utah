@@ -456,6 +456,10 @@ jobs:
           node-version: '20'
       - name: Fail on missing or drifted hasMap/sameAs
         run: node scripts/audit-entity-consistency.mjs --strict
+      # Regression for the 2026-08-11 SLC drift: staged contact data and Heber
+      # entity URLs must never replace the separately verified service-area CID.
+      - name: Fail on SLC identity or claim drift
+        run: npm run audit:slc-identity
 
   doc-isolation:
     name: Internal-doc isolation (blocking)

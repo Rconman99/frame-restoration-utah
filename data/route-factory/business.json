@@ -33,9 +33,17 @@
       "https://www.wikidata.org/wiki/Q140989115"
     ],
     "location_overrides": {
-      "_comment": "Per-location GBP identity: a page whose NAP is a real second office points hasMap at THAT office's profile. Every other location page keeps the keystone (Heber) map. Added 2026-08-10 with the SLC office DID + parked-profile unpark.",
+      "_comment": "Per-location GBP identity: a page with its own verified profile can override hasMap and sameAs. Every unlisted page keeps the Heber keystone. The SLC override was corrected 2026-08-11 from a staged office/DID assumption to the live service-area profile verified under ryan@framerestorations.com.",
       "salt-lake-city.html": {
-        "hasMap": "https://www.google.com/maps?cid=5689850818145735734"
+        "hasMap": "https://www.google.com/maps?cid=5689850818145735734",
+        "sameAs": [
+          "https://www.google.com/maps?cid=5689850818145735734",
+          "https://www.facebook.com/61572258054303",
+          "https://www.instagram.com/framerestorationutah",
+          "https://www.buildzoom.com/contractor/frame-restoration-utah-llc",
+          "https://reviews.birdeye.com/frame-restoration-utah-177732760787552",
+          "https://www.wikidata.org/wiki/Q140989115"
+        ]
       }
     }
   },
