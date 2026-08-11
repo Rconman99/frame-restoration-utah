@@ -1,0 +1,102 @@
+{
+  "schemaVersion": 1,
+  "kind": "frame-slc-google-rank-baseline",
+  "panelId": "utah-salt-lake-city-google-v1",
+  "observedAt": "2026-08-11T20:04:27.000Z",
+  "date": "2026-08-11",
+  "market": "utah",
+  "service": "roofing-contractor-salt-lake-city",
+  "provider": {
+    "name": "DataForSEO",
+    "mode": "task-queue",
+    "device": "mobile",
+    "os": "android",
+    "depth": 30,
+    "locationName": "Salt Lake City,Utah,United States",
+    "estimatedPanelCostUsd": 0.0096
+  },
+  "target": {
+    "domain": "framerestorationutah.com",
+    "businessName": "Frame Restoration Utah LLC",
+    "gbpCid": "5689850818145735734",
+    "phone": "435-292-8802"
+  },
+  "summary": {
+    "queries": 4,
+    "organicRanked": 2,
+    "mapPackMatched": 0,
+    "aiOverviewsPresent": 1,
+    "aiOverviewCitations": 0
+  },
+  "results": [
+    {
+      "id": "slc-roofing-contractor",
+      "keyword": "roofing contractor salt lake city",
+      "organicRank": null,
+      "rankingUrl": null,
+      "mapPackPresent": false,
+      "mapPackRank": null,
+      "aiOverviewPresent": true,
+      "aiOverviewCited": false,
+      "serpFeatures": [
+        "ai_overview",
+        "discussions_and_forums",
+        "people_also_ask",
+        "people_also_search"
+      ]
+    },
+    {
+      "id": "slc-roof-repair",
+      "keyword": "roof repair salt lake city",
+      "organicRank": 23,
+      "rankingUrl": "https://www.framerestorationutah.com/locations/salt-lake-city",
+      "mapPackPresent": true,
+      "mapPackRank": null,
+      "aiOverviewPresent": false,
+      "aiOverviewCited": false,
+      "serpFeatures": [
+        "local_pack",
+        "people_also_ask",
+        "people_also_search",
+        "related_searches",
+        "video"
+      ]
+    },
+    {
+      "id": "slc-roof-replacement",
+      "keyword": "roof replacement salt lake city",
+      "organicRank": 24,
+      "rankingUrl": "https://www.framerestorationutah.com/locations/salt-lake-city",
+      "mapPackPresent": true,
+      "mapPackRank": null,
+      "aiOverviewPresent": false,
+      "aiOverviewCited": false,
+      "serpFeatures": [
+        "discussions_and_forums",
+        "local_pack",
+        "people_also_search",
+        "related_searches"
+      ]
+    },
+    {
+      "id": "slc-roofer",
+      "keyword": "roofer salt lake city",
+      "organicRank": null,
+      "rankingUrl": null,
+      "mapPackPresent": true,
+      "mapPackRank": null,
+      "aiOverviewPresent": false,
+      "aiOverviewCited": false,
+      "serpFeatures": [
+        "local_pack",
+        "people_also_ask",
+        "people_also_search",
+        "related_searches"
+      ]
+    }
+  ],
+  "baselineImport": {
+    "source": "slc-search-baseline-2026-08-11.json",
+    "note": "The canonical latest complete same-day CID-attributed cohort was imported; same-day organic readings varied and are not treated as a trend."
+  }
+}

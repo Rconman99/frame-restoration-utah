@@ -1,0 +1,59 @@
+name: SLC DataForSEO rank tracker
+
+on:
+  schedule:
+    # Weekly Monday 9:00 UTC. One stable mobile panel is more useful than daily noise.
+    - cron: '0 9 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: slc-dataforseo-rank-tracker
+  cancel-in-progress: false
+
+jobs:
+  measure:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+
+      - name: Set up Node.js
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '24'
+
+      - name: Test tracker parsing and fail-closed behavior
+        run: node scripts/test-dataforseo-rank-tracker.mjs
+
+      - name: Validate the fixed SLC panel without provider spend
+        run: node scripts/dataforseo-rank-tracker.mjs --dry-run
+
+      - name: Measure the complete SLC panel
+        env:
+          DATAFORSEO_LOGIN: ${{ secrets.DATAFORSEO_LOGIN }}
+          DATAFORSEO_PASSWORD: ${{ secrets.DATAFORSEO_PASSWORD }}
+        run: node scripts/dataforseo-rank-tracker.mjs
+
+      - name: Add measurement summary
+        if: always()
+        run: |
+          if [ -f data/rank-tracker/latest.md ]; then
+            cat data/rank-tracker/latest.md >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - name: Commit the complete dated panel
+        run: |
+          git config user.name "Frame Rank Tracker"
+          git config user.email "rank-tracker@users.noreply.github.com"
+          git add data/rank-tracker/
+          if git diff --cached --quiet; then
+            echo "No rank-tracker change to commit."
+            exit 0
+          fi
+          TODAY=$(date -u +%F)
+          git commit -m "chore(seo): SLC rank panel ${TODAY} [cloud]"
+          git push
