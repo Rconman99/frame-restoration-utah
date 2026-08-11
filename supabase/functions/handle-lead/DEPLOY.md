@@ -4,7 +4,7 @@
 > `20260807000160_lead_intake_rate_limit.sql` and set a distinct
 > `LEAD_INTAKE_RATE_LIMIT_SECRET` of at least 32 bytes before deploying v10.
 > Do not deploy the IP-keyed throttle until the production environment holds a
-> fresh Ed25519-signed client-IP receipt v3 bound to one exact protected
+> fresh Ed25519-signed client-IP receipt v4 bound to one exact protected
 > function, dispatch nonce, main SHA, Utah project, current
 > `_shared/client-ip.ts`, committed probe template, derived wrapper,
 > signer-attested operator-captured source/`.ezbr` bytes, runtime function
@@ -138,7 +138,7 @@ deployment changes live function metadata, so capture again and issue a fresh
 
 ### Executable client-IP receipt path
 
-Receipt v3 deliberately distinguishes the target commit from the ephemeral
+Receipt v4 deliberately distinguishes the target commit from the ephemeral
 probe wrapper. `target_function` is exactly one of `handle-lead` or `lead-crm`,
 `dispatch_nonce` is a new 32–128 character URL-safe nonce for one manual
 dispatch, and `target_source_sha` is the exact 40-character `DEPLOY_SHA`. One
@@ -294,9 +294,22 @@ its bounded size.
    tuple/body representation must equal the canary capture. Capture the recheck
    body bytes independently at `CLIENT_IP_PROBE_EZBR_DELETE_RECHECK_PATH`; its
    hash must equal the canary body hash, while the provider row digest must
-   independently equal the canary row digest. Every secret snapshot (pre,
-   canary, recheck, post) must be identical. Delete using the literal probe slug
-   only (`literal-slug-only`), never an ID, prefix, glob, or list-derived target.
+   independently equal the canary row digest. Supabase may refresh
+   `updated_at` during the probe deployment for exactly these seven
+   provider-managed secret rows: `SUPABASE_ANON_KEY`, `SUPABASE_DB_URL`,
+   `SUPABASE_JWKS`, `SUPABASE_PUBLISHABLE_KEYS`, `SUPABASE_SECRET_KEYS`,
+   `SUPABASE_SERVICE_ROLE_KEY`, and `SUPABASE_URL`. Those rows must be present in
+   every snapshot, retain identical names and provider digests, and share one
+   common `updated_at` within each snapshot. The only permitted provider-managed
+   timestamp change is one advance from preflight to canary, exactly equal to
+   the canary probe function's provider `created_at`/`updated_at`; the canary,
+   deletion-recheck, and postflight timestamps must then remain identical. All
+   user-managed secret rows, including their full `name`, digest `value`, and
+   `updated_at` metadata, must be identical across all four stages, and the full
+   canary, deletion-recheck, and postflight secret metadata must be identical.
+   Any other name, digest, row, or timestamp drift fails closed. Delete using
+   the literal probe slug only (`literal-slug-only`), never an ID, prefix, glob,
+   or list-derived target.
    This is a **non-atomic** slug deletion: an exact tuple recheck immediately
    before deletion narrows but cannot eliminate the check/delete TOCTOU window.
    Record the deletion time no more than 60 seconds after the tuple recheck.
@@ -305,8 +318,10 @@ its bounded size.
    must be absent and the full postflight function catalog must equal preflight.
    Destroy the exact created Droplet and capture the full list in
    `CLIENT_IP_COMPUTE_POST_PATH`; it must equal compute preflight and omit the
-   created ID. This is how the issuer derives probe deletion, zero secret
-   mutation, and ephemeral-compute destruction rather than copying those labels.
+   created ID. This is how the issuer derives probe deletion, the bounded
+   provider-managed timestamp refresh with no secret-digest or user-secret
+   metadata mutation, and ephemeral-compute destruction rather than copying
+   those labels.
 
 Save one mode-0600 operator attestation at
 `CLIENT_IP_OPERATOR_ATTESTATION_PATH`. It contains only the exclusive-window
