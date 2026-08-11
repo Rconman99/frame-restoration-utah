@@ -29,6 +29,30 @@ function safeTarget(rel, file, label) {
   return target;
 }
 
+function jsonLdNodes(html, file) {
+  const nodes = [];
+  const blocks = html.matchAll(
+    /<script\b[^>]*type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/giu,
+  );
+  const append = (value) => {
+    if (Array.isArray(value)) {
+      for (const item of value) append(item);
+      return;
+    }
+    if (!value || typeof value !== "object") return;
+    nodes.push(value);
+    if (Array.isArray(value["@graph"])) append(value["@graph"]);
+  };
+  for (const block of blocks) {
+    try {
+      append(JSON.parse(block[1]));
+    } catch (error) {
+      fail(file, `invalid JSON-LD: ${error.message}`);
+    }
+  }
+  return nodes;
+}
+
 if (!existsSync(previewRoot)) {
   console.error("City page draft audit FAILED: previews/city-pages is missing");
   process.exit(1);
@@ -71,12 +95,43 @@ for (const manifestFile of manifestFiles) {
   }
 
   const html = readFileSync(htmlFile, "utf8");
+  const identityMarker = manifest.candidate?.identityMarker;
+  const identityVerified =
+    manifest.candidate?.localIdentityStatus === "verified" &&
+    manifest.candidate?.gbpCidPresent === true &&
+    manifest.candidate?.publicPhonePresent === true &&
+    typeof identityMarker === "string" &&
+    /^frame-city-generator-identity-v1:\d{10,20}$/u.test(identityMarker);
+  const telCtaPresent = /href=["']tel:/iu.test(html);
+  const schemaNodes = jsonLdNodes(html, htmlFile);
+  const roofingContractors = schemaNodes.filter((node) => {
+    const types = Array.isArray(node["@type"]) ? node["@type"] : [node["@type"]];
+    return types.includes("RoofingContractor");
+  });
+  const genericLocalBusinesses = schemaNodes.filter((node) => {
+    const types = Array.isArray(node["@type"]) ? node["@type"] : [node["@type"]];
+    return types.includes("LocalBusiness");
+  });
   if (hash(html) !== manifest.candidate?.candidateHash) fail(htmlFile, "candidate hash does not match the manifest");
   if (!html.includes(`data-city-generator-marker="${manifest.candidate?.marker}"`)) fail(htmlFile, "freshness marker is missing");
   if (!/<meta\s+name="robots"\s+content="noindex, nofollow, noarchive"\s*\/>/u.test(html)) fail(htmlFile, "strict noindex policy is missing");
   if (/rel=["']canonical["']/iu.test(html)) fail(htmlFile, "draft must not publish a canonical URL");
-  if (/href=["']tel:/iu.test(html)) fail(htmlFile, "draft must not publish an unverified phone CTA");
-  if (/"@type"\s*:\s*"LocalBusiness"/u.test(html)) fail(htmlFile, "draft must not publish LocalBusiness schema before identity verification");
+  if (genericLocalBusinesses.length) fail(htmlFile, "draft must use the verified specific business subtype, not generic LocalBusiness schema");
+  if (!identityVerified) {
+    if (telCtaPresent) fail(htmlFile, "draft must not publish an unverified phone CTA");
+    if (roofingContractors.length) fail(htmlFile, "draft must not publish RoofingContractor schema before identity verification");
+  } else {
+    const gbpCid = identityMarker.split(":").at(-1);
+    if (!telCtaPresent) fail(htmlFile, "verified identity draft must render its phone CTA");
+    if (roofingContractors.length !== 1) fail(htmlFile, "verified identity draft must render exactly one RoofingContractor node");
+    const contractor = roofingContractors[0];
+    if (contractor && contractor.hasMap !== `https://www.google.com/maps?cid=${gbpCid}`) {
+      fail(htmlFile, "RoofingContractor hasMap must match the verified identity CID");
+    }
+    if (contractor && !/^\+1\d{10}$/u.test(contractor.telephone || "")) {
+      fail(htmlFile, "RoofingContractor telephone must be a verified E.164 US number");
+    }
+  }
   if (!/data-publication-state="draft"/u.test(html)) fail(htmlFile, "draft publication state is missing");
 
   if (manifest.destination?.existingLiveRoute) {

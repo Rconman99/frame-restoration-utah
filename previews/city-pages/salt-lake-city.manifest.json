@@ -1,14 +1,14 @@
 {
   "artifact": "frame-city-page-generator",
   "version": 1,
-  "generatedAt": "2026-08-11T19:46:42.965Z",
+  "generatedAt": "2026-08-11T20:06:01.831Z",
   "mode": "preview_only",
   "status": "draft_ready",
   "source": {
     "client": "Frame",
     "cityNote": "10-Clients/Frame/Cities/Salt Lake City.md",
     "pageNote": "10-Clients/Frame/Pages/salt-lake-city-roofing.md",
-    "sourceHash": "1a72171f21be38961cc8a40a7619cc86387606eb8cb09e2f47ce5bf620f2e1c8"
+    "sourceHash": "9305323bd6d120ba2ae6d4b9cc99a822fee486628efd566a75b6ee0d82d8d39a"
   },
   "destination": {
     "market": "utah",
@@ -27,20 +27,20 @@
     "slug": "salt-lake-city",
     "marker": "frame-city-generator-v1:salt-lake-city",
     "identityMarker": "frame-city-generator-identity-v1:5689850818145735734",
-    "contentWordCount": 1334,
+    "contentWordCount": 1353,
     "proofAssetCount": 3,
     "evidenceSourceCount": 4,
-    "candidateHash": "ca9dbc95eaddc87ce72936d86e8633fca79c25f8589dfa553fac96622310fd74",
+    "candidateHash": "3fdbfc15be8271b4e6014614ebfaa43de92a31e0299e7adf3a4a9c18032c0a0a",
     "generatorStatus": "preview_ready",
     "publicationApproval": "approved",
     "cityProofStatus": "verified",
     "localIdentityStatus": "verified",
     "measurementKey": "utah::roofing-contractor-salt-lake-city",
-    "measurementBaselineStatus": "partial",
+    "measurementBaselineStatus": "recorded",
     "gbpCidPresent": true,
     "publicPhonePresent": true,
     "previewReady": true,
-    "promotionReady": false
+    "promotionReady": true
   },
   "gates": [
     {
@@ -75,8 +75,8 @@
     },
     {
       "id": "measurement-baseline",
-      "status": "blocked",
-      "detail": "Named-citation baseline is partial; every required engine must be measured before promotion."
+      "status": "pass",
+      "detail": "Named-citation baseline is recorded."
     }
   ],
   "errors": [],
