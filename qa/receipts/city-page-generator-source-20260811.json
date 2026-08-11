@@ -1,0 +1,294 @@
+{
+  "schema_version": "1.0",
+  "contract": "frame-utah-city-page-generator-source",
+  "contract_sha256": "156471dce4ee1a41782566abea863884858677fd127efc535a868ac4cb540997",
+  "contract_snapshot": {
+    "schema_version": "1.0",
+    "name": "frame-utah-city-page-generator-source",
+    "expected_serving_origin": "http://127.0.0.1:4174",
+    "canonical_policy": "absent",
+    "freshness_markers": [
+      "frame-city-generator-v1:salt-lake-city"
+    ],
+    "max_redirects": 0,
+    "min_touch_target_css_px": 44,
+    "max_fixed_viewport_ratio": 0.15,
+    "max_landscape_fixed_viewport_ratio": 0.24,
+    "stability_wait_ms": 500,
+    "readiness_selector": "main",
+    "viewports": [
+      {
+        "name": "small-320",
+        "width": 320,
+        "height": 568
+      },
+      {
+        "name": "landscape-740",
+        "width": 740,
+        "height": 360
+      }
+    ],
+    "routes": [
+      {
+        "path": "/previews/city-pages/salt-lake-city.html"
+      }
+    ],
+    "critical_targets": [
+      {
+        "selector": ".factory-nav a",
+        "expected_href_pattern": "^/$"
+      }
+    ],
+    "fixed_elements": [
+      {
+        "selector": ".draft-rail",
+        "max_viewport_ratio": 0.15,
+        "max_landscape_viewport_ratio": 0.24
+      }
+    ],
+    "forbidden_visible_selectors": [
+      ".fr-modal-overlay.open"
+    ],
+    "max_console_errors": 0,
+    "max_page_errors": 0,
+    "allowed_console_error_patterns": []
+  },
+  "stage": "source",
+  "base_url": "http://127.0.0.1:4174",
+  "observed_at": "2026-08-11T17:25:23.422912Z",
+  "verdict": "pass",
+  "summary": {
+    "checks": 28,
+    "failures": 0,
+    "routes": 1,
+    "viewports": 2
+  },
+  "runs": [
+    {
+      "route": "/previews/city-pages/salt-lake-city.html",
+      "viewport": {
+        "name": "small-320",
+        "width": 320,
+        "height": 568
+      },
+      "url": "http://127.0.0.1:4174/previews/city-pages/salt-lake-city.html",
+      "checks": [
+        {
+          "name": "http-200",
+          "pass": true,
+          "detail": "status=200"
+        },
+        {
+          "name": "redirect-budget",
+          "pass": true,
+          "detail": "redirects=0 cap=0"
+        },
+        {
+          "name": "serving-origin",
+          "pass": true,
+          "detail": "final=http://127.0.0.1:4174 expected=http://127.0.0.1:4174"
+        },
+        {
+          "name": "viewport-meta",
+          "pass": true,
+          "detail": "content='width=device-width, initial-scale=1'"
+        },
+        {
+          "name": "canonical-absent",
+          "pass": true,
+          "detail": "count=0 actual=''"
+        },
+        {
+          "name": "freshness:frame-city-generator-v1:salt-lake-city",
+          "pass": true,
+          "detail": "marker present"
+        },
+        {
+          "name": "horizontal-reflow",
+          "pass": true,
+          "detail": "scrollWidth=320 innerWidth=320"
+        },
+        {
+          "name": "critical-target:.factory-nav a",
+          "pass": true,
+          "detail": "present, sized, hittable, and href-valid"
+        },
+        {
+          "name": "fixed-element:.draft-rail",
+          "pass": true,
+          "detail": "present and within orientation budget"
+        },
+        {
+          "name": "forbidden-visible:.fr-modal-overlay.open",
+          "pass": true,
+          "detail": "visible=0"
+        },
+        {
+          "name": "focus-not-obscured",
+          "pass": true,
+          "detail": "sampled keyboard focus is exposed"
+        },
+        {
+          "name": "forbidden-visible-post-focus:.fr-modal-overlay.open",
+          "pass": true,
+          "detail": "visible=0"
+        },
+        {
+          "name": "console-errors",
+          "pass": true,
+          "detail": "count=0 cap=0 errors=[] guard_suppressed=0"
+        },
+        {
+          "name": "page-errors",
+          "pass": true,
+          "detail": "count=0 cap=0 errors=[]"
+        }
+      ],
+      "failures": [],
+      "http": {
+        "status": 200,
+        "final_url": "http://127.0.0.1:4174/previews/city-pages/salt-lake-city.html",
+        "redirects": 0,
+        "headers": {
+          "content-length": "20676",
+          "content-type": "text/html",
+          "date": "Tue, 11 Aug 2026 17:25:24 GMT",
+          "last-modified": "Tue, 11 Aug 2026 17:24:54 GMT",
+          "server": "SimpleHTTP/0.6 Python/3.14.6"
+        }
+      },
+      "screenshot": {
+        "path": "/Users/agenticmac/projects/_wt-utah-multi-city-slc-20260811/qa/screenshots/city-page-generator-source-20260811/previews-city-pages-salt-lake-city.html--0cb2d4627884--small-320.png",
+        "sha256": "0c0ad2db28ddc7bec02a05d6c6fedfa08619248077ac6a2ac7ca4e5b58d0eb38",
+        "captured_scroll_y": 0
+      },
+      "network_guard": {
+        "mode": "read_only",
+        "auth_bootstrap_used": false,
+        "protection_bypass_used": false,
+        "preview_toolbar_suppression_requested": false,
+        "service_workers_blocked": true,
+        "websockets_blocked": true,
+        "stability_wait_ms": 500,
+        "readiness_selector": "main",
+        "blocked_count": 0,
+        "blocked": [],
+        "console_errors_suppressed": 0
+      }
+    },
+    {
+      "route": "/previews/city-pages/salt-lake-city.html",
+      "viewport": {
+        "name": "landscape-740",
+        "width": 740,
+        "height": 360
+      },
+      "url": "http://127.0.0.1:4174/previews/city-pages/salt-lake-city.html",
+      "checks": [
+        {
+          "name": "http-200",
+          "pass": true,
+          "detail": "status=200"
+        },
+        {
+          "name": "redirect-budget",
+          "pass": true,
+          "detail": "redirects=0 cap=0"
+        },
+        {
+          "name": "serving-origin",
+          "pass": true,
+          "detail": "final=http://127.0.0.1:4174 expected=http://127.0.0.1:4174"
+        },
+        {
+          "name": "viewport-meta",
+          "pass": true,
+          "detail": "content='width=device-width, initial-scale=1'"
+        },
+        {
+          "name": "canonical-absent",
+          "pass": true,
+          "detail": "count=0 actual=''"
+        },
+        {
+          "name": "freshness:frame-city-generator-v1:salt-lake-city",
+          "pass": true,
+          "detail": "marker present"
+        },
+        {
+          "name": "horizontal-reflow",
+          "pass": true,
+          "detail": "scrollWidth=740 innerWidth=740"
+        },
+        {
+          "name": "critical-target:.factory-nav a",
+          "pass": true,
+          "detail": "present, sized, hittable, and href-valid"
+        },
+        {
+          "name": "fixed-element:.draft-rail",
+          "pass": true,
+          "detail": "present and within orientation budget"
+        },
+        {
+          "name": "forbidden-visible:.fr-modal-overlay.open",
+          "pass": true,
+          "detail": "visible=0"
+        },
+        {
+          "name": "focus-not-obscured",
+          "pass": true,
+          "detail": "sampled keyboard focus is exposed"
+        },
+        {
+          "name": "forbidden-visible-post-focus:.fr-modal-overlay.open",
+          "pass": true,
+          "detail": "visible=0"
+        },
+        {
+          "name": "console-errors",
+          "pass": true,
+          "detail": "count=0 cap=0 errors=[] guard_suppressed=0"
+        },
+        {
+          "name": "page-errors",
+          "pass": true,
+          "detail": "count=0 cap=0 errors=[]"
+        }
+      ],
+      "failures": [],
+      "http": {
+        "status": 200,
+        "final_url": "http://127.0.0.1:4174/previews/city-pages/salt-lake-city.html",
+        "redirects": 0,
+        "headers": {
+          "content-length": "20676",
+          "content-type": "text/html",
+          "date": "Tue, 11 Aug 2026 17:25:25 GMT",
+          "last-modified": "Tue, 11 Aug 2026 17:24:54 GMT",
+          "server": "SimpleHTTP/0.6 Python/3.14.6"
+        }
+      },
+      "screenshot": {
+        "path": "/Users/agenticmac/projects/_wt-utah-multi-city-slc-20260811/qa/screenshots/city-page-generator-source-20260811/previews-city-pages-salt-lake-city.html--0cb2d4627884--landscape-740.png",
+        "sha256": "f17ded83800be68a3d60c32abe9e291333a3f936f10b08f7efe325e9ddef5ba5",
+        "captured_scroll_y": 0
+      },
+      "network_guard": {
+        "mode": "read_only",
+        "auth_bootstrap_used": false,
+        "protection_bypass_used": false,
+        "preview_toolbar_suppression_requested": false,
+        "service_workers_blocked": true,
+        "websockets_blocked": true,
+        "stability_wait_ms": 500,
+        "readiness_selector": "main",
+        "blocked_count": 0,
+        "blocked": [],
+        "console_errors_suppressed": 0
+      }
+    }
+  ],
+  "duration_seconds": 2.971,
+  "receipt_path": "/Users/agenticmac/projects/_wt-utah-multi-city-slc-20260811/qa/receipts/city-page-generator-source-20260811.json"
+}

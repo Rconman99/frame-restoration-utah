@@ -1,0 +1,88 @@
+{
+  "artifact": "frame-city-page-generator",
+  "version": 1,
+  "generatedAt": "2026-08-11T17:24:54.240Z",
+  "mode": "preview_only",
+  "status": "draft_ready",
+  "source": {
+    "client": "Frame",
+    "cityNote": "10-Clients/Frame/Cities/Salt Lake City.md",
+    "pageNote": "10-Clients/Frame/Pages/salt-lake-city-roofing.md",
+    "sourceHash": "901b64ebe77f4e3e783977685af2e73996fb81f6e8309dc209c85069815dfe87"
+  },
+  "destination": {
+    "market": "utah",
+    "repository": "Rconman99/frame-restoration-utah",
+    "canonicalOrigin": "https://www.framerestorationutah.com",
+    "nativeFormat": "static_html",
+    "livePath": "locations/salt-lake-city.html",
+    "previewPath": "previews/city-pages/salt-lake-city.html",
+    "previewManifestPath": "previews/city-pages/salt-lake-city.manifest.json",
+    "existingLiveRoute": true,
+    "existingLiveHash": "8c46d24de026c513e193ea53271012f2a56a4cc39d592be1f42e9d1e0330020e"
+  },
+  "candidate": {
+    "city": "Salt Lake City",
+    "state": "UT",
+    "slug": "salt-lake-city",
+    "marker": "frame-city-generator-v1:salt-lake-city",
+    "contentWordCount": 1340,
+    "proofAssetCount": 3,
+    "evidenceSourceCount": 4,
+    "candidateHash": "0f041953189f04aea54245e6802027e7d1577a1321f786897d088cc23058fbf2",
+    "generatorStatus": "preview_ready",
+    "publicationApproval": "pending",
+    "cityProofStatus": "pending",
+    "localIdentityStatus": "pending",
+    "measurementKey": "utah::roofing-contractor-salt-lake-city",
+    "measurementBaselineStatus": "pending",
+    "previewReady": true,
+    "promotionReady": false
+  },
+  "gates": [
+    {
+      "id": "source-contract",
+      "status": "pass",
+      "detail": "City and page notes satisfy the v1 compiler contract."
+    },
+    {
+      "id": "market-isolation",
+      "status": "pass",
+      "detail": "utah is pinned to Rconman99/frame-restoration-utah and https://www.framerestorationutah.com."
+    },
+    {
+      "id": "existing-live-route",
+      "status": "adoption_required",
+      "detail": "locations/salt-lake-city.html exists and will not be overwritten."
+    },
+    {
+      "id": "local-identity",
+      "status": "blocked",
+      "detail": "Exact city GBP CID and public phone are still pending; draft renders no contact CTA or LocalBusiness schema."
+    },
+    {
+      "id": "city-proof",
+      "status": "blocked",
+      "detail": "Published assets are available for layout, but city-specific proof review is still pending."
+    },
+    {
+      "id": "owner-approval",
+      "status": "blocked",
+      "detail": "Publication approval remains pending."
+    },
+    {
+      "id": "measurement-baseline",
+      "status": "blocked",
+      "detail": "Named-citation baseline must be recorded before promotion."
+    }
+  ],
+  "errors": [],
+  "safety": {
+    "publicSideEffects": 0,
+    "liveRouteWrites": 0,
+    "indexingSubmissions": 0,
+    "gbpMutations": 0,
+    "outreachSends": 0,
+    "secretsIncluded": false
+  }
+}
