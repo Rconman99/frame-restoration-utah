@@ -289,6 +289,70 @@ Deno.test("durable capture precedes role routing guards and claims remain blocke
   );
 });
 
+Deno.test("worker paginates both due sets and completes route health before claims", () => {
+  for (
+    const contract of [
+      "const READY_JOB_LIMIT = 25",
+      "const EXPIRED_JOB_LIMIT = 10",
+      "const RECOVERY_PAGE_SIZE = 100",
+      'type RecoverySet = "ready" | "expired"',
+      '.in("status", ["pending", "failed"])',
+      '.lte("next_attempt_at", runStartedAt)',
+      '.eq("status", "sending")',
+      '.lte("lease_expires_at", runStartedAt)',
+      ".order(orderColumn, { ascending: true })",
+      '.order("id", { ascending: true })',
+      "`${orderColumn}.gt.${cursor.orderedAt},and(${orderColumn}.eq.${cursor.orderedAt},id.gt.${cursor.id})`",
+      ".limit(pageSize)",
+      "!data.every((row) => validRecoveryJob(row, set))",
+      "isUuid(job.id)",
+      '["primary", "backup"].includes(String(job.recipient_role))',
+      "expectedStatus && job.retryable === true",
+      "timestampFields.every((field)",
+      "deliveryFields.every(nullableString)",
+    ]
+  ) {
+    assert(worker.includes(contract), `worker queue scan lacks ${contract}`);
+  }
+
+  const scanStart = worker.indexOf(
+    "[readyScan, expiredScan, activeRouteHealth] = await Promise.all([",
+  );
+  const scanFailure = worker.indexOf(
+    'return new Response("Retry", { status: 503 })',
+    scanStart,
+  );
+  const processingStart = worker.indexOf("for (const candidate of jobs)");
+  const preflight = worker.slice(scanStart, processingStart);
+  assert(
+    scanStart >= 0 && scanFailure > scanStart &&
+      processingStart > scanFailure &&
+      preflight.includes(
+        'scanRecoverySet(\n        supabase,\n        "ready"',
+      ) &&
+      preflight.includes(
+        'scanRecoverySet(\n        supabase,\n        "expired"',
+      ) &&
+      preflight.includes("scanActiveRouteHealth(") &&
+      !preflight.includes("LEAD_NOTIFICATION_CLAIM_RPC") &&
+      !preflight.includes("sendOwnerNotificationEmail("),
+    "worker can claim/send before complete ready, expired, and health scans",
+  );
+
+  const readPageStart = worker.indexOf("async function readRecoveryJobPage(");
+  const completeClaimStart = worker.indexOf("async function completeClaim(");
+  const readOnlyScans = worker.slice(readPageStart, completeClaimStart);
+  assert(
+    readPageStart >= 0 && completeClaimStart > readPageStart &&
+      readOnlyScans.includes("scanNotificationRouteHealth(") &&
+      readOnlyScans.includes('(["ready", "expired"] as const)') &&
+      readOnlyScans.includes("summary.persistenceErrors += 1") &&
+      !readOnlyScans.includes("supabase.rpc(") &&
+      !readOnlyScans.includes("sendOwnerNotificationEmail("),
+    "health route scan is not exhaustive, fail-closed, and read-only",
+  );
+});
+
 Deno.test("migration-owned unique indexes cannot retain adversarial same-name definitions", () => {
   const exactIndexes = [
     {

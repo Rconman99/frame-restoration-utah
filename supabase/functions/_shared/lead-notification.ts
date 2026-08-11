@@ -107,6 +107,41 @@ export type NotificationClaim = {
   delivery_tag_value: typeof RESEND_OWNER_TAG_VALUE;
 };
 
+export type NotificationRouteCandidate = {
+  id: string;
+  recipient_role: NotificationRole;
+  delivery_from: string | null;
+  delivery_to: string | null;
+  delivery_subject: string | null;
+  delivery_text: string | null;
+  delivery_tag_name: string | null;
+  delivery_tag_value: string | null;
+};
+
+export type NotificationRouteScan<T> = {
+  jobs: T[];
+  scanned: number;
+  skipped: number;
+  routeOutages: number;
+  partialDeliveries: number;
+  pages: number;
+};
+
+export type NotificationRouteCursor = {
+  orderedAt: string;
+  id: string;
+};
+
+export type NotificationRouteHealthScan = Omit<
+  NotificationRouteScan<never>,
+  "jobs"
+>;
+
+export type NotificationRouteCandidateState = {
+  partialDelivery: boolean;
+  routeOutage: ResendOutcome | null;
+};
+
 export type NotificationWorkerHealthCounts = {
   exhausted: number;
   terminalFailed: number;
@@ -218,6 +253,161 @@ export function notificationRoleRouteOutage(
     return recipientRouteOutage("recipient_route_mismatch");
   }
   return null;
+}
+
+export function notificationRouteCandidateState(
+  settings: NotificationSettings,
+  candidate: NotificationRouteCandidate,
+): NotificationRouteCandidateState {
+  const frozenFields = [
+    candidate.delivery_from,
+    candidate.delivery_to,
+    candidate.delivery_subject,
+    candidate.delivery_text,
+    candidate.delivery_tag_name,
+    candidate.delivery_tag_value,
+  ];
+  const hasFrozenDelivery = frozenFields.every((value) =>
+    typeof value === "string" && value.length > 0
+  );
+  const partialDelivery = frozenFields.some((value) => value !== null) &&
+    !hasFrozenDelivery;
+  if (partialDelivery) return { partialDelivery, routeOutage: null };
+  if (!["primary", "backup"].includes(candidate.recipient_role)) {
+    return {
+      partialDelivery: false,
+      routeOutage: recipientRouteOutage("invalid_recipient_config"),
+    };
+  }
+  const deliveryTo = hasFrozenDelivery
+    ? candidate.delivery_to!
+    : candidate.recipient_role === "primary"
+    ? settings.primaryEmail
+    : settings.backupEmail;
+  return {
+    partialDelivery: false,
+    routeOutage: notificationRoleRouteOutage(
+      settings,
+      candidate.recipient_role,
+      deliveryTo,
+    ),
+  };
+}
+
+function notificationRouteCursorAdvances(
+  cursor: NotificationRouteCursor | null,
+  nextCursor: NotificationRouteCursor,
+): boolean {
+  return !!nextCursor && typeof nextCursor.orderedAt === "string" &&
+    nextCursor.orderedAt.length > 0 && typeof nextCursor.id === "string" &&
+    nextCursor.id.length > 0 &&
+    (cursor === null || nextCursor.orderedAt > cursor.orderedAt ||
+      (nextCursor.orderedAt === cursor.orderedAt && nextCursor.id > cursor.id));
+}
+
+export async function scanRoutableNotificationJobs<
+  T extends NotificationRouteCandidate,
+>(
+  settings: NotificationSettings,
+  maxJobs: number,
+  pageSize: number,
+  readPage: (
+    cursor: NotificationRouteCursor | null,
+    pageSize: number,
+  ) => Promise<ReadonlyArray<T>>,
+  cursorFor: (candidate: T) => NotificationRouteCursor,
+): Promise<NotificationRouteScan<T>> {
+  if (!Number.isSafeInteger(maxJobs) || maxJobs < 1) {
+    throw new Error("notification_route_scan_limit_invalid");
+  }
+  if (!Number.isSafeInteger(pageSize) || pageSize < 1 || pageSize > 1000) {
+    throw new Error("notification_route_scan_page_size_invalid");
+  }
+
+  const result: NotificationRouteScan<T> = {
+    jobs: [],
+    scanned: 0,
+    skipped: 0,
+    routeOutages: 0,
+    partialDeliveries: 0,
+    pages: 0,
+  };
+  let cursor: NotificationRouteCursor | null = null;
+  while (result.jobs.length < maxJobs) {
+    const page = await readPage(cursor, pageSize);
+    if (!Array.isArray(page) || page.length > pageSize) {
+      throw new Error("notification_route_scan_page_invalid");
+    }
+    result.pages += 1;
+    for (const candidate of page) {
+      if (result.jobs.length >= maxJobs) break;
+      const nextCursor = cursorFor(candidate);
+      if (!notificationRouteCursorAdvances(cursor, nextCursor)) {
+        throw new Error("notification_route_scan_cursor_invalid");
+      }
+      cursor = nextCursor;
+      result.scanned += 1;
+      const state = notificationRouteCandidateState(settings, candidate);
+      if (state.partialDelivery) {
+        result.partialDeliveries += 1;
+        result.skipped += 1;
+        continue;
+      }
+      if (state.routeOutage) {
+        result.routeOutages += 1;
+        result.skipped += 1;
+        continue;
+      }
+      result.jobs.push(candidate);
+    }
+    if (page.length < pageSize || result.jobs.length >= maxJobs) break;
+  }
+  return result;
+}
+
+export async function scanNotificationRouteHealth<
+  T extends NotificationRouteCandidate,
+>(
+  settings: NotificationSettings,
+  pageSize: number,
+  readPage: (
+    cursor: NotificationRouteCursor | null,
+    pageSize: number,
+  ) => Promise<ReadonlyArray<T>>,
+  cursorFor: (candidate: T) => NotificationRouteCursor,
+): Promise<NotificationRouteHealthScan> {
+  if (!Number.isSafeInteger(pageSize) || pageSize < 1 || pageSize > 1000) {
+    throw new Error("notification_route_health_page_size_invalid");
+  }
+  const result: NotificationRouteHealthScan = {
+    scanned: 0,
+    skipped: 0,
+    routeOutages: 0,
+    partialDeliveries: 0,
+    pages: 0,
+  };
+  let cursor: NotificationRouteCursor | null = null;
+  while (true) {
+    const page = await readPage(cursor, pageSize);
+    if (!Array.isArray(page) || page.length > pageSize) {
+      throw new Error("notification_route_health_page_invalid");
+    }
+    result.pages += 1;
+    for (const candidate of page) {
+      const nextCursor = cursorFor(candidate);
+      if (!notificationRouteCursorAdvances(cursor, nextCursor)) {
+        throw new Error("notification_route_health_cursor_invalid");
+      }
+      cursor = nextCursor;
+      result.scanned += 1;
+      const state = notificationRouteCandidateState(settings, candidate);
+      if (state.partialDelivery) result.partialDeliveries += 1;
+      if (state.routeOutage) result.routeOutages += 1;
+      if (state.partialDelivery || state.routeOutage) result.skipped += 1;
+    }
+    if (page.length < pageSize) break;
+  }
+  return result;
 }
 
 export function notificationSettingsReady(

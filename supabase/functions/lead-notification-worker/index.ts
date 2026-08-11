@@ -1,6 +1,7 @@
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import {
+  isUuid,
   LEAD_NOTIFICATION_CLAIM_RPC,
   LEAD_NOTIFICATION_COMPLETE_RPC,
   LEAD_NOTIFICATION_EXHAUST_RPC,
@@ -11,6 +12,10 @@ import {
   notificationConfigurationOutage,
   notificationFromPersistedLead,
   notificationRoleRouteOutage,
+  type NotificationRouteCandidate,
+  notificationRouteCandidateState,
+  type NotificationRouteCursor,
+  type NotificationRouteScan,
   notificationSettings,
   notificationSettingsReady,
   notificationWorkerHttpStatus,
@@ -19,6 +24,8 @@ import {
   probeResendSendingAccess,
   resendCredentialOutage,
   type ResendOutcome,
+  scanNotificationRouteHealth,
+  scanRoutableNotificationJobs,
   sendOwnerNotificationEmail,
   STALE_DELIVERY_DELAY_MS,
   UNCONFIRMED_ACCEPTANCE_MS,
@@ -29,25 +36,24 @@ const SERVICE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") || "";
 const WORKER_TOKEN = Deno.env.get("LEAD_NOTIFICATION_WORKER_TOKEN") || "";
 const DEPLOYMENT_ID = Deno.env.get("DENO_DEPLOYMENT_ID") || "";
 const SETTINGS = notificationSettings((key) => Deno.env.get(key));
+const READY_JOB_LIMIT = 25;
+const EXPIRED_JOB_LIMIT = 10;
+const RECOVERY_PAGE_SIZE = 100;
+const FROZEN_ROUTE_HEALTH_PAGE_SIZE = 100;
+const RECOVERY_JOB_SELECT =
+  "id,lead_id,recipient_role,idempotency_key,attempts,status,retryable,claim_version,lease_expires_at,created_at,updated_at,delivery_from,delivery_to,delivery_reply_to,delivery_subject,delivery_text,delivery_tag_name,delivery_tag_value";
 
-type Job = {
-  id: string;
+type Job = NotificationRouteCandidate & {
   lead_id: number;
-  recipient_role: "primary" | "backup";
   idempotency_key: string;
   attempts: number;
   status: string;
   retryable: boolean;
   claim_version: number;
   lease_expires_at: string | null;
+  created_at: string;
   updated_at: string;
-  delivery_from: string | null;
-  delivery_to: string | null;
   delivery_reply_to: string | null;
-  delivery_subject: string | null;
-  delivery_text: string | null;
-  delivery_tag_name: string | null;
-  delivery_tag_value: string | null;
 };
 
 type HealthSummary = {
@@ -101,10 +107,177 @@ function validHealthCount(value: unknown): value is number {
   return Number.isSafeInteger(value) && (value as number) >= 0;
 }
 
+type RecoverySet = "ready" | "expired";
+
+function recoveryOrderColumn(set: RecoverySet): "created_at" | "updated_at" {
+  return set === "ready" ? "created_at" : "updated_at";
+}
+
+function nullableString(value: unknown): value is string | null {
+  return value === null || typeof value === "string";
+}
+
+function validRecoveryJob(value: unknown, set: RecoverySet): value is Job {
+  if (!value || typeof value !== "object" || Array.isArray(value)) return false;
+  const job = value as Record<string, unknown>;
+  const expectedStatus = set === "ready"
+    ? ["pending", "failed"].includes(String(job.status))
+    : job.status === "sending";
+  const timestampFields = [job.created_at, job.updated_at];
+  const deliveryFields = [
+    job.delivery_from,
+    job.delivery_to,
+    job.delivery_reply_to,
+    job.delivery_subject,
+    job.delivery_text,
+    job.delivery_tag_name,
+    job.delivery_tag_value,
+  ];
+  return isUuid(job.id) && Number.isSafeInteger(job.lead_id) &&
+    (job.lead_id as number) > 0 &&
+    ["primary", "backup"].includes(String(job.recipient_role)) &&
+    typeof job.idempotency_key === "string" &&
+    job.idempotency_key.length > 0 && job.idempotency_key.length <= 240 &&
+    Number.isInteger(job.attempts) && (job.attempts as number) >= 0 &&
+    (job.attempts as number) < MAX_NOTIFICATION_ATTEMPTS &&
+    expectedStatus && job.retryable === true &&
+    Number.isSafeInteger(job.claim_version) &&
+    (job.claim_version as number) >= 0 &&
+    (job.lease_expires_at === null ||
+      (typeof job.lease_expires_at === "string" &&
+        Number.isFinite(Date.parse(job.lease_expires_at)))) &&
+    (set !== "expired" ||
+      (typeof job.lease_expires_at === "string" &&
+        Number.isFinite(Date.parse(job.lease_expires_at)))) &&
+    timestampFields.every((field) =>
+      typeof field === "string" && Number.isFinite(Date.parse(field))
+    ) && deliveryFields.every(nullableString);
+}
+
+async function readRecoveryJobPage(
+  supabase: any,
+  set: RecoverySet,
+  runStartedAt: string,
+  cursor: NotificationRouteCursor | null,
+  pageSize: number,
+): Promise<Job[]> {
+  const orderColumn = recoveryOrderColumn(set);
+  let query = supabase.from("lead_notifications").select(RECOVERY_JOB_SELECT);
+  query = set === "ready"
+    ? query.in("status", ["pending", "failed"])
+      .eq("retryable", true)
+      .lt("attempts", MAX_NOTIFICATION_ATTEMPTS)
+      .lte("next_attempt_at", runStartedAt)
+    : query.eq("status", "sending")
+      .eq("retryable", true)
+      .lt("attempts", MAX_NOTIFICATION_ATTEMPTS)
+      .lte("lease_expires_at", runStartedAt);
+  if (cursor) {
+    query = query.or(
+      `${orderColumn}.gt.${cursor.orderedAt},and(${orderColumn}.eq.${cursor.orderedAt},id.gt.${cursor.id})`,
+    );
+  }
+  const { data, error } = await query
+    .order(orderColumn, { ascending: true })
+    .order("id", { ascending: true })
+    .limit(pageSize);
+  if (
+    error || !Array.isArray(data) || data.length > pageSize ||
+    !data.every((row) => validRecoveryJob(row, set))
+  ) {
+    throw new Error(`notification_${set}_page_read_failed`);
+  }
+  return data as Job[];
+}
+
+function recoveryCursorFor(
+  set: RecoverySet,
+  job: Job,
+): NotificationRouteCursor {
+  return {
+    orderedAt: set === "ready" ? job.created_at : job.updated_at,
+    id: job.id,
+  };
+}
+
+async function scanRecoverySet(
+  supabase: any,
+  set: RecoverySet,
+  runStartedAt: string,
+  maxJobs: number,
+): Promise<NotificationRouteScan<Job>> {
+  return await scanRoutableNotificationJobs(
+    SETTINGS,
+    maxJobs,
+    RECOVERY_PAGE_SIZE,
+    (cursor, pageSize) =>
+      readRecoveryJobPage(
+        supabase,
+        set,
+        runStartedAt,
+        cursor,
+        pageSize,
+      ),
+    (job) => recoveryCursorFor(set, job),
+  );
+}
+
+async function scanActiveRouteHealth(
+  supabase: any,
+  runStartedAt: string,
+): Promise<{ routeOutages: number; partialDeliveries: number }> {
+  const scans = await Promise.all(
+    (["ready", "expired"] as const).map((set) =>
+      scanNotificationRouteHealth(
+        SETTINGS,
+        FROZEN_ROUTE_HEALTH_PAGE_SIZE,
+        (cursor, pageSize) =>
+          readRecoveryJobPage(
+            supabase,
+            set,
+            runStartedAt,
+            cursor,
+            pageSize,
+          ),
+        (job) => recoveryCursorFor(set, job),
+      )
+    ),
+  );
+  return {
+    routeOutages: scans.reduce(
+      (total, scan) => total + scan.routeOutages,
+      0,
+    ),
+    partialDeliveries: scans.reduce(
+      (total, scan) => total + scan.partialDeliveries,
+      0,
+    ),
+  };
+}
+
+async function readActiveRouteHealth(
+  supabase: any,
+  summary: HealthSummary,
+  runStartedAt: string,
+): Promise<void> {
+  try {
+    const scan = await scanActiveRouteHealth(supabase, runStartedAt);
+    summary.credentialOutages += scan.routeOutages;
+    summary.persistenceErrors += scan.partialDeliveries;
+  } catch (error) {
+    console.error(
+      "[lead-notification-worker] active route health scan failed:",
+      error,
+    );
+    summary.persistenceErrors += 1;
+  }
+}
+
 async function readDurableHealth(
   supabase: any,
   summary: HealthSummary,
   now: Date,
+  includeActiveRouteHealth = true,
 ): Promise<void> {
   // These are read-only HEAD/count queries. Keep this helper mutation-free so
   // the authenticated deployment canary cannot claim, retry, reconcile,
@@ -184,6 +357,9 @@ async function readDurableHealth(
   summary.durableRetryable = durableRetryable as number;
   summary.staleDelayed = staleDelayed as number;
   summary.staleAccepted = staleAccepted as number;
+  if (includeActiveRouteHealth) {
+    await readActiveRouteHealth(supabase, summary, now.toISOString());
+  }
 }
 
 async function completeClaim(
@@ -274,46 +450,47 @@ Deno.serve(async (request: Request) => {
     return new Response("Retry", { status: 503 });
   }
 
-  const { data: ready, error: readyError } = await supabase
-    .from("lead_notifications")
-    .select(
-      "id,lead_id,recipient_role,idempotency_key,attempts,status,retryable,claim_version,lease_expires_at,updated_at,delivery_from,delivery_to,delivery_reply_to,delivery_subject,delivery_text,delivery_tag_name,delivery_tag_value",
-    )
-    .in("status", ["pending", "failed"])
-    .eq("retryable", true)
-    .lt("attempts", MAX_NOTIFICATION_ATTEMPTS)
-    .lte("next_attempt_at", now.toISOString())
-    .order("created_at", { ascending: true })
-    .limit(25);
-  const { data: stale, error: staleError } = await supabase
-    .from("lead_notifications")
-    .select(
-      "id,lead_id,recipient_role,idempotency_key,attempts,status,retryable,claim_version,lease_expires_at,updated_at,delivery_from,delivery_to,delivery_reply_to,delivery_subject,delivery_text,delivery_tag_name,delivery_tag_value",
-    )
-    .eq("status", "sending")
-    .eq("retryable", true)
-    .lt("attempts", MAX_NOTIFICATION_ATTEMPTS)
-    .lte("lease_expires_at", now.toISOString())
-    .order("updated_at", { ascending: true })
-    .limit(10);
-  if (readyError || staleError) {
-    console.error(
-      "[lead-notification-worker] queue read failed:",
-      readyError || staleError,
-    );
+  let readyScan: NotificationRouteScan<Job>;
+  let expiredScan: NotificationRouteScan<Job>;
+  let activeRouteHealth: {
+    routeOutages: number;
+    partialDeliveries: number;
+  };
+  try {
+    [readyScan, expiredScan, activeRouteHealth] = await Promise.all([
+      scanRecoverySet(
+        supabase,
+        "ready",
+        now.toISOString(),
+        READY_JOB_LIMIT,
+      ),
+      scanRecoverySet(
+        supabase,
+        "expired",
+        now.toISOString(),
+        EXPIRED_JOB_LIMIT,
+      ),
+      scanActiveRouteHealth(supabase, now.toISOString()),
+    ]);
+  } catch (error) {
+    console.error("[lead-notification-worker] queue scan failed:", error);
     return new Response("Retry", { status: 503 });
   }
 
   const jobs = [
     ...new Map(
-      [...(ready || []), ...(stale || [])].map((job: Job) => [job.id, job]),
+      [...readyScan.jobs, ...expiredScan.jobs].map((job) => [job.id, job]),
     ).values(),
   ];
+  const scanned = readyScan.scanned + expiredScan.scanned;
   const summary = healthSummary(
     reconciledCount as number,
-    jobs.length,
+    scanned,
     exhaustedCount as number,
   );
+  summary.credentialOutages += activeRouteHealth.routeOutages;
+  summary.persistenceErrors += activeRouteHealth.partialDeliveries;
+  summary.skipped += readyScan.skipped + expiredScan.skipped;
 
   for (const candidate of jobs) {
     const frozenFields = [
@@ -485,7 +662,7 @@ Deno.serve(async (request: Request) => {
   // Health comes from durable, unacknowledged state, not only failures seen by
   // this invocation. Scheduled recovery stays red until the provider condition
   // clears or an operator explicitly acknowledges the persisted alarm.
-  await readDurableHealth(supabase, summary, now);
+  await readDurableHealth(supabase, summary, now, false);
 
   const status = notificationWorkerHttpStatus(summary);
   summary.healthy = status === 200;
