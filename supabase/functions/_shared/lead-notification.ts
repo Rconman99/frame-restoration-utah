@@ -135,10 +135,10 @@ export function notificationSettings(
     apiKey: get("UTAH_LEAD_RESEND_API_KEY")?.trim() || "",
     from: get("UTAH_LEAD_RESEND_FROM")?.trim() || "",
     smsFrom: get("UTAH_LEAD_RESEND_SMS_FROM")?.trim() || "",
-    primaryEmail: get("LEAD_NOTIFICATION_PRIMARY_EMAIL") ||
-      "landon@framerestorations.com",
-    backupEmail: get("LEAD_NOTIFICATION_BACKUP_EMAIL") ||
-      "ryanconwell99@gmail.com",
+    primaryEmail: (get("LEAD_NOTIFICATION_PRIMARY_EMAIL") ||
+      "landon@framerestorations.com").trim(),
+    backupEmail: (get("LEAD_NOTIFICATION_BACKUP_EMAIL") ||
+      "ryanconwell99@gmail.com").trim(),
   };
 }
 
@@ -158,13 +158,79 @@ export function validResendSender(value: string): boolean {
   return notificationMailbox(bracketed ? bracketed[2] : trimmed) !== null;
 }
 
+function normalizedNotificationMailbox(value: string): string | null {
+  return notificationMailbox(value)?.toLowerCase() ?? null;
+}
+
+export function notificationRecipientsDistinct(
+  settings: NotificationSettings,
+): boolean {
+  const primaryMailbox = normalizedNotificationMailbox(settings.primaryEmail);
+  const backupMailbox = normalizedNotificationMailbox(settings.backupEmail);
+  return primaryMailbox !== null && backupMailbox !== null &&
+    primaryMailbox !== backupMailbox;
+}
+
+function recipientRouteOutage(
+  errorCode:
+    | "invalid_recipient_config"
+    | "duplicate_recipient_config"
+    | "recipient_route_mismatch",
+): ResendOutcome {
+  return {
+    status: "failed",
+    providerMessageId: null,
+    retryable: true,
+    errorCode,
+    errorMessage: {
+      invalid_recipient_config: "The owner notification recipient is invalid",
+      duplicate_recipient_config:
+        "Primary and backup owner notification recipients must be distinct",
+      recipient_route_mismatch:
+        "The frozen owner notification recipient does not match its current role",
+    }[errorCode],
+    httpStatus: null,
+  };
+}
+
+export function notificationRoleRouteOutage(
+  settings: NotificationSettings,
+  role: NotificationRole,
+  deliveryTo: string,
+): ResendOutcome | null {
+  const primaryMailbox = normalizedNotificationMailbox(settings.primaryEmail);
+  const backupMailbox = normalizedNotificationMailbox(settings.backupEmail);
+  const expectedMailbox = role === "primary" ? primaryMailbox : backupMailbox;
+  if (expectedMailbox === null) {
+    return recipientRouteOutage("invalid_recipient_config");
+  }
+  if (
+    primaryMailbox !== null && backupMailbox !== null &&
+    primaryMailbox === backupMailbox
+  ) {
+    return recipientRouteOutage("duplicate_recipient_config");
+  }
+  const actualMailbox = normalizedNotificationMailbox(deliveryTo);
+  if (actualMailbox === null) {
+    return recipientRouteOutage("invalid_recipient_config");
+  }
+  if (actualMailbox !== expectedMailbox) {
+    return recipientRouteOutage("recipient_route_mismatch");
+  }
+  return null;
+}
+
 export function notificationSettingsReady(
   settings: NotificationSettings,
 ): boolean {
-  // Core owner-email readiness is intentionally independent of the auxiliary
-  // Verizon gateway sender and of the other recipient lane. Each recipient is
-  // validated and attempted independently.
-  return settings.apiKey.length > 0 && validResendSender(settings.from);
+  // The auxiliary Verizon gateway sender remains independent, but the two
+  // owner-email lanes are one routing contract: both mailboxes must be valid
+  // and distinct. Compare their normalized values case-insensitively so a
+  // casing or surrounding-whitespace difference cannot route both jobs to the
+  // same inbox.
+  return settings.apiKey.trim().length > 0 &&
+    validResendSender(settings.from) &&
+    notificationRecipientsDistinct(settings);
 }
 
 export type ResendAuthProbe = {
@@ -232,6 +298,8 @@ export function resendCredentialOutage(
       outcome.errorCode === "missing_sender_config" ||
       outcome.errorCode === "invalid_sender_config" ||
       outcome.errorCode === "invalid_recipient_config" ||
+      outcome.errorCode === "duplicate_recipient_config" ||
+      outcome.errorCode === "recipient_route_mismatch" ||
       outcome.httpStatus === 401 || outcome.httpStatus === 403);
 }
 
@@ -472,6 +540,21 @@ export async function sendResendEmail(
       httpStatus: null,
     };
   }
+}
+
+export async function sendOwnerNotificationEmail(
+  fetcher: FetchLike,
+  settings: NotificationSettings,
+  role: NotificationRole,
+  email: ResendEmail,
+): Promise<ResendOutcome> {
+  const routingOutage = notificationRoleRouteOutage(
+    settings,
+    role,
+    email.to,
+  );
+  if (routingOutage) return routingOutage;
+  return await sendResendEmail(fetcher, settings.apiKey, email);
 }
 
 export function notificationConfigurationOutage(

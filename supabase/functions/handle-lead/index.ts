@@ -70,11 +70,13 @@ import {
   notificationFromPersistedLead,
   notificationRetryAllowed,
   type NotificationRole,
+  notificationRoleRouteOutage,
   notificationSettings,
   parseNotificationClaim,
   PERSISTED_LEAD_NOTIFICATION_SELECT,
   resendCredentialOutage,
   type ResendOutcome,
+  sendOwnerNotificationEmail,
   sendResendEmail,
 } from "../_shared/lead-notification.ts";
 import {
@@ -397,6 +399,12 @@ async function deliverOwnerNotification(
         subject,
         text,
       };
+    const routeOutage = notificationRoleRouteOutage(
+      NOTIFICATION_SETTINGS,
+      role,
+      delivery.to,
+    );
+    if (routeOutage) return routeOutage;
     const configurationOutage = notificationConfigurationOutage(
       NOTIFICATION_SETTINGS.apiKey,
       delivery.from,
@@ -427,15 +435,20 @@ async function deliverOwnerNotification(
   }
 
   if (!job) throw new Error("notification_claim_missing");
-  const result = await sendResendEmail(fetch, NOTIFICATION_SETTINGS.apiKey, {
-    from: job.delivery_from,
-    to: job.delivery_to,
-    replyTo: job.delivery_reply_to || undefined,
-    subject: job.delivery_subject,
-    text: job.delivery_text,
-    idempotencyKey: job.idempotency_key,
-    tags: [{ name: job.delivery_tag_name, value: job.delivery_tag_value }],
-  });
+  const result = await sendOwnerNotificationEmail(
+    fetch,
+    NOTIFICATION_SETTINGS,
+    role,
+    {
+      from: job.delivery_from,
+      to: job.delivery_to,
+      replyTo: job.delivery_reply_to || undefined,
+      subject: job.delivery_subject,
+      text: job.delivery_text,
+      idempotencyKey: job.idempotency_key,
+      tags: [{ name: job.delivery_tag_name, value: job.delivery_tag_value }],
+    },
+  );
 
   if (job) {
     const now = new Date();
@@ -894,7 +907,7 @@ Deno.serve(async (req: Request) => {
 
     if (ownerEmailCredentialOutage || ownerEmailRetryableFailure) {
       console.error(
-        "[handle-lead] owner email provider authentication is unavailable; durable retries remain queued",
+        "[handle-lead] owner email provider or routing configuration is unavailable; durable retries remain queued",
       );
       return leadFailureResponse(
         nativeForm,

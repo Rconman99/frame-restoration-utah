@@ -10,7 +10,9 @@ import {
   notificationCompletionArgs,
   notificationFromPersistedLead,
   notificationIdempotencyKey,
+  notificationRecipientsDistinct,
   notificationRetryAllowed,
+  notificationRoleRouteOutage,
   notificationSettings,
   notificationSettingsReady,
   notificationWorkerHttpStatus,
@@ -20,6 +22,7 @@ import {
   resendCredentialOutage,
   resendStatusForEvent,
   retryableResendStatus,
+  sendOwnerNotificationEmail,
   sendResendEmail,
 } from "./lead-notification.ts";
 
@@ -93,14 +96,6 @@ Deno.test("notification senders are Utah-scoped and fail closed without verified
   assertEquals(settings.from, "Utah <lead@example.com>");
   assertEquals(notificationSettingsReady(settings), true);
   assertEquals(
-    notificationSettingsReady({
-      ...settings,
-      smsFrom: "",
-      backupEmail: "not-an-email",
-    }),
-    true,
-  );
-  assertEquals(
     notificationSettings((key) =>
       key === "RESEND_FROM" ? "Wrong Market <wrong@example.net>" : undefined
     ).from,
@@ -116,8 +111,119 @@ Deno.test("notification senders are Utah-scoped and fail closed without verified
     notificationSettingsReady(notificationSettings(() => undefined)),
     false,
   );
-  assertEquals(settings.primaryEmail, "landon@framerestorations.com");
-  assertEquals(settings.backupEmail, "ryanconwell99@gmail.com");
+  const defaults = notificationSettings(() => undefined);
+  assertEquals(defaults.primaryEmail, "landon@framerestorations.com");
+  assertEquals(defaults.backupEmail, "ryanconwell99@gmail.com");
+});
+
+Deno.test("owner notification routes must be valid and normalized-distinct", () => {
+  const values: Record<string, string> = {
+    UTAH_LEAD_RESEND_API_KEY: "utah-scoped-key",
+    UTAH_LEAD_RESEND_FROM: "Utah <lead@example.com>",
+    UTAH_LEAD_RESEND_SMS_FROM: "",
+    LEAD_NOTIFICATION_PRIMARY_EMAIL: "  Landon@example.com ",
+    LEAD_NOTIFICATION_BACKUP_EMAIL: " backup@example.com  ",
+  };
+  const settings = notificationSettings((key) => values[key]);
+  assertEquals(settings.primaryEmail, "Landon@example.com");
+  assertEquals(settings.backupEmail, "backup@example.com");
+  assertEquals(notificationRecipientsDistinct(settings), true);
+  assertEquals(notificationSettingsReady(settings), true);
+  for (
+    const [primaryEmail, backupEmail, ready] of [
+      ["not-an-email", settings.backupEmail, false],
+      [settings.primaryEmail, "not-an-email", false],
+      ["Owner@example.com", "owner@example.com", false],
+      ["  Owner@example.com ", "OWNER@EXAMPLE.COM  ", false],
+      ["  Landon@example.com ", " BACKUP@example.com  ", true],
+    ] as const
+  ) {
+    assertEquals(
+      notificationSettingsReady({ ...settings, primaryEmail, backupEmail }),
+      ready,
+    );
+  }
+  const whitespaceValues: Record<string, string> = {
+    UTAH_LEAD_RESEND_API_KEY: "utah-scoped-key",
+    UTAH_LEAD_RESEND_FROM: "Utah <lead@example.com>",
+    LEAD_NOTIFICATION_BACKUP_EMAIL: "   ",
+  };
+  const whitespaceRoute = notificationSettings((key) => whitespaceValues[key]);
+  assertEquals(whitespaceRoute.backupEmail, "");
+  assertEquals(notificationSettingsReady(whitespaceRoute), false);
+});
+
+Deno.test("duplicate and stale frozen owner routes never reach provider fetch", async () => {
+  const settings = {
+    apiKey: "utah-scoped-key",
+    from: "Utah <lead@example.com>",
+    smsFrom: "",
+    primaryEmail: "Landon@example.com",
+    backupEmail: "backup@example.com",
+  };
+  const email = {
+    from: settings.from,
+    to: settings.primaryEmail,
+    subject: "Test",
+    text: "Body",
+    idempotencyKey: "stable-key",
+  };
+  let providerFetches = 0;
+  const fetcher = async () => {
+    providerFetches += 1;
+    return Response.json({ id: "provider-id" });
+  };
+
+  for (
+    const fixture of [
+      {
+        settings: {
+          ...settings,
+          primaryEmail: " Owner@example.com ",
+          backupEmail: "OWNER@EXAMPLE.COM",
+        },
+        role: "primary" as const,
+        to: "owner@example.com",
+        code: "duplicate_recipient_config",
+      },
+      {
+        settings,
+        role: "backup" as const,
+        to: settings.primaryEmail,
+        code: "recipient_route_mismatch",
+      },
+    ]
+  ) {
+    const outcome = await sendOwnerNotificationEmail(
+      fetcher,
+      fixture.settings,
+      fixture.role,
+      { ...email, to: fixture.to },
+    );
+    assertEquals(outcome.errorCode, fixture.code);
+    assertEquals(outcome.retryable, true);
+    assertEquals(resendCredentialOutage(outcome), true);
+  }
+  assertEquals(providerFetches, 0);
+
+  const invalidPeer = { ...settings, backupEmail: "not-an-email" };
+  assertEquals(
+    notificationRoleRouteOutage(
+      invalidPeer,
+      "primary",
+      settings.primaryEmail,
+    ),
+    null,
+  );
+  assertEquals(
+    notificationRoleRouteOutage(invalidPeer, "backup", "not-an-email")
+      ?.errorCode,
+    "invalid_recipient_config",
+  );
+  assertEquals(
+    notificationRoleRouteOutage(settings, "backup", " BACKUP@EXAMPLE.COM "),
+    null,
+  );
 });
 
 Deno.test("invalid sender or owner recipient fails recoverably before network", async () => {

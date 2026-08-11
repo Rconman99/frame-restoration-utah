@@ -10,14 +10,16 @@ import {
   notificationCompletionArgs,
   notificationConfigurationOutage,
   notificationFromPersistedLead,
+  notificationRoleRouteOutage,
   notificationSettings,
+  notificationSettingsReady,
   notificationWorkerHttpStatus,
   parseNotificationClaim,
   PERSISTED_LEAD_NOTIFICATION_SELECT,
   probeResendSendingAccess,
   resendCredentialOutage,
   type ResendOutcome,
-  sendResendEmail,
+  sendOwnerNotificationEmail,
   STALE_DELIVERY_DELAY_MS,
   UNCONFIRMED_ACCEPTANCE_MS,
 } from "../_shared/lead-notification.ts";
@@ -82,16 +84,7 @@ function healthSummary(
     // Missing provider configuration must stay red even when the queue is
     // empty. The health-only canary therefore proves provider configuration
     // without claiming, mutating, or sending any queued notification.
-    credentialOutages: [SETTINGS.primaryEmail, SETTINGS.backupEmail].some(
-        (recipient) =>
-          notificationConfigurationOutage(
-            SETTINGS.apiKey,
-            SETTINGS.from,
-            recipient,
-          ) !== null,
-      )
-      ? 1
-      : 0,
+    credentialOutages: notificationSettingsReady(SETTINGS) ? 0 : 1,
     durableTerminal: 0,
     durableCredentialOutages: 0,
     durableRetryable: 0,
@@ -142,6 +135,8 @@ async function readDurableHealth(
       "missing_sender_config",
       "invalid_sender_config",
       "invalid_recipient_config",
+      "duplicate_recipient_config",
+      "recipient_route_mismatch",
     ])
     .is("health_acknowledged_at", null);
   const { count: durableRetryable, error: durableRetryableError } =
@@ -389,6 +384,16 @@ Deno.serve(async (request: Request) => {
         continue;
       }
     }
+    const routeOutage = notificationRoleRouteOutage(
+      SETTINGS,
+      candidate.recipient_role,
+      delivery.to,
+    );
+    if (routeOutage) {
+      summary.credentialOutages += 1;
+      summary.skipped += 1;
+      continue;
+    }
     const configurationOutage = notificationConfigurationOutage(
       SETTINGS.apiKey,
       delivery.from,
@@ -425,18 +430,23 @@ Deno.serve(async (request: Request) => {
       continue;
     }
 
-    const result = await sendResendEmail(fetch, SETTINGS.apiKey, {
-      from: claimed.delivery_from,
-      to: claimed.delivery_to,
-      replyTo: claimed.delivery_reply_to || undefined,
-      subject: claimed.delivery_subject,
-      text: claimed.delivery_text,
-      idempotencyKey: claimed.idempotency_key,
-      tags: [{
-        name: claimed.delivery_tag_name,
-        value: claimed.delivery_tag_value,
-      }],
-    });
+    const result = await sendOwnerNotificationEmail(
+      fetch,
+      SETTINGS,
+      claimed.recipient_role,
+      {
+        from: claimed.delivery_from,
+        to: claimed.delivery_to,
+        replyTo: claimed.delivery_reply_to || undefined,
+        subject: claimed.delivery_subject,
+        text: claimed.delivery_text,
+        idempotencyKey: claimed.idempotency_key,
+        tags: [{
+          name: claimed.delivery_tag_name,
+          value: claimed.delivery_tag_value,
+        }],
+      },
+    );
     const finishedAt = new Date();
     const completion = await completeClaim(
       supabase,
