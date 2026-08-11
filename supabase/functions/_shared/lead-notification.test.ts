@@ -1,4 +1,4 @@
-import { assertEquals } from "jsr:@std/assert";
+import { assertEquals, assertRejects } from "jsr:@std/assert";
 import {
   buildLeadNotification,
   deferredNotificationOutcome,
@@ -10,7 +10,10 @@ import {
   notificationCompletionArgs,
   notificationFromPersistedLead,
   notificationIdempotencyKey,
+  notificationRecipientsDistinct,
   notificationRetryAllowed,
+  notificationRoleRouteOutage,
+  type NotificationRouteCandidate,
   notificationSettings,
   notificationSettingsReady,
   notificationWorkerHttpStatus,
@@ -20,6 +23,9 @@ import {
   resendCredentialOutage,
   resendStatusForEvent,
   retryableResendStatus,
+  scanNotificationRouteHealth,
+  scanRoutableNotificationJobs,
+  sendOwnerNotificationEmail,
   sendResendEmail,
 } from "./lead-notification.ts";
 
@@ -93,14 +99,6 @@ Deno.test("notification senders are Utah-scoped and fail closed without verified
   assertEquals(settings.from, "Utah <lead@example.com>");
   assertEquals(notificationSettingsReady(settings), true);
   assertEquals(
-    notificationSettingsReady({
-      ...settings,
-      smsFrom: "",
-      backupEmail: "not-an-email",
-    }),
-    true,
-  );
-  assertEquals(
     notificationSettings((key) =>
       key === "RESEND_FROM" ? "Wrong Market <wrong@example.net>" : undefined
     ).from,
@@ -116,8 +114,288 @@ Deno.test("notification senders are Utah-scoped and fail closed without verified
     notificationSettingsReady(notificationSettings(() => undefined)),
     false,
   );
-  assertEquals(settings.primaryEmail, "landon@framerestorations.com");
-  assertEquals(settings.backupEmail, "ryanconwell99@gmail.com");
+  const defaults = notificationSettings(() => undefined);
+  assertEquals(defaults.primaryEmail, "landon@framerestorations.com");
+  assertEquals(defaults.backupEmail, "ryanconwell99@gmail.com");
+});
+
+Deno.test("owner notification routes must be valid and normalized-distinct", () => {
+  const values: Record<string, string> = {
+    UTAH_LEAD_RESEND_API_KEY: "utah-scoped-key",
+    UTAH_LEAD_RESEND_FROM: "Utah <lead@example.com>",
+    UTAH_LEAD_RESEND_SMS_FROM: "",
+    LEAD_NOTIFICATION_PRIMARY_EMAIL: "  Landon@example.com ",
+    LEAD_NOTIFICATION_BACKUP_EMAIL: " backup@example.com  ",
+  };
+  const settings = notificationSettings((key) => values[key]);
+  assertEquals(settings.primaryEmail, "Landon@example.com");
+  assertEquals(settings.backupEmail, "backup@example.com");
+  assertEquals(notificationRecipientsDistinct(settings), true);
+  assertEquals(notificationSettingsReady(settings), true);
+  for (
+    const [primaryEmail, backupEmail, ready] of [
+      ["not-an-email", settings.backupEmail, false],
+      [settings.primaryEmail, "not-an-email", false],
+      ["Owner@example.com", "owner@example.com", false],
+      ["  Owner@example.com ", "OWNER@EXAMPLE.COM  ", false],
+      ["  Landon@example.com ", " BACKUP@example.com  ", true],
+    ] as const
+  ) {
+    assertEquals(
+      notificationSettingsReady({ ...settings, primaryEmail, backupEmail }),
+      ready,
+    );
+  }
+  const whitespaceValues: Record<string, string> = {
+    UTAH_LEAD_RESEND_API_KEY: "utah-scoped-key",
+    UTAH_LEAD_RESEND_FROM: "Utah <lead@example.com>",
+    LEAD_NOTIFICATION_BACKUP_EMAIL: "   ",
+  };
+  const whitespaceRoute = notificationSettings((key) => whitespaceValues[key]);
+  assertEquals(whitespaceRoute.backupEmail, "");
+  assertEquals(notificationSettingsReady(whitespaceRoute), false);
+});
+
+Deno.test("duplicate and stale frozen owner routes never reach provider fetch", async () => {
+  const settings = {
+    apiKey: "utah-scoped-key",
+    from: "Utah <lead@example.com>",
+    smsFrom: "",
+    primaryEmail: "Landon@example.com",
+    backupEmail: "backup@example.com",
+  };
+  const email = {
+    from: settings.from,
+    to: settings.primaryEmail,
+    subject: "Test",
+    text: "Body",
+    idempotencyKey: "stable-key",
+  };
+  let providerFetches = 0;
+  const fetcher = async () => {
+    providerFetches += 1;
+    return Response.json({ id: "provider-id" });
+  };
+
+  for (
+    const fixture of [
+      {
+        settings: {
+          ...settings,
+          primaryEmail: " Owner@example.com ",
+          backupEmail: "OWNER@EXAMPLE.COM",
+        },
+        role: "primary" as const,
+        to: "owner@example.com",
+        code: "duplicate_recipient_config",
+      },
+      {
+        settings,
+        role: "backup" as const,
+        to: settings.primaryEmail,
+        code: "recipient_route_mismatch",
+      },
+    ]
+  ) {
+    const outcome = await sendOwnerNotificationEmail(
+      fetcher,
+      fixture.settings,
+      fixture.role,
+      { ...email, to: fixture.to },
+    );
+    assertEquals(outcome.errorCode, fixture.code);
+    assertEquals(outcome.retryable, true);
+    assertEquals(resendCredentialOutage(outcome), true);
+  }
+  assertEquals(providerFetches, 0);
+
+  const invalidPeer = { ...settings, backupEmail: "not-an-email" };
+  assertEquals(
+    notificationRoleRouteOutage(
+      invalidPeer,
+      "primary",
+      settings.primaryEmail,
+    ),
+    null,
+  );
+  assertEquals(
+    notificationRoleRouteOutage(invalidPeer, "backup", "not-an-email")
+      ?.errorCode,
+    "invalid_recipient_config",
+  );
+  assertEquals(
+    notificationRoleRouteOutage(settings, "backup", " BACKUP@EXAMPLE.COM "),
+    null,
+  );
+});
+
+Deno.test("route scans cross blocked ready and expired pages without consuming runnable caps", async () => {
+  const settings = {
+    apiKey: "utah-scoped-key",
+    from: "Utah <lead@example.com>",
+    smsFrom: "",
+    primaryEmail: "primary@example.com",
+    backupEmail: "backup@example.com",
+  };
+  type Fixture = NotificationRouteCandidate & {
+    created_at: string;
+    updated_at: string;
+    status: string;
+  };
+  const fixture = (
+    index: number,
+    role: "primary" | "backup",
+    to: string,
+    status = "pending",
+  ): Fixture => {
+    const timestamp = new Date(Date.UTC(2026, 0, 1, 0, 0, index))
+      .toISOString();
+    return {
+      id: `job-${String(index).padStart(3, "0")}`,
+      recipient_role: role,
+      delivery_from: settings.from,
+      delivery_to: to,
+      delivery_subject: "Subject",
+      delivery_text: "Body",
+      delivery_tag_name: "frame_notification",
+      delivery_tag_value: "utah_owner_lead_v1",
+      created_at: timestamp,
+      updated_at: timestamp,
+      status,
+    };
+  };
+  const reader =
+    (rows: Fixture[], order: "created_at" | "updated_at") =>
+    async (cursor: { orderedAt: string; id: string } | null, size: number) => {
+      const start = cursor
+        ? rows.findIndex((row) =>
+          row[order] === cursor.orderedAt && row.id === cursor.id
+        ) + 1
+        : 0;
+      if (cursor && start === 0) throw new Error("cursor_not_found");
+      return rows.slice(start, start + size);
+    };
+  const cursorFor = (order: "created_at" | "updated_at") => (row: Fixture) => ({
+    orderedAt: row[order],
+    id: row.id,
+  });
+
+  const readyRows = [
+    ...Array.from(
+      { length: 99 },
+      (_, index) => fixture(index, "primary", settings.backupEmail),
+    ),
+    fixture(99, "backup", settings.primaryEmail),
+    ...Array.from(
+      { length: 25 },
+      (_, index) =>
+        fixture(
+          100 + index,
+          index % 2 === 0 ? "primary" : "backup",
+          index % 2 === 0 ? settings.primaryEmail : settings.backupEmail,
+        ),
+    ),
+  ];
+  for (const row of readyRows.slice(0, 100)) {
+    row.created_at = readyRows[0].created_at;
+  }
+  const ready = await scanRoutableNotificationJobs(
+    settings,
+    25,
+    100,
+    reader(readyRows, "created_at"),
+    cursorFor("created_at"),
+  );
+  assertEquals(ready.pages, 2);
+  assertEquals(ready.routeOutages, 100);
+  assertEquals(ready.jobs.length, 25);
+  assertEquals(ready.jobs[0].id, "job-100");
+  assertEquals(ready.jobs[24].id, "job-124");
+
+  const expiredRows = [
+    ...Array.from(
+      { length: 100 },
+      (_, index) =>
+        fixture(300 + index, "backup", settings.primaryEmail, "sending"),
+    ),
+    ...Array.from(
+      { length: 10 },
+      (_, index) =>
+        fixture(400 + index, "backup", settings.backupEmail, "sending"),
+    ),
+  ];
+  for (const row of expiredRows.slice(0, 100)) {
+    row.updated_at = expiredRows[0].updated_at;
+  }
+  const expired = await scanRoutableNotificationJobs(
+    settings,
+    10,
+    100,
+    reader(expiredRows, "updated_at"),
+    cursorFor("updated_at"),
+  );
+  assertEquals(expired.pages, 2);
+  assertEquals(expired.routeOutages, 100);
+  assertEquals(expired.jobs.length, 10);
+  assertEquals(expired.jobs[0].id, "job-400");
+  assertEquals(expired.jobs[9].id, "job-409");
+
+  const invalidPeerSettings = { ...settings, backupEmail: "not-an-email" };
+  const independent = await scanRoutableNotificationJobs(
+    invalidPeerSettings,
+    1,
+    1,
+    reader([
+      fixture(500, "backup", "not-an-email"),
+      fixture(501, "primary", settings.primaryEmail),
+    ], "created_at"),
+    cursorFor("created_at"),
+  );
+  assertEquals(independent.routeOutages, 1);
+  assertEquals(independent.jobs.map((row) => row.id), ["job-501"]);
+
+  const partial = { ...fixture(410, "backup", settings.backupEmail) };
+  partial.delivery_text = null;
+  const health = await scanNotificationRouteHealth(
+    settings,
+    100,
+    reader([...expiredRows, partial], "updated_at"),
+    cursorFor("updated_at"),
+  );
+  assertEquals(health.pages, 2);
+  assertEquals(health.routeOutages, 100);
+  assertEquals(health.partialDeliveries, 1);
+  assertEquals(
+    notificationWorkerHttpStatus({
+      exhausted: 0,
+      terminalFailed: 0,
+      credentialOutages: health.routeOutages,
+      retryableFailed: 0,
+      durableTerminal: 0,
+      durableCredentialOutages: 0,
+      durableRetryable: 0,
+      staleDelayed: 0,
+      staleAccepted: 0,
+      persistenceErrors: health.partialDeliveries,
+    }),
+    503,
+  );
+
+  await assertRejects(
+    () =>
+      scanRoutableNotificationJobs(
+        settings,
+        1,
+        2,
+        async (cursor) => {
+          if (cursor) throw new Error("second_page_failed");
+          return readyRows.slice(0, 2);
+        },
+        cursorFor("created_at"),
+      ),
+    Error,
+    "second_page_failed",
+  );
 });
 
 Deno.test("invalid sender or owner recipient fails recoverably before network", async () => {

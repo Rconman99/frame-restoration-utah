@@ -107,6 +107,41 @@ export type NotificationClaim = {
   delivery_tag_value: typeof RESEND_OWNER_TAG_VALUE;
 };
 
+export type NotificationRouteCandidate = {
+  id: string;
+  recipient_role: NotificationRole;
+  delivery_from: string | null;
+  delivery_to: string | null;
+  delivery_subject: string | null;
+  delivery_text: string | null;
+  delivery_tag_name: string | null;
+  delivery_tag_value: string | null;
+};
+
+export type NotificationRouteScan<T> = {
+  jobs: T[];
+  scanned: number;
+  skipped: number;
+  routeOutages: number;
+  partialDeliveries: number;
+  pages: number;
+};
+
+export type NotificationRouteCursor = {
+  orderedAt: string;
+  id: string;
+};
+
+export type NotificationRouteHealthScan = Omit<
+  NotificationRouteScan<never>,
+  "jobs"
+>;
+
+export type NotificationRouteCandidateState = {
+  partialDelivery: boolean;
+  routeOutage: ResendOutcome | null;
+};
+
 export type NotificationWorkerHealthCounts = {
   exhausted: number;
   terminalFailed: number;
@@ -135,10 +170,10 @@ export function notificationSettings(
     apiKey: get("UTAH_LEAD_RESEND_API_KEY")?.trim() || "",
     from: get("UTAH_LEAD_RESEND_FROM")?.trim() || "",
     smsFrom: get("UTAH_LEAD_RESEND_SMS_FROM")?.trim() || "",
-    primaryEmail: get("LEAD_NOTIFICATION_PRIMARY_EMAIL") ||
-      "landon@framerestorations.com",
-    backupEmail: get("LEAD_NOTIFICATION_BACKUP_EMAIL") ||
-      "ryanconwell99@gmail.com",
+    primaryEmail: (get("LEAD_NOTIFICATION_PRIMARY_EMAIL") ||
+      "landon@framerestorations.com").trim(),
+    backupEmail: (get("LEAD_NOTIFICATION_BACKUP_EMAIL") ||
+      "ryanconwell99@gmail.com").trim(),
   };
 }
 
@@ -158,13 +193,234 @@ export function validResendSender(value: string): boolean {
   return notificationMailbox(bracketed ? bracketed[2] : trimmed) !== null;
 }
 
+function normalizedNotificationMailbox(value: string): string | null {
+  return notificationMailbox(value)?.toLowerCase() ?? null;
+}
+
+export function notificationRecipientsDistinct(
+  settings: NotificationSettings,
+): boolean {
+  const primaryMailbox = normalizedNotificationMailbox(settings.primaryEmail);
+  const backupMailbox = normalizedNotificationMailbox(settings.backupEmail);
+  return primaryMailbox !== null && backupMailbox !== null &&
+    primaryMailbox !== backupMailbox;
+}
+
+function recipientRouteOutage(
+  errorCode:
+    | "invalid_recipient_config"
+    | "duplicate_recipient_config"
+    | "recipient_route_mismatch",
+): ResendOutcome {
+  return {
+    status: "failed",
+    providerMessageId: null,
+    retryable: true,
+    errorCode,
+    errorMessage: {
+      invalid_recipient_config: "The owner notification recipient is invalid",
+      duplicate_recipient_config:
+        "Primary and backup owner notification recipients must be distinct",
+      recipient_route_mismatch:
+        "The frozen owner notification recipient does not match its current role",
+    }[errorCode],
+    httpStatus: null,
+  };
+}
+
+export function notificationRoleRouteOutage(
+  settings: NotificationSettings,
+  role: NotificationRole,
+  deliveryTo: string,
+): ResendOutcome | null {
+  const primaryMailbox = normalizedNotificationMailbox(settings.primaryEmail);
+  const backupMailbox = normalizedNotificationMailbox(settings.backupEmail);
+  const expectedMailbox = role === "primary" ? primaryMailbox : backupMailbox;
+  if (expectedMailbox === null) {
+    return recipientRouteOutage("invalid_recipient_config");
+  }
+  if (
+    primaryMailbox !== null && backupMailbox !== null &&
+    primaryMailbox === backupMailbox
+  ) {
+    return recipientRouteOutage("duplicate_recipient_config");
+  }
+  const actualMailbox = normalizedNotificationMailbox(deliveryTo);
+  if (actualMailbox === null) {
+    return recipientRouteOutage("invalid_recipient_config");
+  }
+  if (actualMailbox !== expectedMailbox) {
+    return recipientRouteOutage("recipient_route_mismatch");
+  }
+  return null;
+}
+
+export function notificationRouteCandidateState(
+  settings: NotificationSettings,
+  candidate: NotificationRouteCandidate,
+): NotificationRouteCandidateState {
+  const frozenFields = [
+    candidate.delivery_from,
+    candidate.delivery_to,
+    candidate.delivery_subject,
+    candidate.delivery_text,
+    candidate.delivery_tag_name,
+    candidate.delivery_tag_value,
+  ];
+  const hasFrozenDelivery = frozenFields.every((value) =>
+    typeof value === "string" && value.length > 0
+  );
+  const partialDelivery = frozenFields.some((value) => value !== null) &&
+    !hasFrozenDelivery;
+  if (partialDelivery) return { partialDelivery, routeOutage: null };
+  if (!["primary", "backup"].includes(candidate.recipient_role)) {
+    return {
+      partialDelivery: false,
+      routeOutage: recipientRouteOutage("invalid_recipient_config"),
+    };
+  }
+  const deliveryTo = hasFrozenDelivery
+    ? candidate.delivery_to!
+    : candidate.recipient_role === "primary"
+    ? settings.primaryEmail
+    : settings.backupEmail;
+  return {
+    partialDelivery: false,
+    routeOutage: notificationRoleRouteOutage(
+      settings,
+      candidate.recipient_role,
+      deliveryTo,
+    ),
+  };
+}
+
+function notificationRouteCursorAdvances(
+  cursor: NotificationRouteCursor | null,
+  nextCursor: NotificationRouteCursor,
+): boolean {
+  return !!nextCursor && typeof nextCursor.orderedAt === "string" &&
+    nextCursor.orderedAt.length > 0 && typeof nextCursor.id === "string" &&
+    nextCursor.id.length > 0 &&
+    (cursor === null || nextCursor.orderedAt > cursor.orderedAt ||
+      (nextCursor.orderedAt === cursor.orderedAt && nextCursor.id > cursor.id));
+}
+
+export async function scanRoutableNotificationJobs<
+  T extends NotificationRouteCandidate,
+>(
+  settings: NotificationSettings,
+  maxJobs: number,
+  pageSize: number,
+  readPage: (
+    cursor: NotificationRouteCursor | null,
+    pageSize: number,
+  ) => Promise<ReadonlyArray<T>>,
+  cursorFor: (candidate: T) => NotificationRouteCursor,
+): Promise<NotificationRouteScan<T>> {
+  if (!Number.isSafeInteger(maxJobs) || maxJobs < 1) {
+    throw new Error("notification_route_scan_limit_invalid");
+  }
+  if (!Number.isSafeInteger(pageSize) || pageSize < 1 || pageSize > 1000) {
+    throw new Error("notification_route_scan_page_size_invalid");
+  }
+
+  const result: NotificationRouteScan<T> = {
+    jobs: [],
+    scanned: 0,
+    skipped: 0,
+    routeOutages: 0,
+    partialDeliveries: 0,
+    pages: 0,
+  };
+  let cursor: NotificationRouteCursor | null = null;
+  while (result.jobs.length < maxJobs) {
+    const page = await readPage(cursor, pageSize);
+    if (!Array.isArray(page) || page.length > pageSize) {
+      throw new Error("notification_route_scan_page_invalid");
+    }
+    result.pages += 1;
+    for (const candidate of page) {
+      if (result.jobs.length >= maxJobs) break;
+      const nextCursor = cursorFor(candidate);
+      if (!notificationRouteCursorAdvances(cursor, nextCursor)) {
+        throw new Error("notification_route_scan_cursor_invalid");
+      }
+      cursor = nextCursor;
+      result.scanned += 1;
+      const state = notificationRouteCandidateState(settings, candidate);
+      if (state.partialDelivery) {
+        result.partialDeliveries += 1;
+        result.skipped += 1;
+        continue;
+      }
+      if (state.routeOutage) {
+        result.routeOutages += 1;
+        result.skipped += 1;
+        continue;
+      }
+      result.jobs.push(candidate);
+    }
+    if (page.length < pageSize || result.jobs.length >= maxJobs) break;
+  }
+  return result;
+}
+
+export async function scanNotificationRouteHealth<
+  T extends NotificationRouteCandidate,
+>(
+  settings: NotificationSettings,
+  pageSize: number,
+  readPage: (
+    cursor: NotificationRouteCursor | null,
+    pageSize: number,
+  ) => Promise<ReadonlyArray<T>>,
+  cursorFor: (candidate: T) => NotificationRouteCursor,
+): Promise<NotificationRouteHealthScan> {
+  if (!Number.isSafeInteger(pageSize) || pageSize < 1 || pageSize > 1000) {
+    throw new Error("notification_route_health_page_size_invalid");
+  }
+  const result: NotificationRouteHealthScan = {
+    scanned: 0,
+    skipped: 0,
+    routeOutages: 0,
+    partialDeliveries: 0,
+    pages: 0,
+  };
+  let cursor: NotificationRouteCursor | null = null;
+  while (true) {
+    const page = await readPage(cursor, pageSize);
+    if (!Array.isArray(page) || page.length > pageSize) {
+      throw new Error("notification_route_health_page_invalid");
+    }
+    result.pages += 1;
+    for (const candidate of page) {
+      const nextCursor = cursorFor(candidate);
+      if (!notificationRouteCursorAdvances(cursor, nextCursor)) {
+        throw new Error("notification_route_health_cursor_invalid");
+      }
+      cursor = nextCursor;
+      result.scanned += 1;
+      const state = notificationRouteCandidateState(settings, candidate);
+      if (state.partialDelivery) result.partialDeliveries += 1;
+      if (state.routeOutage) result.routeOutages += 1;
+      if (state.partialDelivery || state.routeOutage) result.skipped += 1;
+    }
+    if (page.length < pageSize) break;
+  }
+  return result;
+}
+
 export function notificationSettingsReady(
   settings: NotificationSettings,
 ): boolean {
-  // Core owner-email readiness is intentionally independent of the auxiliary
-  // Verizon gateway sender and of the other recipient lane. Each recipient is
-  // validated and attempted independently.
-  return settings.apiKey.length > 0 && validResendSender(settings.from);
+  // The auxiliary Verizon gateway sender remains independent, but the two
+  // owner-email lanes are one routing contract: both mailboxes must be valid
+  // and distinct. Compare their normalized values case-insensitively so a
+  // casing or surrounding-whitespace difference cannot route both jobs to the
+  // same inbox.
+  return settings.apiKey.trim().length > 0 &&
+    validResendSender(settings.from) &&
+    notificationRecipientsDistinct(settings);
 }
 
 export type ResendAuthProbe = {
@@ -232,6 +488,8 @@ export function resendCredentialOutage(
       outcome.errorCode === "missing_sender_config" ||
       outcome.errorCode === "invalid_sender_config" ||
       outcome.errorCode === "invalid_recipient_config" ||
+      outcome.errorCode === "duplicate_recipient_config" ||
+      outcome.errorCode === "recipient_route_mismatch" ||
       outcome.httpStatus === 401 || outcome.httpStatus === 403);
 }
 
@@ -472,6 +730,21 @@ export async function sendResendEmail(
       httpStatus: null,
     };
   }
+}
+
+export async function sendOwnerNotificationEmail(
+  fetcher: FetchLike,
+  settings: NotificationSettings,
+  role: NotificationRole,
+  email: ResendEmail,
+): Promise<ResendOutcome> {
+  const routingOutage = notificationRoleRouteOutage(
+    settings,
+    role,
+    email.to,
+  );
+  if (routingOutage) return routingOutage;
+  return await sendResendEmail(fetcher, settings.apiKey, email);
 }
 
 export function notificationConfigurationOutage(

@@ -170,6 +170,7 @@ Deno.test("worker deployment canary is authenticated, read-only, and no-send", (
   for (
     const forbidden of [
       "sendResendEmail",
+      "sendOwnerNotificationEmail",
       "LEAD_NOTIFICATION_CLAIM_RPC",
       "LEAD_NOTIFICATION_COMPLETE_RPC",
       "LEAD_NOTIFICATION_EXHAUST_RPC",
@@ -211,6 +212,144 @@ Deno.test("worker deployment canary is authenticated, read-only, and no-send", (
       !worker.includes("staleDelayed || 0") &&
       !worker.includes("staleAccepted || 0"),
     "missing/null durable count receipts can still pass health as zero",
+  );
+});
+
+Deno.test("durable capture precedes role routing guards and claims remain blocked", () => {
+  const handlerStart = handleLead.indexOf("Deno.serve(async (req: Request)");
+  const leadInsert = handleLead.indexOf(
+    '.from(\n        "leads",',
+    handlerStart,
+  );
+  const ownerDispatch = handleLead.indexOf(
+    "const [primaryEmail, backupEmail] = await Promise.all([",
+    leadInsert,
+  );
+  assert(
+    handlerStart >= 0 && leadInsert > handlerStart &&
+      ownerDispatch > leadInsert &&
+      !handleLead.slice(handlerStart, leadInsert).includes(
+        "notificationRoleRouteOutage(",
+      ) &&
+      !handleLead.slice(handlerStart, leadInsert).includes(
+        "notificationSettingsReady(",
+      ),
+    "handle-lead can reject routing before durable lead/outbox capture",
+  );
+
+  const deliveryStart = handleLead.indexOf(
+    "const delivery = candidate.delivery_from",
+  );
+  const handlerRoutingGuard = handleLead.indexOf(
+    "notificationRoleRouteOutage(",
+    deliveryStart,
+  );
+  const handlerClaim = handleLead.indexOf(
+    "LEAD_NOTIFICATION_CLAIM_RPC",
+    handlerRoutingGuard,
+  );
+  const handlerProviderSend = handleLead.indexOf(
+    "sendOwnerNotificationEmail(",
+    handlerClaim,
+  );
+  assert(
+    deliveryStart >= 0 && handlerRoutingGuard > deliveryStart &&
+      handlerClaim > handlerRoutingGuard &&
+      handlerProviderSend > handlerClaim &&
+      handleLead.slice(handlerRoutingGuard, handlerClaim).includes(
+        "if (routeOutage) return routeOutage",
+      ),
+    "handle-lead can claim or provider-send before role routing validation",
+  );
+
+  const reconciliationStart = worker.indexOf(
+    "const { data: reconciledCount",
+  );
+  const workerLoop = worker.indexOf("for (const candidate of jobs)");
+  const workerRoutingGuard = worker.indexOf(
+    "notificationRoleRouteOutage(",
+    workerLoop,
+  );
+  const workerClaim = worker.indexOf(
+    "LEAD_NOTIFICATION_CLAIM_RPC",
+    workerRoutingGuard,
+  );
+  const workerProviderSend = worker.indexOf(
+    "sendOwnerNotificationEmail(",
+    workerClaim,
+  );
+  assert(
+    reconciliationStart >= 0 && workerLoop > reconciliationStart &&
+      workerRoutingGuard > workerLoop && workerClaim > workerRoutingGuard &&
+      workerProviderSend > workerClaim &&
+      worker.slice(workerRoutingGuard, workerClaim).includes(
+        "if (routeOutage)",
+      ) && worker.slice(workerRoutingGuard, workerClaim).includes("continue"),
+    "notification worker can claim or provider-send before role routing validation",
+  );
+});
+
+Deno.test("worker paginates both due sets and completes route health before claims", () => {
+  for (
+    const contract of [
+      "const READY_JOB_LIMIT = 25",
+      "const EXPIRED_JOB_LIMIT = 10",
+      "const RECOVERY_PAGE_SIZE = 100",
+      'type RecoverySet = "ready" | "expired"',
+      '.in("status", ["pending", "failed"])',
+      '.lte("next_attempt_at", runStartedAt)',
+      '.eq("status", "sending")',
+      '.lte("lease_expires_at", runStartedAt)',
+      ".order(orderColumn, { ascending: true })",
+      '.order("id", { ascending: true })',
+      "`${orderColumn}.gt.${cursor.orderedAt},and(${orderColumn}.eq.${cursor.orderedAt},id.gt.${cursor.id})`",
+      ".limit(pageSize)",
+      "!data.every((row) => validRecoveryJob(row, set))",
+      "isUuid(job.id)",
+      '["primary", "backup"].includes(String(job.recipient_role))',
+      "expectedStatus && job.retryable === true",
+      "timestampFields.every((field)",
+      "deliveryFields.every(nullableString)",
+    ]
+  ) {
+    assert(worker.includes(contract), `worker queue scan lacks ${contract}`);
+  }
+
+  const scanStart = worker.indexOf(
+    "[readyScan, expiredScan, activeRouteHealth] = await Promise.all([",
+  );
+  const scanFailure = worker.indexOf(
+    'return new Response("Retry", { status: 503 })',
+    scanStart,
+  );
+  const processingStart = worker.indexOf("for (const candidate of jobs)");
+  const preflight = worker.slice(scanStart, processingStart);
+  assert(
+    scanStart >= 0 && scanFailure > scanStart &&
+      processingStart > scanFailure &&
+      preflight.includes(
+        'scanRecoverySet(\n        supabase,\n        "ready"',
+      ) &&
+      preflight.includes(
+        'scanRecoverySet(\n        supabase,\n        "expired"',
+      ) &&
+      preflight.includes("scanActiveRouteHealth(") &&
+      !preflight.includes("LEAD_NOTIFICATION_CLAIM_RPC") &&
+      !preflight.includes("sendOwnerNotificationEmail("),
+    "worker can claim/send before complete ready, expired, and health scans",
+  );
+
+  const readPageStart = worker.indexOf("async function readRecoveryJobPage(");
+  const completeClaimStart = worker.indexOf("async function completeClaim(");
+  const readOnlyScans = worker.slice(readPageStart, completeClaimStart);
+  assert(
+    readPageStart >= 0 && completeClaimStart > readPageStart &&
+      readOnlyScans.includes("scanNotificationRouteHealth(") &&
+      readOnlyScans.includes('(["ready", "expired"] as const)') &&
+      readOnlyScans.includes("summary.persistenceErrors += 1") &&
+      !readOnlyScans.includes("supabase.rpc(") &&
+      !readOnlyScans.includes("sendOwnerNotificationEmail("),
+    "health route scan is not exhaustive, fail-closed, and read-only",
   );
 });
 
@@ -980,7 +1119,7 @@ Deno.test("inline duplicate recovery honors durable backoff and credential outag
     "const { data: candidate, error: candidateError }",
   );
   const sendStart = handleLead.indexOf(
-    "const result = await sendResendEmail",
+    "const result = await sendOwnerNotificationEmail",
     candidateStart,
   );
   assert(
@@ -1040,10 +1179,11 @@ Deno.test("inline duplicate recovery honors durable backoff and credential outag
     "background provider-auth outage is not visibly unhealthy",
   );
   assert(
-    worker.includes("SETTINGS.primaryEmail, SETTINGS.backupEmail") &&
-      worker.includes("notificationConfigurationOutage(") &&
-      !worker.includes("!SETTINGS.apiKey)"),
-    "invalid sender or owner recipients can pass an empty-queue health run",
+    worker.includes(
+      "credentialOutages: notificationSettingsReady(SETTINGS) ? 0 : 1",
+    ) && worker.includes("notificationRoleRouteOutage(") &&
+      handleLead.includes("notificationRoleRouteOutage("),
+    "invalid or duplicate owner recipients can pass worker health/recovery",
   );
   assert(
     handleLead.includes('"owner_notification_failed"'),
