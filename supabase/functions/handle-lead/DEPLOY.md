@@ -179,9 +179,12 @@ its bounded size.
 
 1. Capture full preflight function and secret metadata. A function capture has
    exact top-level fields `capture_version`, `captured_at`, `project_ref`,
-   `capture_method`, `functions`, and `probe_ezbr_sha256`; the preflight bundle
-   field is `null`. A secret capture has `capture_version`, `captured_at`,
-   `project_ref`, `capture_method`, and the complete `secrets` array. Point
+   `capture_method`, `functions`, and `probe_ezbr_sha256`; the preflight body
+   field is `null`. The legacy-named `probe_ezbr_sha256` field is the SHA-256 of
+   the bytes returned by the Management API function-body endpoint, not the
+   provider row's `ezbr_sha256`. A secret capture has `capture_version`,
+   `captured_at`, `project_ref`, `capture_method`, and the complete `secrets`
+   array. Point
    `CLIENT_IP_FUNCTIONS_PRE_PATH` and `CLIENT_IP_SECRETS_PRE_PATH` at those raw
    files. Every secret-metadata row has exactly `name`, `value`, and
    `updated_at`; despite the provider field name, `value` must be its lowercase
@@ -204,11 +207,20 @@ its bounded size.
 4. Capture full canary function and secret metadata in
    `CLIENT_IP_FUNCTIONS_CANARY_PATH` and `CLIENT_IP_SECRETS_CANARY_PATH`. The
    actual function row must have literal slug `client-ip-probe`, a unique UUID,
-   positive version, literal provider status `ACTIVE`, and `ezbr_sha256` equal to
-   the operator-captured `.ezbr` byte digest at the capture top level. Save the
-   actual bundle bytes separately at `CLIENT_IP_PROBE_EZBR_CANARY_PATH`; the
-   issuer hashes that mode-0600 binary itself and rejects a metadata-only digest.
-   The issuer computes the Management API tuple hash. `DENO_DEPLOYMENT_ID` is independently
+   positive version, literal provider status `ACTIVE`, and a lowercase-hex
+   provider `ezbr_sha256`. Save the body endpoint bytes separately at
+   `CLIENT_IP_PROBE_EZBR_CANARY_PATH`; the issuer hashes that mode-0600 binary
+   itself and rejects a metadata-only digest. Supabase's row digest represents
+   the compressed upload payload, while the body endpoint returns a repacked
+   ESZIP, so those two hashes are intentionally independent and MUST NOT be
+   asserted equal. The issuer records both, computes the provider-row Management
+   API tuple hash, and later requires both representations to remain stable.
+   In the signed receipt, legacy-named
+   `operator_captured_ezbr_bundle_sha256` records the body-endpoint digest;
+   `probe_function.ezbr_sha256` records the provider-row digest; and
+   `probe_function.management_api_body_sha256` repeats the body digest under an
+   explicit name.
+   `DENO_DEPLOYMENT_ID` is independently
    derived from successful response artifacts and must equal
    `project_ref_function_id_version`.
 5. In a second new isolated directory, capture the deployed source with pinned
@@ -274,9 +286,10 @@ its bounded size.
 7. Immediately before deletion, refresh the full function and secret metadata
    into `CLIENT_IP_FUNCTIONS_DELETE_RECHECK_PATH` and
    `CLIENT_IP_SECRETS_DELETE_RECHECK_PATH`. The function catalog and exact ACTIVE
-   tuple/bundle must equal the canary capture. Capture the recheck bundle bytes
-   independently at `CLIENT_IP_PROBE_EZBR_DELETE_RECHECK_PATH`; both byte hashes
-   must equal the tuple metadata. Every secret snapshot (pre,
+   tuple/body representation must equal the canary capture. Capture the recheck
+   body bytes independently at `CLIENT_IP_PROBE_EZBR_DELETE_RECHECK_PATH`; its
+   hash must equal the canary body hash, while the provider row digest must
+   independently equal the canary row digest. Every secret snapshot (pre,
    canary, recheck, post) must be identical. Delete using the literal probe slug
    only (`literal-slug-only`), never an ID, prefix, glob, or list-derived target.
    This is a **non-atomic** slug deletion: an exact tuple recheck immediately
