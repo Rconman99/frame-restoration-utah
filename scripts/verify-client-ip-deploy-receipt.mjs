@@ -45,6 +45,8 @@ const POSITIVE_CASES = [
 ];
 const NEGATIVE_CASES = ["missing-signature", "invalid-signature"];
 const REQUEST_CASES = [...POSITIVE_CASES, ...NEGATIVE_CASES];
+const GATEWAY_REJECTION_CASES = ["ipv4-forged-cf", "ipv6-forged-cf"];
+const EXACT_GATEWAY_REJECTION_BODY = "error code: 1000\n";
 
 function requireString(value, label) {
   if (typeof value !== "string" || value.length === 0) {
@@ -775,6 +777,24 @@ function readRequestArtifacts(manifest, deploySha, deploymentId) {
     ) {
       throw new Error(`client-IP ${caseId} request/status timing is invalid`);
     }
+    if (GATEWAY_REJECTION_CASES.includes(caseId)) {
+      if (
+        status.status !== 403 ||
+        responseArtifact.text !== EXACT_GATEWAY_REJECTION_BODY
+      ) {
+        throw new Error(
+          `client-IP ${caseId} must be the exact gateway HTTP 403 rejection`,
+        );
+      }
+      parsed.set(caseId, {
+        status: status.status,
+        observedAt,
+        observedAtText: status.observed_at,
+        family: requestContract.family,
+        requestAt: requestContract.requestAt,
+      });
+      continue;
+    }
     let body;
     try {
       body = parseJsonWithoutDuplicateKeys(
@@ -859,6 +879,18 @@ function signedPositiveCase(parsed, caseId, deploySha, deploymentId, outcome) {
   };
 }
 
+function signedGatewayRejectionCase(parsed, caseId) {
+  const observed = parsed.get(caseId);
+  return {
+    status: observed.status,
+    outcome: "gateway-rejected-forged-cf-connecting-ip",
+    request_shape: "exact-captured-request",
+    transport_family: observed.family,
+    exact_body: true,
+    function_metadata_exposed: false,
+  };
+}
+
 function buildRequestReceipt(parsed, deploySha, deploymentId) {
   const matrix = {};
   if (
@@ -870,11 +902,7 @@ function buildRequestReceipt(parsed, deploySha, deploymentId) {
   for (const family of ["ipv4", "ipv6"]) {
     const baselineId = `${family}-baseline`;
     const baseline = parsed.get(baselineId);
-    for (const suffix of [
-      "forged-cf",
-      "forged-x-real-ip",
-      "forged-x-forwarded-for",
-    ]) {
+    for (const suffix of ["forged-x-real-ip", "forged-x-forwarded-for"]) {
       if (parsed.get(`${family}-${suffix}`).fingerprint !== baseline.fingerprint) {
         throw new Error(
           `client-IP ${family} ${suffix} changed the selected client fingerprint`,
@@ -894,12 +922,9 @@ function buildRequestReceipt(parsed, deploySha, deploymentId) {
         canonical_source: "cf-connecting-ip",
         derived_key: "64-lowercase-hex-raw-free",
       },
-      forged_cf_connecting_ip: signedPositiveCase(
+      forged_cf_connecting_ip: signedGatewayRejectionCase(
         parsed,
         `${family}-forged-cf`,
-        deploySha,
-        deploymentId,
-        "gateway-overwritten-selected-fingerprint-unchanged",
       ),
       forged_x_real_ip: signedPositiveCase(
         parsed,
@@ -1431,6 +1456,30 @@ function verifySignedPositiveCase(item, label, family, deploySha, deploymentId, 
   }
 }
 
+function verifySignedGatewayRejection(item, label, family) {
+  assertExactKeys(
+    item,
+    [
+      "status",
+      "outcome",
+      "request_shape",
+      "transport_family",
+      "exact_body",
+      "function_metadata_exposed",
+    ],
+    label,
+  );
+  if (
+    item.status !== 403 ||
+    item.outcome !== "gateway-rejected-forged-cf-connecting-ip" ||
+    item.request_shape !== "exact-captured-request" ||
+    item.transport_family !== family || item.exact_body !== true ||
+    item.function_metadata_exposed !== false
+  ) {
+    throw new Error(`${label} lacks exact gateway rejection binding`);
+  }
+}
+
 function verifyMatrixPath(pathEvidence, label, deploySha, deploymentId) {
   assertExactKeys(
     pathEvidence,
@@ -1454,11 +1503,12 @@ function verifyMatrixPath(pathEvidence, label, deploySha, deploymentId) {
     deploymentId,
     "passed",
   );
+  verifySignedGatewayRejection(
+    pathEvidence.forged_cf_connecting_ip,
+    `${label} forged_cf_connecting_ip`,
+    label,
+  );
   for (const [name, outcome] of [
-    [
-      "forged_cf_connecting_ip",
-      "gateway-overwritten-selected-fingerprint-unchanged",
-    ],
     ["forged_x_real_ip", "selected-fingerprint-unchanged"],
     ["forged_x_forwarded_for", "selected-fingerprint-unchanged"],
   ]) {

@@ -77,17 +77,17 @@ const APPROVED_OPAQUE_ASSETS = Object.freeze({
 // silently expanding a critical tool's sinks, control flow, or subprocesses.
 // These are intentionally updated only after the semantic regression suite.
 const VERIFIER_SECURITY_SURFACE_SHA256 =
-  "d14f4af324dcc969c14ab43f45df891038fc5b679bf15fec2eb0227e57043b38";
+  "305e83850b82397e7d6d329d2c2330c0d744084b83d44dde633a9456f0939f42";
 const ISSUER_SECURITY_SURFACE_SHA256 =
   "14d6554f8adab745eb06ad947c54501ad287eb40813715c1039e36a1cf672747";
 const RENDERER_OUTPUT_SURFACE_SHA256 =
   "9a96422d770af9e6bddcd1a91313db157648faa9cc516b17eca992af04fbf414";
 const CLIENT_TEST_SPAWN_SURFACE_SHA256 =
-  "9cf93918e579b261d6b86d5e7d105779e3ebe7049a501448e75741744178c010";
+  "73260c1f5f1ba8aa3a0353d4a863be33271024cbd05f31c61326d0fc05508d03";
 const OWNER_TEST_SPAWN_SURFACE_SHA256 =
   "506d45a03413389a4ab1d07aeedfc9b4b1908420a156e0714b614d5dc233080a";
 const SCANNER_NORMALIZED_SOURCE_SHA256 =
-  "091a1cb8db26d8448a599da34bfb23403188161625e8d779ce86c671756197fe";
+  "5d2ff5c43e853e76b93e3566bdaa7111d239cbf31634aabd969dc8990c6f0eb2";
 const SIGNED_RECEIPT_PARSER_SHA256 =
   "1e854738f0555804f52266a1833cd279ef83482b4946a63c226781be045114df";
 const ISSUER_SIGNER_SHA256 =
@@ -104,15 +104,15 @@ const REVIEWED_CRITICAL_SOURCE_SHA256 = Object.freeze({
   "scripts/render-client-ip-probe.mjs":
     "b78a424c672f9df9309748b85608b653038fc7eddd806d1d2526dbd692b9fee0",
   "scripts/test-client-ip-deploy-receipt.mjs":
-    "c13da5863e8cddaa0ca87f71d0569c0d7e56c235bfccb75293270f452d886882",
+    "5c54c468125446a9fb5569338d79157597771f81334857dc349c2257a531031a",
   "scripts/test-owner-notification-deploy-receipt.mjs":
     "37b1d7a82ad3f0feedb461fcd3301f92e91323eb3c3710a8d6bbbf1c48a0d8e3",
   "scripts/verify-client-ip-deploy-receipt.mjs":
-    "582d71e2fbef2154e3335f2df7469588498fd43a7de5d238a6ba2bec3708fa9a",
+    "ad9369d94e7eb177216f57bfe84f580f335d9069278148c7357403eb8c2bb2df",
   "supabase/functions/_shared/client-ip.ts":
     "3e69a5e29a473c2697b3271e68ffead3cd427bc012383eae8cc97c3998458636",
   "supabase/functions/handle-lead/DEPLOY.md":
-    "282ac9461717f211b92bd37eaf4ce195d3efa9abc662095e2e99b93b04817b40",
+    "7fadf17288bb180d133abda8e01c5bd11599d2c725229c9f6b18da02a01d5808",
   "supabase/probe-templates/client-ip-probe/index.ts.tmpl":
     "1a45cf1b9d7dcc7ca514ff334b81e93b5024ff45301489c1f4e9ed20535e0c53",
 });
