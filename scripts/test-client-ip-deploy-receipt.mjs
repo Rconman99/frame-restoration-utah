@@ -98,6 +98,15 @@ const MANAGEMENT_API_BODY_SHA256 = crypto.createHash("sha256")
 const PROVIDER_EZBR_SHA256 = "e".repeat(64);
 const IPV4_FINGERPRINT = "1".repeat(64);
 const IPV6_FINGERPRINT = "2".repeat(64);
+const PLATFORM_MANAGED_SECRET_NAMES = [
+  "SUPABASE_ANON_KEY",
+  "SUPABASE_DB_URL",
+  "SUPABASE_JWKS",
+  "SUPABASE_PUBLISHABLE_KEYS",
+  "SUPABASE_SECRET_KEYS",
+  "SUPABASE_SERVICE_ROLE_KEY",
+  "SUPABASE_URL",
+];
 const artifacts = expectedClientIpProbeArtifacts({
   deploySha: SHA,
   templateSource: probeTemplateSource,
@@ -217,9 +226,11 @@ function buildRawArtifacts(tempRoot, now = NOW) {
     status: "ACTIVE",
     verify_jwt: false,
     ezbr_sha256: PROVIDER_EZBR_SHA256,
+    created_at: Date.parse(at(-700)),
+    updated_at: Date.parse(at(-700)),
   };
   const canaryFunctions = [...baseFunctions, probe];
-  const secrets = [
+  const userSecrets = [
     {
       name: "LEAD_NOTIFICATION_WORKER_TOKEN",
       value: "3".repeat(64),
@@ -230,6 +241,20 @@ function buildRawArtifacts(tempRoot, now = NOW) {
       value: "4".repeat(64),
       updated_at: at(-1290),
     },
+  ];
+  const platformSecrets = (updatedAt) =>
+    PLATFORM_MANAGED_SECRET_NAMES.map((name, index) => ({
+      name,
+      value: (index + 5).toString(16).repeat(64),
+      updated_at: updatedAt,
+    }));
+  const secretsPreDeploy = [
+    ...userSecrets,
+    ...platformSecrets(at(-1300)),
+  ];
+  const secretsPostDeploy = [
+    ...userSecrets,
+    ...platformSecrets(at(-700)),
   ];
   const baseDroplets = [{ id: "4001", name: "unrelated-existing-runner" }];
   const createdDroplet = { id: "9001", name: "utah-client-ip-ephemeral" };
@@ -260,19 +285,19 @@ function buildRawArtifacts(tempRoot, now = NOW) {
     ),
     secretsPre: writeJson0600(
       path.join(tempRoot, "secrets-pre.json"),
-      secretCapture(at(-760), secrets),
+      secretCapture(at(-760), secretsPreDeploy),
     ),
     secretsCanary: writeJson0600(
       path.join(tempRoot, "secrets-canary.json"),
-      secretCapture(at(-690), secrets),
+      secretCapture(at(-690), secretsPostDeploy),
     ),
     secretsRecheck: writeJson0600(
       path.join(tempRoot, "secrets-recheck.json"),
-      secretCapture(at(-495), secrets),
+      secretCapture(at(-495), secretsPostDeploy),
     ),
     secretsPost: writeJson0600(
       path.join(tempRoot, "secrets-post.json"),
-      secretCapture(at(-430), secrets),
+      secretCapture(at(-430), secretsPostDeploy),
     ),
     computePre: writeJson0600(
       path.join(tempRoot, "compute-pre.json"),
@@ -292,7 +317,7 @@ function buildRawArtifacts(tempRoot, now = NOW) {
     ),
     finalSecrets: writeJson0600(
       path.join(tempRoot, "final-live-secrets.json"),
-      secrets,
+      secretsPostDeploy,
     ),
   };
 
@@ -528,6 +553,25 @@ function withJsonMutation(filePath, mutate, assertion) {
     assertion();
   } finally {
     write0600(filePath, original);
+  }
+}
+
+function withJsonMutations(filePaths, mutate, assertion) {
+  const originals = filePaths.map((filePath) => [
+    filePath,
+    fs.readFileSync(filePath),
+  ]);
+  for (const [index, [filePath, original]] of originals.entries()) {
+    const value = JSON.parse(original.toString("utf8"));
+    mutate(value, index, filePath);
+    writeJson0600(filePath, value);
+  }
+  try {
+    assertion();
+  } finally {
+    for (const [filePath, original] of originals) {
+      write0600(filePath, original);
+    }
   }
 }
 
@@ -1170,7 +1214,7 @@ for (const [label, source] of [
   );
 }
 
-const tempRoot = fs.mkdtempSync(path.join(os.tmpdir(), "ut-client-ip-v3-hardening-"));
+const tempRoot = fs.mkdtempSync(path.join(os.tmpdir(), "ut-client-ip-v4-hardening-"));
 try {
   const raw = buildRawArtifacts(tempRoot);
   activeFinalStatePaths = raw.finalStatePaths;
@@ -1247,7 +1291,7 @@ try {
   write0600(capturedWrapper, originalWrapper);
 
   const issued = issue(raw);
-  assert.equal(issued.payload.receipt_version, 3);
+  assert.equal(issued.payload.receipt_version, 4);
   assert.equal(issued.payload.receipt_signature_scheme, "ed25519");
   assert.equal(issued.payload.target_function, "handle-lead");
   assert.equal(issued.payload.dispatch_nonce, DISPATCH_NONCE);
@@ -1281,6 +1325,38 @@ try {
   assert.equal(
     issued.payload.metadata_integrity.ephemeral_compute_created_then_absent,
     true,
+  );
+  assert.notEqual(
+    issued.payload.metadata_integrity.secrets_pre_sha256,
+    issued.payload.metadata_integrity.secrets_canary_sha256,
+  );
+  assert.equal(
+    issued.payload.metadata_integrity.secrets_canary_sha256,
+    issued.payload.metadata_integrity.secrets_delete_recheck_sha256,
+  );
+  assert.equal(
+    issued.payload.metadata_integrity.secrets_canary_sha256,
+    issued.payload.metadata_integrity.secrets_post_sha256,
+  );
+  assert.match(
+    issued.payload.metadata_integrity.secret_name_value_sha256,
+    /^[0-9a-f]{64}$/,
+  );
+  assert.match(
+    issued.payload.metadata_integrity.user_secret_metadata_sha256,
+    /^[0-9a-f]{64}$/,
+  );
+  for (const flag of [
+    "secret_name_values_all_stages_equal",
+    "user_secret_metadata_all_stages_equal",
+    "platform_secret_updated_at_refresh_only",
+    "post_deploy_secret_metadata_stable",
+  ]) {
+    assert.equal(issued.payload.metadata_integrity[flag], true, flag);
+  }
+  assert.equal(
+    Object.hasOwn(issued.payload.metadata_integrity, "secrets_all_stages_equal"),
+    false,
   );
   assert.equal(
     issued.payload.mutation_control.deletion_atomicity,
@@ -1343,6 +1419,18 @@ try {
   withJsonMutation(raw.files.finalSecrets, (value) => {
     value[0].value = "9".repeat(64);
   }, () => assert.throws(() => verifyPayload(issued.payload), /final live.*differs/));
+  withJsonMutation(raw.files.finalSecrets, (value) => {
+    const reference = value.find((row) => row.name === "SUPABASE_URL");
+    value.push({
+      name: "SUPABASE_FUTURE_KEY",
+      value: "c".repeat(64),
+      updated_at: reference.updated_at,
+    });
+  }, () => assert.throws(
+    () => verifyPayload(issued.payload),
+    /platform-managed secret allowlist differs/,
+    "final live state must reject an unreviewed provider-reserved row",
+  ));
   for (const finalPath of [raw.files.finalFunctions, raw.files.finalSecrets]) {
     mutateRawFile(finalPath, (text) => {
       const objectAt = text.indexOf("{");
@@ -1374,6 +1462,7 @@ try {
   );
 
   const receiptMutations = [
+    ["legacy receipt version", (p) => p.receipt_version = 3, /unsupported client-IP receipt/],
     ["CI self-protection overclaim", (p) => p.ci_trust_boundary.authorized_maintainer_ci_mutation_self_protected = true, /trust boundary/],
     ["source origin overclaim", (p) => p.source_binding.platform_origin_independently_verified = true, /provenance scope/],
     ["captured source drift", (p) => p.source_binding.operator_captured_source_manifest_sha256 = "d".repeat(64), /differs from exact source/],
@@ -1388,6 +1477,12 @@ try {
     ["gateway family", (p) => p.requests.matrix.ipv6.forged_cf_connecting_ip.transport_family = "ipv4", /gateway rejection binding/],
     ["fingerprint smuggling", (p) => p.requests.matrix.ipv4.baseline.fingerprint = IPV4_FINGERPRINT, /schema differs/],
     ["metadata restoration", (p) => p.metadata_integrity.secrets_canary_sha256 = "d".repeat(64), /metadata restoration/],
+    ["secret name/value digest", (p) => p.metadata_integrity.secret_name_value_sha256 = "d".repeat(64), /final live.*differs/],
+    ["user-secret metadata digest", (p) => p.metadata_integrity.user_secret_metadata_sha256 = "d".repeat(64), /final live.*differs/],
+    ["secret name/value equality flag", (p) => p.metadata_integrity.secret_name_values_all_stages_equal = false, /metadata restoration/],
+    ["user-secret metadata equality flag", (p) => p.metadata_integrity.user_secret_metadata_all_stages_equal = false, /metadata restoration/],
+    ["platform timestamp refresh flag", (p) => p.metadata_integrity.platform_secret_updated_at_refresh_only = false, /metadata restoration/],
+    ["post-deploy secret stability flag", (p) => p.metadata_integrity.post_deploy_secret_metadata_stable = false, /metadata restoration/],
     ["future effective lifetime", (p) => {
       p.issued_at = new Date(NOW.getTime() + 4 * 60 * 1000).toISOString();
       p.expires_at = new Date(NOW.getTime() + 19 * 60 * 1000).toISOString();
@@ -1431,8 +1526,91 @@ try {
     value.probe_ezbr_sha256 = MANAGEMENT_API_BODY_SHA256;
   }, () => assert.throws(() => issue(raw), /absent from preflight and postflight/));
   withJsonMutation(raw.files.secretsCanary, (value) => {
-    value.secrets[0].value = "5".repeat(64);
-  }, () => assert.throws(() => issue(raw), /secret metadata differs/));
+    value.secrets.find((row) => row.name === "SUPABASE_ANON_KEY").value =
+      "c".repeat(64);
+  }, () => assert.throws(
+    () => issue(raw),
+    /secret names or provider digests differ/,
+    "platform-managed provider digest drift must be rejected",
+  ));
+  withJsonMutation(raw.files.secretsCanary, (value) => {
+    value.secrets.find((row) =>
+      row.name === "LEAD_NOTIFICATION_WORKER_TOKEN"
+    ).updated_at = new Date(NOW.getTime() - 1_280_000).toISOString();
+  }, () => assert.throws(
+    () => issue(raw),
+    /user-managed secret metadata differs/,
+    "user-managed updated_at drift must be rejected",
+  ));
+  withJsonMutation(raw.files.secretsCanary, (value) => {
+    value.secrets.find((row) => row.name === "SUPABASE_ANON_KEY").updated_at =
+      new Date(NOW.getTime() - 699_000).toISOString();
+  }, () => assert.throws(
+    () => issue(raw),
+    /platform-managed updated_at values differ/,
+    "platform-managed timestamps must agree within each snapshot",
+  ));
+  withJsonMutation(raw.files.secretsRecheck, (value) => {
+    for (const row of value.secrets) {
+      if (PLATFORM_MANAGED_SECRET_NAMES.includes(row.name)) {
+        row.updated_at = new Date(NOW.getTime() - 650_000).toISOString();
+      }
+    }
+  }, () => assert.throws(
+    () => issue(raw),
+    /post-deploy secret metadata is not stable/,
+    "platform-managed timestamps must remain stable after the deploy refresh",
+  ));
+  withJsonMutation(raw.files.secretsCanary, (value) => {
+    value.secrets = value.secrets.filter((row) => row.name !== "SUPABASE_URL");
+  }, () => assert.throws(
+    () => issue(raw),
+    /platform-managed secret allowlist differs/,
+    "missing platform-managed allowlist members must be rejected",
+  ));
+  withJsonMutation(raw.files.secretsCanary, (value) => {
+    const platformRow = value.secrets.find((row) =>
+      row.name === "SUPABASE_URL"
+    );
+    platformRow.name = "SUPABASE_FUTURE_KEY";
+  }, () => assert.throws(
+    () => issue(raw),
+    /platform-managed secret allowlist differs/,
+    "an unreviewed platform-shaped allowlist replacement must be rejected",
+  ));
+  withJsonMutations([
+    raw.files.secretsPre,
+    raw.files.secretsCanary,
+    raw.files.secretsRecheck,
+    raw.files.secretsPost,
+    raw.files.finalSecrets,
+  ], (value) => {
+    const secrets = Array.isArray(value) ? value : value.secrets;
+    const reference = secrets.find((row) => row.name === "SUPABASE_URL");
+    secrets.push({
+      name: "SUPABASE_FUTURE_KEY",
+      value: "c".repeat(64),
+      updated_at: reference.updated_at,
+    });
+  }, () => assert.throws(
+    () => issue(raw),
+    /platform-managed secret allowlist differs/,
+    "an unreviewed provider-reserved row stable at every stage must be rejected",
+  ));
+  withJsonMutations([
+    raw.files.functionsCanary,
+    raw.files.functionsRecheck,
+  ], (value) => {
+    const probeRow = value.functions.find((row) => row.slug === "client-ip-probe");
+    probeRow.created_at = Date.parse(new Date(
+      NOW.getTime() - 701_000,
+    ).toISOString());
+    probeRow.updated_at = probeRow.created_at;
+  }, () => assert.throws(
+    () => issue(raw),
+    /timestamp refresh is not bound to the canary deployment/,
+    "provider refresh metadata must equal the canary deployment timestamp",
+  ));
   withJsonMutation(raw.files.secretsCanary, (value) => {
     value.secrets[0].plaintext_secret = "must-never-be-captured";
   }, () => assert.throws(() => issue(raw), /schema differs/));
@@ -1970,5 +2148,5 @@ for (const overclaim of [
 }
 
 console.log(
-  "Client-IP receipt v3 offline fixtures passed: Ed25519 function/nonce binding, artifact-derived ACTIVE tuple/source/request/final-live metadata/compute evidence, exact dual-stack runtime binding, repo-wide structural anti-bypass scanner, and explicit signer-scoped provenance. This is not live deployment proof.",
+  "Client-IP receipt v4 offline fixtures passed: Ed25519 function/nonce binding, artifact-derived ACTIVE tuple/source/request/final-live metadata/compute evidence, exact dual-stack runtime binding, repo-wide structural anti-bypass scanner, and explicit signer-scoped provenance. This is not live deployment proof.",
 );

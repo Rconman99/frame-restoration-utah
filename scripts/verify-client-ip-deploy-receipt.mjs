@@ -47,6 +47,15 @@ const NEGATIVE_CASES = ["missing-signature", "invalid-signature"];
 const REQUEST_CASES = [...POSITIVE_CASES, ...NEGATIVE_CASES];
 const GATEWAY_REJECTION_CASES = ["ipv4-forged-cf", "ipv6-forged-cf"];
 const EXACT_GATEWAY_REJECTION_BODY = "error code: 1000\n";
+const PLATFORM_MANAGED_SECRET_NAMES = [
+  "SUPABASE_ANON_KEY",
+  "SUPABASE_DB_URL",
+  "SUPABASE_JWKS",
+  "SUPABASE_PUBLISHABLE_KEYS",
+  "SUPABASE_SECRET_KEYS",
+  "SUPABASE_SERVICE_ROLE_KEY",
+  "SUPABASE_URL",
+];
 
 function requireString(value, label) {
   if (typeof value !== "string" || value.length === 0) {
@@ -353,6 +362,73 @@ function functionCapture(filePath, label, projectRef) {
   };
 }
 
+function validatedSecretMetadata(rows, label) {
+  if (!Array.isArray(rows)) {
+    throw new Error(`${label} must be an array`);
+  }
+  const seenNames = new Set();
+  const platformRows = [];
+  const userRows = [];
+  for (const [index, row] of rows.entries()) {
+    const secretLabel = `${label}[${index}]`;
+    const secret = assertExactKeys(
+      row,
+      ["name", "value", "updated_at"],
+      secretLabel,
+    );
+    const name = requireString(secret.name, `${secretLabel}.name`);
+    if (!/^[A-Z][A-Z0-9_]{0,127}$/.test(name)) {
+      throw new Error(`${secretLabel}.name is invalid`);
+    }
+    requireDigest(secret.value, `${secretLabel}.value provider digest`);
+    parseIsoTimestamp(secret.updated_at, `${secretLabel}.updated_at`);
+    if (seenNames.has(name)) {
+      throw new Error(`${label} contains duplicate secret name ${name}`);
+    }
+    seenNames.add(name);
+    if (name.startsWith("SUPABASE_")) {
+      platformRows.push(secret);
+    } else {
+      userRows.push(secret);
+    }
+  }
+  const actualPlatformNames = platformRows.map((row) => row.name).sort();
+  if (
+    JSON.stringify(actualPlatformNames) !==
+      JSON.stringify(PLATFORM_MANAGED_SECRET_NAMES)
+  ) {
+    throw new Error(`${label} platform-managed secret allowlist differs`);
+  }
+  const platformUpdatedAtValues = [...new Set(
+    platformRows.map((row) => row.updated_at),
+  )];
+  if (platformUpdatedAtValues.length !== 1) {
+    throw new Error(`${label} platform-managed updated_at values differ`);
+  }
+  const canonicalSecrets = canonicalUnorderedRows(rows, label);
+  const canonicalNameValues = canonicalUnorderedRows(
+    rows.map((row) => ({ name: row.name, value: row.value })),
+    `${label} name/value rows`,
+  );
+  const canonicalUserSecrets = canonicalUnorderedRows(
+    userRows,
+    `${label} user-managed rows`,
+  );
+  return {
+    canonicalSecrets,
+    secretsSha256: sha256(canonicalSecrets),
+    canonicalNameValues,
+    nameValuesSha256: sha256(canonicalNameValues),
+    canonicalUserSecrets,
+    userSecretsSha256: sha256(canonicalUserSecrets),
+    platformUpdatedAt: parseIsoTimestamp(
+      platformUpdatedAtValues[0],
+      `${label} platform-managed updated_at`,
+    ),
+    platformUpdatedAtText: platformUpdatedAtValues[0],
+  };
+}
+
 function secretCapture(filePath, label, projectRef) {
   const artifact = readSecureJson(filePath, label);
   const value = assertExactKeys(
@@ -373,32 +449,15 @@ function secretCapture(filePath, label, projectRef) {
     throw new Error(`${label} has an invalid capture contract`);
   }
   const capturedAt = parseIsoTimestamp(value.captured_at, `${label} captured_at`);
-  const canonicalSecrets = canonicalUnorderedRows(value.secrets, `${label} secrets`);
-  const seenNames = new Set();
-  for (const [index, row] of value.secrets.entries()) {
-    const secretLabel = `${label} secrets[${index}]`;
-    const secret = assertExactKeys(
-      row,
-      ["name", "value", "updated_at"],
-      secretLabel,
-    );
-    const name = requireString(secret.name, `${secretLabel}.name`);
-    if (!/^[A-Z][A-Z0-9_]{0,127}$/.test(name)) {
-      throw new Error(`${secretLabel}.name is invalid`);
-    }
-    requireDigest(secret.value, `${secretLabel}.value provider digest`);
-    parseIsoTimestamp(secret.updated_at, `${secretLabel}.updated_at`);
-    if (seenNames.has(name)) {
-      throw new Error(`${label} contains duplicate secret name ${name}`);
-    }
-    seenNames.add(name);
+  const metadata = validatedSecretMetadata(value.secrets, `${label} secrets`);
+  if (metadata.platformUpdatedAt > capturedAt) {
+    throw new Error(`${label} platform-managed timestamp is after capture`);
   }
   return {
     artifact,
     capturedAt,
     capturedAtText: value.captured_at,
-    canonicalSecrets,
-    secretsSha256: sha256(canonicalSecrets),
+    ...metadata,
   };
 }
 
@@ -446,26 +505,11 @@ function finalSecretState(filePath) {
     filePath,
     "final live Supabase secret metadata",
   );
-  if (!Array.isArray(artifact.value)) {
-    throw new Error("final live Supabase secret metadata must be an array");
-  }
-  const seenNames = new Set();
-  for (const [index, row] of artifact.value.entries()) {
-    const label = `final live Supabase secret metadata[${index}]`;
-    const secret = assertExactKeys(row, ["name", "value", "updated_at"], label);
-    const name = requireString(secret.name, `${label}.name`);
-    if (!/^[A-Z][A-Z0-9_]{0,127}$/.test(name) || seenNames.has(name)) {
-      throw new Error("final live Supabase secret metadata has invalid/duplicate name");
-    }
-    seenNames.add(name);
-    requireDigest(secret.value, `${label}.value provider digest`);
-    parseIsoTimestamp(secret.updated_at, `${label}.updated_at`);
-  }
-  const canonical = canonicalUnorderedRows(
+  const metadata = validatedSecretMetadata(
     artifact.value,
     "final live Supabase secrets",
   );
-  return { sha256: sha256(canonical), artifact };
+  return { sha256: metadata.secretsSha256, artifact, ...metadata };
 }
 
 function exactProbeTuple(capture, projectRef, label) {
@@ -479,6 +523,15 @@ function exactProbeTuple(capture, projectRef, label) {
     probe.status !== "ACTIVE"
   ) {
     throw new Error(`${label} lacks the actual ACTIVE probe tuple`);
+  }
+  const createdAt = probe.created_at;
+  const updatedAt = probe.updated_at;
+  if (
+    !Number.isSafeInteger(createdAt) || createdAt <= 0 ||
+    !Number.isSafeInteger(updatedAt) || updatedAt !== createdAt ||
+    createdAt > capture.capturedAt
+  ) {
+    throw new Error(`${label} probe deployment timestamp is invalid`);
   }
   const providerEzbrSha256 = requireDigest(
     probe.ezbr_sha256,
@@ -498,6 +551,8 @@ function exactProbeTuple(capture, projectRef, label) {
   };
   return {
     ...tuple,
+    createdAt,
+    updatedAt,
     managementApiBodySha256,
     tupleSha256: sha256(canonicalJson(tuple, `${label} management API tuple`)),
   };
@@ -1209,12 +1264,34 @@ export function buildClientIpDeployReceiptPayload({
   if (functionsPre.canonicalFunctions !== functionsPost.canonicalFunctions) {
     throw new Error("full pre/post function metadata differs");
   }
+  const secretCaptures = [
+    secretsPre,
+    secretsCanary,
+    secretsRecheck,
+    secretsPost,
+  ];
+  if (secretCaptures.some((capture) =>
+    capture.canonicalNameValues !== secretsPre.canonicalNameValues
+  )) {
+    throw new Error("secret names or provider digests differ across the mutation window");
+  }
+  if (secretCaptures.some((capture) =>
+    capture.canonicalUserSecrets !== secretsPre.canonicalUserSecrets
+  )) {
+    throw new Error("user-managed secret metadata differs across the mutation window");
+  }
   if (
-    secretsPre.canonicalSecrets !== secretsCanary.canonicalSecrets ||
-    secretsPre.canonicalSecrets !== secretsRecheck.canonicalSecrets ||
-    secretsPre.canonicalSecrets !== secretsPost.canonicalSecrets
+    secretsCanary.canonicalSecrets !== secretsRecheck.canonicalSecrets ||
+    secretsCanary.canonicalSecrets !== secretsPost.canonicalSecrets
   ) {
-    throw new Error("full secret metadata differs across the mutation window");
+    throw new Error("post-deploy secret metadata is not stable");
+  }
+  if (
+    secretsPre.platformUpdatedAt >= secretsCanary.platformUpdatedAt ||
+    secretsCanary.platformUpdatedAt !== secretsRecheck.platformUpdatedAt ||
+    secretsCanary.platformUpdatedAt !== secretsPost.platformUpdatedAt
+  ) {
+    throw new Error("platform-managed secret timestamp refresh contract differs");
   }
   if (
     computePre.createdDropletId !== null || computePost.createdDropletId !== null ||
@@ -1248,6 +1325,17 @@ export function buildClientIpDeployReceiptPayload({
     projectRef,
     "client-IP delete-recheck metadata",
   );
+  if (
+    secretsCanary.platformUpdatedAt !== canaryTuple.createdAt ||
+    Math.max(functionsPre.capturedAt, secretsPre.capturedAt) >=
+      canaryTuple.createdAt ||
+    canaryTuple.createdAt > functionsCanary.capturedAt ||
+    functionsCanary.capturedAt > secretsCanary.capturedAt
+  ) {
+    throw new Error(
+      "platform-managed secret timestamp refresh is not bound to the canary deployment",
+    );
+  }
   const comparableCanaryTuple = { ...canaryTuple };
   const comparableRecheckTuple = { ...recheckTuple };
   delete comparableCanaryTuple.tupleSha256;
@@ -1314,7 +1402,7 @@ export function buildClientIpDeployReceiptPayload({
   }
 
   const payload = {
-    receipt_version: 3,
+    receipt_version: 4,
     receipt_signature_scheme: "ed25519",
     project_ref: projectRef,
     target_function: targetFunction,
@@ -1381,7 +1469,12 @@ export function buildClientIpDeployReceiptPayload({
       secrets_canary_sha256: secretsCanary.secretsSha256,
       secrets_delete_recheck_sha256: secretsRecheck.secretsSha256,
       secrets_post_sha256: secretsPost.secretsSha256,
-      secrets_all_stages_equal: true,
+      secret_name_value_sha256: secretsPre.nameValuesSha256,
+      user_secret_metadata_sha256: secretsPre.userSecretsSha256,
+      secret_name_values_all_stages_equal: true,
+      user_secret_metadata_all_stages_equal: true,
+      platform_secret_updated_at_refresh_only: true,
+      post_deploy_secret_metadata_stable: true,
       compute_pre_sha256: computePre.dropletsSha256,
       compute_created_sha256: computeCreated.dropletsSha256,
       compute_post_sha256: computePost.dropletsSha256,
@@ -1601,7 +1694,7 @@ export function verifyClientIpDeployReceipt({
     "client-IP receipt",
   );
   if (
-    receipt.receipt_version !== 3 ||
+    receipt.receipt_version !== 4 ||
     receipt.receipt_signature_scheme !== "ed25519"
   ) {
     throw new Error("unsupported client-IP receipt version/signature scheme");
@@ -1836,7 +1929,12 @@ export function verifyClientIpDeployReceipt({
       "secrets_canary_sha256",
       "secrets_delete_recheck_sha256",
       "secrets_post_sha256",
-      "secrets_all_stages_equal",
+      "secret_name_value_sha256",
+      "user_secret_metadata_sha256",
+      "secret_name_values_all_stages_equal",
+      "user_secret_metadata_all_stages_equal",
+      "platform_secret_updated_at_refresh_only",
+      "post_deploy_secret_metadata_stable",
       "compute_pre_sha256",
       "compute_created_sha256",
       "compute_post_sha256",
@@ -1855,6 +1953,8 @@ export function verifyClientIpDeployReceipt({
     "secrets_canary_sha256",
     "secrets_delete_recheck_sha256",
     "secrets_post_sha256",
+    "secret_name_value_sha256",
+    "user_secret_metadata_sha256",
     "compute_pre_sha256",
     "compute_created_sha256",
     "compute_post_sha256",
@@ -1864,9 +1964,10 @@ export function verifyClientIpDeployReceipt({
     metadata.functions_pre_sha256 !== metadata.functions_post_sha256 ||
     metadata.functions_canary_sha256 !==
       metadata.functions_delete_recheck_sha256 ||
-    metadata.secrets_pre_sha256 !== metadata.secrets_canary_sha256 ||
-    metadata.secrets_pre_sha256 !== metadata.secrets_delete_recheck_sha256 ||
-    metadata.secrets_pre_sha256 !== metadata.secrets_post_sha256 ||
+    metadata.secrets_pre_sha256 === metadata.secrets_canary_sha256 ||
+    metadata.secrets_canary_sha256 !==
+      metadata.secrets_delete_recheck_sha256 ||
+    metadata.secrets_canary_sha256 !== metadata.secrets_post_sha256 ||
     metadata.compute_pre_sha256 !== metadata.compute_post_sha256 ||
     metadata.compute_created_sha256 === metadata.compute_pre_sha256 ||
     metadata.functions_pre_post_equal !== true ||
@@ -1874,7 +1975,10 @@ export function verifyClientIpDeployReceipt({
     metadata.non_probe_catalog_unchanged !== true ||
     metadata.probe_absent_preflight !== true ||
     metadata.probe_absent_postflight !== true ||
-    metadata.secrets_all_stages_equal !== true ||
+    metadata.secret_name_values_all_stages_equal !== true ||
+    metadata.user_secret_metadata_all_stages_equal !== true ||
+    metadata.platform_secret_updated_at_refresh_only !== true ||
+    metadata.post_deploy_secret_metadata_stable !== true ||
     metadata.compute_pre_post_equal !== true ||
     metadata.ephemeral_compute_created_then_absent !== true
   ) {
@@ -1888,7 +1992,9 @@ export function verifyClientIpDeployReceipt({
   ]);
   if (
     finalFunctions.sha256 !== metadata.functions_post_sha256 ||
-    finalSecrets.sha256 !== metadata.secrets_post_sha256
+    finalSecrets.sha256 !== metadata.secrets_post_sha256 ||
+    finalSecrets.nameValuesSha256 !== metadata.secret_name_value_sha256 ||
+    finalSecrets.userSecretsSha256 !== metadata.user_secret_metadata_sha256
   ) {
     throw new Error(
       "final live Supabase function/secret metadata differs from signed postflight",

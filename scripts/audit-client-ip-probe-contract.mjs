@@ -77,17 +77,17 @@ const APPROVED_OPAQUE_ASSETS = Object.freeze({
 // silently expanding a critical tool's sinks, control flow, or subprocesses.
 // These are intentionally updated only after the semantic regression suite.
 const VERIFIER_SECURITY_SURFACE_SHA256 =
-  "305e83850b82397e7d6d329d2c2330c0d744084b83d44dde633a9456f0939f42";
+  "faf1a5f2fb8f44b65ba9ab49b048e8f039c8e8213eab3885a509697eac42e680";
 const ISSUER_SECURITY_SURFACE_SHA256 =
   "14d6554f8adab745eb06ad947c54501ad287eb40813715c1039e36a1cf672747";
 const RENDERER_OUTPUT_SURFACE_SHA256 =
   "9a96422d770af9e6bddcd1a91313db157648faa9cc516b17eca992af04fbf414";
 const CLIENT_TEST_SPAWN_SURFACE_SHA256 =
-  "73260c1f5f1ba8aa3a0353d4a863be33271024cbd05f31c61326d0fc05508d03";
+  "41816bfcde668cb0df0a0bf03780fb79a57cf312ebfa99b91263a1efe660ae5f";
 const OWNER_TEST_SPAWN_SURFACE_SHA256 =
   "506d45a03413389a4ab1d07aeedfc9b4b1908420a156e0714b614d5dc233080a";
 const SCANNER_NORMALIZED_SOURCE_SHA256 =
-  "5d2ff5c43e853e76b93e3566bdaa7111d239cbf31634aabd969dc8990c6f0eb2";
+  "8c4bd9292f95da30ebc6241c8379029883e7d9d939e6367f72b5087a4129e175";
 const SIGNED_RECEIPT_PARSER_SHA256 =
   "1e854738f0555804f52266a1833cd279ef83482b4946a63c226781be045114df";
 const ISSUER_SIGNER_SHA256 =
@@ -104,15 +104,15 @@ const REVIEWED_CRITICAL_SOURCE_SHA256 = Object.freeze({
   "scripts/render-client-ip-probe.mjs":
     "b78a424c672f9df9309748b85608b653038fc7eddd806d1d2526dbd692b9fee0",
   "scripts/test-client-ip-deploy-receipt.mjs":
-    "5c54c468125446a9fb5569338d79157597771f81334857dc349c2257a531031a",
+    "a115e725c73f62c06208cb6150249d8a3b26f0ae6a5a7ced7fb0e960b84b6421",
   "scripts/test-owner-notification-deploy-receipt.mjs":
     "37b1d7a82ad3f0feedb461fcd3301f92e91323eb3c3710a8d6bbbf1c48a0d8e3",
   "scripts/verify-client-ip-deploy-receipt.mjs":
-    "ad9369d94e7eb177216f57bfe84f580f335d9069278148c7357403eb8c2bb2df",
+    "9be2dae05dfa8e7dcb6f2b6ad6701764b4aede7ecc615459a770d8c2c374161c",
   "supabase/functions/_shared/client-ip.ts":
     "3e69a5e29a473c2697b3271e68ffead3cd427bc012383eae8cc97c3998458636",
   "supabase/functions/handle-lead/DEPLOY.md":
-    "7fadf17288bb180d133abda8e01c5bd11599d2c725229c9f6b18da02a01d5808",
+    "3876005bd15144c2cb6233e37c481c761b03de57e82033a142e81b84faaeae66",
   "supabase/probe-templates/client-ip-probe/index.ts.tmpl":
     "1a45cf1b9d7dcc7ca514ff334b81e93b5024ff45301489c1f4e9ed20535e0c53",
 });
@@ -1365,10 +1365,29 @@ function verifierSourceViolations(relative, source, trustedDigests) {
     "crypto.verify(null",
     'publicKey.export({ format: "der", type: "spki" })',
     "canonical public-key DER",
-    "receipt.receipt_version !== 3",
+    "receipt.receipt_version !== 4",
     'receipt.receipt_signature_scheme !== "ed25519"',
     "receipt.target_function !== functionName",
     "receipt.dispatch_nonce !== dispatchNonce",
+    "const PLATFORM_MANAGED_SECRET_NAMES = [",
+    '"SUPABASE_ANON_KEY"',
+    '"SUPABASE_DB_URL"',
+    '"SUPABASE_JWKS"',
+    '"SUPABASE_PUBLISHABLE_KEYS"',
+    '"SUPABASE_SECRET_KEYS"',
+    '"SUPABASE_SERVICE_ROLE_KEY"',
+    '"SUPABASE_URL"',
+    "validatedSecretMetadata(value.secrets",
+    'name.startsWith("SUPABASE_")',
+    "capture.canonicalNameValues !== secretsPre.canonicalNameValues",
+    "capture.canonicalUserSecrets !== secretsPre.canonicalUserSecrets",
+    "secretsCanary.canonicalSecrets !== secretsRecheck.canonicalSecrets",
+    "secretsPre.platformUpdatedAt >= secretsCanary.platformUpdatedAt",
+    "secretsCanary.platformUpdatedAt !== canaryTuple.createdAt",
+    "Math.max(functionsPre.capturedAt, secretsPre.capturedAt) >=",
+    "functionsCanary.capturedAt > secretsCanary.capturedAt",
+    "finalSecrets.nameValuesSha256 !== metadata.secret_name_value_sha256",
+    "finalSecrets.userSecretsSha256 !== metadata.user_secret_metadata_sha256",
     "finalFunctionState(finalFunctionsPath)",
     "finalSecretState(finalSecretsPath)",
     "process.argv.length !== 2",
@@ -1526,18 +1545,18 @@ function verifierSourceViolations(relative, source, trustedDigests) {
   const functionReturnAt = finalFunctions.indexOf(
     "return { sha256: sha256(canonical), artifact };",
   );
-  const secretCanonicalAt = finalSecrets.indexOf(
-    "const canonical = canonicalUnorderedRows(",
+  const secretValidationAt = finalSecrets.indexOf(
+    "const metadata = validatedSecretMetadata(",
   );
   const secretReturnAt = finalSecrets.indexOf(
-    "return { sha256: sha256(canonical), artifact };",
+    "return { sha256: metadata.secretsSha256, artifact, ...metadata };",
   );
   if (
     (finalFunctions.match(/\breturn\b/g)?.length ?? 0) !== 1 ||
     functionProbeAbsenceAt < 0 || functionCanonicalAt <= functionProbeAbsenceAt ||
     functionReturnAt <= functionCanonicalAt ||
     (finalSecrets.match(/\breturn\b/g)?.length ?? 0) !== 1 ||
-    secretCanonicalAt < 0 || secretReturnAt <= secretCanonicalAt
+    secretValidationAt < 0 || secretReturnAt <= secretValidationAt
   ) {
     violations.push(`${relative}:final live-state canonicalization/probe-absence flow differs`);
   }
@@ -1916,6 +1935,15 @@ function runbookSourceViolations(relative, source, trustedDigests) {
     "CLIENT_IP_DEPLOY_DISPATCH_NONCE",
     "CLIENT_IP_DEPLOY_RECEIPT_PRIVATE_KEY_PKCS8_DER_BASE64",
     "CLIENT_IP_DEPLOY_RECEIPT_PUBLIC_KEY_SPKI_DER_BASE64",
+    "SUPABASE_ANON_KEY",
+    "SUPABASE_DB_URL",
+    "SUPABASE_JWKS",
+    "SUPABASE_PUBLISHABLE_KEYS",
+    "SUPABASE_SECRET_KEYS",
+    "SUPABASE_SERVICE_ROLE_KEY",
+    "SUPABASE_URL",
+    "provider-managed secret rows",
+    "user-managed secret rows",
     "15 minutes",
     "single-use",
   ]) {
