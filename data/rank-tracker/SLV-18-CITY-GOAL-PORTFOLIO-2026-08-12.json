@@ -55,16 +55,16 @@
   },
   "portfolioScore": {
     "citiesInPortfolio": 18,
-    "citiesWithGoogleBaseline": 6,
-    "citiesPendingFirstGoogleBaseline": 12,
+    "citiesWithGoogleBaseline": 18,
+    "citiesPendingFirstGoogleBaseline": 0,
     "fixedOrganicTargets": 72,
-    "fixedOrganicTargetsMeasured": 24,
-    "fixedOrganicNumberOne": 0,
+    "fixedOrganicTargetsMeasured": 72,
+    "fixedOrganicNumberOne": 2,
     "exactCidMapsTargets": 72,
-    "exactCidMapsTargetsMeasured": 24,
+    "exactCidMapsTargetsMeasured": 72,
     "exactCidMapsNumberOne": 0,
-    "googleAiOverviewCitations": 1,
-    "googleAiOverviewsPresent": 2,
+    "googleAiOverviewCitations": 2,
+    "googleAiOverviewsPresent": 4,
     "consumerAiCompleteCityPanels": 0,
     "citiesAtSustainedGoal": 0
   },
@@ -75,7 +75,8 @@
     "expansionWorkflow": ".github/workflows/slv-expansion-baseline.yml",
     "publicRemediationPacket": "data/authority/SLV-CITY-PUBLIC-REMEDIATION-PACKET-2026-08-12.json",
     "millcreekScopeAmendment": "data/authority/MILLCREEK-PUBLIC-IDENTITY-SCOPE-AMENDMENT-2026-08-12.json",
-    "expansionIntegrityAudit": "data/authority/SLV-EXPANSION-INTEGRITY-AUDIT-2026-08-12.json"
+    "expansionIntegrityAudit": "data/authority/SLV-EXPANSION-INTEGRITY-AUDIT-2026-08-12.json",
+    "expansionPanelObservedAt": "2026-08-12T17:40:30.503Z"
   },
   "cohorts": {
     "core": {
@@ -95,7 +96,7 @@
       "cityCount": 12,
       "cadence": "manual-baseline-before-weekly-admission",
       "estimatedOneTimeBaselineCostUsd": 0.1152,
-      "state": "validated-config-not-yet-measured",
+      "state": "first-manual-baseline-measured-not-yet-admitted-to-weekly-spend",
       "admissionRule": "Run one complete manual baseline, validate all 48 results, classify integrity and route architecture, verify current service-area evidence separately, then explicitly approve any city for the recurring weekly registry.",
       "cityGoalIds": [
         "slv-bluffdale-number-one-v1",
@@ -325,13 +326,39 @@
       "slug": "bluffdale",
       "page": "locations/bluffdale.html",
       "panelId": "utah-bluffdale-google-v1",
-      "cohort": "expansion-baseline-pending",
-      "measurementStatus": "not-yet-measured",
+      "cohort": "expansion-manual-baseline-measured",
+      "measurementStatus": "measured-not-yet-admitted-to-weekly-spend",
       "identityEvidence": "existing-salt-lake-county-route-measurement-only",
       "serviceAreaStatus": "pending-current-profile-service-area-verification",
-      "current": null,
-      "phase": "manual-google-baseline-before-weekly-admission",
-      "nextPermittedAction": "Run the complete 12-city manual Google baseline atomically; do not infer zero ranks, alter public pages, or assert GBP service-area inclusion from registry membership."
+      "current": {
+        "observedAt": "2026-08-12T17:40:30.498Z",
+        "organicRanks": [
+          18,
+          11,
+          9,
+          17
+        ],
+        "selectedOrganicUrls": [
+          "https://www.framerestorationutah.com/locations/bluffdale",
+          "https://www.framerestorationutah.com/locations/bluffdale",
+          "https://www.framerestorationutah.com/locations/bluffdale",
+          "https://www.framerestorationutah.com/locations/bluffdale"
+        ],
+        "exactCidMapsRanks": [
+          null,
+          null,
+          null,
+          null
+        ],
+        "googleAiOverview": {
+          "present": 0,
+          "ownedCitations": 0
+        },
+        "consumerAi": "configured-manual-measurement-only-blocked-invalid-provider-credential"
+      },
+      "phase": "integrity-and-service-area-evidence-before-weekly-admission",
+      "nextPermittedAction": "Preserve measured organic and AIO footholds, complete evidence-safe integrity diagnosis, and verify current profile service-area evidence; do not edit public pages or assert a city GBP without explicit approval.",
+      "rankSource": "data/rank-tracker/expansion/bluffdale/latest.json"
     },
     {
       "priority": 7,
@@ -340,13 +367,39 @@
       "slug": "herriman",
       "page": "locations/herriman.html",
       "panelId": "utah-herriman-google-v1",
-      "cohort": "expansion-baseline-pending",
-      "measurementStatus": "not-yet-measured",
+      "cohort": "expansion-manual-baseline-measured",
+      "measurementStatus": "measured-not-yet-admitted-to-weekly-spend",
       "identityEvidence": "existing-salt-lake-county-route-measurement-only",
       "serviceAreaStatus": "pending-current-profile-service-area-verification",
-      "current": null,
-      "phase": "manual-google-baseline-before-weekly-admission",
-      "nextPermittedAction": "Run the complete 12-city manual Google baseline atomically; do not infer zero ranks, alter public pages, or assert GBP service-area inclusion from registry membership."
+      "current": {
+        "observedAt": "2026-08-12T17:40:30.500Z",
+        "organicRanks": [
+          22,
+          14,
+          12,
+          26
+        ],
+        "selectedOrganicUrls": [
+          "https://www.framerestorationutah.com/locations/herriman",
+          "https://www.framerestorationutah.com/locations/herriman",
+          "https://www.framerestorationutah.com/locations/herriman",
+          "https://www.framerestorationutah.com/locations/herriman"
+        ],
+        "exactCidMapsRanks": [
+          null,
+          null,
+          null,
+          null
+        ],
+        "googleAiOverview": {
+          "present": 0,
+          "ownedCitations": 0
+        },
+        "consumerAi": "configured-manual-measurement-only-blocked-invalid-provider-credential"
+      },
+      "phase": "integrity-and-service-area-evidence-before-weekly-admission",
+      "nextPermittedAction": "Preserve measured organic and AIO footholds, complete evidence-safe integrity diagnosis, and verify current profile service-area evidence; do not edit public pages or assert a city GBP without explicit approval.",
+      "rankSource": "data/rank-tracker/expansion/herriman/latest.json"
     },
     {
       "priority": 8,
@@ -355,13 +408,39 @@
       "slug": "kearns",
       "page": "locations/kearns.html",
       "panelId": "utah-kearns-google-v1",
-      "cohort": "expansion-baseline-pending",
-      "measurementStatus": "not-yet-measured",
+      "cohort": "expansion-manual-baseline-measured",
+      "measurementStatus": "measured-not-yet-admitted-to-weekly-spend",
       "identityEvidence": "existing-salt-lake-county-route-measurement-only",
       "serviceAreaStatus": "pending-current-profile-service-area-verification",
-      "current": null,
-      "phase": "manual-google-baseline-before-weekly-admission",
-      "nextPermittedAction": "Run the complete 12-city manual Google baseline atomically; do not infer zero ranks, alter public pages, or assert GBP service-area inclusion from registry membership."
+      "current": {
+        "observedAt": "2026-08-12T17:40:30.500Z",
+        "organicRanks": [
+          14,
+          8,
+          1,
+          10
+        ],
+        "selectedOrganicUrls": [
+          "https://www.framerestorationutah.com/locations/kearns",
+          "https://www.framerestorationutah.com/locations/kearns",
+          "https://www.framerestorationutah.com/locations/kearns",
+          "https://www.framerestorationutah.com/locations/kearns"
+        ],
+        "exactCidMapsRanks": [
+          null,
+          null,
+          null,
+          null
+        ],
+        "googleAiOverview": {
+          "present": 0,
+          "ownedCitations": 0
+        },
+        "consumerAi": "configured-manual-measurement-only-blocked-invalid-provider-credential"
+      },
+      "phase": "integrity-and-service-area-evidence-before-weekly-admission",
+      "nextPermittedAction": "Preserve measured organic and AIO footholds, complete evidence-safe integrity diagnosis, and verify current profile service-area evidence; do not edit public pages or assert a city GBP without explicit approval.",
+      "rankSource": "data/rank-tracker/expansion/kearns/latest.json"
     },
     {
       "priority": 9,
@@ -370,13 +449,39 @@
       "slug": "magna",
       "page": "locations/magna.html",
       "panelId": "utah-magna-google-v1",
-      "cohort": "expansion-baseline-pending",
-      "measurementStatus": "not-yet-measured",
+      "cohort": "expansion-manual-baseline-measured",
+      "measurementStatus": "measured-not-yet-admitted-to-weekly-spend",
       "identityEvidence": "existing-salt-lake-county-route-measurement-only",
       "serviceAreaStatus": "pending-current-profile-service-area-verification",
-      "current": null,
-      "phase": "manual-google-baseline-before-weekly-admission",
-      "nextPermittedAction": "Run the complete 12-city manual Google baseline atomically; do not infer zero ranks, alter public pages, or assert GBP service-area inclusion from registry membership."
+      "current": {
+        "observedAt": "2026-08-12T17:40:30.501Z",
+        "organicRanks": [
+          7,
+          2,
+          1,
+          3
+        ],
+        "selectedOrganicUrls": [
+          "https://www.framerestorationutah.com/locations/magna",
+          "https://www.framerestorationutah.com/locations/magna",
+          "https://www.framerestorationutah.com/locations/magna",
+          "https://www.framerestorationutah.com/locations/magna"
+        ],
+        "exactCidMapsRanks": [
+          null,
+          null,
+          null,
+          null
+        ],
+        "googleAiOverview": {
+          "present": 1,
+          "ownedCitations": 1
+        },
+        "consumerAi": "configured-manual-measurement-only-blocked-invalid-provider-credential"
+      },
+      "phase": "integrity-and-service-area-evidence-before-weekly-admission",
+      "nextPermittedAction": "Preserve measured organic and AIO footholds, complete evidence-safe integrity diagnosis, and verify current profile service-area evidence; do not edit public pages or assert a city GBP without explicit approval.",
+      "rankSource": "data/rank-tracker/expansion/magna/latest.json"
     },
     {
       "priority": 10,
@@ -385,13 +490,39 @@
       "slug": "midvale",
       "page": "locations/midvale.html",
       "panelId": "utah-midvale-google-v1",
-      "cohort": "expansion-baseline-pending",
-      "measurementStatus": "not-yet-measured",
+      "cohort": "expansion-manual-baseline-measured",
+      "measurementStatus": "measured-not-yet-admitted-to-weekly-spend",
       "identityEvidence": "existing-salt-lake-county-route-measurement-only",
       "serviceAreaStatus": "pending-current-profile-service-area-verification",
-      "current": null,
-      "phase": "manual-google-baseline-before-weekly-admission",
-      "nextPermittedAction": "Run the complete 12-city manual Google baseline atomically; do not infer zero ranks, alter public pages, or assert GBP service-area inclusion from registry membership."
+      "current": {
+        "observedAt": "2026-08-12T17:40:30.501Z",
+        "organicRanks": [
+          18,
+          15,
+          10,
+          16
+        ],
+        "selectedOrganicUrls": [
+          "https://www.framerestorationutah.com/locations/midvale",
+          "https://www.framerestorationutah.com/locations/midvale",
+          "https://www.framerestorationutah.com/locations/midvale",
+          "https://www.framerestorationutah.com/locations/midvale"
+        ],
+        "exactCidMapsRanks": [
+          null,
+          null,
+          null,
+          null
+        ],
+        "googleAiOverview": {
+          "present": 0,
+          "ownedCitations": 0
+        },
+        "consumerAi": "configured-manual-measurement-only-blocked-invalid-provider-credential"
+      },
+      "phase": "integrity-and-service-area-evidence-before-weekly-admission",
+      "nextPermittedAction": "Preserve measured organic and AIO footholds, complete evidence-safe integrity diagnosis, and verify current profile service-area evidence; do not edit public pages or assert a city GBP without explicit approval.",
+      "rankSource": "data/rank-tracker/expansion/midvale/latest.json"
     },
     {
       "priority": 11,
@@ -400,13 +531,39 @@
       "slug": "murray",
       "page": "locations/murray.html",
       "panelId": "utah-murray-google-v1",
-      "cohort": "expansion-baseline-pending",
-      "measurementStatus": "not-yet-measured",
+      "cohort": "expansion-manual-baseline-measured",
+      "measurementStatus": "measured-not-yet-admitted-to-weekly-spend",
       "identityEvidence": "existing-salt-lake-county-route-measurement-only",
       "serviceAreaStatus": "pending-current-profile-service-area-verification",
-      "current": null,
-      "phase": "manual-google-baseline-before-weekly-admission",
-      "nextPermittedAction": "Run the complete 12-city manual Google baseline atomically; do not infer zero ranks, alter public pages, or assert GBP service-area inclusion from registry membership."
+      "current": {
+        "observedAt": "2026-08-12T17:40:30.501Z",
+        "organicRanks": [
+          12,
+          7,
+          4,
+          8
+        ],
+        "selectedOrganicUrls": [
+          "https://www.framerestorationutah.com/locations/murray",
+          "https://www.framerestorationutah.com/locations/murray",
+          "https://www.framerestorationutah.com/locations/murray",
+          "https://www.framerestorationutah.com/locations/murray"
+        ],
+        "exactCidMapsRanks": [
+          null,
+          null,
+          null,
+          null
+        ],
+        "googleAiOverview": {
+          "present": 0,
+          "ownedCitations": 0
+        },
+        "consumerAi": "configured-manual-measurement-only-blocked-invalid-provider-credential"
+      },
+      "phase": "integrity-and-service-area-evidence-before-weekly-admission",
+      "nextPermittedAction": "Preserve measured organic and AIO footholds, complete evidence-safe integrity diagnosis, and verify current profile service-area evidence; do not edit public pages or assert a city GBP without explicit approval.",
+      "rankSource": "data/rank-tracker/expansion/murray/latest.json"
     },
     {
       "priority": 12,
@@ -415,13 +572,39 @@
       "slug": "riverton",
       "page": "locations/riverton.html",
       "panelId": "utah-riverton-google-v1",
-      "cohort": "expansion-baseline-pending",
-      "measurementStatus": "not-yet-measured",
+      "cohort": "expansion-manual-baseline-measured",
+      "measurementStatus": "measured-not-yet-admitted-to-weekly-spend",
       "identityEvidence": "existing-salt-lake-county-route-measurement-only",
       "serviceAreaStatus": "pending-current-profile-service-area-verification",
-      "current": null,
-      "phase": "manual-google-baseline-before-weekly-admission",
-      "nextPermittedAction": "Run the complete 12-city manual Google baseline atomically; do not infer zero ranks, alter public pages, or assert GBP service-area inclusion from registry membership."
+      "current": {
+        "observedAt": "2026-08-12T17:40:30.501Z",
+        "organicRanks": [
+          null,
+          4,
+          7,
+          10
+        ],
+        "selectedOrganicUrls": [
+          null,
+          "https://www.framerestorationutah.com/locations/riverton",
+          "https://www.framerestorationutah.com/locations/riverton",
+          "https://www.framerestorationutah.com/locations/riverton"
+        ],
+        "exactCidMapsRanks": [
+          null,
+          null,
+          null,
+          null
+        ],
+        "googleAiOverview": {
+          "present": 0,
+          "ownedCitations": 0
+        },
+        "consumerAi": "configured-manual-measurement-only-blocked-invalid-provider-credential"
+      },
+      "phase": "integrity-and-service-area-evidence-before-weekly-admission",
+      "nextPermittedAction": "Preserve measured organic and AIO footholds, complete evidence-safe integrity diagnosis, and verify current profile service-area evidence; do not edit public pages or assert a city GBP without explicit approval.",
+      "rankSource": "data/rank-tracker/expansion/riverton/latest.json"
     },
     {
       "priority": 13,
@@ -430,13 +613,39 @@
       "slug": "south-jordan",
       "page": "locations/south-jordan.html",
       "panelId": "utah-south-jordan-google-v1",
-      "cohort": "expansion-baseline-pending",
-      "measurementStatus": "not-yet-measured",
+      "cohort": "expansion-manual-baseline-measured",
+      "measurementStatus": "measured-not-yet-admitted-to-weekly-spend",
       "identityEvidence": "existing-salt-lake-county-route-measurement-only",
       "serviceAreaStatus": "pending-current-profile-service-area-verification",
-      "current": null,
-      "phase": "manual-google-baseline-before-weekly-admission",
-      "nextPermittedAction": "Run the complete 12-city manual Google baseline atomically; do not infer zero ranks, alter public pages, or assert GBP service-area inclusion from registry membership."
+      "current": {
+        "observedAt": "2026-08-12T17:40:30.502Z",
+        "organicRanks": [
+          16,
+          8,
+          4,
+          12
+        ],
+        "selectedOrganicUrls": [
+          "https://www.framerestorationutah.com/locations/south-jordan",
+          "https://www.framerestorationutah.com/locations/south-jordan",
+          "https://www.framerestorationutah.com/locations/south-jordan",
+          "https://www.framerestorationutah.com/locations/south-jordan"
+        ],
+        "exactCidMapsRanks": [
+          null,
+          null,
+          null,
+          null
+        ],
+        "googleAiOverview": {
+          "present": 0,
+          "ownedCitations": 0
+        },
+        "consumerAi": "configured-manual-measurement-only-blocked-invalid-provider-credential"
+      },
+      "phase": "integrity-and-service-area-evidence-before-weekly-admission",
+      "nextPermittedAction": "Preserve measured organic and AIO footholds, complete evidence-safe integrity diagnosis, and verify current profile service-area evidence; do not edit public pages or assert a city GBP without explicit approval.",
+      "rankSource": "data/rank-tracker/expansion/south-jordan/latest.json"
     },
     {
       "priority": 14,
@@ -445,13 +654,39 @@
       "slug": "south-salt-lake",
       "page": "locations/south-salt-lake.html",
       "panelId": "utah-south-salt-lake-google-v1",
-      "cohort": "expansion-baseline-pending",
-      "measurementStatus": "not-yet-measured",
+      "cohort": "expansion-manual-baseline-measured",
+      "measurementStatus": "measured-not-yet-admitted-to-weekly-spend",
       "identityEvidence": "existing-salt-lake-county-route-measurement-only",
       "serviceAreaStatus": "pending-current-profile-service-area-verification",
-      "current": null,
-      "phase": "manual-google-baseline-before-weekly-admission",
-      "nextPermittedAction": "Run the complete 12-city manual Google baseline atomically; do not infer zero ranks, alter public pages, or assert GBP service-area inclusion from registry membership."
+      "current": {
+        "observedAt": "2026-08-12T17:40:30.502Z",
+        "organicRanks": [
+          null,
+          14,
+          12,
+          null
+        ],
+        "selectedOrganicUrls": [
+          null,
+          "https://www.framerestorationutah.com/locations/south-salt-lake",
+          "https://www.framerestorationutah.com/locations/south-salt-lake",
+          null
+        ],
+        "exactCidMapsRanks": [
+          null,
+          null,
+          null,
+          null
+        ],
+        "googleAiOverview": {
+          "present": 1,
+          "ownedCitations": 0
+        },
+        "consumerAi": "configured-manual-measurement-only-blocked-invalid-provider-credential"
+      },
+      "phase": "integrity-and-service-area-evidence-before-weekly-admission",
+      "nextPermittedAction": "Preserve measured organic and AIO footholds, complete evidence-safe integrity diagnosis, and verify current profile service-area evidence; do not edit public pages or assert a city GBP without explicit approval.",
+      "rankSource": "data/rank-tracker/expansion/south-salt-lake/latest.json"
     },
     {
       "priority": 15,
@@ -460,13 +695,39 @@
       "slug": "taylorsville",
       "page": "locations/taylorsville.html",
       "panelId": "utah-taylorsville-google-v1",
-      "cohort": "expansion-baseline-pending",
-      "measurementStatus": "not-yet-measured",
+      "cohort": "expansion-manual-baseline-measured",
+      "measurementStatus": "measured-not-yet-admitted-to-weekly-spend",
       "identityEvidence": "existing-salt-lake-county-route-measurement-only",
       "serviceAreaStatus": "pending-current-profile-service-area-verification",
-      "current": null,
-      "phase": "manual-google-baseline-before-weekly-admission",
-      "nextPermittedAction": "Run the complete 12-city manual Google baseline atomically; do not infer zero ranks, alter public pages, or assert GBP service-area inclusion from registry membership."
+      "current": {
+        "observedAt": "2026-08-12T17:40:30.503Z",
+        "organicRanks": [
+          15,
+          7,
+          10,
+          18
+        ],
+        "selectedOrganicUrls": [
+          "https://www.framerestorationutah.com/locations/taylorsville",
+          "https://www.framerestorationutah.com/locations/taylorsville",
+          "https://www.framerestorationutah.com/locations/taylorsville",
+          "https://www.framerestorationutah.com/locations/taylorsville"
+        ],
+        "exactCidMapsRanks": [
+          null,
+          null,
+          null,
+          null
+        ],
+        "googleAiOverview": {
+          "present": 0,
+          "ownedCitations": 0
+        },
+        "consumerAi": "configured-manual-measurement-only-blocked-invalid-provider-credential"
+      },
+      "phase": "integrity-and-service-area-evidence-before-weekly-admission",
+      "nextPermittedAction": "Preserve measured organic and AIO footholds, complete evidence-safe integrity diagnosis, and verify current profile service-area evidence; do not edit public pages or assert a city GBP without explicit approval.",
+      "rankSource": "data/rank-tracker/expansion/taylorsville/latest.json"
     },
     {
       "priority": 16,
@@ -475,13 +736,39 @@
       "slug": "west-jordan",
       "page": "locations/west-jordan.html",
       "panelId": "utah-west-jordan-google-v1",
-      "cohort": "expansion-baseline-pending",
-      "measurementStatus": "not-yet-measured",
+      "cohort": "expansion-manual-baseline-measured",
+      "measurementStatus": "measured-not-yet-admitted-to-weekly-spend",
       "identityEvidence": "existing-salt-lake-county-route-measurement-only",
       "serviceAreaStatus": "pending-current-profile-service-area-verification",
-      "current": null,
-      "phase": "manual-google-baseline-before-weekly-admission",
-      "nextPermittedAction": "Run the complete 12-city manual Google baseline atomically; do not infer zero ranks, alter public pages, or assert GBP service-area inclusion from registry membership."
+      "current": {
+        "observedAt": "2026-08-12T17:40:30.503Z",
+        "organicRanks": [
+          null,
+          19,
+          14,
+          null
+        ],
+        "selectedOrganicUrls": [
+          null,
+          "https://www.framerestorationutah.com/locations/west-jordan",
+          "https://www.framerestorationutah.com/locations/west-jordan",
+          null
+        ],
+        "exactCidMapsRanks": [
+          null,
+          null,
+          null,
+          null
+        ],
+        "googleAiOverview": {
+          "present": 0,
+          "ownedCitations": 0
+        },
+        "consumerAi": "configured-manual-measurement-only-blocked-invalid-provider-credential"
+      },
+      "phase": "integrity-and-service-area-evidence-before-weekly-admission",
+      "nextPermittedAction": "Preserve measured organic and AIO footholds, complete evidence-safe integrity diagnosis, and verify current profile service-area evidence; do not edit public pages or assert a city GBP without explicit approval.",
+      "rankSource": "data/rank-tracker/expansion/west-jordan/latest.json"
     },
     {
       "priority": 17,
@@ -490,13 +777,39 @@
       "slug": "west-valley-city",
       "page": "locations/west-valley-city.html",
       "panelId": "utah-west-valley-city-google-v1",
-      "cohort": "expansion-baseline-pending",
-      "measurementStatus": "not-yet-measured",
+      "cohort": "expansion-manual-baseline-measured",
+      "measurementStatus": "measured-not-yet-admitted-to-weekly-spend",
       "identityEvidence": "existing-salt-lake-county-route-measurement-only",
       "serviceAreaStatus": "pending-current-profile-service-area-verification",
-      "current": null,
-      "phase": "manual-google-baseline-before-weekly-admission",
-      "nextPermittedAction": "Run the complete 12-city manual Google baseline atomically; do not infer zero ranks, alter public pages, or assert GBP service-area inclusion from registry membership."
+      "current": {
+        "observedAt": "2026-08-12T17:40:30.503Z",
+        "organicRanks": [
+          21,
+          16,
+          11,
+          16
+        ],
+        "selectedOrganicUrls": [
+          "https://www.framerestorationutah.com/locations/west-valley-city",
+          "https://www.framerestorationutah.com/locations/west-valley-city",
+          "https://www.framerestorationutah.com/locations/west-valley-city",
+          "https://www.framerestorationutah.com/locations/west-valley-city"
+        ],
+        "exactCidMapsRanks": [
+          null,
+          null,
+          null,
+          null
+        ],
+        "googleAiOverview": {
+          "present": 0,
+          "ownedCitations": 0
+        },
+        "consumerAi": "configured-manual-measurement-only-blocked-invalid-provider-credential"
+      },
+      "phase": "integrity-and-service-area-evidence-before-weekly-admission",
+      "nextPermittedAction": "Preserve measured organic and AIO footholds, complete evidence-safe integrity diagnosis, and verify current profile service-area evidence; do not edit public pages or assert a city GBP without explicit approval.",
+      "rankSource": "data/rank-tracker/expansion/west-valley-city/latest.json"
     }
   ],
   "gates": {

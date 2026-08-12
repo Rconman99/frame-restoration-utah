@@ -44,6 +44,12 @@ jobs:
       - name: Validate the expansion contract after measurement
         run: npm run audit:slv-expansion-panels
 
+      - name: Refresh the 18-city goal portfolio from the complete baseline
+        run: npm run sync:slv-18-city-goals
+
+      - name: Validate the refreshed 18-city goal portfolio
+        run: npm run audit:slv-18-city-goals
+
       - name: Add measurement summary
         if: always()
         run: |
@@ -56,7 +62,7 @@ jobs:
         run: |
           git config user.name "Frame Rank Tracker"
           git config user.email "rank-tracker@users.noreply.github.com"
-          git add data/rank-tracker/expansion/
+          git add data/rank-tracker/expansion/ data/rank-tracker/SLV-18-CITY-GOAL-PORTFOLIO-2026-08-12.json
           if git diff --cached --quiet; then
             echo "No expansion rank-tracker change to commit."
             exit 0

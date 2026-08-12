@@ -34,7 +34,7 @@ assert.deepEqual(completion.consumerAi.engines, ["chatgpt", "perplexity", "gemin
 assert.match(completion.completion, /same uncontaminated 28-day window/i);
 
 const coreGoals = portfolio.cityGoals.filter((goal) => goal.cohort === "core-measured");
-const expansionGoals = portfolio.cityGoals.filter((goal) => goal.cohort === "expansion-baseline-pending");
+const expansionGoals = portfolio.cityGoals.filter((goal) => goal.cohort === "expansion-manual-baseline-measured");
 assert.equal(coreGoals.length, 6);
 assert.equal(expansionGoals.length, 12);
 
@@ -55,8 +55,18 @@ const expansionById = new Map(expansionRegistry.panels.map((panel) => [panel.id,
 for (const goal of expansionGoals) {
   const panel = expansionById.get(goal.panelId);
   assert.ok(panel, `unknown expansion panel: ${goal.panelId}`);
-  assert.equal(goal.measurementStatus, "not-yet-measured");
-  assert.equal(goal.current, null, `${goal.city} missing baseline must remain null, never zero`);
+  assert.equal(goal.measurementStatus, "measured-not-yet-admitted-to-weekly-spend");
+  const rankSource = panel.configPath.replace(/config\.json$/, "latest.json");
+  const report = read(rankSource);
+  assert.equal(goal.rankSource, rankSource);
+  assert.equal(goal.current.observedAt, report.observedAt);
+  assert.deepEqual(goal.current.organicRanks, report.results.map((result) => result.organicRank));
+  assert.deepEqual(goal.current.selectedOrganicUrls, report.results.map((result) => result.rankingUrl));
+  assert.deepEqual(goal.current.exactCidMapsRanks, report.results.map((result) => result.mapPackRank));
+  assert.deepEqual(goal.current.googleAiOverview, {
+    present: report.summary.aiOverviewsPresent,
+    ownedCitations: report.summary.aiOverviewCitations,
+  });
   assert.equal(goal.serviceAreaStatus, "pending-current-profile-service-area-verification");
   assert.equal(goal.page, `${panel.route.slice(1)}.html`);
   assert.ok(fs.existsSync(path.join(root, goal.page)), `missing expansion page: ${goal.page}`);
@@ -65,16 +75,16 @@ for (const goal of expansionGoals) {
 const score = portfolio.portfolioScore;
 assert.deepEqual(score, {
   citiesInPortfolio: 18,
-  citiesWithGoogleBaseline: 6,
-  citiesPendingFirstGoogleBaseline: 12,
+  citiesWithGoogleBaseline: 18,
+  citiesPendingFirstGoogleBaseline: 0,
   fixedOrganicTargets: 72,
-  fixedOrganicTargetsMeasured: core.currentScore.organicQueriesMeasured,
-  fixedOrganicNumberOne: core.currentScore.organicNumberOneQueries,
+  fixedOrganicTargetsMeasured: 72,
+  fixedOrganicNumberOne: 2,
   exactCidMapsTargets: 72,
-  exactCidMapsTargetsMeasured: core.currentScore.exactCidMapsQueriesMeasured,
+  exactCidMapsTargetsMeasured: 72,
   exactCidMapsNumberOne: core.currentScore.exactCidMapsNumberOneQueries,
-  googleAiOverviewCitations: core.currentScore.googleAiOverviewCitations,
-  googleAiOverviewsPresent: core.currentScore.googleAiOverviewsPresent,
+  googleAiOverviewCitations: 2,
+  googleAiOverviewsPresent: 4,
   consumerAiCompleteCityPanels: 0,
   citiesAtSustainedGoal: 0,
 });
@@ -88,4 +98,4 @@ assert.match(portfolio.gates.expansionIntegrity, /^73-blocking-finding-classes/)
 assert.ok(portfolio.prohibited.includes("treating an unmeasured expansion city as zero"));
 assert.ok(portfolio.prohibited.some((rule) => rule.includes("18-city portfolio complete")));
 
-console.log("PASS SLV 18-city goal portfolio: 72 organic #1 targets, 72 exact-CID Maps #1 targets, 6 measured cities, 12 explicitly unmeasured baseline candidates, 0 sustained completions");
+console.log("PASS SLV 18-city goal portfolio: 72 organic #1 targets, 72 exact-CID Maps #1 targets, 18 measured cities, organic #1 2/72, Maps #1 0/72, 0 sustained completions");
