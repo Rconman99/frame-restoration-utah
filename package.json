@@ -25,6 +25,8 @@
     "audit:mobile-ui": "node scripts/validate-mobile-ui-contract.mjs && node scripts/validate-mobile-contact-corpus.mjs && npm run audit:shared-assets",
     "audit:city-page-drafts": "node scripts/validate-city-page-drafts.mjs",
     "audit:slc-identity": "node scripts/validate-slc-identity.mjs",
+    "audit:slv-city-integrity": "node scripts/audit-slv-city-integrity.mjs --strict",
+    "audit:slv-city-integrity:report": "node scripts/audit-slv-city-integrity.mjs",
     "audit:shared-assets": "node scripts/sync-shared-asset-versions.mjs --check",
     "sync:shared-assets": "node scripts/sync-shared-asset-versions.mjs --write",
     "test:mobile-ui": "node scripts/test-mobile-ui.mjs",
