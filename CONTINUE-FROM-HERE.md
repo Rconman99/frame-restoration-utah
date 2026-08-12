@@ -12,9 +12,9 @@ Every location page in `/locations/` now has unique, city-specific content with:
 - Nearby city cross-links
 Script used: `/scripts/rewrite_locations.py` (711 lines, embedded CITIES dict with data for all 44 cities)
 
-### 2. BBB Trust Bar Badge (DONE)
-- SVG star icon + "BBB A+ Rated" added to homepage trust bar
-- Links to correct BBB profile: `https://www.bbb.org/us/ut/heber-city/profile/roofing-contractors/frame-restoration-utah-llc-1166-90056184`
+### 2. BBB Trust Bar Badge (DONE; corrected 2026-08-12)
+- Homepage trust bar now uses the stable "BBB Accredited" claim without a letter grade
+- Links to correct BBB profile: `https://www.bbb.org/us/ut/heber-city/profile/roofing-contractors/frame-restoration-utah-llc-1126-90056184`
 - Schema sameAs array also updated with correct BBB URL
 - Broken agent BBB image tag removed from live site
 

@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "market": "UT",
-  "reviewedAt": "2026-07-26",
-  "verificationScope": "Version 1 locks identity and service-route facts already present in approved repository sources. It intentionally omits pricing, payout, ranking, review-count, warranty, certification, and claim-outcome assertions until each has independent evidence and an owner-approved review date.",
+  "reviewedAt": "2026-08-12",
+  "verificationScope": "Version 1 locks identity and service-route facts already present in approved repository sources. It includes dated independent evidence for BBB accreditation but intentionally omits BBB letter grades, pricing, payout, ranking, review-count, warranty, certification, and claim-outcome assertions until each has independent evidence and an owner-approved review date.",
   "claims": [
     {
       "id": "identity.public_brand",
@@ -204,6 +204,24 @@
       "mirrors": [],
       "allowedSurfaces": ["llms.txt", "visible-copy", "outreach-claims"],
       "prohibitedVariants": ["supplemental-claim advocacy", "represents homeowners", "writes supplemental claims"]
+    },
+    {
+      "id": "third_party.bbb_accreditation",
+      "label": "BBB accreditation",
+      "value": "BBB Accredited Business",
+      "status": "verified",
+      "verifiedBy": "official-public-profile-review",
+      "verifiedOn": "2026-08-12",
+      "expiresOn": "2026-11-12",
+      "evidence": [
+        {
+          "kind": "local-file",
+          "path": "data/authority/BBB-PROFILE-VERIFICATION-2026-08-12.md"
+        }
+      ],
+      "mirrors": [],
+      "allowedSurfaces": ["visible-copy", "structured-data", "directory-packet", "content-generator"],
+      "prohibitedVariants": ["BBB A+", "A+ BBB", "BBB A-", "A- BBB"]
     }
   ],
   "services": [

@@ -11,6 +11,18 @@ import path from "node:path";
 
 const repoRoot = process.cwd();
 const failures = [];
+const canonicalBbbProfile = "https://www.bbb.org/us/ut/heber-city/profile/roofing-contractors/frame-restoration-utah-llc-1126-90056184";
+const retiredBbbProfileFragment = "frame-restoration-utah-llc-1166-90056184";
+const bbbGradePatterns = [
+  /BBB[\s\S]{0,160}(?:\bA\+(?![\w-])|\bA-(?![\w-])|\bA\s+Plus\b|\bA\s+Minus\b)/iu,
+  /(?:\bA\+(?![\w-])|\bA-(?![\w-])|\bA\s+Plus\b|\bA\s+Minus\b)[\s\S]{0,160}BBB/iu,
+  /BBB[\s\S]{0,160}A&#43;/iu,
+  /A&#43;[\s\S]{0,160}BBB/iu,
+];
+const unverifiedManufacturerCredentialPatterns = [
+  /(?:CertainTeed|TAMKO)[\s\S]{0,100}\bcertif(?:ied|ication|ications)\b/iu,
+  /\bcertif(?:ied|ication|ications)\b[\s\S]{0,100}(?:CertainTeed|TAMKO)/iu,
+];
 
 const internalArtifactDenylist = new Set([
   "Frame-AEO-Master-Play.html",
@@ -73,6 +85,21 @@ function fail(message) {
   console.error(`::error::${message}`);
 }
 
+function auditBbbTrustSurface(rel, text, { auditManufacturerCredentials = true } = {}) {
+  if (text.includes(retiredBbbProfileFragment)) {
+    fail(`${rel} contains retired BBB profile URL; use ${canonicalBbbProfile}`);
+  }
+  if (bbbGradePatterns.some((pattern) => pattern.test(text))) {
+    fail(`${rel} publishes an unstable BBB letter-grade claim; publish accreditation only`);
+  }
+  if (
+    auditManufacturerCredentials
+    && unverifiedManufacturerCredentialPatterns.some((pattern) => pattern.test(text))
+  ) {
+    fail(`${rel} publishes an unregistered CertainTeed/TAMKO certification claim`);
+  }
+}
+
 const deployed = walk(repoRoot).sort();
 
 const homepage = fs.readFileSync(path.join(repoRoot, "index.html"), "utf8");
@@ -108,6 +135,44 @@ for (const rel of deployed) {
   if (/(?:\+?1[-.\s]?)?\(?435\)?[-.\s]?302[-.\s]?4422/.test(text)) {
     fail(`${rel} contains legacy/internal phone (435) 302-4422`);
   }
+  auditBbbTrustSurface(rel, text);
+}
+
+const activeBbbClaimSources = [
+  "add-author-bio.py",
+  "fix-unique-content.py",
+  "scripts/blog-autobrief.py",
+  "scripts/blog-draft-openrouter.py",
+  "scripts/generate-blog-post.py",
+];
+for (const directory of ["data/blog-briefs", "data/blog-published"]) {
+  const fullDirectory = path.join(repoRoot, directory);
+  if (!fs.existsSync(fullDirectory)) continue;
+  for (const entry of fs.readdirSync(fullDirectory, { withFileTypes: true })) {
+    if (entry.isFile() && entry.name.endsWith(".json")) {
+      activeBbbClaimSources.push(`${directory}/${entry.name}`);
+    }
+  }
+}
+for (const rel of activeBbbClaimSources) {
+  const fullPath = path.join(repoRoot, rel);
+  if (!fs.existsSync(fullPath)) continue;
+  auditBbbTrustSurface(rel, fs.readFileSync(fullPath, "utf8"), {
+    // Generator source contains the deny-list pattern itself. Generated JSON
+    // briefs/posts are still checked as public claim sources below.
+    auditManufacturerCredentials: rel !== "scripts/generate-blog-post.py",
+  });
+}
+
+const businessIdentity = JSON.parse(
+  fs.readFileSync(path.join(repoRoot, "data/route-factory/business.json"), "utf8"),
+);
+const canonicalProfiles = businessIdentity.entity_links?.sameAs ?? [];
+if (!canonicalProfiles.includes(canonicalBbbProfile)) {
+  fail("data/route-factory/business.json is missing the canonical BBB profile URL");
+}
+if (canonicalProfiles.some((profile) => profile.includes(retiredBbbProfileFragment))) {
+  fail("data/route-factory/business.json still contains the retired BBB profile URL");
 }
 
 const sitemapPath = path.join(repoRoot, "sitemap.xml");

@@ -1,6 +1,6 @@
 # Frame Utah — NAP / Directory Cleanup Checklist
 
-**Current refresh:** 2026-07-17
+**Current refresh:** 2026-08-12
 **Status:** active source of truth for Utah directory cleanup.
 **Supersedes:** `NAP-DIRECTORY-CHECKLIST-2026-05-27.md`, the stale 2026-06-01 DBA/name-change plan, and historical `LOCAL-CITATION-PLAN.md` details.
 
@@ -56,7 +56,8 @@ Do not approve a subscription or blanket sync solely from the scan screenshot.
 
 | Directory | Current evidence | Required action |
 |---|---|---|
-| BBB | Public page still surfaces `(435) 302-4422` as the primary phone and `(435) 292-8802` as other phone. | Make `(435) 292-8802` the primary/public phone. Keep legal name `Frame Restoration Utah LLC`. Confirm website points to `https://www.framerestorationutah.com/`. |
+| BBB | Public page still surfaces `(435) 302-4422` as the primary phone, `(435) 292-8802` as other phone, and links to retired `www.frameroofingutah.com`. Accreditation is public; the changeable letter grade is not a Frame-controlled claim. | Make `(435) 292-8802` the primary/public phone and replace the website with `https://www.framerestorationutah.com/`. Keep legal name `Frame Restoration Utah LLC`. |
+| Go Heber Valley | Public page re-verified 2026-08-12 with `(435) 292-8802` and a direct link to `www.framerestorationutah.com`. | No edit. Preserve as verified and recheck during the next quarterly citation audit. |
 | Yelp | Surefire screenshot shows `Frame Restoration`, correct address, wrong phone `(435) 302-4422`, and 0 reviews. | Claim/update to legal name, public phone `(435) 292-8802`, canonical website, and roofing category. |
 | Google Business Profile | Surefire scanner failed with a temporary problem, so the screenshot is not evidence of an error. | Use owner-authorized access for read-only proof and evidence-backed non-post corrections only. Verify NAP manually before any change. No name change from scanner data. No posts. |
 | Facebook | Surefire scanner failed with a temporary problem, so the screenshot is not evidence of an error. | Verify manually in the owner account. Match name, phone, address, and website. |
@@ -68,7 +69,7 @@ Do not approve a subscription or blanket sync solely from the scan screenshot.
 
 Claim or correct these after Tier 1 is clean:
 
-Apple Business Connect, Bing Places, Thumbtack, Houzz, Porch, GoHeberValley, Utah.com, CertainTeed dealer listing, Tamko dealer listing, Heber Valley Chamber, Salt Lake Chamber.
+Apple Business Connect, Bing Places, Thumbtack, Houzz, Porch, Utah.com, CertainTeed dealer listing, Tamko dealer listing, Heber Valley Chamber, Salt Lake Chamber.
 
 ## Tier 3 batch
 

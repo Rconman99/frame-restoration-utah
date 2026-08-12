@@ -318,7 +318,9 @@
 ## ⛔ CRITICAL RULES — READ BEFORE ANY EDIT
 
 ### DO NOT add false trust claims. These are NOT true:
-- ~~**BBB A+ Rated**~~ — NOW CONFIRMED. BBB accreditation approved 2026-04-07. A+ BBB badge on site is accurate. **✅ 2026-07-14: the 7/13 “UNDER REVIEW / A− conflict” flag is RETRACTED — it was a FALSE POSITIVE. Verified on `main`: no `A−`/“A- Rated” string exists in ANY tracked file, `salt-lake-city.html` says “BBB A+” in all of its BBB references, and `c938d74`’s diff touched ZERO BBB lines. A+ stands; the site is internally consistent; no sweep needed.**
+- **Any BBB letter grade.** The official profile displayed A- when reviewed on
+  2026-08-12, superseding the July repository-only conclusion. Publish
+  `BBB Accredited` only; ratings are changeable and intentionally not mirrored.
 - **NRCA Member** — Frame Roofing is NOT an NRCA member. Never add this.
 - **GAF Master Elite / OC Preferred** — Not verified. Do not claim.
 - Any certification, membership, or accreditation that hasn't been confirmed by Ryan or Landon.
@@ -330,7 +332,6 @@
 - Financing Available
 - 10-Year Workmanship Warranty
 - BBB Accredited (confirmed by Landon 2026-04-07)
-- A+ BBB Rating
 
 ### Phone numbers: ARCHITECTURE FLIPPED 2026-05-27 (commit 2fe52d2) — Twilio number IS now the public NAP
 - **Public NAP / display / tel: href / sms: / schema.org / GBP / directories → 435-292-8802** (Twilio A2P 10DLC registered number)

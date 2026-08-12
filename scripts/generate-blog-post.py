@@ -28,7 +28,8 @@ Hard rules (encoded — do not change without reading CLAUDE.md):
   - Alt text labels them as "stylized illustration," not photography.
   - File paths use -illustration.webp suffix to keep naming honest.
   - Phone CTAs use the Twilio line: 435-292-8802.
-  - No invented certifications. BBB A+ is allowed; NRCA / GAF Master Elite are NOT.
+  - No invented certifications. BBB Accredited is allowed; NRCA, GAF Master Elite,
+    CertainTeed-certified, and TAMKO-certified claims require registered evidence.
   - Brand string is "Frame Restoration Utah" — never "Frame Restoration TX" leak.
 """
 
@@ -184,7 +185,16 @@ BRAND_SUFFIX_RE = re.compile(r"\s*(?:\||-|–|—)\s*Frame (?:Roofing|Restoratio
 FORBIDDEN_DRAFT_PATTERNS = [
     ("old call number", re.compile(r"435[-\s]?302[-\s]?4422|\+?1?4353024422")),
     ("Texas brand leak", re.compile(r"\b(?:Texas|Frisco|Dallas|Frame Restoration TX|framerestorations\.com)\b", re.I)),
-    ("unverified certification", re.compile(r"\b(?:NRCA|GAF Master Elite|Owens Corning Preferred|OC Preferred|certified inspectors?|certified inspection|certified assessment)\b", re.I)),
+    (
+        "unverified certification",
+        re.compile(
+            r"\b(?:NRCA|GAF Master Elite|Owens Corning Preferred|OC Preferred|"
+            r"certified inspectors?|certified inspection|certified assessment|"
+            r"(?:CertainTeed|TAMKO)(?:\s+and\s+(?:CertainTeed|TAMKO))?\s+certified|"
+            r"certified\s+(?:CertainTeed|TAMKO))\b",
+            re.I,
+        ),
+    ),
     ("invented license number", re.compile(r"\b(?:license|lic\.?|DOPL)\s*(?:#|no\.?|number)\s*(?!14256097-5501\b)[A-Z0-9-]+", re.I)),
     ("invented customer count", re.compile(r"\b(?:helped|served|completed|installed|repaired)\s+(?:over\s+)?\d[\d,]*\s+(?:Utah\s+)?(?:families|homeowners|customers|jobs|projects|roofs)\b", re.I)),
     ("unverified recommendation claim", re.compile(r"\b(?:insurance agents?\s+routinely\s+recommend|preferred choice|go-to provider|longest in the region)\b", re.I)),
@@ -396,7 +406,7 @@ def retry_prompt(base_prompt: str, errors: list[str]) -> str:
         if "Texas brand leak" in error:
             guidance.append("- Keep the copy entirely Utah-scoped; do not mention out-of-state locations, brands, domains, or sister operations.")
         elif "unverified certification" in error:
-            guidance.append("- Use only these trust claims: licensed, insured, BBB Accredited (A+), 10-year workmanship warranty. Do not use certified/certification language.")
+            guidance.append("- Use only these trust claims: licensed, insured, BBB Accredited, 10-year workmanship warranty. Do not use certified/certification language.")
         elif "old call number" in error:
             guidance.append("- Use only 435-292-8802 as the phone number.")
         elif "invented license number" in error:
@@ -474,8 +484,8 @@ Today's date: {today_iso}
 {current_context}
 
 HARD RULES (do not violate):
-1. {BUSINESS_NAME} is licensed + insured + BBB Accredited (A+) since 2026-04-07. Do not add trade-association, manufacturer, installer, inspector, or other certification claims.
-2. Confirmed claims you MAY use: Licensed & Insured in Utah, Free Roof Inspections, 24/7 Storm Response, Financing Available, 10-Year Workmanship Warranty, BBB Accredited (A+).
+1. {BUSINESS_NAME} is licensed + insured + BBB Accredited since 2026-04-07. Do not add trade-association, manufacturer, installer, inspector, or other certification claims.
+2. Confirmed claims you MAY use: Licensed & Insured in Utah, Free Roof Inspections, 24/7 Storm Response, Financing Available, 10-Year Workmanship Warranty, BBB Accredited.
 3. NEVER invent company age, years in business, founding date, number of jobs completed, or "over X years of experience". {BUSINESS_NAME}'s age is NOT public — do not estimate or fabricate it.
 4. {BUSINESS_NAME} is the Utah public brand only. Do not mention parent brands, sister companies, out-of-state locations, out-of-state operations, or external company domains.
 5. Phone CTA = {PHONE_CALL}. This is the only public phone number for {BUSINESS_NAME}.
@@ -848,7 +858,7 @@ def render_html(manifest: dict, image_url: Optional[str], image_local_path: Opti
 
 <section class="blog-cta">
   <h2>Free Inspection. No Pressure.</h2>
-  <p>Licensed Utah roofers. BBB Accredited (A+). 10-year workmanship warranty.</p>
+  <p>Licensed Utah roofers. BBB Accredited. 10-year workmanship warranty.</p>
   <a href="tel:{PHONE_TEL}" class="btn btn-primary">Call {PHONE_CALL}</a>
   <a href="{SCHEDULE_URL}" target="_blank" rel="noopener" class="btn btn-secondary" style="margin-left:12px">Book Online</a>
 </section>

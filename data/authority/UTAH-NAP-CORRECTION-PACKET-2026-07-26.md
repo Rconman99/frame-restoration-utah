@@ -1,8 +1,10 @@
 # Utah NAP correction packet
 
-Status: **draft — owner approval required before any public listing edit**
+Status: **active correction packet — owner-authenticated directory access required**
 
 Prepared: 2026-07-26
+
+Public evidence refreshed: 2026-08-12
 
 ## Verified repository identity
 
@@ -18,30 +20,37 @@ Source: `data/route-factory/business.json`
 
 Internal-only phone that must not publish: **435-302-4422**.
 
-## Observed contradiction
+## Current verified contradiction
 
-As observed on 2026-07-26, the following public profiles or search results show
-435-302-4422:
+As observed on 2026-08-12, BBB still presents the internal/legacy phone as its
+primary number and links to the retired website:
 
 - BBB profile:
-  https://www.bbb.org/us/ut/heber-city/profile/roofing-contractors/frame-restoration-utah-llc-1166-90056184
-- Go Heber Valley:
-  https://www.gohebervalley.com/frame-restoration-utah-llc/
-- BuildZoom:
-  https://www.buildzoom.com/contractor/frame-restoration-utah-llc
+  https://www.bbb.org/us/ut/heber-city/profile/roofing-contractors/frame-restoration-utah-llc-1126-90056184
+- Primary phone shown: 435-302-4422
+- Other phone shown: 435-292-8802
+- Website shown: www.frameroofingutah.com
+
+Go Heber Valley was rechecked on 2026-08-12 and now shows the approved public
+phone and links directly to `www.framerestorationutah.com`:
+
+- https://www.gohebervalley.com/frame-restoration-utah-llc/
+
+BuildZoom was observed with phone drift on 2026-07-26 but was not re-verified in
+this refresh; do not mark it corrected or incorrect without a new public check.
 
 This packet does not assert ownership or edit access for any profile.
 
 ## Requested owner decision
 
-Approve changing the public phone on owned/claimed profiles from
-**435-302-4422** to **435-292-8802**, without changing the public address,
-website, category, service area, credentials, or business description in the
-same action.
+For BBB, change the primary public phone from **435-302-4422** to
+**435-292-8802** and replace `www.frameroofingutah.com` with
+`https://www.framerestorationutah.com/`. Do not change the public address,
+category, service area, credentials, or business description in the same action.
 
 Owner:
 
-- [ ] Approve the phone-only correction
+- [ ] Confirm owner-authenticated BBB access for the phone-and-website correction
 - [ ] Reject
 - [ ] Provide a different verified public number
 

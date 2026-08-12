@@ -66,7 +66,7 @@ GENERAL_LINKS = [
 ]
 
 # Always-true credentials (safe to assert on every post).
-CREDENTIAL_FACT = ("Frame Restoration Utah is Licensed & Insured in Utah, BBB Accredited (A+), "
+CREDENTIAL_FACT = ("Frame Restoration Utah is Licensed & Insured in Utah, BBB Accredited, "
                    "offers a 10-year workmanship warranty, provides free no-obligation inspections, "
                    "dispatches 24/7 storm response, and works to IRC R905 standards under a Utah "
                    "DOPL contractor license.")
