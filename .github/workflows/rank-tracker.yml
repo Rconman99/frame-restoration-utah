@@ -51,8 +51,10 @@ jobs:
           npm run sync:slv-18-city-goals
           npm run sync:slv-entity-health
           npm run sync:slv-weekly-decisions
+          npm run sync:slv-competitor-displacement
           npm run sync:slv-gsc-attribution
           npm run sync:slv-expansion-architecture
+          npm run sync:slv-interventions
           npm run sync:slv-execution-registry
 
       - name: Validate the combined portfolio and weekly decisions
@@ -61,8 +63,10 @@ jobs:
           npm run audit:slv-consumer-ai
           npm run audit:slv-entity-health
           npm run audit:slv-weekly-decisions
+          npm run audit:slv-competitor-displacement
           npm run audit:slv-gsc-attribution
           npm run audit:slv-expansion-architecture
+          npm run audit:slv-interventions
           npm run audit:slv-execution-registry
 
       - name: Add measurement summary

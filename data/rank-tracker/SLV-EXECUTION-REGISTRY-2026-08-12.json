@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "registryId": "frame-utah-slv-18-city-execution-v1",
   "market": "utah-salt-lake-valley",
-  "preparedAt": "2026-08-12T18:32:00.000Z",
+  "preparedAt": "2026-08-12T20:48:46.000Z",
   "status": "active-goal-execution-gated",
   "publicMutationPerformed": false,
   "score": {
@@ -69,14 +69,18 @@
       "file": "data/rank-tracker/SLV-CONSUMER-AI-LATEST.json",
       "sha256": "355f34d51267a942614cd7bd86e60daa4ae35fad3aa8f449413095ca5709377f"
     },
+    "interventions": {
+      "file": "data/rank-tracker/SLV-INTERVENTION-QUEUE-2026-08-12.json",
+      "sha256": "13d566c747a6a2c114147dd63ab4e1485026ad8fd49041cbf58c7e59c344e5eb"
+    },
     "businessDriveReceipt": {
       "file": "data/rank-tracker/evidence/SLV-BUSINESS-DRIVE-CONNECTOR-2026-08-12.json",
-      "sha256": "a69dcc916343c59c940720a8565070f58865d677c8c4260352591b38e3003799"
+      "sha256": "431dce98c54cfe390c111412df7b653b5940f70becf896064f3298cef5cc5260"
     }
   },
   "externalEvidence": {
     "businessDriveReceipt": "data/rank-tracker/evidence/SLV-BUSINESS-DRIVE-CONNECTOR-2026-08-12.json",
-    "externalBusinessDriveReceiptSha256": "d1509d396e1d62776ea28387c7730ff22defec883932de0c0f97ec5f59d43e9b"
+    "externalBusinessDriveReceiptSha256": "c1ef99c795d7932d4497ab30395ab753720b1f7c88326e1d588da604cdb03951"
   },
   "consumerAiConfiguration": {
     "repository": "Rconman99/geo-aeo-tracker",
@@ -156,6 +160,13 @@
       "state": "active-no-premature-ranking-verdicts",
       "source": "data/rank-tracker/SLV-WEEKLY-DECISIONS-2026-08-12.json",
       "decision": "Keep the required SLC factual correction, hold all 18 ranking lanes until their comparable evidence contracts are satisfied, and preserve the Magna/Kearns #1 footholds."
+    },
+    {
+      "id": "evidence-ranked-city-interventions",
+      "class": "system-fixable-on-evidence-refresh",
+      "state": "active-no-public-authorization",
+      "source": "data/rank-tracker/SLV-INTERVENTION-QUEUE-2026-08-12.json",
+      "decision": "Re-rank each city's next action after every complete Google, GSC, review, entity-health, or consumer-AI refresh; protect existing footholds and preserve every explicit evidence and owner gate."
     }
   ],
   "connectionNeeded": [
@@ -165,8 +176,8 @@
       "requiredAccount": "ryan@framerestorations.com",
       "observedAccount": "ryanconwell99@gmail.com",
       "receipt": "data/rank-tracker/evidence/SLV-BUSINESS-DRIVE-CONNECTOR-2026-08-12.json",
-      "receiptSha256": "a69dcc916343c59c940720a8565070f58865d677c8c4260352591b38e3003799",
-      "externalSourceReceiptSha256": "d1509d396e1d62776ea28387c7730ff22defec883932de0c0f97ec5f59d43e9b",
+      "receiptSha256": "431dce98c54cfe390c111412df7b653b5940f70becf896064f3298cef5cc5260",
+      "externalSourceReceiptSha256": "c1ef99c795d7932d4497ab30395ab753720b1f7c88326e1d588da604cdb03951",
       "action": "Reconnect the claude.ai Google Drive connector to ryan@framerestorations.com, then rerun the read-only evidence audit."
     },
     {
@@ -246,11 +257,40 @@
         "alternateNormalizedUrls": [],
         "nextEvidenceAction": "Keep the Salt Lake City page frozen under its active experiment until the 2026-09-09 evaluation gate; continue weekly fixed panels and targeted GSC reads."
       },
-      "lane": "observe-time-gated-experiment",
-      "action": "Keep the page frozen, run the weekly fixed Google panel, and evaluate the existing trust correction no earlier than 2026-09-09T04:40:58Z.",
-      "actionClass": "system-fixable-when-scheduled",
+      "lane": "observe-time-gated-slc-experiment",
+      "action": "Keep the Salt Lake City page frozen and collect the scheduled fixed Google, targeted GSC, exact-CID review, and consumer-AI readings until the existing experiment's evaluation gate opens.",
+      "actionClass": "system-monitor",
       "gate": "time-gated-until-2026-09-09T04:40:58Z",
       "publicApprovalPacket": null,
+      "ownerApprovalPhrase": null,
+      "intervention": {
+        "lane": "observe-time-gated-slc-experiment",
+        "decision": "Monitor",
+        "selectedAction": "Keep the Salt Lake City page frozen and collect the scheduled fixed Google, targeted GSC, exact-CID review, and consumer-AI readings until the existing experiment's evaluation gate opens.",
+        "gate": "time-gated-until-2026-09-09T04:40:58Z",
+        "acceptanceCheck": "No SLC title, H1, copy, schema, canonical, route, or internal-link intent change occurs before the time gate; every weekly panel is retained without converting missing results to zero.",
+        "scoreVector": {
+          "businessValue": 10,
+          "confidence": 8,
+          "leadValue": 3,
+          "authorityValue": 7,
+          "learningValue": 6,
+          "implementationCost": 1,
+          "complianceRisk": 1,
+          "customerBlockerRisk": 4,
+          "maintenanceCost": 2,
+          "sourceBiasRisk": 2,
+          "recencyBiasRisk": 1
+        },
+        "feedback": {
+          "cadence": "weekly",
+          "requiredComparablePanels": 4,
+          "currentSameWindowCompleteStreak": 0,
+          "verdict": "hold",
+          "keepRule": "Keep only a declared isolated ranking variable when its city-specific acceptance check passes and every protected integrity, URL-selection, Maps, AIO, consumer-AI, and route guardrail remains green.",
+          "revertRule": "Revert the isolated ranking variable on a declared guardrail failure or unmet 28-day decision rule; never revert a required factual correction to restore an unsupported claim or wrong entity identity."
+        }
+      },
       "universalDependencies": [
         "valid Bright Data user API key for ChatGPT/Perplexity/Gemini panels",
         "business Drive connector authenticated as ryan@framerestorations.com for evidence search",
@@ -293,11 +333,40 @@
         "alternateNormalizedUrls": [],
         "nextEvidenceAction": "Protect the measured #1/AIO foothold. Do not change title, H1, canonical, route, or internal-link intent until exact owner approval and a declared isolated experiment exist."
       },
-      "lane": "cleanup-first-protect-aio",
-      "action": "After exact owner approval, apply the five-page core cleanup plus the pinned Millcreek storm-child identity correction as one isolated variable; protect the owned roof-repair AIO citation and all current titles/H1s.",
-      "actionClass": "system-fixable-after-owner-approval",
-      "gate": "explicit-owner-publication-approval",
+      "lane": "owner-gated-verified-identity-and-integrity-cleanup",
+      "action": "Request the exact combined core-cleanup and Millcreek storm-child approval; if approved, apply only the pinned integrity and Salt Lake Valley identity correction while preserving title, H1, canonical, visible intent, and the roof-repair AIO foothold.",
+      "actionClass": "owner-or-evidence-input-needed",
+      "gate": "explicit-owner-publication-approval-and-full-surface-release-gate",
       "publicApprovalPacket": "data/authority/SLV-CITY-PUBLIC-REMEDIATION-PACKET-2026-08-12.json",
+      "ownerApprovalPhrase": "I explicitly approve editing and publishing the five-page integrity cleanup defined in PR #242 and the Millcreek storm-child identity correction defined in the pinned Millcreek scope amendment.",
+      "intervention": {
+        "lane": "owner-gated-verified-identity-and-integrity-cleanup",
+        "decision": "Request input",
+        "selectedAction": "Request the exact combined core-cleanup and Millcreek storm-child approval; if approved, apply only the pinned integrity and Salt Lake Valley identity correction while preserving title, H1, canonical, visible intent, and the roof-repair AIO foothold.",
+        "gate": "explicit-owner-publication-approval-and-full-surface-release-gate",
+        "acceptanceCheck": "Both Millcreek routes publish the reviewed Salt Lake Valley CID/sameAs set, strict integrity is green, all five rendered release gates pass, and a fresh baseline opens the 28-day observation window.",
+        "scoreVector": {
+          "businessValue": 10,
+          "confidence": 10,
+          "leadValue": 9,
+          "authorityValue": 10,
+          "learningValue": 6,
+          "implementationCost": 5,
+          "complianceRisk": 8,
+          "customerBlockerRisk": 4,
+          "maintenanceCost": 2,
+          "sourceBiasRisk": 2,
+          "recencyBiasRisk": 1
+        },
+        "feedback": {
+          "cadence": "weekly",
+          "requiredComparablePanels": 4,
+          "currentSameWindowCompleteStreak": 0,
+          "verdict": "hold",
+          "keepRule": "Keep only a declared isolated ranking variable when its city-specific acceptance check passes and every protected integrity, URL-selection, Maps, AIO, consumer-AI, and route guardrail remains green.",
+          "revertRule": "Revert the isolated ranking variable on a declared guardrail failure or unmet 28-day decision rule; never revert a required factual correction to restore an unsupported claim or wrong entity identity."
+        }
+      },
       "universalDependencies": [
         "valid Bright Data user API key for ChatGPT/Perplexity/Gemini panels",
         "business Drive connector authenticated as ryan@framerestorations.com for evidence search",
@@ -342,11 +411,40 @@
         "alternateNormalizedUrls": [],
         "nextEvidenceAction": "Protect the measured #1/AIO foothold. Do not change title, H1, canonical, route, or internal-link intent until exact owner approval and a declared isolated experiment exist."
       },
-      "lane": "protect-number-one-cleanup-first",
-      "action": "After separate exact owner approval, apply only the expansion integrity cleanup for Magna; preserve its roof-replacement #1 query and owned Google AIO citation, then observe before any ranking experiment.",
-      "actionClass": "system-fixable-after-owner-approval",
-      "gate": "explicit-owner-publication-approval",
+      "lane": "protect-foothold-before-cleanup-or-intent-change",
+      "action": "Request the exact expansion integrity-cleanup approval for Magna; preserve every title, H1, canonical, route, and protected #1/AIO query, then observe four weekly panels before drafting an intent change.",
+      "actionClass": "owner-or-evidence-input-needed",
+      "gate": "explicit-owner-publication-approval-and-protected-foothold-guardrail",
       "publicApprovalPacket": "data/authority/SLV-EXPANSION-PUBLIC-REMEDIATION-PACKET-2026-08-12.json",
+      "ownerApprovalPhrase": "I explicitly approve editing and publishing the 12-page Salt Lake Valley expansion integrity cleanup defined in packet frame-utah-slv-twelve-page-expansion-public-integrity-cleanup-v1, with expansion identities, titles, H1s, canonicals, and protected related routes unchanged.",
+      "intervention": {
+        "lane": "protect-foothold-before-cleanup-or-intent-change",
+        "decision": "Request input",
+        "selectedAction": "Request the exact expansion integrity-cleanup approval for Magna; preserve every title, H1, canonical, route, and protected #1/AIO query, then observe four weekly panels before drafting an intent change.",
+        "gate": "explicit-owner-publication-approval-and-protected-foothold-guardrail",
+        "acceptanceCheck": "The Magna cleanup passes all release gates and roof replacement magna remains protected through the declared observation window.",
+        "scoreVector": {
+          "businessValue": 10,
+          "confidence": 6,
+          "leadValue": 10,
+          "authorityValue": 10,
+          "learningValue": 9,
+          "implementationCost": 5,
+          "complianceRisk": 8,
+          "customerBlockerRisk": 8,
+          "maintenanceCost": 2,
+          "sourceBiasRisk": 2,
+          "recencyBiasRisk": 1
+        },
+        "feedback": {
+          "cadence": "weekly",
+          "requiredComparablePanels": 4,
+          "currentSameWindowCompleteStreak": 0,
+          "verdict": "hold",
+          "keepRule": "Keep only a declared isolated ranking variable when its city-specific acceptance check passes and every protected integrity, URL-selection, Maps, AIO, consumer-AI, and route guardrail remains green.",
+          "revertRule": "Revert the isolated ranking variable on a declared guardrail failure or unmet 28-day decision rule; never revert a required factual correction to restore an unsupported claim or wrong entity identity."
+        }
+      },
       "universalDependencies": [
         "valid Bright Data user API key for ChatGPT/Perplexity/Gemini panels",
         "business Drive connector authenticated as ryan@framerestorations.com for evidence search",
@@ -389,11 +487,40 @@
         "alternateNormalizedUrls": [],
         "nextEvidenceAction": "Protect the measured #1/AIO foothold. Do not change title, H1, canonical, route, or internal-link intent until exact owner approval and a declared isolated experiment exist."
       },
-      "lane": "protect-number-one-cleanup-first",
-      "action": "After separate exact owner approval, apply only the expansion integrity cleanup for Kearns; preserve its roof-replacement #1 query, then observe before any ranking experiment.",
-      "actionClass": "system-fixable-after-owner-approval",
-      "gate": "explicit-owner-publication-approval",
+      "lane": "protect-foothold-before-cleanup-or-intent-change",
+      "action": "Request the exact expansion integrity-cleanup approval for Kearns; preserve every title, H1, canonical, route, and protected #1/AIO query, then observe four weekly panels before drafting an intent change.",
+      "actionClass": "owner-or-evidence-input-needed",
+      "gate": "explicit-owner-publication-approval-and-protected-foothold-guardrail",
       "publicApprovalPacket": "data/authority/SLV-EXPANSION-PUBLIC-REMEDIATION-PACKET-2026-08-12.json",
+      "ownerApprovalPhrase": "I explicitly approve editing and publishing the 12-page Salt Lake Valley expansion integrity cleanup defined in packet frame-utah-slv-twelve-page-expansion-public-integrity-cleanup-v1, with expansion identities, titles, H1s, canonicals, and protected related routes unchanged.",
+      "intervention": {
+        "lane": "protect-foothold-before-cleanup-or-intent-change",
+        "decision": "Request input",
+        "selectedAction": "Request the exact expansion integrity-cleanup approval for Kearns; preserve every title, H1, canonical, route, and protected #1/AIO query, then observe four weekly panels before drafting an intent change.",
+        "gate": "explicit-owner-publication-approval-and-protected-foothold-guardrail",
+        "acceptanceCheck": "The Kearns cleanup passes all release gates and roof replacement kearns remains protected through the declared observation window.",
+        "scoreVector": {
+          "businessValue": 10,
+          "confidence": 6,
+          "leadValue": 10,
+          "authorityValue": 5,
+          "learningValue": 9,
+          "implementationCost": 5,
+          "complianceRisk": 8,
+          "customerBlockerRisk": 8,
+          "maintenanceCost": 2,
+          "sourceBiasRisk": 2,
+          "recencyBiasRisk": 1
+        },
+        "feedback": {
+          "cadence": "weekly",
+          "requiredComparablePanels": 4,
+          "currentSameWindowCompleteStreak": 0,
+          "verdict": "hold",
+          "keepRule": "Keep only a declared isolated ranking variable when its city-specific acceptance check passes and every protected integrity, URL-selection, Maps, AIO, consumer-AI, and route guardrail remains green.",
+          "revertRule": "Revert the isolated ranking variable on a declared guardrail failure or unmet 28-day decision rule; never revert a required factual correction to restore an unsupported claim or wrong entity identity."
+        }
+      },
       "universalDependencies": [
         "valid Bright Data user API key for ChatGPT/Perplexity/Gemini panels",
         "business Drive connector authenticated as ryan@framerestorations.com for evidence search",
@@ -434,11 +561,40 @@
         "alternateNormalizedUrls": [],
         "nextEvidenceAction": "Preserve the intended city hub and all related routes; use the next complete targeted GSC read before selecting an architecture or intent experiment."
       },
-      "lane": "cleanup-then-single-variable-experiment",
-      "action": "After exact owner approval, complete the bounded core integrity cleanup for Sandy; capture a fresh baseline before one declared ranking variable.",
-      "actionClass": "system-fixable-after-owner-approval",
-      "gate": "explicit-owner-publication-approval",
+      "lane": "owner-gated-core-integrity-then-single-variable-intent-test",
+      "action": "Obtain current Salt Lake Valley service-area evidence for Sandy's separate Maps lane and request the exact core cleanup approval; after a green production receipt and fresh baseline, activate at most the already-pinned single-title experiment with every other intent surface held constant.",
+      "actionClass": "owner-or-evidence-input-needed",
+      "gate": "service-area-evidence-plus-explicit-owner-cleanup-approval-then-separate-ranking-experiment-approval",
       "publicApprovalPacket": "data/authority/SLV-CITY-PUBLIC-REMEDIATION-PACKET-2026-08-12.json",
+      "ownerApprovalPhrase": "I explicitly approve editing and publishing the five-page integrity cleanup defined in PR #242 and the Millcreek storm-child identity correction defined in the pinned Millcreek scope amendment.",
+      "intervention": {
+        "lane": "owner-gated-core-integrity-then-single-variable-intent-test",
+        "decision": "Request input",
+        "selectedAction": "Obtain current Salt Lake Valley service-area evidence for Sandy's separate Maps lane and request the exact core cleanup approval; after a green production receipt and fresh baseline, activate at most the already-pinned single-title experiment with every other intent surface held constant.",
+        "gate": "service-area-evidence-plus-explicit-owner-cleanup-approval-then-separate-ranking-experiment-approval",
+        "acceptanceCheck": "Keep only if roofing contractor sandy is position 12 or better in each of the final two weekly panels and the four-query mean rank is 11.5 or better in both panels. A current receipt separately classifies Sandy for CID 5689850818145735734.",
+        "scoreVector": {
+          "businessValue": 10,
+          "confidence": 6,
+          "leadValue": 5,
+          "authorityValue": 5,
+          "learningValue": 6,
+          "implementationCost": 5,
+          "complianceRisk": 8,
+          "customerBlockerRisk": 8,
+          "maintenanceCost": 2,
+          "sourceBiasRisk": 2,
+          "recencyBiasRisk": 1
+        },
+        "feedback": {
+          "cadence": "weekly",
+          "requiredComparablePanels": 4,
+          "currentSameWindowCompleteStreak": 0,
+          "verdict": "hold",
+          "keepRule": "Keep only a declared isolated ranking variable when its city-specific acceptance check passes and every protected integrity, URL-selection, Maps, AIO, consumer-AI, and route guardrail remains green.",
+          "revertRule": "Revert the isolated ranking variable on a declared guardrail failure or unmet 28-day decision rule; never revert a required factual correction to restore an unsupported claim or wrong entity identity."
+        }
+      },
       "universalDependencies": [
         "valid Bright Data user API key for ChatGPT/Perplexity/Gemini panels",
         "business Drive connector authenticated as ryan@framerestorations.com for evidence search",
@@ -483,11 +639,40 @@
         ],
         "nextEvidenceAction": "Inspect the alternate URLs against redirect dates, canonicals, current live routing, and query intent. Treat this blended 28-day evidence as a diagnosis trigger, not proof of current cannibalization or permission to redirect."
       },
-      "lane": "cleanup-then-single-variable-experiment",
-      "action": "After exact owner approval, complete the bounded core integrity cleanup for Holladay; capture a fresh baseline before one declared ranking variable.",
-      "actionClass": "system-fixable-after-owner-approval",
-      "gate": "explicit-owner-publication-approval",
+      "lane": "diagnose-url-consolidation-before-intent-change",
+      "action": "Complete a full post-August-10 GSC consolidation window while preserving the city hub, redirected legacy route, homepage, and editorial guide; obtain current Salt Lake Valley service-area evidence for the separate Maps lane, request the core cleanup separately, and do not activate the drafted title test until its prerequisites pass.",
+      "actionClass": "system-monitor",
+      "gate": "complete-post-redirect-gsc-window-plus-service-area-evidence-plus-owner-gated-cleanup",
       "publicApprovalPacket": "data/authority/SLV-CITY-PUBLIC-REMEDIATION-PACKET-2026-08-12.json",
+      "ownerApprovalPhrase": "I explicitly approve editing and publishing the five-page integrity cleanup defined in PR #242 and the Millcreek storm-child identity correction defined in the pinned Millcreek scope amendment.",
+      "intervention": {
+        "lane": "diagnose-url-consolidation-before-intent-change",
+        "decision": "Monitor",
+        "selectedAction": "Complete a full post-August-10 GSC consolidation window while preserving the city hub, redirected legacy route, homepage, and editorial guide; obtain current Salt Lake Valley service-area evidence for the separate Maps lane, request the core cleanup separately, and do not activate the drafted title test until its prerequisites pass.",
+        "gate": "complete-post-redirect-gsc-window-plus-service-area-evidence-plus-owner-gated-cleanup",
+        "acceptanceCheck": "Current query-to-URL evidence no longer depends on the pre-redirect window; the position-4 roof-replacement foothold and all protected routes remain intact; a current receipt separately classifies Holladay for CID 5689850818145735734.",
+        "scoreVector": {
+          "businessValue": 10,
+          "confidence": 6,
+          "leadValue": 8,
+          "authorityValue": 5,
+          "learningValue": 6,
+          "implementationCost": 3,
+          "complianceRisk": 1,
+          "customerBlockerRisk": 8,
+          "maintenanceCost": 2,
+          "sourceBiasRisk": 2,
+          "recencyBiasRisk": 1
+        },
+        "feedback": {
+          "cadence": "weekly",
+          "requiredComparablePanels": 4,
+          "currentSameWindowCompleteStreak": 0,
+          "verdict": "hold",
+          "keepRule": "Keep only a declared isolated ranking variable when its city-specific acceptance check passes and every protected integrity, URL-selection, Maps, AIO, consumer-AI, and route guardrail remains green.",
+          "revertRule": "Revert the isolated ranking variable on a declared guardrail failure or unmet 28-day decision rule; never revert a required factual correction to restore an unsupported claim or wrong entity identity."
+        }
+      },
       "universalDependencies": [
         "valid Bright Data user API key for ChatGPT/Perplexity/Gemini panels",
         "business Drive connector authenticated as ryan@framerestorations.com for evidence search",
@@ -528,11 +713,40 @@
         "alternateNormalizedUrls": [],
         "nextEvidenceAction": "Preserve the intended city hub and all related routes; use the next complete targeted GSC read before selecting an architecture or intent experiment."
       },
-      "lane": "cleanup-then-single-variable-experiment",
-      "action": "After exact owner approval, complete the bounded core integrity cleanup for Cottonwood Heights; capture a fresh baseline before one declared ranking variable.",
-      "actionClass": "system-fixable-after-owner-approval",
-      "gate": "explicit-owner-publication-approval",
+      "lane": "owner-gated-core-integrity-then-single-variable-intent-test",
+      "action": "Obtain current Salt Lake Valley service-area evidence for Cottonwood Heights's separate Maps lane and request the exact core cleanup approval; after a green production receipt and fresh baseline, activate at most the already-pinned single-title experiment with every other intent surface held constant.",
+      "actionClass": "owner-or-evidence-input-needed",
+      "gate": "service-area-evidence-plus-explicit-owner-cleanup-approval-then-separate-ranking-experiment-approval",
       "publicApprovalPacket": "data/authority/SLV-CITY-PUBLIC-REMEDIATION-PACKET-2026-08-12.json",
+      "ownerApprovalPhrase": "I explicitly approve editing and publishing the five-page integrity cleanup defined in PR #242 and the Millcreek storm-child identity correction defined in the pinned Millcreek scope amendment.",
+      "intervention": {
+        "lane": "owner-gated-core-integrity-then-single-variable-intent-test",
+        "decision": "Request input",
+        "selectedAction": "Obtain current Salt Lake Valley service-area evidence for Cottonwood Heights's separate Maps lane and request the exact core cleanup approval; after a green production receipt and fresh baseline, activate at most the already-pinned single-title experiment with every other intent surface held constant.",
+        "gate": "service-area-evidence-plus-explicit-owner-cleanup-approval-then-separate-ranking-experiment-approval",
+        "acceptanceCheck": "Keep only if roofing contractor cottonwood heights is position 10 or better in each of the final two weekly panels and the four-query mean rank is 11.5 or better in both panels. A current receipt separately classifies Cottonwood Heights for CID 5689850818145735734.",
+        "scoreVector": {
+          "businessValue": 10,
+          "confidence": 6,
+          "leadValue": 7,
+          "authorityValue": 5,
+          "learningValue": 6,
+          "implementationCost": 5,
+          "complianceRisk": 8,
+          "customerBlockerRisk": 8,
+          "maintenanceCost": 2,
+          "sourceBiasRisk": 2,
+          "recencyBiasRisk": 1
+        },
+        "feedback": {
+          "cadence": "weekly",
+          "requiredComparablePanels": 4,
+          "currentSameWindowCompleteStreak": 0,
+          "verdict": "hold",
+          "keepRule": "Keep only a declared isolated ranking variable when its city-specific acceptance check passes and every protected integrity, URL-selection, Maps, AIO, consumer-AI, and route guardrail remains green.",
+          "revertRule": "Revert the isolated ranking variable on a declared guardrail failure or unmet 28-day decision rule; never revert a required factual correction to restore an unsupported claim or wrong entity identity."
+        }
+      },
       "universalDependencies": [
         "valid Bright Data user API key for ChatGPT/Perplexity/Gemini panels",
         "business Drive connector authenticated as ryan@framerestorations.com for evidence search",
@@ -573,11 +787,40 @@
         "alternateNormalizedUrls": [],
         "nextEvidenceAction": "Preserve the intended city hub and all related routes; use the next complete targeted GSC read before selecting an architecture or intent experiment."
       },
-      "lane": "closest-organic-improvement-after-integrity",
-      "action": "After separate exact owner approval, apply only the bounded expansion integrity cleanup for Murray; obtain targeted GSC URL evidence before any title, H1, canonical, link, or route experiment.",
-      "actionClass": "system-fixable-after-owner-approval",
-      "gate": "explicit-owner-publication-approval-and-targeted-gsc",
+      "lane": "service-area-proof-and-targeted-gsc-before-intent-change",
+      "action": "Obtain current Salt Lake Valley service-area evidence and the next exact-query GSC attribution for Murray; request the bounded expansion cleanup separately, but do not change identity or commercial intent until those evidence gates pass.",
+      "actionClass": "owner-or-evidence-input-needed",
+      "gate": "service-area-evidence-plus-targeted-gsc-plus-explicit-cleanup-approval",
       "publicApprovalPacket": "data/authority/SLV-EXPANSION-PUBLIC-REMEDIATION-PACKET-2026-08-12.json",
+      "ownerApprovalPhrase": "I explicitly approve editing and publishing the 12-page Salt Lake Valley expansion integrity cleanup defined in packet frame-utah-slv-twelve-page-expansion-public-integrity-cleanup-v1, with expansion identities, titles, H1s, canonicals, and protected related routes unchanged.",
+      "intervention": {
+        "lane": "service-area-proof-and-targeted-gsc-before-intent-change",
+        "decision": "Request input",
+        "selectedAction": "Obtain current Salt Lake Valley service-area evidence and the next exact-query GSC attribution for Murray; request the bounded expansion cleanup separately, but do not change identity or commercial intent until those evidence gates pass.",
+        "gate": "service-area-evidence-plus-targeted-gsc-plus-explicit-cleanup-approval",
+        "acceptanceCheck": "A current receipt explicitly classifies Murray for CID 5689850818145735734, all four exact queries are requested without treating missing rows as zero, and any approved cleanup passes the full release gate.",
+        "scoreVector": {
+          "businessValue": 10,
+          "confidence": 4,
+          "leadValue": 8,
+          "authorityValue": 5,
+          "learningValue": 9,
+          "implementationCost": 5,
+          "complianceRisk": 8,
+          "customerBlockerRisk": 8,
+          "maintenanceCost": 2,
+          "sourceBiasRisk": 2,
+          "recencyBiasRisk": 1
+        },
+        "feedback": {
+          "cadence": "weekly",
+          "requiredComparablePanels": 4,
+          "currentSameWindowCompleteStreak": 0,
+          "verdict": "hold",
+          "keepRule": "Keep only a declared isolated ranking variable when its city-specific acceptance check passes and every protected integrity, URL-selection, Maps, AIO, consumer-AI, and route guardrail remains green.",
+          "revertRule": "Revert the isolated ranking variable on a declared guardrail failure or unmet 28-day decision rule; never revert a required factual correction to restore an unsupported claim or wrong entity identity."
+        }
+      },
       "universalDependencies": [
         "valid Bright Data user API key for ChatGPT/Perplexity/Gemini panels",
         "business Drive connector authenticated as ryan@framerestorations.com for evidence search",
@@ -618,11 +861,40 @@
         "alternateNormalizedUrls": [],
         "nextEvidenceAction": "Preserve the intended city hub and all related routes; use the next complete targeted GSC read before selecting an architecture or intent experiment."
       },
-      "lane": "closest-organic-improvement-after-integrity",
-      "action": "After separate exact owner approval, apply only the bounded expansion integrity cleanup for Riverton; obtain targeted GSC URL evidence before any title, H1, canonical, link, or route experiment.",
-      "actionClass": "system-fixable-after-owner-approval",
-      "gate": "explicit-owner-publication-approval-and-targeted-gsc",
+      "lane": "service-area-proof-and-targeted-gsc-before-intent-change",
+      "action": "Obtain current Salt Lake Valley service-area evidence and the next exact-query GSC attribution for Riverton; request the bounded expansion cleanup separately, but do not change identity or commercial intent until those evidence gates pass.",
+      "actionClass": "owner-or-evidence-input-needed",
+      "gate": "service-area-evidence-plus-targeted-gsc-plus-explicit-cleanup-approval",
       "publicApprovalPacket": "data/authority/SLV-EXPANSION-PUBLIC-REMEDIATION-PACKET-2026-08-12.json",
+      "ownerApprovalPhrase": "I explicitly approve editing and publishing the 12-page Salt Lake Valley expansion integrity cleanup defined in packet frame-utah-slv-twelve-page-expansion-public-integrity-cleanup-v1, with expansion identities, titles, H1s, canonicals, and protected related routes unchanged.",
+      "intervention": {
+        "lane": "service-area-proof-and-targeted-gsc-before-intent-change",
+        "decision": "Request input",
+        "selectedAction": "Obtain current Salt Lake Valley service-area evidence and the next exact-query GSC attribution for Riverton; request the bounded expansion cleanup separately, but do not change identity or commercial intent until those evidence gates pass.",
+        "gate": "service-area-evidence-plus-targeted-gsc-plus-explicit-cleanup-approval",
+        "acceptanceCheck": "A current receipt explicitly classifies Riverton for CID 5689850818145735734, all four exact queries are requested without treating missing rows as zero, and any approved cleanup passes the full release gate.",
+        "scoreVector": {
+          "businessValue": 10,
+          "confidence": 4,
+          "leadValue": 8,
+          "authorityValue": 5,
+          "learningValue": 9,
+          "implementationCost": 5,
+          "complianceRisk": 8,
+          "customerBlockerRisk": 8,
+          "maintenanceCost": 2,
+          "sourceBiasRisk": 2,
+          "recencyBiasRisk": 1
+        },
+        "feedback": {
+          "cadence": "weekly",
+          "requiredComparablePanels": 4,
+          "currentSameWindowCompleteStreak": 0,
+          "verdict": "hold",
+          "keepRule": "Keep only a declared isolated ranking variable when its city-specific acceptance check passes and every protected integrity, URL-selection, Maps, AIO, consumer-AI, and route guardrail remains green.",
+          "revertRule": "Revert the isolated ranking variable on a declared guardrail failure or unmet 28-day decision rule; never revert a required factual correction to restore an unsupported claim or wrong entity identity."
+        }
+      },
       "universalDependencies": [
         "valid Bright Data user API key for ChatGPT/Perplexity/Gemini panels",
         "business Drive connector authenticated as ryan@framerestorations.com for evidence search",
@@ -663,11 +935,40 @@
         "alternateNormalizedUrls": [],
         "nextEvidenceAction": "Preserve the intended city hub and all related routes; use the next complete targeted GSC read before selecting an architecture or intent experiment."
       },
-      "lane": "closest-organic-improvement-after-integrity",
-      "action": "After separate exact owner approval, apply only the bounded expansion integrity cleanup for South Jordan; obtain targeted GSC URL evidence before any title, H1, canonical, link, or route experiment.",
-      "actionClass": "system-fixable-after-owner-approval",
-      "gate": "explicit-owner-publication-approval-and-targeted-gsc",
+      "lane": "service-area-proof-and-targeted-gsc-before-intent-change",
+      "action": "Obtain current Salt Lake Valley service-area evidence and the next exact-query GSC attribution for South Jordan; request the bounded expansion cleanup separately, but do not change identity or commercial intent until those evidence gates pass.",
+      "actionClass": "owner-or-evidence-input-needed",
+      "gate": "service-area-evidence-plus-targeted-gsc-plus-explicit-cleanup-approval",
       "publicApprovalPacket": "data/authority/SLV-EXPANSION-PUBLIC-REMEDIATION-PACKET-2026-08-12.json",
+      "ownerApprovalPhrase": "I explicitly approve editing and publishing the 12-page Salt Lake Valley expansion integrity cleanup defined in packet frame-utah-slv-twelve-page-expansion-public-integrity-cleanup-v1, with expansion identities, titles, H1s, canonicals, and protected related routes unchanged.",
+      "intervention": {
+        "lane": "service-area-proof-and-targeted-gsc-before-intent-change",
+        "decision": "Request input",
+        "selectedAction": "Obtain current Salt Lake Valley service-area evidence and the next exact-query GSC attribution for South Jordan; request the bounded expansion cleanup separately, but do not change identity or commercial intent until those evidence gates pass.",
+        "gate": "service-area-evidence-plus-targeted-gsc-plus-explicit-cleanup-approval",
+        "acceptanceCheck": "A current receipt explicitly classifies South Jordan for CID 5689850818145735734, all four exact queries are requested without treating missing rows as zero, and any approved cleanup passes the full release gate.",
+        "scoreVector": {
+          "businessValue": 10,
+          "confidence": 4,
+          "leadValue": 8,
+          "authorityValue": 5,
+          "learningValue": 9,
+          "implementationCost": 5,
+          "complianceRisk": 8,
+          "customerBlockerRisk": 8,
+          "maintenanceCost": 2,
+          "sourceBiasRisk": 2,
+          "recencyBiasRisk": 1
+        },
+        "feedback": {
+          "cadence": "weekly",
+          "requiredComparablePanels": 4,
+          "currentSameWindowCompleteStreak": 0,
+          "verdict": "hold",
+          "keepRule": "Keep only a declared isolated ranking variable when its city-specific acceptance check passes and every protected integrity, URL-selection, Maps, AIO, consumer-AI, and route guardrail remains green.",
+          "revertRule": "Revert the isolated ranking variable on a declared guardrail failure or unmet 28-day decision rule; never revert a required factual correction to restore an unsupported claim or wrong entity identity."
+        }
+      },
       "universalDependencies": [
         "valid Bright Data user API key for ChatGPT/Perplexity/Gemini panels",
         "business Drive connector authenticated as ryan@framerestorations.com for evidence search",
@@ -708,11 +1009,40 @@
         "alternateNormalizedUrls": [],
         "nextEvidenceAction": "Preserve the intended city hub and all related routes; use the next complete targeted GSC read before selecting an architecture or intent experiment."
       },
-      "lane": "closest-organic-improvement-after-integrity",
-      "action": "After separate exact owner approval, apply only the bounded expansion integrity cleanup for Taylorsville; obtain targeted GSC URL evidence before any title, H1, canonical, link, or route experiment.",
-      "actionClass": "system-fixable-after-owner-approval",
-      "gate": "explicit-owner-publication-approval-and-targeted-gsc",
+      "lane": "service-area-proof-and-targeted-gsc-before-intent-change",
+      "action": "Obtain current Salt Lake Valley service-area evidence and the next exact-query GSC attribution for Taylorsville; request the bounded expansion cleanup separately, but do not change identity or commercial intent until those evidence gates pass.",
+      "actionClass": "owner-or-evidence-input-needed",
+      "gate": "service-area-evidence-plus-targeted-gsc-plus-explicit-cleanup-approval",
       "publicApprovalPacket": "data/authority/SLV-EXPANSION-PUBLIC-REMEDIATION-PACKET-2026-08-12.json",
+      "ownerApprovalPhrase": "I explicitly approve editing and publishing the 12-page Salt Lake Valley expansion integrity cleanup defined in packet frame-utah-slv-twelve-page-expansion-public-integrity-cleanup-v1, with expansion identities, titles, H1s, canonicals, and protected related routes unchanged.",
+      "intervention": {
+        "lane": "service-area-proof-and-targeted-gsc-before-intent-change",
+        "decision": "Request input",
+        "selectedAction": "Obtain current Salt Lake Valley service-area evidence and the next exact-query GSC attribution for Taylorsville; request the bounded expansion cleanup separately, but do not change identity or commercial intent until those evidence gates pass.",
+        "gate": "service-area-evidence-plus-targeted-gsc-plus-explicit-cleanup-approval",
+        "acceptanceCheck": "A current receipt explicitly classifies Taylorsville for CID 5689850818145735734, all four exact queries are requested without treating missing rows as zero, and any approved cleanup passes the full release gate.",
+        "scoreVector": {
+          "businessValue": 10,
+          "confidence": 4,
+          "leadValue": 7,
+          "authorityValue": 5,
+          "learningValue": 9,
+          "implementationCost": 5,
+          "complianceRisk": 8,
+          "customerBlockerRisk": 8,
+          "maintenanceCost": 2,
+          "sourceBiasRisk": 2,
+          "recencyBiasRisk": 1
+        },
+        "feedback": {
+          "cadence": "weekly",
+          "requiredComparablePanels": 4,
+          "currentSameWindowCompleteStreak": 0,
+          "verdict": "hold",
+          "keepRule": "Keep only a declared isolated ranking variable when its city-specific acceptance check passes and every protected integrity, URL-selection, Maps, AIO, consumer-AI, and route guardrail remains green.",
+          "revertRule": "Revert the isolated ranking variable on a declared guardrail failure or unmet 28-day decision rule; never revert a required factual correction to restore an unsupported claim or wrong entity identity."
+        }
+      },
       "universalDependencies": [
         "valid Bright Data user API key for ChatGPT/Perplexity/Gemini panels",
         "business Drive connector authenticated as ryan@framerestorations.com for evidence search",
@@ -753,11 +1083,40 @@
         "alternateNormalizedUrls": [],
         "nextEvidenceAction": "Preserve the intended city hub and all related routes; use the next complete targeted GSC read before selecting an architecture or intent experiment."
       },
-      "lane": "broader-commercial-relevance-after-integrity",
-      "action": "After separate exact owner approval, apply only the bounded expansion integrity cleanup for Bluffdale; obtain targeted GSC URL evidence before any title, H1, canonical, link, or route experiment.",
-      "actionClass": "system-fixable-after-owner-approval",
-      "gate": "explicit-owner-publication-approval-and-targeted-gsc",
+      "lane": "service-area-proof-and-targeted-gsc-before-intent-change",
+      "action": "Obtain current Salt Lake Valley service-area evidence and the next exact-query GSC attribution for Bluffdale; request the bounded expansion cleanup separately, but do not change identity or commercial intent until those evidence gates pass.",
+      "actionClass": "owner-or-evidence-input-needed",
+      "gate": "service-area-evidence-plus-targeted-gsc-plus-explicit-cleanup-approval",
       "publicApprovalPacket": "data/authority/SLV-EXPANSION-PUBLIC-REMEDIATION-PACKET-2026-08-12.json",
+      "ownerApprovalPhrase": "I explicitly approve editing and publishing the 12-page Salt Lake Valley expansion integrity cleanup defined in packet frame-utah-slv-twelve-page-expansion-public-integrity-cleanup-v1, with expansion identities, titles, H1s, canonicals, and protected related routes unchanged.",
+      "intervention": {
+        "lane": "service-area-proof-and-targeted-gsc-before-intent-change",
+        "decision": "Request input",
+        "selectedAction": "Obtain current Salt Lake Valley service-area evidence and the next exact-query GSC attribution for Bluffdale; request the bounded expansion cleanup separately, but do not change identity or commercial intent until those evidence gates pass.",
+        "gate": "service-area-evidence-plus-targeted-gsc-plus-explicit-cleanup-approval",
+        "acceptanceCheck": "A current receipt explicitly classifies Bluffdale for CID 5689850818145735734, all four exact queries are requested without treating missing rows as zero, and any approved cleanup passes the full release gate.",
+        "scoreVector": {
+          "businessValue": 10,
+          "confidence": 4,
+          "leadValue": 7,
+          "authorityValue": 5,
+          "learningValue": 9,
+          "implementationCost": 5,
+          "complianceRisk": 8,
+          "customerBlockerRisk": 8,
+          "maintenanceCost": 2,
+          "sourceBiasRisk": 2,
+          "recencyBiasRisk": 1
+        },
+        "feedback": {
+          "cadence": "weekly",
+          "requiredComparablePanels": 4,
+          "currentSameWindowCompleteStreak": 0,
+          "verdict": "hold",
+          "keepRule": "Keep only a declared isolated ranking variable when its city-specific acceptance check passes and every protected integrity, URL-selection, Maps, AIO, consumer-AI, and route guardrail remains green.",
+          "revertRule": "Revert the isolated ranking variable on a declared guardrail failure or unmet 28-day decision rule; never revert a required factual correction to restore an unsupported claim or wrong entity identity."
+        }
+      },
       "universalDependencies": [
         "valid Bright Data user API key for ChatGPT/Perplexity/Gemini panels",
         "business Drive connector authenticated as ryan@framerestorations.com for evidence search",
@@ -798,11 +1157,40 @@
         "alternateNormalizedUrls": [],
         "nextEvidenceAction": "Preserve the intended city hub and all related routes; use the next complete targeted GSC read before selecting an architecture or intent experiment."
       },
-      "lane": "broader-commercial-relevance-after-integrity",
-      "action": "After separate exact owner approval, apply only the bounded expansion integrity cleanup for Midvale; obtain targeted GSC URL evidence before any title, H1, canonical, link, or route experiment.",
-      "actionClass": "system-fixable-after-owner-approval",
-      "gate": "explicit-owner-publication-approval-and-targeted-gsc",
+      "lane": "service-area-proof-and-targeted-gsc-before-intent-change",
+      "action": "Obtain current Salt Lake Valley service-area evidence and the next exact-query GSC attribution for Midvale; request the bounded expansion cleanup separately, but do not change identity or commercial intent until those evidence gates pass.",
+      "actionClass": "owner-or-evidence-input-needed",
+      "gate": "service-area-evidence-plus-targeted-gsc-plus-explicit-cleanup-approval",
       "publicApprovalPacket": "data/authority/SLV-EXPANSION-PUBLIC-REMEDIATION-PACKET-2026-08-12.json",
+      "ownerApprovalPhrase": "I explicitly approve editing and publishing the 12-page Salt Lake Valley expansion integrity cleanup defined in packet frame-utah-slv-twelve-page-expansion-public-integrity-cleanup-v1, with expansion identities, titles, H1s, canonicals, and protected related routes unchanged.",
+      "intervention": {
+        "lane": "service-area-proof-and-targeted-gsc-before-intent-change",
+        "decision": "Request input",
+        "selectedAction": "Obtain current Salt Lake Valley service-area evidence and the next exact-query GSC attribution for Midvale; request the bounded expansion cleanup separately, but do not change identity or commercial intent until those evidence gates pass.",
+        "gate": "service-area-evidence-plus-targeted-gsc-plus-explicit-cleanup-approval",
+        "acceptanceCheck": "A current receipt explicitly classifies Midvale for CID 5689850818145735734, all four exact queries are requested without treating missing rows as zero, and any approved cleanup passes the full release gate.",
+        "scoreVector": {
+          "businessValue": 10,
+          "confidence": 4,
+          "leadValue": 7,
+          "authorityValue": 5,
+          "learningValue": 9,
+          "implementationCost": 5,
+          "complianceRisk": 8,
+          "customerBlockerRisk": 8,
+          "maintenanceCost": 2,
+          "sourceBiasRisk": 2,
+          "recencyBiasRisk": 1
+        },
+        "feedback": {
+          "cadence": "weekly",
+          "requiredComparablePanels": 4,
+          "currentSameWindowCompleteStreak": 0,
+          "verdict": "hold",
+          "keepRule": "Keep only a declared isolated ranking variable when its city-specific acceptance check passes and every protected integrity, URL-selection, Maps, AIO, consumer-AI, and route guardrail remains green.",
+          "revertRule": "Revert the isolated ranking variable on a declared guardrail failure or unmet 28-day decision rule; never revert a required factual correction to restore an unsupported claim or wrong entity identity."
+        }
+      },
       "universalDependencies": [
         "valid Bright Data user API key for ChatGPT/Perplexity/Gemini panels",
         "business Drive connector authenticated as ryan@framerestorations.com for evidence search",
@@ -843,11 +1231,40 @@
         "alternateNormalizedUrls": [],
         "nextEvidenceAction": "Preserve the intended city hub and all related routes; use the next complete targeted GSC read before selecting an architecture or intent experiment."
       },
-      "lane": "broader-commercial-relevance-after-integrity",
-      "action": "After separate exact owner approval, apply only the bounded expansion integrity cleanup for Herriman; obtain targeted GSC URL evidence before any title, H1, canonical, link, or route experiment.",
-      "actionClass": "system-fixable-after-owner-approval",
-      "gate": "explicit-owner-publication-approval-and-targeted-gsc",
+      "lane": "service-area-proof-and-targeted-gsc-before-intent-change",
+      "action": "Obtain current Salt Lake Valley service-area evidence and the next exact-query GSC attribution for Herriman; request the bounded expansion cleanup separately, but do not change identity or commercial intent until those evidence gates pass.",
+      "actionClass": "owner-or-evidence-input-needed",
+      "gate": "service-area-evidence-plus-targeted-gsc-plus-explicit-cleanup-approval",
       "publicApprovalPacket": "data/authority/SLV-EXPANSION-PUBLIC-REMEDIATION-PACKET-2026-08-12.json",
+      "ownerApprovalPhrase": "I explicitly approve editing and publishing the 12-page Salt Lake Valley expansion integrity cleanup defined in packet frame-utah-slv-twelve-page-expansion-public-integrity-cleanup-v1, with expansion identities, titles, H1s, canonicals, and protected related routes unchanged.",
+      "intervention": {
+        "lane": "service-area-proof-and-targeted-gsc-before-intent-change",
+        "decision": "Request input",
+        "selectedAction": "Obtain current Salt Lake Valley service-area evidence and the next exact-query GSC attribution for Herriman; request the bounded expansion cleanup separately, but do not change identity or commercial intent until those evidence gates pass.",
+        "gate": "service-area-evidence-plus-targeted-gsc-plus-explicit-cleanup-approval",
+        "acceptanceCheck": "A current receipt explicitly classifies Herriman for CID 5689850818145735734, all four exact queries are requested without treating missing rows as zero, and any approved cleanup passes the full release gate.",
+        "scoreVector": {
+          "businessValue": 10,
+          "confidence": 4,
+          "leadValue": 5,
+          "authorityValue": 5,
+          "learningValue": 9,
+          "implementationCost": 5,
+          "complianceRisk": 8,
+          "customerBlockerRisk": 8,
+          "maintenanceCost": 2,
+          "sourceBiasRisk": 2,
+          "recencyBiasRisk": 1
+        },
+        "feedback": {
+          "cadence": "weekly",
+          "requiredComparablePanels": 4,
+          "currentSameWindowCompleteStreak": 0,
+          "verdict": "hold",
+          "keepRule": "Keep only a declared isolated ranking variable when its city-specific acceptance check passes and every protected integrity, URL-selection, Maps, AIO, consumer-AI, and route guardrail remains green.",
+          "revertRule": "Revert the isolated ranking variable on a declared guardrail failure or unmet 28-day decision rule; never revert a required factual correction to restore an unsupported claim or wrong entity identity."
+        }
+      },
       "universalDependencies": [
         "valid Bright Data user API key for ChatGPT/Perplexity/Gemini panels",
         "business Drive connector authenticated as ryan@framerestorations.com for evidence search",
@@ -888,11 +1305,40 @@
         "alternateNormalizedUrls": [],
         "nextEvidenceAction": "Preserve the intended city hub and all related routes; use the next complete targeted GSC read before selecting an architecture or intent experiment."
       },
-      "lane": "broader-commercial-relevance-after-integrity",
-      "action": "After separate exact owner approval, apply only the bounded expansion integrity cleanup for West Valley City; obtain targeted GSC URL evidence before any title, H1, canonical, link, or route experiment.",
-      "actionClass": "system-fixable-after-owner-approval",
-      "gate": "explicit-owner-publication-approval-and-targeted-gsc",
+      "lane": "service-area-proof-and-targeted-gsc-before-intent-change",
+      "action": "Obtain current Salt Lake Valley service-area evidence and the next exact-query GSC attribution for West Valley City; request the bounded expansion cleanup separately, but do not change identity or commercial intent until those evidence gates pass.",
+      "actionClass": "owner-or-evidence-input-needed",
+      "gate": "service-area-evidence-plus-targeted-gsc-plus-explicit-cleanup-approval",
       "publicApprovalPacket": "data/authority/SLV-EXPANSION-PUBLIC-REMEDIATION-PACKET-2026-08-12.json",
+      "ownerApprovalPhrase": "I explicitly approve editing and publishing the 12-page Salt Lake Valley expansion integrity cleanup defined in packet frame-utah-slv-twelve-page-expansion-public-integrity-cleanup-v1, with expansion identities, titles, H1s, canonicals, and protected related routes unchanged.",
+      "intervention": {
+        "lane": "service-area-proof-and-targeted-gsc-before-intent-change",
+        "decision": "Request input",
+        "selectedAction": "Obtain current Salt Lake Valley service-area evidence and the next exact-query GSC attribution for West Valley City; request the bounded expansion cleanup separately, but do not change identity or commercial intent until those evidence gates pass.",
+        "gate": "service-area-evidence-plus-targeted-gsc-plus-explicit-cleanup-approval",
+        "acceptanceCheck": "A current receipt explicitly classifies West Valley City for CID 5689850818145735734, all four exact queries are requested without treating missing rows as zero, and any approved cleanup passes the full release gate.",
+        "scoreVector": {
+          "businessValue": 10,
+          "confidence": 4,
+          "leadValue": 5,
+          "authorityValue": 5,
+          "learningValue": 9,
+          "implementationCost": 5,
+          "complianceRisk": 8,
+          "customerBlockerRisk": 8,
+          "maintenanceCost": 2,
+          "sourceBiasRisk": 2,
+          "recencyBiasRisk": 1
+        },
+        "feedback": {
+          "cadence": "weekly",
+          "requiredComparablePanels": 4,
+          "currentSameWindowCompleteStreak": 0,
+          "verdict": "hold",
+          "keepRule": "Keep only a declared isolated ranking variable when its city-specific acceptance check passes and every protected integrity, URL-selection, Maps, AIO, consumer-AI, and route guardrail remains green.",
+          "revertRule": "Revert the isolated ranking variable on a declared guardrail failure or unmet 28-day decision rule; never revert a required factual correction to restore an unsupported claim or wrong entity identity."
+        }
+      },
       "universalDependencies": [
         "valid Bright Data user API key for ChatGPT/Perplexity/Gemini panels",
         "business Drive connector authenticated as ryan@framerestorations.com for evidence search",
@@ -933,11 +1379,40 @@
         "alternateNormalizedUrls": [],
         "nextEvidenceAction": "Preserve the intended city hub and all related routes; use the next complete targeted GSC read before selecting an architecture or intent experiment."
       },
-      "lane": "cleanup-then-architecture-diagnosis",
-      "action": "After exact owner approval, complete the bounded core integrity cleanup for Draper; then protect related routes and use targeted GSC URL evidence before changing intent surfaces.",
-      "actionClass": "system-fixable-after-owner-approval",
-      "gate": "explicit-owner-publication-approval",
+      "lane": "owner-gated-core-integrity-then-single-variable-intent-test",
+      "action": "Obtain current Salt Lake Valley service-area evidence for Draper's separate Maps lane and request the exact core cleanup approval; after a green production receipt and fresh baseline, activate at most the already-pinned single-title experiment with every other intent surface held constant.",
+      "actionClass": "owner-or-evidence-input-needed",
+      "gate": "service-area-evidence-plus-explicit-owner-cleanup-approval-then-separate-ranking-experiment-approval",
       "publicApprovalPacket": "data/authority/SLV-CITY-PUBLIC-REMEDIATION-PACKET-2026-08-12.json",
+      "ownerApprovalPhrase": "I explicitly approve editing and publishing the five-page integrity cleanup defined in PR #242 and the Millcreek storm-child identity correction defined in the pinned Millcreek scope amendment.",
+      "intervention": {
+        "lane": "owner-gated-core-integrity-then-single-variable-intent-test",
+        "decision": "Request input",
+        "selectedAction": "Obtain current Salt Lake Valley service-area evidence for Draper's separate Maps lane and request the exact core cleanup approval; after a green production receipt and fresh baseline, activate at most the already-pinned single-title experiment with every other intent surface held constant.",
+        "gate": "service-area-evidence-plus-explicit-owner-cleanup-approval-then-separate-ranking-experiment-approval",
+        "acceptanceCheck": "Keep only if at least two of the four fixed commercial queries return exact organic ranks within the top 30 in each of the final two weekly panels, with no integrity regression. A current receipt separately classifies Draper for CID 5689850818145735734.",
+        "scoreVector": {
+          "businessValue": 10,
+          "confidence": 6,
+          "leadValue": 2,
+          "authorityValue": 5,
+          "learningValue": 6,
+          "implementationCost": 5,
+          "complianceRisk": 8,
+          "customerBlockerRisk": 8,
+          "maintenanceCost": 2,
+          "sourceBiasRisk": 2,
+          "recencyBiasRisk": 1
+        },
+        "feedback": {
+          "cadence": "weekly",
+          "requiredComparablePanels": 4,
+          "currentSameWindowCompleteStreak": 0,
+          "verdict": "hold",
+          "keepRule": "Keep only a declared isolated ranking variable when its city-specific acceptance check passes and every protected integrity, URL-selection, Maps, AIO, consumer-AI, and route guardrail remains green.",
+          "revertRule": "Revert the isolated ranking variable on a declared guardrail failure or unmet 28-day decision rule; never revert a required factual correction to restore an unsupported claim or wrong entity identity."
+        }
+      },
       "universalDependencies": [
         "valid Bright Data user API key for ChatGPT/Perplexity/Gemini panels",
         "business Drive connector authenticated as ryan@framerestorations.com for evidence search",
@@ -978,11 +1453,40 @@
         "alternateNormalizedUrls": [],
         "nextEvidenceAction": "Preserve the intended city hub and all related routes; use the next complete targeted GSC read before selecting an architecture or intent experiment."
       },
-      "lane": "cleanup-then-architecture-diagnosis",
-      "action": "After separate exact owner approval, apply only the bounded expansion integrity cleanup for South Salt Lake; obtain targeted GSC URL evidence before any title, H1, canonical, link, or route experiment.",
-      "actionClass": "system-fixable-after-owner-approval",
-      "gate": "explicit-owner-publication-approval-and-targeted-gsc",
+      "lane": "service-area-proof-and-targeted-gsc-before-intent-change",
+      "action": "Obtain current Salt Lake Valley service-area evidence and the next exact-query GSC attribution for South Salt Lake; request the bounded expansion cleanup separately, but do not change identity or commercial intent until those evidence gates pass.",
+      "actionClass": "owner-or-evidence-input-needed",
+      "gate": "service-area-evidence-plus-targeted-gsc-plus-explicit-cleanup-approval",
       "publicApprovalPacket": "data/authority/SLV-EXPANSION-PUBLIC-REMEDIATION-PACKET-2026-08-12.json",
+      "ownerApprovalPhrase": "I explicitly approve editing and publishing the 12-page Salt Lake Valley expansion integrity cleanup defined in packet frame-utah-slv-twelve-page-expansion-public-integrity-cleanup-v1, with expansion identities, titles, H1s, canonicals, and protected related routes unchanged.",
+      "intervention": {
+        "lane": "service-area-proof-and-targeted-gsc-before-intent-change",
+        "decision": "Request input",
+        "selectedAction": "Obtain current Salt Lake Valley service-area evidence and the next exact-query GSC attribution for South Salt Lake; request the bounded expansion cleanup separately, but do not change identity or commercial intent until those evidence gates pass.",
+        "gate": "service-area-evidence-plus-targeted-gsc-plus-explicit-cleanup-approval",
+        "acceptanceCheck": "A current receipt explicitly classifies South Salt Lake for CID 5689850818145735734, all four exact queries are requested without treating missing rows as zero, and any approved cleanup passes the full release gate.",
+        "scoreVector": {
+          "businessValue": 10,
+          "confidence": 4,
+          "leadValue": 5,
+          "authorityValue": 7,
+          "learningValue": 9,
+          "implementationCost": 5,
+          "complianceRisk": 8,
+          "customerBlockerRisk": 8,
+          "maintenanceCost": 2,
+          "sourceBiasRisk": 2,
+          "recencyBiasRisk": 1
+        },
+        "feedback": {
+          "cadence": "weekly",
+          "requiredComparablePanels": 4,
+          "currentSameWindowCompleteStreak": 0,
+          "verdict": "hold",
+          "keepRule": "Keep only a declared isolated ranking variable when its city-specific acceptance check passes and every protected integrity, URL-selection, Maps, AIO, consumer-AI, and route guardrail remains green.",
+          "revertRule": "Revert the isolated ranking variable on a declared guardrail failure or unmet 28-day decision rule; never revert a required factual correction to restore an unsupported claim or wrong entity identity."
+        }
+      },
       "universalDependencies": [
         "valid Bright Data user API key for ChatGPT/Perplexity/Gemini panels",
         "business Drive connector authenticated as ryan@framerestorations.com for evidence search",
@@ -1023,11 +1527,40 @@
         "alternateNormalizedUrls": [],
         "nextEvidenceAction": "Preserve the intended city hub and all related routes; use the next complete targeted GSC read before selecting an architecture or intent experiment."
       },
-      "lane": "cleanup-then-architecture-diagnosis",
-      "action": "After separate exact owner approval, apply only the bounded expansion integrity cleanup for West Jordan; obtain targeted GSC URL evidence before any title, H1, canonical, link, or route experiment.",
-      "actionClass": "system-fixable-after-owner-approval",
-      "gate": "explicit-owner-publication-approval-and-targeted-gsc",
+      "lane": "service-area-proof-and-targeted-gsc-before-intent-change",
+      "action": "Obtain current Salt Lake Valley service-area evidence and the next exact-query GSC attribution for West Jordan; request the bounded expansion cleanup separately, but do not change identity or commercial intent until those evidence gates pass.",
+      "actionClass": "owner-or-evidence-input-needed",
+      "gate": "service-area-evidence-plus-targeted-gsc-plus-explicit-cleanup-approval",
       "publicApprovalPacket": "data/authority/SLV-EXPANSION-PUBLIC-REMEDIATION-PACKET-2026-08-12.json",
+      "ownerApprovalPhrase": "I explicitly approve editing and publishing the 12-page Salt Lake Valley expansion integrity cleanup defined in packet frame-utah-slv-twelve-page-expansion-public-integrity-cleanup-v1, with expansion identities, titles, H1s, canonicals, and protected related routes unchanged.",
+      "intervention": {
+        "lane": "service-area-proof-and-targeted-gsc-before-intent-change",
+        "decision": "Request input",
+        "selectedAction": "Obtain current Salt Lake Valley service-area evidence and the next exact-query GSC attribution for West Jordan; request the bounded expansion cleanup separately, but do not change identity or commercial intent until those evidence gates pass.",
+        "gate": "service-area-evidence-plus-targeted-gsc-plus-explicit-cleanup-approval",
+        "acceptanceCheck": "A current receipt explicitly classifies West Jordan for CID 5689850818145735734, all four exact queries are requested without treating missing rows as zero, and any approved cleanup passes the full release gate.",
+        "scoreVector": {
+          "businessValue": 10,
+          "confidence": 4,
+          "leadValue": 5,
+          "authorityValue": 5,
+          "learningValue": 9,
+          "implementationCost": 5,
+          "complianceRisk": 8,
+          "customerBlockerRisk": 8,
+          "maintenanceCost": 2,
+          "sourceBiasRisk": 2,
+          "recencyBiasRisk": 1
+        },
+        "feedback": {
+          "cadence": "weekly",
+          "requiredComparablePanels": 4,
+          "currentSameWindowCompleteStreak": 0,
+          "verdict": "hold",
+          "keepRule": "Keep only a declared isolated ranking variable when its city-specific acceptance check passes and every protected integrity, URL-selection, Maps, AIO, consumer-AI, and route guardrail remains green.",
+          "revertRule": "Revert the isolated ranking variable on a declared guardrail failure or unmet 28-day decision rule; never revert a required factual correction to restore an unsupported claim or wrong entity identity."
+        }
+      },
       "universalDependencies": [
         "valid Bright Data user API key for ChatGPT/Perplexity/Gemini panels",
         "business Drive connector authenticated as ryan@framerestorations.com for evidence search",

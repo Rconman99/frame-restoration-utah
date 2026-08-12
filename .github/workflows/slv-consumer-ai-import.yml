@@ -41,6 +41,7 @@ jobs:
           npm run sync:slv-weekly-decisions
           npm run sync:slv-gsc-attribution
           npm run sync:slv-expansion-architecture
+          npm run sync:slv-interventions
           npm run sync:slv-execution-registry
 
       - name: Validate fail-closed consumer-AI and goal contracts
@@ -52,6 +53,7 @@ jobs:
           npm run audit:slv-weekly-decisions
           npm run audit:slv-gsc-attribution
           npm run audit:slv-expansion-architecture
+          npm run audit:slv-interventions
           npm run audit:slv-execution-registry
 
       - name: Add measurement summary

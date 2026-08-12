@@ -46,9 +46,11 @@ jobs:
       - name: Refresh and verify the entity-health contracts
         run: |
           npm run sync:slv-entity-health
+          npm run sync:slv-interventions
           npm run sync:slv-execution-registry
           npm run audit:slv-entity-health
           npm run audit:slv-weekly-decisions
+          npm run audit:slv-interventions
           npm run audit:slv-execution-registry
 
       - name: Add the non-sensitive measurement summary
@@ -61,6 +63,7 @@ jobs:
           git config user.email "entity-health@users.noreply.github.com"
           git add data/rank-tracker/reviews/salt-lake-city/ \
             data/rank-tracker/SLV-ENTITY-HEALTH-2026-08-12.json \
+            data/rank-tracker/SLV-INTERVENTION-QUEUE-2026-08-12.json \
             data/rank-tracker/SLV-EXECUTION-REGISTRY-2026-08-12.json
           if git diff --cached --quiet; then
             echo "No exact-CID review measurement change to commit."

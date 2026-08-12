@@ -68,3 +68,12 @@ Batch: `local-customer-request-batch-frame-roofing-utah-legacy-customer-request-
 ## Safety
 
 Rows and delivery drafts only. No email, SMS, Google Sheet, portal, GBP, DNS, tracking, review, outreach, or public website action was performed.
+
+## 2026-08-12 Salt Lake Valley service-area evidence addendum
+
+- Request: `frame-utah-slv-current-service-area-evidence-v1`
+- Status: ready, not sent
+- Scope: confirm the 16 still-unverified portfolio cities against exact CID `5689850818145735734`; Salt Lake City and Millcreek are already pinned separately.
+- Required proof: a current dated owner-view service-area receipt plus the owner city matrix. A website route, historic note, rank, or wrong-account Drive result is not current GBP proof.
+- Artifact: `data/authority/SLV-SERVICE-AREA-EVIDENCE-REQUEST-2026-08-12.json`
+- Safety: do not send passwords; this request does not authorize GBP, page, schema, directory, review, indexing, outreach, ads, or DNS changes.

@@ -25,11 +25,12 @@ const sourceFiles = {
   weeklyDecisions: "data/rank-tracker/SLV-WEEKLY-DECISIONS-2026-08-12.json",
   gscAttribution: "data/rank-tracker/SLV-GSC-URL-ATTRIBUTION-LATEST.json",
   consumerAi: "data/rank-tracker/SLV-CONSUMER-AI-LATEST.json",
+  interventions: "data/rank-tracker/SLV-INTERVENTION-QUEUE-2026-08-12.json",
   businessDriveReceipt: "data/rank-tracker/evidence/SLV-BUSINESS-DRIVE-CONNECTOR-2026-08-12.json",
 };
 const externalEvidence = {
   businessDriveReceipt: sourceFiles.businessDriveReceipt,
-  externalBusinessDriveReceiptSha256: "d1509d396e1d62776ea28387c7730ff22defec883932de0c0f97ec5f59d43e9b",
+  externalBusinessDriveReceiptSha256: "c1ef99c795d7932d4497ab30395ab753720b1f7c88326e1d588da604cdb03951",
 };
 const read = (file) => JSON.parse(fs.readFileSync(path.join(root, file), "utf8"));
 const sha256 = (file) => crypto.createHash("sha256").update(fs.readFileSync(file)).digest("hex");
@@ -46,9 +47,11 @@ const entityHealth = read(sourceFiles.entityHealth);
 const weeklyDecisions = read(sourceFiles.weeklyDecisions);
 const gscAttribution = read(sourceFiles.gscAttribution);
 const consumerAi = read(sourceFiles.consumerAi);
+const interventions = read(sourceFiles.interventions);
 const goals = new Map(portfolio.cityGoals.map((goal) => [goal.city, goal]));
 const gscByCity = new Map(gscAttribution.cities.map((city) => [city.city, city]));
 const expansionRows = new Map(expansionPriority.cities.map((city) => [city.city, city]));
+const interventionByCity = new Map(interventions.candidates.map((candidate) => [candidate.city, candidate]));
 const queryRows = new Map();
 for (const query of displacement.queries) {
   if (!queryRows.has(query.city)) queryRows.set(query.city, []);
@@ -128,6 +131,8 @@ const cities = cityOrder.map((city, index) => {
   const organicNumberOne = queries.filter((query) => query.target.organicRank === 1).map((query) => query.keyword);
   const aioOwned = queries.filter((query) => query.target.aiOverviewCited).map((query) => query.keyword);
   const action = actionFor(city);
+  const intervention = interventionByCity.get(city);
+  assert.ok(intervention, `missing intervention: ${city}`);
   return {
     executionPriority: index,
     city,
@@ -153,7 +158,21 @@ const cities = cityOrder.map((city, index) => {
       alternateNormalizedUrls: gsc.alternateNormalizedUrls,
       nextEvidenceAction: gsc.nextEvidenceAction,
     },
-    ...action,
+    lane: intervention.lane,
+    action: intervention.selectedAction,
+    actionClass: intervention.decision === "Monitor" ? "system-monitor" : "owner-or-evidence-input-needed",
+    gate: intervention.gate,
+    publicApprovalPacket: action.publicApprovalPacket,
+    ownerApprovalPhrase: intervention.ownerApprovalPhrase,
+    intervention: {
+      lane: intervention.lane,
+      decision: intervention.decision,
+      selectedAction: intervention.selectedAction,
+      gate: intervention.gate,
+      acceptanceCheck: intervention.acceptanceCheck,
+      scoreVector: intervention.scoreVector,
+      feedback: intervention.feedback,
+    },
     universalDependencies: [
       "valid Bright Data user API key for ChatGPT/Perplexity/Gemini panels",
       "business Drive connector authenticated as ryan@framerestorations.com for evidence search",
@@ -167,7 +186,7 @@ const registry = {
   schemaVersion: 1,
   registryId: "frame-utah-slv-18-city-execution-v1",
   market: "utah-salt-lake-valley",
-  preparedAt: "2026-08-12T18:32:00.000Z",
+  preparedAt: "2026-08-12T20:48:46.000Z",
   status: "active-goal-execution-gated",
   publicMutationPerformed: false,
   score: {
@@ -254,6 +273,13 @@ const registry = {
       source: sourceFiles.weeklyDecisions,
       decision: "Keep the required SLC factual correction, hold all 18 ranking lanes until their comparable evidence contracts are satisfied, and preserve the Magna/Kearns #1 footholds.",
     },
+    {
+      id: "evidence-ranked-city-interventions",
+      class: "system-fixable-on-evidence-refresh",
+      state: "active-no-public-authorization",
+      source: sourceFiles.interventions,
+      decision: "Re-rank each city's next action after every complete Google, GSC, review, entity-health, or consumer-AI refresh; protect existing footholds and preserve every explicit evidence and owner gate.",
+    },
   ],
   connectionNeeded: [
     {
@@ -321,12 +347,15 @@ assert.equal(gscAttribution.summary.cities, 18);
 assert.equal(gscAttribution.summary.fixedQueries, 72);
 assert.equal(gscAttribution.measurementContract.workflowTargetQueries, 72);
 assert.equal(consumerAi.summary.cities, 18);
+assert.equal(interventions.summary.cities, 18);
 assert.equal(gscByCity.size, 18);
+assert.equal(interventionByCity.size, 18);
 assert.equal(registry.cities.reduce((sum, city) => sum + city.gscAttribution.requestedQueries, 0), gscAttribution.summary.requestedQueries);
 assert.equal(registry.connectionNeeded.length, consumerAi.summary.citiesWithCompleteReading > 0 ? 1 : 2);
 assert.equal(registry.ownerApprovalsNeeded.length, 3);
 assert.ok(registry.cities.every((city) => city.completionContract.includes("four consecutive weekly panels")));
 assert.ok(registry.cities.every((city) => city.universalDependencies.length === 3));
+assert.ok(registry.cities.every((city) => city.intervention.feedback.requiredComparablePanels === 4));
 
 const nextText = `${JSON.stringify(registry, null, 2)}\n`;
 const fullOutputPath = path.join(root, outputPath);

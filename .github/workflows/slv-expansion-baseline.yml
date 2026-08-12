@@ -59,13 +59,17 @@ jobs:
         run: |
           npm run sync:slv-entity-health
           npm run sync:slv-weekly-decisions
+          npm run sync:slv-competitor-displacement
           npm run sync:slv-gsc-attribution
           npm run sync:slv-expansion-architecture
+          npm run sync:slv-interventions
           npm run sync:slv-execution-registry
           npm run audit:slv-entity-health
           npm run audit:slv-weekly-decisions
+          npm run audit:slv-competitor-displacement
           npm run audit:slv-gsc-attribution
           npm run audit:slv-expansion-architecture
+          npm run audit:slv-interventions
           npm run audit:slv-execution-registry
 
       - name: Add measurement summary
@@ -87,8 +91,10 @@ jobs:
             data/rank-tracker/SLV-18-CITY-GOAL-PORTFOLIO-2026-08-12.json \
             data/rank-tracker/SLV-ENTITY-HEALTH-2026-08-12.json \
             data/rank-tracker/SLV-WEEKLY-DECISIONS-2026-08-12.json \
+            data/rank-tracker/SLV-COMPETITOR-DISPLACEMENT-2026-08-12.json \
             data/rank-tracker/SLV-GSC-URL-ATTRIBUTION-LATEST.json \
             data/rank-tracker/SLV-EXPANSION-ARCHITECTURE-2026-08-12.json \
+            data/rank-tracker/SLV-INTERVENTION-QUEUE-2026-08-12.json \
             data/rank-tracker/SLV-EXECUTION-REGISTRY-2026-08-12.json
           if git diff --cached --quiet; then
             echo "No expansion rank-tracker change to commit."

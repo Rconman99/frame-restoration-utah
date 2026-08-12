@@ -1,0 +1,81 @@
+{
+  "schemaVersion": 1,
+  "requestId": "frame-utah-slv-current-service-area-evidence-v1",
+  "market": "utah-salt-lake-valley",
+  "preparedAt": "2026-08-12T20:48:46Z",
+  "status": "ready-not-sent",
+  "publicMutationPerformed": false,
+  "purpose": "Verify which portfolio cities are currently saved on the Salt Lake Valley Google Business Profile before applying its CID or sameAs graph to another city page or admitting that city to Maps optimization.",
+  "targetProfile": {
+    "business": "Frame Restoration Utah LLC",
+    "cid": "5689850818145735734",
+    "requiredOwnerAccount": "ryan@framerestorations.com"
+  },
+  "alreadyVerified": [
+    {
+      "city": "Salt Lake City",
+      "status": "verified-profile-identity-city"
+    },
+    {
+      "city": "Millcreek",
+      "status": "saved-service-area-observed"
+    }
+  ],
+  "citiesRequiringCurrentEvidence": [
+    "Sandy",
+    "Holladay",
+    "Cottonwood Heights",
+    "Draper",
+    "Bluffdale",
+    "Herriman",
+    "Kearns",
+    "Magna",
+    "Midvale",
+    "Murray",
+    "Riverton",
+    "South Jordan",
+    "South Salt Lake",
+    "Taylorsville",
+    "West Jordan",
+    "West Valley City"
+  ],
+  "requestedEvidence": {
+    "accepted": [
+      "A current dated owner-view screenshot or export showing the saved service-area list for CID 5689850818145735734.",
+      "A current owner-authored city matrix explicitly marking each city as Serve now, Growth target, Do not serve, or Unsure, paired with a separate current GBP service-area receipt before an exact-CID page identity change."
+    ],
+    "minimumFields": [
+      "observation date",
+      "target CID or unmistakable Salt Lake Valley profile identity",
+      "city name",
+      "saved or not-saved state"
+    ],
+    "notAcceptedAsCurrentProfileProof": [
+      "an existing website location route",
+      "a historic service-area note",
+      "an aggregate rank or GSC row",
+      "a Heber profile export",
+      "a document found under the wrong Drive account"
+    ]
+  },
+  "drivePreflight": {
+    "portableReceipt": "data/rank-tracker/evidence/SLV-BUSINESS-DRIVE-CONNECTOR-2026-08-12.json",
+    "state": "failed-closed-account-mismatch",
+    "requiredAccount": "ryan@framerestorations.com",
+    "observedAccount": "ryanconwell99@gmail.com",
+    "searchPerformed": false,
+    "externalReceiptSha256": "c1ef99c795d7932d4497ab30395ab753720b1f7c88326e1d588da604cdb03951"
+  },
+  "delivery": {
+    "state": "draft-only-not-sent",
+    "existingCustomerRequestKey": "frame:frame-roofing-utah:customer_requests:confirm-service-areas",
+    "ownerAsk": "For each of the 16 pending Salt Lake Valley cities, mark Serve now, Growth target, Do not serve, or Unsure. Separately provide a current owner-view receipt showing which Serve now cities are saved on the Salt Lake Valley Google Business Profile. Do not send passwords or credential fields.",
+    "externalSendAuthorized": false
+  },
+  "unlockRule": "A city may move from measurement-only to exact-CID identity planning only after current evidence explicitly ties it to CID 5689850818145735734. Any public page, schema, GBP, directory, or profile mutation still requires its own explicit scope and release gate.",
+  "prohibited": [
+    "Do not infer a GBP service area from a website page, keyword rank, map-pack appearance, or historic note.",
+    "Do not copy credentials, account-sheet fields, homeowner data, or full private documents into the repository.",
+    "Do not edit GBP, public pages, schema, directories, reviews, indexing, outreach, ads, or DNS from this request."
+  ]
+}
