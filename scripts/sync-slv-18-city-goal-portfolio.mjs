@@ -15,6 +15,9 @@ const next = JSON.parse(currentText);
 const core = JSON.parse(fs.readFileSync(path.join(root, next.sources.coreGoalProgram), "utf8"));
 const coreRegistry = JSON.parse(fs.readFileSync(path.join(root, next.sources.coreGoogleRegistry), "utf8"));
 const expansion = JSON.parse(fs.readFileSync(path.join(root, next.sources.expansionGoogleRegistry), "utf8"));
+const consumerAiPath = "data/rank-tracker/SLV-CONSUMER-AI-LATEST.json";
+const consumerAi = JSON.parse(fs.readFileSync(path.join(root, consumerAiPath), "utf8"));
+const consumerAiByCity = new Map(consumerAi.cities.map((city) => [city.city, city]));
 const coreById = new Map(core.cityTracks.map((track) => [track.panelId, track]));
 const corePanelById = new Map(coreRegistry.panels.map((panel) => [panel.id, panel]));
 const expansionById = new Map(expansion.panels.map((panel) => [panel.id, panel]));
@@ -42,7 +45,7 @@ for (const goal of next.cityGoals.filter((candidate) => candidate.priority < 6))
       present: report.summary.aiOverviewsPresent,
       ownedCitations: report.summary.aiOverviewCitations,
     },
-    consumerAi: track.consumerAi,
+    consumerAi: consumerAiByCity.get(goal.city)?.state || track.consumerAi,
   };
 }
 
@@ -67,7 +70,7 @@ for (const goal of next.cityGoals.filter((candidate) => candidate.priority >= 6)
       present: report.summary.aiOverviewsPresent,
       ownedCitations: report.summary.aiOverviewCitations,
     },
-    consumerAi: "configured-manual-measurement-only-blocked-invalid-provider-credential",
+    consumerAi: consumerAiByCity.get(goal.city)?.state || "configured-manual-unmeasured-invalid-provider-credential",
   };
   goal.phase = "integrity-and-service-area-evidence-before-weekly-admission";
   goal.nextPermittedAction = "Preserve measured organic and AIO footholds, complete evidence-safe integrity diagnosis, and verify current profile service-area evidence; do not edit public pages or assert a city GBP without explicit approval.";
@@ -77,6 +80,7 @@ for (const goal of next.cityGoals.filter((candidate) => candidate.priority >= 6)
 
 assert.equal(expansionById.size, 12);
 assert.equal(corePanelById.size, 6);
+assert.equal(consumerAiByCity.size, 18);
 const organicTargetsMeasured = next.cityGoals.reduce((sum, goal) => sum + goal.current.organicRanks.length, 0);
 const organicNumberOne = next.cityGoals.reduce((sum, goal) => sum + goal.current.organicRanks.filter((rank) => rank === 1).length, 0);
 const mapsTargetsMeasured = next.cityGoals.reduce((sum, goal) => sum + goal.current.exactCidMapsRanks.length, 0);
@@ -84,6 +88,7 @@ const mapsNumberOne = next.cityGoals.reduce((sum, goal) => sum + goal.current.ex
 const aioPresent = next.cityGoals.reduce((sum, goal) => sum + goal.current.googleAiOverview.present, 0);
 const aioCited = next.cityGoals.reduce((sum, goal) => sum + goal.current.googleAiOverview.ownedCitations, 0);
 next.sources.expansionPanelObservedAt = expansionObservedAt;
+next.sources.consumerAiLedger = consumerAiPath;
 next.cohorts.expansion.state = "first-manual-baseline-measured-not-yet-admitted-to-weekly-spend";
 next.portfolioScore = {
   citiesInPortfolio: next.cityGoals.length,
@@ -97,7 +102,7 @@ next.portfolioScore = {
   exactCidMapsNumberOne: mapsNumberOne,
   googleAiOverviewCitations: aioCited,
   googleAiOverviewsPresent: aioPresent,
-  consumerAiCompleteCityPanels: 0,
+  consumerAiCompleteCityPanels: consumerAi.summary.citiesWithCompleteReading,
   citiesAtSustainedGoal: 0,
 };
 

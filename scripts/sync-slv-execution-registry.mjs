@@ -24,6 +24,7 @@ const sourceFiles = {
   entityHealth: "data/rank-tracker/SLV-ENTITY-HEALTH-2026-08-12.json",
   weeklyDecisions: "data/rank-tracker/SLV-WEEKLY-DECISIONS-2026-08-12.json",
   gscAttribution: "data/rank-tracker/SLV-GSC-URL-ATTRIBUTION-LATEST.json",
+  consumerAi: "data/rank-tracker/SLV-CONSUMER-AI-LATEST.json",
   businessDriveReceipt: "data/rank-tracker/evidence/SLV-BUSINESS-DRIVE-CONNECTOR-2026-08-12.json",
 };
 const externalEvidence = {
@@ -44,6 +45,7 @@ const expansionCleanup = read(sourceFiles.expansionCleanupPacket);
 const entityHealth = read(sourceFiles.entityHealth);
 const weeklyDecisions = read(sourceFiles.weeklyDecisions);
 const gscAttribution = read(sourceFiles.gscAttribution);
+const consumerAi = read(sourceFiles.consumerAi);
 const goals = new Map(portfolio.cityGoals.map((goal) => [goal.city, goal]));
 const gscByCity = new Map(gscAttribution.cities.map((city) => [city.city, city]));
 const expansionRows = new Map(expansionPriority.cities.map((city) => [city.city, city]));
@@ -168,7 +170,10 @@ const registry = {
   preparedAt: "2026-08-12T18:32:00.000Z",
   status: "active-goal-execution-gated",
   publicMutationPerformed: false,
-  score: portfolio.portfolioScore,
+  score: {
+    ...portfolio.portfolioScore,
+    citiesAtSustainedGoal: weeklyDecisions.summary.citiesAtSustainedGoal,
+  },
   sources: Object.fromEntries(Object.entries(sourceFiles).map(([key, file]) => [key, { file, sha256: localHash(file) }])),
   externalEvidence,
   consumerAiConfiguration: {
@@ -185,7 +190,12 @@ const registry = {
     configuredCities: 18,
     boundedProviderPromptRows: 162,
     automaticallyScheduledCities: ["Salt Lake City", "Millcreek"],
-    state: "configuration-live-measurement-blocked-invalid-provider-key",
+    citiesWithCompleteReading: consumerAi.summary.citiesWithCompleteReading,
+    comparableWeeklyPanels: consumerAi.summary.comparableWeeklyPanels,
+    citiesAtFourWeekConsumerAiTarget: consumerAi.summary.citiesAtFourWeekConsumerAiTarget,
+    state: consumerAi.summary.citiesWithCompleteReading > 0
+      ? "measurement-active-complete-readings-imported"
+      : "configuration-live-measurement-blocked-invalid-provider-key",
   },
   systemActions: [
     {
@@ -256,14 +266,14 @@ const registry = {
       externalSourceReceiptSha256: externalEvidence.externalBusinessDriveReceiptSha256,
       action: "Reconnect the claude.ai Google Drive connector to ryan@framerestorations.com, then rerun the read-only evidence audit.",
     },
-    {
+    ...(consumerAi.summary.citiesWithCompleteReading === 0 ? [{
       id: "consumer-ai-provider-key",
       state: "blocked-invalid-existing-secret",
       secretName: "BRIGHT_DATA_KEY",
       lastObservedSecretUpdatedAt: "2026-08-12T15:02:01Z",
       failedRun: "https://github.com/Rconman99/geo-aeo-tracker/actions/runs/31610098484",
       action: "Replace the existing GitHub secret with a valid Bright Data user API key from the Bright Data user settings page; rerun only after the secret timestamp changes.",
-    },
+    }] : []),
   ],
   ownerApprovalsNeeded: [
     {
@@ -310,9 +320,10 @@ assert.equal(weeklyDecisions.summary.protectedOrganicNumberOneQueries, registry.
 assert.equal(gscAttribution.summary.cities, 18);
 assert.equal(gscAttribution.summary.fixedQueries, 72);
 assert.equal(gscAttribution.measurementContract.workflowTargetQueries, 72);
+assert.equal(consumerAi.summary.cities, 18);
 assert.equal(gscByCity.size, 18);
 assert.equal(registry.cities.reduce((sum, city) => sum + city.gscAttribution.requestedQueries, 0), gscAttribution.summary.requestedQueries);
-assert.equal(registry.connectionNeeded.length, 2);
+assert.equal(registry.connectionNeeded.length, consumerAi.summary.citiesWithCompleteReading > 0 ? 1 : 2);
 assert.equal(registry.ownerApprovalsNeeded.length, 3);
 assert.ok(registry.cities.every((city) => city.completionContract.includes("four consecutive weekly panels")));
 assert.ok(registry.cities.every((city) => city.universalDependencies.length === 3));

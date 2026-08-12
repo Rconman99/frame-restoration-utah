@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "evidenceId": "frame-utah-slv-consumer-ai-suite-v1",
+  "repository": "Rconman99/geo-aeo-tracker",
+  "publicRepository": true,
+  "releasedCommit": "cdb05834e8dc9ab641dc67cefa16c35dd0bbfdd6",
+  "suiteId": "frame-utah-salt-lake-valley-consumer-ai-v1",
+  "workflow": ".github/workflows/frame-utah-slc-panel.yml",
+  "metric": "named-and-owned-domain-cited",
+  "providers": ["chatgpt", "perplexity", "gemini"],
+  "promptsPerProvider": 3,
+  "completeRowsPerCity": 9,
+  "scheduledCities": ["salt-lake-city", "millcreek"],
+  "panels": [
+    {"citySlug":"salt-lake-city","city":"Salt Lake City","panelId":"frame-utah-salt-lake-city-consumer-ai-v1","scheduled":true,"identityEvidence":"verified-profile-city"},
+    {"citySlug":"millcreek","city":"Millcreek","panelId":"frame-utah-millcreek-consumer-ai-v1","scheduled":true,"identityEvidence":"saved-service-area-observed"},
+    {"citySlug":"cottonwood-heights","city":"Cottonwood Heights","panelId":"frame-utah-cottonwood-heights-consumer-ai-v1","scheduled":false,"identityEvidence":"measurement-only-pending-current-profile-service-area-verification"},
+    {"citySlug":"holladay","city":"Holladay","panelId":"frame-utah-holladay-consumer-ai-v1","scheduled":false,"identityEvidence":"measurement-only-pending-current-profile-service-area-verification"},
+    {"citySlug":"sandy","city":"Sandy","panelId":"frame-utah-sandy-consumer-ai-v1","scheduled":false,"identityEvidence":"measurement-only-pending-current-profile-service-area-verification"},
+    {"citySlug":"draper","city":"Draper","panelId":"frame-utah-draper-consumer-ai-v1","scheduled":false,"identityEvidence":"measurement-only-pending-current-profile-service-area-verification"},
+    {"citySlug":"bluffdale","city":"Bluffdale","panelId":"frame-utah-bluffdale-consumer-ai-v1","scheduled":false,"identityEvidence":"measurement-only-pending-current-profile-service-area-verification"},
+    {"citySlug":"herriman","city":"Herriman","panelId":"frame-utah-herriman-consumer-ai-v1","scheduled":false,"identityEvidence":"measurement-only-pending-current-profile-service-area-verification"},
+    {"citySlug":"kearns","city":"Kearns","panelId":"frame-utah-kearns-consumer-ai-v1","scheduled":false,"identityEvidence":"measurement-only-pending-current-profile-service-area-verification"},
+    {"citySlug":"magna","city":"Magna","panelId":"frame-utah-magna-consumer-ai-v1","scheduled":false,"identityEvidence":"measurement-only-pending-current-profile-service-area-verification"},
+    {"citySlug":"midvale","city":"Midvale","panelId":"frame-utah-midvale-consumer-ai-v1","scheduled":false,"identityEvidence":"measurement-only-pending-current-profile-service-area-verification"},
+    {"citySlug":"murray","city":"Murray","panelId":"frame-utah-murray-consumer-ai-v1","scheduled":false,"identityEvidence":"measurement-only-pending-current-profile-service-area-verification"},
+    {"citySlug":"riverton","city":"Riverton","panelId":"frame-utah-riverton-consumer-ai-v1","scheduled":false,"identityEvidence":"measurement-only-pending-current-profile-service-area-verification"},
+    {"citySlug":"south-jordan","city":"South Jordan","panelId":"frame-utah-south-jordan-consumer-ai-v1","scheduled":false,"identityEvidence":"measurement-only-pending-current-profile-service-area-verification"},
+    {"citySlug":"south-salt-lake","city":"South Salt Lake","panelId":"frame-utah-south-salt-lake-consumer-ai-v1","scheduled":false,"identityEvidence":"measurement-only-pending-current-profile-service-area-verification"},
+    {"citySlug":"taylorsville","city":"Taylorsville","panelId":"frame-utah-taylorsville-consumer-ai-v1","scheduled":false,"identityEvidence":"measurement-only-pending-current-profile-service-area-verification"},
+    {"citySlug":"west-jordan","city":"West Jordan","panelId":"frame-utah-west-jordan-consumer-ai-v1","scheduled":false,"identityEvidence":"measurement-only-pending-current-profile-service-area-verification"},
+    {"citySlug":"west-valley-city","city":"West Valley City","panelId":"frame-utah-west-valley-city-consumer-ai-v1","scheduled":false,"identityEvidence":"measurement-only-pending-current-profile-service-area-verification"}
+  ],
+  "failedCredentialReceipt": {
+    "workflowRun": "https://github.com/Rconman99/geo-aeo-tracker/actions/runs/31610098484",
+    "observedAt": "2026-08-12T15:03:25Z",
+    "status": "failed-closed-http-401-auth-method-not-supported",
+    "secretValueStored": false
+  },
+  "publicMutationPerformed": false
+}

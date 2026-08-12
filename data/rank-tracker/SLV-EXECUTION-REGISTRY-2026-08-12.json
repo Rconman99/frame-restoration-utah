@@ -23,7 +23,7 @@
   "sources": {
     "portfolio": {
       "file": "data/rank-tracker/SLV-18-CITY-GOAL-PORTFOLIO-2026-08-12.json",
-      "sha256": "271a09dfc0018f715b580c7aa543ec42fb74c0faadfb951667fa57532207100d"
+      "sha256": "5782534f715e91f7683aeb6ef258ab88b5b39e0bcc44fd702bf2e65e655264c3"
     },
     "corePriority": {
       "file": "data/rank-tracker/SLV-PRIORITY-2026-08-12.json",
@@ -51,19 +51,23 @@
     },
     "expansionArchitecture": {
       "file": "data/rank-tracker/SLV-EXPANSION-ARCHITECTURE-2026-08-12.json",
-      "sha256": "1403a98f644ade1e2e3227ac352e0c55ff3edc9ce4c916c08699fb1df2262b12"
+      "sha256": "583b9a8299b776ede28a3c8935bd4ec82d23fe06dffd8b4865390b2dff92c14d"
     },
     "entityHealth": {
       "file": "data/rank-tracker/SLV-ENTITY-HEALTH-2026-08-12.json",
-      "sha256": "0037c6e26303a02a4970ecf6c14609ab7cdb9831e71d7fdf3f3f730ef943f2c4"
+      "sha256": "780e654065caa082745073d6d12f2249153cacc9e45614162f649fabff2f5f04"
     },
     "weeklyDecisions": {
       "file": "data/rank-tracker/SLV-WEEKLY-DECISIONS-2026-08-12.json",
-      "sha256": "2b232fe5d9159710fb600ce04281e0f4e83ca8dea56e907f0c4fb4a0f5dd39e8"
+      "sha256": "7fdd84a94fe2718408b8bb387b4d0b6a63cb5996bd19c154635db5d77918fb77"
     },
     "gscAttribution": {
       "file": "data/rank-tracker/SLV-GSC-URL-ATTRIBUTION-LATEST.json",
-      "sha256": "19341318461d776c41eafaa8f5a449d6a18a9ba91eab6071ccbaf0f2031541e3"
+      "sha256": "2cb15e4921ebd6b4bee98435b824dbfad1ddf7ecc6d9839284552019e3467f04"
+    },
+    "consumerAi": {
+      "file": "data/rank-tracker/SLV-CONSUMER-AI-LATEST.json",
+      "sha256": "355f34d51267a942614cd7bd86e60daa4ae35fad3aa8f449413095ca5709377f"
     },
     "businessDriveReceipt": {
       "file": "data/rank-tracker/evidence/SLV-BUSINESS-DRIVE-CONNECTOR-2026-08-12.json",
@@ -91,6 +95,9 @@
       "Salt Lake City",
       "Millcreek"
     ],
+    "citiesWithCompleteReading": 0,
+    "comparableWeeklyPanels": 0,
+    "citiesAtFourWeekConsumerAiTarget": 0,
     "state": "configuration-live-measurement-blocked-invalid-provider-key"
   },
   "systemActions": [
@@ -224,7 +231,7 @@
         "organicNumberOne": [],
         "exactCidMapsNumberOne": 0,
         "googleAiOverviewOwnedQueries": [],
-        "consumerAi": "blocked-invalid-provider-credential"
+        "consumerAi": "configured-scheduled-unmeasured-invalid-provider-credential"
       },
       "gscAttribution": {
         "snapshotDate": "2026-08-12",
@@ -271,7 +278,7 @@
         "googleAiOverviewOwnedQueries": [
           "roof repair millcreek"
         ],
-        "consumerAi": "blocked-invalid-provider-credential"
+        "consumerAi": "configured-scheduled-unmeasured-invalid-provider-credential"
       },
       "gscAttribution": {
         "snapshotDate": "2026-08-12",
@@ -320,7 +327,7 @@
         "googleAiOverviewOwnedQueries": [
           "roof replacement magna"
         ],
-        "consumerAi": "configured-manual-measurement-only-blocked-invalid-provider-credential"
+        "consumerAi": "configured-manual-unmeasured-invalid-provider-credential"
       },
       "gscAttribution": {
         "snapshotDate": "2026-08-12",
@@ -367,7 +374,7 @@
         ],
         "exactCidMapsNumberOne": 0,
         "googleAiOverviewOwnedQueries": [],
-        "consumerAi": "configured-manual-measurement-only-blocked-invalid-provider-credential"
+        "consumerAi": "configured-manual-unmeasured-invalid-provider-credential"
       },
       "gscAttribution": {
         "snapshotDate": "2026-08-12",
@@ -412,7 +419,7 @@
         "organicNumberOne": [],
         "exactCidMapsNumberOne": 0,
         "googleAiOverviewOwnedQueries": [],
-        "consumerAi": "configured-manual-measurement-only-blocked-invalid-provider-credential"
+        "consumerAi": "configured-manual-unmeasured-invalid-provider-credential"
       },
       "gscAttribution": {
         "snapshotDate": "2026-08-12",
@@ -457,7 +464,7 @@
         "organicNumberOne": [],
         "exactCidMapsNumberOne": 0,
         "googleAiOverviewOwnedQueries": [],
-        "consumerAi": "configured-manual-measurement-only-blocked-invalid-provider-credential"
+        "consumerAi": "configured-manual-unmeasured-invalid-provider-credential"
       },
       "gscAttribution": {
         "snapshotDate": "2026-08-12",
@@ -506,7 +513,7 @@
         "organicNumberOne": [],
         "exactCidMapsNumberOne": 0,
         "googleAiOverviewOwnedQueries": [],
-        "consumerAi": "configured-manual-measurement-only-blocked-invalid-provider-credential"
+        "consumerAi": "configured-manual-unmeasured-invalid-provider-credential"
       },
       "gscAttribution": {
         "snapshotDate": "2026-08-12",
@@ -551,7 +558,7 @@
         "organicNumberOne": [],
         "exactCidMapsNumberOne": 0,
         "googleAiOverviewOwnedQueries": [],
-        "consumerAi": "configured-manual-measurement-only-blocked-invalid-provider-credential"
+        "consumerAi": "configured-manual-unmeasured-invalid-provider-credential"
       },
       "gscAttribution": {
         "snapshotDate": "2026-08-12",
@@ -596,7 +603,7 @@
         "organicNumberOne": [],
         "exactCidMapsNumberOne": 0,
         "googleAiOverviewOwnedQueries": [],
-        "consumerAi": "configured-manual-measurement-only-blocked-invalid-provider-credential"
+        "consumerAi": "configured-manual-unmeasured-invalid-provider-credential"
       },
       "gscAttribution": {
         "snapshotDate": "2026-08-12",
@@ -641,7 +648,7 @@
         "organicNumberOne": [],
         "exactCidMapsNumberOne": 0,
         "googleAiOverviewOwnedQueries": [],
-        "consumerAi": "configured-manual-measurement-only-blocked-invalid-provider-credential"
+        "consumerAi": "configured-manual-unmeasured-invalid-provider-credential"
       },
       "gscAttribution": {
         "snapshotDate": "2026-08-12",
@@ -686,7 +693,7 @@
         "organicNumberOne": [],
         "exactCidMapsNumberOne": 0,
         "googleAiOverviewOwnedQueries": [],
-        "consumerAi": "configured-manual-measurement-only-blocked-invalid-provider-credential"
+        "consumerAi": "configured-manual-unmeasured-invalid-provider-credential"
       },
       "gscAttribution": {
         "snapshotDate": "2026-08-12",
@@ -731,7 +738,7 @@
         "organicNumberOne": [],
         "exactCidMapsNumberOne": 0,
         "googleAiOverviewOwnedQueries": [],
-        "consumerAi": "configured-manual-measurement-only-blocked-invalid-provider-credential"
+        "consumerAi": "configured-manual-unmeasured-invalid-provider-credential"
       },
       "gscAttribution": {
         "snapshotDate": "2026-08-12",
@@ -776,7 +783,7 @@
         "organicNumberOne": [],
         "exactCidMapsNumberOne": 0,
         "googleAiOverviewOwnedQueries": [],
-        "consumerAi": "configured-manual-measurement-only-blocked-invalid-provider-credential"
+        "consumerAi": "configured-manual-unmeasured-invalid-provider-credential"
       },
       "gscAttribution": {
         "snapshotDate": "2026-08-12",
@@ -821,7 +828,7 @@
         "organicNumberOne": [],
         "exactCidMapsNumberOne": 0,
         "googleAiOverviewOwnedQueries": [],
-        "consumerAi": "configured-manual-measurement-only-blocked-invalid-provider-credential"
+        "consumerAi": "configured-manual-unmeasured-invalid-provider-credential"
       },
       "gscAttribution": {
         "snapshotDate": "2026-08-12",
@@ -866,7 +873,7 @@
         "organicNumberOne": [],
         "exactCidMapsNumberOne": 0,
         "googleAiOverviewOwnedQueries": [],
-        "consumerAi": "configured-manual-measurement-only-blocked-invalid-provider-credential"
+        "consumerAi": "configured-manual-unmeasured-invalid-provider-credential"
       },
       "gscAttribution": {
         "snapshotDate": "2026-08-12",
@@ -911,7 +918,7 @@
         "organicNumberOne": [],
         "exactCidMapsNumberOne": 0,
         "googleAiOverviewOwnedQueries": [],
-        "consumerAi": "configured-manual-measurement-only-blocked-invalid-provider-credential"
+        "consumerAi": "configured-manual-unmeasured-invalid-provider-credential"
       },
       "gscAttribution": {
         "snapshotDate": "2026-08-12",
@@ -956,7 +963,7 @@
         "organicNumberOne": [],
         "exactCidMapsNumberOne": 0,
         "googleAiOverviewOwnedQueries": [],
-        "consumerAi": "configured-manual-measurement-only-blocked-invalid-provider-credential"
+        "consumerAi": "configured-manual-unmeasured-invalid-provider-credential"
       },
       "gscAttribution": {
         "snapshotDate": "2026-08-12",
@@ -1001,7 +1008,7 @@
         "organicNumberOne": [],
         "exactCidMapsNumberOne": 0,
         "googleAiOverviewOwnedQueries": [],
-        "consumerAi": "configured-manual-measurement-only-blocked-invalid-provider-credential"
+        "consumerAi": "configured-manual-unmeasured-invalid-provider-credential"
       },
       "gscAttribution": {
         "snapshotDate": "2026-08-12",

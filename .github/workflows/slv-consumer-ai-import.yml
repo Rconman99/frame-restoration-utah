@@ -1,0 +1,73 @@
+name: Salt Lake Valley consumer AI import
+
+on:
+  schedule:
+    # Daily read-only poll. The producer measures weekly; daily import absorbs
+    # GitHub schedule delays without creating additional provider calls/spend.
+    - cron: '15 13 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: slv-consumer-ai-import
+  cancel-in-progress: false
+
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+
+      - name: Set up Node.js
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '24'
+
+      - name: Import only committed complete scheduled-city readings
+        run: |
+          npm run import:slv-consumer-ai -- --city salt-lake-city --allow-missing
+          npm run import:slv-consumer-ai -- --city millcreek --allow-missing
+
+      - name: Refresh every dependent goal ledger
+        run: |
+          npm run sync:slv-consumer-ai
+          npm run sync:slv-city-goals
+          npm run sync:slv-18-city-goals
+          npm run sync:slv-entity-health
+          npm run sync:slv-weekly-decisions
+          npm run sync:slv-gsc-attribution
+          npm run sync:slv-expansion-architecture
+          npm run sync:slv-execution-registry
+
+      - name: Validate fail-closed consumer-AI and goal contracts
+        run: |
+          npm run audit:slv-consumer-ai
+          npm run audit:slv-city-goals
+          npm run audit:slv-18-city-goals
+          npm run audit:slv-entity-health
+          npm run audit:slv-weekly-decisions
+          npm run audit:slv-gsc-attribution
+          npm run audit:slv-expansion-architecture
+          npm run audit:slv-execution-registry
+
+      - name: Add measurement summary
+        if: always()
+        run: |
+          jq -r '"### Salt Lake Valley consumer AI\n\n- Cities with a complete nine-row reading: \(.summary.citiesWithCompleteReading)/18\n- Comparable weekly panels: \(.summary.comparableWeeklyPanels)\n- Cities at four-week all-engine target: \(.summary.citiesAtFourWeekConsumerAiTarget)\n- Missing/failed panels treated as zero: no\n- Public mutation: no"' data/rank-tracker/SLV-CONSUMER-AI-LATEST.json >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Commit normalized readings and derived ledgers
+        run: |
+          git config user.name "Frame AEO Importer"
+          git config user.email "aeo-importer@users.noreply.github.com"
+          git add data/rank-tracker/
+          if git diff --cached --quiet; then
+            echo "No complete consumer-AI reading change to commit."
+            exit 0
+          fi
+          TODAY=$(date -u +%F)
+          git commit -m "chore(aeo): SLV consumer AI readings ${TODAY} [cloud]"
+          git push

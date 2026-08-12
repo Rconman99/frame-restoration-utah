@@ -45,18 +45,27 @@ jobs:
         run: npm run audit:slv-expansion-panels
 
       - name: Refresh the 18-city goal portfolio from the complete baseline
-        run: npm run sync:slv-18-city-goals
+        run: |
+          npm run sync:slv-consumer-ai
+          npm run sync:slv-city-goals
+          npm run sync:slv-18-city-goals
 
       - name: Validate the refreshed 18-city goal portfolio
-        run: npm run audit:slv-18-city-goals
+        run: |
+          npm run audit:slv-consumer-ai
+          npm run audit:slv-18-city-goals
 
       - name: Refresh and validate evidence-safe weekly decisions
         run: |
           npm run sync:slv-entity-health
           npm run sync:slv-weekly-decisions
+          npm run sync:slv-gsc-attribution
+          npm run sync:slv-expansion-architecture
           npm run sync:slv-execution-registry
           npm run audit:slv-entity-health
           npm run audit:slv-weekly-decisions
+          npm run audit:slv-gsc-attribution
+          npm run audit:slv-expansion-architecture
           npm run audit:slv-execution-registry
 
       - name: Add measurement summary
@@ -73,9 +82,13 @@ jobs:
           git config user.name "Frame Rank Tracker"
           git config user.email "rank-tracker@users.noreply.github.com"
           git add data/rank-tracker/expansion/ \
+            data/rank-tracker/SLV-CONSUMER-AI-LATEST.json \
+            data/rank-tracker/SLV-CITY-GOAL-PROGRAM-2026-08-12.json \
             data/rank-tracker/SLV-18-CITY-GOAL-PORTFOLIO-2026-08-12.json \
             data/rank-tracker/SLV-ENTITY-HEALTH-2026-08-12.json \
             data/rank-tracker/SLV-WEEKLY-DECISIONS-2026-08-12.json \
+            data/rank-tracker/SLV-GSC-URL-ATTRIBUTION-LATEST.json \
+            data/rank-tracker/SLV-EXPANSION-ARCHITECTURE-2026-08-12.json \
             data/rank-tracker/SLV-EXECUTION-REGISTRY-2026-08-12.json
           if git diff --cached --quiet; then
             echo "No expansion rank-tracker change to commit."

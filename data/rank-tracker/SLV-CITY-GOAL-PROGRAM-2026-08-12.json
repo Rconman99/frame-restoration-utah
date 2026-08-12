@@ -53,7 +53,8 @@
       "markdownReceiptSha256": "d32407477c61434f88ed65a9aa6b4543d9de0d14d2079266bd443b0ce60dc3b0",
       "acceptedPrimaryEvidenceCount": 0,
       "driveMutations": 0
-    }
+    },
+    "consumerAiLedger": "data/rank-tracker/SLV-CONSUMER-AI-LATEST.json"
   },
   "programGates": {
     "consumerAiCredential": {
@@ -122,7 +123,7 @@
         "present": 1,
         "ownedCitations": 0
       },
-      "consumerAi": "blocked-invalid-provider-credential",
+      "consumerAi": "configured-scheduled-unmeasured-invalid-provider-credential",
       "phase": "observe-existing-experiment",
       "nextPermittedAction": "Run the fixed weekly Google panel and, after credential replacement, the fixed consumer-AI panel; do not change the page before 2026-09-09T04:40:58Z."
     },
@@ -151,7 +152,7 @@
         "present": 1,
         "ownedCitations": 1
       },
-      "consumerAi": "blocked-invalid-provider-credential",
+      "consumerAi": "configured-scheduled-unmeasured-invalid-provider-credential",
       "phase": "first-after-public-integrity-cleanup",
       "nextPermittedAction": "Preserve the first AIO foothold, replace the consumer-AI key, and prepare the claim/identity cleanup; publish only after explicit approval and the full release gate."
     },
@@ -180,7 +181,7 @@
         "present": 0,
         "ownedCitations": 0
       },
-      "consumerAi": "configured-manual-measurement-only-blocked-invalid-provider-credential",
+      "consumerAi": "configured-manual-unmeasured-invalid-provider-credential",
       "phase": "integrity-and-service-area-evidence",
       "nextPermittedAction": "Measure weekly and prepare evidence-safe claim replacements; do not assert a city GBP or publish without explicit approval."
     },
@@ -209,7 +210,7 @@
         "present": 0,
         "ownedCitations": 0
       },
-      "consumerAi": "configured-manual-measurement-only-blocked-invalid-provider-credential",
+      "consumerAi": "configured-manual-unmeasured-invalid-provider-credential",
       "phase": "integrity-and-service-area-evidence",
       "nextPermittedAction": "Protect the position-4 roof-replacement foothold while preparing removal of unverified city review/project attribution; publish only after explicit approval."
     },
@@ -238,7 +239,7 @@
         "present": 0,
         "ownedCitations": 0
       },
-      "consumerAi": "configured-manual-measurement-only-blocked-invalid-provider-credential",
+      "consumerAi": "configured-manual-unmeasured-invalid-provider-credential",
       "phase": "integrity-and-service-area-evidence",
       "nextPermittedAction": "Measure weekly and prepare evidence-safe local context without treating the neighborhood image as completed-project proof."
     },
@@ -267,7 +268,7 @@
         "present": 0,
         "ownedCitations": 0
       },
-      "consumerAi": "configured-manual-measurement-only-blocked-invalid-provider-credential",
+      "consumerAi": "configured-manual-unmeasured-invalid-provider-credential",
       "phase": "architecture-diagnosis-and-integrity",
       "nextPermittedAction": "Diagnose the main-page versus storm-route intent and internal-link architecture without editing public copy; preserve the storm route's existing search foothold."
     }

@@ -15,11 +15,15 @@
   "sources": {
     "portfolio": {
       "file": "data/rank-tracker/SLV-18-CITY-GOAL-PORTFOLIO-2026-08-12.json",
-      "sha256": "271a09dfc0018f715b580c7aa543ec42fb74c0faadfb951667fa57532207100d"
+      "sha256": "5782534f715e91f7683aeb6ef258ab88b5b39e0bcc44fd702bf2e65e655264c3"
     },
     "saltLakeCityExperiment": {
       "file": "data/seo-experiments/utah-slc-entity-trust-correction-2026-08-12.json",
       "sha256": "4ea4c57b9055571e287da12a389c5903d012b9083f747bcd4675b0bac482be27"
+    },
+    "consumerAi": {
+      "file": "data/rank-tracker/SLV-CONSUMER-AI-LATEST.json",
+      "sha256": "355f34d51267a942614cd7bd86e60daa4ae35fad3aa8f449413095ca5709377f"
     },
     "panels": {
       "salt-lake-city": [
@@ -159,7 +163,13 @@
       "latestObservedAt": "2026-08-12T14:18:10.297Z",
       "rawDatedGoogleReports": 2,
       "comparableWeeklyGooglePanels": 1,
-      "consumerAiState": "blocked-invalid-provider-credential",
+      "consumerAiState": "configured-scheduled-unmeasured-invalid-provider-credential",
+      "consumerAi": {
+        "comparableWeeklyPanels": 0,
+        "latest": null,
+        "consecutiveAllEngineCompletePanels": 0,
+        "requiredPanels": 4
+      },
       "protectedFootholds": {
         "organicNumberOneQueries": [],
         "googleAiOverviewCitedQueries": []
@@ -171,6 +181,9 @@
         "allObservedAiOverviewsCitedStreak": 0,
         "intendedPageSelectionStreak": 1,
         "consumerAiCompleteStreak": 0,
+        "sameWindowCompleteStreak": 0,
+        "integrityGreen": true,
+        "uncontaminatedWindow": false,
         "cityAtSustainedGoal": false
       },
       "decisions": {
@@ -261,7 +274,13 @@
       "latestObservedAt": "2026-08-12T14:18:10.299Z",
       "rawDatedGoogleReports": 1,
       "comparableWeeklyGooglePanels": 1,
-      "consumerAiState": "blocked-invalid-provider-credential",
+      "consumerAiState": "configured-scheduled-unmeasured-invalid-provider-credential",
+      "consumerAi": {
+        "comparableWeeklyPanels": 0,
+        "latest": null,
+        "consecutiveAllEngineCompletePanels": 0,
+        "requiredPanels": 4
+      },
       "protectedFootholds": {
         "organicNumberOneQueries": [],
         "googleAiOverviewCitedQueries": [
@@ -275,6 +294,9 @@
         "allObservedAiOverviewsCitedStreak": 1,
         "intendedPageSelectionStreak": 1,
         "consumerAiCompleteStreak": 0,
+        "sameWindowCompleteStreak": 0,
+        "integrityGreen": false,
+        "uncontaminatedWindow": true,
         "cityAtSustainedGoal": false
       },
       "decisions": {
@@ -358,7 +380,13 @@
       "latestObservedAt": "2026-08-12T14:18:10.300Z",
       "rawDatedGoogleReports": 1,
       "comparableWeeklyGooglePanels": 1,
-      "consumerAiState": "configured-manual-measurement-only-blocked-invalid-provider-credential",
+      "consumerAiState": "configured-manual-unmeasured-invalid-provider-credential",
+      "consumerAi": {
+        "comparableWeeklyPanels": 0,
+        "latest": null,
+        "consecutiveAllEngineCompletePanels": 0,
+        "requiredPanels": 4
+      },
       "protectedFootholds": {
         "organicNumberOneQueries": [],
         "googleAiOverviewCitedQueries": []
@@ -370,6 +398,9 @@
         "allObservedAiOverviewsCitedStreak": 1,
         "intendedPageSelectionStreak": 1,
         "consumerAiCompleteStreak": 0,
+        "sameWindowCompleteStreak": 0,
+        "integrityGreen": false,
+        "uncontaminatedWindow": true,
         "cityAtSustainedGoal": false
       },
       "decisions": {
@@ -453,7 +484,13 @@
       "latestObservedAt": "2026-08-12T14:18:10.299Z",
       "rawDatedGoogleReports": 1,
       "comparableWeeklyGooglePanels": 1,
-      "consumerAiState": "configured-manual-measurement-only-blocked-invalid-provider-credential",
+      "consumerAiState": "configured-manual-unmeasured-invalid-provider-credential",
+      "consumerAi": {
+        "comparableWeeklyPanels": 0,
+        "latest": null,
+        "consecutiveAllEngineCompletePanels": 0,
+        "requiredPanels": 4
+      },
       "protectedFootholds": {
         "organicNumberOneQueries": [],
         "googleAiOverviewCitedQueries": []
@@ -465,6 +502,9 @@
         "allObservedAiOverviewsCitedStreak": 1,
         "intendedPageSelectionStreak": 1,
         "consumerAiCompleteStreak": 0,
+        "sameWindowCompleteStreak": 0,
+        "integrityGreen": false,
+        "uncontaminatedWindow": true,
         "cityAtSustainedGoal": false
       },
       "decisions": {
@@ -548,7 +588,13 @@
       "latestObservedAt": "2026-08-12T14:18:10.299Z",
       "rawDatedGoogleReports": 1,
       "comparableWeeklyGooglePanels": 1,
-      "consumerAiState": "configured-manual-measurement-only-blocked-invalid-provider-credential",
+      "consumerAiState": "configured-manual-unmeasured-invalid-provider-credential",
+      "consumerAi": {
+        "comparableWeeklyPanels": 0,
+        "latest": null,
+        "consecutiveAllEngineCompletePanels": 0,
+        "requiredPanels": 4
+      },
       "protectedFootholds": {
         "organicNumberOneQueries": [],
         "googleAiOverviewCitedQueries": []
@@ -560,6 +606,9 @@
         "allObservedAiOverviewsCitedStreak": 1,
         "intendedPageSelectionStreak": 1,
         "consumerAiCompleteStreak": 0,
+        "sameWindowCompleteStreak": 0,
+        "integrityGreen": false,
+        "uncontaminatedWindow": true,
         "cityAtSustainedGoal": false
       },
       "decisions": {
@@ -643,7 +692,13 @@
       "latestObservedAt": "2026-08-12T14:18:10.300Z",
       "rawDatedGoogleReports": 1,
       "comparableWeeklyGooglePanels": 1,
-      "consumerAiState": "configured-manual-measurement-only-blocked-invalid-provider-credential",
+      "consumerAiState": "configured-manual-unmeasured-invalid-provider-credential",
+      "consumerAi": {
+        "comparableWeeklyPanels": 0,
+        "latest": null,
+        "consecutiveAllEngineCompletePanels": 0,
+        "requiredPanels": 4
+      },
       "protectedFootholds": {
         "organicNumberOneQueries": [],
         "googleAiOverviewCitedQueries": []
@@ -655,6 +710,9 @@
         "allObservedAiOverviewsCitedStreak": 1,
         "intendedPageSelectionStreak": 1,
         "consumerAiCompleteStreak": 0,
+        "sameWindowCompleteStreak": 0,
+        "integrityGreen": false,
+        "uncontaminatedWindow": true,
         "cityAtSustainedGoal": false
       },
       "decisions": {
@@ -738,7 +796,13 @@
       "latestObservedAt": "2026-08-12T17:40:30.498Z",
       "rawDatedGoogleReports": 1,
       "comparableWeeklyGooglePanels": 1,
-      "consumerAiState": "configured-manual-measurement-only-blocked-invalid-provider-credential",
+      "consumerAiState": "configured-manual-unmeasured-invalid-provider-credential",
+      "consumerAi": {
+        "comparableWeeklyPanels": 0,
+        "latest": null,
+        "consecutiveAllEngineCompletePanels": 0,
+        "requiredPanels": 4
+      },
       "protectedFootholds": {
         "organicNumberOneQueries": [],
         "googleAiOverviewCitedQueries": []
@@ -750,6 +814,9 @@
         "allObservedAiOverviewsCitedStreak": 1,
         "intendedPageSelectionStreak": 1,
         "consumerAiCompleteStreak": 0,
+        "sameWindowCompleteStreak": 0,
+        "integrityGreen": false,
+        "uncontaminatedWindow": true,
         "cityAtSustainedGoal": false
       },
       "decisions": {
@@ -833,7 +900,13 @@
       "latestObservedAt": "2026-08-12T17:40:30.500Z",
       "rawDatedGoogleReports": 1,
       "comparableWeeklyGooglePanels": 1,
-      "consumerAiState": "configured-manual-measurement-only-blocked-invalid-provider-credential",
+      "consumerAiState": "configured-manual-unmeasured-invalid-provider-credential",
+      "consumerAi": {
+        "comparableWeeklyPanels": 0,
+        "latest": null,
+        "consecutiveAllEngineCompletePanels": 0,
+        "requiredPanels": 4
+      },
       "protectedFootholds": {
         "organicNumberOneQueries": [],
         "googleAiOverviewCitedQueries": []
@@ -845,6 +918,9 @@
         "allObservedAiOverviewsCitedStreak": 1,
         "intendedPageSelectionStreak": 1,
         "consumerAiCompleteStreak": 0,
+        "sameWindowCompleteStreak": 0,
+        "integrityGreen": false,
+        "uncontaminatedWindow": true,
         "cityAtSustainedGoal": false
       },
       "decisions": {
@@ -928,7 +1004,13 @@
       "latestObservedAt": "2026-08-12T17:40:30.500Z",
       "rawDatedGoogleReports": 1,
       "comparableWeeklyGooglePanels": 1,
-      "consumerAiState": "configured-manual-measurement-only-blocked-invalid-provider-credential",
+      "consumerAiState": "configured-manual-unmeasured-invalid-provider-credential",
+      "consumerAi": {
+        "comparableWeeklyPanels": 0,
+        "latest": null,
+        "consecutiveAllEngineCompletePanels": 0,
+        "requiredPanels": 4
+      },
       "protectedFootholds": {
         "organicNumberOneQueries": [
           "roof replacement kearns"
@@ -942,6 +1024,9 @@
         "allObservedAiOverviewsCitedStreak": 1,
         "intendedPageSelectionStreak": 1,
         "consumerAiCompleteStreak": 0,
+        "sameWindowCompleteStreak": 0,
+        "integrityGreen": false,
+        "uncontaminatedWindow": true,
         "cityAtSustainedGoal": false
       },
       "decisions": {
@@ -1025,7 +1110,13 @@
       "latestObservedAt": "2026-08-12T17:40:30.501Z",
       "rawDatedGoogleReports": 1,
       "comparableWeeklyGooglePanels": 1,
-      "consumerAiState": "configured-manual-measurement-only-blocked-invalid-provider-credential",
+      "consumerAiState": "configured-manual-unmeasured-invalid-provider-credential",
+      "consumerAi": {
+        "comparableWeeklyPanels": 0,
+        "latest": null,
+        "consecutiveAllEngineCompletePanels": 0,
+        "requiredPanels": 4
+      },
       "protectedFootholds": {
         "organicNumberOneQueries": [
           "roof replacement magna"
@@ -1041,6 +1132,9 @@
         "allObservedAiOverviewsCitedStreak": 1,
         "intendedPageSelectionStreak": 1,
         "consumerAiCompleteStreak": 0,
+        "sameWindowCompleteStreak": 0,
+        "integrityGreen": false,
+        "uncontaminatedWindow": true,
         "cityAtSustainedGoal": false
       },
       "decisions": {
@@ -1124,7 +1218,13 @@
       "latestObservedAt": "2026-08-12T17:40:30.501Z",
       "rawDatedGoogleReports": 1,
       "comparableWeeklyGooglePanels": 1,
-      "consumerAiState": "configured-manual-measurement-only-blocked-invalid-provider-credential",
+      "consumerAiState": "configured-manual-unmeasured-invalid-provider-credential",
+      "consumerAi": {
+        "comparableWeeklyPanels": 0,
+        "latest": null,
+        "consecutiveAllEngineCompletePanels": 0,
+        "requiredPanels": 4
+      },
       "protectedFootholds": {
         "organicNumberOneQueries": [],
         "googleAiOverviewCitedQueries": []
@@ -1136,6 +1236,9 @@
         "allObservedAiOverviewsCitedStreak": 1,
         "intendedPageSelectionStreak": 1,
         "consumerAiCompleteStreak": 0,
+        "sameWindowCompleteStreak": 0,
+        "integrityGreen": false,
+        "uncontaminatedWindow": true,
         "cityAtSustainedGoal": false
       },
       "decisions": {
@@ -1219,7 +1322,13 @@
       "latestObservedAt": "2026-08-12T17:40:30.501Z",
       "rawDatedGoogleReports": 1,
       "comparableWeeklyGooglePanels": 1,
-      "consumerAiState": "configured-manual-measurement-only-blocked-invalid-provider-credential",
+      "consumerAiState": "configured-manual-unmeasured-invalid-provider-credential",
+      "consumerAi": {
+        "comparableWeeklyPanels": 0,
+        "latest": null,
+        "consecutiveAllEngineCompletePanels": 0,
+        "requiredPanels": 4
+      },
       "protectedFootholds": {
         "organicNumberOneQueries": [],
         "googleAiOverviewCitedQueries": []
@@ -1231,6 +1340,9 @@
         "allObservedAiOverviewsCitedStreak": 1,
         "intendedPageSelectionStreak": 1,
         "consumerAiCompleteStreak": 0,
+        "sameWindowCompleteStreak": 0,
+        "integrityGreen": false,
+        "uncontaminatedWindow": true,
         "cityAtSustainedGoal": false
       },
       "decisions": {
@@ -1314,7 +1426,13 @@
       "latestObservedAt": "2026-08-12T17:40:30.501Z",
       "rawDatedGoogleReports": 1,
       "comparableWeeklyGooglePanels": 1,
-      "consumerAiState": "configured-manual-measurement-only-blocked-invalid-provider-credential",
+      "consumerAiState": "configured-manual-unmeasured-invalid-provider-credential",
+      "consumerAi": {
+        "comparableWeeklyPanels": 0,
+        "latest": null,
+        "consecutiveAllEngineCompletePanels": 0,
+        "requiredPanels": 4
+      },
       "protectedFootholds": {
         "organicNumberOneQueries": [],
         "googleAiOverviewCitedQueries": []
@@ -1326,6 +1444,9 @@
         "allObservedAiOverviewsCitedStreak": 1,
         "intendedPageSelectionStreak": 1,
         "consumerAiCompleteStreak": 0,
+        "sameWindowCompleteStreak": 0,
+        "integrityGreen": false,
+        "uncontaminatedWindow": true,
         "cityAtSustainedGoal": false
       },
       "decisions": {
@@ -1409,7 +1530,13 @@
       "latestObservedAt": "2026-08-12T17:40:30.502Z",
       "rawDatedGoogleReports": 1,
       "comparableWeeklyGooglePanels": 1,
-      "consumerAiState": "configured-manual-measurement-only-blocked-invalid-provider-credential",
+      "consumerAiState": "configured-manual-unmeasured-invalid-provider-credential",
+      "consumerAi": {
+        "comparableWeeklyPanels": 0,
+        "latest": null,
+        "consecutiveAllEngineCompletePanels": 0,
+        "requiredPanels": 4
+      },
       "protectedFootholds": {
         "organicNumberOneQueries": [],
         "googleAiOverviewCitedQueries": []
@@ -1421,6 +1548,9 @@
         "allObservedAiOverviewsCitedStreak": 1,
         "intendedPageSelectionStreak": 1,
         "consumerAiCompleteStreak": 0,
+        "sameWindowCompleteStreak": 0,
+        "integrityGreen": false,
+        "uncontaminatedWindow": true,
         "cityAtSustainedGoal": false
       },
       "decisions": {
@@ -1504,7 +1634,13 @@
       "latestObservedAt": "2026-08-12T17:40:30.502Z",
       "rawDatedGoogleReports": 1,
       "comparableWeeklyGooglePanels": 1,
-      "consumerAiState": "configured-manual-measurement-only-blocked-invalid-provider-credential",
+      "consumerAiState": "configured-manual-unmeasured-invalid-provider-credential",
+      "consumerAi": {
+        "comparableWeeklyPanels": 0,
+        "latest": null,
+        "consecutiveAllEngineCompletePanels": 0,
+        "requiredPanels": 4
+      },
       "protectedFootholds": {
         "organicNumberOneQueries": [],
         "googleAiOverviewCitedQueries": []
@@ -1516,6 +1652,9 @@
         "allObservedAiOverviewsCitedStreak": 0,
         "intendedPageSelectionStreak": 1,
         "consumerAiCompleteStreak": 0,
+        "sameWindowCompleteStreak": 0,
+        "integrityGreen": false,
+        "uncontaminatedWindow": true,
         "cityAtSustainedGoal": false
       },
       "decisions": {
@@ -1599,7 +1738,13 @@
       "latestObservedAt": "2026-08-12T17:40:30.503Z",
       "rawDatedGoogleReports": 1,
       "comparableWeeklyGooglePanels": 1,
-      "consumerAiState": "configured-manual-measurement-only-blocked-invalid-provider-credential",
+      "consumerAiState": "configured-manual-unmeasured-invalid-provider-credential",
+      "consumerAi": {
+        "comparableWeeklyPanels": 0,
+        "latest": null,
+        "consecutiveAllEngineCompletePanels": 0,
+        "requiredPanels": 4
+      },
       "protectedFootholds": {
         "organicNumberOneQueries": [],
         "googleAiOverviewCitedQueries": []
@@ -1611,6 +1756,9 @@
         "allObservedAiOverviewsCitedStreak": 1,
         "intendedPageSelectionStreak": 1,
         "consumerAiCompleteStreak": 0,
+        "sameWindowCompleteStreak": 0,
+        "integrityGreen": false,
+        "uncontaminatedWindow": true,
         "cityAtSustainedGoal": false
       },
       "decisions": {
@@ -1694,7 +1842,13 @@
       "latestObservedAt": "2026-08-12T17:40:30.503Z",
       "rawDatedGoogleReports": 1,
       "comparableWeeklyGooglePanels": 1,
-      "consumerAiState": "configured-manual-measurement-only-blocked-invalid-provider-credential",
+      "consumerAiState": "configured-manual-unmeasured-invalid-provider-credential",
+      "consumerAi": {
+        "comparableWeeklyPanels": 0,
+        "latest": null,
+        "consecutiveAllEngineCompletePanels": 0,
+        "requiredPanels": 4
+      },
       "protectedFootholds": {
         "organicNumberOneQueries": [],
         "googleAiOverviewCitedQueries": []
@@ -1706,6 +1860,9 @@
         "allObservedAiOverviewsCitedStreak": 1,
         "intendedPageSelectionStreak": 1,
         "consumerAiCompleteStreak": 0,
+        "sameWindowCompleteStreak": 0,
+        "integrityGreen": false,
+        "uncontaminatedWindow": true,
         "cityAtSustainedGoal": false
       },
       "decisions": {
@@ -1789,7 +1946,13 @@
       "latestObservedAt": "2026-08-12T17:40:30.503Z",
       "rawDatedGoogleReports": 1,
       "comparableWeeklyGooglePanels": 1,
-      "consumerAiState": "configured-manual-measurement-only-blocked-invalid-provider-credential",
+      "consumerAiState": "configured-manual-unmeasured-invalid-provider-credential",
+      "consumerAi": {
+        "comparableWeeklyPanels": 0,
+        "latest": null,
+        "consecutiveAllEngineCompletePanels": 0,
+        "requiredPanels": 4
+      },
       "protectedFootholds": {
         "organicNumberOneQueries": [],
         "googleAiOverviewCitedQueries": []
@@ -1801,6 +1964,9 @@
         "allObservedAiOverviewsCitedStreak": 1,
         "intendedPageSelectionStreak": 1,
         "consumerAiCompleteStreak": 0,
+        "sameWindowCompleteStreak": 0,
+        "integrityGreen": false,
+        "uncontaminatedWindow": true,
         "cityAtSustainedGoal": false
       },
       "decisions": {

@@ -76,7 +76,8 @@
     "publicRemediationPacket": "data/authority/SLV-CITY-PUBLIC-REMEDIATION-PACKET-2026-08-12.json",
     "millcreekScopeAmendment": "data/authority/MILLCREEK-PUBLIC-IDENTITY-SCOPE-AMENDMENT-2026-08-12.json",
     "expansionIntegrityAudit": "data/authority/SLV-EXPANSION-INTEGRITY-AUDIT-2026-08-12.json",
-    "expansionPanelObservedAt": "2026-08-12T17:40:30.503Z"
+    "expansionPanelObservedAt": "2026-08-12T17:40:30.503Z",
+    "consumerAiLedger": "data/rank-tracker/SLV-CONSUMER-AI-LATEST.json"
   },
   "cohorts": {
     "core": {
@@ -150,7 +151,7 @@
           "present": 1,
           "ownedCitations": 0
         },
-        "consumerAi": "blocked-invalid-provider-credential"
+        "consumerAi": "configured-scheduled-unmeasured-invalid-provider-credential"
       },
       "phase": "observe-existing-experiment",
       "nextPermittedAction": "Run the fixed weekly Google panel and, after credential replacement, the fixed consumer-AI panel; do not change the page before 2026-09-09T04:40:58Z.",
@@ -191,7 +192,7 @@
           "present": 1,
           "ownedCitations": 1
         },
-        "consumerAi": "blocked-invalid-provider-credential"
+        "consumerAi": "configured-scheduled-unmeasured-invalid-provider-credential"
       },
       "phase": "first-after-public-integrity-cleanup",
       "nextPermittedAction": "Preserve the first AIO foothold, replace the consumer-AI key, and prepare the claim/identity cleanup; publish only after explicit approval and the full release gate.",
@@ -232,7 +233,7 @@
           "present": 0,
           "ownedCitations": 0
         },
-        "consumerAi": "configured-manual-measurement-only-blocked-invalid-provider-credential"
+        "consumerAi": "configured-manual-unmeasured-invalid-provider-credential"
       },
       "phase": "integrity-and-service-area-evidence",
       "nextPermittedAction": "Measure weekly and prepare evidence-safe claim replacements; do not assert a city GBP or publish without explicit approval.",
@@ -273,7 +274,7 @@
           "present": 0,
           "ownedCitations": 0
         },
-        "consumerAi": "configured-manual-measurement-only-blocked-invalid-provider-credential"
+        "consumerAi": "configured-manual-unmeasured-invalid-provider-credential"
       },
       "phase": "integrity-and-service-area-evidence",
       "nextPermittedAction": "Protect the position-4 roof-replacement foothold while preparing removal of unverified city review/project attribution; publish only after explicit approval.",
@@ -314,7 +315,7 @@
           "present": 0,
           "ownedCitations": 0
         },
-        "consumerAi": "configured-manual-measurement-only-blocked-invalid-provider-credential"
+        "consumerAi": "configured-manual-unmeasured-invalid-provider-credential"
       },
       "phase": "integrity-and-service-area-evidence",
       "nextPermittedAction": "Measure weekly and prepare evidence-safe local context without treating the neighborhood image as completed-project proof.",
@@ -355,7 +356,7 @@
           "present": 0,
           "ownedCitations": 0
         },
-        "consumerAi": "configured-manual-measurement-only-blocked-invalid-provider-credential"
+        "consumerAi": "configured-manual-unmeasured-invalid-provider-credential"
       },
       "phase": "architecture-diagnosis-and-integrity",
       "nextPermittedAction": "Diagnose the main-page versus storm-route intent and internal-link architecture without editing public copy; preserve the storm route's existing search foothold.",
@@ -396,7 +397,7 @@
           "present": 0,
           "ownedCitations": 0
         },
-        "consumerAi": "configured-manual-measurement-only-blocked-invalid-provider-credential"
+        "consumerAi": "configured-manual-unmeasured-invalid-provider-credential"
       },
       "phase": "integrity-and-service-area-evidence-before-weekly-admission",
       "nextPermittedAction": "Preserve measured organic and AIO footholds, complete evidence-safe integrity diagnosis, and verify current profile service-area evidence; do not edit public pages or assert a city GBP without explicit approval.",
@@ -437,7 +438,7 @@
           "present": 0,
           "ownedCitations": 0
         },
-        "consumerAi": "configured-manual-measurement-only-blocked-invalid-provider-credential"
+        "consumerAi": "configured-manual-unmeasured-invalid-provider-credential"
       },
       "phase": "integrity-and-service-area-evidence-before-weekly-admission",
       "nextPermittedAction": "Preserve measured organic and AIO footholds, complete evidence-safe integrity diagnosis, and verify current profile service-area evidence; do not edit public pages or assert a city GBP without explicit approval.",
@@ -478,7 +479,7 @@
           "present": 0,
           "ownedCitations": 0
         },
-        "consumerAi": "configured-manual-measurement-only-blocked-invalid-provider-credential"
+        "consumerAi": "configured-manual-unmeasured-invalid-provider-credential"
       },
       "phase": "integrity-and-service-area-evidence-before-weekly-admission",
       "nextPermittedAction": "Preserve measured organic and AIO footholds, complete evidence-safe integrity diagnosis, and verify current profile service-area evidence; do not edit public pages or assert a city GBP without explicit approval.",
@@ -519,7 +520,7 @@
           "present": 1,
           "ownedCitations": 1
         },
-        "consumerAi": "configured-manual-measurement-only-blocked-invalid-provider-credential"
+        "consumerAi": "configured-manual-unmeasured-invalid-provider-credential"
       },
       "phase": "integrity-and-service-area-evidence-before-weekly-admission",
       "nextPermittedAction": "Preserve measured organic and AIO footholds, complete evidence-safe integrity diagnosis, and verify current profile service-area evidence; do not edit public pages or assert a city GBP without explicit approval.",
@@ -560,7 +561,7 @@
           "present": 0,
           "ownedCitations": 0
         },
-        "consumerAi": "configured-manual-measurement-only-blocked-invalid-provider-credential"
+        "consumerAi": "configured-manual-unmeasured-invalid-provider-credential"
       },
       "phase": "integrity-and-service-area-evidence-before-weekly-admission",
       "nextPermittedAction": "Preserve measured organic and AIO footholds, complete evidence-safe integrity diagnosis, and verify current profile service-area evidence; do not edit public pages or assert a city GBP without explicit approval.",
@@ -601,7 +602,7 @@
           "present": 0,
           "ownedCitations": 0
         },
-        "consumerAi": "configured-manual-measurement-only-blocked-invalid-provider-credential"
+        "consumerAi": "configured-manual-unmeasured-invalid-provider-credential"
       },
       "phase": "integrity-and-service-area-evidence-before-weekly-admission",
       "nextPermittedAction": "Preserve measured organic and AIO footholds, complete evidence-safe integrity diagnosis, and verify current profile service-area evidence; do not edit public pages or assert a city GBP without explicit approval.",
@@ -642,7 +643,7 @@
           "present": 0,
           "ownedCitations": 0
         },
-        "consumerAi": "configured-manual-measurement-only-blocked-invalid-provider-credential"
+        "consumerAi": "configured-manual-unmeasured-invalid-provider-credential"
       },
       "phase": "integrity-and-service-area-evidence-before-weekly-admission",
       "nextPermittedAction": "Preserve measured organic and AIO footholds, complete evidence-safe integrity diagnosis, and verify current profile service-area evidence; do not edit public pages or assert a city GBP without explicit approval.",
@@ -683,7 +684,7 @@
           "present": 0,
           "ownedCitations": 0
         },
-        "consumerAi": "configured-manual-measurement-only-blocked-invalid-provider-credential"
+        "consumerAi": "configured-manual-unmeasured-invalid-provider-credential"
       },
       "phase": "integrity-and-service-area-evidence-before-weekly-admission",
       "nextPermittedAction": "Preserve measured organic and AIO footholds, complete evidence-safe integrity diagnosis, and verify current profile service-area evidence; do not edit public pages or assert a city GBP without explicit approval.",
@@ -724,7 +725,7 @@
           "present": 1,
           "ownedCitations": 0
         },
-        "consumerAi": "configured-manual-measurement-only-blocked-invalid-provider-credential"
+        "consumerAi": "configured-manual-unmeasured-invalid-provider-credential"
       },
       "phase": "integrity-and-service-area-evidence-before-weekly-admission",
       "nextPermittedAction": "Preserve measured organic and AIO footholds, complete evidence-safe integrity diagnosis, and verify current profile service-area evidence; do not edit public pages or assert a city GBP without explicit approval.",
@@ -765,7 +766,7 @@
           "present": 0,
           "ownedCitations": 0
         },
-        "consumerAi": "configured-manual-measurement-only-blocked-invalid-provider-credential"
+        "consumerAi": "configured-manual-unmeasured-invalid-provider-credential"
       },
       "phase": "integrity-and-service-area-evidence-before-weekly-admission",
       "nextPermittedAction": "Preserve measured organic and AIO footholds, complete evidence-safe integrity diagnosis, and verify current profile service-area evidence; do not edit public pages or assert a city GBP without explicit approval.",
@@ -806,7 +807,7 @@
           "present": 0,
           "ownedCitations": 0
         },
-        "consumerAi": "configured-manual-measurement-only-blocked-invalid-provider-credential"
+        "consumerAi": "configured-manual-unmeasured-invalid-provider-credential"
       },
       "phase": "integrity-and-service-area-evidence-before-weekly-admission",
       "nextPermittedAction": "Preserve measured organic and AIO footholds, complete evidence-safe integrity diagnosis, and verify current profile service-area evidence; do not edit public pages or assert a city GBP without explicit approval.",
@@ -847,7 +848,7 @@
           "present": 0,
           "ownedCitations": 0
         },
-        "consumerAi": "configured-manual-measurement-only-blocked-invalid-provider-credential"
+        "consumerAi": "configured-manual-unmeasured-invalid-provider-credential"
       },
       "phase": "integrity-and-service-area-evidence-before-weekly-admission",
       "nextPermittedAction": "Preserve measured organic and AIO footholds, complete evidence-safe integrity diagnosis, and verify current profile service-area evidence; do not edit public pages or assert a city GBP without explicit approval.",

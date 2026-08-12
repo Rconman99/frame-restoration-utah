@@ -8,6 +8,7 @@ on:
       - '.github/workflows/slv-expansion-baseline.yml'
       - '.github/workflows/slv-review-baseline.yml'
       - '.github/workflows/seo-loop.yml'
+      - '.github/workflows/slv-consumer-ai-import.yml'
       - 'data/rank-tracker/SLV-CITY-GOAL-PROGRAM-2026-08-12.json'
       - 'data/rank-tracker/DRAPER-ARCHITECTURE-DIAGNOSIS-2026-08-12.json'
       - 'data/rank-tracker/HOLLADAY-ARCHITECTURE-DIAGNOSIS-2026-08-12.json'
@@ -21,6 +22,9 @@ on:
       - 'data/rank-tracker/SLV-EXECUTION-REGISTRY-2026-08-12.json'
       - 'data/rank-tracker/SLV-GSC-URL-ATTRIBUTION-LATEST.json'
       - 'data/rank-tracker/SLV-EXPANSION-ARCHITECTURE-2026-08-12.json'
+      - 'data/rank-tracker/SLV-CONSUMER-AI-LATEST.json'
+      - 'data/rank-tracker/evidence/SLV-CONSUMER-AI-SUITE-2026-08-12.json'
+      - 'data/rank-tracker/consumer-ai-imports/**/*.json'
       - 'data/rank-tracker/evidence/SLV-BUSINESS-DRIVE-CONNECTOR-2026-08-12.json'
       - 'data/rank-tracker/expansion-panels.json'
       - 'data/rank-tracker/panels/holladay/2026-08-12.json'
@@ -76,6 +80,11 @@ on:
       - 'scripts/sync-slv-expansion-architecture.mjs'
       - 'scripts/lib/slv-gsc-attribution.mjs'
       - 'scripts/lib/slv-gsc-attribution.test.mjs'
+      - 'scripts/sync-slv-consumer-ai.mjs'
+      - 'scripts/import-slv-consumer-ai.mjs'
+      - 'scripts/lib/slv-consumer-ai.mjs'
+      - 'scripts/lib/slv-consumer-ai.test.mjs'
+      - 'scripts/test-import-slv-consumer-ai.mjs'
       - 'package.json'
   push:
     branches:
@@ -86,6 +95,7 @@ on:
       - '.github/workflows/slv-expansion-baseline.yml'
       - '.github/workflows/slv-review-baseline.yml'
       - '.github/workflows/seo-loop.yml'
+      - '.github/workflows/slv-consumer-ai-import.yml'
       - 'data/rank-tracker/SLV-CITY-GOAL-PROGRAM-2026-08-12.json'
       - 'data/rank-tracker/DRAPER-ARCHITECTURE-DIAGNOSIS-2026-08-12.json'
       - 'data/rank-tracker/HOLLADAY-ARCHITECTURE-DIAGNOSIS-2026-08-12.json'
@@ -99,6 +109,9 @@ on:
       - 'data/rank-tracker/SLV-EXECUTION-REGISTRY-2026-08-12.json'
       - 'data/rank-tracker/SLV-GSC-URL-ATTRIBUTION-LATEST.json'
       - 'data/rank-tracker/SLV-EXPANSION-ARCHITECTURE-2026-08-12.json'
+      - 'data/rank-tracker/SLV-CONSUMER-AI-LATEST.json'
+      - 'data/rank-tracker/evidence/SLV-CONSUMER-AI-SUITE-2026-08-12.json'
+      - 'data/rank-tracker/consumer-ai-imports/**/*.json'
       - 'data/rank-tracker/evidence/SLV-BUSINESS-DRIVE-CONNECTOR-2026-08-12.json'
       - 'data/rank-tracker/expansion-panels.json'
       - 'data/rank-tracker/panels/holladay/2026-08-12.json'
@@ -154,6 +167,11 @@ on:
       - 'scripts/sync-slv-expansion-architecture.mjs'
       - 'scripts/lib/slv-gsc-attribution.mjs'
       - 'scripts/lib/slv-gsc-attribution.test.mjs'
+      - 'scripts/sync-slv-consumer-ai.mjs'
+      - 'scripts/import-slv-consumer-ai.mjs'
+      - 'scripts/lib/slv-consumer-ai.mjs'
+      - 'scripts/lib/slv-consumer-ai.test.mjs'
+      - 'scripts/test-import-slv-consumer-ai.mjs'
       - 'package.json'
 
 permissions:
@@ -194,6 +212,7 @@ jobs:
         run: |
           npm run audit:slv-entity-health
           npm run audit:slv-weekly-decisions
+          npm run audit:slv-consumer-ai
           npm run audit:slv-gsc-attribution
           npm run audit:slv-expansion-architecture
           npm run audit:slv-execution-registry

@@ -17,6 +17,8 @@ const registry = JSON.parse(
 const integrityContract = JSON.parse(
   fs.readFileSync(path.join(repoRoot, program.authoritativeSources.integrityContract), "utf8"),
 );
+const consumerAi = JSON.parse(fs.readFileSync(path.join(repoRoot, program.authoritativeSources.consumerAiLedger), "utf8"));
+const consumerAiByCity = new Map(consumerAi.cities.map((city) => [city.city, city]));
 
 assert.equal(program.schemaVersion, 1);
 assert.equal(program.status, "active-not-achieved");
@@ -74,6 +76,7 @@ for (const track of program.cityTracks) {
     present: report.summary.aiOverviewsPresent,
     ownedCitations: report.summary.aiOverviewCitations,
   });
+  assert.equal(track.consumerAi, consumerAiByCity.get(track.city).state);
 
   organicNumberOneQueries += report.results.filter((result) => result.organicRank === 1).length;
   organicQueriesMeasured += report.results.length;
@@ -113,7 +116,7 @@ assert.deepEqual(program.currentScore, {
   exactCidMapsQueriesMeasured: mapsQueriesMeasured,
   googleAiOverviewCitations: aiOverviewCitations,
   googleAiOverviewsPresent: aiOverviewsPresent,
-  consumerAiCompleteCityPanels: 0,
+  consumerAiCompleteCityPanels: program.cityTracks.filter((track) => consumerAiByCity.get(track.city).latest).length,
   citiesAtSustainedGoal: 0,
   citiesTracked: program.cityTracks.length,
 });
@@ -130,8 +133,12 @@ assert.equal(integrityContract.releaseGate.requiresExplicitOwnerApproval, true);
 assert.equal(program.programGates.businessDrive.status, "owner-action-required");
 assert.equal(program.authoritativeSources.businessDriveAudit.acceptedPrimaryEvidenceCount, 0);
 assert.equal(program.authoritativeSources.businessDriveAudit.driveMutations, 0);
-assert.equal(program.programGates.consumerAiCredential.status, "owner-action-required");
-assert.match(program.programGates.consumerAiCredential.reason, /401/);
+if (consumerAi.summary.citiesWithCompleteReading > 0) {
+  assert.equal(program.programGates.consumerAiCredential.status, "measurement-active");
+} else {
+  assert.equal(program.programGates.consumerAiCredential.status, "owner-action-required");
+  assert.match(program.programGates.consumerAiCredential.reason, /401/);
+}
 assert.equal(program.programGates.saltLakeCityObservation.status, "hold");
 
 const integrityRun = spawnSync(

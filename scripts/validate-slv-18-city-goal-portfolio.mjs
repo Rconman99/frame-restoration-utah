@@ -12,6 +12,8 @@ const core = read(portfolio.sources.coreGoalProgram);
 const coreRegistry = read(portfolio.sources.coreGoogleRegistry);
 const expansionRegistry = read(portfolio.sources.expansionGoogleRegistry);
 const expansionIntegrity = read(portfolio.sources.expansionIntegrityAudit);
+const consumerAi = read(portfolio.sources.consumerAiLedger);
+const consumerAiByCity = new Map(consumerAi.cities.map((city) => [city.city, city]));
 
 assert.equal(portfolio.schemaVersion, 1);
 assert.equal(portfolio.status, "active-not-achieved");
@@ -56,7 +58,7 @@ for (const goal of coreGoals) {
     present: report.summary.aiOverviewsPresent,
     ownedCitations: report.summary.aiOverviewCitations,
   });
-  assert.equal(goal.current.consumerAi, track.consumerAi);
+  assert.equal(goal.current.consumerAi, consumerAiByCity.get(goal.city).state);
   assert.ok(fs.existsSync(path.join(root, goal.page)), `missing core page: ${goal.page}`);
 }
 
@@ -76,6 +78,7 @@ for (const goal of expansionGoals) {
     present: report.summary.aiOverviewsPresent,
     ownedCitations: report.summary.aiOverviewCitations,
   });
+  assert.equal(goal.current.consumerAi, consumerAiByCity.get(goal.city).state);
   assert.equal(goal.serviceAreaStatus, "pending-current-profile-service-area-verification");
   assert.equal(goal.page, `${panel.route.slice(1)}.html`);
   assert.ok(fs.existsSync(path.join(root, goal.page)), `missing expansion page: ${goal.page}`);
@@ -98,7 +101,7 @@ assert.deepEqual(score, {
   exactCidMapsNumberOne: mapsNumberOne,
   googleAiOverviewCitations: aioCited,
   googleAiOverviewsPresent: aioPresent,
-  consumerAiCompleteCityPanels: 0,
+  consumerAiCompleteCityPanels: consumerAi.summary.citiesWithCompleteReading,
   citiesAtSustainedGoal: 0,
 });
 assert.equal(portfolio.cohorts.expansion.estimatedOneTimeBaselineCostUsd, 0.1152);

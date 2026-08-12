@@ -5,6 +5,7 @@ import crypto from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { isoWeekStart, trailingAlignedWeeklyStreak } from "./lib/slv-consumer-ai.mjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const write = process.argv.includes("--write");
@@ -14,10 +15,13 @@ assert.notEqual(write && process.argv.includes("--check"), true, "use either --w
 const outputPath = "data/rank-tracker/SLV-WEEKLY-DECISIONS-2026-08-12.json";
 const portfolioPath = "data/rank-tracker/SLV-18-CITY-GOAL-PORTFOLIO-2026-08-12.json";
 const slcExperimentPath = "data/seo-experiments/utah-slc-entity-trust-correction-2026-08-12.json";
+const consumerAiPath = "data/rank-tracker/SLV-CONSUMER-AI-LATEST.json";
 const read = (file) => JSON.parse(fs.readFileSync(path.join(root, file), "utf8"));
 const sha256 = (file) => crypto.createHash("sha256").update(fs.readFileSync(path.join(root, file))).digest("hex");
 const portfolio = read(portfolioPath);
 const slcExperiment = read(slcExperimentPath);
+const consumerAi = read(consumerAiPath);
+const consumerAiByCity = new Map(consumerAi.cities.map((city) => [city.city, city]));
 
 function reportDirectory(goal) {
   if (goal.slug === "salt-lake-city") return "data/rank-tracker";
@@ -74,6 +78,8 @@ function intendedPageSelected(result, goal) {
 const allObservedAt = [];
 const sourcePanels = {};
 const cityDecisions = portfolio.cityGoals.map((goal) => {
+  const consumer = consumerAiByCity.get(goal.city);
+  assert.ok(consumer, `missing consumer-AI city: ${goal.city}`);
   const reports = datedReports(goal);
   assert.ok(reports.length > 0, `missing dated panel: ${goal.city}`);
   const weeklyReports = latestReportPerWeek(reports);
@@ -108,6 +114,20 @@ const cityDecisions = portfolio.cityGoals.map((goal) => {
   const cityMapsStreak = trailingStreak(weeklyReports, ({ results }) => results.every((row) => row.mapPackRank === 1));
   const cityAioCoverageStreak = trailingStreak(weeklyReports, ({ results }) => results.every((row) => !row.aiOverviewPresent || row.aiOverviewCited));
   const intendedUrlStreak = trailingStreak(weeklyReports, ({ results }) => results.every((row) => intendedPageSelected(row, goal)));
+  const alignedGooglePanels = weeklyReports.map(({ report }) => ({
+    isoWeek: isoWeekKey(report),
+    weekStart: isoWeekStart(report.date || report.observedAt),
+    report,
+  }));
+  const sameWindowCompleteStreak = trailingAlignedWeeklyStreak(
+    alignedGooglePanels,
+    consumer.weeklyPanels,
+    ({ report }) => report.results.every((row) => row.organicRank === 1
+      && row.mapPackRank === 1
+      && (!row.aiOverviewPresent || row.aiOverviewCited)
+      && intendedPageSelected(row, goal)),
+    (panel) => panel.allEnginesNamedAndCited,
+  );
 
   const isSlc = goal.city === "Salt Lake City";
   const postDeploymentReports = isSlc
@@ -126,6 +146,8 @@ const cityDecisions = portfolio.cityGoals.map((goal) => {
         verdict: "pending-owner-approval",
         reason: "The bounded integrity cleanup has not been published; no keep/revert decision exists for an unapplied change.",
       };
+  const integrityGreen = integrityDecision.verdict === "keep";
+  const uncontaminatedWindow = !isSlc || slcExperiment.confounds.length === 0;
 
   const rankingDecision = isSlc
     ? {
@@ -159,7 +181,13 @@ const cityDecisions = portfolio.cityGoals.map((goal) => {
     latestObservedAt: latest.observedAt,
     rawDatedGoogleReports: reports.length,
     comparableWeeklyGooglePanels: weeklyReports.length,
-    consumerAiState: goal.current.consumerAi,
+    consumerAiState: consumer.state,
+    consumerAi: {
+      comparableWeeklyPanels: consumer.comparableWeeklyPanels,
+      latest: consumer.latest,
+      consecutiveAllEngineCompletePanels: consumer.consecutiveAllEngineCompletePanels,
+      requiredPanels: 4,
+    },
     protectedFootholds: {
       organicNumberOneQueries: currentOrganicNumberOne,
       googleAiOverviewCitedQueries: currentAioCitations,
@@ -170,8 +198,11 @@ const cityDecisions = portfolio.cityGoals.map((goal) => {
       allFourExactCidMapsNumberOneStreak: cityMapsStreak,
       allObservedAiOverviewsCitedStreak: cityAioCoverageStreak,
       intendedPageSelectionStreak: intendedUrlStreak,
-      consumerAiCompleteStreak: 0,
-      cityAtSustainedGoal: false,
+      consumerAiCompleteStreak: consumer.consecutiveAllEngineCompletePanels,
+      sameWindowCompleteStreak,
+      integrityGreen,
+      uncontaminatedWindow,
+      cityAtSustainedGoal: sameWindowCompleteStreak >= 4 && integrityGreen && uncontaminatedWindow,
     },
     decisions: { integrity: integrityDecision, ranking: rankingDecision },
     queryStreaks,
@@ -201,6 +232,7 @@ const artifact = {
   sources: {
     portfolio: { file: portfolioPath, sha256: sha256(portfolioPath) },
     saltLakeCityExperiment: { file: slcExperimentPath, sha256: sha256(slcExperimentPath) },
+    consumerAi: { file: consumerAiPath, sha256: sha256(consumerAiPath) },
     panels: sourcePanels,
   },
   summary: {
@@ -212,7 +244,7 @@ const artifact = {
     rankingHold: cityDecisions.filter((city) => city.decisions.ranking.verdict === "hold").length,
     protectedOrganicNumberOneQueries: cityDecisions.reduce((sum, city) => sum + city.protectedFootholds.organicNumberOneQueries.length, 0),
     protectedGoogleAiOverviewCitations: cityDecisions.reduce((sum, city) => sum + city.protectedFootholds.googleAiOverviewCitedQueries.length, 0),
-    citiesAtSustainedGoal: 0,
+    citiesAtSustainedGoal: cityDecisions.filter((city) => city.sustainedProgress.cityAtSustainedGoal).length,
   },
   nextDecisionDate: nextCorePanelDate,
   nextAction: `Run the scheduled six-city core Google panel on ${nextCorePanelDate}. Do not admit the 12 expansion cities to recurring paid measurement without explicit spend approval, and do not call a ranking keep/revert before comparable evidence exists.`,
@@ -232,7 +264,7 @@ assert.ok(saltLakeCityDecision.rawDatedGoogleReports >= saltLakeCityDecision.com
 assert.ok(saltLakeCityDecision.comparableWeeklyGooglePanels >= 1);
 assert.ok(saltLakeCityDecision.decisions.ranking.postDeploymentGooglePanels >= 1);
 assert.ok(saltLakeCityDecision.decisions.ranking.postDeploymentGooglePanels <= saltLakeCityDecision.comparableWeeklyGooglePanels);
-assert.ok(artifact.cities.every((city) => city.sustainedProgress.cityAtSustainedGoal === false));
+assert.equal(artifact.summary.citiesAtSustainedGoal, artifact.cities.filter((city) => city.sustainedProgress.cityAtSustainedGoal).length);
 
 const nextText = `${JSON.stringify(artifact, null, 2)}\n`;
 const fullOutputPath = path.join(root, outputPath);
