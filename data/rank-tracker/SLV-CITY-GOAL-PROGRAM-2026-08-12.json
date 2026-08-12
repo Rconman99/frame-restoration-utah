@@ -47,10 +47,12 @@
       "failedLiveRun": "https://github.com/Rconman99/geo-aeo-tracker/actions/runs/31610098484"
     },
     "businessDriveAudit": {
-      "status": "failed-closed-connector-account-mismatch",
-      "observedAt": "2026-08-12T15:54:34.000Z",
-      "jsonReceiptSha256": "5715c0de5daccb85570f982cf5a12202459184f8af2ab26335d7242146eb3cbb",
-      "markdownReceiptSha256": "d32407477c61434f88ed65a9aa6b4543d9de0d14d2079266bd443b0ce60dc3b0",
+      "status": "business-account-search-complete-current-gbp-proof-not-found",
+      "observedAt": "2026-08-12T22:07:30.000Z",
+      "portableReceipt": "data/rank-tracker/evidence/SLV-BUSINESS-DRIVE-CONNECTOR-2026-08-12.json",
+      "requiredAccount": "ryan@framerestorations.com",
+      "observedAccount": "ryan@framerestorations.com",
+      "searchPerformed": true,
       "acceptedPrimaryEvidenceCount": 0,
       "driveMutations": 0
     },
@@ -63,9 +65,9 @@
       "nextAction": "Create a Bright Data user API key in account settings, store it as a sensitive Vercel Production variable, mirror it to the GitHub Actions secret without exposing it, then run Salt Lake City and Millcreek separately."
     },
     "businessDrive": {
-      "status": "owner-action-required",
-      "reason": "Both available Google Drive connector checks resolved to the personal account, so the required business-account corpus was not searched.",
-      "nextAction": "Reconnect the Drive connector to ryan@framerestorations.com and rerun the read-only evidence audit before accepting private proof."
+      "status": "search-complete-owner-view-gbp-receipt-required",
+      "reason": "The registered gdrive-business route was verified as ryan@framerestorations.com and the bounded business-account search completed, but no current exact-CID owner-view GBP or saved service-area receipt was found.",
+      "nextAction": "Provide a current dated owner-view screenshot set or export for CID 5689850818145735734. The business Drive connection does not need to be reconnected."
     },
     "publicCityPages": {
       "status": "explicit-owner-approval-required",
@@ -276,7 +278,7 @@
   "decisionOrder": [
     "Replace and harden the Bright Data user API key without exposing it.",
     "Run complete Salt Lake City and Millcreek consumer-AI baselines separately.",
-    "Reconnect the business Drive account and rerun the read-only primary-evidence audit.",
+    "Provide the current owner-view exact-CID GBP and saved service-area receipt; the business Drive search is complete.",
     "Obtain explicit owner approval for the five-page public integrity cleanup.",
     "Correct the five pages, pass strict integrity plus source/preview/production gates, and capture a new baseline.",
     "Evaluate one declared city variable at a time after 28 days; keep only measured gains and revert losses."

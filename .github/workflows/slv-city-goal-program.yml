@@ -70,6 +70,7 @@ on:
       - 'scripts/sync-slv-public-remediation-packet.mjs'
       - 'scripts/sync-slv-city-goal-program.mjs'
       - 'scripts/validate-slv-city-goal-program.mjs'
+      - 'scripts/validate-slv-business-drive-evidence.mjs'
       - 'scripts/validate-draper-architecture-diagnosis.mjs'
       - 'scripts/validate-holladay-architecture-diagnosis.mjs'
       - 'scripts/validate-sandy-architecture-diagnosis.mjs'
@@ -171,6 +172,7 @@ on:
       - 'scripts/sync-slv-public-remediation-packet.mjs'
       - 'scripts/sync-slv-city-goal-program.mjs'
       - 'scripts/validate-slv-city-goal-program.mjs'
+      - 'scripts/validate-slv-business-drive-evidence.mjs'
       - 'scripts/validate-draper-architecture-diagnosis.mjs'
       - 'scripts/validate-holladay-architecture-diagnosis.mjs'
       - 'scripts/validate-sandy-architecture-diagnosis.mjs'
@@ -220,6 +222,9 @@ jobs:
 
       - name: Validate all six city goals against current evidence
         run: npm run audit:slv-city-goals
+
+      - name: Validate bounded business Drive evidence handling
+        run: npm run audit:slv-business-drive-evidence
 
       - name: Validate the owner-gated five-page remediation packet
         run: npm run audit:slv-public-remediation-packet

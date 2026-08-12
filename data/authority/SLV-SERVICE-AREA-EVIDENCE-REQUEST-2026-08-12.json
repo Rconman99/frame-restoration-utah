@@ -60,11 +60,13 @@
   },
   "drivePreflight": {
     "portableReceipt": "data/rank-tracker/evidence/SLV-BUSINESS-DRIVE-CONNECTOR-2026-08-12.json",
-    "state": "failed-closed-account-mismatch",
+    "state": "business-account-search-complete-current-gbp-proof-not-found",
     "requiredAccount": "ryan@framerestorations.com",
-    "observedAccount": "ryanconwell99@gmail.com",
-    "searchPerformed": false,
-    "externalReceiptSha256": "c1ef99c795d7932d4497ab30395ab753720b1f7c88326e1d588da604cdb03951"
+    "observedAccount": "ryan@framerestorations.com",
+    "accessPath": "gdrive-business",
+    "searchPerformed": true,
+    "acceptedCurrentServiceAreaEvidenceCount": 0,
+    "nextAction": "Obtain a current dated owner-view GBP screenshot set or export for the exact CID. The business Drive connection is already available and does not need to be reconnected."
   },
   "delivery": {
     "state": "draft-only-not-sent",

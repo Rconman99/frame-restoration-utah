@@ -130,7 +130,19 @@ assert.deepEqual(
   new Set(integrityContract.targetPages.map((file) => path.basename(file, ".html").split("-").map((word) => word[0].toUpperCase() + word.slice(1)).join(" "))),
 );
 assert.equal(integrityContract.releaseGate.requiresExplicitOwnerApproval, true);
-assert.equal(program.programGates.businessDrive.status, "owner-action-required");
+assert.equal(
+  program.programGates.businessDrive.status,
+  "search-complete-owner-view-gbp-receipt-required",
+);
+assert.equal(program.authoritativeSources.businessDriveAudit.searchPerformed, true);
+assert.equal(
+  program.authoritativeSources.businessDriveAudit.requiredAccount,
+  "ryan@framerestorations.com",
+);
+assert.equal(
+  program.authoritativeSources.businessDriveAudit.observedAccount,
+  "ryan@framerestorations.com",
+);
 assert.equal(program.authoritativeSources.businessDriveAudit.acceptedPrimaryEvidenceCount, 0);
 assert.equal(program.authoritativeSources.businessDriveAudit.driveMutations, 0);
 if (consumerAi.summary.citiesWithCompleteReading > 0) {

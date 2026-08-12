@@ -1,26 +1,69 @@
 {
   "schemaVersion": 1,
-  "evidenceId": "frame-utah-business-drive-connector-preflight-v1",
+  "evidenceId": "frame-utah-business-drive-evidence-search-v1",
   "market": "utah-salt-lake-valley",
-  "observedAt": "2026-08-12T20:36:24Z",
-  "status": "FAILED_CLOSED_CONNECTOR_ACCOUNT_MISMATCH",
+  "observedAt": "2026-08-12T22:07:30Z",
+  "status": "BUSINESS_ACCOUNT_SEARCH_COMPLETE_CURRENT_GBP_PROOF_NOT_FOUND",
   "connector": {
     "requiredAccount": "ryan@framerestorations.com",
-    "observedAccount": "ryanconwell99@gmail.com",
-    "match": false,
-    "verificationClass": "read-only-owner-preflight"
+    "observedAccount": "ryan@framerestorations.com",
+    "match": true,
+    "accessPath": "gdrive-business",
+    "verificationClass": "read-only-drive-about-user-preflight"
   },
-  "evidenceSearchPerformed": false,
-  "acceptedPrimaryEvidenceCount": 0,
+  "evidenceSearchPerformed": true,
+  "searchClass": "bounded-title-and-marker-audit",
+  "searchedArtifacts": [
+    {
+      "title": "ONLINE ACCOUNTS",
+      "type": "google-sheet",
+      "modifiedAt": "2026-08-11T15:48:09Z",
+      "credentialBearing": true,
+      "utahEntityMarker": false,
+      "googleBusinessProfileMarker": true,
+      "serviceAreaMarker": false,
+      "approvedCityMarkers": []
+    },
+    {
+      "title": "WEBSITE UPDATES",
+      "type": "google-doc",
+      "modifiedAt": "2026-07-23T20:13:07Z",
+      "credentialBearing": false,
+      "utahEntityMarker": false,
+      "googleBusinessProfileMarker": false,
+      "serviceAreaMarker": false,
+      "approvedCityMarkers": []
+    },
+    {
+      "title": "Frame Restoration Utah LLC. & Contractor Independence - Website Optimization Request",
+      "type": "google-doc",
+      "modifiedAt": "2026-06-30T21:38:55Z",
+      "credentialBearing": true,
+      "utahEntityMarker": true,
+      "googleBusinessProfileMarker": false,
+      "serviceAreaMarker": false,
+      "approvedCityMarkers": [
+        "Salt Lake City"
+      ]
+    }
+  ],
+  "acceptedCurrentGbpProfileEvidenceCount": 0,
+  "acceptedCurrentServiceAreaEvidenceCount": 0,
+  "supportingUtahEntityScopeDocumentCount": 1,
+  "credentialFieldsStored": 0,
+  "privateAddressesStored": 0,
+  "reviewerOrHomeownerIdentitiesStored": 0,
   "publicMutationPerformed": false,
+  "driveMutationPerformed": false,
   "source": {
-    "externalReceiptSha256": "c1ef99c795d7932d4497ab30395ab753720b1f7c88326e1d588da604cdb03951",
-    "note": "Portable redacted receipt derived from the local command-center audit. The source path is intentionally omitted because GitHub Actions cannot access the Mac-only filesystem."
+    "method": "The authenticated Google Drive user was verified through Drive About, matching files were listed through gdrive-business, and bounded exports were scanned only for evidence-class markers. Raw contents and credential fields were not retained.",
+    "accountProof": "Google Drive About user email matched the required Frame Workspace account.",
+    "contentHandling": "Only artifact titles, file types, modification times, booleans, counts, and approved public city names are stored."
   },
-  "decision": "Do not search the personal Drive for Frame Utah evidence. Reconnect the claude.ai Google Drive connector to the required business account, verify the owner preflight, then rerun the read-only evidence audit.",
+  "decision": "The Frame Workspace Drive connection is available and the business-account search is complete. Existing Drive artifacts do not prove the current saved service-area list or owner-view completeness of CID 5689850818145735734. Request a current dated owner-view GBP screenshot set or export; no Drive reconnection is needed.",
   "prohibited": [
-    "No business-evidence claim may be inferred from this failed preflight.",
-    "No credential, homeowner, claim, policy, signature, or full-document content is stored in this receipt.",
+    "Do not infer a current GBP field or service area from an owner-authored website request, an account sheet, a website route, or a ranking result.",
+    "Do not copy credential fields, homeowner data, private addresses, reviewer identities, or full private documents into Git, prompts, reports, email, or text.",
     "No Google Drive, GBP, directory, indexing, email, message, or public-site mutation is authorized."
   ]
 }

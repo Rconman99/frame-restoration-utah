@@ -32,7 +32,6 @@ const sourceFiles = {
 };
 const externalEvidence = {
   businessDriveReceipt: sourceFiles.businessDriveReceipt,
-  externalBusinessDriveReceiptSha256: "c1ef99c795d7932d4497ab30395ab753720b1f7c88326e1d588da604cdb03951",
 };
 const read = (file) => JSON.parse(fs.readFileSync(path.join(root, file), "utf8"));
 const sha256 = (file) => crypto.createHash("sha256").update(fs.readFileSync(file)).digest("hex");
@@ -64,10 +63,15 @@ for (const query of displacement.queries) {
 }
 
 const driveReceipt = read(externalEvidence.businessDriveReceipt);
-assert.equal(driveReceipt.status, "FAILED_CLOSED_CONNECTOR_ACCOUNT_MISMATCH");
+assert.equal(driveReceipt.status, "BUSINESS_ACCOUNT_SEARCH_COMPLETE_CURRENT_GBP_PROOF_NOT_FOUND");
 assert.equal(driveReceipt.connector.requiredAccount, "ryan@framerestorations.com");
-assert.equal(driveReceipt.connector.match, false);
-assert.equal(driveReceipt.source.externalReceiptSha256, externalEvidence.externalBusinessDriveReceiptSha256);
+assert.equal(driveReceipt.connector.observedAccount, "ryan@framerestorations.com");
+assert.equal(driveReceipt.connector.match, true);
+assert.equal(driveReceipt.evidenceSearchPerformed, true);
+assert.equal(driveReceipt.acceptedCurrentGbpProfileEvidenceCount, 0);
+assert.equal(driveReceipt.acceptedCurrentServiceAreaEvidenceCount, 0);
+assert.equal(driveReceipt.credentialFieldsStored, 0);
+assert.equal(driveReceipt.driveMutationPerformed, false);
 
 const cityOrder = [
   "Salt Lake City", "Millcreek", "Magna", "Kearns", "Sandy", "Holladay", "Cottonwood Heights", "Murray", "Riverton", "South Jordan", "Taylorsville", "Bluffdale", "Midvale", "Herriman", "West Valley City", "Draper", "South Salt Lake", "West Jordan",
@@ -190,7 +194,7 @@ const cities = cityOrder.map((city, index) => {
     },
     universalDependencies: [
       "valid Bright Data user API key for ChatGPT/Perplexity/Gemini panels",
-      "business Drive connector authenticated as ryan@framerestorations.com for evidence search",
+      "current owner-view GBP and saved service-area evidence for the exact CID",
       "clean Vercel blocking status before merge",
     ],
     completionContract: "All four organic queries and the exact CID rank #1 across four consecutive weekly panels; every observed AIO cites Frame; all three consumer-AI engines name and cite Frame; integrity remains green in the same 28-day window.",
@@ -306,16 +310,6 @@ const registry = {
     },
   ],
   connectionNeeded: [
-    {
-      id: "business-drive-connector",
-      state: "blocked-with-proof",
-      requiredAccount: driveReceipt.connector.requiredAccount,
-      observedAccount: driveReceipt.connector.observedAccount,
-      receipt: externalEvidence.businessDriveReceipt,
-      receiptSha256: localHash(externalEvidence.businessDriveReceipt),
-      externalSourceReceiptSha256: externalEvidence.externalBusinessDriveReceiptSha256,
-      action: "Reconnect the claude.ai Google Drive connector to ryan@framerestorations.com, then rerun the read-only evidence audit.",
-    },
     ...(consumerAi.summary.citiesWithCompleteReading === 0 ? [{
       id: "consumer-ai-provider-key",
       state: "blocked-invalid-existing-secret",
@@ -393,7 +387,7 @@ assert.equal(mapsByCity.size, 18);
 assert.equal(mapsReadiness.summary.exactCidNumberOne, registry.score.exactCidMapsNumberOne);
 assert.equal(registry.ownerEvidenceNeeded.length, 2);
 assert.equal(registry.cities.reduce((sum, city) => sum + city.gscAttribution.requestedQueries, 0), gscAttribution.summary.requestedQueries);
-assert.equal(registry.connectionNeeded.length, consumerAi.summary.citiesWithCompleteReading > 0 ? 1 : 2);
+assert.equal(registry.connectionNeeded.length, consumerAi.summary.citiesWithCompleteReading > 0 ? 0 : 1);
 assert.equal(registry.ownerApprovalsNeeded.length, 3);
 assert.ok(registry.cities.every((city) => city.completionContract.includes("four consecutive weekly panels")));
 assert.ok(registry.cities.every((city) => city.universalDependencies.length === 3));
