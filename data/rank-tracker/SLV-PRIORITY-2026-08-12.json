@@ -20,7 +20,8 @@
       "queryCoverageLimitation": "398 of 3612 queries are retained, representing 57.5% of impressions. Missing city-query rows are unknown, not zero."
     },
     "identityAudit": "qa/SLC-ADOPTION-AUDIT-2026-08-11.md",
-    "claimRegistry": "data/route-factory/claim-registry.json"
+    "claimRegistry": "data/route-factory/claim-registry.json",
+    "cityClaimEvidenceAudit": "data/authority/SLV-CITY-CLAIM-EVIDENCE-AUDIT-2026-08-12.md"
   },
   "measurementCorrection": {
     "organicMapsRule": "Exclude DataForSEO local-pack members marked is_paid true before calculating organic Maps position.",
@@ -55,7 +56,7 @@
   },
   "integrityGate": {
     "verdict": "red-block-pending-owner-clearance",
-    "reason": "The five expansion pages publish claims intentionally absent from the verified claim registry.",
+    "reason": "The five expansion pages publish claims absent from the verified claim registry. A limited personal-account Drive search found provisional first-party support for the 10-year workmanship warranty, but it did not produce a current warranty instrument and did not support the other disputed classes.",
     "affectedPages": [
       "locations/millcreek.html",
       "locations/sandy.html",
@@ -73,7 +74,23 @@
       "unsourced project-duration promises",
       "city-specific review attribution without current proof"
     ],
-    "interpretation": "This is not a finding that each claim is false. It is a finding that the current evidence contract cannot support publishing it.",
+    "evidenceDisposition": {
+      "provisionalPreservePendingBusinessAccountVerification": [
+        "10-year workmanship warranty"
+      ],
+      "removeOrNarrowUnlessNewRegisteredEvidenceAppears": [
+        "city-specific price ranges",
+        "general liability and workers compensation coverage",
+        "exact 15-minute travel claims",
+        "24/7 and within-24/48-hour response promises",
+        "universal permit-handling promises",
+        "unsourced hail-season and roof-life-loss assertions",
+        "unsourced project-duration promises",
+        "city-specific review or completed-project attribution"
+      ],
+      "connectorLimitation": "The read-only Drive search used ryanconwell99@gmail.com rather than the Frame business account; missing evidence must be rechecked under ryan@framerestorations.com."
+    },
+    "interpretation": "This is not a finding that each claim is false. It is a finding that the current verified evidence contract cannot support publishing it. The warranty receives a preserve-pending-verification disposition, not verified status.",
     "requiredAction": "Source, narrow, or remove each claim; add a regression audit; run source, immutable-preview, and production surface receipts before starting a query-alignment experiment."
   },
   "cityPriority": [
