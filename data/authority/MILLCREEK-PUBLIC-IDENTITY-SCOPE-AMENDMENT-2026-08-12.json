@@ -1,0 +1,95 @@
+{
+  "schemaVersion": 1,
+  "amendmentId": "frame-utah-millcreek-nested-identity-scope-v1",
+  "market": "utah",
+  "preparedAt": "2026-08-12T17:15:48Z",
+  "preparedFromCommit": "abb96cda25c47155f2484e96e432023eeeb47d55",
+  "status": "draft-only-awaiting-explicit-owner-approval",
+  "publicMutationPerformed": false,
+  "parentPacket": {
+    "file": "data/authority/SLV-CITY-PUBLIC-REMEDIATION-PACKET-2026-08-12.json",
+    "sha256": "b1616942e2e46f33a847d75a9fc75a084585983c91f444ade1ebd84d11b69333",
+    "scopeChange": "Add one nested Millcreek route for identity-only correction; do not expand the five city-page claim-cleanup scope."
+  },
+  "reason": "The verified Salt Lake Valley identity correction in the parent packet covers locations/millcreek.html and data/route-factory/business.json. A read-only nested-route audit found that locations/millcreek/storm-damage.html separately embeds the same Heber CID and Heber-oriented sameAs set. Leaving it unchanged would publish contradictory entity graphs within the Millcreek route family.",
+  "ownerEvidence": {
+    "contract": "data/authority/SLV-CITY-PUBLIC-REMEDIATION-CONTRACT-2026-08-12.json",
+    "identityEvidence": "verified-profile-saved-service-area",
+    "serviceAreaStatus": "saved-service-area-observed",
+    "verifiedSaltLakeValleyCid": "5689850818145735734",
+    "heberCid": "8458659884566588108",
+    "reviewedSaltLakeValleyHasMap": "https://www.google.com/maps?cid=5689850818145735734",
+    "reviewedSaltLakeValleySameAs": [
+      "https://www.google.com/maps?cid=5689850818145735734",
+      "https://www.facebook.com/61572258054303",
+      "https://www.instagram.com/framerestorationutah",
+      "https://www.buildzoom.com/contractor/frame-restoration-utah-llc",
+      "https://reviews.birdeye.com/frame-restoration-utah-177732760787552",
+      "https://www.wikidata.org/wiki/Q140989115"
+    ]
+  },
+  "source": {
+    "file": "locations/millcreek/storm-damage.html",
+    "sha256": "07499b70a44b42ef40837b2e7451c4661d513316acd491ceb13daffa0810eb0c",
+    "canonical": "https://www.framerestorationutah.com/locations/millcreek/storm-damage",
+    "currentHasMap": "https://www.google.com/maps?cid=8458659884566588108",
+    "currentSameAs": [
+      "https://www.facebook.com/61572258054303",
+      "https://www.instagram.com/framerestorationutah",
+      "https://www.yelp.com/biz/frame-restoration-heber-city",
+      "https://www.gohebervalley.com/frame-restoration-utah-llc/",
+      "https://www.bbb.org/us/ut/heber-city/profile/roofing-contractors/frame-restoration-utah-llc-1126-90056184",
+      "https://www.angi.com/companylist/us/ut/heber-city/frame-restoration-utah-llc-reviews-1.htm",
+      "https://www.homeadvisor.com/rated.FrameRestoration.157214032.html",
+      "https://www.thumbtack.com/ut/heber-city/roofing/frame-restoration-utah/service/575757991393927176",
+      "https://nextdoor.com/page/frame-restoration-utah-llc-heber-city-ut",
+      "https://www.google.com/maps/place/Frame+Restoration+Utah/@40.5069,-111.4133,17z/",
+      "https://www.buildzoom.com/contractor/frame-restoration-utah-llc",
+      "https://reviews.birdeye.com/frame-restoration-utah-177732760787552",
+      "https://maps.apple/p/3.Ws8CAg~5tDio"
+    ]
+  },
+  "approvedMutationIfAuthorized": {
+    "singleRoute": "locations/millcreek/storm-damage.html",
+    "replaceHasMapWith": "https://www.google.com/maps?cid=5689850818145735734",
+    "replaceSameAsWith": [
+      "https://www.google.com/maps?cid=5689850818145735734",
+      "https://www.facebook.com/61572258054303",
+      "https://www.instagram.com/framerestorationutah",
+      "https://www.buildzoom.com/contractor/frame-restoration-utah-llc",
+      "https://reviews.birdeye.com/frame-restoration-utah-177732760787552",
+      "https://www.wikidata.org/wiki/Q140989115"
+    ],
+    "heldConstant": [
+      "title",
+      "H1",
+      "meta description",
+      "canonical",
+      "visible body copy",
+      "FAQ copy",
+      "reviews",
+      "images",
+      "internal links",
+      "phone",
+      "license",
+      "GBP and all third-party profiles"
+    ]
+  },
+  "releaseGate": {
+    "approvalRequiredBeforeEditingPublicRoute": true,
+    "requiredApprovalPhrase": "I explicitly approve editing and publishing the five-page integrity cleanup defined in PR #242 and the Millcreek storm-child identity correction defined in the pinned Millcreek scope amendment.",
+    "checks": [
+      "Verify parent-packet and storm-child SHA-256 values still match.",
+      "Apply the parent packet and this amendment together in a clean exact-main worktree.",
+      "Require the main Millcreek page and nested storm child to use exact Salt Lake Valley hasMap and sameAs values.",
+      "Run strict claim, entity, integrity, JSON-LD, public-SEO, internal-link, mobile, source, immutable-preview five-viewport, and post-release production gates.",
+      "Capture a fresh six-city Google and valid consumer-AI baseline after release."
+    ]
+  },
+  "prohibited": [
+    "Editing the public route before the exact owner approval is recorded.",
+    "Changing the title, H1, visible copy, canonical, reviews, images, links, phone, license, or any non-identity field under this amendment.",
+    "Changing GBP, service areas, directories, reviews, outreach, indexing, ads, DNS, or public profiles.",
+    "Applying the Salt Lake Valley identity to any other city route without its own verified evidence and explicit scope."
+  ]
+}

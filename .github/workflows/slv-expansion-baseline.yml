@@ -1,0 +1,108 @@
+name: Salt Lake Valley expansion baseline
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: slv-expansion-dataforseo-baseline
+  cancel-in-progress: false
+
+jobs:
+  measure:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+
+      - name: Set up Node.js
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '24'
+
+      - name: Test tracker parsing and fail-closed behavior
+        run: node scripts/test-dataforseo-rank-tracker.mjs
+
+      - name: Validate the 12-city expansion contract without provider spend
+        run: npm run audit:slv-expansion-panels
+
+      - name: Validate the pinned 12-city integrity and entity audit
+        run: npm run audit:slv-expansion-integrity
+
+      - name: Dry-run the complete 48-query matrix without provider spend
+        run: node scripts/dataforseo-rank-tracker.mjs --registry data/rank-tracker/expansion-panels.json --dry-run
+
+      - name: Measure the complete 12-city baseline atomically
+        env:
+          DATAFORSEO_LOGIN: ${{ secrets.DATAFORSEO_LOGIN }}
+          DATAFORSEO_PASSWORD: ${{ secrets.DATAFORSEO_PASSWORD }}
+        run: node scripts/dataforseo-rank-tracker.mjs --registry data/rank-tracker/expansion-panels.json
+
+      - name: Validate the expansion contract after measurement
+        run: npm run audit:slv-expansion-panels
+
+      - name: Refresh the 18-city goal portfolio from the complete baseline
+        run: |
+          npm run sync:slv-consumer-ai
+          npm run sync:slv-city-goals
+          npm run sync:slv-18-city-goals
+
+      - name: Validate the refreshed 18-city goal portfolio
+        run: |
+          npm run audit:slv-consumer-ai
+          npm run audit:slv-18-city-goals
+
+      - name: Refresh and validate evidence-safe weekly decisions
+        run: |
+          npm run sync:slv-entity-health
+          npm run sync:slv-weekly-decisions
+          npm run sync:slv-competitor-displacement
+          npm run sync:slv-gsc-attribution
+          npm run sync:slv-expansion-architecture
+          npm run sync:slv-maps-readiness
+          npm run sync:slv-interventions
+          npm run sync:slv-execution-registry
+          npm run audit:slv-entity-health
+          npm run audit:slv-weekly-decisions
+          npm run audit:slv-competitor-displacement
+          npm run audit:slv-gsc-attribution
+          npm run audit:slv-expansion-architecture
+          npm run audit:slv-maps-readiness
+          npm run audit:slv-interventions
+          npm run audit:slv-execution-registry
+
+      - name: Add measurement summary
+        if: always()
+        run: |
+          while IFS= read -r report; do
+            cat "$report" >> "$GITHUB_STEP_SUMMARY"
+            echo >> "$GITHUB_STEP_SUMMARY"
+          done < <(find data/rank-tracker/expansion -name latest.md -type f | sort)
+          jq -r '"### Salt Lake Valley weekly decisions\n\n- Ranking lanes held for evidence: \(.summary.rankingHold)\n- Protected organic #1 queries: \(.summary.protectedOrganicNumberOneQueries)\n- Sustained cities: \(.summary.citiesAtSustainedGoal)"' data/rank-tracker/SLV-WEEKLY-DECISIONS-2026-08-12.json >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Commit the complete dated expansion baseline
+        run: |
+          git config user.name "Frame Rank Tracker"
+          git config user.email "rank-tracker@users.noreply.github.com"
+          git add data/rank-tracker/expansion/ \
+            data/rank-tracker/SLV-CONSUMER-AI-LATEST.json \
+            data/rank-tracker/SLV-CITY-GOAL-PROGRAM-2026-08-12.json \
+            data/rank-tracker/SLV-18-CITY-GOAL-PORTFOLIO-2026-08-12.json \
+            data/rank-tracker/SLV-ENTITY-HEALTH-2026-08-12.json \
+            data/rank-tracker/SLV-WEEKLY-DECISIONS-2026-08-12.json \
+            data/rank-tracker/SLV-COMPETITOR-DISPLACEMENT-2026-08-12.json \
+            data/rank-tracker/SLV-GSC-URL-ATTRIBUTION-LATEST.json \
+            data/rank-tracker/SLV-EXPANSION-ARCHITECTURE-2026-08-12.json \
+            data/rank-tracker/SLV-MAPS-READINESS-2026-08-12.json \
+            data/rank-tracker/SLV-INTERVENTION-QUEUE-2026-08-12.json \
+            data/rank-tracker/SLV-EXECUTION-REGISTRY-2026-08-12.json
+          if git diff --cached --quiet; then
+            echo "No expansion rank-tracker change to commit."
+            exit 0
+          fi
+          TODAY=$(date -u +%F)
+          git commit -m "chore(seo): SLV expansion baseline ${TODAY} [cloud]"
+          git push

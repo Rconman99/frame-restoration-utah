@@ -169,3 +169,47 @@ test("an incomplete latest panel becomes explicitly unmeasured", () => {
     fs.rmSync(dir, { recursive: true, force: true });
   }
 });
+
+test("daily snapshot can consume core plus manual expansion panels without changing paid cadence", () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), "frame-ranks-expanded-"));
+  try {
+    for (const cohort of ["core", "expansion/city"]) fs.mkdirSync(path.join(dir, "data", "rank-tracker", cohort), { recursive: true });
+    fs.writeFileSync(path.join(dir, "data", "rank-tracker", "panels.json"), JSON.stringify({
+      registryId: "core-weekly",
+      panels: [{ id: "core-panel", configPath: "data/rank-tracker/core/config.json", status: "active" }],
+    }));
+    fs.writeFileSync(path.join(dir, "data", "rank-tracker", "expansion-panels.json"), JSON.stringify({
+      registryId: "expansion-manual",
+      panels: [{ id: "expansion-panel", configPath: "data/rank-tracker/expansion/city/config.json", status: "active" }],
+    }));
+    const writePanel = (directory, panelId, city, keyword, rank) => {
+      fs.writeFileSync(path.join(directory, "config.json"), JSON.stringify({
+        panelId, city, depth: 30, keywords: [{ id: `${panelId}-k1`, keyword }],
+      }));
+      fs.writeFileSync(path.join(directory, "latest.json"), JSON.stringify({
+        panelId, observedAt: "2026-08-12T17:40:30.503Z",
+        results: [{
+          id: `${panelId}-k1`, keyword, organicRank: rank,
+          rankingUrl: `https://www.framerestorationutah.com/locations/${city.toLowerCase()}`,
+          mapPackRank: null, mapPackPresent: true, paidMapPackPresent: false,
+          aiOverviewPresent: false, aiOverviewCited: false,
+        }],
+      }));
+    };
+    writePanel(path.join(dir, "data", "rank-tracker", "core"), "core-panel", "Core", "roofer core", 4);
+    writePanel(path.join(dir, "data", "rank-tracker", "expansion", "city"), "expansion-panel", "Expansion", "roofer expansion", 8);
+
+    const state = readTrackedRanks({ rootDir: dir, includeExpansion: true });
+    assert.equal(state.measurement.available, true);
+    assert.equal(state.measurement.panelsMeasured, 2);
+    assert.equal(state.measurement.queriesMeasured, 2);
+    assert.equal(state.ranks.length, 2);
+    assert.deepEqual(state.ranks.map((row) => row.keyword), ["roofer core", "roofer expansion"]);
+    assert.deepEqual(state.measurement.cadence, {
+      core: "weekly",
+      expansion: "manual-baseline-not-yet-admitted-to-weekly-spend",
+    });
+  } finally {
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
+});

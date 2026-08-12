@@ -1,0 +1,307 @@
+{
+  "schemaVersion": 1,
+  "diagnosisId": "frame-utah-holladay-commercial-architecture-v1",
+  "market": "utah",
+  "city": "Holladay",
+  "preparedAt": "2026-08-12T16:44:48Z",
+  "preparedFromCommit": "abb96cda25c47155f2484e96e432023eeeb47d55",
+  "status": "diagnosed-awaiting-owner-gated-integrity-cleanup-and-fresh-baseline",
+  "publicMutationPerformed": false,
+  "identityEvidence": "documented-slv-target-measurement-only",
+  "serviceAreaStatus": "pending-current-profile-service-area-verification",
+  "question": "Do Holladay's historical multi-URL Search Console rows prove current cannibalization, or does the current fixed mobile panel select the right page while its narrow premium-reroofing framing limits broad commercial queries?",
+  "decision": {
+    "currentCommercialCannibalization": "not-evidenced",
+    "historicalMultiUrlAssociation": "evidenced-but-not-current-cannibalization-proof",
+    "primaryDiagnosis": "commercial-intent-alignment-gap",
+    "confidence": "moderate",
+    "summary": "The August 12 fixed mobile panel selects the self-canonical Holladay city page for all four commercial queries, including a position-4 roof-replacement foothold. The blended July 13–August 9 Search Console window associates two queries with multiple URLs, but the apparent Salt Lake City duplicate predates the August 10 permanent redirect and the GBP-tagged homepage is a parameterized view of the canonical homepage. The roof-replacement blog contributes only two impressions at position 18.5 versus the city page's 19 impressions at position 5.9. Current evidence therefore supports preserving every route and treating the main page's narrow premium-reroofing title and H1 as the primary broad-intent gap.",
+    "limits": [
+      "Search Console is blended across devices and its window ends three days before the fixed mobile panel; historical URL rows cannot establish current SERP selection by themselves.",
+      "The permanent /salt-lake-city redirect was merged after the Search Console window ended, so the next complete 28-day window is needed to evaluate consolidation.",
+      "A GBP-tagged homepage URL is a tracked acquisition URL whose rendered page self-canonicalizes to the clean homepage; its presence is not proof of a separate owned page.",
+      "The targeted Search Console request retains returned rows but Google may withhold low-volume rows; absent rows and small impression counts are unknown or incomplete, not zero.",
+      "Service-area inclusion for Holladay on the current Salt Lake Valley profile remains unverified, so this diagnosis does not authorize GBP, Maps, hasMap, or sameAs changes."
+    ]
+  },
+  "evidence": {
+    "fixedPanel": {
+      "file": "data/rank-tracker/panels/holladay/2026-08-12.json",
+      "sha256": "68e170a9e9b9bc3c48b2b9f686a4b3b75ac027727aa5d1e1a711ad059185adc1",
+      "observedAt": "2026-08-12T14:18:10.299Z",
+      "provider": "DataForSEO task queue",
+      "device": "mobile",
+      "os": "android",
+      "depth": 30,
+      "locationName": "Holladay,Utah,United States",
+      "queries": [
+        "roofing contractor holladay",
+        "roof repair holladay",
+        "roof replacement holladay",
+        "roofer holladay"
+      ],
+      "organicRanks": [
+        17,
+        10,
+        4,
+        12
+      ],
+      "rankingUrl": "https://www.framerestorationutah.com/locations/holladay",
+      "allQueriesSelectMainPage": true,
+      "exactCidMapMatches": 0,
+      "aiOverviewsPresent": 0,
+      "aiOverviewCitations": 0
+    },
+    "searchConsole": {
+      "file": "data/seo/snapshots/2026-08-12.json",
+      "sha256": "d26e17238e1e76ef203654cf1f9ce4d9c927bd4088560a55cb2b8f33ff282d14",
+      "window": {
+        "startDate": "2026-07-13",
+        "endDate": "2026-08-09"
+      },
+      "targetedCommercialQueriesRequested": 4,
+      "targetedCommercialQueriesReturned": 3,
+      "targetedCommercialRowsReturned": 6,
+      "multiUrlQueries": [
+        {
+          "query": "roofing contractor holladay",
+          "rows": [
+            {
+              "page": "https://www.framerestorationutah.com/salt-lake-city",
+              "clicks": 0,
+              "impressions": 11,
+              "position": 8.5,
+              "classification": "historical-legacy-route-now-permanently-redirected"
+            },
+            {
+              "page": "https://www.framerestorationutah.com/locations/holladay",
+              "clicks": 0,
+              "impressions": 11,
+              "position": 13.1,
+              "classification": "intended-city-page"
+            },
+            {
+              "page": "https://www.framerestorationutah.com/?utm_source=google&utm_medium=organic&utm_campaign=gbp",
+              "clicks": 0,
+              "impressions": 5,
+              "position": 9.6,
+              "classification": "gbp-tagged-canonical-homepage"
+            }
+          ]
+        },
+        {
+          "query": "roof replacement holladay",
+          "rows": [
+            {
+              "page": "https://www.framerestorationutah.com/locations/holladay",
+              "clicks": 0,
+              "impressions": 19,
+              "position": 5.9,
+              "classification": "intended-city-page-dominant"
+            },
+            {
+              "page": "https://www.framerestorationutah.com/blog/holladay/roof-replacement-holladay-utah",
+              "clicks": 0,
+              "impressions": 2,
+              "position": 18.5,
+              "classification": "informational-guide-minority-row"
+            }
+          ]
+        }
+      ],
+      "singleUrlQuery": {
+        "query": "roof repair holladay",
+        "page": "https://www.framerestorationutah.com/locations/holladay",
+        "clicks": 0,
+        "impressions": 15,
+        "position": 9.7
+      },
+      "rooferQueryRowsReturned": 0,
+      "aggregatePages": [
+        {
+          "page": "https://www.framerestorationutah.com/locations/holladay",
+          "clicks": 0,
+          "impressions": 1390,
+          "position": 23.7
+        },
+        {
+          "page": "https://www.framerestorationutah.com/locations/holladay/storm-damage",
+          "clicks": 0,
+          "impressions": 916,
+          "position": 2.9
+        },
+        {
+          "page": "https://www.framerestorationutah.com/blog/holladay/roof-replacement-holladay-utah",
+          "clicks": 0,
+          "impressions": 6,
+          "position": 10.5
+        }
+      ]
+    },
+    "routing": {
+      "file": "vercel.json",
+      "sha256": "9decfe30c03f5eb0014e3bc3ae9600781e00d7ab374b62e2e2b1c0a3a82b8ff7",
+      "legacySource": "/salt-lake-city",
+      "destination": "/locations/salt-lake-city",
+      "permanent": true,
+      "mergedCommit": "179b443b6f4c0e453959422688684e1c1d16d0d7",
+      "mergedAt": "2026-08-10T05:22:50Z",
+      "gscWindowEndedBeforeRedirect": true,
+      "liveReadOnlyCheck": {
+        "observedAt": "2026-08-12T16:43:36Z",
+        "status": 308,
+        "location": "/locations/salt-lake-city"
+      }
+    },
+    "routes": [
+      {
+        "file": "locations/holladay.html",
+        "sha256": "791bd58c2a8c1bb9c42d65b4687863fae05126b9eaea0f053eca76a0ca0de0e0",
+        "role": "commercial-city-hub",
+        "title": "Premium Reroofing Holladay UT | Frame Restoration Utah",
+        "h1": "Premium Reroofing in Holladay",
+        "canonical": "https://www.framerestorationutah.com/locations/holladay",
+        "inboundInternalLinks": 14,
+        "visibleTermCounts": {
+          "roofer": 0,
+          "roofing contractor": 0,
+          "roof repair": 2,
+          "roof replacement": 11,
+          "reroof": 6
+        }
+      },
+      {
+        "file": "locations/holladay/storm-damage.html",
+        "sha256": "2ba5e6a1e4c1931eb073c6c2547410704e1aafe199dbcf1b8fd7180a0356b260",
+        "role": "storm-specific-child",
+        "title": "Holladay Storm Damage Roof Repair | Frame Restoration Utah",
+        "h1": "Storm Damage Roof Repair in Holladay",
+        "canonical": "https://www.framerestorationutah.com/locations/holladay/storm-damage",
+        "inboundInternalLinks": 2
+      },
+      {
+        "file": "blog/holladay/roof-replacement-holladay-utah.html",
+        "sha256": "76000b31c134ef7c96e381305c7768cea305aed7030fa0a848bfb1faa9bf19c6",
+        "role": "informational-roof-replacement-guide",
+        "title": "Holladay Roof Replacement | Frame Restoration Utah",
+        "h1": "Roof Replacement in Holladay, Utah: Beat the 2026 Summer Heat",
+        "canonical": "https://www.framerestorationutah.com/blog/holladay/roof-replacement-holladay-utah",
+        "inboundInternalLinks": 1,
+        "risk": "watch-only; current fixed mobile SERP selects the city page and the targeted GSC row is a small minority"
+      },
+      {
+        "file": "locations/salt-lake-city.html",
+        "sha256": "9c247843f17ee6e2e12b118bf8c8a5b05bd291fb4d029afba59daae755f952c8",
+        "role": "separate-salt-lake-city-hub-and-legacy-redirect-destination",
+        "title": "Salt Lake City Roof Repair &amp; Replacement | Frame Restoration Utah",
+        "h1": "Salt Lake City Roof Repair &amp; Replacement",
+        "canonical": "https://www.framerestorationutah.com/locations/salt-lake-city",
+        "inboundInternalLinks": 78
+      },
+      {
+        "file": "index.html",
+        "sha256": "7df6f2ea835bef26f25dd752ee7cc04c96584b67f2bffdfa10024c6d22f1e818",
+        "role": "canonical-homepage-and-gbp-landing-page",
+        "title": "Utah Roofing Company | Frame Restoration Utah",
+        "h1": "Mountain-Grade Roofing. Valley-Wide.",
+        "canonical": "https://www.framerestorationutah.com/",
+        "inboundInternalLinks": 1049
+      }
+    ],
+    "integrityGate": {
+      "packet": "data/authority/SLV-CITY-PUBLIC-REMEDIATION-PACKET-2026-08-12.json",
+      "packetSha256": "b1616942e2e46f33a847d75a9fc75a084585983c91f444ade1ebd84d11b69333",
+      "holladayBlockingFindingClasses": 8,
+      "holladayProvisionalWarnings": 1,
+      "cleanupStatus": "awaiting-explicit-owner-approval"
+    }
+  },
+  "hypotheses": [
+    {
+      "priority": 1,
+      "id": "commercial-title-mismatch",
+      "state": "supported",
+      "why": "The current panel consistently selects the intended city page, but the page ranks 17 for roofing contractor and 12 for roofer. Its title and H1 emphasize premium reroofing, and neither broad commercial term appears in visible page copy."
+    },
+    {
+      "priority": 2,
+      "id": "legacy-slc-route-cannibalization",
+      "state": "historical-consolidation-latency-watch",
+      "why": "The /salt-lake-city row belongs to a Search Console window that ended before its August 10 permanent redirect. Current live routing returns 308 and the August 12 fixed panel selects /locations/holladay, so removal or another redirect is not justified."
+    },
+    {
+      "priority": 3,
+      "id": "roof-replacement-blog-overlap",
+      "state": "watch-only",
+      "why": "Both the city page and informational blog returned for roof replacement, but the city page held 19 impressions at position 5.9 versus the blog's two at position 18.5, and the current fixed mobile panel ranks the city page fourth. Preserve the useful guide and monitor."
+    },
+    {
+      "priority": 4,
+      "id": "gbp-tagged-homepage-duplication",
+      "state": "not-a-separate-owned-page",
+      "why": "The parameterized GBP landing URL renders the homepage and its canonical is the clean root. Treat its GSC row as attribution evidence, not as a route to redirect, delete, or canonicalize differently."
+    },
+    {
+      "priority": 5,
+      "id": "entity-and-service-area-distance",
+      "state": "unresolved-owner-evidence-gap",
+      "why": "The exact Salt Lake Valley CID does not appear in any of the four Holladay local packs, and Holladay's current profile service-area inclusion has not been verified. This can affect Maps but does not authorize a profile mutation."
+    }
+  ],
+  "nextExperiment": {
+    "id": "holladay-commercial-title-alignment-v1",
+    "status": "draft-only-do-not-apply-before-prerequisites",
+    "page": "locations/holladay.html",
+    "singleVariable": "html-title",
+    "currentValue": "Premium Reroofing Holladay UT | Frame Restoration Utah",
+    "proposedValue": "Holladay Roofing Contractor | Frame Restoration Utah",
+    "heldConstant": [
+      "H1",
+      "meta description",
+      "canonical",
+      "body copy",
+      "schema",
+      "internal links",
+      "storm child",
+      "Holladay blog routes",
+      "Salt Lake City redirect",
+      "GBP landing URL and all public third-party profiles"
+    ],
+    "prerequisites": [
+      "Receive explicit owner approval for and complete the five-page integrity cleanup defined by the pinned remediation packet.",
+      "Pass the cleanup's source, immutable-preview five-viewport, and production surface receipts.",
+      "Capture a fresh post-cleanup 24-query Google baseline and complete consumer-AI baseline; do not treat the invalid Bright Data credential as measured zero.",
+      "Wait for the integrity cleanup observation window or explicitly declare this title test as a separate uncontaminated experiment after the fresh baseline.",
+      "Receive separate explicit owner approval for this public title-only experiment.",
+      "Verify the page SHA, current title, redirect rule, and position-4 roof-replacement foothold still match this diagnosis; regenerate if any changed."
+    ],
+    "measurement": {
+      "panel": "utah-holladay-google-v1",
+      "cadence": "weekly",
+      "windowDays": 28,
+      "baselineOrganicRanks": [
+        17,
+        10,
+        4,
+        12
+      ],
+      "primaryDecisionRule": "Keep only if roofing contractor holladay is position 12 or better in each of the final two weekly panels and the four-query mean rank improves by at least two positions from the 10.75 baseline.",
+      "guardrails": [
+        "Roof replacement holladay remains position 6 or better in each of the final two weekly panels.",
+        "The intended Holladay city page remains the selected organic URL for all four fixed queries.",
+        "No material regression in the Holladay storm child's Search Console clicks, impressions, or average position compared with the declared pre-experiment window.",
+        "No new persistent multi-URL fixed-query evidence after a complete post-August-10 28-day consolidation window.",
+        "No loss of canonical, schema, NAP, mobile UI, or public-claim gate coverage.",
+        "Consumer-AI named-citation rates are recorded per engine; missing provider data remains unmeasured, never zero."
+      ],
+      "revertRule": "Revert the isolated title commit if the primary decision rule is not met after 28 days, if the position-4 roof-replacement foothold materially regresses, if another guardrail fails, or if the experiment becomes contaminated by another Holladay intent change."
+    }
+  },
+  "prohibited": [
+    "Publishing this draft experiment without the listed owner and release gates.",
+    "Redirecting, canonicalizing, noindexing, or deleting the Holladay city page, storm child, informational blog, clean homepage, or GBP-tagged homepage URL on current evidence.",
+    "Removing the valid Salt Lake City consolidation redirect or treating pre-redirect Search Console rows as current cannibalization proof.",
+    "Changing GBP, service areas, hasMap, sameAs, directories, reviews, outreach, indexing, ads, DNS, or public profiles from this diagnosis.",
+    "Treating missing Search Console rows, absent AI provider data, or an outside-top-30 rank as zero."
+  ]
+}

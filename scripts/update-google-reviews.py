@@ -22,13 +22,18 @@ Environment:
                                     Frame's 8458659884566588108
   REVIEWS_PROVIDER     (optional) — force 'dataforseo' or 'serpapi'
   SERPAPI_KEY          (fallback) — SerpAPI private key
-  SERPAPI_DATA_ID      (optional) — Google Maps data_id override; defaults to
-                                    0x874df59069be3e09:0x756332595f702acc
+  SERPAPI_DATA_ID      (optional) — exact Google Maps data_id for SerpAPI.
+                                    Required when GOOGLE_CID overrides Heber;
+                                    its hex CID suffix must match GOOGLE_CID.
 
 Exit codes:
   0 = files updated (changed count or rating)
   2 = no change (live count matches file count — don't commit)
   1 = error (API, parsing, env)
+
+Measurement-only mode (no site files, audit log, or GBP are changed):
+  python3 scripts/update-google-reviews.py --measurement-only \
+    --measurement-output data/rank-tracker/reviews/salt-lake-city/DATE.json
 """
 
 import base64
@@ -88,6 +93,121 @@ TARGETS = [
 _DFS_CACHE: dict | None = None
 _QUOTA_CACHE: int | None = None
 _QUOTA_CHECKED = False
+
+
+def _cid_from_data_id(data_id: str) -> str | None:
+    """Return the decimal CID encoded in a Google Maps data_id."""
+    try:
+        parts = str(data_id or "").split(":")
+        if len(parts) != 2 or not parts[1].lower().startswith("0x"):
+            return None
+        return str(int(parts[1], 16))
+    except (TypeError, ValueError):
+        return None
+
+
+def _target_cid() -> str:
+    """The exact Google listing this run is allowed to read."""
+    return str(os.environ.get("GOOGLE_CID") or DEFAULT_CID).strip()
+
+
+def _serpapi_data_id() -> str:
+    """Resolve a SerpAPI target that is provably the same listing as GOOGLE_CID.
+
+    DataForSEO accepts a decimal CID; SerpAPI requires its longer Maps data_id.
+    An alternate-CID run must never fall back to DEFAULT_DATA_ID (Heber).
+    """
+    cid = _target_cid()
+    explicit = str(os.environ.get("SERPAPI_DATA_ID") or "").strip()
+    if not explicit:
+        if cid != DEFAULT_CID:
+            raise SystemExit(
+                "ERROR: GOOGLE_CID override cannot fall back to SerpAPI without "
+                "a matching SERPAPI_DATA_ID; refusing to read the default Heber listing"
+            )
+        return DEFAULT_DATA_ID
+
+    encoded_cid = _cid_from_data_id(explicit)
+    if encoded_cid is None:
+        raise SystemExit("ERROR: SERPAPI_DATA_ID is malformed; refusing an unpinned review lookup")
+    if encoded_cid != cid:
+        raise SystemExit(
+            f"ERROR: SERPAPI_DATA_ID encodes CID {encoded_cid}, not requested GOOGLE_CID {cid}; "
+            "refusing cross-profile review data"
+        )
+    return explicit
+
+
+def _source_identity() -> dict:
+    """Secretless listing identity persisted with review exports."""
+    cid = _target_cid()
+    explicit = str(os.environ.get("SERPAPI_DATA_ID") or "").strip()
+    data_id = explicit or (DEFAULT_DATA_ID if cid == DEFAULT_CID else None)
+    return {"google_cid": cid, "data_id": data_id}
+
+
+def _build_measurement_payload(place: dict, reviews: list[dict], observed_at: str | None = None) -> dict:
+    """Build a text-free exact-listing review receipt for rank/entity tracking."""
+    dates = sorted(str(review.get("date") or "")[:10] for review in reviews if review.get("date"))
+    rating_distribution: dict[str, int] = {}
+    for review in reviews:
+        rating = int(review.get("rating") or 0)
+        if 1 <= rating <= 5:
+            key = str(rating)
+            rating_distribution[key] = rating_distribution.get(key, 0) + 1
+    return {
+        "schemaVersion": 1,
+        "measurementId": "frame-utah-salt-lake-valley-google-review-baseline-v1",
+        "market": "utah-salt-lake-valley",
+        "observedAt": observed_at or datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ"),
+        "publicMutationPerformed": False,
+        "provider": (os.environ.get("REVIEWS_PROVIDER") or "auto").strip().lower(),
+        "target": {
+            "googleCid": _target_cid(),
+            "exactCidPinned": True,
+            "placeName": place.get("name") or "",
+            "placeId": place.get("place_id") or "",
+        },
+        "aggregate": {
+            "rating": float(place["rating"]),
+            "reviewCount": int(place["count"]),
+        },
+        "reviewSample": {
+            "rowsReturned": len(reviews),
+            "rowsWithText": sum(1 for review in reviews if review.get("text")),
+            "latestReviewDate": dates[-1] if dates else None,
+            "ratingDistribution": rating_distribution,
+            "reviewTextStored": False,
+            "reviewerIdentityStored": False,
+        },
+    }
+
+
+def _measurement_output_path() -> Path:
+    """Resolve a required, repository-contained measurement output path."""
+    try:
+        index = sys.argv.index("--measurement-output")
+        raw = sys.argv[index + 1]
+    except (ValueError, IndexError):
+        raise SystemExit("ERROR: --measurement-only requires --measurement-output PATH")
+    candidate = (ROOT / raw).resolve() if not Path(raw).is_absolute() else Path(raw).resolve()
+    allowed = (ROOT / "data" / "rank-tracker" / "reviews").resolve()
+    if candidate != allowed and allowed not in candidate.parents:
+        raise SystemExit(f"ERROR: measurement output must be under {allowed}")
+    return candidate
+
+
+def write_measurement_snapshot(place: dict, reviews: list[dict]) -> Path:
+    """Write only a text-free measurement artifact under the rank tracker."""
+    if int(place.get("count") or 0) > 0 and not reviews:
+        raise SystemExit("ERROR: provider returned a positive review count but no review rows")
+    output = _measurement_output_path()
+    output.parent.mkdir(parents=True, exist_ok=True)
+    output.write_text(
+        json.dumps(_build_measurement_payload(place, reviews), indent=2, ensure_ascii=False) + "\n",
+        encoding="utf-8",
+    )
+    return output
 
 # Below this many SerpAPI searches remaining, route to DataForSEO instead.
 # Rationale: the SerpAPI plan is PREPAID and use-it-or-lose-it, so spending it
@@ -200,7 +320,7 @@ def _fetch_dataforseo(depth: int = REVIEWS_FULL_LIMIT) -> dict | None:
     if _DFS_CACHE is not None:
         return _DFS_CACHE
 
-    cid = os.environ.get("GOOGLE_CID", DEFAULT_CID)
+    cid = _target_cid()
     payload = [{
         "keyword": f"cid:{cid}",
         "language_code": "en",
@@ -299,7 +419,7 @@ def fetch_place() -> dict:
 def _fetch_place_serpapi() -> dict:
     """Call SerpAPI's Google Maps engine for review count + rating."""
     api_key = os.environ.get("SERPAPI_KEY")
-    data_id = os.environ.get("SERPAPI_DATA_ID", DEFAULT_DATA_ID)
+    data_id = _serpapi_data_id()
     if not api_key:
         raise SystemExit("ERROR: set SERPAPI_KEY")
 
@@ -363,7 +483,7 @@ def _fetch_reviews_serpapi(limit: int = REVIEWS_FEED_LIMIT) -> list[dict]:
     the existing reviews.json if the feed comes back empty.
     """
     api_key = os.environ.get("SERPAPI_KEY")
-    data_id = os.environ.get("SERPAPI_DATA_ID", DEFAULT_DATA_ID)
+    data_id = _serpapi_data_id()
     if not api_key:
         return []
 
@@ -445,7 +565,7 @@ def _fetch_all_reviews_serpapi(limit: int = REVIEWS_FULL_LIMIT) -> list[dict]:
     [] and the caller preserves the existing file (or skips writing).
     """
     api_key = os.environ.get("SERPAPI_KEY")
-    data_id = os.environ.get("SERPAPI_DATA_ID", DEFAULT_DATA_ID)
+    data_id = _serpapi_data_id()
     if not api_key:
         return []
 
@@ -498,7 +618,7 @@ def write_reviews_full_json(reviews: list[dict], place: dict) -> bool:
         return False
     payload = {
         "source": "google_maps_reviews",
-        "data_id": os.environ.get("SERPAPI_DATA_ID", DEFAULT_DATA_ID),
+        **_source_identity(),
         "aggregate": {
             "rating": place.get("rating"),
             "review_count": place.get("count"),
@@ -584,7 +704,7 @@ def write_reviews_json(place: dict, reviews: list[dict]) -> bool:
     payload = {
         "source": "google",
         "place_name": place.get("name") or existing.get("place_name") or "Frame Restoration Utah",
-        "data_id": os.environ.get("SERPAPI_DATA_ID", DEFAULT_DATA_ID),
+        **_source_identity(),
         "aggregate": {
             "rating": place["rating"],
             "review_count": place["count"],
@@ -670,6 +790,13 @@ def write_audit(data: dict) -> None:
 def main() -> int:
     dry_run = "--dry-run" in sys.argv
     place = fetch_place()
+
+    if "--measurement-only" in sys.argv:
+        reviews = fetch_all_reviews()
+        output = write_measurement_snapshot(place, reviews)
+        print(f"Measured exact CID {_target_cid()} to {output.relative_to(ROOT)}; no site files changed.")
+        return 0
+
     file_count = current_file_count()
 
     print(f"SerpAPI: {place['name']} — {place['count']} reviews, {place['rating']} stars")

@@ -95,6 +95,14 @@ retained in a separate evidence list but excluded from `mapPackRank`, the
 organic map-pack top three, and Maps #1 goal coverage. A paid local ad can never
 satisfy or displace the exact-CID organic Maps goal.
 
+`data/rank-tracker/SLV-MAPS-READINESS-2026-08-12.json` converts those exact-CID
+observations into separate relevance, distance, and prominence lanes. Relevance
+requires current owner evidence; distance is measured and is never treated as
+permission to create a fake location or duplicate profile; prominence combines
+the exact-CID review baseline with earned web authority. The ledger is read-only
+and cannot authorize a GBP, review, service-area, page, schema, directory, or
+other public mutation.
+
 The loader fails closed per panel. A missing, corrupt, incomplete, or mismatched report produces
 explicitly unmeasured rows plus a named source issue; it cannot silently reuse partial results as a
 complete weekly matrix.

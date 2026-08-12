@@ -195,4 +195,18 @@ assert.throws(
   /duplicate panel id/,
 );
 
+const expansionRegistryPath = path.join(REPO_ROOT, 'data', 'rank-tracker', 'expansion-panels.json');
+const expansionRegistry = validateRegistry(JSON.parse(fs.readFileSync(expansionRegistryPath, 'utf8')));
+const expansionConfigs = expansionRegistry.panels.map((panel) => {
+  const panelConfig = validateConfig(JSON.parse(fs.readFileSync(path.join(REPO_ROOT, panel.configPath), 'utf8')));
+  assert.equal(panelConfig.panelId, panel.id);
+  assert.equal(panelConfig.target.gbpCid, registry.sourceOfTruth.profileCid);
+  return panelConfig;
+});
+assert.equal(expansionConfigs.length, 12);
+assert.equal(expansionConfigs.reduce((sum, panelConfig) => sum + panelConfig.keywords.length, 0), 48);
+assert.equal(buildTaskMatrix(expansionConfigs).length, 48);
+assert.ok(Math.abs(expansionConfigs.reduce((sum, panelConfig) => sum + estimatedPanelCost(panelConfig), 0) - 0.1152) < Number.EPSILON);
+assert.equal(new Set(expansionConfigs.map((panelConfig) => panelConfig.city)).size, 12);
+
 console.log('dataforseo rank tracker: all assertions passed');

@@ -1,0 +1,2421 @@
+{
+  "schemaVersion": 1,
+  "ledgerId": "frame-utah-slv-exact-cid-maps-readiness-v1",
+  "market": "utah-salt-lake-valley",
+  "preparedAt": "2026-08-12T21:12:00Z",
+  "status": "read-only-diagnosis-public-and-gbp-actions-gated",
+  "publicMutationPerformed": false,
+  "objective": "Make the exact verified Salt Lake Valley CID measurable and evidence-ready for ethical #1 Maps displacement across all 18 city panels without treating distance as an editable lever or inventing profile facts.",
+  "target": {
+    "business": "Frame Restoration Utah LLC",
+    "exactCid": "5689850818145735734",
+    "fixedQueries": [
+      "roofing contractor {city}",
+      "roof repair {city}",
+      "roof replacement {city}",
+      "roofer {city}"
+    ],
+    "requiredConsecutiveWeeklyPanels": 4
+  },
+  "officialGoogleRules": {
+    "checkedAt": "2026-08-12",
+    "sources": [
+      {
+        "title": "Tips to improve your local ranking on Google",
+        "url": "https://support.google.com/business/answer/7091?hl=en-en",
+        "implications": [
+          "Local results are mainly based on relevance, distance, and prominence.",
+          "Complete and accurate information, verification, current hours, review replies, and photos/videos are legitimate operating inputs.",
+          "There is no way to request or pay Google for a better local ranking."
+        ]
+      },
+      {
+        "title": "Manage your service areas for service-area and hybrid businesses",
+        "url": "https://support.google.com/business/answer/9157481?hl=en",
+        "implications": [
+          "A service-area business has one profile for the whole area it serves unless separate eligible staffed locations exist.",
+          "Use up to 20 specific, accurate cities, postal codes, or areas; the overall boundary generally should remain within about two hours of the business base.",
+          "A business that does not serve customers at its address should remove or hide that address."
+        ]
+      },
+      {
+        "title": "Guidelines for representing your business on Google",
+        "url": "https://support.google.com/business/answer/3038177?hl=en",
+        "implications": [
+          "Use the real-world business name, an accurate address or service area, and the fewest specific categories that describe the core business.",
+          "Do not use virtual offices, duplicate profiles, unnecessary name keywords, or categories solely as keywords.",
+          "A service-area profile must reflect an actual eligible business and accurate customer service area."
+        ]
+      }
+    ]
+  },
+  "sources": {
+    "portfolio": {
+      "file": "data/rank-tracker/SLV-18-CITY-GOAL-PORTFOLIO-2026-08-12.json",
+      "sha256": "5782534f715e91f7683aeb6ef258ab88b5b39e0bcc44fd702bf2e65e655264c3"
+    },
+    "displacement": {
+      "file": "data/rank-tracker/SLV-COMPETITOR-DISPLACEMENT-2026-08-12.json",
+      "sha256": "aed18abd061963d5dd0280dc7575060640daa9f89e98bd77a91dca80a449ef7a"
+    },
+    "entityHealth": {
+      "file": "data/rank-tracker/SLV-ENTITY-HEALTH-2026-08-12.json",
+      "sha256": "780e654065caa082745073d6d12f2249153cacc9e45614162f649fabff2f5f04"
+    },
+    "serviceAreaRequest": {
+      "file": "data/authority/SLV-SERVICE-AREA-EVIDENCE-REQUEST-2026-08-12.json",
+      "sha256": "5c42463b915a993c7ec7288c22debc98644b8f9718b81ec80afebe768a13d670"
+    },
+    "ownerProfileAuditRequest": {
+      "file": "data/authority/SLV-GBP-OWNER-AUDIT-REQUEST-2026-08-12.json",
+      "sha256": "88e701fc0438260e4249a4b38ebb6e872dd454c2389a21311e67210b1ca0777d"
+    }
+  },
+  "summary": {
+    "cities": 18,
+    "queries": 72,
+    "mapsPacksPresent": 69,
+    "mapsPacksAbsent": 3,
+    "exactCidReturned": 0,
+    "exactCidNumberOne": 0,
+    "profileVerifiedCities": 2,
+    "citiesPendingServiceAreaEvidence": 16,
+    "pagesUsingExactCidIdentity": 1,
+    "exactCidReviewState": "unmeasured",
+    "ownerProfileCompletenessState": "unmeasured-owner-view-audit-required",
+    "citiesReadyForMapsIntervention": 0,
+    "laneCounts": {
+      "exact-cid-review-and-owner-profile-audit": 1,
+      "owner-gated-page-identity-correction": 1,
+      "service-area-proof-before-exact-cid-planning": 16
+    }
+  },
+  "systemNextActions": [
+    "Land the exact-CID review measurement workflow, then measure the Salt Lake Valley review baseline without storing reviewer identity or review text.",
+    "Collect the read-only exact-CID owner profile audit under ryan@framerestorations.com; no profile edit is authorized.",
+    "Collect current service-area evidence for the 16 pending cities before exact-CID page identity planning.",
+    "Keep fixed city/device panels and compare exact competing CIDs weekly; never interpret distance as permission for a fake location or duplicate profile."
+  ],
+  "prohibited": [
+    "No GBP, review, service-area, category, service, hours, photo, post, directory, page, schema, indexing, outreach, ads, DNS, or public-account mutation from this ledger.",
+    "No duplicate profile, virtual office, fake location, keyword-stuffed name, category stuffing, or unsupported service area.",
+    "No review incentives, review gating, fabricated reviews, suppression, or competitor manipulation.",
+    "No paid local placement counts toward the exact-CID organic Maps goal.",
+    "No missing pack or absent exact CID is converted to rank zero."
+  ],
+  "cities": [
+    {
+      "city": "Salt Lake City",
+      "slug": "salt-lake-city",
+      "page": "locations/salt-lake-city.html",
+      "panelId": "utah-salt-lake-city-google-v1",
+      "lane": "exact-cid-review-and-owner-profile-audit",
+      "publicMutationAuthorized": false,
+      "googleRankingAxes": {
+        "relevance": {
+          "serviceAreaEvidence": "verified-profile-identity-city",
+          "pageIdentity": "salt-lake-valley-exact-cid",
+          "exactCidOwnerProfileFields": "unmeasured-owner-view-audit-required",
+          "rule": "Use accurate, complete, real-world business information; a city keyword or website route is not profile evidence."
+        },
+        "distance": {
+          "state": "fixed-city-mobile-panel-measured-not-an-editable-ranking-lever",
+          "providerLocation": "Salt Lake City",
+          "rule": "Retain the fixed city/device panel and report what Google returns; do not create fake locations or duplicate profiles to manipulate distance."
+        },
+        "prominence": {
+          "exactCidReviews": "unmeasured",
+          "organicNumberOneQueries": [],
+          "ownedGoogleAiOverviewCitations": [],
+          "rule": "Measure genuine review strength and earned web authority separately; no incentives, gating, fabricated reviews, or paid ranking links."
+        }
+      },
+      "maps": {
+        "packsPresent": 3,
+        "packsAbsent": 1,
+        "exactCidReturned": 0,
+        "exactCidNumberOne": 0,
+        "exactCidRanks": [
+          null,
+          null,
+          null,
+          null
+        ],
+        "dominantDisplacers": [
+          {
+            "name": "The Roof Doctor",
+            "cid": "16329927680093228178",
+            "domain": "google.com",
+            "appearances": 3,
+            "numberOneQueries": 3,
+            "bestRank": 1,
+            "keywords": [
+              "roof repair salt lake city",
+              "roof replacement salt lake city",
+              "roofer salt lake city"
+            ]
+          },
+          {
+            "name": "Shingle Pro Roofing",
+            "cid": "9926634112120129216",
+            "domain": "google.com",
+            "appearances": 2,
+            "numberOneQueries": 0,
+            "bestRank": 2,
+            "keywords": [
+              "roof repair salt lake city",
+              "roofer salt lake city"
+            ]
+          },
+          {
+            "name": "Roof-It, Inc.",
+            "cid": "14355335798757301774",
+            "domain": "google.com",
+            "appearances": 1,
+            "numberOneQueries": 0,
+            "bestRank": 2,
+            "keywords": [
+              "roof replacement salt lake city"
+            ]
+          }
+        ]
+      },
+      "queries": [
+        {
+          "queryId": "slc-roofing-contractor",
+          "keyword": "roofing contractor salt lake city",
+          "packState": "local-pack-not-present",
+          "exactCidRank": null,
+          "numberOneEntity": null
+        },
+        {
+          "queryId": "slc-roof-repair",
+          "keyword": "roof repair salt lake city",
+          "packState": "exact-cid-not-returned-in-pack",
+          "exactCidRank": null,
+          "numberOneEntity": {
+            "name": "The Roof Doctor",
+            "cid": "16329927680093228178"
+          }
+        },
+        {
+          "queryId": "slc-roof-replacement",
+          "keyword": "roof replacement salt lake city",
+          "packState": "exact-cid-not-returned-in-pack",
+          "exactCidRank": null,
+          "numberOneEntity": {
+            "name": "The Roof Doctor",
+            "cid": "16329927680093228178"
+          }
+        },
+        {
+          "queryId": "slc-roofer",
+          "keyword": "roofer salt lake city",
+          "packState": "exact-cid-not-returned-in-pack",
+          "exactCidRank": null,
+          "numberOneEntity": {
+            "name": "The Roof Doctor",
+            "cid": "16329927680093228178"
+          }
+        }
+      ],
+      "nextAction": "Keep the Salt Lake City page frozen, measure the exact-CID review baseline, collect the owner-view profile audit, and compare the next fixed weekly panel before proposing a relevance or prominence change.",
+      "gates": {
+        "ownerEvidence": "frame-utah-slv-exact-cid-owner-profile-audit-v1",
+        "exactCidReviewBaseline": "unmeasured",
+        "pageOrProfileMutation": "separate-reviewed-scope-and-explicit-owner-approval-required"
+      }
+    },
+    {
+      "city": "Millcreek",
+      "slug": "millcreek",
+      "page": "locations/millcreek.html",
+      "panelId": "utah-millcreek-google-v1",
+      "lane": "owner-gated-page-identity-correction",
+      "publicMutationAuthorized": false,
+      "googleRankingAxes": {
+        "relevance": {
+          "serviceAreaEvidence": "saved-service-area-observed",
+          "pageIdentity": "heber-keystone-cid",
+          "exactCidOwnerProfileFields": "unmeasured-owner-view-audit-required",
+          "rule": "Use accurate, complete, real-world business information; a city keyword or website route is not profile evidence."
+        },
+        "distance": {
+          "state": "fixed-city-mobile-panel-measured-not-an-editable-ranking-lever",
+          "providerLocation": "Millcreek",
+          "rule": "Retain the fixed city/device panel and report what Google returns; do not create fake locations or duplicate profiles to manipulate distance."
+        },
+        "prominence": {
+          "exactCidReviews": "unmeasured",
+          "organicNumberOneQueries": [],
+          "ownedGoogleAiOverviewCitations": [
+            "roof repair millcreek"
+          ],
+          "rule": "Measure genuine review strength and earned web authority separately; no incentives, gating, fabricated reviews, or paid ranking links."
+        }
+      },
+      "maps": {
+        "packsPresent": 3,
+        "packsAbsent": 1,
+        "exactCidReturned": 0,
+        "exactCidNumberOne": 0,
+        "exactCidRanks": [
+          null,
+          null,
+          null,
+          null
+        ],
+        "dominantDisplacers": [
+          {
+            "name": "Millcreek Roof Repair",
+            "cid": "15265859284064313678",
+            "domain": "google.com",
+            "appearances": 3,
+            "numberOneQueries": 2,
+            "bestRank": 1,
+            "keywords": [
+              "roofing contractor millcreek",
+              "roof replacement millcreek",
+              "roofer millcreek"
+            ]
+          },
+          {
+            "name": "Whitaker Roofing Services",
+            "cid": "11316815627233980109",
+            "domain": "google.com",
+            "appearances": 3,
+            "numberOneQueries": 1,
+            "bestRank": 1,
+            "keywords": [
+              "roofing contractor millcreek",
+              "roof replacement millcreek",
+              "roofer millcreek"
+            ]
+          },
+          {
+            "name": "RoofTek",
+            "cid": "2008385778269964311",
+            "domain": "google.com",
+            "appearances": 1,
+            "numberOneQueries": 0,
+            "bestRank": 3,
+            "keywords": [
+              "roofer millcreek"
+            ]
+          }
+        ]
+      },
+      "queries": [
+        {
+          "queryId": "millcreek-roofing-contractor",
+          "keyword": "roofing contractor millcreek",
+          "packState": "exact-cid-not-returned-in-pack",
+          "exactCidRank": null,
+          "numberOneEntity": {
+            "name": "Millcreek Roof Repair",
+            "cid": "15265859284064313678"
+          }
+        },
+        {
+          "queryId": "millcreek-roof-repair",
+          "keyword": "roof repair millcreek",
+          "packState": "local-pack-not-present",
+          "exactCidRank": null,
+          "numberOneEntity": null
+        },
+        {
+          "queryId": "millcreek-roof-replacement",
+          "keyword": "roof replacement millcreek",
+          "packState": "exact-cid-not-returned-in-pack",
+          "exactCidRank": null,
+          "numberOneEntity": {
+            "name": "Whitaker Roofing Services",
+            "cid": "11316815627233980109"
+          }
+        },
+        {
+          "queryId": "millcreek-roofer",
+          "keyword": "roofer millcreek",
+          "packState": "exact-cid-not-returned-in-pack",
+          "exactCidRank": null,
+          "numberOneEntity": {
+            "name": "Millcreek Roof Repair",
+            "cid": "15265859284064313678"
+          }
+        }
+      ],
+      "nextAction": "Collect the exact-CID review and owner-profile baselines, then request the pinned Millcreek page-identity correction separately; preserve the owned AIO citation and do not edit GBP from this ledger.",
+      "gates": {
+        "ownerEvidence": "frame-utah-slv-exact-cid-owner-profile-audit-v1",
+        "exactCidReviewBaseline": "unmeasured",
+        "pageOrProfileMutation": "separate-reviewed-scope-and-explicit-owner-approval-required"
+      }
+    },
+    {
+      "city": "Sandy",
+      "slug": "sandy",
+      "page": "locations/sandy.html",
+      "panelId": "utah-sandy-google-v1",
+      "lane": "service-area-proof-before-exact-cid-planning",
+      "publicMutationAuthorized": false,
+      "googleRankingAxes": {
+        "relevance": {
+          "serviceAreaEvidence": "pending-current-profile-service-area-verification",
+          "pageIdentity": "heber-keystone-cid",
+          "exactCidOwnerProfileFields": "unmeasured-owner-view-audit-required",
+          "rule": "Use accurate, complete, real-world business information; a city keyword or website route is not profile evidence."
+        },
+        "distance": {
+          "state": "fixed-city-mobile-panel-measured-not-an-editable-ranking-lever",
+          "providerLocation": "Sandy",
+          "rule": "Retain the fixed city/device panel and report what Google returns; do not create fake locations or duplicate profiles to manipulate distance."
+        },
+        "prominence": {
+          "exactCidReviews": "unmeasured",
+          "organicNumberOneQueries": [],
+          "ownedGoogleAiOverviewCitations": [],
+          "rule": "Measure genuine review strength and earned web authority separately; no incentives, gating, fabricated reviews, or paid ranking links."
+        }
+      },
+      "maps": {
+        "packsPresent": 4,
+        "packsAbsent": 0,
+        "exactCidReturned": 0,
+        "exactCidNumberOne": 0,
+        "exactCidRanks": [
+          null,
+          null,
+          null,
+          null
+        ],
+        "dominantDisplacers": [
+          {
+            "name": "ReRoofIt",
+            "cid": "3305979678440818523",
+            "domain": "google.com",
+            "appearances": 4,
+            "numberOneQueries": 3,
+            "bestRank": 1,
+            "keywords": [
+              "roofing contractor sandy",
+              "roof repair sandy",
+              "roof replacement sandy",
+              "roofer sandy"
+            ]
+          },
+          {
+            "name": "The Roofing Center",
+            "cid": "5187111774548334344",
+            "domain": "google.com",
+            "appearances": 4,
+            "numberOneQueries": 1,
+            "bestRank": 1,
+            "keywords": [
+              "roofing contractor sandy",
+              "roof repair sandy",
+              "roof replacement sandy",
+              "roofer sandy"
+            ]
+          },
+          {
+            "name": "Red Star Roofing",
+            "cid": "16317468138973610641",
+            "domain": "google.com",
+            "appearances": 4,
+            "numberOneQueries": 0,
+            "bestRank": 3,
+            "keywords": [
+              "roofing contractor sandy",
+              "roof repair sandy",
+              "roof replacement sandy",
+              "roofer sandy"
+            ]
+          }
+        ]
+      },
+      "queries": [
+        {
+          "queryId": "sandy-roofing-contractor",
+          "keyword": "roofing contractor sandy",
+          "packState": "exact-cid-not-returned-in-pack",
+          "exactCidRank": null,
+          "numberOneEntity": {
+            "name": "ReRoofIt",
+            "cid": "3305979678440818523"
+          }
+        },
+        {
+          "queryId": "sandy-roof-repair",
+          "keyword": "roof repair sandy",
+          "packState": "exact-cid-not-returned-in-pack",
+          "exactCidRank": null,
+          "numberOneEntity": {
+            "name": "ReRoofIt",
+            "cid": "3305979678440818523"
+          }
+        },
+        {
+          "queryId": "sandy-roof-replacement",
+          "keyword": "roof replacement sandy",
+          "packState": "exact-cid-not-returned-in-pack",
+          "exactCidRank": null,
+          "numberOneEntity": {
+            "name": "ReRoofIt",
+            "cid": "3305979678440818523"
+          }
+        },
+        {
+          "queryId": "sandy-roofer",
+          "keyword": "roofer sandy",
+          "packState": "exact-cid-not-returned-in-pack",
+          "exactCidRank": null,
+          "numberOneEntity": {
+            "name": "The Roofing Center",
+            "cid": "5187111774548334344"
+          }
+        }
+      ],
+      "nextAction": "Obtain current owner-view service-area evidence for Sandy and the read-only exact-CID profile audit; do not attach the Salt Lake CID to the city page or edit GBP unless a later reviewed scope is explicitly approved.",
+      "gates": {
+        "ownerEvidence": "frame-utah-slv-current-service-area-evidence-v1",
+        "exactCidReviewBaseline": "unmeasured",
+        "pageOrProfileMutation": "separate-reviewed-scope-and-explicit-owner-approval-required"
+      }
+    },
+    {
+      "city": "Holladay",
+      "slug": "holladay",
+      "page": "locations/holladay.html",
+      "panelId": "utah-holladay-google-v1",
+      "lane": "service-area-proof-before-exact-cid-planning",
+      "publicMutationAuthorized": false,
+      "googleRankingAxes": {
+        "relevance": {
+          "serviceAreaEvidence": "pending-current-profile-service-area-verification",
+          "pageIdentity": "heber-keystone-cid",
+          "exactCidOwnerProfileFields": "unmeasured-owner-view-audit-required",
+          "rule": "Use accurate, complete, real-world business information; a city keyword or website route is not profile evidence."
+        },
+        "distance": {
+          "state": "fixed-city-mobile-panel-measured-not-an-editable-ranking-lever",
+          "providerLocation": "Holladay",
+          "rule": "Retain the fixed city/device panel and report what Google returns; do not create fake locations or duplicate profiles to manipulate distance."
+        },
+        "prominence": {
+          "exactCidReviews": "unmeasured",
+          "organicNumberOneQueries": [],
+          "ownedGoogleAiOverviewCitations": [],
+          "rule": "Measure genuine review strength and earned web authority separately; no incentives, gating, fabricated reviews, or paid ranking links."
+        }
+      },
+      "maps": {
+        "packsPresent": 4,
+        "packsAbsent": 0,
+        "exactCidReturned": 0,
+        "exactCidNumberOne": 0,
+        "exactCidRanks": [
+          null,
+          null,
+          null,
+          null
+        ],
+        "dominantDisplacers": [
+          {
+            "name": "True North Roofing",
+            "cid": "5387650211366766810",
+            "domain": "google.com",
+            "appearances": 4,
+            "numberOneQueries": 4,
+            "bestRank": 1,
+            "keywords": [
+              "roofing contractor holladay",
+              "roof repair holladay",
+              "roof replacement holladay",
+              "roofer holladay"
+            ]
+          },
+          {
+            "name": "Holladay Roofing",
+            "cid": "4608145956816988456",
+            "domain": "google.com",
+            "appearances": 4,
+            "numberOneQueries": 0,
+            "bestRank": 2,
+            "keywords": [
+              "roofing contractor holladay",
+              "roof repair holladay",
+              "roof replacement holladay",
+              "roofer holladay"
+            ]
+          },
+          {
+            "name": "Utah Roofing Pros",
+            "cid": "4118570990011609504",
+            "domain": "google.com",
+            "appearances": 4,
+            "numberOneQueries": 0,
+            "bestRank": 2,
+            "keywords": [
+              "roofing contractor holladay",
+              "roof repair holladay",
+              "roof replacement holladay",
+              "roofer holladay"
+            ]
+          }
+        ]
+      },
+      "queries": [
+        {
+          "queryId": "holladay-roofing-contractor",
+          "keyword": "roofing contractor holladay",
+          "packState": "exact-cid-not-returned-in-pack",
+          "exactCidRank": null,
+          "numberOneEntity": {
+            "name": "True North Roofing",
+            "cid": "5387650211366766810"
+          }
+        },
+        {
+          "queryId": "holladay-roof-repair",
+          "keyword": "roof repair holladay",
+          "packState": "exact-cid-not-returned-in-pack",
+          "exactCidRank": null,
+          "numberOneEntity": {
+            "name": "True North Roofing",
+            "cid": "5387650211366766810"
+          }
+        },
+        {
+          "queryId": "holladay-roof-replacement",
+          "keyword": "roof replacement holladay",
+          "packState": "exact-cid-not-returned-in-pack",
+          "exactCidRank": null,
+          "numberOneEntity": {
+            "name": "True North Roofing",
+            "cid": "5387650211366766810"
+          }
+        },
+        {
+          "queryId": "holladay-roofer",
+          "keyword": "roofer holladay",
+          "packState": "exact-cid-not-returned-in-pack",
+          "exactCidRank": null,
+          "numberOneEntity": {
+            "name": "True North Roofing",
+            "cid": "5387650211366766810"
+          }
+        }
+      ],
+      "nextAction": "Obtain current owner-view service-area evidence for Holladay and the read-only exact-CID profile audit; do not attach the Salt Lake CID to the city page or edit GBP unless a later reviewed scope is explicitly approved.",
+      "gates": {
+        "ownerEvidence": "frame-utah-slv-current-service-area-evidence-v1",
+        "exactCidReviewBaseline": "unmeasured",
+        "pageOrProfileMutation": "separate-reviewed-scope-and-explicit-owner-approval-required"
+      }
+    },
+    {
+      "city": "Cottonwood Heights",
+      "slug": "cottonwood-heights",
+      "page": "locations/cottonwood-heights.html",
+      "panelId": "utah-cottonwood-heights-google-v1",
+      "lane": "service-area-proof-before-exact-cid-planning",
+      "publicMutationAuthorized": false,
+      "googleRankingAxes": {
+        "relevance": {
+          "serviceAreaEvidence": "pending-current-profile-service-area-verification",
+          "pageIdentity": "heber-keystone-cid",
+          "exactCidOwnerProfileFields": "unmeasured-owner-view-audit-required",
+          "rule": "Use accurate, complete, real-world business information; a city keyword or website route is not profile evidence."
+        },
+        "distance": {
+          "state": "fixed-city-mobile-panel-measured-not-an-editable-ranking-lever",
+          "providerLocation": "Cottonwood Heights",
+          "rule": "Retain the fixed city/device panel and report what Google returns; do not create fake locations or duplicate profiles to manipulate distance."
+        },
+        "prominence": {
+          "exactCidReviews": "unmeasured",
+          "organicNumberOneQueries": [],
+          "ownedGoogleAiOverviewCitations": [],
+          "rule": "Measure genuine review strength and earned web authority separately; no incentives, gating, fabricated reviews, or paid ranking links."
+        }
+      },
+      "maps": {
+        "packsPresent": 4,
+        "packsAbsent": 0,
+        "exactCidReturned": 0,
+        "exactCidNumberOne": 0,
+        "exactCidRanks": [
+          null,
+          null,
+          null,
+          null
+        ],
+        "dominantDisplacers": [
+          {
+            "name": "Utah Roofing Pros",
+            "cid": "4118570990011609504",
+            "domain": "google.com",
+            "appearances": 4,
+            "numberOneQueries": 4,
+            "bestRank": 1,
+            "keywords": [
+              "roofing contractor cottonwood heights",
+              "roof repair cottonwood heights",
+              "roof replacement cottonwood heights",
+              "roofer cottonwood heights"
+            ]
+          },
+          {
+            "name": "Pioneer Roofing Co",
+            "cid": "8874014093901703868",
+            "domain": "google.com",
+            "appearances": 4,
+            "numberOneQueries": 0,
+            "bestRank": 2,
+            "keywords": [
+              "roofing contractor cottonwood heights",
+              "roof repair cottonwood heights",
+              "roof replacement cottonwood heights",
+              "roofer cottonwood heights"
+            ]
+          },
+          {
+            "name": "ReRoofIt",
+            "cid": "3305979678440818523",
+            "domain": "google.com",
+            "appearances": 3,
+            "numberOneQueries": 0,
+            "bestRank": 3,
+            "keywords": [
+              "roofing contractor cottonwood heights",
+              "roof repair cottonwood heights",
+              "roof replacement cottonwood heights"
+            ]
+          }
+        ]
+      },
+      "queries": [
+        {
+          "queryId": "cottonwood-heights-roofing-contractor",
+          "keyword": "roofing contractor cottonwood heights",
+          "packState": "exact-cid-not-returned-in-pack",
+          "exactCidRank": null,
+          "numberOneEntity": {
+            "name": "Utah Roofing Pros",
+            "cid": "4118570990011609504"
+          }
+        },
+        {
+          "queryId": "cottonwood-heights-roof-repair",
+          "keyword": "roof repair cottonwood heights",
+          "packState": "exact-cid-not-returned-in-pack",
+          "exactCidRank": null,
+          "numberOneEntity": {
+            "name": "Utah Roofing Pros",
+            "cid": "4118570990011609504"
+          }
+        },
+        {
+          "queryId": "cottonwood-heights-roof-replacement",
+          "keyword": "roof replacement cottonwood heights",
+          "packState": "exact-cid-not-returned-in-pack",
+          "exactCidRank": null,
+          "numberOneEntity": {
+            "name": "Utah Roofing Pros",
+            "cid": "4118570990011609504"
+          }
+        },
+        {
+          "queryId": "cottonwood-heights-roofer",
+          "keyword": "roofer cottonwood heights",
+          "packState": "exact-cid-not-returned-in-pack",
+          "exactCidRank": null,
+          "numberOneEntity": {
+            "name": "Utah Roofing Pros",
+            "cid": "4118570990011609504"
+          }
+        }
+      ],
+      "nextAction": "Obtain current owner-view service-area evidence for Cottonwood Heights and the read-only exact-CID profile audit; do not attach the Salt Lake CID to the city page or edit GBP unless a later reviewed scope is explicitly approved.",
+      "gates": {
+        "ownerEvidence": "frame-utah-slv-current-service-area-evidence-v1",
+        "exactCidReviewBaseline": "unmeasured",
+        "pageOrProfileMutation": "separate-reviewed-scope-and-explicit-owner-approval-required"
+      }
+    },
+    {
+      "city": "Draper",
+      "slug": "draper",
+      "page": "locations/draper.html",
+      "panelId": "utah-draper-google-v1",
+      "lane": "service-area-proof-before-exact-cid-planning",
+      "publicMutationAuthorized": false,
+      "googleRankingAxes": {
+        "relevance": {
+          "serviceAreaEvidence": "pending-current-profile-service-area-verification",
+          "pageIdentity": "heber-keystone-cid",
+          "exactCidOwnerProfileFields": "unmeasured-owner-view-audit-required",
+          "rule": "Use accurate, complete, real-world business information; a city keyword or website route is not profile evidence."
+        },
+        "distance": {
+          "state": "fixed-city-mobile-panel-measured-not-an-editable-ranking-lever",
+          "providerLocation": "Draper",
+          "rule": "Retain the fixed city/device panel and report what Google returns; do not create fake locations or duplicate profiles to manipulate distance."
+        },
+        "prominence": {
+          "exactCidReviews": "unmeasured",
+          "organicNumberOneQueries": [],
+          "ownedGoogleAiOverviewCitations": [],
+          "rule": "Measure genuine review strength and earned web authority separately; no incentives, gating, fabricated reviews, or paid ranking links."
+        }
+      },
+      "maps": {
+        "packsPresent": 4,
+        "packsAbsent": 0,
+        "exactCidReturned": 0,
+        "exactCidNumberOne": 0,
+        "exactCidRanks": [
+          null,
+          null,
+          null,
+          null
+        ],
+        "dominantDisplacers": [
+          {
+            "name": "Pride Roofing & Contracting, LLC",
+            "cid": "15206834657984643450",
+            "domain": "google.com",
+            "appearances": 4,
+            "numberOneQueries": 3,
+            "bestRank": 1,
+            "keywords": [
+              "roofing contractor draper",
+              "roof repair draper",
+              "roof replacement draper",
+              "roofer draper"
+            ]
+          },
+          {
+            "name": "Rocky Mountain Roofing UT, LLC",
+            "cid": "11642763325802433097",
+            "domain": "google.com",
+            "appearances": 4,
+            "numberOneQueries": 1,
+            "bestRank": 1,
+            "keywords": [
+              "roofing contractor draper",
+              "roof repair draper",
+              "roof replacement draper",
+              "roofer draper"
+            ]
+          },
+          {
+            "name": "MAD Roofing & Exteriors",
+            "cid": "948726251693855103",
+            "domain": "google.com",
+            "appearances": 2,
+            "numberOneQueries": 0,
+            "bestRank": 3,
+            "keywords": [
+              "roof replacement draper",
+              "roofer draper"
+            ]
+          }
+        ]
+      },
+      "queries": [
+        {
+          "queryId": "draper-roofing-contractor",
+          "keyword": "roofing contractor draper",
+          "packState": "exact-cid-not-returned-in-pack",
+          "exactCidRank": null,
+          "numberOneEntity": {
+            "name": "Rocky Mountain Roofing UT, LLC",
+            "cid": "11642763325802433097"
+          }
+        },
+        {
+          "queryId": "draper-roof-repair",
+          "keyword": "roof repair draper",
+          "packState": "exact-cid-not-returned-in-pack",
+          "exactCidRank": null,
+          "numberOneEntity": {
+            "name": "Pride Roofing & Contracting, LLC",
+            "cid": "15206834657984643450"
+          }
+        },
+        {
+          "queryId": "draper-roof-replacement",
+          "keyword": "roof replacement draper",
+          "packState": "exact-cid-not-returned-in-pack",
+          "exactCidRank": null,
+          "numberOneEntity": {
+            "name": "Pride Roofing & Contracting, LLC",
+            "cid": "15206834657984643450"
+          }
+        },
+        {
+          "queryId": "draper-roofer",
+          "keyword": "roofer draper",
+          "packState": "exact-cid-not-returned-in-pack",
+          "exactCidRank": null,
+          "numberOneEntity": {
+            "name": "Pride Roofing & Contracting, LLC",
+            "cid": "15206834657984643450"
+          }
+        }
+      ],
+      "nextAction": "Obtain current owner-view service-area evidence for Draper and the read-only exact-CID profile audit; do not attach the Salt Lake CID to the city page or edit GBP unless a later reviewed scope is explicitly approved.",
+      "gates": {
+        "ownerEvidence": "frame-utah-slv-current-service-area-evidence-v1",
+        "exactCidReviewBaseline": "unmeasured",
+        "pageOrProfileMutation": "separate-reviewed-scope-and-explicit-owner-approval-required"
+      }
+    },
+    {
+      "city": "Bluffdale",
+      "slug": "bluffdale",
+      "page": "locations/bluffdale.html",
+      "panelId": "utah-bluffdale-google-v1",
+      "lane": "service-area-proof-before-exact-cid-planning",
+      "publicMutationAuthorized": false,
+      "googleRankingAxes": {
+        "relevance": {
+          "serviceAreaEvidence": "pending-current-profile-service-area-verification",
+          "pageIdentity": "heber-keystone-cid",
+          "exactCidOwnerProfileFields": "unmeasured-owner-view-audit-required",
+          "rule": "Use accurate, complete, real-world business information; a city keyword or website route is not profile evidence."
+        },
+        "distance": {
+          "state": "fixed-city-mobile-panel-measured-not-an-editable-ranking-lever",
+          "providerLocation": "Bluffdale",
+          "rule": "Retain the fixed city/device panel and report what Google returns; do not create fake locations or duplicate profiles to manipulate distance."
+        },
+        "prominence": {
+          "exactCidReviews": "unmeasured",
+          "organicNumberOneQueries": [],
+          "ownedGoogleAiOverviewCitations": [],
+          "rule": "Measure genuine review strength and earned web authority separately; no incentives, gating, fabricated reviews, or paid ranking links."
+        }
+      },
+      "maps": {
+        "packsPresent": 4,
+        "packsAbsent": 0,
+        "exactCidReturned": 0,
+        "exactCidNumberOne": 0,
+        "exactCidRanks": [
+          null,
+          null,
+          null,
+          null
+        ],
+        "dominantDisplacers": [
+          {
+            "name": "The Roofing Contractor",
+            "cid": "10363506003073586853",
+            "domain": "google.com",
+            "appearances": 4,
+            "numberOneQueries": 3,
+            "bestRank": 1,
+            "keywords": [
+              "roofing contractor bluffdale",
+              "roof repair bluffdale",
+              "roof replacement bluffdale",
+              "roofer bluffdale"
+            ]
+          },
+          {
+            "name": "Far West Roofing",
+            "cid": "17002873996221913149",
+            "domain": "google.com",
+            "appearances": 4,
+            "numberOneQueries": 1,
+            "bestRank": 1,
+            "keywords": [
+              "roofing contractor bluffdale",
+              "roof repair bluffdale",
+              "roof replacement bluffdale",
+              "roofer bluffdale"
+            ]
+          },
+          {
+            "name": "Capstone Roofing & Siding LLC",
+            "cid": "9682829961026927875",
+            "domain": "google.com",
+            "appearances": 2,
+            "numberOneQueries": 0,
+            "bestRank": 3,
+            "keywords": [
+              "roofing contractor bluffdale",
+              "roof replacement bluffdale"
+            ]
+          }
+        ]
+      },
+      "queries": [
+        {
+          "queryId": "bluffdale-roofing-contractor",
+          "keyword": "roofing contractor bluffdale",
+          "packState": "exact-cid-not-returned-in-pack",
+          "exactCidRank": null,
+          "numberOneEntity": {
+            "name": "The Roofing Contractor",
+            "cid": "10363506003073586853"
+          }
+        },
+        {
+          "queryId": "bluffdale-roof-repair",
+          "keyword": "roof repair bluffdale",
+          "packState": "exact-cid-not-returned-in-pack",
+          "exactCidRank": null,
+          "numberOneEntity": {
+            "name": "The Roofing Contractor",
+            "cid": "10363506003073586853"
+          }
+        },
+        {
+          "queryId": "bluffdale-roof-replacement",
+          "keyword": "roof replacement bluffdale",
+          "packState": "exact-cid-not-returned-in-pack",
+          "exactCidRank": null,
+          "numberOneEntity": {
+            "name": "The Roofing Contractor",
+            "cid": "10363506003073586853"
+          }
+        },
+        {
+          "queryId": "bluffdale-roofer",
+          "keyword": "roofer bluffdale",
+          "packState": "exact-cid-not-returned-in-pack",
+          "exactCidRank": null,
+          "numberOneEntity": {
+            "name": "Far West Roofing",
+            "cid": "17002873996221913149"
+          }
+        }
+      ],
+      "nextAction": "Obtain current owner-view service-area evidence for Bluffdale and the read-only exact-CID profile audit; do not attach the Salt Lake CID to the city page or edit GBP unless a later reviewed scope is explicitly approved.",
+      "gates": {
+        "ownerEvidence": "frame-utah-slv-current-service-area-evidence-v1",
+        "exactCidReviewBaseline": "unmeasured",
+        "pageOrProfileMutation": "separate-reviewed-scope-and-explicit-owner-approval-required"
+      }
+    },
+    {
+      "city": "Herriman",
+      "slug": "herriman",
+      "page": "locations/herriman.html",
+      "panelId": "utah-herriman-google-v1",
+      "lane": "service-area-proof-before-exact-cid-planning",
+      "publicMutationAuthorized": false,
+      "googleRankingAxes": {
+        "relevance": {
+          "serviceAreaEvidence": "pending-current-profile-service-area-verification",
+          "pageIdentity": "heber-keystone-cid",
+          "exactCidOwnerProfileFields": "unmeasured-owner-view-audit-required",
+          "rule": "Use accurate, complete, real-world business information; a city keyword or website route is not profile evidence."
+        },
+        "distance": {
+          "state": "fixed-city-mobile-panel-measured-not-an-editable-ranking-lever",
+          "providerLocation": "Herriman",
+          "rule": "Retain the fixed city/device panel and report what Google returns; do not create fake locations or duplicate profiles to manipulate distance."
+        },
+        "prominence": {
+          "exactCidReviews": "unmeasured",
+          "organicNumberOneQueries": [],
+          "ownedGoogleAiOverviewCitations": [],
+          "rule": "Measure genuine review strength and earned web authority separately; no incentives, gating, fabricated reviews, or paid ranking links."
+        }
+      },
+      "maps": {
+        "packsPresent": 4,
+        "packsAbsent": 0,
+        "exactCidReturned": 0,
+        "exactCidNumberOne": 0,
+        "exactCidRanks": [
+          null,
+          null,
+          null,
+          null
+        ],
+        "dominantDisplacers": [
+          {
+            "name": "RoofKap",
+            "cid": "12684491778996500074",
+            "domain": "google.com",
+            "appearances": 4,
+            "numberOneQueries": 4,
+            "bestRank": 1,
+            "keywords": [
+              "roofing contractor herriman",
+              "roof repair herriman",
+              "roof replacement herriman",
+              "roofer herriman"
+            ]
+          },
+          {
+            "name": "Herriman Roofing",
+            "cid": "12149473317218225909",
+            "domain": "google.com",
+            "appearances": 4,
+            "numberOneQueries": 0,
+            "bestRank": 2,
+            "keywords": [
+              "roofing contractor herriman",
+              "roof repair herriman",
+              "roof replacement herriman",
+              "roofer herriman"
+            ]
+          },
+          {
+            "name": "J. Torres Roofing",
+            "cid": "16498478264807940360",
+            "domain": "google.com",
+            "appearances": 3,
+            "numberOneQueries": 0,
+            "bestRank": 3,
+            "keywords": [
+              "roofing contractor herriman",
+              "roof replacement herriman",
+              "roofer herriman"
+            ]
+          }
+        ]
+      },
+      "queries": [
+        {
+          "queryId": "herriman-roofing-contractor",
+          "keyword": "roofing contractor herriman",
+          "packState": "exact-cid-not-returned-in-pack",
+          "exactCidRank": null,
+          "numberOneEntity": {
+            "name": "RoofKap",
+            "cid": "12684491778996500074"
+          }
+        },
+        {
+          "queryId": "herriman-roof-repair",
+          "keyword": "roof repair herriman",
+          "packState": "exact-cid-not-returned-in-pack",
+          "exactCidRank": null,
+          "numberOneEntity": {
+            "name": "RoofKap",
+            "cid": "12684491778996500074"
+          }
+        },
+        {
+          "queryId": "herriman-roof-replacement",
+          "keyword": "roof replacement herriman",
+          "packState": "exact-cid-not-returned-in-pack",
+          "exactCidRank": null,
+          "numberOneEntity": {
+            "name": "RoofKap",
+            "cid": "12684491778996500074"
+          }
+        },
+        {
+          "queryId": "herriman-roofer",
+          "keyword": "roofer herriman",
+          "packState": "exact-cid-not-returned-in-pack",
+          "exactCidRank": null,
+          "numberOneEntity": {
+            "name": "RoofKap",
+            "cid": "12684491778996500074"
+          }
+        }
+      ],
+      "nextAction": "Obtain current owner-view service-area evidence for Herriman and the read-only exact-CID profile audit; do not attach the Salt Lake CID to the city page or edit GBP unless a later reviewed scope is explicitly approved.",
+      "gates": {
+        "ownerEvidence": "frame-utah-slv-current-service-area-evidence-v1",
+        "exactCidReviewBaseline": "unmeasured",
+        "pageOrProfileMutation": "separate-reviewed-scope-and-explicit-owner-approval-required"
+      }
+    },
+    {
+      "city": "Kearns",
+      "slug": "kearns",
+      "page": "locations/kearns.html",
+      "panelId": "utah-kearns-google-v1",
+      "lane": "service-area-proof-before-exact-cid-planning",
+      "publicMutationAuthorized": false,
+      "googleRankingAxes": {
+        "relevance": {
+          "serviceAreaEvidence": "pending-current-profile-service-area-verification",
+          "pageIdentity": "heber-keystone-cid",
+          "exactCidOwnerProfileFields": "unmeasured-owner-view-audit-required",
+          "rule": "Use accurate, complete, real-world business information; a city keyword or website route is not profile evidence."
+        },
+        "distance": {
+          "state": "fixed-city-mobile-panel-measured-not-an-editable-ranking-lever",
+          "providerLocation": "Kearns",
+          "rule": "Retain the fixed city/device panel and report what Google returns; do not create fake locations or duplicate profiles to manipulate distance."
+        },
+        "prominence": {
+          "exactCidReviews": "unmeasured",
+          "organicNumberOneQueries": [
+            "roof replacement kearns"
+          ],
+          "ownedGoogleAiOverviewCitations": [],
+          "rule": "Measure genuine review strength and earned web authority separately; no incentives, gating, fabricated reviews, or paid ranking links."
+        }
+      },
+      "maps": {
+        "packsPresent": 4,
+        "packsAbsent": 0,
+        "exactCidReturned": 0,
+        "exactCidNumberOne": 0,
+        "exactCidRanks": [
+          null,
+          null,
+          null,
+          null
+        ],
+        "dominantDisplacers": [
+          {
+            "name": "Reliable Roofing Kearns",
+            "cid": "13010928145203840528",
+            "domain": "google.com",
+            "appearances": 4,
+            "numberOneQueries": 2,
+            "bestRank": 1,
+            "keywords": [
+              "roofing contractor kearns",
+              "roof repair kearns",
+              "roof replacement kearns",
+              "roofer kearns"
+            ]
+          },
+          {
+            "name": "Classic Roofing and Exteriors",
+            "cid": "10315170581426755444",
+            "domain": "google.com",
+            "appearances": 3,
+            "numberOneQueries": 1,
+            "bestRank": 1,
+            "keywords": [
+              "roofing contractor kearns",
+              "roof repair kearns",
+              "roofer kearns"
+            ]
+          },
+          {
+            "name": "Top Line Roofing Kearns",
+            "cid": "7139442759297582051",
+            "domain": "google.com",
+            "appearances": 3,
+            "numberOneQueries": 1,
+            "bestRank": 1,
+            "keywords": [
+              "roofing contractor kearns",
+              "roof replacement kearns",
+              "roofer kearns"
+            ]
+          }
+        ]
+      },
+      "queries": [
+        {
+          "queryId": "kearns-roofing-contractor",
+          "keyword": "roofing contractor kearns",
+          "packState": "exact-cid-not-returned-in-pack",
+          "exactCidRank": null,
+          "numberOneEntity": {
+            "name": "Reliable Roofing Kearns",
+            "cid": "13010928145203840528"
+          }
+        },
+        {
+          "queryId": "kearns-roof-repair",
+          "keyword": "roof repair kearns",
+          "packState": "exact-cid-not-returned-in-pack",
+          "exactCidRank": null,
+          "numberOneEntity": {
+            "name": "Classic Roofing and Exteriors",
+            "cid": "10315170581426755444"
+          }
+        },
+        {
+          "queryId": "kearns-roof-replacement",
+          "keyword": "roof replacement kearns",
+          "packState": "exact-cid-not-returned-in-pack",
+          "exactCidRank": null,
+          "numberOneEntity": {
+            "name": "Top Line Roofing Kearns",
+            "cid": "7139442759297582051"
+          }
+        },
+        {
+          "queryId": "kearns-roofer",
+          "keyword": "roofer kearns",
+          "packState": "exact-cid-not-returned-in-pack",
+          "exactCidRank": null,
+          "numberOneEntity": {
+            "name": "Reliable Roofing Kearns",
+            "cid": "13010928145203840528"
+          }
+        }
+      ],
+      "nextAction": "Obtain current owner-view service-area evidence for Kearns and the read-only exact-CID profile audit; do not attach the Salt Lake CID to the city page or edit GBP unless a later reviewed scope is explicitly approved.",
+      "gates": {
+        "ownerEvidence": "frame-utah-slv-current-service-area-evidence-v1",
+        "exactCidReviewBaseline": "unmeasured",
+        "pageOrProfileMutation": "separate-reviewed-scope-and-explicit-owner-approval-required"
+      }
+    },
+    {
+      "city": "Magna",
+      "slug": "magna",
+      "page": "locations/magna.html",
+      "panelId": "utah-magna-google-v1",
+      "lane": "service-area-proof-before-exact-cid-planning",
+      "publicMutationAuthorized": false,
+      "googleRankingAxes": {
+        "relevance": {
+          "serviceAreaEvidence": "pending-current-profile-service-area-verification",
+          "pageIdentity": "heber-keystone-cid",
+          "exactCidOwnerProfileFields": "unmeasured-owner-view-audit-required",
+          "rule": "Use accurate, complete, real-world business information; a city keyword or website route is not profile evidence."
+        },
+        "distance": {
+          "state": "fixed-city-mobile-panel-measured-not-an-editable-ranking-lever",
+          "providerLocation": "Magna",
+          "rule": "Retain the fixed city/device panel and report what Google returns; do not create fake locations or duplicate profiles to manipulate distance."
+        },
+        "prominence": {
+          "exactCidReviews": "unmeasured",
+          "organicNumberOneQueries": [
+            "roof replacement magna"
+          ],
+          "ownedGoogleAiOverviewCitations": [
+            "roof replacement magna"
+          ],
+          "rule": "Measure genuine review strength and earned web authority separately; no incentives, gating, fabricated reviews, or paid ranking links."
+        }
+      },
+      "maps": {
+        "packsPresent": 4,
+        "packsAbsent": 0,
+        "exactCidReturned": 0,
+        "exactCidNumberOne": 0,
+        "exactCidRanks": [
+          null,
+          null,
+          null,
+          null
+        ],
+        "dominantDisplacers": [
+          {
+            "name": "Classic Roofing and Exteriors",
+            "cid": "10315170581426755444",
+            "domain": "google.com",
+            "appearances": 3,
+            "numberOneQueries": 3,
+            "bestRank": 1,
+            "keywords": [
+              "roofing contractor magna",
+              "roof repair magna",
+              "roof replacement magna"
+            ]
+          },
+          {
+            "name": "Bullet Proof Roof and Renovations",
+            "cid": "16907554618949483021",
+            "domain": "google.com",
+            "appearances": 1,
+            "numberOneQueries": 1,
+            "bestRank": 1,
+            "keywords": [
+              "roofer magna"
+            ]
+          },
+          {
+            "name": "RADIN Services",
+            "cid": "14999247916767874042",
+            "domain": "google.com",
+            "appearances": 2,
+            "numberOneQueries": 0,
+            "bestRank": 2,
+            "keywords": [
+              "roof replacement magna",
+              "roofer magna"
+            ]
+          }
+        ]
+      },
+      "queries": [
+        {
+          "queryId": "magna-roofing-contractor",
+          "keyword": "roofing contractor magna",
+          "packState": "exact-cid-not-returned-in-pack",
+          "exactCidRank": null,
+          "numberOneEntity": {
+            "name": "Classic Roofing and Exteriors",
+            "cid": "10315170581426755444"
+          }
+        },
+        {
+          "queryId": "magna-roof-repair",
+          "keyword": "roof repair magna",
+          "packState": "exact-cid-not-returned-in-pack",
+          "exactCidRank": null,
+          "numberOneEntity": {
+            "name": "Classic Roofing and Exteriors",
+            "cid": "10315170581426755444"
+          }
+        },
+        {
+          "queryId": "magna-roof-replacement",
+          "keyword": "roof replacement magna",
+          "packState": "exact-cid-not-returned-in-pack",
+          "exactCidRank": null,
+          "numberOneEntity": {
+            "name": "Classic Roofing and Exteriors",
+            "cid": "10315170581426755444"
+          }
+        },
+        {
+          "queryId": "magna-roofer",
+          "keyword": "roofer magna",
+          "packState": "exact-cid-not-returned-in-pack",
+          "exactCidRank": null,
+          "numberOneEntity": {
+            "name": "Bullet Proof Roof and Renovations",
+            "cid": "16907554618949483021"
+          }
+        }
+      ],
+      "nextAction": "Obtain current owner-view service-area evidence for Magna and the read-only exact-CID profile audit; do not attach the Salt Lake CID to the city page or edit GBP unless a later reviewed scope is explicitly approved.",
+      "gates": {
+        "ownerEvidence": "frame-utah-slv-current-service-area-evidence-v1",
+        "exactCidReviewBaseline": "unmeasured",
+        "pageOrProfileMutation": "separate-reviewed-scope-and-explicit-owner-approval-required"
+      }
+    },
+    {
+      "city": "Midvale",
+      "slug": "midvale",
+      "page": "locations/midvale.html",
+      "panelId": "utah-midvale-google-v1",
+      "lane": "service-area-proof-before-exact-cid-planning",
+      "publicMutationAuthorized": false,
+      "googleRankingAxes": {
+        "relevance": {
+          "serviceAreaEvidence": "pending-current-profile-service-area-verification",
+          "pageIdentity": "heber-keystone-cid",
+          "exactCidOwnerProfileFields": "unmeasured-owner-view-audit-required",
+          "rule": "Use accurate, complete, real-world business information; a city keyword or website route is not profile evidence."
+        },
+        "distance": {
+          "state": "fixed-city-mobile-panel-measured-not-an-editable-ranking-lever",
+          "providerLocation": "Midvale",
+          "rule": "Retain the fixed city/device panel and report what Google returns; do not create fake locations or duplicate profiles to manipulate distance."
+        },
+        "prominence": {
+          "exactCidReviews": "unmeasured",
+          "organicNumberOneQueries": [],
+          "ownedGoogleAiOverviewCitations": [],
+          "rule": "Measure genuine review strength and earned web authority separately; no incentives, gating, fabricated reviews, or paid ranking links."
+        }
+      },
+      "maps": {
+        "packsPresent": 4,
+        "packsAbsent": 0,
+        "exactCidReturned": 0,
+        "exactCidNumberOne": 0,
+        "exactCidRanks": [
+          null,
+          null,
+          null,
+          null
+        ],
+        "dominantDisplacers": [
+          {
+            "name": "Xperience Roofing",
+            "cid": "8697029845329445458",
+            "domain": "google.com",
+            "appearances": 4,
+            "numberOneQueries": 3,
+            "bestRank": 1,
+            "keywords": [
+              "roofing contractor midvale",
+              "roof repair midvale",
+              "roof replacement midvale",
+              "roofer midvale"
+            ]
+          },
+          {
+            "name": "BigHorn Roofing",
+            "cid": "6589720378980894074",
+            "domain": "google.com",
+            "appearances": 4,
+            "numberOneQueries": 1,
+            "bestRank": 1,
+            "keywords": [
+              "roofing contractor midvale",
+              "roof repair midvale",
+              "roof replacement midvale",
+              "roofer midvale"
+            ]
+          },
+          {
+            "name": "ReRoofIt",
+            "cid": "3305979678440818523",
+            "domain": "google.com",
+            "appearances": 3,
+            "numberOneQueries": 0,
+            "bestRank": 3,
+            "keywords": [
+              "roofing contractor midvale",
+              "roof repair midvale",
+              "roof replacement midvale"
+            ]
+          }
+        ]
+      },
+      "queries": [
+        {
+          "queryId": "midvale-roofing-contractor",
+          "keyword": "roofing contractor midvale",
+          "packState": "exact-cid-not-returned-in-pack",
+          "exactCidRank": null,
+          "numberOneEntity": {
+            "name": "Xperience Roofing",
+            "cid": "8697029845329445458"
+          }
+        },
+        {
+          "queryId": "midvale-roof-repair",
+          "keyword": "roof repair midvale",
+          "packState": "exact-cid-not-returned-in-pack",
+          "exactCidRank": null,
+          "numberOneEntity": {
+            "name": "Xperience Roofing",
+            "cid": "8697029845329445458"
+          }
+        },
+        {
+          "queryId": "midvale-roof-replacement",
+          "keyword": "roof replacement midvale",
+          "packState": "exact-cid-not-returned-in-pack",
+          "exactCidRank": null,
+          "numberOneEntity": {
+            "name": "Xperience Roofing",
+            "cid": "8697029845329445458"
+          }
+        },
+        {
+          "queryId": "midvale-roofer",
+          "keyword": "roofer midvale",
+          "packState": "exact-cid-not-returned-in-pack",
+          "exactCidRank": null,
+          "numberOneEntity": {
+            "name": "BigHorn Roofing",
+            "cid": "6589720378980894074"
+          }
+        }
+      ],
+      "nextAction": "Obtain current owner-view service-area evidence for Midvale and the read-only exact-CID profile audit; do not attach the Salt Lake CID to the city page or edit GBP unless a later reviewed scope is explicitly approved.",
+      "gates": {
+        "ownerEvidence": "frame-utah-slv-current-service-area-evidence-v1",
+        "exactCidReviewBaseline": "unmeasured",
+        "pageOrProfileMutation": "separate-reviewed-scope-and-explicit-owner-approval-required"
+      }
+    },
+    {
+      "city": "Murray",
+      "slug": "murray",
+      "page": "locations/murray.html",
+      "panelId": "utah-murray-google-v1",
+      "lane": "service-area-proof-before-exact-cid-planning",
+      "publicMutationAuthorized": false,
+      "googleRankingAxes": {
+        "relevance": {
+          "serviceAreaEvidence": "pending-current-profile-service-area-verification",
+          "pageIdentity": "heber-keystone-cid",
+          "exactCidOwnerProfileFields": "unmeasured-owner-view-audit-required",
+          "rule": "Use accurate, complete, real-world business information; a city keyword or website route is not profile evidence."
+        },
+        "distance": {
+          "state": "fixed-city-mobile-panel-measured-not-an-editable-ranking-lever",
+          "providerLocation": "Murray",
+          "rule": "Retain the fixed city/device panel and report what Google returns; do not create fake locations or duplicate profiles to manipulate distance."
+        },
+        "prominence": {
+          "exactCidReviews": "unmeasured",
+          "organicNumberOneQueries": [],
+          "ownedGoogleAiOverviewCitations": [],
+          "rule": "Measure genuine review strength and earned web authority separately; no incentives, gating, fabricated reviews, or paid ranking links."
+        }
+      },
+      "maps": {
+        "packsPresent": 4,
+        "packsAbsent": 0,
+        "exactCidReturned": 0,
+        "exactCidNumberOne": 0,
+        "exactCidRanks": [
+          null,
+          null,
+          null,
+          null
+        ],
+        "dominantDisplacers": [
+          {
+            "name": "Milne Brothers Roofing",
+            "cid": "7936184157434939732",
+            "domain": "google.com",
+            "appearances": 4,
+            "numberOneQueries": 2,
+            "bestRank": 1,
+            "keywords": [
+              "roofing contractor murray",
+              "roof repair murray",
+              "roof replacement murray",
+              "roofer murray"
+            ]
+          },
+          {
+            "name": "Bartlett Roofing",
+            "cid": "14958115238436635129",
+            "domain": "google.com",
+            "appearances": 3,
+            "numberOneQueries": 1,
+            "bestRank": 1,
+            "keywords": [
+              "roofing contractor murray",
+              "roof replacement murray",
+              "roofer murray"
+            ]
+          },
+          {
+            "name": "Whitaker Roofing Services",
+            "cid": "11316815627233980109",
+            "domain": "google.com",
+            "appearances": 2,
+            "numberOneQueries": 1,
+            "bestRank": 1,
+            "keywords": [
+              "roof repair murray",
+              "roof replacement murray"
+            ]
+          }
+        ]
+      },
+      "queries": [
+        {
+          "queryId": "murray-roofing-contractor",
+          "keyword": "roofing contractor murray",
+          "packState": "exact-cid-not-returned-in-pack",
+          "exactCidRank": null,
+          "numberOneEntity": {
+            "name": "Milne Brothers Roofing",
+            "cid": "7936184157434939732"
+          }
+        },
+        {
+          "queryId": "murray-roof-repair",
+          "keyword": "roof repair murray",
+          "packState": "exact-cid-not-returned-in-pack",
+          "exactCidRank": null,
+          "numberOneEntity": {
+            "name": "Milne Brothers Roofing",
+            "cid": "7936184157434939732"
+          }
+        },
+        {
+          "queryId": "murray-roof-replacement",
+          "keyword": "roof replacement murray",
+          "packState": "exact-cid-not-returned-in-pack",
+          "exactCidRank": null,
+          "numberOneEntity": {
+            "name": "Whitaker Roofing Services",
+            "cid": "11316815627233980109"
+          }
+        },
+        {
+          "queryId": "murray-roofer",
+          "keyword": "roofer murray",
+          "packState": "exact-cid-not-returned-in-pack",
+          "exactCidRank": null,
+          "numberOneEntity": {
+            "name": "Bartlett Roofing",
+            "cid": "14958115238436635129"
+          }
+        }
+      ],
+      "nextAction": "Obtain current owner-view service-area evidence for Murray and the read-only exact-CID profile audit; do not attach the Salt Lake CID to the city page or edit GBP unless a later reviewed scope is explicitly approved.",
+      "gates": {
+        "ownerEvidence": "frame-utah-slv-current-service-area-evidence-v1",
+        "exactCidReviewBaseline": "unmeasured",
+        "pageOrProfileMutation": "separate-reviewed-scope-and-explicit-owner-approval-required"
+      }
+    },
+    {
+      "city": "Riverton",
+      "slug": "riverton",
+      "page": "locations/riverton.html",
+      "panelId": "utah-riverton-google-v1",
+      "lane": "service-area-proof-before-exact-cid-planning",
+      "publicMutationAuthorized": false,
+      "googleRankingAxes": {
+        "relevance": {
+          "serviceAreaEvidence": "pending-current-profile-service-area-verification",
+          "pageIdentity": "heber-keystone-cid",
+          "exactCidOwnerProfileFields": "unmeasured-owner-view-audit-required",
+          "rule": "Use accurate, complete, real-world business information; a city keyword or website route is not profile evidence."
+        },
+        "distance": {
+          "state": "fixed-city-mobile-panel-measured-not-an-editable-ranking-lever",
+          "providerLocation": "Riverton",
+          "rule": "Retain the fixed city/device panel and report what Google returns; do not create fake locations or duplicate profiles to manipulate distance."
+        },
+        "prominence": {
+          "exactCidReviews": "unmeasured",
+          "organicNumberOneQueries": [],
+          "ownedGoogleAiOverviewCitations": [],
+          "rule": "Measure genuine review strength and earned web authority separately; no incentives, gating, fabricated reviews, or paid ranking links."
+        }
+      },
+      "maps": {
+        "packsPresent": 4,
+        "packsAbsent": 0,
+        "exactCidReturned": 0,
+        "exactCidNumberOne": 0,
+        "exactCidRanks": [
+          null,
+          null,
+          null,
+          null
+        ],
+        "dominantDisplacers": [
+          {
+            "name": "Mountain Valley Roofing",
+            "cid": "1336901996070958999",
+            "domain": "google.com",
+            "appearances": 4,
+            "numberOneQueries": 3,
+            "bestRank": 1,
+            "keywords": [
+              "roofing contractor riverton",
+              "roof repair riverton",
+              "roof replacement riverton",
+              "roofer riverton"
+            ]
+          },
+          {
+            "name": "Capstone Roofing & Siding LLC",
+            "cid": "9682829961026927875",
+            "domain": "google.com",
+            "appearances": 4,
+            "numberOneQueries": 1,
+            "bestRank": 1,
+            "keywords": [
+              "roofing contractor riverton",
+              "roof repair riverton",
+              "roof replacement riverton",
+              "roofer riverton"
+            ]
+          },
+          {
+            "name": "Sky Ridge Roofing LLC",
+            "cid": "5486202495538867658",
+            "domain": "google.com",
+            "appearances": 3,
+            "numberOneQueries": 0,
+            "bestRank": 3,
+            "keywords": [
+              "roofing contractor riverton",
+              "roof repair riverton",
+              "roofer riverton"
+            ]
+          }
+        ]
+      },
+      "queries": [
+        {
+          "queryId": "riverton-roofing-contractor",
+          "keyword": "roofing contractor riverton",
+          "packState": "exact-cid-not-returned-in-pack",
+          "exactCidRank": null,
+          "numberOneEntity": {
+            "name": "Mountain Valley Roofing",
+            "cid": "1336901996070958999"
+          }
+        },
+        {
+          "queryId": "riverton-roof-repair",
+          "keyword": "roof repair riverton",
+          "packState": "exact-cid-not-returned-in-pack",
+          "exactCidRank": null,
+          "numberOneEntity": {
+            "name": "Mountain Valley Roofing",
+            "cid": "1336901996070958999"
+          }
+        },
+        {
+          "queryId": "riverton-roof-replacement",
+          "keyword": "roof replacement riverton",
+          "packState": "exact-cid-not-returned-in-pack",
+          "exactCidRank": null,
+          "numberOneEntity": {
+            "name": "Capstone Roofing & Siding LLC",
+            "cid": "9682829961026927875"
+          }
+        },
+        {
+          "queryId": "riverton-roofer",
+          "keyword": "roofer riverton",
+          "packState": "exact-cid-not-returned-in-pack",
+          "exactCidRank": null,
+          "numberOneEntity": {
+            "name": "Mountain Valley Roofing",
+            "cid": "1336901996070958999"
+          }
+        }
+      ],
+      "nextAction": "Obtain current owner-view service-area evidence for Riverton and the read-only exact-CID profile audit; do not attach the Salt Lake CID to the city page or edit GBP unless a later reviewed scope is explicitly approved.",
+      "gates": {
+        "ownerEvidence": "frame-utah-slv-current-service-area-evidence-v1",
+        "exactCidReviewBaseline": "unmeasured",
+        "pageOrProfileMutation": "separate-reviewed-scope-and-explicit-owner-approval-required"
+      }
+    },
+    {
+      "city": "South Jordan",
+      "slug": "south-jordan",
+      "page": "locations/south-jordan.html",
+      "panelId": "utah-south-jordan-google-v1",
+      "lane": "service-area-proof-before-exact-cid-planning",
+      "publicMutationAuthorized": false,
+      "googleRankingAxes": {
+        "relevance": {
+          "serviceAreaEvidence": "pending-current-profile-service-area-verification",
+          "pageIdentity": "heber-keystone-cid",
+          "exactCidOwnerProfileFields": "unmeasured-owner-view-audit-required",
+          "rule": "Use accurate, complete, real-world business information; a city keyword or website route is not profile evidence."
+        },
+        "distance": {
+          "state": "fixed-city-mobile-panel-measured-not-an-editable-ranking-lever",
+          "providerLocation": "South Jordan",
+          "rule": "Retain the fixed city/device panel and report what Google returns; do not create fake locations or duplicate profiles to manipulate distance."
+        },
+        "prominence": {
+          "exactCidReviews": "unmeasured",
+          "organicNumberOneQueries": [],
+          "ownedGoogleAiOverviewCitations": [],
+          "rule": "Measure genuine review strength and earned web authority separately; no incentives, gating, fabricated reviews, or paid ranking links."
+        }
+      },
+      "maps": {
+        "packsPresent": 4,
+        "packsAbsent": 0,
+        "exactCidReturned": 0,
+        "exactCidNumberOne": 0,
+        "exactCidRanks": [
+          null,
+          null,
+          null,
+          null
+        ],
+        "dominantDisplacers": [
+          {
+            "name": "Top Local Roofing",
+            "cid": "6716199756783041358",
+            "domain": "google.com",
+            "appearances": 4,
+            "numberOneQueries": 3,
+            "bestRank": 1,
+            "keywords": [
+              "roofing contractor south jordan",
+              "roof repair south jordan",
+              "roof replacement south jordan",
+              "roofer south jordan"
+            ]
+          },
+          {
+            "name": "South Jordan's Best Roofing",
+            "cid": "8599164046063971268",
+            "domain": "google.com",
+            "appearances": 1,
+            "numberOneQueries": 1,
+            "bestRank": 1,
+            "keywords": [
+              "roofer south jordan"
+            ]
+          },
+          {
+            "name": "Nexgen Roofing | Roofing, Siding & Gutters",
+            "cid": "10865281799952829989",
+            "domain": "google.com",
+            "appearances": 3,
+            "numberOneQueries": 0,
+            "bestRank": 2,
+            "keywords": [
+              "roofing contractor south jordan",
+              "roof repair south jordan",
+              "roof replacement south jordan"
+            ]
+          }
+        ]
+      },
+      "queries": [
+        {
+          "queryId": "south-jordan-roofing-contractor",
+          "keyword": "roofing contractor south jordan",
+          "packState": "exact-cid-not-returned-in-pack",
+          "exactCidRank": null,
+          "numberOneEntity": {
+            "name": "Top Local Roofing",
+            "cid": "6716199756783041358"
+          }
+        },
+        {
+          "queryId": "south-jordan-roof-repair",
+          "keyword": "roof repair south jordan",
+          "packState": "exact-cid-not-returned-in-pack",
+          "exactCidRank": null,
+          "numberOneEntity": {
+            "name": "Top Local Roofing",
+            "cid": "6716199756783041358"
+          }
+        },
+        {
+          "queryId": "south-jordan-roof-replacement",
+          "keyword": "roof replacement south jordan",
+          "packState": "exact-cid-not-returned-in-pack",
+          "exactCidRank": null,
+          "numberOneEntity": {
+            "name": "Top Local Roofing",
+            "cid": "6716199756783041358"
+          }
+        },
+        {
+          "queryId": "south-jordan-roofer",
+          "keyword": "roofer south jordan",
+          "packState": "exact-cid-not-returned-in-pack",
+          "exactCidRank": null,
+          "numberOneEntity": {
+            "name": "South Jordan's Best Roofing",
+            "cid": "8599164046063971268"
+          }
+        }
+      ],
+      "nextAction": "Obtain current owner-view service-area evidence for South Jordan and the read-only exact-CID profile audit; do not attach the Salt Lake CID to the city page or edit GBP unless a later reviewed scope is explicitly approved.",
+      "gates": {
+        "ownerEvidence": "frame-utah-slv-current-service-area-evidence-v1",
+        "exactCidReviewBaseline": "unmeasured",
+        "pageOrProfileMutation": "separate-reviewed-scope-and-explicit-owner-approval-required"
+      }
+    },
+    {
+      "city": "South Salt Lake",
+      "slug": "south-salt-lake",
+      "page": "locations/south-salt-lake.html",
+      "panelId": "utah-south-salt-lake-google-v1",
+      "lane": "service-area-proof-before-exact-cid-planning",
+      "publicMutationAuthorized": false,
+      "googleRankingAxes": {
+        "relevance": {
+          "serviceAreaEvidence": "pending-current-profile-service-area-verification",
+          "pageIdentity": "heber-keystone-cid",
+          "exactCidOwnerProfileFields": "unmeasured-owner-view-audit-required",
+          "rule": "Use accurate, complete, real-world business information; a city keyword or website route is not profile evidence."
+        },
+        "distance": {
+          "state": "fixed-city-mobile-panel-measured-not-an-editable-ranking-lever",
+          "providerLocation": "South Salt Lake",
+          "rule": "Retain the fixed city/device panel and report what Google returns; do not create fake locations or duplicate profiles to manipulate distance."
+        },
+        "prominence": {
+          "exactCidReviews": "unmeasured",
+          "organicNumberOneQueries": [],
+          "ownedGoogleAiOverviewCitations": [],
+          "rule": "Measure genuine review strength and earned web authority separately; no incentives, gating, fabricated reviews, or paid ranking links."
+        }
+      },
+      "maps": {
+        "packsPresent": 3,
+        "packsAbsent": 1,
+        "exactCidReturned": 0,
+        "exactCidNumberOne": 0,
+        "exactCidRanks": [
+          null,
+          null,
+          null,
+          null
+        ],
+        "dominantDisplacers": [
+          {
+            "name": "The Roof Doctor",
+            "cid": "16329927680093228178",
+            "domain": "google.com",
+            "appearances": 2,
+            "numberOneQueries": 2,
+            "bestRank": 1,
+            "keywords": [
+              "roof repair south salt lake",
+              "roof replacement south salt lake"
+            ]
+          },
+          {
+            "name": "Sky Bridge Roofing",
+            "cid": "5327886489350788974",
+            "domain": "google.com",
+            "appearances": 3,
+            "numberOneQueries": 1,
+            "bestRank": 1,
+            "keywords": [
+              "roof repair south salt lake",
+              "roof replacement south salt lake",
+              "roofer south salt lake"
+            ]
+          },
+          {
+            "name": "Olympus Roofing",
+            "cid": "11758872734085536951",
+            "domain": "google.com",
+            "appearances": 3,
+            "numberOneQueries": 0,
+            "bestRank": 3,
+            "keywords": [
+              "roof repair south salt lake",
+              "roof replacement south salt lake",
+              "roofer south salt lake"
+            ]
+          }
+        ]
+      },
+      "queries": [
+        {
+          "queryId": "south-salt-lake-roofing-contractor",
+          "keyword": "roofing contractor south salt lake",
+          "packState": "local-pack-not-present",
+          "exactCidRank": null,
+          "numberOneEntity": null
+        },
+        {
+          "queryId": "south-salt-lake-roof-repair",
+          "keyword": "roof repair south salt lake",
+          "packState": "exact-cid-not-returned-in-pack",
+          "exactCidRank": null,
+          "numberOneEntity": {
+            "name": "The Roof Doctor",
+            "cid": "16329927680093228178"
+          }
+        },
+        {
+          "queryId": "south-salt-lake-roof-replacement",
+          "keyword": "roof replacement south salt lake",
+          "packState": "exact-cid-not-returned-in-pack",
+          "exactCidRank": null,
+          "numberOneEntity": {
+            "name": "The Roof Doctor",
+            "cid": "16329927680093228178"
+          }
+        },
+        {
+          "queryId": "south-salt-lake-roofer",
+          "keyword": "roofer south salt lake",
+          "packState": "exact-cid-not-returned-in-pack",
+          "exactCidRank": null,
+          "numberOneEntity": {
+            "name": "Sky Bridge Roofing",
+            "cid": "5327886489350788974"
+          }
+        }
+      ],
+      "nextAction": "Obtain current owner-view service-area evidence for South Salt Lake and the read-only exact-CID profile audit; do not attach the Salt Lake CID to the city page or edit GBP unless a later reviewed scope is explicitly approved.",
+      "gates": {
+        "ownerEvidence": "frame-utah-slv-current-service-area-evidence-v1",
+        "exactCidReviewBaseline": "unmeasured",
+        "pageOrProfileMutation": "separate-reviewed-scope-and-explicit-owner-approval-required"
+      }
+    },
+    {
+      "city": "Taylorsville",
+      "slug": "taylorsville",
+      "page": "locations/taylorsville.html",
+      "panelId": "utah-taylorsville-google-v1",
+      "lane": "service-area-proof-before-exact-cid-planning",
+      "publicMutationAuthorized": false,
+      "googleRankingAxes": {
+        "relevance": {
+          "serviceAreaEvidence": "pending-current-profile-service-area-verification",
+          "pageIdentity": "heber-keystone-cid",
+          "exactCidOwnerProfileFields": "unmeasured-owner-view-audit-required",
+          "rule": "Use accurate, complete, real-world business information; a city keyword or website route is not profile evidence."
+        },
+        "distance": {
+          "state": "fixed-city-mobile-panel-measured-not-an-editable-ranking-lever",
+          "providerLocation": "Taylorsville",
+          "rule": "Retain the fixed city/device panel and report what Google returns; do not create fake locations or duplicate profiles to manipulate distance."
+        },
+        "prominence": {
+          "exactCidReviews": "unmeasured",
+          "organicNumberOneQueries": [],
+          "ownedGoogleAiOverviewCitations": [],
+          "rule": "Measure genuine review strength and earned web authority separately; no incentives, gating, fabricated reviews, or paid ranking links."
+        }
+      },
+      "maps": {
+        "packsPresent": 4,
+        "packsAbsent": 0,
+        "exactCidReturned": 0,
+        "exactCidNumberOne": 0,
+        "exactCidRanks": [
+          null,
+          null,
+          null,
+          null
+        ],
+        "dominantDisplacers": [
+          {
+            "name": "The Roof Doctor",
+            "cid": "16329927680093228178",
+            "domain": "google.com",
+            "appearances": 3,
+            "numberOneQueries": 2,
+            "bestRank": 1,
+            "keywords": [
+              "roofing contractor taylorsville",
+              "roof repair taylorsville",
+              "roof replacement taylorsville"
+            ]
+          },
+          {
+            "name": "Jordan River Roofing",
+            "cid": "1120484001727382236",
+            "domain": "google.com",
+            "appearances": 4,
+            "numberOneQueries": 1,
+            "bestRank": 1,
+            "keywords": [
+              "roofing contractor taylorsville",
+              "roof repair taylorsville",
+              "roof replacement taylorsville",
+              "roofer taylorsville"
+            ]
+          },
+          {
+            "name": "Chalk Line Roofing",
+            "cid": "7209675912203059606",
+            "domain": "google.com",
+            "appearances": 3,
+            "numberOneQueries": 1,
+            "bestRank": 1,
+            "keywords": [
+              "roofing contractor taylorsville",
+              "roof replacement taylorsville",
+              "roofer taylorsville"
+            ]
+          }
+        ]
+      },
+      "queries": [
+        {
+          "queryId": "taylorsville-roofing-contractor",
+          "keyword": "roofing contractor taylorsville",
+          "packState": "exact-cid-not-returned-in-pack",
+          "exactCidRank": null,
+          "numberOneEntity": {
+            "name": "Chalk Line Roofing",
+            "cid": "7209675912203059606"
+          }
+        },
+        {
+          "queryId": "taylorsville-roof-repair",
+          "keyword": "roof repair taylorsville",
+          "packState": "exact-cid-not-returned-in-pack",
+          "exactCidRank": null,
+          "numberOneEntity": {
+            "name": "The Roof Doctor",
+            "cid": "16329927680093228178"
+          }
+        },
+        {
+          "queryId": "taylorsville-roof-replacement",
+          "keyword": "roof replacement taylorsville",
+          "packState": "exact-cid-not-returned-in-pack",
+          "exactCidRank": null,
+          "numberOneEntity": {
+            "name": "The Roof Doctor",
+            "cid": "16329927680093228178"
+          }
+        },
+        {
+          "queryId": "taylorsville-roofer",
+          "keyword": "roofer taylorsville",
+          "packState": "exact-cid-not-returned-in-pack",
+          "exactCidRank": null,
+          "numberOneEntity": {
+            "name": "Jordan River Roofing",
+            "cid": "1120484001727382236"
+          }
+        }
+      ],
+      "nextAction": "Obtain current owner-view service-area evidence for Taylorsville and the read-only exact-CID profile audit; do not attach the Salt Lake CID to the city page or edit GBP unless a later reviewed scope is explicitly approved.",
+      "gates": {
+        "ownerEvidence": "frame-utah-slv-current-service-area-evidence-v1",
+        "exactCidReviewBaseline": "unmeasured",
+        "pageOrProfileMutation": "separate-reviewed-scope-and-explicit-owner-approval-required"
+      }
+    },
+    {
+      "city": "West Jordan",
+      "slug": "west-jordan",
+      "page": "locations/west-jordan.html",
+      "panelId": "utah-west-jordan-google-v1",
+      "lane": "service-area-proof-before-exact-cid-planning",
+      "publicMutationAuthorized": false,
+      "googleRankingAxes": {
+        "relevance": {
+          "serviceAreaEvidence": "pending-current-profile-service-area-verification",
+          "pageIdentity": "heber-keystone-cid",
+          "exactCidOwnerProfileFields": "unmeasured-owner-view-audit-required",
+          "rule": "Use accurate, complete, real-world business information; a city keyword or website route is not profile evidence."
+        },
+        "distance": {
+          "state": "fixed-city-mobile-panel-measured-not-an-editable-ranking-lever",
+          "providerLocation": "West Jordan",
+          "rule": "Retain the fixed city/device panel and report what Google returns; do not create fake locations or duplicate profiles to manipulate distance."
+        },
+        "prominence": {
+          "exactCidReviews": "unmeasured",
+          "organicNumberOneQueries": [],
+          "ownedGoogleAiOverviewCitations": [],
+          "rule": "Measure genuine review strength and earned web authority separately; no incentives, gating, fabricated reviews, or paid ranking links."
+        }
+      },
+      "maps": {
+        "packsPresent": 4,
+        "packsAbsent": 0,
+        "exactCidReturned": 0,
+        "exactCidNumberOne": 0,
+        "exactCidRanks": [
+          null,
+          null,
+          null,
+          null
+        ],
+        "dominantDisplacers": [
+          {
+            "name": "West Jordan Roofing Solutions",
+            "cid": "12317812539198406731",
+            "domain": "google.com",
+            "appearances": 3,
+            "numberOneQueries": 3,
+            "bestRank": 1,
+            "keywords": [
+              "roofing contractor west jordan",
+              "roof repair west jordan",
+              "roofer west jordan"
+            ]
+          },
+          {
+            "name": "Altitude Construction",
+            "cid": "419345804739202304",
+            "domain": "google.com",
+            "appearances": 4,
+            "numberOneQueries": 1,
+            "bestRank": 1,
+            "keywords": [
+              "roofing contractor west jordan",
+              "roof repair west jordan",
+              "roof replacement west jordan",
+              "roofer west jordan"
+            ]
+          },
+          {
+            "name": "IKON Roofing",
+            "cid": "2386025596452446726",
+            "domain": "google.com",
+            "appearances": 2,
+            "numberOneQueries": 0,
+            "bestRank": 2,
+            "keywords": [
+              "roof replacement west jordan",
+              "roofer west jordan"
+            ]
+          }
+        ]
+      },
+      "queries": [
+        {
+          "queryId": "west-jordan-roofing-contractor",
+          "keyword": "roofing contractor west jordan",
+          "packState": "exact-cid-not-returned-in-pack",
+          "exactCidRank": null,
+          "numberOneEntity": {
+            "name": "West Jordan Roofing Solutions",
+            "cid": "12317812539198406731"
+          }
+        },
+        {
+          "queryId": "west-jordan-roof-repair",
+          "keyword": "roof repair west jordan",
+          "packState": "exact-cid-not-returned-in-pack",
+          "exactCidRank": null,
+          "numberOneEntity": {
+            "name": "West Jordan Roofing Solutions",
+            "cid": "12317812539198406731"
+          }
+        },
+        {
+          "queryId": "west-jordan-roof-replacement",
+          "keyword": "roof replacement west jordan",
+          "packState": "exact-cid-not-returned-in-pack",
+          "exactCidRank": null,
+          "numberOneEntity": {
+            "name": "Altitude Construction",
+            "cid": "419345804739202304"
+          }
+        },
+        {
+          "queryId": "west-jordan-roofer",
+          "keyword": "roofer west jordan",
+          "packState": "exact-cid-not-returned-in-pack",
+          "exactCidRank": null,
+          "numberOneEntity": {
+            "name": "West Jordan Roofing Solutions",
+            "cid": "12317812539198406731"
+          }
+        }
+      ],
+      "nextAction": "Obtain current owner-view service-area evidence for West Jordan and the read-only exact-CID profile audit; do not attach the Salt Lake CID to the city page or edit GBP unless a later reviewed scope is explicitly approved.",
+      "gates": {
+        "ownerEvidence": "frame-utah-slv-current-service-area-evidence-v1",
+        "exactCidReviewBaseline": "unmeasured",
+        "pageOrProfileMutation": "separate-reviewed-scope-and-explicit-owner-approval-required"
+      }
+    },
+    {
+      "city": "West Valley City",
+      "slug": "west-valley-city",
+      "page": "locations/west-valley-city.html",
+      "panelId": "utah-west-valley-city-google-v1",
+      "lane": "service-area-proof-before-exact-cid-planning",
+      "publicMutationAuthorized": false,
+      "googleRankingAxes": {
+        "relevance": {
+          "serviceAreaEvidence": "pending-current-profile-service-area-verification",
+          "pageIdentity": "heber-keystone-cid",
+          "exactCidOwnerProfileFields": "unmeasured-owner-view-audit-required",
+          "rule": "Use accurate, complete, real-world business information; a city keyword or website route is not profile evidence."
+        },
+        "distance": {
+          "state": "fixed-city-mobile-panel-measured-not-an-editable-ranking-lever",
+          "providerLocation": "West Valley City",
+          "rule": "Retain the fixed city/device panel and report what Google returns; do not create fake locations or duplicate profiles to manipulate distance."
+        },
+        "prominence": {
+          "exactCidReviews": "unmeasured",
+          "organicNumberOneQueries": [],
+          "ownedGoogleAiOverviewCitations": [],
+          "rule": "Measure genuine review strength and earned web authority separately; no incentives, gating, fabricated reviews, or paid ranking links."
+        }
+      },
+      "maps": {
+        "packsPresent": 4,
+        "packsAbsent": 0,
+        "exactCidReturned": 0,
+        "exactCidNumberOne": 0,
+        "exactCidRanks": [
+          null,
+          null,
+          null,
+          null
+        ],
+        "dominantDisplacers": [
+          {
+            "name": "Classic Roofing and Exteriors",
+            "cid": "10315170581426755444",
+            "domain": "google.com",
+            "appearances": 4,
+            "numberOneQueries": 3,
+            "bestRank": 1,
+            "keywords": [
+              "roofing contractor west valley city",
+              "roof repair west valley city",
+              "roof replacement west valley city",
+              "roofer west valley city"
+            ]
+          },
+          {
+            "name": "The Roof Doctor",
+            "cid": "16329927680093228178",
+            "domain": "google.com",
+            "appearances": 4,
+            "numberOneQueries": 1,
+            "bestRank": 1,
+            "keywords": [
+              "roofing contractor west valley city",
+              "roof repair west valley city",
+              "roof replacement west valley city",
+              "roofer west valley city"
+            ]
+          },
+          {
+            "name": "Roof-It, Inc.",
+            "cid": "14355335798757301774",
+            "domain": "google.com",
+            "appearances": 3,
+            "numberOneQueries": 0,
+            "bestRank": 3,
+            "keywords": [
+              "roofing contractor west valley city",
+              "roof repair west valley city",
+              "roof replacement west valley city"
+            ]
+          }
+        ]
+      },
+      "queries": [
+        {
+          "queryId": "west-valley-city-roofing-contractor",
+          "keyword": "roofing contractor west valley city",
+          "packState": "exact-cid-not-returned-in-pack",
+          "exactCidRank": null,
+          "numberOneEntity": {
+            "name": "Classic Roofing and Exteriors",
+            "cid": "10315170581426755444"
+          }
+        },
+        {
+          "queryId": "west-valley-city-roof-repair",
+          "keyword": "roof repair west valley city",
+          "packState": "exact-cid-not-returned-in-pack",
+          "exactCidRank": null,
+          "numberOneEntity": {
+            "name": "The Roof Doctor",
+            "cid": "16329927680093228178"
+          }
+        },
+        {
+          "queryId": "west-valley-city-roof-replacement",
+          "keyword": "roof replacement west valley city",
+          "packState": "exact-cid-not-returned-in-pack",
+          "exactCidRank": null,
+          "numberOneEntity": {
+            "name": "Classic Roofing and Exteriors",
+            "cid": "10315170581426755444"
+          }
+        },
+        {
+          "queryId": "west-valley-city-roofer",
+          "keyword": "roofer west valley city",
+          "packState": "exact-cid-not-returned-in-pack",
+          "exactCidRank": null,
+          "numberOneEntity": {
+            "name": "Classic Roofing and Exteriors",
+            "cid": "10315170581426755444"
+          }
+        }
+      ],
+      "nextAction": "Obtain current owner-view service-area evidence for West Valley City and the read-only exact-CID profile audit; do not attach the Salt Lake CID to the city page or edit GBP unless a later reviewed scope is explicitly approved.",
+      "gates": {
+        "ownerEvidence": "frame-utah-slv-current-service-area-evidence-v1",
+        "exactCidReviewBaseline": "unmeasured",
+        "pageOrProfileMutation": "separate-reviewed-scope-and-explicit-owner-approval-required"
+      }
+    }
+  ]
+}

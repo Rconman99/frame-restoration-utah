@@ -8,7 +8,9 @@ name: SEO loop (Utah)
 #   1. scripts/seo-snapshot.mjs — live-crawls www.framerestorationutah.com (real
 #      status codes, redirect chains, noindex, thin content) + pulls Google
 #      Search Console when the GSC_SERVICE_ACCOUNT_JSON secret exists, consumes
-#      the committed weekly DataForSEO matrix, and writes
+#      the committed six-city weekly DataForSEO matrix plus the twelve-city
+#      manual expansion baseline (read-only here; this workflow never buys
+#      additional SERPs), and writes
 #      data/seo/snapshots/<date>.json. A failed crawl writes NO
 #      snapshot and fails the job — a fabricated "0 issues" snapshot would
 #      read as a clean bill of health in tomorrow's diff.
@@ -58,7 +60,7 @@ jobs:
         with:
           node-version: '22'
       - name: Unit tests
-        run: node --test scripts/seo-diff.test.mjs scripts/seo-crawl.test.mjs scripts/lib/gsc.test.mjs scripts/seo-snapshot.test.mjs
+        run: node --test scripts/seo-diff.test.mjs scripts/seo-crawl.test.mjs scripts/lib/gsc.test.mjs scripts/lib/slv-gsc-attribution.test.mjs scripts/seo-snapshot.test.mjs
 
   measure:
     needs: test               # a broken differ must not get to write a snapshot
@@ -81,11 +83,34 @@ jobs:
       - name: Diff + readout (regressions first)
         run: node scripts/seo-diff.mjs | tee -a "$GITHUB_STEP_SUMMARY"
 
+      - name: Refresh the 18-city exact-query URL attribution ledger
+        run: |
+          npm run sync:slv-gsc-attribution
+          npm run sync:slv-expansion-architecture
+          npm run sync:slv-maps-readiness
+          npm run sync:slv-interventions
+          npm run sync:slv-execution-registry
+          npm run audit:slv-gsc-attribution
+          npm run audit:slv-expansion-architecture
+          npm run audit:slv-maps-readiness
+          npm run audit:slv-interventions
+          npm run audit:slv-execution-registry
+
+      - name: Add exact-query URL attribution summary
+        if: always()
+        run: |
+          jq -r '"### Salt Lake Valley exact-query URL attribution\n\n- Queries requested: \(.summary.requestedQueries)/72\n- Queries with returned rows: \(.summary.queriesWithRows)\n- Exact query→URL rows: \(.summary.exactRows)\n- Multi-URL queries requiring diagnosis: \(.summary.multiUrlIncludingIntendedQueries + .summary.alternateUrlOnlyQueries)\n- Missing/unreturned rows treated as zero: no\n- Public mutation: no"' data/rank-tracker/SLV-GSC-URL-ATTRIBUTION-LATEST.json >> "$GITHUB_STEP_SUMMARY"
+
       - name: Commit if changed
         run: |
           git config user.name "SEO Loop Bot"
           git config user.email "seo-loop-bot@framerestorationutah.com"
-          git add data/seo/
+          git add data/seo/ \
+            data/rank-tracker/SLV-GSC-URL-ATTRIBUTION-LATEST.json \
+            data/rank-tracker/SLV-EXPANSION-ARCHITECTURE-2026-08-12.json \
+            data/rank-tracker/SLV-MAPS-READINESS-2026-08-12.json \
+            data/rank-tracker/SLV-INTERVENTION-QUEUE-2026-08-12.json \
+            data/rank-tracker/SLV-EXECUTION-REGISTRY-2026-08-12.json
           if git diff --cached --quiet; then
             echo "no snapshot changes"
           else

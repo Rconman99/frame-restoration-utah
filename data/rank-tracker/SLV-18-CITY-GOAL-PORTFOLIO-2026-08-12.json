@@ -1,0 +1,879 @@
+{
+  "schemaVersion": 1,
+  "portfolioId": "frame-utah-salt-lake-valley-18-city-number-one-v1",
+  "market": "utah-salt-lake-valley",
+  "preparedAt": "2026-08-12T17:15:48Z",
+  "preparedFromCommit": "abb96cda25c47155f2484e96e432023eeeb47d55",
+  "status": "active-not-achieved",
+  "publicMutationPerformed": false,
+  "ultimateGoal": "Make Frame Restoration Utah the sustained top Google SEO/AEO roofing entity across every existing Salt Lake County city route in the approved portfolio, using fixed mobile panels and evidence-safe city pages.",
+  "cityCompletionContract": {
+    "organic": {
+      "queries": [
+        "roofing contractor {city}",
+        "roof repair {city}",
+        "roof replacement {city}",
+        "roofer {city}"
+      ],
+      "targetRank": 1,
+      "requiredConsecutiveWeeklyPanels": 4,
+      "rule": "All four fixed organic queries must rank exactly #1 in each of four consecutive weekly mobile panels, with the intended city page selected."
+    },
+    "maps": {
+      "queries": [
+        "roofing contractor {city}",
+        "roof repair {city}",
+        "roof replacement {city}",
+        "roofer {city}"
+      ],
+      "targetRank": 1,
+      "exactCid": "5689850818145735734",
+      "requiredConsecutiveWeeklyPanels": 4,
+      "rule": "Only unpaid local-pack matches to the exact verified Salt Lake Valley CID count; all four must rank #1 in each of four consecutive weekly panels."
+    },
+    "googleAiOverview": {
+      "target": "Frame owned-domain citation whenever an AI Overview is present",
+      "requiredConsecutiveWeeklyPanels": 4,
+      "rule": "Score citation coverage only over observed AI Overviews; a query with no overview is not a citation failure."
+    },
+    "consumerAi": {
+      "engines": [
+        "chatgpt",
+        "perplexity",
+        "gemini"
+      ],
+      "fixedPromptsPerCity": 3,
+      "target": "Frame is both named and cited in every response",
+      "requiredConsecutiveWeeklyPanels": 4,
+      "rule": "Invalid credentials, provider errors, or missing runs remain unmeasured and cannot satisfy or fail the goal."
+    },
+    "integrity": {
+      "required": true,
+      "rule": "No doorway pages, fabricated proof, unsupported claims, NAP drift, wrong-CID entity graph, or unapproved public/GBP mutation."
+    },
+    "completion": "A city reaches sustained goal only when organic, exact-CID Maps, Google AIO, consumer-AI, integrity, canonical, and intended-URL contracts all pass for the same uncontaminated 28-day window."
+  },
+  "portfolioScore": {
+    "citiesInPortfolio": 18,
+    "citiesWithGoogleBaseline": 18,
+    "citiesPendingFirstGoogleBaseline": 0,
+    "fixedOrganicTargets": 72,
+    "fixedOrganicTargetsMeasured": 72,
+    "fixedOrganicNumberOne": 2,
+    "exactCidMapsTargets": 72,
+    "exactCidMapsTargetsMeasured": 72,
+    "exactCidMapsNumberOne": 0,
+    "googleAiOverviewCitations": 2,
+    "googleAiOverviewsPresent": 4,
+    "consumerAiCompleteCityPanels": 0,
+    "citiesAtSustainedGoal": 0
+  },
+  "sources": {
+    "coreGoalProgram": "data/rank-tracker/SLV-CITY-GOAL-PROGRAM-2026-08-12.json",
+    "coreGoogleRegistry": "data/rank-tracker/panels.json",
+    "expansionGoogleRegistry": "data/rank-tracker/expansion-panels.json",
+    "expansionWorkflow": ".github/workflows/slv-expansion-baseline.yml",
+    "publicRemediationPacket": "data/authority/SLV-CITY-PUBLIC-REMEDIATION-PACKET-2026-08-12.json",
+    "millcreekScopeAmendment": "data/authority/MILLCREEK-PUBLIC-IDENTITY-SCOPE-AMENDMENT-2026-08-12.json",
+    "expansionIntegrityAudit": "data/authority/SLV-EXPANSION-INTEGRITY-AUDIT-2026-08-12.json",
+    "expansionPanelObservedAt": "2026-08-12T17:40:30.503Z",
+    "consumerAiLedger": "data/rank-tracker/SLV-CONSUMER-AI-LATEST.json"
+  },
+  "cohorts": {
+    "core": {
+      "cityCount": 6,
+      "cadence": "weekly",
+      "state": "baseline-measured",
+      "cityGoalIds": [
+        "slv-salt-lake-city-number-one-v1",
+        "slv-millcreek-number-one-v1",
+        "slv-sandy-number-one-v1",
+        "slv-holladay-number-one-v1",
+        "slv-cottonwood-heights-number-one-v1",
+        "slv-draper-number-one-v1"
+      ]
+    },
+    "expansion": {
+      "cityCount": 12,
+      "cadence": "manual-baseline-before-weekly-admission",
+      "estimatedOneTimeBaselineCostUsd": 0.1152,
+      "state": "first-manual-baseline-measured-not-yet-admitted-to-weekly-spend",
+      "admissionRule": "Run one complete manual baseline, validate all 48 results, classify integrity and route architecture, verify current service-area evidence separately, then explicitly approve any city for the recurring weekly registry.",
+      "cityGoalIds": [
+        "slv-bluffdale-number-one-v1",
+        "slv-herriman-number-one-v1",
+        "slv-kearns-number-one-v1",
+        "slv-magna-number-one-v1",
+        "slv-midvale-number-one-v1",
+        "slv-murray-number-one-v1",
+        "slv-riverton-number-one-v1",
+        "slv-south-jordan-number-one-v1",
+        "slv-south-salt-lake-number-one-v1",
+        "slv-taylorsville-number-one-v1",
+        "slv-west-jordan-number-one-v1",
+        "slv-west-valley-city-number-one-v1"
+      ]
+    }
+  },
+  "cityGoals": [
+    {
+      "priority": 0,
+      "goalId": "slv-salt-lake-city-number-one-v1",
+      "city": "Salt Lake City",
+      "slug": "salt-lake-city",
+      "page": "locations/salt-lake-city.html",
+      "panelId": "utah-salt-lake-city-google-v1",
+      "cohort": "core-measured",
+      "measurementStatus": "measured",
+      "identityEvidence": "verified-profile-identity-city",
+      "serviceAreaStatus": "verified-profile-identity-city",
+      "current": {
+        "observedAt": "2026-08-12T14:18:10.297Z",
+        "organicRanks": [
+          null,
+          25,
+          19,
+          null
+        ],
+        "selectedOrganicUrls": [
+          null,
+          "https://www.framerestorationutah.com/locations/salt-lake-city",
+          "https://www.framerestorationutah.com/locations/salt-lake-city",
+          null
+        ],
+        "exactCidMapsRanks": [
+          null,
+          null,
+          null,
+          null
+        ],
+        "googleAiOverview": {
+          "present": 1,
+          "ownedCitations": 0
+        },
+        "consumerAi": "configured-scheduled-unmeasured-invalid-provider-credential"
+      },
+      "phase": "observe-existing-experiment",
+      "nextPermittedAction": "Run the fixed weekly Google panel and, after credential replacement, the fixed consumer-AI panel; do not change the page before 2026-09-09T04:40:58Z.",
+      "rankSource": "data/rank-tracker/latest.json"
+    },
+    {
+      "priority": 1,
+      "goalId": "slv-millcreek-number-one-v1",
+      "city": "Millcreek",
+      "slug": "millcreek",
+      "page": "locations/millcreek.html",
+      "panelId": "utah-millcreek-google-v1",
+      "cohort": "core-measured",
+      "measurementStatus": "measured",
+      "identityEvidence": "verified-profile-saved-service-area",
+      "serviceAreaStatus": "saved-service-area-observed",
+      "current": {
+        "observedAt": "2026-08-12T14:18:10.299Z",
+        "organicRanks": [
+          4,
+          4,
+          3,
+          5
+        ],
+        "selectedOrganicUrls": [
+          "https://www.framerestorationutah.com/locations/millcreek",
+          "https://www.framerestorationutah.com/locations/millcreek",
+          "https://www.framerestorationutah.com/locations/millcreek",
+          "https://www.framerestorationutah.com/locations/millcreek"
+        ],
+        "exactCidMapsRanks": [
+          null,
+          null,
+          null,
+          null
+        ],
+        "googleAiOverview": {
+          "present": 1,
+          "ownedCitations": 1
+        },
+        "consumerAi": "configured-scheduled-unmeasured-invalid-provider-credential"
+      },
+      "phase": "first-after-public-integrity-cleanup",
+      "nextPermittedAction": "Preserve the first AIO foothold, replace the consumer-AI key, and prepare the claim/identity cleanup; publish only after explicit approval and the full release gate.",
+      "rankSource": "data/rank-tracker/panels/millcreek/latest.json"
+    },
+    {
+      "priority": 2,
+      "goalId": "slv-sandy-number-one-v1",
+      "city": "Sandy",
+      "slug": "sandy",
+      "page": "locations/sandy.html",
+      "panelId": "utah-sandy-google-v1",
+      "cohort": "core-measured",
+      "measurementStatus": "measured",
+      "identityEvidence": "documented-slv-target-measurement-only",
+      "serviceAreaStatus": "pending-current-profile-service-area-verification",
+      "current": {
+        "observedAt": "2026-08-12T14:18:10.300Z",
+        "organicRanks": [
+          17,
+          13,
+          13,
+          11
+        ],
+        "selectedOrganicUrls": [
+          "https://www.framerestorationutah.com/locations/sandy",
+          "https://www.framerestorationutah.com/locations/sandy",
+          "https://www.framerestorationutah.com/locations/sandy",
+          "https://www.framerestorationutah.com/locations/sandy"
+        ],
+        "exactCidMapsRanks": [
+          null,
+          null,
+          null,
+          null
+        ],
+        "googleAiOverview": {
+          "present": 0,
+          "ownedCitations": 0
+        },
+        "consumerAi": "configured-manual-unmeasured-invalid-provider-credential"
+      },
+      "phase": "integrity-and-service-area-evidence",
+      "nextPermittedAction": "Measure weekly and prepare evidence-safe claim replacements; do not assert a city GBP or publish without explicit approval.",
+      "rankSource": "data/rank-tracker/panels/sandy/latest.json"
+    },
+    {
+      "priority": 3,
+      "goalId": "slv-holladay-number-one-v1",
+      "city": "Holladay",
+      "slug": "holladay",
+      "page": "locations/holladay.html",
+      "panelId": "utah-holladay-google-v1",
+      "cohort": "core-measured",
+      "measurementStatus": "measured",
+      "identityEvidence": "documented-slv-target-measurement-only",
+      "serviceAreaStatus": "pending-current-profile-service-area-verification",
+      "current": {
+        "observedAt": "2026-08-12T14:18:10.299Z",
+        "organicRanks": [
+          17,
+          10,
+          4,
+          12
+        ],
+        "selectedOrganicUrls": [
+          "https://www.framerestorationutah.com/locations/holladay",
+          "https://www.framerestorationutah.com/locations/holladay",
+          "https://www.framerestorationutah.com/locations/holladay",
+          "https://www.framerestorationutah.com/locations/holladay"
+        ],
+        "exactCidMapsRanks": [
+          null,
+          null,
+          null,
+          null
+        ],
+        "googleAiOverview": {
+          "present": 0,
+          "ownedCitations": 0
+        },
+        "consumerAi": "configured-manual-unmeasured-invalid-provider-credential"
+      },
+      "phase": "integrity-and-service-area-evidence",
+      "nextPermittedAction": "Protect the position-4 roof-replacement foothold while preparing removal of unverified city review/project attribution; publish only after explicit approval.",
+      "rankSource": "data/rank-tracker/panels/holladay/latest.json"
+    },
+    {
+      "priority": 4,
+      "goalId": "slv-cottonwood-heights-number-one-v1",
+      "city": "Cottonwood Heights",
+      "slug": "cottonwood-heights",
+      "page": "locations/cottonwood-heights.html",
+      "panelId": "utah-cottonwood-heights-google-v1",
+      "cohort": "core-measured",
+      "measurementStatus": "measured",
+      "identityEvidence": "documented-slv-target-measurement-only",
+      "serviceAreaStatus": "pending-current-profile-service-area-verification",
+      "current": {
+        "observedAt": "2026-08-12T14:18:10.299Z",
+        "organicRanks": [
+          15,
+          10,
+          15,
+          14
+        ],
+        "selectedOrganicUrls": [
+          "https://www.framerestorationutah.com/locations/cottonwood-heights",
+          "https://www.framerestorationutah.com/locations/cottonwood-heights",
+          "https://www.framerestorationutah.com/locations/cottonwood-heights",
+          "https://www.framerestorationutah.com/locations/cottonwood-heights"
+        ],
+        "exactCidMapsRanks": [
+          null,
+          null,
+          null,
+          null
+        ],
+        "googleAiOverview": {
+          "present": 0,
+          "ownedCitations": 0
+        },
+        "consumerAi": "configured-manual-unmeasured-invalid-provider-credential"
+      },
+      "phase": "integrity-and-service-area-evidence",
+      "nextPermittedAction": "Measure weekly and prepare evidence-safe local context without treating the neighborhood image as completed-project proof.",
+      "rankSource": "data/rank-tracker/panels/cottonwood-heights/latest.json"
+    },
+    {
+      "priority": 5,
+      "goalId": "slv-draper-number-one-v1",
+      "city": "Draper",
+      "slug": "draper",
+      "page": "locations/draper.html",
+      "panelId": "utah-draper-google-v1",
+      "cohort": "core-measured",
+      "measurementStatus": "measured",
+      "identityEvidence": "documented-slv-target-measurement-only",
+      "serviceAreaStatus": "pending-current-profile-service-area-verification",
+      "current": {
+        "observedAt": "2026-08-12T14:18:10.300Z",
+        "organicRanks": [
+          null,
+          null,
+          null,
+          null
+        ],
+        "selectedOrganicUrls": [
+          null,
+          null,
+          null,
+          null
+        ],
+        "exactCidMapsRanks": [
+          null,
+          null,
+          null,
+          null
+        ],
+        "googleAiOverview": {
+          "present": 0,
+          "ownedCitations": 0
+        },
+        "consumerAi": "configured-manual-unmeasured-invalid-provider-credential"
+      },
+      "phase": "architecture-diagnosis-and-integrity",
+      "nextPermittedAction": "Diagnose the main-page versus storm-route intent and internal-link architecture without editing public copy; preserve the storm route's existing search foothold.",
+      "rankSource": "data/rank-tracker/panels/draper/latest.json"
+    },
+    {
+      "priority": 6,
+      "goalId": "slv-bluffdale-number-one-v1",
+      "city": "Bluffdale",
+      "slug": "bluffdale",
+      "page": "locations/bluffdale.html",
+      "panelId": "utah-bluffdale-google-v1",
+      "cohort": "expansion-manual-baseline-measured",
+      "measurementStatus": "measured-not-yet-admitted-to-weekly-spend",
+      "identityEvidence": "existing-salt-lake-county-route-measurement-only",
+      "serviceAreaStatus": "pending-current-profile-service-area-verification",
+      "current": {
+        "observedAt": "2026-08-12T17:40:30.498Z",
+        "organicRanks": [
+          18,
+          11,
+          9,
+          17
+        ],
+        "selectedOrganicUrls": [
+          "https://www.framerestorationutah.com/locations/bluffdale",
+          "https://www.framerestorationutah.com/locations/bluffdale",
+          "https://www.framerestorationutah.com/locations/bluffdale",
+          "https://www.framerestorationutah.com/locations/bluffdale"
+        ],
+        "exactCidMapsRanks": [
+          null,
+          null,
+          null,
+          null
+        ],
+        "googleAiOverview": {
+          "present": 0,
+          "ownedCitations": 0
+        },
+        "consumerAi": "configured-manual-unmeasured-invalid-provider-credential"
+      },
+      "phase": "integrity-and-service-area-evidence-before-weekly-admission",
+      "nextPermittedAction": "Preserve measured organic and AIO footholds, complete evidence-safe integrity diagnosis, and verify current profile service-area evidence; do not edit public pages or assert a city GBP without explicit approval.",
+      "rankSource": "data/rank-tracker/expansion/bluffdale/latest.json"
+    },
+    {
+      "priority": 7,
+      "goalId": "slv-herriman-number-one-v1",
+      "city": "Herriman",
+      "slug": "herriman",
+      "page": "locations/herriman.html",
+      "panelId": "utah-herriman-google-v1",
+      "cohort": "expansion-manual-baseline-measured",
+      "measurementStatus": "measured-not-yet-admitted-to-weekly-spend",
+      "identityEvidence": "existing-salt-lake-county-route-measurement-only",
+      "serviceAreaStatus": "pending-current-profile-service-area-verification",
+      "current": {
+        "observedAt": "2026-08-12T17:40:30.500Z",
+        "organicRanks": [
+          22,
+          14,
+          12,
+          26
+        ],
+        "selectedOrganicUrls": [
+          "https://www.framerestorationutah.com/locations/herriman",
+          "https://www.framerestorationutah.com/locations/herriman",
+          "https://www.framerestorationutah.com/locations/herriman",
+          "https://www.framerestorationutah.com/locations/herriman"
+        ],
+        "exactCidMapsRanks": [
+          null,
+          null,
+          null,
+          null
+        ],
+        "googleAiOverview": {
+          "present": 0,
+          "ownedCitations": 0
+        },
+        "consumerAi": "configured-manual-unmeasured-invalid-provider-credential"
+      },
+      "phase": "integrity-and-service-area-evidence-before-weekly-admission",
+      "nextPermittedAction": "Preserve measured organic and AIO footholds, complete evidence-safe integrity diagnosis, and verify current profile service-area evidence; do not edit public pages or assert a city GBP without explicit approval.",
+      "rankSource": "data/rank-tracker/expansion/herriman/latest.json"
+    },
+    {
+      "priority": 8,
+      "goalId": "slv-kearns-number-one-v1",
+      "city": "Kearns",
+      "slug": "kearns",
+      "page": "locations/kearns.html",
+      "panelId": "utah-kearns-google-v1",
+      "cohort": "expansion-manual-baseline-measured",
+      "measurementStatus": "measured-not-yet-admitted-to-weekly-spend",
+      "identityEvidence": "existing-salt-lake-county-route-measurement-only",
+      "serviceAreaStatus": "pending-current-profile-service-area-verification",
+      "current": {
+        "observedAt": "2026-08-12T17:40:30.500Z",
+        "organicRanks": [
+          14,
+          8,
+          1,
+          10
+        ],
+        "selectedOrganicUrls": [
+          "https://www.framerestorationutah.com/locations/kearns",
+          "https://www.framerestorationutah.com/locations/kearns",
+          "https://www.framerestorationutah.com/locations/kearns",
+          "https://www.framerestorationutah.com/locations/kearns"
+        ],
+        "exactCidMapsRanks": [
+          null,
+          null,
+          null,
+          null
+        ],
+        "googleAiOverview": {
+          "present": 0,
+          "ownedCitations": 0
+        },
+        "consumerAi": "configured-manual-unmeasured-invalid-provider-credential"
+      },
+      "phase": "integrity-and-service-area-evidence-before-weekly-admission",
+      "nextPermittedAction": "Preserve measured organic and AIO footholds, complete evidence-safe integrity diagnosis, and verify current profile service-area evidence; do not edit public pages or assert a city GBP without explicit approval.",
+      "rankSource": "data/rank-tracker/expansion/kearns/latest.json"
+    },
+    {
+      "priority": 9,
+      "goalId": "slv-magna-number-one-v1",
+      "city": "Magna",
+      "slug": "magna",
+      "page": "locations/magna.html",
+      "panelId": "utah-magna-google-v1",
+      "cohort": "expansion-manual-baseline-measured",
+      "measurementStatus": "measured-not-yet-admitted-to-weekly-spend",
+      "identityEvidence": "existing-salt-lake-county-route-measurement-only",
+      "serviceAreaStatus": "pending-current-profile-service-area-verification",
+      "current": {
+        "observedAt": "2026-08-12T17:40:30.501Z",
+        "organicRanks": [
+          7,
+          2,
+          1,
+          3
+        ],
+        "selectedOrganicUrls": [
+          "https://www.framerestorationutah.com/locations/magna",
+          "https://www.framerestorationutah.com/locations/magna",
+          "https://www.framerestorationutah.com/locations/magna",
+          "https://www.framerestorationutah.com/locations/magna"
+        ],
+        "exactCidMapsRanks": [
+          null,
+          null,
+          null,
+          null
+        ],
+        "googleAiOverview": {
+          "present": 1,
+          "ownedCitations": 1
+        },
+        "consumerAi": "configured-manual-unmeasured-invalid-provider-credential"
+      },
+      "phase": "integrity-and-service-area-evidence-before-weekly-admission",
+      "nextPermittedAction": "Preserve measured organic and AIO footholds, complete evidence-safe integrity diagnosis, and verify current profile service-area evidence; do not edit public pages or assert a city GBP without explicit approval.",
+      "rankSource": "data/rank-tracker/expansion/magna/latest.json"
+    },
+    {
+      "priority": 10,
+      "goalId": "slv-midvale-number-one-v1",
+      "city": "Midvale",
+      "slug": "midvale",
+      "page": "locations/midvale.html",
+      "panelId": "utah-midvale-google-v1",
+      "cohort": "expansion-manual-baseline-measured",
+      "measurementStatus": "measured-not-yet-admitted-to-weekly-spend",
+      "identityEvidence": "existing-salt-lake-county-route-measurement-only",
+      "serviceAreaStatus": "pending-current-profile-service-area-verification",
+      "current": {
+        "observedAt": "2026-08-12T17:40:30.501Z",
+        "organicRanks": [
+          18,
+          15,
+          10,
+          16
+        ],
+        "selectedOrganicUrls": [
+          "https://www.framerestorationutah.com/locations/midvale",
+          "https://www.framerestorationutah.com/locations/midvale",
+          "https://www.framerestorationutah.com/locations/midvale",
+          "https://www.framerestorationutah.com/locations/midvale"
+        ],
+        "exactCidMapsRanks": [
+          null,
+          null,
+          null,
+          null
+        ],
+        "googleAiOverview": {
+          "present": 0,
+          "ownedCitations": 0
+        },
+        "consumerAi": "configured-manual-unmeasured-invalid-provider-credential"
+      },
+      "phase": "integrity-and-service-area-evidence-before-weekly-admission",
+      "nextPermittedAction": "Preserve measured organic and AIO footholds, complete evidence-safe integrity diagnosis, and verify current profile service-area evidence; do not edit public pages or assert a city GBP without explicit approval.",
+      "rankSource": "data/rank-tracker/expansion/midvale/latest.json"
+    },
+    {
+      "priority": 11,
+      "goalId": "slv-murray-number-one-v1",
+      "city": "Murray",
+      "slug": "murray",
+      "page": "locations/murray.html",
+      "panelId": "utah-murray-google-v1",
+      "cohort": "expansion-manual-baseline-measured",
+      "measurementStatus": "measured-not-yet-admitted-to-weekly-spend",
+      "identityEvidence": "existing-salt-lake-county-route-measurement-only",
+      "serviceAreaStatus": "pending-current-profile-service-area-verification",
+      "current": {
+        "observedAt": "2026-08-12T17:40:30.501Z",
+        "organicRanks": [
+          12,
+          7,
+          4,
+          8
+        ],
+        "selectedOrganicUrls": [
+          "https://www.framerestorationutah.com/locations/murray",
+          "https://www.framerestorationutah.com/locations/murray",
+          "https://www.framerestorationutah.com/locations/murray",
+          "https://www.framerestorationutah.com/locations/murray"
+        ],
+        "exactCidMapsRanks": [
+          null,
+          null,
+          null,
+          null
+        ],
+        "googleAiOverview": {
+          "present": 0,
+          "ownedCitations": 0
+        },
+        "consumerAi": "configured-manual-unmeasured-invalid-provider-credential"
+      },
+      "phase": "integrity-and-service-area-evidence-before-weekly-admission",
+      "nextPermittedAction": "Preserve measured organic and AIO footholds, complete evidence-safe integrity diagnosis, and verify current profile service-area evidence; do not edit public pages or assert a city GBP without explicit approval.",
+      "rankSource": "data/rank-tracker/expansion/murray/latest.json"
+    },
+    {
+      "priority": 12,
+      "goalId": "slv-riverton-number-one-v1",
+      "city": "Riverton",
+      "slug": "riverton",
+      "page": "locations/riverton.html",
+      "panelId": "utah-riverton-google-v1",
+      "cohort": "expansion-manual-baseline-measured",
+      "measurementStatus": "measured-not-yet-admitted-to-weekly-spend",
+      "identityEvidence": "existing-salt-lake-county-route-measurement-only",
+      "serviceAreaStatus": "pending-current-profile-service-area-verification",
+      "current": {
+        "observedAt": "2026-08-12T17:40:30.501Z",
+        "organicRanks": [
+          null,
+          4,
+          7,
+          10
+        ],
+        "selectedOrganicUrls": [
+          null,
+          "https://www.framerestorationutah.com/locations/riverton",
+          "https://www.framerestorationutah.com/locations/riverton",
+          "https://www.framerestorationutah.com/locations/riverton"
+        ],
+        "exactCidMapsRanks": [
+          null,
+          null,
+          null,
+          null
+        ],
+        "googleAiOverview": {
+          "present": 0,
+          "ownedCitations": 0
+        },
+        "consumerAi": "configured-manual-unmeasured-invalid-provider-credential"
+      },
+      "phase": "integrity-and-service-area-evidence-before-weekly-admission",
+      "nextPermittedAction": "Preserve measured organic and AIO footholds, complete evidence-safe integrity diagnosis, and verify current profile service-area evidence; do not edit public pages or assert a city GBP without explicit approval.",
+      "rankSource": "data/rank-tracker/expansion/riverton/latest.json"
+    },
+    {
+      "priority": 13,
+      "goalId": "slv-south-jordan-number-one-v1",
+      "city": "South Jordan",
+      "slug": "south-jordan",
+      "page": "locations/south-jordan.html",
+      "panelId": "utah-south-jordan-google-v1",
+      "cohort": "expansion-manual-baseline-measured",
+      "measurementStatus": "measured-not-yet-admitted-to-weekly-spend",
+      "identityEvidence": "existing-salt-lake-county-route-measurement-only",
+      "serviceAreaStatus": "pending-current-profile-service-area-verification",
+      "current": {
+        "observedAt": "2026-08-12T17:40:30.502Z",
+        "organicRanks": [
+          16,
+          8,
+          4,
+          12
+        ],
+        "selectedOrganicUrls": [
+          "https://www.framerestorationutah.com/locations/south-jordan",
+          "https://www.framerestorationutah.com/locations/south-jordan",
+          "https://www.framerestorationutah.com/locations/south-jordan",
+          "https://www.framerestorationutah.com/locations/south-jordan"
+        ],
+        "exactCidMapsRanks": [
+          null,
+          null,
+          null,
+          null
+        ],
+        "googleAiOverview": {
+          "present": 0,
+          "ownedCitations": 0
+        },
+        "consumerAi": "configured-manual-unmeasured-invalid-provider-credential"
+      },
+      "phase": "integrity-and-service-area-evidence-before-weekly-admission",
+      "nextPermittedAction": "Preserve measured organic and AIO footholds, complete evidence-safe integrity diagnosis, and verify current profile service-area evidence; do not edit public pages or assert a city GBP without explicit approval.",
+      "rankSource": "data/rank-tracker/expansion/south-jordan/latest.json"
+    },
+    {
+      "priority": 14,
+      "goalId": "slv-south-salt-lake-number-one-v1",
+      "city": "South Salt Lake",
+      "slug": "south-salt-lake",
+      "page": "locations/south-salt-lake.html",
+      "panelId": "utah-south-salt-lake-google-v1",
+      "cohort": "expansion-manual-baseline-measured",
+      "measurementStatus": "measured-not-yet-admitted-to-weekly-spend",
+      "identityEvidence": "existing-salt-lake-county-route-measurement-only",
+      "serviceAreaStatus": "pending-current-profile-service-area-verification",
+      "current": {
+        "observedAt": "2026-08-12T17:40:30.502Z",
+        "organicRanks": [
+          null,
+          14,
+          12,
+          null
+        ],
+        "selectedOrganicUrls": [
+          null,
+          "https://www.framerestorationutah.com/locations/south-salt-lake",
+          "https://www.framerestorationutah.com/locations/south-salt-lake",
+          null
+        ],
+        "exactCidMapsRanks": [
+          null,
+          null,
+          null,
+          null
+        ],
+        "googleAiOverview": {
+          "present": 1,
+          "ownedCitations": 0
+        },
+        "consumerAi": "configured-manual-unmeasured-invalid-provider-credential"
+      },
+      "phase": "integrity-and-service-area-evidence-before-weekly-admission",
+      "nextPermittedAction": "Preserve measured organic and AIO footholds, complete evidence-safe integrity diagnosis, and verify current profile service-area evidence; do not edit public pages or assert a city GBP without explicit approval.",
+      "rankSource": "data/rank-tracker/expansion/south-salt-lake/latest.json"
+    },
+    {
+      "priority": 15,
+      "goalId": "slv-taylorsville-number-one-v1",
+      "city": "Taylorsville",
+      "slug": "taylorsville",
+      "page": "locations/taylorsville.html",
+      "panelId": "utah-taylorsville-google-v1",
+      "cohort": "expansion-manual-baseline-measured",
+      "measurementStatus": "measured-not-yet-admitted-to-weekly-spend",
+      "identityEvidence": "existing-salt-lake-county-route-measurement-only",
+      "serviceAreaStatus": "pending-current-profile-service-area-verification",
+      "current": {
+        "observedAt": "2026-08-12T17:40:30.503Z",
+        "organicRanks": [
+          15,
+          7,
+          10,
+          18
+        ],
+        "selectedOrganicUrls": [
+          "https://www.framerestorationutah.com/locations/taylorsville",
+          "https://www.framerestorationutah.com/locations/taylorsville",
+          "https://www.framerestorationutah.com/locations/taylorsville",
+          "https://www.framerestorationutah.com/locations/taylorsville"
+        ],
+        "exactCidMapsRanks": [
+          null,
+          null,
+          null,
+          null
+        ],
+        "googleAiOverview": {
+          "present": 0,
+          "ownedCitations": 0
+        },
+        "consumerAi": "configured-manual-unmeasured-invalid-provider-credential"
+      },
+      "phase": "integrity-and-service-area-evidence-before-weekly-admission",
+      "nextPermittedAction": "Preserve measured organic and AIO footholds, complete evidence-safe integrity diagnosis, and verify current profile service-area evidence; do not edit public pages or assert a city GBP without explicit approval.",
+      "rankSource": "data/rank-tracker/expansion/taylorsville/latest.json"
+    },
+    {
+      "priority": 16,
+      "goalId": "slv-west-jordan-number-one-v1",
+      "city": "West Jordan",
+      "slug": "west-jordan",
+      "page": "locations/west-jordan.html",
+      "panelId": "utah-west-jordan-google-v1",
+      "cohort": "expansion-manual-baseline-measured",
+      "measurementStatus": "measured-not-yet-admitted-to-weekly-spend",
+      "identityEvidence": "existing-salt-lake-county-route-measurement-only",
+      "serviceAreaStatus": "pending-current-profile-service-area-verification",
+      "current": {
+        "observedAt": "2026-08-12T17:40:30.503Z",
+        "organicRanks": [
+          null,
+          19,
+          14,
+          null
+        ],
+        "selectedOrganicUrls": [
+          null,
+          "https://www.framerestorationutah.com/locations/west-jordan",
+          "https://www.framerestorationutah.com/locations/west-jordan",
+          null
+        ],
+        "exactCidMapsRanks": [
+          null,
+          null,
+          null,
+          null
+        ],
+        "googleAiOverview": {
+          "present": 0,
+          "ownedCitations": 0
+        },
+        "consumerAi": "configured-manual-unmeasured-invalid-provider-credential"
+      },
+      "phase": "integrity-and-service-area-evidence-before-weekly-admission",
+      "nextPermittedAction": "Preserve measured organic and AIO footholds, complete evidence-safe integrity diagnosis, and verify current profile service-area evidence; do not edit public pages or assert a city GBP without explicit approval.",
+      "rankSource": "data/rank-tracker/expansion/west-jordan/latest.json"
+    },
+    {
+      "priority": 17,
+      "goalId": "slv-west-valley-city-number-one-v1",
+      "city": "West Valley City",
+      "slug": "west-valley-city",
+      "page": "locations/west-valley-city.html",
+      "panelId": "utah-west-valley-city-google-v1",
+      "cohort": "expansion-manual-baseline-measured",
+      "measurementStatus": "measured-not-yet-admitted-to-weekly-spend",
+      "identityEvidence": "existing-salt-lake-county-route-measurement-only",
+      "serviceAreaStatus": "pending-current-profile-service-area-verification",
+      "current": {
+        "observedAt": "2026-08-12T17:40:30.503Z",
+        "organicRanks": [
+          21,
+          16,
+          11,
+          16
+        ],
+        "selectedOrganicUrls": [
+          "https://www.framerestorationutah.com/locations/west-valley-city",
+          "https://www.framerestorationutah.com/locations/west-valley-city",
+          "https://www.framerestorationutah.com/locations/west-valley-city",
+          "https://www.framerestorationutah.com/locations/west-valley-city"
+        ],
+        "exactCidMapsRanks": [
+          null,
+          null,
+          null,
+          null
+        ],
+        "googleAiOverview": {
+          "present": 0,
+          "ownedCitations": 0
+        },
+        "consumerAi": "configured-manual-unmeasured-invalid-provider-credential"
+      },
+      "phase": "integrity-and-service-area-evidence-before-weekly-admission",
+      "nextPermittedAction": "Preserve measured organic and AIO footholds, complete evidence-safe integrity diagnosis, and verify current profile service-area evidence; do not edit public pages or assert a city GBP without explicit approval.",
+      "rankSource": "data/rank-tracker/expansion/west-valley-city/latest.json"
+    }
+  ],
+  "gates": {
+    "publicCleanup": "explicit-owner-approval-required",
+    "consumerAiCredential": "owner-action-required-valid-Bright-Data-user-API-key",
+    "businessDriveEvidence": "owner-action-required-business-account-connector",
+    "duplicateVercelIntegration": "external-owner-team-rate-limited-and-unresolved",
+    "saltLakeCityExperiment": "hold-until-2026-09-09T04:40:58Z",
+    "expansionAdmission": "manual-baseline-plus-city-integrity-and-service-area-evidence-before-recurring-spend",
+    "expansionIntegrity": "73-blocking-finding-classes-across-12-pages-cleanup-requires-separate-owner-approved-scope"
+  },
+  "prohibited": [
+    "doorway pages",
+    "fabricated reviews or project proof",
+    "NAP drift",
+    "unsupported claims",
+    "unapproved GBP, directory, indexing, outreach, or public-page mutations",
+    "declaring success from one observation or an incomplete panel",
+    "treating an unmeasured expansion city as zero",
+    "automatically admitting expansion cities to recurring weekly spend",
+    "applying the verified Salt Lake Valley entity graph to a city without registered evidence",
+    "declaring the 18-city portfolio complete while any city goal is missing or outside its sustained window"
+  ]
+}

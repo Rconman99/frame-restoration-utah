@@ -1,0 +1,1993 @@
+{
+  "schemaVersion": 1,
+  "registryId": "frame-utah-slv-18-city-execution-v1",
+  "market": "utah-salt-lake-valley",
+  "preparedAt": "2026-08-12T20:48:46.000Z",
+  "status": "active-goal-execution-gated",
+  "publicMutationPerformed": false,
+  "score": {
+    "citiesInPortfolio": 18,
+    "citiesWithGoogleBaseline": 18,
+    "citiesPendingFirstGoogleBaseline": 0,
+    "fixedOrganicTargets": 72,
+    "fixedOrganicTargetsMeasured": 72,
+    "fixedOrganicNumberOne": 2,
+    "exactCidMapsTargets": 72,
+    "exactCidMapsTargetsMeasured": 72,
+    "exactCidMapsNumberOne": 0,
+    "googleAiOverviewCitations": 2,
+    "googleAiOverviewsPresent": 4,
+    "consumerAiCompleteCityPanels": 0,
+    "citiesAtSustainedGoal": 0
+  },
+  "sources": {
+    "portfolio": {
+      "file": "data/rank-tracker/SLV-18-CITY-GOAL-PORTFOLIO-2026-08-12.json",
+      "sha256": "5782534f715e91f7683aeb6ef258ab88b5b39e0bcc44fd702bf2e65e655264c3"
+    },
+    "corePriority": {
+      "file": "data/rank-tracker/SLV-PRIORITY-2026-08-12.json",
+      "sha256": "c2711c76ec60ba1668c75660bb4ead6524811e6818485220e68ad2de8d647bff"
+    },
+    "expansionPriority": {
+      "file": "data/rank-tracker/SLV-EXPANSION-PRIORITY-2026-08-12.json",
+      "sha256": "6351f421eaf34d7de8a36544218b609f5bffd09f45a43ba99344a3a422e43542"
+    },
+    "displacement": {
+      "file": "data/rank-tracker/SLV-COMPETITOR-DISPLACEMENT-2026-08-12.json",
+      "sha256": "aed18abd061963d5dd0280dc7575060640daa9f89e98bd77a91dca80a449ef7a"
+    },
+    "coreCleanupPacket": {
+      "file": "data/authority/SLV-CITY-PUBLIC-REMEDIATION-PACKET-2026-08-12.json",
+      "sha256": "b1616942e2e46f33a847d75a9fc75a084585983c91f444ade1ebd84d11b69333"
+    },
+    "millcreekAmendment": {
+      "file": "data/authority/MILLCREEK-PUBLIC-IDENTITY-SCOPE-AMENDMENT-2026-08-12.json",
+      "sha256": "68a5057dea22bfadc84dc888459adeffc9912ff625f8254b28c9059099f6e17d"
+    },
+    "expansionCleanupPacket": {
+      "file": "data/authority/SLV-EXPANSION-PUBLIC-REMEDIATION-PACKET-2026-08-12.json",
+      "sha256": "44b72b3e8ea4d2605e8cd4562fbd4f7ff3233ce07dee46a2ef3a3a8ff8e187c6"
+    },
+    "expansionArchitecture": {
+      "file": "data/rank-tracker/SLV-EXPANSION-ARCHITECTURE-2026-08-12.json",
+      "sha256": "583b9a8299b776ede28a3c8935bd4ec82d23fe06dffd8b4865390b2dff92c14d"
+    },
+    "entityHealth": {
+      "file": "data/rank-tracker/SLV-ENTITY-HEALTH-2026-08-12.json",
+      "sha256": "780e654065caa082745073d6d12f2249153cacc9e45614162f649fabff2f5f04"
+    },
+    "weeklyDecisions": {
+      "file": "data/rank-tracker/SLV-WEEKLY-DECISIONS-2026-08-12.json",
+      "sha256": "7fdd84a94fe2718408b8bb387b4d0b6a63cb5996bd19c154635db5d77918fb77"
+    },
+    "gscAttribution": {
+      "file": "data/rank-tracker/SLV-GSC-URL-ATTRIBUTION-LATEST.json",
+      "sha256": "2cb15e4921ebd6b4bee98435b824dbfad1ddf7ecc6d9839284552019e3467f04"
+    },
+    "consumerAi": {
+      "file": "data/rank-tracker/SLV-CONSUMER-AI-LATEST.json",
+      "sha256": "355f34d51267a942614cd7bd86e60daa4ae35fad3aa8f449413095ca5709377f"
+    },
+    "interventions": {
+      "file": "data/rank-tracker/SLV-INTERVENTION-QUEUE-2026-08-12.json",
+      "sha256": "689199630124aa7fea495222778b9de4adba570a5348244f51b8e1ccffa87c54"
+    },
+    "mapsReadiness": {
+      "file": "data/rank-tracker/SLV-MAPS-READINESS-2026-08-12.json",
+      "sha256": "4ffa3c72d26abbc232e465a4adf34d067459df047eb6e8b80a48117e7b3ea88c"
+    },
+    "ownerProfileAuditRequest": {
+      "file": "data/authority/SLV-GBP-OWNER-AUDIT-REQUEST-2026-08-12.json",
+      "sha256": "88e701fc0438260e4249a4b38ebb6e872dd454c2389a21311e67210b1ca0777d"
+    },
+    "businessDriveReceipt": {
+      "file": "data/rank-tracker/evidence/SLV-BUSINESS-DRIVE-CONNECTOR-2026-08-12.json",
+      "sha256": "431dce98c54cfe390c111412df7b653b5940f70becf896064f3298cef5cc5260"
+    }
+  },
+  "externalEvidence": {
+    "businessDriveReceipt": "data/rank-tracker/evidence/SLV-BUSINESS-DRIVE-CONNECTOR-2026-08-12.json",
+    "externalBusinessDriveReceiptSha256": "c1ef99c795d7932d4497ab30395ab753720b1f7c88326e1d588da604cdb03951"
+  },
+  "consumerAiConfiguration": {
+    "repository": "Rconman99/geo-aeo-tracker",
+    "pullRequest": "https://github.com/Rconman99/geo-aeo-tracker/pull/4",
+    "reviewedHeadSha": "59c513ef99e307f51becb74a975e7ced4a97ec15",
+    "squashMergeSha": "cdb05834e8dc9ab641dc67cefa16c35dd0bbfdd6",
+    "mergedAt": "2026-08-12T18:15:39Z",
+    "deploymentId": "dpl_2vFobCKzCY3vmLctDtYXNJ9vAEts",
+    "deploymentUrl": "https://geo-aeo-tracker-kiscc4eph-ryans-projects-51d84217.vercel.app",
+    "deploymentTarget": "production",
+    "deploymentStatus": "READY",
+    "deploymentVerifiedAt": "2026-08-12T18:16:20Z",
+    "configuredCities": 18,
+    "boundedProviderPromptRows": 162,
+    "automaticallyScheduledCities": [
+      "Salt Lake City",
+      "Millcreek"
+    ],
+    "citiesWithCompleteReading": 0,
+    "comparableWeeklyPanels": 0,
+    "citiesAtFourWeekConsumerAiTarget": 0,
+    "state": "configuration-live-measurement-blocked-invalid-provider-key"
+  },
+  "systemActions": [
+    {
+      "id": "land-diagnosis-bundle",
+      "class": "system-fixable-after-clean-ci",
+      "state": "waiting-on-duplicate-vercel-rate-limit",
+      "nextCheckAfter": "2026-08-13T17:02:21Z",
+      "decision": "Do not push or merge another branch while the stale frameroofingutah Vercel integration is producing a blocking failure; recheck after its stated 24-hour retry window."
+    },
+    {
+      "id": "targeted-gsc-72-query-read",
+      "class": "system-fixable-after-bundle-lands",
+      "state": "workflow-ready-partial-baseline",
+      "source": "data/rank-tracker/SLV-GSC-URL-ATTRIBUTION-LATEST.json",
+      "workflowTargetQueries": 72,
+      "requestedQueries": 24,
+      "decision": "The main-only SEO workflow will target and classify all 72 queries after this code lands; the existing partial baseline remains unmeasured for unrequested queries, not zero."
+    },
+    {
+      "id": "weekly-core-google-panel",
+      "class": "system-fixable-scheduled",
+      "state": "active-six-city-weekly",
+      "decision": "Keep the six core-city fixed panel weekly; do not silently add twelve recurring paid panels without explicit admission."
+    },
+    {
+      "id": "weekly-expansion-google-panel",
+      "class": "owner-spend-approval-needed",
+      "state": "manual-baseline-complete-not-admitted",
+      "estimatedCompleteWeeklyCostUsd": 0.1152,
+      "decision": "The first 12-city baseline is complete; recurring weekly provider spend remains unapproved."
+    },
+    {
+      "id": "salt-lake-valley-review-baseline",
+      "class": "system-fixable-after-bundle-lands",
+      "state": "exact-cid-unmeasured-cross-profile-fallback-now-fail-closed",
+      "targetCid": "5689850818145735734",
+      "decision": "Use the existing valid GitHub DataForSEO credentials after this safeguard lands; never count the Heber 34-review export as Salt Lake Valley evidence."
+    },
+    {
+      "id": "city-editorial-evidence-gaps",
+      "class": "evidence-dependent-public-work",
+      "state": "five-gaps-pinned-no-thin-content",
+      "cities": [
+        "Kearns",
+        "Magna",
+        "Midvale",
+        "South Salt Lake",
+        "Taylorsville"
+      ],
+      "decision": "Add city-specific editorial support only when real local evidence exists and the public release and doorway-page gates pass; protect Magna and Kearns ranking footholds."
+    },
+    {
+      "id": "weekly-keep-revert-decisions",
+      "class": "system-fixable-on-measurement-cadence",
+      "state": "active-no-premature-ranking-verdicts",
+      "source": "data/rank-tracker/SLV-WEEKLY-DECISIONS-2026-08-12.json",
+      "decision": "Keep the required SLC factual correction, hold all 18 ranking lanes until their comparable evidence contracts are satisfied, and preserve the Magna/Kearns #1 footholds."
+    },
+    {
+      "id": "evidence-ranked-city-interventions",
+      "class": "system-fixable-on-evidence-refresh",
+      "state": "active-no-public-authorization",
+      "source": "data/rank-tracker/SLV-INTERVENTION-QUEUE-2026-08-12.json",
+      "decision": "Re-rank each city's next action after every complete Google, GSC, review, entity-health, or consumer-AI refresh; protect existing footholds and preserve every explicit evidence and owner gate."
+    },
+    {
+      "id": "exact-cid-maps-readiness",
+      "class": "system-fixable-on-evidence-refresh",
+      "state": "owner-evidence-and-exact-cid-review-baselines-needed",
+      "source": "data/rank-tracker/SLV-MAPS-READINESS-2026-08-12.json",
+      "exactCidReturned": 0,
+      "citiesPendingServiceAreaEvidence": 16,
+      "decision": "Use Google's relevance, distance, and prominence model per city; measure distance, verify relevance facts, and earn prominence without fake locations, duplicate profiles, name/category stuffing, or review manipulation."
+    }
+  ],
+  "connectionNeeded": [
+    {
+      "id": "business-drive-connector",
+      "state": "blocked-with-proof",
+      "requiredAccount": "ryan@framerestorations.com",
+      "observedAccount": "ryanconwell99@gmail.com",
+      "receipt": "data/rank-tracker/evidence/SLV-BUSINESS-DRIVE-CONNECTOR-2026-08-12.json",
+      "receiptSha256": "431dce98c54cfe390c111412df7b653b5940f70becf896064f3298cef5cc5260",
+      "externalSourceReceiptSha256": "c1ef99c795d7932d4497ab30395ab753720b1f7c88326e1d588da604cdb03951",
+      "action": "Reconnect the claude.ai Google Drive connector to ryan@framerestorations.com, then rerun the read-only evidence audit."
+    },
+    {
+      "id": "consumer-ai-provider-key",
+      "state": "blocked-invalid-existing-secret",
+      "secretName": "BRIGHT_DATA_KEY",
+      "lastObservedSecretUpdatedAt": "2026-08-12T15:02:01Z",
+      "failedRun": "https://github.com/Rconman99/geo-aeo-tracker/actions/runs/31610098484",
+      "action": "Replace the existing GitHub secret with a valid Bright Data user API key from the Bright Data user settings page; rerun only after the secret timestamp changes."
+    }
+  ],
+  "ownerApprovalsNeeded": [
+    {
+      "id": "core-five-page-and-millcreek-child-cleanup",
+      "exactPhrase": "I explicitly approve editing and publishing the five-page integrity cleanup defined in PR #242 and the Millcreek storm-child identity correction defined in the pinned Millcreek scope amendment.",
+      "scope": [
+        "frame-utah-slv-five-page-public-integrity-cleanup-v1",
+        "frame-utah-millcreek-nested-identity-scope-v1"
+      ],
+      "publicMutationPerformed": false
+    },
+    {
+      "id": "expansion-twelve-page-cleanup",
+      "exactPhrase": "I explicitly approve editing and publishing the 12-page Salt Lake Valley expansion integrity cleanup defined in packet frame-utah-slv-twelve-page-expansion-public-integrity-cleanup-v1, with expansion identities, titles, H1s, canonicals, and protected related routes unchanged.",
+      "scope": [
+        "frame-utah-slv-twelve-page-expansion-public-integrity-cleanup-v1"
+      ],
+      "publicMutationPerformed": false
+    },
+    {
+      "id": "expansion-weekly-spend",
+      "exactPhrase": null,
+      "scope": [
+        "Admit the complete 12-city/48-query expansion panel to weekly DataForSEO task-queue runs at an estimated $0.1152 per complete run."
+      ],
+      "publicMutationPerformed": false
+    }
+  ],
+  "ownerEvidenceNeeded": [
+    {
+      "id": "frame-utah-slv-exact-cid-owner-profile-audit-v1",
+      "state": "draft-only-not-sent",
+      "file": "data/authority/SLV-GBP-OWNER-AUDIT-REQUEST-2026-08-12.json",
+      "publicMutationPerformed": false
+    },
+    {
+      "id": "frame-utah-slv-current-service-area-evidence-v1",
+      "state": "ready-not-sent",
+      "file": "data/authority/SLV-SERVICE-AREA-EVIDENCE-REQUEST-2026-08-12.json",
+      "cities": 16,
+      "publicMutationPerformed": false
+    }
+  ],
+  "prohibited": [
+    "No public page edit before the exact governing owner approval is recorded.",
+    "No GBP, review, directory, service-area, indexing, outreach, DNS, ads, owner-message, or other public-account mutation from this registry.",
+    "No competitor cloning, fake community participation, fabricated proof, or unsupported local claims.",
+    "No rank claim converts a measured >30 row to an exact position or an absent local pack to a zero rank.",
+    "No city is complete until the full same-window 28-day contract passes; a single query #1 is a protected foothold, not city completion."
+  ],
+  "cities": [
+    {
+      "executionPriority": 0,
+      "city": "Salt Lake City",
+      "slug": "salt-lake-city",
+      "cohort": "core-measured",
+      "page": "locations/salt-lake-city.html",
+      "panelId": "utah-salt-lake-city-google-v1",
+      "measurement": {
+        "observedAt": "2026-08-12T14:18:10.297Z",
+        "organicRanks": [
+          null,
+          25,
+          19,
+          null
+        ],
+        "organicNumberOne": [],
+        "exactCidMapsNumberOne": 0,
+        "googleAiOverviewOwnedQueries": [],
+        "consumerAi": "configured-scheduled-unmeasured-invalid-provider-credential"
+      },
+      "gscAttribution": {
+        "snapshotDate": "2026-08-12",
+        "window": {
+          "startDate": "2026-07-13",
+          "endDate": "2026-08-09"
+        },
+        "state": "complete-request-with-unreturned-rows",
+        "requestedQueries": 4,
+        "returnedQueries": 2,
+        "exactRows": 2,
+        "alternateNormalizedUrls": [],
+        "nextEvidenceAction": "Keep the Salt Lake City page frozen under its active experiment until the 2026-09-09 evaluation gate; continue weekly fixed panels and targeted GSC reads."
+      },
+      "lane": "observe-time-gated-slc-experiment",
+      "action": "Keep the Salt Lake City page frozen and collect the scheduled fixed Google, targeted GSC, exact-CID review, and consumer-AI readings until the existing experiment's evaluation gate opens.",
+      "actionClass": "system-monitor",
+      "gate": "time-gated-until-2026-09-09T04:40:58Z",
+      "publicApprovalPacket": null,
+      "ownerApprovalPhrase": null,
+      "intervention": {
+        "lane": "observe-time-gated-slc-experiment",
+        "decision": "Monitor",
+        "selectedAction": "Keep the Salt Lake City page frozen and collect the scheduled fixed Google, targeted GSC, exact-CID review, and consumer-AI readings until the existing experiment's evaluation gate opens.",
+        "gate": "time-gated-until-2026-09-09T04:40:58Z",
+        "acceptanceCheck": "No SLC title, H1, copy, schema, canonical, route, or internal-link intent change occurs before the time gate; every weekly panel is retained without converting missing results to zero.",
+        "scoreVector": {
+          "businessValue": 10,
+          "confidence": 8,
+          "leadValue": 3,
+          "authorityValue": 7,
+          "learningValue": 6,
+          "implementationCost": 1,
+          "complianceRisk": 1,
+          "customerBlockerRisk": 4,
+          "maintenanceCost": 2,
+          "sourceBiasRisk": 2,
+          "recencyBiasRisk": 1
+        },
+        "feedback": {
+          "cadence": "weekly",
+          "requiredComparablePanels": 4,
+          "currentSameWindowCompleteStreak": 0,
+          "verdict": "hold",
+          "keepRule": "Keep only a declared isolated ranking variable when its city-specific acceptance check passes and every protected integrity, URL-selection, Maps, AIO, consumer-AI, and route guardrail remains green.",
+          "revertRule": "Revert the isolated ranking variable on a declared guardrail failure or unmet 28-day decision rule; never revert a required factual correction to restore an unsupported claim or wrong entity identity."
+        }
+      },
+      "mapsReadiness": {
+        "lane": "exact-cid-review-and-owner-profile-audit",
+        "packsPresent": 3,
+        "exactCidReturned": 0,
+        "exactCidNumberOne": 0,
+        "dominantDisplacer": {
+          "name": "The Roof Doctor",
+          "cid": "16329927680093228178",
+          "domain": "google.com",
+          "appearances": 3,
+          "numberOneQueries": 3,
+          "bestRank": 1,
+          "keywords": [
+            "roof repair salt lake city",
+            "roof replacement salt lake city",
+            "roofer salt lake city"
+          ]
+        },
+        "nextAction": "Keep the Salt Lake City page frozen, measure the exact-CID review baseline, collect the owner-view profile audit, and compare the next fixed weekly panel before proposing a relevance or prominence change.",
+        "mutationAuthorized": false
+      },
+      "universalDependencies": [
+        "valid Bright Data user API key for ChatGPT/Perplexity/Gemini panels",
+        "business Drive connector authenticated as ryan@framerestorations.com for evidence search",
+        "clean Vercel blocking status before merge"
+      ],
+      "completionContract": "All four organic queries and the exact CID rank #1 across four consecutive weekly panels; every observed AIO cites Frame; all three consumer-AI engines name and cite Frame; integrity remains green in the same 28-day window."
+    },
+    {
+      "executionPriority": 1,
+      "city": "Millcreek",
+      "slug": "millcreek",
+      "cohort": "core-measured",
+      "page": "locations/millcreek.html",
+      "panelId": "utah-millcreek-google-v1",
+      "measurement": {
+        "observedAt": "2026-08-12T14:18:10.299Z",
+        "organicRanks": [
+          4,
+          4,
+          3,
+          5
+        ],
+        "organicNumberOne": [],
+        "exactCidMapsNumberOne": 0,
+        "googleAiOverviewOwnedQueries": [
+          "roof repair millcreek"
+        ],
+        "consumerAi": "configured-scheduled-unmeasured-invalid-provider-credential"
+      },
+      "gscAttribution": {
+        "snapshotDate": "2026-08-12",
+        "window": {
+          "startDate": "2026-07-13",
+          "endDate": "2026-08-09"
+        },
+        "state": "complete-request-with-unreturned-rows",
+        "requestedQueries": 4,
+        "returnedQueries": 0,
+        "exactRows": 0,
+        "alternateNormalizedUrls": [],
+        "nextEvidenceAction": "Protect the measured #1/AIO foothold. Do not change title, H1, canonical, route, or internal-link intent until exact owner approval and a declared isolated experiment exist."
+      },
+      "lane": "owner-gated-verified-identity-and-integrity-cleanup",
+      "action": "Request the exact combined core-cleanup and Millcreek storm-child approval; if approved, apply only the pinned integrity and Salt Lake Valley identity correction while preserving title, H1, canonical, visible intent, and the roof-repair AIO foothold.",
+      "actionClass": "owner-or-evidence-input-needed",
+      "gate": "explicit-owner-publication-approval-and-full-surface-release-gate",
+      "publicApprovalPacket": "data/authority/SLV-CITY-PUBLIC-REMEDIATION-PACKET-2026-08-12.json",
+      "ownerApprovalPhrase": "I explicitly approve editing and publishing the five-page integrity cleanup defined in PR #242 and the Millcreek storm-child identity correction defined in the pinned Millcreek scope amendment.",
+      "intervention": {
+        "lane": "owner-gated-verified-identity-and-integrity-cleanup",
+        "decision": "Request input",
+        "selectedAction": "Request the exact combined core-cleanup and Millcreek storm-child approval; if approved, apply only the pinned integrity and Salt Lake Valley identity correction while preserving title, H1, canonical, visible intent, and the roof-repair AIO foothold.",
+        "gate": "explicit-owner-publication-approval-and-full-surface-release-gate",
+        "acceptanceCheck": "Both Millcreek routes publish the reviewed Salt Lake Valley CID/sameAs set, strict integrity is green, all five rendered release gates pass, and a fresh baseline opens the 28-day observation window.",
+        "scoreVector": {
+          "businessValue": 10,
+          "confidence": 10,
+          "leadValue": 9,
+          "authorityValue": 10,
+          "learningValue": 6,
+          "implementationCost": 5,
+          "complianceRisk": 8,
+          "customerBlockerRisk": 4,
+          "maintenanceCost": 2,
+          "sourceBiasRisk": 2,
+          "recencyBiasRisk": 1
+        },
+        "feedback": {
+          "cadence": "weekly",
+          "requiredComparablePanels": 4,
+          "currentSameWindowCompleteStreak": 0,
+          "verdict": "hold",
+          "keepRule": "Keep only a declared isolated ranking variable when its city-specific acceptance check passes and every protected integrity, URL-selection, Maps, AIO, consumer-AI, and route guardrail remains green.",
+          "revertRule": "Revert the isolated ranking variable on a declared guardrail failure or unmet 28-day decision rule; never revert a required factual correction to restore an unsupported claim or wrong entity identity."
+        }
+      },
+      "mapsReadiness": {
+        "lane": "owner-gated-page-identity-correction",
+        "packsPresent": 3,
+        "exactCidReturned": 0,
+        "exactCidNumberOne": 0,
+        "dominantDisplacer": {
+          "name": "Millcreek Roof Repair",
+          "cid": "15265859284064313678",
+          "domain": "google.com",
+          "appearances": 3,
+          "numberOneQueries": 2,
+          "bestRank": 1,
+          "keywords": [
+            "roofing contractor millcreek",
+            "roof replacement millcreek",
+            "roofer millcreek"
+          ]
+        },
+        "nextAction": "Collect the exact-CID review and owner-profile baselines, then request the pinned Millcreek page-identity correction separately; preserve the owned AIO citation and do not edit GBP from this ledger.",
+        "mutationAuthorized": false
+      },
+      "universalDependencies": [
+        "valid Bright Data user API key for ChatGPT/Perplexity/Gemini panels",
+        "business Drive connector authenticated as ryan@framerestorations.com for evidence search",
+        "clean Vercel blocking status before merge"
+      ],
+      "completionContract": "All four organic queries and the exact CID rank #1 across four consecutive weekly panels; every observed AIO cites Frame; all three consumer-AI engines name and cite Frame; integrity remains green in the same 28-day window."
+    },
+    {
+      "executionPriority": 2,
+      "city": "Magna",
+      "slug": "magna",
+      "cohort": "expansion-manual-baseline-measured",
+      "page": "locations/magna.html",
+      "panelId": "utah-magna-google-v1",
+      "measurement": {
+        "observedAt": "2026-08-12T17:40:30.501Z",
+        "organicRanks": [
+          7,
+          2,
+          1,
+          3
+        ],
+        "organicNumberOne": [
+          "roof replacement magna"
+        ],
+        "exactCidMapsNumberOne": 0,
+        "googleAiOverviewOwnedQueries": [
+          "roof replacement magna"
+        ],
+        "consumerAi": "configured-manual-unmeasured-invalid-provider-credential"
+      },
+      "gscAttribution": {
+        "snapshotDate": "2026-08-12",
+        "window": {
+          "startDate": "2026-07-13",
+          "endDate": "2026-08-09"
+        },
+        "state": "targeted-gsc-not-complete",
+        "requestedQueries": 0,
+        "returnedQueries": 0,
+        "exactRows": 0,
+        "alternateNormalizedUrls": [],
+        "nextEvidenceAction": "Protect the measured #1/AIO foothold. Do not change title, H1, canonical, route, or internal-link intent until exact owner approval and a declared isolated experiment exist."
+      },
+      "lane": "protect-foothold-before-cleanup-or-intent-change",
+      "action": "Request the exact expansion integrity-cleanup approval for Magna; preserve every title, H1, canonical, route, and protected #1/AIO query, then observe four weekly panels before drafting an intent change.",
+      "actionClass": "owner-or-evidence-input-needed",
+      "gate": "explicit-owner-publication-approval-and-protected-foothold-guardrail",
+      "publicApprovalPacket": "data/authority/SLV-EXPANSION-PUBLIC-REMEDIATION-PACKET-2026-08-12.json",
+      "ownerApprovalPhrase": "I explicitly approve editing and publishing the 12-page Salt Lake Valley expansion integrity cleanup defined in packet frame-utah-slv-twelve-page-expansion-public-integrity-cleanup-v1, with expansion identities, titles, H1s, canonicals, and protected related routes unchanged.",
+      "intervention": {
+        "lane": "protect-foothold-before-cleanup-or-intent-change",
+        "decision": "Request input",
+        "selectedAction": "Request the exact expansion integrity-cleanup approval for Magna; preserve every title, H1, canonical, route, and protected #1/AIO query, then observe four weekly panels before drafting an intent change.",
+        "gate": "explicit-owner-publication-approval-and-protected-foothold-guardrail",
+        "acceptanceCheck": "The Magna cleanup passes all release gates and roof replacement magna remains protected through the declared observation window.",
+        "scoreVector": {
+          "businessValue": 10,
+          "confidence": 6,
+          "leadValue": 10,
+          "authorityValue": 10,
+          "learningValue": 9,
+          "implementationCost": 5,
+          "complianceRisk": 8,
+          "customerBlockerRisk": 8,
+          "maintenanceCost": 2,
+          "sourceBiasRisk": 2,
+          "recencyBiasRisk": 1
+        },
+        "feedback": {
+          "cadence": "weekly",
+          "requiredComparablePanels": 4,
+          "currentSameWindowCompleteStreak": 0,
+          "verdict": "hold",
+          "keepRule": "Keep only a declared isolated ranking variable when its city-specific acceptance check passes and every protected integrity, URL-selection, Maps, AIO, consumer-AI, and route guardrail remains green.",
+          "revertRule": "Revert the isolated ranking variable on a declared guardrail failure or unmet 28-day decision rule; never revert a required factual correction to restore an unsupported claim or wrong entity identity."
+        }
+      },
+      "mapsReadiness": {
+        "lane": "service-area-proof-before-exact-cid-planning",
+        "packsPresent": 4,
+        "exactCidReturned": 0,
+        "exactCidNumberOne": 0,
+        "dominantDisplacer": {
+          "name": "Classic Roofing and Exteriors",
+          "cid": "10315170581426755444",
+          "domain": "google.com",
+          "appearances": 3,
+          "numberOneQueries": 3,
+          "bestRank": 1,
+          "keywords": [
+            "roofing contractor magna",
+            "roof repair magna",
+            "roof replacement magna"
+          ]
+        },
+        "nextAction": "Obtain current owner-view service-area evidence for Magna and the read-only exact-CID profile audit; do not attach the Salt Lake CID to the city page or edit GBP unless a later reviewed scope is explicitly approved.",
+        "mutationAuthorized": false
+      },
+      "universalDependencies": [
+        "valid Bright Data user API key for ChatGPT/Perplexity/Gemini panels",
+        "business Drive connector authenticated as ryan@framerestorations.com for evidence search",
+        "clean Vercel blocking status before merge"
+      ],
+      "completionContract": "All four organic queries and the exact CID rank #1 across four consecutive weekly panels; every observed AIO cites Frame; all three consumer-AI engines name and cite Frame; integrity remains green in the same 28-day window."
+    },
+    {
+      "executionPriority": 3,
+      "city": "Kearns",
+      "slug": "kearns",
+      "cohort": "expansion-manual-baseline-measured",
+      "page": "locations/kearns.html",
+      "panelId": "utah-kearns-google-v1",
+      "measurement": {
+        "observedAt": "2026-08-12T17:40:30.500Z",
+        "organicRanks": [
+          14,
+          8,
+          1,
+          10
+        ],
+        "organicNumberOne": [
+          "roof replacement kearns"
+        ],
+        "exactCidMapsNumberOne": 0,
+        "googleAiOverviewOwnedQueries": [],
+        "consumerAi": "configured-manual-unmeasured-invalid-provider-credential"
+      },
+      "gscAttribution": {
+        "snapshotDate": "2026-08-12",
+        "window": {
+          "startDate": "2026-07-13",
+          "endDate": "2026-08-09"
+        },
+        "state": "targeted-gsc-not-complete",
+        "requestedQueries": 0,
+        "returnedQueries": 0,
+        "exactRows": 0,
+        "alternateNormalizedUrls": [],
+        "nextEvidenceAction": "Protect the measured #1/AIO foothold. Do not change title, H1, canonical, route, or internal-link intent until exact owner approval and a declared isolated experiment exist."
+      },
+      "lane": "protect-foothold-before-cleanup-or-intent-change",
+      "action": "Request the exact expansion integrity-cleanup approval for Kearns; preserve every title, H1, canonical, route, and protected #1/AIO query, then observe four weekly panels before drafting an intent change.",
+      "actionClass": "owner-or-evidence-input-needed",
+      "gate": "explicit-owner-publication-approval-and-protected-foothold-guardrail",
+      "publicApprovalPacket": "data/authority/SLV-EXPANSION-PUBLIC-REMEDIATION-PACKET-2026-08-12.json",
+      "ownerApprovalPhrase": "I explicitly approve editing and publishing the 12-page Salt Lake Valley expansion integrity cleanup defined in packet frame-utah-slv-twelve-page-expansion-public-integrity-cleanup-v1, with expansion identities, titles, H1s, canonicals, and protected related routes unchanged.",
+      "intervention": {
+        "lane": "protect-foothold-before-cleanup-or-intent-change",
+        "decision": "Request input",
+        "selectedAction": "Request the exact expansion integrity-cleanup approval for Kearns; preserve every title, H1, canonical, route, and protected #1/AIO query, then observe four weekly panels before drafting an intent change.",
+        "gate": "explicit-owner-publication-approval-and-protected-foothold-guardrail",
+        "acceptanceCheck": "The Kearns cleanup passes all release gates and roof replacement kearns remains protected through the declared observation window.",
+        "scoreVector": {
+          "businessValue": 10,
+          "confidence": 6,
+          "leadValue": 10,
+          "authorityValue": 5,
+          "learningValue": 9,
+          "implementationCost": 5,
+          "complianceRisk": 8,
+          "customerBlockerRisk": 8,
+          "maintenanceCost": 2,
+          "sourceBiasRisk": 2,
+          "recencyBiasRisk": 1
+        },
+        "feedback": {
+          "cadence": "weekly",
+          "requiredComparablePanels": 4,
+          "currentSameWindowCompleteStreak": 0,
+          "verdict": "hold",
+          "keepRule": "Keep only a declared isolated ranking variable when its city-specific acceptance check passes and every protected integrity, URL-selection, Maps, AIO, consumer-AI, and route guardrail remains green.",
+          "revertRule": "Revert the isolated ranking variable on a declared guardrail failure or unmet 28-day decision rule; never revert a required factual correction to restore an unsupported claim or wrong entity identity."
+        }
+      },
+      "mapsReadiness": {
+        "lane": "service-area-proof-before-exact-cid-planning",
+        "packsPresent": 4,
+        "exactCidReturned": 0,
+        "exactCidNumberOne": 0,
+        "dominantDisplacer": {
+          "name": "Reliable Roofing Kearns",
+          "cid": "13010928145203840528",
+          "domain": "google.com",
+          "appearances": 4,
+          "numberOneQueries": 2,
+          "bestRank": 1,
+          "keywords": [
+            "roofing contractor kearns",
+            "roof repair kearns",
+            "roof replacement kearns",
+            "roofer kearns"
+          ]
+        },
+        "nextAction": "Obtain current owner-view service-area evidence for Kearns and the read-only exact-CID profile audit; do not attach the Salt Lake CID to the city page or edit GBP unless a later reviewed scope is explicitly approved.",
+        "mutationAuthorized": false
+      },
+      "universalDependencies": [
+        "valid Bright Data user API key for ChatGPT/Perplexity/Gemini panels",
+        "business Drive connector authenticated as ryan@framerestorations.com for evidence search",
+        "clean Vercel blocking status before merge"
+      ],
+      "completionContract": "All four organic queries and the exact CID rank #1 across four consecutive weekly panels; every observed AIO cites Frame; all three consumer-AI engines name and cite Frame; integrity remains green in the same 28-day window."
+    },
+    {
+      "executionPriority": 4,
+      "city": "Sandy",
+      "slug": "sandy",
+      "cohort": "core-measured",
+      "page": "locations/sandy.html",
+      "panelId": "utah-sandy-google-v1",
+      "measurement": {
+        "observedAt": "2026-08-12T14:18:10.300Z",
+        "organicRanks": [
+          17,
+          13,
+          13,
+          11
+        ],
+        "organicNumberOne": [],
+        "exactCidMapsNumberOne": 0,
+        "googleAiOverviewOwnedQueries": [],
+        "consumerAi": "configured-manual-unmeasured-invalid-provider-credential"
+      },
+      "gscAttribution": {
+        "snapshotDate": "2026-08-12",
+        "window": {
+          "startDate": "2026-07-13",
+          "endDate": "2026-08-09"
+        },
+        "state": "intended-url-only-for-all-returned-rows",
+        "requestedQueries": 4,
+        "returnedQueries": 4,
+        "exactRows": 4,
+        "alternateNormalizedUrls": [],
+        "nextEvidenceAction": "Preserve the intended city hub and all related routes; use the next complete targeted GSC read before selecting an architecture or intent experiment."
+      },
+      "lane": "owner-gated-core-integrity-then-single-variable-intent-test",
+      "action": "Obtain current Salt Lake Valley service-area evidence for Sandy's separate Maps lane and request the exact core cleanup approval; after a green production receipt and fresh baseline, activate at most the already-pinned single-title experiment with every other intent surface held constant.",
+      "actionClass": "owner-or-evidence-input-needed",
+      "gate": "service-area-evidence-plus-explicit-owner-cleanup-approval-then-separate-ranking-experiment-approval",
+      "publicApprovalPacket": "data/authority/SLV-CITY-PUBLIC-REMEDIATION-PACKET-2026-08-12.json",
+      "ownerApprovalPhrase": "I explicitly approve editing and publishing the five-page integrity cleanup defined in PR #242 and the Millcreek storm-child identity correction defined in the pinned Millcreek scope amendment.",
+      "intervention": {
+        "lane": "owner-gated-core-integrity-then-single-variable-intent-test",
+        "decision": "Request input",
+        "selectedAction": "Obtain current Salt Lake Valley service-area evidence for Sandy's separate Maps lane and request the exact core cleanup approval; after a green production receipt and fresh baseline, activate at most the already-pinned single-title experiment with every other intent surface held constant.",
+        "gate": "service-area-evidence-plus-explicit-owner-cleanup-approval-then-separate-ranking-experiment-approval",
+        "acceptanceCheck": "Keep only if roofing contractor sandy is position 12 or better in each of the final two weekly panels and the four-query mean rank is 11.5 or better in both panels. A current receipt separately classifies Sandy for CID 5689850818145735734.",
+        "scoreVector": {
+          "businessValue": 10,
+          "confidence": 6,
+          "leadValue": 5,
+          "authorityValue": 5,
+          "learningValue": 6,
+          "implementationCost": 5,
+          "complianceRisk": 8,
+          "customerBlockerRisk": 8,
+          "maintenanceCost": 2,
+          "sourceBiasRisk": 2,
+          "recencyBiasRisk": 1
+        },
+        "feedback": {
+          "cadence": "weekly",
+          "requiredComparablePanels": 4,
+          "currentSameWindowCompleteStreak": 0,
+          "verdict": "hold",
+          "keepRule": "Keep only a declared isolated ranking variable when its city-specific acceptance check passes and every protected integrity, URL-selection, Maps, AIO, consumer-AI, and route guardrail remains green.",
+          "revertRule": "Revert the isolated ranking variable on a declared guardrail failure or unmet 28-day decision rule; never revert a required factual correction to restore an unsupported claim or wrong entity identity."
+        }
+      },
+      "mapsReadiness": {
+        "lane": "service-area-proof-before-exact-cid-planning",
+        "packsPresent": 4,
+        "exactCidReturned": 0,
+        "exactCidNumberOne": 0,
+        "dominantDisplacer": {
+          "name": "ReRoofIt",
+          "cid": "3305979678440818523",
+          "domain": "google.com",
+          "appearances": 4,
+          "numberOneQueries": 3,
+          "bestRank": 1,
+          "keywords": [
+            "roofing contractor sandy",
+            "roof repair sandy",
+            "roof replacement sandy",
+            "roofer sandy"
+          ]
+        },
+        "nextAction": "Obtain current owner-view service-area evidence for Sandy and the read-only exact-CID profile audit; do not attach the Salt Lake CID to the city page or edit GBP unless a later reviewed scope is explicitly approved.",
+        "mutationAuthorized": false
+      },
+      "universalDependencies": [
+        "valid Bright Data user API key for ChatGPT/Perplexity/Gemini panels",
+        "business Drive connector authenticated as ryan@framerestorations.com for evidence search",
+        "clean Vercel blocking status before merge"
+      ],
+      "completionContract": "All four organic queries and the exact CID rank #1 across four consecutive weekly panels; every observed AIO cites Frame; all three consumer-AI engines name and cite Frame; integrity remains green in the same 28-day window."
+    },
+    {
+      "executionPriority": 5,
+      "city": "Holladay",
+      "slug": "holladay",
+      "cohort": "core-measured",
+      "page": "locations/holladay.html",
+      "panelId": "utah-holladay-google-v1",
+      "measurement": {
+        "observedAt": "2026-08-12T14:18:10.299Z",
+        "organicRanks": [
+          17,
+          10,
+          4,
+          12
+        ],
+        "organicNumberOne": [],
+        "exactCidMapsNumberOne": 0,
+        "googleAiOverviewOwnedQueries": [],
+        "consumerAi": "configured-manual-unmeasured-invalid-provider-credential"
+      },
+      "gscAttribution": {
+        "snapshotDate": "2026-08-12",
+        "window": {
+          "startDate": "2026-07-13",
+          "endDate": "2026-08-09"
+        },
+        "state": "url-competition-requires-diagnosis",
+        "requestedQueries": 4,
+        "returnedQueries": 3,
+        "exactRows": 6,
+        "alternateNormalizedUrls": [
+          "framerestorationutah.com/",
+          "framerestorationutah.com/blog/holladay/roof-replacement-holladay-utah",
+          "framerestorationutah.com/salt-lake-city"
+        ],
+        "nextEvidenceAction": "Inspect the alternate URLs against redirect dates, canonicals, current live routing, and query intent. Treat this blended 28-day evidence as a diagnosis trigger, not proof of current cannibalization or permission to redirect."
+      },
+      "lane": "diagnose-url-consolidation-before-intent-change",
+      "action": "Complete a full post-August-10 GSC consolidation window while preserving the city hub, redirected legacy route, homepage, and editorial guide; obtain current Salt Lake Valley service-area evidence for the separate Maps lane, request the core cleanup separately, and do not activate the drafted title test until its prerequisites pass.",
+      "actionClass": "system-monitor",
+      "gate": "complete-post-redirect-gsc-window-plus-service-area-evidence-plus-owner-gated-cleanup",
+      "publicApprovalPacket": "data/authority/SLV-CITY-PUBLIC-REMEDIATION-PACKET-2026-08-12.json",
+      "ownerApprovalPhrase": "I explicitly approve editing and publishing the five-page integrity cleanup defined in PR #242 and the Millcreek storm-child identity correction defined in the pinned Millcreek scope amendment.",
+      "intervention": {
+        "lane": "diagnose-url-consolidation-before-intent-change",
+        "decision": "Monitor",
+        "selectedAction": "Complete a full post-August-10 GSC consolidation window while preserving the city hub, redirected legacy route, homepage, and editorial guide; obtain current Salt Lake Valley service-area evidence for the separate Maps lane, request the core cleanup separately, and do not activate the drafted title test until its prerequisites pass.",
+        "gate": "complete-post-redirect-gsc-window-plus-service-area-evidence-plus-owner-gated-cleanup",
+        "acceptanceCheck": "Current query-to-URL evidence no longer depends on the pre-redirect window; the position-4 roof-replacement foothold and all protected routes remain intact; a current receipt separately classifies Holladay for CID 5689850818145735734.",
+        "scoreVector": {
+          "businessValue": 10,
+          "confidence": 6,
+          "leadValue": 8,
+          "authorityValue": 5,
+          "learningValue": 6,
+          "implementationCost": 3,
+          "complianceRisk": 1,
+          "customerBlockerRisk": 8,
+          "maintenanceCost": 2,
+          "sourceBiasRisk": 2,
+          "recencyBiasRisk": 1
+        },
+        "feedback": {
+          "cadence": "weekly",
+          "requiredComparablePanels": 4,
+          "currentSameWindowCompleteStreak": 0,
+          "verdict": "hold",
+          "keepRule": "Keep only a declared isolated ranking variable when its city-specific acceptance check passes and every protected integrity, URL-selection, Maps, AIO, consumer-AI, and route guardrail remains green.",
+          "revertRule": "Revert the isolated ranking variable on a declared guardrail failure or unmet 28-day decision rule; never revert a required factual correction to restore an unsupported claim or wrong entity identity."
+        }
+      },
+      "mapsReadiness": {
+        "lane": "service-area-proof-before-exact-cid-planning",
+        "packsPresent": 4,
+        "exactCidReturned": 0,
+        "exactCidNumberOne": 0,
+        "dominantDisplacer": {
+          "name": "True North Roofing",
+          "cid": "5387650211366766810",
+          "domain": "google.com",
+          "appearances": 4,
+          "numberOneQueries": 4,
+          "bestRank": 1,
+          "keywords": [
+            "roofing contractor holladay",
+            "roof repair holladay",
+            "roof replacement holladay",
+            "roofer holladay"
+          ]
+        },
+        "nextAction": "Obtain current owner-view service-area evidence for Holladay and the read-only exact-CID profile audit; do not attach the Salt Lake CID to the city page or edit GBP unless a later reviewed scope is explicitly approved.",
+        "mutationAuthorized": false
+      },
+      "universalDependencies": [
+        "valid Bright Data user API key for ChatGPT/Perplexity/Gemini panels",
+        "business Drive connector authenticated as ryan@framerestorations.com for evidence search",
+        "clean Vercel blocking status before merge"
+      ],
+      "completionContract": "All four organic queries and the exact CID rank #1 across four consecutive weekly panels; every observed AIO cites Frame; all three consumer-AI engines name and cite Frame; integrity remains green in the same 28-day window."
+    },
+    {
+      "executionPriority": 6,
+      "city": "Cottonwood Heights",
+      "slug": "cottonwood-heights",
+      "cohort": "core-measured",
+      "page": "locations/cottonwood-heights.html",
+      "panelId": "utah-cottonwood-heights-google-v1",
+      "measurement": {
+        "observedAt": "2026-08-12T14:18:10.299Z",
+        "organicRanks": [
+          15,
+          10,
+          15,
+          14
+        ],
+        "organicNumberOne": [],
+        "exactCidMapsNumberOne": 0,
+        "googleAiOverviewOwnedQueries": [],
+        "consumerAi": "configured-manual-unmeasured-invalid-provider-credential"
+      },
+      "gscAttribution": {
+        "snapshotDate": "2026-08-12",
+        "window": {
+          "startDate": "2026-07-13",
+          "endDate": "2026-08-09"
+        },
+        "state": "complete-request-with-unreturned-rows",
+        "requestedQueries": 4,
+        "returnedQueries": 0,
+        "exactRows": 0,
+        "alternateNormalizedUrls": [],
+        "nextEvidenceAction": "Preserve the intended city hub and all related routes; use the next complete targeted GSC read before selecting an architecture or intent experiment."
+      },
+      "lane": "owner-gated-core-integrity-then-single-variable-intent-test",
+      "action": "Obtain current Salt Lake Valley service-area evidence for Cottonwood Heights's separate Maps lane and request the exact core cleanup approval; after a green production receipt and fresh baseline, activate at most the already-pinned single-title experiment with every other intent surface held constant.",
+      "actionClass": "owner-or-evidence-input-needed",
+      "gate": "service-area-evidence-plus-explicit-owner-cleanup-approval-then-separate-ranking-experiment-approval",
+      "publicApprovalPacket": "data/authority/SLV-CITY-PUBLIC-REMEDIATION-PACKET-2026-08-12.json",
+      "ownerApprovalPhrase": "I explicitly approve editing and publishing the five-page integrity cleanup defined in PR #242 and the Millcreek storm-child identity correction defined in the pinned Millcreek scope amendment.",
+      "intervention": {
+        "lane": "owner-gated-core-integrity-then-single-variable-intent-test",
+        "decision": "Request input",
+        "selectedAction": "Obtain current Salt Lake Valley service-area evidence for Cottonwood Heights's separate Maps lane and request the exact core cleanup approval; after a green production receipt and fresh baseline, activate at most the already-pinned single-title experiment with every other intent surface held constant.",
+        "gate": "service-area-evidence-plus-explicit-owner-cleanup-approval-then-separate-ranking-experiment-approval",
+        "acceptanceCheck": "Keep only if roofing contractor cottonwood heights is position 10 or better in each of the final two weekly panels and the four-query mean rank is 11.5 or better in both panels. A current receipt separately classifies Cottonwood Heights for CID 5689850818145735734.",
+        "scoreVector": {
+          "businessValue": 10,
+          "confidence": 6,
+          "leadValue": 7,
+          "authorityValue": 5,
+          "learningValue": 6,
+          "implementationCost": 5,
+          "complianceRisk": 8,
+          "customerBlockerRisk": 8,
+          "maintenanceCost": 2,
+          "sourceBiasRisk": 2,
+          "recencyBiasRisk": 1
+        },
+        "feedback": {
+          "cadence": "weekly",
+          "requiredComparablePanels": 4,
+          "currentSameWindowCompleteStreak": 0,
+          "verdict": "hold",
+          "keepRule": "Keep only a declared isolated ranking variable when its city-specific acceptance check passes and every protected integrity, URL-selection, Maps, AIO, consumer-AI, and route guardrail remains green.",
+          "revertRule": "Revert the isolated ranking variable on a declared guardrail failure or unmet 28-day decision rule; never revert a required factual correction to restore an unsupported claim or wrong entity identity."
+        }
+      },
+      "mapsReadiness": {
+        "lane": "service-area-proof-before-exact-cid-planning",
+        "packsPresent": 4,
+        "exactCidReturned": 0,
+        "exactCidNumberOne": 0,
+        "dominantDisplacer": {
+          "name": "Utah Roofing Pros",
+          "cid": "4118570990011609504",
+          "domain": "google.com",
+          "appearances": 4,
+          "numberOneQueries": 4,
+          "bestRank": 1,
+          "keywords": [
+            "roofing contractor cottonwood heights",
+            "roof repair cottonwood heights",
+            "roof replacement cottonwood heights",
+            "roofer cottonwood heights"
+          ]
+        },
+        "nextAction": "Obtain current owner-view service-area evidence for Cottonwood Heights and the read-only exact-CID profile audit; do not attach the Salt Lake CID to the city page or edit GBP unless a later reviewed scope is explicitly approved.",
+        "mutationAuthorized": false
+      },
+      "universalDependencies": [
+        "valid Bright Data user API key for ChatGPT/Perplexity/Gemini panels",
+        "business Drive connector authenticated as ryan@framerestorations.com for evidence search",
+        "clean Vercel blocking status before merge"
+      ],
+      "completionContract": "All four organic queries and the exact CID rank #1 across four consecutive weekly panels; every observed AIO cites Frame; all three consumer-AI engines name and cite Frame; integrity remains green in the same 28-day window."
+    },
+    {
+      "executionPriority": 7,
+      "city": "Murray",
+      "slug": "murray",
+      "cohort": "expansion-manual-baseline-measured",
+      "page": "locations/murray.html",
+      "panelId": "utah-murray-google-v1",
+      "measurement": {
+        "observedAt": "2026-08-12T17:40:30.501Z",
+        "organicRanks": [
+          12,
+          7,
+          4,
+          8
+        ],
+        "organicNumberOne": [],
+        "exactCidMapsNumberOne": 0,
+        "googleAiOverviewOwnedQueries": [],
+        "consumerAi": "configured-manual-unmeasured-invalid-provider-credential"
+      },
+      "gscAttribution": {
+        "snapshotDate": "2026-08-12",
+        "window": {
+          "startDate": "2026-07-13",
+          "endDate": "2026-08-09"
+        },
+        "state": "targeted-gsc-not-complete",
+        "requestedQueries": 0,
+        "returnedQueries": 0,
+        "exactRows": 0,
+        "alternateNormalizedUrls": [],
+        "nextEvidenceAction": "Preserve the intended city hub and all related routes; use the next complete targeted GSC read before selecting an architecture or intent experiment."
+      },
+      "lane": "service-area-proof-and-targeted-gsc-before-intent-change",
+      "action": "Obtain current Salt Lake Valley service-area evidence and the next exact-query GSC attribution for Murray; request the bounded expansion cleanup separately, but do not change identity or commercial intent until those evidence gates pass.",
+      "actionClass": "owner-or-evidence-input-needed",
+      "gate": "service-area-evidence-plus-targeted-gsc-plus-explicit-cleanup-approval",
+      "publicApprovalPacket": "data/authority/SLV-EXPANSION-PUBLIC-REMEDIATION-PACKET-2026-08-12.json",
+      "ownerApprovalPhrase": "I explicitly approve editing and publishing the 12-page Salt Lake Valley expansion integrity cleanup defined in packet frame-utah-slv-twelve-page-expansion-public-integrity-cleanup-v1, with expansion identities, titles, H1s, canonicals, and protected related routes unchanged.",
+      "intervention": {
+        "lane": "service-area-proof-and-targeted-gsc-before-intent-change",
+        "decision": "Request input",
+        "selectedAction": "Obtain current Salt Lake Valley service-area evidence and the next exact-query GSC attribution for Murray; request the bounded expansion cleanup separately, but do not change identity or commercial intent until those evidence gates pass.",
+        "gate": "service-area-evidence-plus-targeted-gsc-plus-explicit-cleanup-approval",
+        "acceptanceCheck": "A current receipt explicitly classifies Murray for CID 5689850818145735734, all four exact queries are requested without treating missing rows as zero, and any approved cleanup passes the full release gate.",
+        "scoreVector": {
+          "businessValue": 10,
+          "confidence": 4,
+          "leadValue": 8,
+          "authorityValue": 5,
+          "learningValue": 9,
+          "implementationCost": 5,
+          "complianceRisk": 8,
+          "customerBlockerRisk": 8,
+          "maintenanceCost": 2,
+          "sourceBiasRisk": 2,
+          "recencyBiasRisk": 1
+        },
+        "feedback": {
+          "cadence": "weekly",
+          "requiredComparablePanels": 4,
+          "currentSameWindowCompleteStreak": 0,
+          "verdict": "hold",
+          "keepRule": "Keep only a declared isolated ranking variable when its city-specific acceptance check passes and every protected integrity, URL-selection, Maps, AIO, consumer-AI, and route guardrail remains green.",
+          "revertRule": "Revert the isolated ranking variable on a declared guardrail failure or unmet 28-day decision rule; never revert a required factual correction to restore an unsupported claim or wrong entity identity."
+        }
+      },
+      "mapsReadiness": {
+        "lane": "service-area-proof-before-exact-cid-planning",
+        "packsPresent": 4,
+        "exactCidReturned": 0,
+        "exactCidNumberOne": 0,
+        "dominantDisplacer": {
+          "name": "Milne Brothers Roofing",
+          "cid": "7936184157434939732",
+          "domain": "google.com",
+          "appearances": 4,
+          "numberOneQueries": 2,
+          "bestRank": 1,
+          "keywords": [
+            "roofing contractor murray",
+            "roof repair murray",
+            "roof replacement murray",
+            "roofer murray"
+          ]
+        },
+        "nextAction": "Obtain current owner-view service-area evidence for Murray and the read-only exact-CID profile audit; do not attach the Salt Lake CID to the city page or edit GBP unless a later reviewed scope is explicitly approved.",
+        "mutationAuthorized": false
+      },
+      "universalDependencies": [
+        "valid Bright Data user API key for ChatGPT/Perplexity/Gemini panels",
+        "business Drive connector authenticated as ryan@framerestorations.com for evidence search",
+        "clean Vercel blocking status before merge"
+      ],
+      "completionContract": "All four organic queries and the exact CID rank #1 across four consecutive weekly panels; every observed AIO cites Frame; all three consumer-AI engines name and cite Frame; integrity remains green in the same 28-day window."
+    },
+    {
+      "executionPriority": 8,
+      "city": "Riverton",
+      "slug": "riverton",
+      "cohort": "expansion-manual-baseline-measured",
+      "page": "locations/riverton.html",
+      "panelId": "utah-riverton-google-v1",
+      "measurement": {
+        "observedAt": "2026-08-12T17:40:30.501Z",
+        "organicRanks": [
+          null,
+          4,
+          7,
+          10
+        ],
+        "organicNumberOne": [],
+        "exactCidMapsNumberOne": 0,
+        "googleAiOverviewOwnedQueries": [],
+        "consumerAi": "configured-manual-unmeasured-invalid-provider-credential"
+      },
+      "gscAttribution": {
+        "snapshotDate": "2026-08-12",
+        "window": {
+          "startDate": "2026-07-13",
+          "endDate": "2026-08-09"
+        },
+        "state": "targeted-gsc-not-complete",
+        "requestedQueries": 0,
+        "returnedQueries": 0,
+        "exactRows": 0,
+        "alternateNormalizedUrls": [],
+        "nextEvidenceAction": "Preserve the intended city hub and all related routes; use the next complete targeted GSC read before selecting an architecture or intent experiment."
+      },
+      "lane": "service-area-proof-and-targeted-gsc-before-intent-change",
+      "action": "Obtain current Salt Lake Valley service-area evidence and the next exact-query GSC attribution for Riverton; request the bounded expansion cleanup separately, but do not change identity or commercial intent until those evidence gates pass.",
+      "actionClass": "owner-or-evidence-input-needed",
+      "gate": "service-area-evidence-plus-targeted-gsc-plus-explicit-cleanup-approval",
+      "publicApprovalPacket": "data/authority/SLV-EXPANSION-PUBLIC-REMEDIATION-PACKET-2026-08-12.json",
+      "ownerApprovalPhrase": "I explicitly approve editing and publishing the 12-page Salt Lake Valley expansion integrity cleanup defined in packet frame-utah-slv-twelve-page-expansion-public-integrity-cleanup-v1, with expansion identities, titles, H1s, canonicals, and protected related routes unchanged.",
+      "intervention": {
+        "lane": "service-area-proof-and-targeted-gsc-before-intent-change",
+        "decision": "Request input",
+        "selectedAction": "Obtain current Salt Lake Valley service-area evidence and the next exact-query GSC attribution for Riverton; request the bounded expansion cleanup separately, but do not change identity or commercial intent until those evidence gates pass.",
+        "gate": "service-area-evidence-plus-targeted-gsc-plus-explicit-cleanup-approval",
+        "acceptanceCheck": "A current receipt explicitly classifies Riverton for CID 5689850818145735734, all four exact queries are requested without treating missing rows as zero, and any approved cleanup passes the full release gate.",
+        "scoreVector": {
+          "businessValue": 10,
+          "confidence": 4,
+          "leadValue": 8,
+          "authorityValue": 5,
+          "learningValue": 9,
+          "implementationCost": 5,
+          "complianceRisk": 8,
+          "customerBlockerRisk": 8,
+          "maintenanceCost": 2,
+          "sourceBiasRisk": 2,
+          "recencyBiasRisk": 1
+        },
+        "feedback": {
+          "cadence": "weekly",
+          "requiredComparablePanels": 4,
+          "currentSameWindowCompleteStreak": 0,
+          "verdict": "hold",
+          "keepRule": "Keep only a declared isolated ranking variable when its city-specific acceptance check passes and every protected integrity, URL-selection, Maps, AIO, consumer-AI, and route guardrail remains green.",
+          "revertRule": "Revert the isolated ranking variable on a declared guardrail failure or unmet 28-day decision rule; never revert a required factual correction to restore an unsupported claim or wrong entity identity."
+        }
+      },
+      "mapsReadiness": {
+        "lane": "service-area-proof-before-exact-cid-planning",
+        "packsPresent": 4,
+        "exactCidReturned": 0,
+        "exactCidNumberOne": 0,
+        "dominantDisplacer": {
+          "name": "Mountain Valley Roofing",
+          "cid": "1336901996070958999",
+          "domain": "google.com",
+          "appearances": 4,
+          "numberOneQueries": 3,
+          "bestRank": 1,
+          "keywords": [
+            "roofing contractor riverton",
+            "roof repair riverton",
+            "roof replacement riverton",
+            "roofer riverton"
+          ]
+        },
+        "nextAction": "Obtain current owner-view service-area evidence for Riverton and the read-only exact-CID profile audit; do not attach the Salt Lake CID to the city page or edit GBP unless a later reviewed scope is explicitly approved.",
+        "mutationAuthorized": false
+      },
+      "universalDependencies": [
+        "valid Bright Data user API key for ChatGPT/Perplexity/Gemini panels",
+        "business Drive connector authenticated as ryan@framerestorations.com for evidence search",
+        "clean Vercel blocking status before merge"
+      ],
+      "completionContract": "All four organic queries and the exact CID rank #1 across four consecutive weekly panels; every observed AIO cites Frame; all three consumer-AI engines name and cite Frame; integrity remains green in the same 28-day window."
+    },
+    {
+      "executionPriority": 9,
+      "city": "South Jordan",
+      "slug": "south-jordan",
+      "cohort": "expansion-manual-baseline-measured",
+      "page": "locations/south-jordan.html",
+      "panelId": "utah-south-jordan-google-v1",
+      "measurement": {
+        "observedAt": "2026-08-12T17:40:30.502Z",
+        "organicRanks": [
+          16,
+          8,
+          4,
+          12
+        ],
+        "organicNumberOne": [],
+        "exactCidMapsNumberOne": 0,
+        "googleAiOverviewOwnedQueries": [],
+        "consumerAi": "configured-manual-unmeasured-invalid-provider-credential"
+      },
+      "gscAttribution": {
+        "snapshotDate": "2026-08-12",
+        "window": {
+          "startDate": "2026-07-13",
+          "endDate": "2026-08-09"
+        },
+        "state": "targeted-gsc-not-complete",
+        "requestedQueries": 0,
+        "returnedQueries": 0,
+        "exactRows": 0,
+        "alternateNormalizedUrls": [],
+        "nextEvidenceAction": "Preserve the intended city hub and all related routes; use the next complete targeted GSC read before selecting an architecture or intent experiment."
+      },
+      "lane": "service-area-proof-and-targeted-gsc-before-intent-change",
+      "action": "Obtain current Salt Lake Valley service-area evidence and the next exact-query GSC attribution for South Jordan; request the bounded expansion cleanup separately, but do not change identity or commercial intent until those evidence gates pass.",
+      "actionClass": "owner-or-evidence-input-needed",
+      "gate": "service-area-evidence-plus-targeted-gsc-plus-explicit-cleanup-approval",
+      "publicApprovalPacket": "data/authority/SLV-EXPANSION-PUBLIC-REMEDIATION-PACKET-2026-08-12.json",
+      "ownerApprovalPhrase": "I explicitly approve editing and publishing the 12-page Salt Lake Valley expansion integrity cleanup defined in packet frame-utah-slv-twelve-page-expansion-public-integrity-cleanup-v1, with expansion identities, titles, H1s, canonicals, and protected related routes unchanged.",
+      "intervention": {
+        "lane": "service-area-proof-and-targeted-gsc-before-intent-change",
+        "decision": "Request input",
+        "selectedAction": "Obtain current Salt Lake Valley service-area evidence and the next exact-query GSC attribution for South Jordan; request the bounded expansion cleanup separately, but do not change identity or commercial intent until those evidence gates pass.",
+        "gate": "service-area-evidence-plus-targeted-gsc-plus-explicit-cleanup-approval",
+        "acceptanceCheck": "A current receipt explicitly classifies South Jordan for CID 5689850818145735734, all four exact queries are requested without treating missing rows as zero, and any approved cleanup passes the full release gate.",
+        "scoreVector": {
+          "businessValue": 10,
+          "confidence": 4,
+          "leadValue": 8,
+          "authorityValue": 5,
+          "learningValue": 9,
+          "implementationCost": 5,
+          "complianceRisk": 8,
+          "customerBlockerRisk": 8,
+          "maintenanceCost": 2,
+          "sourceBiasRisk": 2,
+          "recencyBiasRisk": 1
+        },
+        "feedback": {
+          "cadence": "weekly",
+          "requiredComparablePanels": 4,
+          "currentSameWindowCompleteStreak": 0,
+          "verdict": "hold",
+          "keepRule": "Keep only a declared isolated ranking variable when its city-specific acceptance check passes and every protected integrity, URL-selection, Maps, AIO, consumer-AI, and route guardrail remains green.",
+          "revertRule": "Revert the isolated ranking variable on a declared guardrail failure or unmet 28-day decision rule; never revert a required factual correction to restore an unsupported claim or wrong entity identity."
+        }
+      },
+      "mapsReadiness": {
+        "lane": "service-area-proof-before-exact-cid-planning",
+        "packsPresent": 4,
+        "exactCidReturned": 0,
+        "exactCidNumberOne": 0,
+        "dominantDisplacer": {
+          "name": "Top Local Roofing",
+          "cid": "6716199756783041358",
+          "domain": "google.com",
+          "appearances": 4,
+          "numberOneQueries": 3,
+          "bestRank": 1,
+          "keywords": [
+            "roofing contractor south jordan",
+            "roof repair south jordan",
+            "roof replacement south jordan",
+            "roofer south jordan"
+          ]
+        },
+        "nextAction": "Obtain current owner-view service-area evidence for South Jordan and the read-only exact-CID profile audit; do not attach the Salt Lake CID to the city page or edit GBP unless a later reviewed scope is explicitly approved.",
+        "mutationAuthorized": false
+      },
+      "universalDependencies": [
+        "valid Bright Data user API key for ChatGPT/Perplexity/Gemini panels",
+        "business Drive connector authenticated as ryan@framerestorations.com for evidence search",
+        "clean Vercel blocking status before merge"
+      ],
+      "completionContract": "All four organic queries and the exact CID rank #1 across four consecutive weekly panels; every observed AIO cites Frame; all three consumer-AI engines name and cite Frame; integrity remains green in the same 28-day window."
+    },
+    {
+      "executionPriority": 10,
+      "city": "Taylorsville",
+      "slug": "taylorsville",
+      "cohort": "expansion-manual-baseline-measured",
+      "page": "locations/taylorsville.html",
+      "panelId": "utah-taylorsville-google-v1",
+      "measurement": {
+        "observedAt": "2026-08-12T17:40:30.503Z",
+        "organicRanks": [
+          15,
+          7,
+          10,
+          18
+        ],
+        "organicNumberOne": [],
+        "exactCidMapsNumberOne": 0,
+        "googleAiOverviewOwnedQueries": [],
+        "consumerAi": "configured-manual-unmeasured-invalid-provider-credential"
+      },
+      "gscAttribution": {
+        "snapshotDate": "2026-08-12",
+        "window": {
+          "startDate": "2026-07-13",
+          "endDate": "2026-08-09"
+        },
+        "state": "targeted-gsc-not-complete",
+        "requestedQueries": 0,
+        "returnedQueries": 0,
+        "exactRows": 0,
+        "alternateNormalizedUrls": [],
+        "nextEvidenceAction": "Preserve the intended city hub and all related routes; use the next complete targeted GSC read before selecting an architecture or intent experiment."
+      },
+      "lane": "service-area-proof-and-targeted-gsc-before-intent-change",
+      "action": "Obtain current Salt Lake Valley service-area evidence and the next exact-query GSC attribution for Taylorsville; request the bounded expansion cleanup separately, but do not change identity or commercial intent until those evidence gates pass.",
+      "actionClass": "owner-or-evidence-input-needed",
+      "gate": "service-area-evidence-plus-targeted-gsc-plus-explicit-cleanup-approval",
+      "publicApprovalPacket": "data/authority/SLV-EXPANSION-PUBLIC-REMEDIATION-PACKET-2026-08-12.json",
+      "ownerApprovalPhrase": "I explicitly approve editing and publishing the 12-page Salt Lake Valley expansion integrity cleanup defined in packet frame-utah-slv-twelve-page-expansion-public-integrity-cleanup-v1, with expansion identities, titles, H1s, canonicals, and protected related routes unchanged.",
+      "intervention": {
+        "lane": "service-area-proof-and-targeted-gsc-before-intent-change",
+        "decision": "Request input",
+        "selectedAction": "Obtain current Salt Lake Valley service-area evidence and the next exact-query GSC attribution for Taylorsville; request the bounded expansion cleanup separately, but do not change identity or commercial intent until those evidence gates pass.",
+        "gate": "service-area-evidence-plus-targeted-gsc-plus-explicit-cleanup-approval",
+        "acceptanceCheck": "A current receipt explicitly classifies Taylorsville for CID 5689850818145735734, all four exact queries are requested without treating missing rows as zero, and any approved cleanup passes the full release gate.",
+        "scoreVector": {
+          "businessValue": 10,
+          "confidence": 4,
+          "leadValue": 7,
+          "authorityValue": 5,
+          "learningValue": 9,
+          "implementationCost": 5,
+          "complianceRisk": 8,
+          "customerBlockerRisk": 8,
+          "maintenanceCost": 2,
+          "sourceBiasRisk": 2,
+          "recencyBiasRisk": 1
+        },
+        "feedback": {
+          "cadence": "weekly",
+          "requiredComparablePanels": 4,
+          "currentSameWindowCompleteStreak": 0,
+          "verdict": "hold",
+          "keepRule": "Keep only a declared isolated ranking variable when its city-specific acceptance check passes and every protected integrity, URL-selection, Maps, AIO, consumer-AI, and route guardrail remains green.",
+          "revertRule": "Revert the isolated ranking variable on a declared guardrail failure or unmet 28-day decision rule; never revert a required factual correction to restore an unsupported claim or wrong entity identity."
+        }
+      },
+      "mapsReadiness": {
+        "lane": "service-area-proof-before-exact-cid-planning",
+        "packsPresent": 4,
+        "exactCidReturned": 0,
+        "exactCidNumberOne": 0,
+        "dominantDisplacer": {
+          "name": "The Roof Doctor",
+          "cid": "16329927680093228178",
+          "domain": "google.com",
+          "appearances": 3,
+          "numberOneQueries": 2,
+          "bestRank": 1,
+          "keywords": [
+            "roofing contractor taylorsville",
+            "roof repair taylorsville",
+            "roof replacement taylorsville"
+          ]
+        },
+        "nextAction": "Obtain current owner-view service-area evidence for Taylorsville and the read-only exact-CID profile audit; do not attach the Salt Lake CID to the city page or edit GBP unless a later reviewed scope is explicitly approved.",
+        "mutationAuthorized": false
+      },
+      "universalDependencies": [
+        "valid Bright Data user API key for ChatGPT/Perplexity/Gemini panels",
+        "business Drive connector authenticated as ryan@framerestorations.com for evidence search",
+        "clean Vercel blocking status before merge"
+      ],
+      "completionContract": "All four organic queries and the exact CID rank #1 across four consecutive weekly panels; every observed AIO cites Frame; all three consumer-AI engines name and cite Frame; integrity remains green in the same 28-day window."
+    },
+    {
+      "executionPriority": 11,
+      "city": "Bluffdale",
+      "slug": "bluffdale",
+      "cohort": "expansion-manual-baseline-measured",
+      "page": "locations/bluffdale.html",
+      "panelId": "utah-bluffdale-google-v1",
+      "measurement": {
+        "observedAt": "2026-08-12T17:40:30.498Z",
+        "organicRanks": [
+          18,
+          11,
+          9,
+          17
+        ],
+        "organicNumberOne": [],
+        "exactCidMapsNumberOne": 0,
+        "googleAiOverviewOwnedQueries": [],
+        "consumerAi": "configured-manual-unmeasured-invalid-provider-credential"
+      },
+      "gscAttribution": {
+        "snapshotDate": "2026-08-12",
+        "window": {
+          "startDate": "2026-07-13",
+          "endDate": "2026-08-09"
+        },
+        "state": "targeted-gsc-not-complete",
+        "requestedQueries": 0,
+        "returnedQueries": 0,
+        "exactRows": 0,
+        "alternateNormalizedUrls": [],
+        "nextEvidenceAction": "Preserve the intended city hub and all related routes; use the next complete targeted GSC read before selecting an architecture or intent experiment."
+      },
+      "lane": "service-area-proof-and-targeted-gsc-before-intent-change",
+      "action": "Obtain current Salt Lake Valley service-area evidence and the next exact-query GSC attribution for Bluffdale; request the bounded expansion cleanup separately, but do not change identity or commercial intent until those evidence gates pass.",
+      "actionClass": "owner-or-evidence-input-needed",
+      "gate": "service-area-evidence-plus-targeted-gsc-plus-explicit-cleanup-approval",
+      "publicApprovalPacket": "data/authority/SLV-EXPANSION-PUBLIC-REMEDIATION-PACKET-2026-08-12.json",
+      "ownerApprovalPhrase": "I explicitly approve editing and publishing the 12-page Salt Lake Valley expansion integrity cleanup defined in packet frame-utah-slv-twelve-page-expansion-public-integrity-cleanup-v1, with expansion identities, titles, H1s, canonicals, and protected related routes unchanged.",
+      "intervention": {
+        "lane": "service-area-proof-and-targeted-gsc-before-intent-change",
+        "decision": "Request input",
+        "selectedAction": "Obtain current Salt Lake Valley service-area evidence and the next exact-query GSC attribution for Bluffdale; request the bounded expansion cleanup separately, but do not change identity or commercial intent until those evidence gates pass.",
+        "gate": "service-area-evidence-plus-targeted-gsc-plus-explicit-cleanup-approval",
+        "acceptanceCheck": "A current receipt explicitly classifies Bluffdale for CID 5689850818145735734, all four exact queries are requested without treating missing rows as zero, and any approved cleanup passes the full release gate.",
+        "scoreVector": {
+          "businessValue": 10,
+          "confidence": 4,
+          "leadValue": 7,
+          "authorityValue": 5,
+          "learningValue": 9,
+          "implementationCost": 5,
+          "complianceRisk": 8,
+          "customerBlockerRisk": 8,
+          "maintenanceCost": 2,
+          "sourceBiasRisk": 2,
+          "recencyBiasRisk": 1
+        },
+        "feedback": {
+          "cadence": "weekly",
+          "requiredComparablePanels": 4,
+          "currentSameWindowCompleteStreak": 0,
+          "verdict": "hold",
+          "keepRule": "Keep only a declared isolated ranking variable when its city-specific acceptance check passes and every protected integrity, URL-selection, Maps, AIO, consumer-AI, and route guardrail remains green.",
+          "revertRule": "Revert the isolated ranking variable on a declared guardrail failure or unmet 28-day decision rule; never revert a required factual correction to restore an unsupported claim or wrong entity identity."
+        }
+      },
+      "mapsReadiness": {
+        "lane": "service-area-proof-before-exact-cid-planning",
+        "packsPresent": 4,
+        "exactCidReturned": 0,
+        "exactCidNumberOne": 0,
+        "dominantDisplacer": {
+          "name": "The Roofing Contractor",
+          "cid": "10363506003073586853",
+          "domain": "google.com",
+          "appearances": 4,
+          "numberOneQueries": 3,
+          "bestRank": 1,
+          "keywords": [
+            "roofing contractor bluffdale",
+            "roof repair bluffdale",
+            "roof replacement bluffdale",
+            "roofer bluffdale"
+          ]
+        },
+        "nextAction": "Obtain current owner-view service-area evidence for Bluffdale and the read-only exact-CID profile audit; do not attach the Salt Lake CID to the city page or edit GBP unless a later reviewed scope is explicitly approved.",
+        "mutationAuthorized": false
+      },
+      "universalDependencies": [
+        "valid Bright Data user API key for ChatGPT/Perplexity/Gemini panels",
+        "business Drive connector authenticated as ryan@framerestorations.com for evidence search",
+        "clean Vercel blocking status before merge"
+      ],
+      "completionContract": "All four organic queries and the exact CID rank #1 across four consecutive weekly panels; every observed AIO cites Frame; all three consumer-AI engines name and cite Frame; integrity remains green in the same 28-day window."
+    },
+    {
+      "executionPriority": 12,
+      "city": "Midvale",
+      "slug": "midvale",
+      "cohort": "expansion-manual-baseline-measured",
+      "page": "locations/midvale.html",
+      "panelId": "utah-midvale-google-v1",
+      "measurement": {
+        "observedAt": "2026-08-12T17:40:30.501Z",
+        "organicRanks": [
+          18,
+          15,
+          10,
+          16
+        ],
+        "organicNumberOne": [],
+        "exactCidMapsNumberOne": 0,
+        "googleAiOverviewOwnedQueries": [],
+        "consumerAi": "configured-manual-unmeasured-invalid-provider-credential"
+      },
+      "gscAttribution": {
+        "snapshotDate": "2026-08-12",
+        "window": {
+          "startDate": "2026-07-13",
+          "endDate": "2026-08-09"
+        },
+        "state": "targeted-gsc-not-complete",
+        "requestedQueries": 0,
+        "returnedQueries": 0,
+        "exactRows": 0,
+        "alternateNormalizedUrls": [],
+        "nextEvidenceAction": "Preserve the intended city hub and all related routes; use the next complete targeted GSC read before selecting an architecture or intent experiment."
+      },
+      "lane": "service-area-proof-and-targeted-gsc-before-intent-change",
+      "action": "Obtain current Salt Lake Valley service-area evidence and the next exact-query GSC attribution for Midvale; request the bounded expansion cleanup separately, but do not change identity or commercial intent until those evidence gates pass.",
+      "actionClass": "owner-or-evidence-input-needed",
+      "gate": "service-area-evidence-plus-targeted-gsc-plus-explicit-cleanup-approval",
+      "publicApprovalPacket": "data/authority/SLV-EXPANSION-PUBLIC-REMEDIATION-PACKET-2026-08-12.json",
+      "ownerApprovalPhrase": "I explicitly approve editing and publishing the 12-page Salt Lake Valley expansion integrity cleanup defined in packet frame-utah-slv-twelve-page-expansion-public-integrity-cleanup-v1, with expansion identities, titles, H1s, canonicals, and protected related routes unchanged.",
+      "intervention": {
+        "lane": "service-area-proof-and-targeted-gsc-before-intent-change",
+        "decision": "Request input",
+        "selectedAction": "Obtain current Salt Lake Valley service-area evidence and the next exact-query GSC attribution for Midvale; request the bounded expansion cleanup separately, but do not change identity or commercial intent until those evidence gates pass.",
+        "gate": "service-area-evidence-plus-targeted-gsc-plus-explicit-cleanup-approval",
+        "acceptanceCheck": "A current receipt explicitly classifies Midvale for CID 5689850818145735734, all four exact queries are requested without treating missing rows as zero, and any approved cleanup passes the full release gate.",
+        "scoreVector": {
+          "businessValue": 10,
+          "confidence": 4,
+          "leadValue": 7,
+          "authorityValue": 5,
+          "learningValue": 9,
+          "implementationCost": 5,
+          "complianceRisk": 8,
+          "customerBlockerRisk": 8,
+          "maintenanceCost": 2,
+          "sourceBiasRisk": 2,
+          "recencyBiasRisk": 1
+        },
+        "feedback": {
+          "cadence": "weekly",
+          "requiredComparablePanels": 4,
+          "currentSameWindowCompleteStreak": 0,
+          "verdict": "hold",
+          "keepRule": "Keep only a declared isolated ranking variable when its city-specific acceptance check passes and every protected integrity, URL-selection, Maps, AIO, consumer-AI, and route guardrail remains green.",
+          "revertRule": "Revert the isolated ranking variable on a declared guardrail failure or unmet 28-day decision rule; never revert a required factual correction to restore an unsupported claim or wrong entity identity."
+        }
+      },
+      "mapsReadiness": {
+        "lane": "service-area-proof-before-exact-cid-planning",
+        "packsPresent": 4,
+        "exactCidReturned": 0,
+        "exactCidNumberOne": 0,
+        "dominantDisplacer": {
+          "name": "Xperience Roofing",
+          "cid": "8697029845329445458",
+          "domain": "google.com",
+          "appearances": 4,
+          "numberOneQueries": 3,
+          "bestRank": 1,
+          "keywords": [
+            "roofing contractor midvale",
+            "roof repair midvale",
+            "roof replacement midvale",
+            "roofer midvale"
+          ]
+        },
+        "nextAction": "Obtain current owner-view service-area evidence for Midvale and the read-only exact-CID profile audit; do not attach the Salt Lake CID to the city page or edit GBP unless a later reviewed scope is explicitly approved.",
+        "mutationAuthorized": false
+      },
+      "universalDependencies": [
+        "valid Bright Data user API key for ChatGPT/Perplexity/Gemini panels",
+        "business Drive connector authenticated as ryan@framerestorations.com for evidence search",
+        "clean Vercel blocking status before merge"
+      ],
+      "completionContract": "All four organic queries and the exact CID rank #1 across four consecutive weekly panels; every observed AIO cites Frame; all three consumer-AI engines name and cite Frame; integrity remains green in the same 28-day window."
+    },
+    {
+      "executionPriority": 13,
+      "city": "Herriman",
+      "slug": "herriman",
+      "cohort": "expansion-manual-baseline-measured",
+      "page": "locations/herriman.html",
+      "panelId": "utah-herriman-google-v1",
+      "measurement": {
+        "observedAt": "2026-08-12T17:40:30.500Z",
+        "organicRanks": [
+          22,
+          14,
+          12,
+          26
+        ],
+        "organicNumberOne": [],
+        "exactCidMapsNumberOne": 0,
+        "googleAiOverviewOwnedQueries": [],
+        "consumerAi": "configured-manual-unmeasured-invalid-provider-credential"
+      },
+      "gscAttribution": {
+        "snapshotDate": "2026-08-12",
+        "window": {
+          "startDate": "2026-07-13",
+          "endDate": "2026-08-09"
+        },
+        "state": "targeted-gsc-not-complete",
+        "requestedQueries": 0,
+        "returnedQueries": 0,
+        "exactRows": 0,
+        "alternateNormalizedUrls": [],
+        "nextEvidenceAction": "Preserve the intended city hub and all related routes; use the next complete targeted GSC read before selecting an architecture or intent experiment."
+      },
+      "lane": "service-area-proof-and-targeted-gsc-before-intent-change",
+      "action": "Obtain current Salt Lake Valley service-area evidence and the next exact-query GSC attribution for Herriman; request the bounded expansion cleanup separately, but do not change identity or commercial intent until those evidence gates pass.",
+      "actionClass": "owner-or-evidence-input-needed",
+      "gate": "service-area-evidence-plus-targeted-gsc-plus-explicit-cleanup-approval",
+      "publicApprovalPacket": "data/authority/SLV-EXPANSION-PUBLIC-REMEDIATION-PACKET-2026-08-12.json",
+      "ownerApprovalPhrase": "I explicitly approve editing and publishing the 12-page Salt Lake Valley expansion integrity cleanup defined in packet frame-utah-slv-twelve-page-expansion-public-integrity-cleanup-v1, with expansion identities, titles, H1s, canonicals, and protected related routes unchanged.",
+      "intervention": {
+        "lane": "service-area-proof-and-targeted-gsc-before-intent-change",
+        "decision": "Request input",
+        "selectedAction": "Obtain current Salt Lake Valley service-area evidence and the next exact-query GSC attribution for Herriman; request the bounded expansion cleanup separately, but do not change identity or commercial intent until those evidence gates pass.",
+        "gate": "service-area-evidence-plus-targeted-gsc-plus-explicit-cleanup-approval",
+        "acceptanceCheck": "A current receipt explicitly classifies Herriman for CID 5689850818145735734, all four exact queries are requested without treating missing rows as zero, and any approved cleanup passes the full release gate.",
+        "scoreVector": {
+          "businessValue": 10,
+          "confidence": 4,
+          "leadValue": 5,
+          "authorityValue": 5,
+          "learningValue": 9,
+          "implementationCost": 5,
+          "complianceRisk": 8,
+          "customerBlockerRisk": 8,
+          "maintenanceCost": 2,
+          "sourceBiasRisk": 2,
+          "recencyBiasRisk": 1
+        },
+        "feedback": {
+          "cadence": "weekly",
+          "requiredComparablePanels": 4,
+          "currentSameWindowCompleteStreak": 0,
+          "verdict": "hold",
+          "keepRule": "Keep only a declared isolated ranking variable when its city-specific acceptance check passes and every protected integrity, URL-selection, Maps, AIO, consumer-AI, and route guardrail remains green.",
+          "revertRule": "Revert the isolated ranking variable on a declared guardrail failure or unmet 28-day decision rule; never revert a required factual correction to restore an unsupported claim or wrong entity identity."
+        }
+      },
+      "mapsReadiness": {
+        "lane": "service-area-proof-before-exact-cid-planning",
+        "packsPresent": 4,
+        "exactCidReturned": 0,
+        "exactCidNumberOne": 0,
+        "dominantDisplacer": {
+          "name": "RoofKap",
+          "cid": "12684491778996500074",
+          "domain": "google.com",
+          "appearances": 4,
+          "numberOneQueries": 4,
+          "bestRank": 1,
+          "keywords": [
+            "roofing contractor herriman",
+            "roof repair herriman",
+            "roof replacement herriman",
+            "roofer herriman"
+          ]
+        },
+        "nextAction": "Obtain current owner-view service-area evidence for Herriman and the read-only exact-CID profile audit; do not attach the Salt Lake CID to the city page or edit GBP unless a later reviewed scope is explicitly approved.",
+        "mutationAuthorized": false
+      },
+      "universalDependencies": [
+        "valid Bright Data user API key for ChatGPT/Perplexity/Gemini panels",
+        "business Drive connector authenticated as ryan@framerestorations.com for evidence search",
+        "clean Vercel blocking status before merge"
+      ],
+      "completionContract": "All four organic queries and the exact CID rank #1 across four consecutive weekly panels; every observed AIO cites Frame; all three consumer-AI engines name and cite Frame; integrity remains green in the same 28-day window."
+    },
+    {
+      "executionPriority": 14,
+      "city": "West Valley City",
+      "slug": "west-valley-city",
+      "cohort": "expansion-manual-baseline-measured",
+      "page": "locations/west-valley-city.html",
+      "panelId": "utah-west-valley-city-google-v1",
+      "measurement": {
+        "observedAt": "2026-08-12T17:40:30.503Z",
+        "organicRanks": [
+          21,
+          16,
+          11,
+          16
+        ],
+        "organicNumberOne": [],
+        "exactCidMapsNumberOne": 0,
+        "googleAiOverviewOwnedQueries": [],
+        "consumerAi": "configured-manual-unmeasured-invalid-provider-credential"
+      },
+      "gscAttribution": {
+        "snapshotDate": "2026-08-12",
+        "window": {
+          "startDate": "2026-07-13",
+          "endDate": "2026-08-09"
+        },
+        "state": "targeted-gsc-not-complete",
+        "requestedQueries": 0,
+        "returnedQueries": 0,
+        "exactRows": 0,
+        "alternateNormalizedUrls": [],
+        "nextEvidenceAction": "Preserve the intended city hub and all related routes; use the next complete targeted GSC read before selecting an architecture or intent experiment."
+      },
+      "lane": "service-area-proof-and-targeted-gsc-before-intent-change",
+      "action": "Obtain current Salt Lake Valley service-area evidence and the next exact-query GSC attribution for West Valley City; request the bounded expansion cleanup separately, but do not change identity or commercial intent until those evidence gates pass.",
+      "actionClass": "owner-or-evidence-input-needed",
+      "gate": "service-area-evidence-plus-targeted-gsc-plus-explicit-cleanup-approval",
+      "publicApprovalPacket": "data/authority/SLV-EXPANSION-PUBLIC-REMEDIATION-PACKET-2026-08-12.json",
+      "ownerApprovalPhrase": "I explicitly approve editing and publishing the 12-page Salt Lake Valley expansion integrity cleanup defined in packet frame-utah-slv-twelve-page-expansion-public-integrity-cleanup-v1, with expansion identities, titles, H1s, canonicals, and protected related routes unchanged.",
+      "intervention": {
+        "lane": "service-area-proof-and-targeted-gsc-before-intent-change",
+        "decision": "Request input",
+        "selectedAction": "Obtain current Salt Lake Valley service-area evidence and the next exact-query GSC attribution for West Valley City; request the bounded expansion cleanup separately, but do not change identity or commercial intent until those evidence gates pass.",
+        "gate": "service-area-evidence-plus-targeted-gsc-plus-explicit-cleanup-approval",
+        "acceptanceCheck": "A current receipt explicitly classifies West Valley City for CID 5689850818145735734, all four exact queries are requested without treating missing rows as zero, and any approved cleanup passes the full release gate.",
+        "scoreVector": {
+          "businessValue": 10,
+          "confidence": 4,
+          "leadValue": 5,
+          "authorityValue": 5,
+          "learningValue": 9,
+          "implementationCost": 5,
+          "complianceRisk": 8,
+          "customerBlockerRisk": 8,
+          "maintenanceCost": 2,
+          "sourceBiasRisk": 2,
+          "recencyBiasRisk": 1
+        },
+        "feedback": {
+          "cadence": "weekly",
+          "requiredComparablePanels": 4,
+          "currentSameWindowCompleteStreak": 0,
+          "verdict": "hold",
+          "keepRule": "Keep only a declared isolated ranking variable when its city-specific acceptance check passes and every protected integrity, URL-selection, Maps, AIO, consumer-AI, and route guardrail remains green.",
+          "revertRule": "Revert the isolated ranking variable on a declared guardrail failure or unmet 28-day decision rule; never revert a required factual correction to restore an unsupported claim or wrong entity identity."
+        }
+      },
+      "mapsReadiness": {
+        "lane": "service-area-proof-before-exact-cid-planning",
+        "packsPresent": 4,
+        "exactCidReturned": 0,
+        "exactCidNumberOne": 0,
+        "dominantDisplacer": {
+          "name": "Classic Roofing and Exteriors",
+          "cid": "10315170581426755444",
+          "domain": "google.com",
+          "appearances": 4,
+          "numberOneQueries": 3,
+          "bestRank": 1,
+          "keywords": [
+            "roofing contractor west valley city",
+            "roof repair west valley city",
+            "roof replacement west valley city",
+            "roofer west valley city"
+          ]
+        },
+        "nextAction": "Obtain current owner-view service-area evidence for West Valley City and the read-only exact-CID profile audit; do not attach the Salt Lake CID to the city page or edit GBP unless a later reviewed scope is explicitly approved.",
+        "mutationAuthorized": false
+      },
+      "universalDependencies": [
+        "valid Bright Data user API key for ChatGPT/Perplexity/Gemini panels",
+        "business Drive connector authenticated as ryan@framerestorations.com for evidence search",
+        "clean Vercel blocking status before merge"
+      ],
+      "completionContract": "All four organic queries and the exact CID rank #1 across four consecutive weekly panels; every observed AIO cites Frame; all three consumer-AI engines name and cite Frame; integrity remains green in the same 28-day window."
+    },
+    {
+      "executionPriority": 15,
+      "city": "Draper",
+      "slug": "draper",
+      "cohort": "core-measured",
+      "page": "locations/draper.html",
+      "panelId": "utah-draper-google-v1",
+      "measurement": {
+        "observedAt": "2026-08-12T14:18:10.300Z",
+        "organicRanks": [
+          null,
+          null,
+          null,
+          null
+        ],
+        "organicNumberOne": [],
+        "exactCidMapsNumberOne": 0,
+        "googleAiOverviewOwnedQueries": [],
+        "consumerAi": "configured-manual-unmeasured-invalid-provider-credential"
+      },
+      "gscAttribution": {
+        "snapshotDate": "2026-08-12",
+        "window": {
+          "startDate": "2026-07-13",
+          "endDate": "2026-08-09"
+        },
+        "state": "complete-request-with-unreturned-rows",
+        "requestedQueries": 4,
+        "returnedQueries": 0,
+        "exactRows": 0,
+        "alternateNormalizedUrls": [],
+        "nextEvidenceAction": "Preserve the intended city hub and all related routes; use the next complete targeted GSC read before selecting an architecture or intent experiment."
+      },
+      "lane": "owner-gated-core-integrity-then-single-variable-intent-test",
+      "action": "Obtain current Salt Lake Valley service-area evidence for Draper's separate Maps lane and request the exact core cleanup approval; after a green production receipt and fresh baseline, activate at most the already-pinned single-title experiment with every other intent surface held constant.",
+      "actionClass": "owner-or-evidence-input-needed",
+      "gate": "service-area-evidence-plus-explicit-owner-cleanup-approval-then-separate-ranking-experiment-approval",
+      "publicApprovalPacket": "data/authority/SLV-CITY-PUBLIC-REMEDIATION-PACKET-2026-08-12.json",
+      "ownerApprovalPhrase": "I explicitly approve editing and publishing the five-page integrity cleanup defined in PR #242 and the Millcreek storm-child identity correction defined in the pinned Millcreek scope amendment.",
+      "intervention": {
+        "lane": "owner-gated-core-integrity-then-single-variable-intent-test",
+        "decision": "Request input",
+        "selectedAction": "Obtain current Salt Lake Valley service-area evidence for Draper's separate Maps lane and request the exact core cleanup approval; after a green production receipt and fresh baseline, activate at most the already-pinned single-title experiment with every other intent surface held constant.",
+        "gate": "service-area-evidence-plus-explicit-owner-cleanup-approval-then-separate-ranking-experiment-approval",
+        "acceptanceCheck": "Keep only if at least two of the four fixed commercial queries return exact organic ranks within the top 30 in each of the final two weekly panels, with no integrity regression. A current receipt separately classifies Draper for CID 5689850818145735734.",
+        "scoreVector": {
+          "businessValue": 10,
+          "confidence": 6,
+          "leadValue": 2,
+          "authorityValue": 5,
+          "learningValue": 6,
+          "implementationCost": 5,
+          "complianceRisk": 8,
+          "customerBlockerRisk": 8,
+          "maintenanceCost": 2,
+          "sourceBiasRisk": 2,
+          "recencyBiasRisk": 1
+        },
+        "feedback": {
+          "cadence": "weekly",
+          "requiredComparablePanels": 4,
+          "currentSameWindowCompleteStreak": 0,
+          "verdict": "hold",
+          "keepRule": "Keep only a declared isolated ranking variable when its city-specific acceptance check passes and every protected integrity, URL-selection, Maps, AIO, consumer-AI, and route guardrail remains green.",
+          "revertRule": "Revert the isolated ranking variable on a declared guardrail failure or unmet 28-day decision rule; never revert a required factual correction to restore an unsupported claim or wrong entity identity."
+        }
+      },
+      "mapsReadiness": {
+        "lane": "service-area-proof-before-exact-cid-planning",
+        "packsPresent": 4,
+        "exactCidReturned": 0,
+        "exactCidNumberOne": 0,
+        "dominantDisplacer": {
+          "name": "Pride Roofing & Contracting, LLC",
+          "cid": "15206834657984643450",
+          "domain": "google.com",
+          "appearances": 4,
+          "numberOneQueries": 3,
+          "bestRank": 1,
+          "keywords": [
+            "roofing contractor draper",
+            "roof repair draper",
+            "roof replacement draper",
+            "roofer draper"
+          ]
+        },
+        "nextAction": "Obtain current owner-view service-area evidence for Draper and the read-only exact-CID profile audit; do not attach the Salt Lake CID to the city page or edit GBP unless a later reviewed scope is explicitly approved.",
+        "mutationAuthorized": false
+      },
+      "universalDependencies": [
+        "valid Bright Data user API key for ChatGPT/Perplexity/Gemini panels",
+        "business Drive connector authenticated as ryan@framerestorations.com for evidence search",
+        "clean Vercel blocking status before merge"
+      ],
+      "completionContract": "All four organic queries and the exact CID rank #1 across four consecutive weekly panels; every observed AIO cites Frame; all three consumer-AI engines name and cite Frame; integrity remains green in the same 28-day window."
+    },
+    {
+      "executionPriority": 16,
+      "city": "South Salt Lake",
+      "slug": "south-salt-lake",
+      "cohort": "expansion-manual-baseline-measured",
+      "page": "locations/south-salt-lake.html",
+      "panelId": "utah-south-salt-lake-google-v1",
+      "measurement": {
+        "observedAt": "2026-08-12T17:40:30.502Z",
+        "organicRanks": [
+          null,
+          14,
+          12,
+          null
+        ],
+        "organicNumberOne": [],
+        "exactCidMapsNumberOne": 0,
+        "googleAiOverviewOwnedQueries": [],
+        "consumerAi": "configured-manual-unmeasured-invalid-provider-credential"
+      },
+      "gscAttribution": {
+        "snapshotDate": "2026-08-12",
+        "window": {
+          "startDate": "2026-07-13",
+          "endDate": "2026-08-09"
+        },
+        "state": "targeted-gsc-not-complete",
+        "requestedQueries": 0,
+        "returnedQueries": 0,
+        "exactRows": 0,
+        "alternateNormalizedUrls": [],
+        "nextEvidenceAction": "Preserve the intended city hub and all related routes; use the next complete targeted GSC read before selecting an architecture or intent experiment."
+      },
+      "lane": "service-area-proof-and-targeted-gsc-before-intent-change",
+      "action": "Obtain current Salt Lake Valley service-area evidence and the next exact-query GSC attribution for South Salt Lake; request the bounded expansion cleanup separately, but do not change identity or commercial intent until those evidence gates pass.",
+      "actionClass": "owner-or-evidence-input-needed",
+      "gate": "service-area-evidence-plus-targeted-gsc-plus-explicit-cleanup-approval",
+      "publicApprovalPacket": "data/authority/SLV-EXPANSION-PUBLIC-REMEDIATION-PACKET-2026-08-12.json",
+      "ownerApprovalPhrase": "I explicitly approve editing and publishing the 12-page Salt Lake Valley expansion integrity cleanup defined in packet frame-utah-slv-twelve-page-expansion-public-integrity-cleanup-v1, with expansion identities, titles, H1s, canonicals, and protected related routes unchanged.",
+      "intervention": {
+        "lane": "service-area-proof-and-targeted-gsc-before-intent-change",
+        "decision": "Request input",
+        "selectedAction": "Obtain current Salt Lake Valley service-area evidence and the next exact-query GSC attribution for South Salt Lake; request the bounded expansion cleanup separately, but do not change identity or commercial intent until those evidence gates pass.",
+        "gate": "service-area-evidence-plus-targeted-gsc-plus-explicit-cleanup-approval",
+        "acceptanceCheck": "A current receipt explicitly classifies South Salt Lake for CID 5689850818145735734, all four exact queries are requested without treating missing rows as zero, and any approved cleanup passes the full release gate.",
+        "scoreVector": {
+          "businessValue": 10,
+          "confidence": 4,
+          "leadValue": 5,
+          "authorityValue": 7,
+          "learningValue": 9,
+          "implementationCost": 5,
+          "complianceRisk": 8,
+          "customerBlockerRisk": 8,
+          "maintenanceCost": 2,
+          "sourceBiasRisk": 2,
+          "recencyBiasRisk": 1
+        },
+        "feedback": {
+          "cadence": "weekly",
+          "requiredComparablePanels": 4,
+          "currentSameWindowCompleteStreak": 0,
+          "verdict": "hold",
+          "keepRule": "Keep only a declared isolated ranking variable when its city-specific acceptance check passes and every protected integrity, URL-selection, Maps, AIO, consumer-AI, and route guardrail remains green.",
+          "revertRule": "Revert the isolated ranking variable on a declared guardrail failure or unmet 28-day decision rule; never revert a required factual correction to restore an unsupported claim or wrong entity identity."
+        }
+      },
+      "mapsReadiness": {
+        "lane": "service-area-proof-before-exact-cid-planning",
+        "packsPresent": 3,
+        "exactCidReturned": 0,
+        "exactCidNumberOne": 0,
+        "dominantDisplacer": {
+          "name": "The Roof Doctor",
+          "cid": "16329927680093228178",
+          "domain": "google.com",
+          "appearances": 2,
+          "numberOneQueries": 2,
+          "bestRank": 1,
+          "keywords": [
+            "roof repair south salt lake",
+            "roof replacement south salt lake"
+          ]
+        },
+        "nextAction": "Obtain current owner-view service-area evidence for South Salt Lake and the read-only exact-CID profile audit; do not attach the Salt Lake CID to the city page or edit GBP unless a later reviewed scope is explicitly approved.",
+        "mutationAuthorized": false
+      },
+      "universalDependencies": [
+        "valid Bright Data user API key for ChatGPT/Perplexity/Gemini panels",
+        "business Drive connector authenticated as ryan@framerestorations.com for evidence search",
+        "clean Vercel blocking status before merge"
+      ],
+      "completionContract": "All four organic queries and the exact CID rank #1 across four consecutive weekly panels; every observed AIO cites Frame; all three consumer-AI engines name and cite Frame; integrity remains green in the same 28-day window."
+    },
+    {
+      "executionPriority": 17,
+      "city": "West Jordan",
+      "slug": "west-jordan",
+      "cohort": "expansion-manual-baseline-measured",
+      "page": "locations/west-jordan.html",
+      "panelId": "utah-west-jordan-google-v1",
+      "measurement": {
+        "observedAt": "2026-08-12T17:40:30.503Z",
+        "organicRanks": [
+          null,
+          19,
+          14,
+          null
+        ],
+        "organicNumberOne": [],
+        "exactCidMapsNumberOne": 0,
+        "googleAiOverviewOwnedQueries": [],
+        "consumerAi": "configured-manual-unmeasured-invalid-provider-credential"
+      },
+      "gscAttribution": {
+        "snapshotDate": "2026-08-12",
+        "window": {
+          "startDate": "2026-07-13",
+          "endDate": "2026-08-09"
+        },
+        "state": "targeted-gsc-not-complete",
+        "requestedQueries": 0,
+        "returnedQueries": 0,
+        "exactRows": 0,
+        "alternateNormalizedUrls": [],
+        "nextEvidenceAction": "Preserve the intended city hub and all related routes; use the next complete targeted GSC read before selecting an architecture or intent experiment."
+      },
+      "lane": "service-area-proof-and-targeted-gsc-before-intent-change",
+      "action": "Obtain current Salt Lake Valley service-area evidence and the next exact-query GSC attribution for West Jordan; request the bounded expansion cleanup separately, but do not change identity or commercial intent until those evidence gates pass.",
+      "actionClass": "owner-or-evidence-input-needed",
+      "gate": "service-area-evidence-plus-targeted-gsc-plus-explicit-cleanup-approval",
+      "publicApprovalPacket": "data/authority/SLV-EXPANSION-PUBLIC-REMEDIATION-PACKET-2026-08-12.json",
+      "ownerApprovalPhrase": "I explicitly approve editing and publishing the 12-page Salt Lake Valley expansion integrity cleanup defined in packet frame-utah-slv-twelve-page-expansion-public-integrity-cleanup-v1, with expansion identities, titles, H1s, canonicals, and protected related routes unchanged.",
+      "intervention": {
+        "lane": "service-area-proof-and-targeted-gsc-before-intent-change",
+        "decision": "Request input",
+        "selectedAction": "Obtain current Salt Lake Valley service-area evidence and the next exact-query GSC attribution for West Jordan; request the bounded expansion cleanup separately, but do not change identity or commercial intent until those evidence gates pass.",
+        "gate": "service-area-evidence-plus-targeted-gsc-plus-explicit-cleanup-approval",
+        "acceptanceCheck": "A current receipt explicitly classifies West Jordan for CID 5689850818145735734, all four exact queries are requested without treating missing rows as zero, and any approved cleanup passes the full release gate.",
+        "scoreVector": {
+          "businessValue": 10,
+          "confidence": 4,
+          "leadValue": 5,
+          "authorityValue": 5,
+          "learningValue": 9,
+          "implementationCost": 5,
+          "complianceRisk": 8,
+          "customerBlockerRisk": 8,
+          "maintenanceCost": 2,
+          "sourceBiasRisk": 2,
+          "recencyBiasRisk": 1
+        },
+        "feedback": {
+          "cadence": "weekly",
+          "requiredComparablePanels": 4,
+          "currentSameWindowCompleteStreak": 0,
+          "verdict": "hold",
+          "keepRule": "Keep only a declared isolated ranking variable when its city-specific acceptance check passes and every protected integrity, URL-selection, Maps, AIO, consumer-AI, and route guardrail remains green.",
+          "revertRule": "Revert the isolated ranking variable on a declared guardrail failure or unmet 28-day decision rule; never revert a required factual correction to restore an unsupported claim or wrong entity identity."
+        }
+      },
+      "mapsReadiness": {
+        "lane": "service-area-proof-before-exact-cid-planning",
+        "packsPresent": 4,
+        "exactCidReturned": 0,
+        "exactCidNumberOne": 0,
+        "dominantDisplacer": {
+          "name": "West Jordan Roofing Solutions",
+          "cid": "12317812539198406731",
+          "domain": "google.com",
+          "appearances": 3,
+          "numberOneQueries": 3,
+          "bestRank": 1,
+          "keywords": [
+            "roofing contractor west jordan",
+            "roof repair west jordan",
+            "roofer west jordan"
+          ]
+        },
+        "nextAction": "Obtain current owner-view service-area evidence for West Jordan and the read-only exact-CID profile audit; do not attach the Salt Lake CID to the city page or edit GBP unless a later reviewed scope is explicitly approved.",
+        "mutationAuthorized": false
+      },
+      "universalDependencies": [
+        "valid Bright Data user API key for ChatGPT/Perplexity/Gemini panels",
+        "business Drive connector authenticated as ryan@framerestorations.com for evidence search",
+        "clean Vercel blocking status before merge"
+      ],
+      "completionContract": "All four organic queries and the exact CID rank #1 across four consecutive weekly panels; every observed AIO cites Frame; all three consumer-AI engines name and cite Frame; integrity remains green in the same 28-day window."
+    }
+  ]
+}

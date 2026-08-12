@@ -19,6 +19,9 @@ const registry = JSON.parse(
   fs.readFileSync(path.join(repoRoot, current.authoritativeSources.googlePanelRegistry), "utf8"),
 );
 const registryByPanel = new Map(registry.panels.map((panel) => [panel.id, panel]));
+const consumerAiPath = "data/rank-tracker/SLV-CONSUMER-AI-LATEST.json";
+const consumerAi = JSON.parse(fs.readFileSync(path.join(repoRoot, consumerAiPath), "utf8"));
+const consumerAiByCity = new Map(consumerAi.cities.map((city) => [city.city, city]));
 const next = structuredClone(current);
 
 let organicNumberOneQueries = 0;
@@ -45,6 +48,7 @@ for (const track of next.cityTracks) {
     present: report.summary.aiOverviewsPresent,
     ownedCitations: report.summary.aiOverviewCitations,
   };
+  track.consumerAi = consumerAiByCity.get(track.city)?.state || track.consumerAi;
 
   organicNumberOneQueries += report.results.filter((result) => result.organicRank === 1).length;
   organicQueriesMeasured += report.results.length;
@@ -57,6 +61,7 @@ for (const track of next.cityTracks) {
 
 assert.equal(registryByPanel.size, next.cityTracks.length);
 next.authoritativeSources.googlePanelObservedAt = latestGoogleObservedAt;
+next.authoritativeSources.consumerAiLedger = consumerAiPath;
 next.asOf = [next.asOf, latestGoogleObservedAt].sort().at(-1);
 next.currentScore = {
   organicNumberOneQueries,
@@ -65,10 +70,17 @@ next.currentScore = {
   exactCidMapsQueriesMeasured: mapsQueriesMeasured,
   googleAiOverviewCitations: aiOverviewCitations,
   googleAiOverviewsPresent: aiOverviewsPresent,
-  consumerAiCompleteCityPanels: next.currentScore.consumerAiCompleteCityPanels,
+  consumerAiCompleteCityPanels: next.cityTracks.filter((track) => consumerAiByCity.get(track.city)?.latest).length,
   citiesAtSustainedGoal: next.currentScore.citiesAtSustainedGoal,
   citiesTracked: next.cityTracks.length,
 };
+if (consumerAi.summary.citiesWithCompleteReading > 0) {
+  next.programGates.consumerAiCredential = {
+    status: "measurement-active",
+    reason: "At least one complete nine-row ChatGPT/Perplexity/Gemini reading has been imported from the released tracker.",
+    nextAction: "Continue the fixed weekly panels; missing or failed city panels remain unmeasured and cannot satisfy or fail the goal.",
+  };
+}
 
 const nextText = `${JSON.stringify(next, null, 2)}\n`;
 if (write) {

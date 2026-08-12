@@ -1,0 +1,2072 @@
+{
+  "schemaVersion": 1,
+  "queueId": "frame-utah-slv-world-class-intervention-queue-v1",
+  "market": "utah-salt-lake-valley",
+  "preparedAt": "2026-08-12T20:48:46Z",
+  "status": "active-evidence-ranked-public-actions-gated",
+  "publicMutationPerformed": false,
+  "objective": "Reach and sustain #1 organic and exact-CID Maps ranks for all 72 fixed city queries, plus named-and-cited Google AIO, ChatGPT, Perplexity, and Gemini visibility, without unsupported or unapproved public mutations.",
+  "recommendationPipeline": {
+    "mode": "world-class-ranking",
+    "stages": [
+      "source",
+      "hydrate",
+      "filter",
+      "score",
+      "select",
+      "side-effect",
+      "feedback"
+    ],
+    "semanticRecall": {
+      "result": "reused-existing-artifacts",
+      "searched": [
+        "SLV execution registry and weekly decisions",
+        "core and expansion priority ledgers",
+        "five city architecture diagnoses",
+        "GSC URL attribution and expansion architecture",
+        "entity health and customer request board",
+        "core, Millcreek, and expansion approval packets"
+      ],
+      "newArtifactJustification": "Existing artifacts describe evidence and gates but do not expose one machine-ranked intervention, acceptance check, and feedback contract per city."
+    },
+    "filters": [
+      "Reject bulk city-service page generation, competitor copying, generic content inflation, and schema-count matching.",
+      "Reject any title, H1, identity, canonical, route, GBP, review, directory, indexing, outreach, ads, or DNS mutation without its explicit evidence and approval gate.",
+      "Protect current organic #1 and owned AIO footholds before pursuing lower-ranked queries on the same page.",
+      "Treat missing provider results and unreturned GSC rows as unmeasured, never zero."
+    ],
+    "biasAndDiversity": {
+      "result": "pass",
+      "sourceFamilies": [
+        "fixed mobile SERP",
+        "targeted GSC",
+        "site/entity audit",
+        "owner-evidence contract",
+        "competitor displacement"
+      ],
+      "checks": {
+        "vendorBias": "No provider recommendation or vendor feature is selected as an intervention.",
+        "popularityBias": "Rank leaders inform displacement but do not authorize copying.",
+        "recencyBias": "All decision-time dates and source hashes are retained; future syncs mark changed evidence instead of silently overwriting it.",
+        "categoryCollapse": "The queue includes measurement, integrity, identity, architecture, content-intent, Maps, and AEO lanes rather than one generic rewrite.",
+        "feedbackBias": "No intervention is called successful until a declared four-week outcome is measured."
+      }
+    },
+    "evalHarness": {
+      "tests": [
+        "Every portfolio city appears exactly once with four fixed query evidence rows.",
+        "Salt Lake City remains time-frozen; Millcreek uses the verified identity lane; Magna and Kearns use protected-foothold lanes.",
+        "Every pending service-area city requires current evidence before exact-CID identity planning.",
+        "Every score component is an integer from 0 through 10.",
+        "No candidate authorizes a public mutation, and every public candidate carries the exact governing approval phrase."
+      ]
+    }
+  },
+  "sources": {
+    "portfolio": {
+      "file": "data/rank-tracker/SLV-18-CITY-GOAL-PORTFOLIO-2026-08-12.json",
+      "sha256": "5782534f715e91f7683aeb6ef258ab88b5b39e0bcc44fd702bf2e65e655264c3"
+    },
+    "weeklyDecisions": {
+      "file": "data/rank-tracker/SLV-WEEKLY-DECISIONS-2026-08-12.json",
+      "sha256": "7fdd84a94fe2718408b8bb387b4d0b6a63cb5996bd19c154635db5d77918fb77"
+    },
+    "gscAttribution": {
+      "file": "data/rank-tracker/SLV-GSC-URL-ATTRIBUTION-LATEST.json",
+      "sha256": "2cb15e4921ebd6b4bee98435b824dbfad1ddf7ecc6d9839284552019e3467f04"
+    },
+    "displacement": {
+      "file": "data/rank-tracker/SLV-COMPETITOR-DISPLACEMENT-2026-08-12.json",
+      "sha256": "aed18abd061963d5dd0280dc7575060640daa9f89e98bd77a91dca80a449ef7a"
+    },
+    "entityHealth": {
+      "file": "data/rank-tracker/SLV-ENTITY-HEALTH-2026-08-12.json",
+      "sha256": "780e654065caa082745073d6d12f2249153cacc9e45614162f649fabff2f5f04"
+    },
+    "mapsReadiness": {
+      "file": "data/rank-tracker/SLV-MAPS-READINESS-2026-08-12.json",
+      "sha256": "4ffa3c72d26abbc232e465a4adf34d067459df047eb6e8b80a48117e7b3ea88c"
+    },
+    "expansionArchitecture": {
+      "file": "data/rank-tracker/SLV-EXPANSION-ARCHITECTURE-2026-08-12.json",
+      "sha256": "583b9a8299b776ede28a3c8935bd4ec82d23fe06dffd8b4865390b2dff92c14d"
+    },
+    "corePriority": {
+      "file": "data/rank-tracker/SLV-PRIORITY-2026-08-12.json",
+      "sha256": "c2711c76ec60ba1668c75660bb4ead6524811e6818485220e68ad2de8d647bff"
+    },
+    "coreCleanup": {
+      "file": "data/authority/SLV-CITY-PUBLIC-REMEDIATION-PACKET-2026-08-12.json",
+      "sha256": "b1616942e2e46f33a847d75a9fc75a084585983c91f444ade1ebd84d11b69333"
+    },
+    "millcreekAmendment": {
+      "file": "data/authority/MILLCREEK-PUBLIC-IDENTITY-SCOPE-AMENDMENT-2026-08-12.json",
+      "sha256": "68a5057dea22bfadc84dc888459adeffc9912ff625f8254b28c9059099f6e17d"
+    },
+    "expansionCleanup": {
+      "file": "data/authority/SLV-EXPANSION-PUBLIC-REMEDIATION-PACKET-2026-08-12.json",
+      "sha256": "44b72b3e8ea4d2605e8cd4562fbd4f7ff3233ce07dee46a2ef3a3a8ff8e187c6"
+    },
+    "serviceAreaRequest": {
+      "file": "data/authority/SLV-SERVICE-AREA-EVIDENCE-REQUEST-2026-08-12.json",
+      "sha256": "5c42463b915a993c7ec7288c22debc98644b8f9718b81ec80afebe768a13d670"
+    },
+    "ownerProfileAuditRequest": {
+      "file": "data/authority/SLV-GBP-OWNER-AUDIT-REQUEST-2026-08-12.json",
+      "sha256": "88e701fc0438260e4249a4b38ebb6e872dd454c2389a21311e67210b1ca0777d"
+    },
+    "driveReceipt": {
+      "file": "data/rank-tracker/evidence/SLV-BUSINESS-DRIVE-CONNECTOR-2026-08-12.json",
+      "sha256": "431dce98c54cfe390c111412df7b653b5940f70becf896064f3298cef5cc5260"
+    },
+    "diagnoses": {
+      "Millcreek": {
+        "file": "data/rank-tracker/MILLCREEK-IDENTITY-ARCHITECTURE-DIAGNOSIS-2026-08-12.json",
+        "sha256": "68320ed7967996f08a4086d1d878b24851817263c0735dd1a28e93f720c97195"
+      },
+      "Sandy": {
+        "file": "data/rank-tracker/SANDY-ARCHITECTURE-DIAGNOSIS-2026-08-12.json",
+        "sha256": "2c00c3ad8e871dafdf3e47f36e2f4b4aa4fbf57789dd3d2da3cae562dd9da361"
+      },
+      "Holladay": {
+        "file": "data/rank-tracker/HOLLADAY-ARCHITECTURE-DIAGNOSIS-2026-08-12.json",
+        "sha256": "4d287342ad3ed4b2ffe0f3e25c1de07a04f96b3271fdcc5b02cb55eb9b1d3154"
+      },
+      "Cottonwood Heights": {
+        "file": "data/rank-tracker/COTTONWOOD-HEIGHTS-ARCHITECTURE-DIAGNOSIS-2026-08-12.json",
+        "sha256": "dd452e8b48883f9816a180a2cac79ffff2a0545c86178c3c992980c1bd80ef35"
+      },
+      "Draper": {
+        "file": "data/rank-tracker/DRAPER-ARCHITECTURE-DIAGNOSIS-2026-08-12.json",
+        "sha256": "2275639f44e73b2d3df1fd3665d257f643cfb53fca37bcd4e02f0a392b37982c"
+      }
+    }
+  },
+  "summary": {
+    "cities": 18,
+    "monitor": 2,
+    "requestInput": 16,
+    "protectedOrganicNumberOneQueries": 2,
+    "protectedGoogleAiOverviewCitations": 2,
+    "citiesPendingServiceAreaEvidence": 16,
+    "citiesWithAllFourTargetedGscQueriesRequested": 6,
+    "citiesAtSustainedGoal": 0,
+    "laneCounts": {
+      "diagnose-url-consolidation-before-intent-change": 1,
+      "observe-time-gated-slc-experiment": 1,
+      "owner-gated-core-integrity-then-single-variable-intent-test": 3,
+      "owner-gated-verified-identity-and-integrity-cleanup": 1,
+      "protect-foothold-before-cleanup-or-intent-change": 2,
+      "service-area-proof-and-targeted-gsc-before-intent-change": 10
+    }
+  },
+  "systemNextActions": [
+    "Keep the SLC page frozen and run the next core Google panel on 2026-08-17.",
+    "Refresh all 72 exact-query GSC URL attributions after this queue lands; preserve unreturned rows as unmeasured.",
+    "Import only complete nine-row consumer-AI panels after a valid provider credential produces a committed reading.",
+    "Run the exact-CID Salt Lake Valley review baseline after this branch lands; never mix in the Heber review export.",
+    "Collect the read-only exact-CID owner profile audit before proposing a GBP relevance or prominence change; no profile edit is authorized."
+  ],
+  "customerRequests": [
+    {
+      "id": "frame-utah-slv-current-service-area-evidence-v1",
+      "state": "draft-only-not-sent",
+      "cities": [
+        "Sandy",
+        "Holladay",
+        "Cottonwood Heights",
+        "Draper",
+        "Bluffdale",
+        "Herriman",
+        "Kearns",
+        "Magna",
+        "Midvale",
+        "Murray",
+        "Riverton",
+        "South Jordan",
+        "South Salt Lake",
+        "Taylorsville",
+        "West Jordan",
+        "West Valley City"
+      ],
+      "file": "data/authority/SLV-SERVICE-AREA-EVIDENCE-REQUEST-2026-08-12.json"
+    },
+    {
+      "id": "frame-utah-slv-exact-cid-owner-profile-audit-v1",
+      "state": "draft-only-not-sent",
+      "file": "data/authority/SLV-GBP-OWNER-AUDIT-REQUEST-2026-08-12.json",
+      "action": "Open the Salt Lake Valley profile for CID 5689850818145735734 while signed in as ryan@framerestorations.com and provide a current read-only receipt for the requested fields. Do not change anything and do not send passwords or private address details."
+    },
+    {
+      "id": "business-drive-connector-account",
+      "state": "FAILED_CLOSED_CONNECTOR_ACCOUNT_MISMATCH",
+      "requiredAccount": "ryan@framerestorations.com",
+      "observedAccount": "ryanconwell99@gmail.com",
+      "action": "Do not search the personal Drive for Frame Utah evidence. Reconnect the claude.ai Google Drive connector to the required business account, verify the owner preflight, then rerun the read-only evidence audit."
+    },
+    {
+      "id": "consumer-ai-provider-key",
+      "state": "unchanged-known-invalid-secret",
+      "action": "Replace BRIGHT_DATA_KEY in Rconman99/geo-aeo-tracker with a valid Bright Data user API key; rerun only after GitHub reports a changed secret timestamp."
+    }
+  ],
+  "candidates": [
+    {
+      "interventionPriority": 0,
+      "city": "Salt Lake City",
+      "slug": "salt-lake-city",
+      "cohort": "core-measured",
+      "page": "locations/salt-lake-city.html",
+      "panelId": "utah-salt-lake-city-google-v1",
+      "lane": "observe-time-gated-slc-experiment",
+      "decision": "Monitor",
+      "evidenceFeatures": {
+        "observedAt": "2026-08-12T14:18:10.297Z",
+        "organicRanks": [
+          null,
+          25,
+          19,
+          null
+        ],
+        "bestMeasuredOrganicRank": 19,
+        "measuredMeanOrganicRank": 22,
+        "exactCidMapsNumberOne": 0,
+        "exactCidMapsReturned": 0,
+        "mapsPacksPresent": 3,
+        "mapsReadinessLane": "exact-cid-review-and-owner-profile-audit",
+        "dominantMapsDisplacer": {
+          "name": "The Roof Doctor",
+          "cid": "16329927680093228178",
+          "domain": "google.com",
+          "appearances": 3,
+          "numberOneQueries": 3,
+          "bestRank": 1,
+          "keywords": [
+            "roof repair salt lake city",
+            "roof replacement salt lake city",
+            "roofer salt lake city"
+          ]
+        },
+        "googleAiOverviewsPresent": 1,
+        "googleAiOverviewOwnedQueries": [],
+        "protectedOrganicNumberOneQueries": [],
+        "intendedPageSelectedForEveryMeasuredRank": true,
+        "gscState": "complete-request-with-unreturned-rows",
+        "gscRequestedQueries": 4,
+        "gscReturnedQueries": 2,
+        "gscAlternateNormalizedUrls": [],
+        "serviceAreaStatus": "verified-profile-identity-city",
+        "identityProfile": "salt-lake-valley-exact-cid",
+        "citySpecificEditorialAsset": true,
+        "architectureState": "not-separately-diagnosed",
+        "protectedRelatedRoutes": [],
+        "consumerAiState": "configured-scheduled-unmeasured-invalid-provider-credential",
+        "comparableWeeklyGooglePanels": 1,
+        "comparableWeeklyConsumerAiPanels": 0
+      },
+      "scoreVector": {
+        "businessValue": 10,
+        "confidence": 8,
+        "leadValue": 3,
+        "authorityValue": 7,
+        "learningValue": 6,
+        "implementationCost": 1,
+        "complianceRisk": 1,
+        "customerBlockerRisk": 4,
+        "maintenanceCost": 2,
+        "sourceBiasRisk": 2,
+        "recencyBiasRisk": 1
+      },
+      "selectedAction": "Keep the Salt Lake City page frozen and collect the scheduled fixed Google, targeted GSC, exact-CID review, and consumer-AI readings until the existing experiment's evaluation gate opens.",
+      "gate": "time-gated-until-2026-09-09T04:40:58Z",
+      "ownerApprovalPhrase": null,
+      "acceptanceCheck": "No SLC title, H1, copy, schema, canonical, route, or internal-link intent change occurs before the time gate; every weekly panel is retained without converting missing results to zero.",
+      "feedback": {
+        "cadence": "weekly",
+        "requiredComparablePanels": 4,
+        "currentSameWindowCompleteStreak": 0,
+        "verdict": "hold",
+        "keepRule": "Keep only a declared isolated ranking variable when its city-specific acceptance check passes and every protected integrity, URL-selection, Maps, AIO, consumer-AI, and route guardrail remains green.",
+        "revertRule": "Revert the isolated ranking variable on a declared guardrail failure or unmet 28-day decision rule; never revert a required factual correction to restore an unsupported claim or wrong entity identity."
+      },
+      "sources": {
+        "diagnosis": null,
+        "panelEvidence": [
+          {
+            "queryId": "slc-roofing-contractor",
+            "keyword": "roofing contractor salt lake city"
+          },
+          {
+            "queryId": "slc-roof-repair",
+            "keyword": "roof repair salt lake city"
+          },
+          {
+            "queryId": "slc-roof-replacement",
+            "keyword": "roof replacement salt lake city"
+          },
+          {
+            "queryId": "slc-roofer",
+            "keyword": "roofer salt lake city"
+          }
+        ]
+      }
+    },
+    {
+      "interventionPriority": 1,
+      "city": "Millcreek",
+      "slug": "millcreek",
+      "cohort": "core-measured",
+      "page": "locations/millcreek.html",
+      "panelId": "utah-millcreek-google-v1",
+      "lane": "owner-gated-verified-identity-and-integrity-cleanup",
+      "decision": "Request input",
+      "evidenceFeatures": {
+        "observedAt": "2026-08-12T14:18:10.299Z",
+        "organicRanks": [
+          4,
+          4,
+          3,
+          5
+        ],
+        "bestMeasuredOrganicRank": 3,
+        "measuredMeanOrganicRank": 4,
+        "exactCidMapsNumberOne": 0,
+        "exactCidMapsReturned": 0,
+        "mapsPacksPresent": 3,
+        "mapsReadinessLane": "owner-gated-page-identity-correction",
+        "dominantMapsDisplacer": {
+          "name": "Millcreek Roof Repair",
+          "cid": "15265859284064313678",
+          "domain": "google.com",
+          "appearances": 3,
+          "numberOneQueries": 2,
+          "bestRank": 1,
+          "keywords": [
+            "roofing contractor millcreek",
+            "roof replacement millcreek",
+            "roofer millcreek"
+          ]
+        },
+        "googleAiOverviewsPresent": 1,
+        "googleAiOverviewOwnedQueries": [
+          "roof repair millcreek"
+        ],
+        "protectedOrganicNumberOneQueries": [],
+        "intendedPageSelectedForEveryMeasuredRank": true,
+        "gscState": "complete-request-with-unreturned-rows",
+        "gscRequestedQueries": 4,
+        "gscReturnedQueries": 0,
+        "gscAlternateNormalizedUrls": [],
+        "serviceAreaStatus": "saved-service-area-observed",
+        "identityProfile": "heber-keystone-cid",
+        "citySpecificEditorialAsset": true,
+        "architectureState": "not-evidenced",
+        "protectedRelatedRoutes": [],
+        "consumerAiState": "configured-scheduled-unmeasured-invalid-provider-credential",
+        "comparableWeeklyGooglePanels": 1,
+        "comparableWeeklyConsumerAiPanels": 0
+      },
+      "scoreVector": {
+        "businessValue": 10,
+        "confidence": 10,
+        "leadValue": 9,
+        "authorityValue": 10,
+        "learningValue": 6,
+        "implementationCost": 5,
+        "complianceRisk": 8,
+        "customerBlockerRisk": 4,
+        "maintenanceCost": 2,
+        "sourceBiasRisk": 2,
+        "recencyBiasRisk": 1
+      },
+      "selectedAction": "Request the exact combined core-cleanup and Millcreek storm-child approval; if approved, apply only the pinned integrity and Salt Lake Valley identity correction while preserving title, H1, canonical, visible intent, and the roof-repair AIO foothold.",
+      "gate": "explicit-owner-publication-approval-and-full-surface-release-gate",
+      "ownerApprovalPhrase": "I explicitly approve editing and publishing the five-page integrity cleanup defined in PR #242 and the Millcreek storm-child identity correction defined in the pinned Millcreek scope amendment.",
+      "acceptanceCheck": "Both Millcreek routes publish the reviewed Salt Lake Valley CID/sameAs set, strict integrity is green, all five rendered release gates pass, and a fresh baseline opens the 28-day observation window.",
+      "feedback": {
+        "cadence": "weekly",
+        "requiredComparablePanels": 4,
+        "currentSameWindowCompleteStreak": 0,
+        "verdict": "hold",
+        "keepRule": "Keep only a declared isolated ranking variable when its city-specific acceptance check passes and every protected integrity, URL-selection, Maps, AIO, consumer-AI, and route guardrail remains green.",
+        "revertRule": "Revert the isolated ranking variable on a declared guardrail failure or unmet 28-day decision rule; never revert a required factual correction to restore an unsupported claim or wrong entity identity."
+      },
+      "sources": {
+        "diagnosis": {
+          "file": "data/rank-tracker/MILLCREEK-IDENTITY-ARCHITECTURE-DIAGNOSIS-2026-08-12.json",
+          "sha256": "68320ed7967996f08a4086d1d878b24851817263c0735dd1a28e93f720c97195"
+        },
+        "panelEvidence": [
+          {
+            "queryId": "millcreek-roofing-contractor",
+            "keyword": "roofing contractor millcreek"
+          },
+          {
+            "queryId": "millcreek-roof-repair",
+            "keyword": "roof repair millcreek"
+          },
+          {
+            "queryId": "millcreek-roof-replacement",
+            "keyword": "roof replacement millcreek"
+          },
+          {
+            "queryId": "millcreek-roofer",
+            "keyword": "roofer millcreek"
+          }
+        ]
+      }
+    },
+    {
+      "interventionPriority": 2,
+      "city": "Magna",
+      "slug": "magna",
+      "cohort": "expansion-manual-baseline-measured",
+      "page": "locations/magna.html",
+      "panelId": "utah-magna-google-v1",
+      "lane": "protect-foothold-before-cleanup-or-intent-change",
+      "decision": "Request input",
+      "evidenceFeatures": {
+        "observedAt": "2026-08-12T17:40:30.501Z",
+        "organicRanks": [
+          7,
+          2,
+          1,
+          3
+        ],
+        "bestMeasuredOrganicRank": 1,
+        "measuredMeanOrganicRank": 3.25,
+        "exactCidMapsNumberOne": 0,
+        "exactCidMapsReturned": 0,
+        "mapsPacksPresent": 4,
+        "mapsReadinessLane": "service-area-proof-before-exact-cid-planning",
+        "dominantMapsDisplacer": {
+          "name": "Classic Roofing and Exteriors",
+          "cid": "10315170581426755444",
+          "domain": "google.com",
+          "appearances": 3,
+          "numberOneQueries": 3,
+          "bestRank": 1,
+          "keywords": [
+            "roofing contractor magna",
+            "roof repair magna",
+            "roof replacement magna"
+          ]
+        },
+        "googleAiOverviewsPresent": 1,
+        "googleAiOverviewOwnedQueries": [
+          "roof replacement magna"
+        ],
+        "protectedOrganicNumberOneQueries": [
+          "roof replacement magna"
+        ],
+        "intendedPageSelectedForEveryMeasuredRank": true,
+        "gscState": "targeted-gsc-not-complete",
+        "gscRequestedQueries": 0,
+        "gscReturnedQueries": 0,
+        "gscAlternateNormalizedUrls": [],
+        "serviceAreaStatus": "pending-current-profile-service-area-verification",
+        "identityProfile": "heber-keystone-cid",
+        "citySpecificEditorialAsset": false,
+        "architectureState": "not-evidenced-all-four-fixed-serps-select-main",
+        "protectedRelatedRoutes": [],
+        "consumerAiState": "configured-manual-unmeasured-invalid-provider-credential",
+        "comparableWeeklyGooglePanels": 1,
+        "comparableWeeklyConsumerAiPanels": 0
+      },
+      "scoreVector": {
+        "businessValue": 10,
+        "confidence": 6,
+        "leadValue": 10,
+        "authorityValue": 10,
+        "learningValue": 9,
+        "implementationCost": 5,
+        "complianceRisk": 8,
+        "customerBlockerRisk": 8,
+        "maintenanceCost": 2,
+        "sourceBiasRisk": 2,
+        "recencyBiasRisk": 1
+      },
+      "selectedAction": "Request the exact expansion integrity-cleanup approval for Magna; preserve every title, H1, canonical, route, and protected #1/AIO query, then observe four weekly panels before drafting an intent change.",
+      "gate": "explicit-owner-publication-approval-and-protected-foothold-guardrail",
+      "ownerApprovalPhrase": "I explicitly approve editing and publishing the 12-page Salt Lake Valley expansion integrity cleanup defined in packet frame-utah-slv-twelve-page-expansion-public-integrity-cleanup-v1, with expansion identities, titles, H1s, canonicals, and protected related routes unchanged.",
+      "acceptanceCheck": "The Magna cleanup passes all release gates and roof replacement magna remains protected through the declared observation window.",
+      "feedback": {
+        "cadence": "weekly",
+        "requiredComparablePanels": 4,
+        "currentSameWindowCompleteStreak": 0,
+        "verdict": "hold",
+        "keepRule": "Keep only a declared isolated ranking variable when its city-specific acceptance check passes and every protected integrity, URL-selection, Maps, AIO, consumer-AI, and route guardrail remains green.",
+        "revertRule": "Revert the isolated ranking variable on a declared guardrail failure or unmet 28-day decision rule; never revert a required factual correction to restore an unsupported claim or wrong entity identity."
+      },
+      "sources": {
+        "diagnosis": null,
+        "panelEvidence": [
+          {
+            "queryId": "magna-roofing-contractor",
+            "keyword": "roofing contractor magna"
+          },
+          {
+            "queryId": "magna-roof-repair",
+            "keyword": "roof repair magna"
+          },
+          {
+            "queryId": "magna-roof-replacement",
+            "keyword": "roof replacement magna"
+          },
+          {
+            "queryId": "magna-roofer",
+            "keyword": "roofer magna"
+          }
+        ]
+      }
+    },
+    {
+      "interventionPriority": 3,
+      "city": "Kearns",
+      "slug": "kearns",
+      "cohort": "expansion-manual-baseline-measured",
+      "page": "locations/kearns.html",
+      "panelId": "utah-kearns-google-v1",
+      "lane": "protect-foothold-before-cleanup-or-intent-change",
+      "decision": "Request input",
+      "evidenceFeatures": {
+        "observedAt": "2026-08-12T17:40:30.500Z",
+        "organicRanks": [
+          14,
+          8,
+          1,
+          10
+        ],
+        "bestMeasuredOrganicRank": 1,
+        "measuredMeanOrganicRank": 8.25,
+        "exactCidMapsNumberOne": 0,
+        "exactCidMapsReturned": 0,
+        "mapsPacksPresent": 4,
+        "mapsReadinessLane": "service-area-proof-before-exact-cid-planning",
+        "dominantMapsDisplacer": {
+          "name": "Reliable Roofing Kearns",
+          "cid": "13010928145203840528",
+          "domain": "google.com",
+          "appearances": 4,
+          "numberOneQueries": 2,
+          "bestRank": 1,
+          "keywords": [
+            "roofing contractor kearns",
+            "roof repair kearns",
+            "roof replacement kearns",
+            "roofer kearns"
+          ]
+        },
+        "googleAiOverviewsPresent": 0,
+        "googleAiOverviewOwnedQueries": [],
+        "protectedOrganicNumberOneQueries": [
+          "roof replacement kearns"
+        ],
+        "intendedPageSelectedForEveryMeasuredRank": true,
+        "gscState": "targeted-gsc-not-complete",
+        "gscRequestedQueries": 0,
+        "gscReturnedQueries": 0,
+        "gscAlternateNormalizedUrls": [],
+        "serviceAreaStatus": "pending-current-profile-service-area-verification",
+        "identityProfile": "heber-keystone-cid",
+        "citySpecificEditorialAsset": false,
+        "architectureState": "not-evidenced-all-four-fixed-serps-select-main",
+        "protectedRelatedRoutes": [],
+        "consumerAiState": "configured-manual-unmeasured-invalid-provider-credential",
+        "comparableWeeklyGooglePanels": 1,
+        "comparableWeeklyConsumerAiPanels": 0
+      },
+      "scoreVector": {
+        "businessValue": 10,
+        "confidence": 6,
+        "leadValue": 10,
+        "authorityValue": 5,
+        "learningValue": 9,
+        "implementationCost": 5,
+        "complianceRisk": 8,
+        "customerBlockerRisk": 8,
+        "maintenanceCost": 2,
+        "sourceBiasRisk": 2,
+        "recencyBiasRisk": 1
+      },
+      "selectedAction": "Request the exact expansion integrity-cleanup approval for Kearns; preserve every title, H1, canonical, route, and protected #1/AIO query, then observe four weekly panels before drafting an intent change.",
+      "gate": "explicit-owner-publication-approval-and-protected-foothold-guardrail",
+      "ownerApprovalPhrase": "I explicitly approve editing and publishing the 12-page Salt Lake Valley expansion integrity cleanup defined in packet frame-utah-slv-twelve-page-expansion-public-integrity-cleanup-v1, with expansion identities, titles, H1s, canonicals, and protected related routes unchanged.",
+      "acceptanceCheck": "The Kearns cleanup passes all release gates and roof replacement kearns remains protected through the declared observation window.",
+      "feedback": {
+        "cadence": "weekly",
+        "requiredComparablePanels": 4,
+        "currentSameWindowCompleteStreak": 0,
+        "verdict": "hold",
+        "keepRule": "Keep only a declared isolated ranking variable when its city-specific acceptance check passes and every protected integrity, URL-selection, Maps, AIO, consumer-AI, and route guardrail remains green.",
+        "revertRule": "Revert the isolated ranking variable on a declared guardrail failure or unmet 28-day decision rule; never revert a required factual correction to restore an unsupported claim or wrong entity identity."
+      },
+      "sources": {
+        "diagnosis": null,
+        "panelEvidence": [
+          {
+            "queryId": "kearns-roofing-contractor",
+            "keyword": "roofing contractor kearns"
+          },
+          {
+            "queryId": "kearns-roof-repair",
+            "keyword": "roof repair kearns"
+          },
+          {
+            "queryId": "kearns-roof-replacement",
+            "keyword": "roof replacement kearns"
+          },
+          {
+            "queryId": "kearns-roofer",
+            "keyword": "roofer kearns"
+          }
+        ]
+      }
+    },
+    {
+      "interventionPriority": 4,
+      "city": "Sandy",
+      "slug": "sandy",
+      "cohort": "core-measured",
+      "page": "locations/sandy.html",
+      "panelId": "utah-sandy-google-v1",
+      "lane": "owner-gated-core-integrity-then-single-variable-intent-test",
+      "decision": "Request input",
+      "evidenceFeatures": {
+        "observedAt": "2026-08-12T14:18:10.300Z",
+        "organicRanks": [
+          17,
+          13,
+          13,
+          11
+        ],
+        "bestMeasuredOrganicRank": 11,
+        "measuredMeanOrganicRank": 13.5,
+        "exactCidMapsNumberOne": 0,
+        "exactCidMapsReturned": 0,
+        "mapsPacksPresent": 4,
+        "mapsReadinessLane": "service-area-proof-before-exact-cid-planning",
+        "dominantMapsDisplacer": {
+          "name": "ReRoofIt",
+          "cid": "3305979678440818523",
+          "domain": "google.com",
+          "appearances": 4,
+          "numberOneQueries": 3,
+          "bestRank": 1,
+          "keywords": [
+            "roofing contractor sandy",
+            "roof repair sandy",
+            "roof replacement sandy",
+            "roofer sandy"
+          ]
+        },
+        "googleAiOverviewsPresent": 0,
+        "googleAiOverviewOwnedQueries": [],
+        "protectedOrganicNumberOneQueries": [],
+        "intendedPageSelectedForEveryMeasuredRank": true,
+        "gscState": "intended-url-only-for-all-returned-rows",
+        "gscRequestedQueries": 4,
+        "gscReturnedQueries": 4,
+        "gscAlternateNormalizedUrls": [],
+        "serviceAreaStatus": "pending-current-profile-service-area-verification",
+        "identityProfile": "heber-keystone-cid",
+        "citySpecificEditorialAsset": true,
+        "architectureState": "not-evidenced",
+        "protectedRelatedRoutes": [],
+        "consumerAiState": "configured-manual-unmeasured-invalid-provider-credential",
+        "comparableWeeklyGooglePanels": 1,
+        "comparableWeeklyConsumerAiPanels": 0
+      },
+      "scoreVector": {
+        "businessValue": 10,
+        "confidence": 6,
+        "leadValue": 5,
+        "authorityValue": 5,
+        "learningValue": 6,
+        "implementationCost": 5,
+        "complianceRisk": 8,
+        "customerBlockerRisk": 8,
+        "maintenanceCost": 2,
+        "sourceBiasRisk": 2,
+        "recencyBiasRisk": 1
+      },
+      "selectedAction": "Obtain current Salt Lake Valley service-area evidence for Sandy's separate Maps lane and request the exact core cleanup approval; after a green production receipt and fresh baseline, activate at most the already-pinned single-title experiment with every other intent surface held constant.",
+      "gate": "service-area-evidence-plus-explicit-owner-cleanup-approval-then-separate-ranking-experiment-approval",
+      "ownerApprovalPhrase": "I explicitly approve editing and publishing the five-page integrity cleanup defined in PR #242 and the Millcreek storm-child identity correction defined in the pinned Millcreek scope amendment.",
+      "acceptanceCheck": "Keep only if roofing contractor sandy is position 12 or better in each of the final two weekly panels and the four-query mean rank is 11.5 or better in both panels. A current receipt separately classifies Sandy for CID 5689850818145735734.",
+      "feedback": {
+        "cadence": "weekly",
+        "requiredComparablePanels": 4,
+        "currentSameWindowCompleteStreak": 0,
+        "verdict": "hold",
+        "keepRule": "Keep only a declared isolated ranking variable when its city-specific acceptance check passes and every protected integrity, URL-selection, Maps, AIO, consumer-AI, and route guardrail remains green.",
+        "revertRule": "Revert the isolated ranking variable on a declared guardrail failure or unmet 28-day decision rule; never revert a required factual correction to restore an unsupported claim or wrong entity identity."
+      },
+      "sources": {
+        "diagnosis": {
+          "file": "data/rank-tracker/SANDY-ARCHITECTURE-DIAGNOSIS-2026-08-12.json",
+          "sha256": "2c00c3ad8e871dafdf3e47f36e2f4b4aa4fbf57789dd3d2da3cae562dd9da361"
+        },
+        "panelEvidence": [
+          {
+            "queryId": "sandy-roofing-contractor",
+            "keyword": "roofing contractor sandy"
+          },
+          {
+            "queryId": "sandy-roof-repair",
+            "keyword": "roof repair sandy"
+          },
+          {
+            "queryId": "sandy-roof-replacement",
+            "keyword": "roof replacement sandy"
+          },
+          {
+            "queryId": "sandy-roofer",
+            "keyword": "roofer sandy"
+          }
+        ]
+      }
+    },
+    {
+      "interventionPriority": 5,
+      "city": "Holladay",
+      "slug": "holladay",
+      "cohort": "core-measured",
+      "page": "locations/holladay.html",
+      "panelId": "utah-holladay-google-v1",
+      "lane": "diagnose-url-consolidation-before-intent-change",
+      "decision": "Monitor",
+      "evidenceFeatures": {
+        "observedAt": "2026-08-12T14:18:10.299Z",
+        "organicRanks": [
+          17,
+          10,
+          4,
+          12
+        ],
+        "bestMeasuredOrganicRank": 4,
+        "measuredMeanOrganicRank": 10.75,
+        "exactCidMapsNumberOne": 0,
+        "exactCidMapsReturned": 0,
+        "mapsPacksPresent": 4,
+        "mapsReadinessLane": "service-area-proof-before-exact-cid-planning",
+        "dominantMapsDisplacer": {
+          "name": "True North Roofing",
+          "cid": "5387650211366766810",
+          "domain": "google.com",
+          "appearances": 4,
+          "numberOneQueries": 4,
+          "bestRank": 1,
+          "keywords": [
+            "roofing contractor holladay",
+            "roof repair holladay",
+            "roof replacement holladay",
+            "roofer holladay"
+          ]
+        },
+        "googleAiOverviewsPresent": 0,
+        "googleAiOverviewOwnedQueries": [],
+        "protectedOrganicNumberOneQueries": [],
+        "intendedPageSelectedForEveryMeasuredRank": true,
+        "gscState": "url-competition-requires-diagnosis",
+        "gscRequestedQueries": 4,
+        "gscReturnedQueries": 3,
+        "gscAlternateNormalizedUrls": [
+          "framerestorationutah.com/",
+          "framerestorationutah.com/blog/holladay/roof-replacement-holladay-utah",
+          "framerestorationutah.com/salt-lake-city"
+        ],
+        "serviceAreaStatus": "pending-current-profile-service-area-verification",
+        "identityProfile": "heber-keystone-cid",
+        "citySpecificEditorialAsset": true,
+        "architectureState": "not-evidenced",
+        "protectedRelatedRoutes": [],
+        "consumerAiState": "configured-manual-unmeasured-invalid-provider-credential",
+        "comparableWeeklyGooglePanels": 1,
+        "comparableWeeklyConsumerAiPanels": 0
+      },
+      "scoreVector": {
+        "businessValue": 10,
+        "confidence": 6,
+        "leadValue": 8,
+        "authorityValue": 5,
+        "learningValue": 6,
+        "implementationCost": 3,
+        "complianceRisk": 1,
+        "customerBlockerRisk": 8,
+        "maintenanceCost": 2,
+        "sourceBiasRisk": 2,
+        "recencyBiasRisk": 1
+      },
+      "selectedAction": "Complete a full post-August-10 GSC consolidation window while preserving the city hub, redirected legacy route, homepage, and editorial guide; obtain current Salt Lake Valley service-area evidence for the separate Maps lane, request the core cleanup separately, and do not activate the drafted title test until its prerequisites pass.",
+      "gate": "complete-post-redirect-gsc-window-plus-service-area-evidence-plus-owner-gated-cleanup",
+      "ownerApprovalPhrase": "I explicitly approve editing and publishing the five-page integrity cleanup defined in PR #242 and the Millcreek storm-child identity correction defined in the pinned Millcreek scope amendment.",
+      "acceptanceCheck": "Current query-to-URL evidence no longer depends on the pre-redirect window; the position-4 roof-replacement foothold and all protected routes remain intact; a current receipt separately classifies Holladay for CID 5689850818145735734.",
+      "feedback": {
+        "cadence": "weekly",
+        "requiredComparablePanels": 4,
+        "currentSameWindowCompleteStreak": 0,
+        "verdict": "hold",
+        "keepRule": "Keep only a declared isolated ranking variable when its city-specific acceptance check passes and every protected integrity, URL-selection, Maps, AIO, consumer-AI, and route guardrail remains green.",
+        "revertRule": "Revert the isolated ranking variable on a declared guardrail failure or unmet 28-day decision rule; never revert a required factual correction to restore an unsupported claim or wrong entity identity."
+      },
+      "sources": {
+        "diagnosis": {
+          "file": "data/rank-tracker/HOLLADAY-ARCHITECTURE-DIAGNOSIS-2026-08-12.json",
+          "sha256": "4d287342ad3ed4b2ffe0f3e25c1de07a04f96b3271fdcc5b02cb55eb9b1d3154"
+        },
+        "panelEvidence": [
+          {
+            "queryId": "holladay-roofing-contractor",
+            "keyword": "roofing contractor holladay"
+          },
+          {
+            "queryId": "holladay-roof-repair",
+            "keyword": "roof repair holladay"
+          },
+          {
+            "queryId": "holladay-roof-replacement",
+            "keyword": "roof replacement holladay"
+          },
+          {
+            "queryId": "holladay-roofer",
+            "keyword": "roofer holladay"
+          }
+        ]
+      }
+    },
+    {
+      "interventionPriority": 6,
+      "city": "Cottonwood Heights",
+      "slug": "cottonwood-heights",
+      "cohort": "core-measured",
+      "page": "locations/cottonwood-heights.html",
+      "panelId": "utah-cottonwood-heights-google-v1",
+      "lane": "owner-gated-core-integrity-then-single-variable-intent-test",
+      "decision": "Request input",
+      "evidenceFeatures": {
+        "observedAt": "2026-08-12T14:18:10.299Z",
+        "organicRanks": [
+          15,
+          10,
+          15,
+          14
+        ],
+        "bestMeasuredOrganicRank": 10,
+        "measuredMeanOrganicRank": 13.5,
+        "exactCidMapsNumberOne": 0,
+        "exactCidMapsReturned": 0,
+        "mapsPacksPresent": 4,
+        "mapsReadinessLane": "service-area-proof-before-exact-cid-planning",
+        "dominantMapsDisplacer": {
+          "name": "Utah Roofing Pros",
+          "cid": "4118570990011609504",
+          "domain": "google.com",
+          "appearances": 4,
+          "numberOneQueries": 4,
+          "bestRank": 1,
+          "keywords": [
+            "roofing contractor cottonwood heights",
+            "roof repair cottonwood heights",
+            "roof replacement cottonwood heights",
+            "roofer cottonwood heights"
+          ]
+        },
+        "googleAiOverviewsPresent": 0,
+        "googleAiOverviewOwnedQueries": [],
+        "protectedOrganicNumberOneQueries": [],
+        "intendedPageSelectedForEveryMeasuredRank": true,
+        "gscState": "complete-request-with-unreturned-rows",
+        "gscRequestedQueries": 4,
+        "gscReturnedQueries": 0,
+        "gscAlternateNormalizedUrls": [],
+        "serviceAreaStatus": "pending-current-profile-service-area-verification",
+        "identityProfile": "heber-keystone-cid",
+        "citySpecificEditorialAsset": true,
+        "architectureState": "not-evidenced",
+        "protectedRelatedRoutes": [],
+        "consumerAiState": "configured-manual-unmeasured-invalid-provider-credential",
+        "comparableWeeklyGooglePanels": 1,
+        "comparableWeeklyConsumerAiPanels": 0
+      },
+      "scoreVector": {
+        "businessValue": 10,
+        "confidence": 6,
+        "leadValue": 7,
+        "authorityValue": 5,
+        "learningValue": 6,
+        "implementationCost": 5,
+        "complianceRisk": 8,
+        "customerBlockerRisk": 8,
+        "maintenanceCost": 2,
+        "sourceBiasRisk": 2,
+        "recencyBiasRisk": 1
+      },
+      "selectedAction": "Obtain current Salt Lake Valley service-area evidence for Cottonwood Heights's separate Maps lane and request the exact core cleanup approval; after a green production receipt and fresh baseline, activate at most the already-pinned single-title experiment with every other intent surface held constant.",
+      "gate": "service-area-evidence-plus-explicit-owner-cleanup-approval-then-separate-ranking-experiment-approval",
+      "ownerApprovalPhrase": "I explicitly approve editing and publishing the five-page integrity cleanup defined in PR #242 and the Millcreek storm-child identity correction defined in the pinned Millcreek scope amendment.",
+      "acceptanceCheck": "Keep only if roofing contractor cottonwood heights is position 10 or better in each of the final two weekly panels and the four-query mean rank is 11.5 or better in both panels. A current receipt separately classifies Cottonwood Heights for CID 5689850818145735734.",
+      "feedback": {
+        "cadence": "weekly",
+        "requiredComparablePanels": 4,
+        "currentSameWindowCompleteStreak": 0,
+        "verdict": "hold",
+        "keepRule": "Keep only a declared isolated ranking variable when its city-specific acceptance check passes and every protected integrity, URL-selection, Maps, AIO, consumer-AI, and route guardrail remains green.",
+        "revertRule": "Revert the isolated ranking variable on a declared guardrail failure or unmet 28-day decision rule; never revert a required factual correction to restore an unsupported claim or wrong entity identity."
+      },
+      "sources": {
+        "diagnosis": {
+          "file": "data/rank-tracker/COTTONWOOD-HEIGHTS-ARCHITECTURE-DIAGNOSIS-2026-08-12.json",
+          "sha256": "dd452e8b48883f9816a180a2cac79ffff2a0545c86178c3c992980c1bd80ef35"
+        },
+        "panelEvidence": [
+          {
+            "queryId": "cottonwood-heights-roofing-contractor",
+            "keyword": "roofing contractor cottonwood heights"
+          },
+          {
+            "queryId": "cottonwood-heights-roof-repair",
+            "keyword": "roof repair cottonwood heights"
+          },
+          {
+            "queryId": "cottonwood-heights-roof-replacement",
+            "keyword": "roof replacement cottonwood heights"
+          },
+          {
+            "queryId": "cottonwood-heights-roofer",
+            "keyword": "roofer cottonwood heights"
+          }
+        ]
+      }
+    },
+    {
+      "interventionPriority": 7,
+      "city": "Murray",
+      "slug": "murray",
+      "cohort": "expansion-manual-baseline-measured",
+      "page": "locations/murray.html",
+      "panelId": "utah-murray-google-v1",
+      "lane": "service-area-proof-and-targeted-gsc-before-intent-change",
+      "decision": "Request input",
+      "evidenceFeatures": {
+        "observedAt": "2026-08-12T17:40:30.501Z",
+        "organicRanks": [
+          12,
+          7,
+          4,
+          8
+        ],
+        "bestMeasuredOrganicRank": 4,
+        "measuredMeanOrganicRank": 7.75,
+        "exactCidMapsNumberOne": 0,
+        "exactCidMapsReturned": 0,
+        "mapsPacksPresent": 4,
+        "mapsReadinessLane": "service-area-proof-before-exact-cid-planning",
+        "dominantMapsDisplacer": {
+          "name": "Milne Brothers Roofing",
+          "cid": "7936184157434939732",
+          "domain": "google.com",
+          "appearances": 4,
+          "numberOneQueries": 2,
+          "bestRank": 1,
+          "keywords": [
+            "roofing contractor murray",
+            "roof repair murray",
+            "roof replacement murray",
+            "roofer murray"
+          ]
+        },
+        "googleAiOverviewsPresent": 0,
+        "googleAiOverviewOwnedQueries": [],
+        "protectedOrganicNumberOneQueries": [],
+        "intendedPageSelectedForEveryMeasuredRank": true,
+        "gscState": "targeted-gsc-not-complete",
+        "gscRequestedQueries": 0,
+        "gscReturnedQueries": 0,
+        "gscAlternateNormalizedUrls": [],
+        "serviceAreaStatus": "pending-current-profile-service-area-verification",
+        "identityProfile": "heber-keystone-cid",
+        "citySpecificEditorialAsset": true,
+        "architectureState": "not-evidenced-all-four-fixed-serps-select-main",
+        "protectedRelatedRoutes": [
+          "blog/murray/signs-you-need-new-roof.html",
+          "blog/murray/storm-damage-roofing-murray-utah.html",
+          "locations/murray/storm-damage.html"
+        ],
+        "consumerAiState": "configured-manual-unmeasured-invalid-provider-credential",
+        "comparableWeeklyGooglePanels": 1,
+        "comparableWeeklyConsumerAiPanels": 0
+      },
+      "scoreVector": {
+        "businessValue": 10,
+        "confidence": 4,
+        "leadValue": 8,
+        "authorityValue": 5,
+        "learningValue": 9,
+        "implementationCost": 5,
+        "complianceRisk": 8,
+        "customerBlockerRisk": 8,
+        "maintenanceCost": 2,
+        "sourceBiasRisk": 2,
+        "recencyBiasRisk": 1
+      },
+      "selectedAction": "Obtain current Salt Lake Valley service-area evidence and the next exact-query GSC attribution for Murray; request the bounded expansion cleanup separately, but do not change identity or commercial intent until those evidence gates pass.",
+      "gate": "service-area-evidence-plus-targeted-gsc-plus-explicit-cleanup-approval",
+      "ownerApprovalPhrase": "I explicitly approve editing and publishing the 12-page Salt Lake Valley expansion integrity cleanup defined in packet frame-utah-slv-twelve-page-expansion-public-integrity-cleanup-v1, with expansion identities, titles, H1s, canonicals, and protected related routes unchanged.",
+      "acceptanceCheck": "A current receipt explicitly classifies Murray for CID 5689850818145735734, all four exact queries are requested without treating missing rows as zero, and any approved cleanup passes the full release gate.",
+      "feedback": {
+        "cadence": "weekly",
+        "requiredComparablePanels": 4,
+        "currentSameWindowCompleteStreak": 0,
+        "verdict": "hold",
+        "keepRule": "Keep only a declared isolated ranking variable when its city-specific acceptance check passes and every protected integrity, URL-selection, Maps, AIO, consumer-AI, and route guardrail remains green.",
+        "revertRule": "Revert the isolated ranking variable on a declared guardrail failure or unmet 28-day decision rule; never revert a required factual correction to restore an unsupported claim or wrong entity identity."
+      },
+      "sources": {
+        "diagnosis": null,
+        "panelEvidence": [
+          {
+            "queryId": "murray-roofing-contractor",
+            "keyword": "roofing contractor murray"
+          },
+          {
+            "queryId": "murray-roof-repair",
+            "keyword": "roof repair murray"
+          },
+          {
+            "queryId": "murray-roof-replacement",
+            "keyword": "roof replacement murray"
+          },
+          {
+            "queryId": "murray-roofer",
+            "keyword": "roofer murray"
+          }
+        ]
+      }
+    },
+    {
+      "interventionPriority": 8,
+      "city": "Riverton",
+      "slug": "riverton",
+      "cohort": "expansion-manual-baseline-measured",
+      "page": "locations/riverton.html",
+      "panelId": "utah-riverton-google-v1",
+      "lane": "service-area-proof-and-targeted-gsc-before-intent-change",
+      "decision": "Request input",
+      "evidenceFeatures": {
+        "observedAt": "2026-08-12T17:40:30.501Z",
+        "organicRanks": [
+          null,
+          4,
+          7,
+          10
+        ],
+        "bestMeasuredOrganicRank": 4,
+        "measuredMeanOrganicRank": 7,
+        "exactCidMapsNumberOne": 0,
+        "exactCidMapsReturned": 0,
+        "mapsPacksPresent": 4,
+        "mapsReadinessLane": "service-area-proof-before-exact-cid-planning",
+        "dominantMapsDisplacer": {
+          "name": "Mountain Valley Roofing",
+          "cid": "1336901996070958999",
+          "domain": "google.com",
+          "appearances": 4,
+          "numberOneQueries": 3,
+          "bestRank": 1,
+          "keywords": [
+            "roofing contractor riverton",
+            "roof repair riverton",
+            "roof replacement riverton",
+            "roofer riverton"
+          ]
+        },
+        "googleAiOverviewsPresent": 0,
+        "googleAiOverviewOwnedQueries": [],
+        "protectedOrganicNumberOneQueries": [],
+        "intendedPageSelectedForEveryMeasuredRank": true,
+        "gscState": "targeted-gsc-not-complete",
+        "gscRequestedQueries": 0,
+        "gscReturnedQueries": 0,
+        "gscAlternateNormalizedUrls": [],
+        "serviceAreaStatus": "pending-current-profile-service-area-verification",
+        "identityProfile": "heber-keystone-cid",
+        "citySpecificEditorialAsset": true,
+        "architectureState": "not-evidenced-bounded-panel-selects-main-when-ranked-and-exact-gsc-unmeasured",
+        "protectedRelatedRoutes": [
+          "blog/riverton/hail-damage-roof-inspection.html"
+        ],
+        "consumerAiState": "configured-manual-unmeasured-invalid-provider-credential",
+        "comparableWeeklyGooglePanels": 1,
+        "comparableWeeklyConsumerAiPanels": 0
+      },
+      "scoreVector": {
+        "businessValue": 10,
+        "confidence": 4,
+        "leadValue": 8,
+        "authorityValue": 5,
+        "learningValue": 9,
+        "implementationCost": 5,
+        "complianceRisk": 8,
+        "customerBlockerRisk": 8,
+        "maintenanceCost": 2,
+        "sourceBiasRisk": 2,
+        "recencyBiasRisk": 1
+      },
+      "selectedAction": "Obtain current Salt Lake Valley service-area evidence and the next exact-query GSC attribution for Riverton; request the bounded expansion cleanup separately, but do not change identity or commercial intent until those evidence gates pass.",
+      "gate": "service-area-evidence-plus-targeted-gsc-plus-explicit-cleanup-approval",
+      "ownerApprovalPhrase": "I explicitly approve editing and publishing the 12-page Salt Lake Valley expansion integrity cleanup defined in packet frame-utah-slv-twelve-page-expansion-public-integrity-cleanup-v1, with expansion identities, titles, H1s, canonicals, and protected related routes unchanged.",
+      "acceptanceCheck": "A current receipt explicitly classifies Riverton for CID 5689850818145735734, all four exact queries are requested without treating missing rows as zero, and any approved cleanup passes the full release gate.",
+      "feedback": {
+        "cadence": "weekly",
+        "requiredComparablePanels": 4,
+        "currentSameWindowCompleteStreak": 0,
+        "verdict": "hold",
+        "keepRule": "Keep only a declared isolated ranking variable when its city-specific acceptance check passes and every protected integrity, URL-selection, Maps, AIO, consumer-AI, and route guardrail remains green.",
+        "revertRule": "Revert the isolated ranking variable on a declared guardrail failure or unmet 28-day decision rule; never revert a required factual correction to restore an unsupported claim or wrong entity identity."
+      },
+      "sources": {
+        "diagnosis": null,
+        "panelEvidence": [
+          {
+            "queryId": "riverton-roofing-contractor",
+            "keyword": "roofing contractor riverton"
+          },
+          {
+            "queryId": "riverton-roof-repair",
+            "keyword": "roof repair riverton"
+          },
+          {
+            "queryId": "riverton-roof-replacement",
+            "keyword": "roof replacement riverton"
+          },
+          {
+            "queryId": "riverton-roofer",
+            "keyword": "roofer riverton"
+          }
+        ]
+      }
+    },
+    {
+      "interventionPriority": 9,
+      "city": "South Jordan",
+      "slug": "south-jordan",
+      "cohort": "expansion-manual-baseline-measured",
+      "page": "locations/south-jordan.html",
+      "panelId": "utah-south-jordan-google-v1",
+      "lane": "service-area-proof-and-targeted-gsc-before-intent-change",
+      "decision": "Request input",
+      "evidenceFeatures": {
+        "observedAt": "2026-08-12T17:40:30.502Z",
+        "organicRanks": [
+          16,
+          8,
+          4,
+          12
+        ],
+        "bestMeasuredOrganicRank": 4,
+        "measuredMeanOrganicRank": 10,
+        "exactCidMapsNumberOne": 0,
+        "exactCidMapsReturned": 0,
+        "mapsPacksPresent": 4,
+        "mapsReadinessLane": "service-area-proof-before-exact-cid-planning",
+        "dominantMapsDisplacer": {
+          "name": "Top Local Roofing",
+          "cid": "6716199756783041358",
+          "domain": "google.com",
+          "appearances": 4,
+          "numberOneQueries": 3,
+          "bestRank": 1,
+          "keywords": [
+            "roofing contractor south jordan",
+            "roof repair south jordan",
+            "roof replacement south jordan",
+            "roofer south jordan"
+          ]
+        },
+        "googleAiOverviewsPresent": 0,
+        "googleAiOverviewOwnedQueries": [],
+        "protectedOrganicNumberOneQueries": [],
+        "intendedPageSelectedForEveryMeasuredRank": true,
+        "gscState": "targeted-gsc-not-complete",
+        "gscRequestedQueries": 0,
+        "gscReturnedQueries": 0,
+        "gscAlternateNormalizedUrls": [],
+        "serviceAreaStatus": "pending-current-profile-service-area-verification",
+        "identityProfile": "heber-keystone-cid",
+        "citySpecificEditorialAsset": true,
+        "architectureState": "not-evidenced-all-four-fixed-serps-select-main",
+        "protectedRelatedRoutes": [
+          "blog/south-jordan/roof-replacement-south-jordan-utah.html",
+          "blog/south-jordan/storm-damage-roof-repair-south-jordan-utah.html"
+        ],
+        "consumerAiState": "configured-manual-unmeasured-invalid-provider-credential",
+        "comparableWeeklyGooglePanels": 1,
+        "comparableWeeklyConsumerAiPanels": 0
+      },
+      "scoreVector": {
+        "businessValue": 10,
+        "confidence": 4,
+        "leadValue": 8,
+        "authorityValue": 5,
+        "learningValue": 9,
+        "implementationCost": 5,
+        "complianceRisk": 8,
+        "customerBlockerRisk": 8,
+        "maintenanceCost": 2,
+        "sourceBiasRisk": 2,
+        "recencyBiasRisk": 1
+      },
+      "selectedAction": "Obtain current Salt Lake Valley service-area evidence and the next exact-query GSC attribution for South Jordan; request the bounded expansion cleanup separately, but do not change identity or commercial intent until those evidence gates pass.",
+      "gate": "service-area-evidence-plus-targeted-gsc-plus-explicit-cleanup-approval",
+      "ownerApprovalPhrase": "I explicitly approve editing and publishing the 12-page Salt Lake Valley expansion integrity cleanup defined in packet frame-utah-slv-twelve-page-expansion-public-integrity-cleanup-v1, with expansion identities, titles, H1s, canonicals, and protected related routes unchanged.",
+      "acceptanceCheck": "A current receipt explicitly classifies South Jordan for CID 5689850818145735734, all four exact queries are requested without treating missing rows as zero, and any approved cleanup passes the full release gate.",
+      "feedback": {
+        "cadence": "weekly",
+        "requiredComparablePanels": 4,
+        "currentSameWindowCompleteStreak": 0,
+        "verdict": "hold",
+        "keepRule": "Keep only a declared isolated ranking variable when its city-specific acceptance check passes and every protected integrity, URL-selection, Maps, AIO, consumer-AI, and route guardrail remains green.",
+        "revertRule": "Revert the isolated ranking variable on a declared guardrail failure or unmet 28-day decision rule; never revert a required factual correction to restore an unsupported claim or wrong entity identity."
+      },
+      "sources": {
+        "diagnosis": null,
+        "panelEvidence": [
+          {
+            "queryId": "south-jordan-roofing-contractor",
+            "keyword": "roofing contractor south jordan"
+          },
+          {
+            "queryId": "south-jordan-roof-repair",
+            "keyword": "roof repair south jordan"
+          },
+          {
+            "queryId": "south-jordan-roof-replacement",
+            "keyword": "roof replacement south jordan"
+          },
+          {
+            "queryId": "south-jordan-roofer",
+            "keyword": "roofer south jordan"
+          }
+        ]
+      }
+    },
+    {
+      "interventionPriority": 10,
+      "city": "Taylorsville",
+      "slug": "taylorsville",
+      "cohort": "expansion-manual-baseline-measured",
+      "page": "locations/taylorsville.html",
+      "panelId": "utah-taylorsville-google-v1",
+      "lane": "service-area-proof-and-targeted-gsc-before-intent-change",
+      "decision": "Request input",
+      "evidenceFeatures": {
+        "observedAt": "2026-08-12T17:40:30.503Z",
+        "organicRanks": [
+          15,
+          7,
+          10,
+          18
+        ],
+        "bestMeasuredOrganicRank": 7,
+        "measuredMeanOrganicRank": 12.5,
+        "exactCidMapsNumberOne": 0,
+        "exactCidMapsReturned": 0,
+        "mapsPacksPresent": 4,
+        "mapsReadinessLane": "service-area-proof-before-exact-cid-planning",
+        "dominantMapsDisplacer": {
+          "name": "The Roof Doctor",
+          "cid": "16329927680093228178",
+          "domain": "google.com",
+          "appearances": 3,
+          "numberOneQueries": 2,
+          "bestRank": 1,
+          "keywords": [
+            "roofing contractor taylorsville",
+            "roof repair taylorsville",
+            "roof replacement taylorsville"
+          ]
+        },
+        "googleAiOverviewsPresent": 0,
+        "googleAiOverviewOwnedQueries": [],
+        "protectedOrganicNumberOneQueries": [],
+        "intendedPageSelectedForEveryMeasuredRank": true,
+        "gscState": "targeted-gsc-not-complete",
+        "gscRequestedQueries": 0,
+        "gscReturnedQueries": 0,
+        "gscAlternateNormalizedUrls": [],
+        "serviceAreaStatus": "pending-current-profile-service-area-verification",
+        "identityProfile": "heber-keystone-cid",
+        "citySpecificEditorialAsset": false,
+        "architectureState": "not-evidenced-all-four-fixed-serps-select-main",
+        "protectedRelatedRoutes": [],
+        "consumerAiState": "configured-manual-unmeasured-invalid-provider-credential",
+        "comparableWeeklyGooglePanels": 1,
+        "comparableWeeklyConsumerAiPanels": 0
+      },
+      "scoreVector": {
+        "businessValue": 10,
+        "confidence": 4,
+        "leadValue": 7,
+        "authorityValue": 5,
+        "learningValue": 9,
+        "implementationCost": 5,
+        "complianceRisk": 8,
+        "customerBlockerRisk": 8,
+        "maintenanceCost": 2,
+        "sourceBiasRisk": 2,
+        "recencyBiasRisk": 1
+      },
+      "selectedAction": "Obtain current Salt Lake Valley service-area evidence and the next exact-query GSC attribution for Taylorsville; request the bounded expansion cleanup separately, but do not change identity or commercial intent until those evidence gates pass.",
+      "gate": "service-area-evidence-plus-targeted-gsc-plus-explicit-cleanup-approval",
+      "ownerApprovalPhrase": "I explicitly approve editing and publishing the 12-page Salt Lake Valley expansion integrity cleanup defined in packet frame-utah-slv-twelve-page-expansion-public-integrity-cleanup-v1, with expansion identities, titles, H1s, canonicals, and protected related routes unchanged.",
+      "acceptanceCheck": "A current receipt explicitly classifies Taylorsville for CID 5689850818145735734, all four exact queries are requested without treating missing rows as zero, and any approved cleanup passes the full release gate.",
+      "feedback": {
+        "cadence": "weekly",
+        "requiredComparablePanels": 4,
+        "currentSameWindowCompleteStreak": 0,
+        "verdict": "hold",
+        "keepRule": "Keep only a declared isolated ranking variable when its city-specific acceptance check passes and every protected integrity, URL-selection, Maps, AIO, consumer-AI, and route guardrail remains green.",
+        "revertRule": "Revert the isolated ranking variable on a declared guardrail failure or unmet 28-day decision rule; never revert a required factual correction to restore an unsupported claim or wrong entity identity."
+      },
+      "sources": {
+        "diagnosis": null,
+        "panelEvidence": [
+          {
+            "queryId": "taylorsville-roofing-contractor",
+            "keyword": "roofing contractor taylorsville"
+          },
+          {
+            "queryId": "taylorsville-roof-repair",
+            "keyword": "roof repair taylorsville"
+          },
+          {
+            "queryId": "taylorsville-roof-replacement",
+            "keyword": "roof replacement taylorsville"
+          },
+          {
+            "queryId": "taylorsville-roofer",
+            "keyword": "roofer taylorsville"
+          }
+        ]
+      }
+    },
+    {
+      "interventionPriority": 11,
+      "city": "Bluffdale",
+      "slug": "bluffdale",
+      "cohort": "expansion-manual-baseline-measured",
+      "page": "locations/bluffdale.html",
+      "panelId": "utah-bluffdale-google-v1",
+      "lane": "service-area-proof-and-targeted-gsc-before-intent-change",
+      "decision": "Request input",
+      "evidenceFeatures": {
+        "observedAt": "2026-08-12T17:40:30.498Z",
+        "organicRanks": [
+          18,
+          11,
+          9,
+          17
+        ],
+        "bestMeasuredOrganicRank": 9,
+        "measuredMeanOrganicRank": 13.75,
+        "exactCidMapsNumberOne": 0,
+        "exactCidMapsReturned": 0,
+        "mapsPacksPresent": 4,
+        "mapsReadinessLane": "service-area-proof-before-exact-cid-planning",
+        "dominantMapsDisplacer": {
+          "name": "The Roofing Contractor",
+          "cid": "10363506003073586853",
+          "domain": "google.com",
+          "appearances": 4,
+          "numberOneQueries": 3,
+          "bestRank": 1,
+          "keywords": [
+            "roofing contractor bluffdale",
+            "roof repair bluffdale",
+            "roof replacement bluffdale",
+            "roofer bluffdale"
+          ]
+        },
+        "googleAiOverviewsPresent": 0,
+        "googleAiOverviewOwnedQueries": [],
+        "protectedOrganicNumberOneQueries": [],
+        "intendedPageSelectedForEveryMeasuredRank": true,
+        "gscState": "targeted-gsc-not-complete",
+        "gscRequestedQueries": 0,
+        "gscReturnedQueries": 0,
+        "gscAlternateNormalizedUrls": [],
+        "serviceAreaStatus": "pending-current-profile-service-area-verification",
+        "identityProfile": "heber-keystone-cid",
+        "citySpecificEditorialAsset": true,
+        "architectureState": "not-evidenced-all-four-fixed-serps-select-main",
+        "protectedRelatedRoutes": [
+          "blog/bluffdale/storm-damage-roof-repair-bluffdale.html"
+        ],
+        "consumerAiState": "configured-manual-unmeasured-invalid-provider-credential",
+        "comparableWeeklyGooglePanels": 1,
+        "comparableWeeklyConsumerAiPanels": 0
+      },
+      "scoreVector": {
+        "businessValue": 10,
+        "confidence": 4,
+        "leadValue": 7,
+        "authorityValue": 5,
+        "learningValue": 9,
+        "implementationCost": 5,
+        "complianceRisk": 8,
+        "customerBlockerRisk": 8,
+        "maintenanceCost": 2,
+        "sourceBiasRisk": 2,
+        "recencyBiasRisk": 1
+      },
+      "selectedAction": "Obtain current Salt Lake Valley service-area evidence and the next exact-query GSC attribution for Bluffdale; request the bounded expansion cleanup separately, but do not change identity or commercial intent until those evidence gates pass.",
+      "gate": "service-area-evidence-plus-targeted-gsc-plus-explicit-cleanup-approval",
+      "ownerApprovalPhrase": "I explicitly approve editing and publishing the 12-page Salt Lake Valley expansion integrity cleanup defined in packet frame-utah-slv-twelve-page-expansion-public-integrity-cleanup-v1, with expansion identities, titles, H1s, canonicals, and protected related routes unchanged.",
+      "acceptanceCheck": "A current receipt explicitly classifies Bluffdale for CID 5689850818145735734, all four exact queries are requested without treating missing rows as zero, and any approved cleanup passes the full release gate.",
+      "feedback": {
+        "cadence": "weekly",
+        "requiredComparablePanels": 4,
+        "currentSameWindowCompleteStreak": 0,
+        "verdict": "hold",
+        "keepRule": "Keep only a declared isolated ranking variable when its city-specific acceptance check passes and every protected integrity, URL-selection, Maps, AIO, consumer-AI, and route guardrail remains green.",
+        "revertRule": "Revert the isolated ranking variable on a declared guardrail failure or unmet 28-day decision rule; never revert a required factual correction to restore an unsupported claim or wrong entity identity."
+      },
+      "sources": {
+        "diagnosis": null,
+        "panelEvidence": [
+          {
+            "queryId": "bluffdale-roofing-contractor",
+            "keyword": "roofing contractor bluffdale"
+          },
+          {
+            "queryId": "bluffdale-roof-repair",
+            "keyword": "roof repair bluffdale"
+          },
+          {
+            "queryId": "bluffdale-roof-replacement",
+            "keyword": "roof replacement bluffdale"
+          },
+          {
+            "queryId": "bluffdale-roofer",
+            "keyword": "roofer bluffdale"
+          }
+        ]
+      }
+    },
+    {
+      "interventionPriority": 12,
+      "city": "Midvale",
+      "slug": "midvale",
+      "cohort": "expansion-manual-baseline-measured",
+      "page": "locations/midvale.html",
+      "panelId": "utah-midvale-google-v1",
+      "lane": "service-area-proof-and-targeted-gsc-before-intent-change",
+      "decision": "Request input",
+      "evidenceFeatures": {
+        "observedAt": "2026-08-12T17:40:30.501Z",
+        "organicRanks": [
+          18,
+          15,
+          10,
+          16
+        ],
+        "bestMeasuredOrganicRank": 10,
+        "measuredMeanOrganicRank": 14.75,
+        "exactCidMapsNumberOne": 0,
+        "exactCidMapsReturned": 0,
+        "mapsPacksPresent": 4,
+        "mapsReadinessLane": "service-area-proof-before-exact-cid-planning",
+        "dominantMapsDisplacer": {
+          "name": "Xperience Roofing",
+          "cid": "8697029845329445458",
+          "domain": "google.com",
+          "appearances": 4,
+          "numberOneQueries": 3,
+          "bestRank": 1,
+          "keywords": [
+            "roofing contractor midvale",
+            "roof repair midvale",
+            "roof replacement midvale",
+            "roofer midvale"
+          ]
+        },
+        "googleAiOverviewsPresent": 0,
+        "googleAiOverviewOwnedQueries": [],
+        "protectedOrganicNumberOneQueries": [],
+        "intendedPageSelectedForEveryMeasuredRank": true,
+        "gscState": "targeted-gsc-not-complete",
+        "gscRequestedQueries": 0,
+        "gscReturnedQueries": 0,
+        "gscAlternateNormalizedUrls": [],
+        "serviceAreaStatus": "pending-current-profile-service-area-verification",
+        "identityProfile": "heber-keystone-cid",
+        "citySpecificEditorialAsset": false,
+        "architectureState": "not-evidenced-all-four-fixed-serps-select-main",
+        "protectedRelatedRoutes": [
+          "locations/midvale/storm-damage.html"
+        ],
+        "consumerAiState": "configured-manual-unmeasured-invalid-provider-credential",
+        "comparableWeeklyGooglePanels": 1,
+        "comparableWeeklyConsumerAiPanels": 0
+      },
+      "scoreVector": {
+        "businessValue": 10,
+        "confidence": 4,
+        "leadValue": 7,
+        "authorityValue": 5,
+        "learningValue": 9,
+        "implementationCost": 5,
+        "complianceRisk": 8,
+        "customerBlockerRisk": 8,
+        "maintenanceCost": 2,
+        "sourceBiasRisk": 2,
+        "recencyBiasRisk": 1
+      },
+      "selectedAction": "Obtain current Salt Lake Valley service-area evidence and the next exact-query GSC attribution for Midvale; request the bounded expansion cleanup separately, but do not change identity or commercial intent until those evidence gates pass.",
+      "gate": "service-area-evidence-plus-targeted-gsc-plus-explicit-cleanup-approval",
+      "ownerApprovalPhrase": "I explicitly approve editing and publishing the 12-page Salt Lake Valley expansion integrity cleanup defined in packet frame-utah-slv-twelve-page-expansion-public-integrity-cleanup-v1, with expansion identities, titles, H1s, canonicals, and protected related routes unchanged.",
+      "acceptanceCheck": "A current receipt explicitly classifies Midvale for CID 5689850818145735734, all four exact queries are requested without treating missing rows as zero, and any approved cleanup passes the full release gate.",
+      "feedback": {
+        "cadence": "weekly",
+        "requiredComparablePanels": 4,
+        "currentSameWindowCompleteStreak": 0,
+        "verdict": "hold",
+        "keepRule": "Keep only a declared isolated ranking variable when its city-specific acceptance check passes and every protected integrity, URL-selection, Maps, AIO, consumer-AI, and route guardrail remains green.",
+        "revertRule": "Revert the isolated ranking variable on a declared guardrail failure or unmet 28-day decision rule; never revert a required factual correction to restore an unsupported claim or wrong entity identity."
+      },
+      "sources": {
+        "diagnosis": null,
+        "panelEvidence": [
+          {
+            "queryId": "midvale-roofing-contractor",
+            "keyword": "roofing contractor midvale"
+          },
+          {
+            "queryId": "midvale-roof-repair",
+            "keyword": "roof repair midvale"
+          },
+          {
+            "queryId": "midvale-roof-replacement",
+            "keyword": "roof replacement midvale"
+          },
+          {
+            "queryId": "midvale-roofer",
+            "keyword": "roofer midvale"
+          }
+        ]
+      }
+    },
+    {
+      "interventionPriority": 13,
+      "city": "Herriman",
+      "slug": "herriman",
+      "cohort": "expansion-manual-baseline-measured",
+      "page": "locations/herriman.html",
+      "panelId": "utah-herriman-google-v1",
+      "lane": "service-area-proof-and-targeted-gsc-before-intent-change",
+      "decision": "Request input",
+      "evidenceFeatures": {
+        "observedAt": "2026-08-12T17:40:30.500Z",
+        "organicRanks": [
+          22,
+          14,
+          12,
+          26
+        ],
+        "bestMeasuredOrganicRank": 12,
+        "measuredMeanOrganicRank": 18.5,
+        "exactCidMapsNumberOne": 0,
+        "exactCidMapsReturned": 0,
+        "mapsPacksPresent": 4,
+        "mapsReadinessLane": "service-area-proof-before-exact-cid-planning",
+        "dominantMapsDisplacer": {
+          "name": "RoofKap",
+          "cid": "12684491778996500074",
+          "domain": "google.com",
+          "appearances": 4,
+          "numberOneQueries": 4,
+          "bestRank": 1,
+          "keywords": [
+            "roofing contractor herriman",
+            "roof repair herriman",
+            "roof replacement herriman",
+            "roofer herriman"
+          ]
+        },
+        "googleAiOverviewsPresent": 0,
+        "googleAiOverviewOwnedQueries": [],
+        "protectedOrganicNumberOneQueries": [],
+        "intendedPageSelectedForEveryMeasuredRank": true,
+        "gscState": "targeted-gsc-not-complete",
+        "gscRequestedQueries": 0,
+        "gscReturnedQueries": 0,
+        "gscAlternateNormalizedUrls": [],
+        "serviceAreaStatus": "pending-current-profile-service-area-verification",
+        "identityProfile": "heber-keystone-cid",
+        "citySpecificEditorialAsset": true,
+        "architectureState": "not-evidenced-all-four-fixed-serps-select-main",
+        "protectedRelatedRoutes": [
+          "blog/herriman/hail-damage-new-homes.html"
+        ],
+        "consumerAiState": "configured-manual-unmeasured-invalid-provider-credential",
+        "comparableWeeklyGooglePanels": 1,
+        "comparableWeeklyConsumerAiPanels": 0
+      },
+      "scoreVector": {
+        "businessValue": 10,
+        "confidence": 4,
+        "leadValue": 5,
+        "authorityValue": 5,
+        "learningValue": 9,
+        "implementationCost": 5,
+        "complianceRisk": 8,
+        "customerBlockerRisk": 8,
+        "maintenanceCost": 2,
+        "sourceBiasRisk": 2,
+        "recencyBiasRisk": 1
+      },
+      "selectedAction": "Obtain current Salt Lake Valley service-area evidence and the next exact-query GSC attribution for Herriman; request the bounded expansion cleanup separately, but do not change identity or commercial intent until those evidence gates pass.",
+      "gate": "service-area-evidence-plus-targeted-gsc-plus-explicit-cleanup-approval",
+      "ownerApprovalPhrase": "I explicitly approve editing and publishing the 12-page Salt Lake Valley expansion integrity cleanup defined in packet frame-utah-slv-twelve-page-expansion-public-integrity-cleanup-v1, with expansion identities, titles, H1s, canonicals, and protected related routes unchanged.",
+      "acceptanceCheck": "A current receipt explicitly classifies Herriman for CID 5689850818145735734, all four exact queries are requested without treating missing rows as zero, and any approved cleanup passes the full release gate.",
+      "feedback": {
+        "cadence": "weekly",
+        "requiredComparablePanels": 4,
+        "currentSameWindowCompleteStreak": 0,
+        "verdict": "hold",
+        "keepRule": "Keep only a declared isolated ranking variable when its city-specific acceptance check passes and every protected integrity, URL-selection, Maps, AIO, consumer-AI, and route guardrail remains green.",
+        "revertRule": "Revert the isolated ranking variable on a declared guardrail failure or unmet 28-day decision rule; never revert a required factual correction to restore an unsupported claim or wrong entity identity."
+      },
+      "sources": {
+        "diagnosis": null,
+        "panelEvidence": [
+          {
+            "queryId": "herriman-roofing-contractor",
+            "keyword": "roofing contractor herriman"
+          },
+          {
+            "queryId": "herriman-roof-repair",
+            "keyword": "roof repair herriman"
+          },
+          {
+            "queryId": "herriman-roof-replacement",
+            "keyword": "roof replacement herriman"
+          },
+          {
+            "queryId": "herriman-roofer",
+            "keyword": "roofer herriman"
+          }
+        ]
+      }
+    },
+    {
+      "interventionPriority": 14,
+      "city": "West Valley City",
+      "slug": "west-valley-city",
+      "cohort": "expansion-manual-baseline-measured",
+      "page": "locations/west-valley-city.html",
+      "panelId": "utah-west-valley-city-google-v1",
+      "lane": "service-area-proof-and-targeted-gsc-before-intent-change",
+      "decision": "Request input",
+      "evidenceFeatures": {
+        "observedAt": "2026-08-12T17:40:30.503Z",
+        "organicRanks": [
+          21,
+          16,
+          11,
+          16
+        ],
+        "bestMeasuredOrganicRank": 11,
+        "measuredMeanOrganicRank": 16,
+        "exactCidMapsNumberOne": 0,
+        "exactCidMapsReturned": 0,
+        "mapsPacksPresent": 4,
+        "mapsReadinessLane": "service-area-proof-before-exact-cid-planning",
+        "dominantMapsDisplacer": {
+          "name": "Classic Roofing and Exteriors",
+          "cid": "10315170581426755444",
+          "domain": "google.com",
+          "appearances": 4,
+          "numberOneQueries": 3,
+          "bestRank": 1,
+          "keywords": [
+            "roofing contractor west valley city",
+            "roof repair west valley city",
+            "roof replacement west valley city",
+            "roofer west valley city"
+          ]
+        },
+        "googleAiOverviewsPresent": 0,
+        "googleAiOverviewOwnedQueries": [],
+        "protectedOrganicNumberOneQueries": [],
+        "intendedPageSelectedForEveryMeasuredRank": true,
+        "gscState": "targeted-gsc-not-complete",
+        "gscRequestedQueries": 0,
+        "gscReturnedQueries": 0,
+        "gscAlternateNormalizedUrls": [],
+        "serviceAreaStatus": "pending-current-profile-service-area-verification",
+        "identityProfile": "heber-keystone-cid",
+        "citySpecificEditorialAsset": true,
+        "architectureState": "not-evidenced-all-four-fixed-serps-select-main",
+        "protectedRelatedRoutes": [
+          "blog/west-valley-city/roof-replacement-cost.html"
+        ],
+        "consumerAiState": "configured-manual-unmeasured-invalid-provider-credential",
+        "comparableWeeklyGooglePanels": 1,
+        "comparableWeeklyConsumerAiPanels": 0
+      },
+      "scoreVector": {
+        "businessValue": 10,
+        "confidence": 4,
+        "leadValue": 5,
+        "authorityValue": 5,
+        "learningValue": 9,
+        "implementationCost": 5,
+        "complianceRisk": 8,
+        "customerBlockerRisk": 8,
+        "maintenanceCost": 2,
+        "sourceBiasRisk": 2,
+        "recencyBiasRisk": 1
+      },
+      "selectedAction": "Obtain current Salt Lake Valley service-area evidence and the next exact-query GSC attribution for West Valley City; request the bounded expansion cleanup separately, but do not change identity or commercial intent until those evidence gates pass.",
+      "gate": "service-area-evidence-plus-targeted-gsc-plus-explicit-cleanup-approval",
+      "ownerApprovalPhrase": "I explicitly approve editing and publishing the 12-page Salt Lake Valley expansion integrity cleanup defined in packet frame-utah-slv-twelve-page-expansion-public-integrity-cleanup-v1, with expansion identities, titles, H1s, canonicals, and protected related routes unchanged.",
+      "acceptanceCheck": "A current receipt explicitly classifies West Valley City for CID 5689850818145735734, all four exact queries are requested without treating missing rows as zero, and any approved cleanup passes the full release gate.",
+      "feedback": {
+        "cadence": "weekly",
+        "requiredComparablePanels": 4,
+        "currentSameWindowCompleteStreak": 0,
+        "verdict": "hold",
+        "keepRule": "Keep only a declared isolated ranking variable when its city-specific acceptance check passes and every protected integrity, URL-selection, Maps, AIO, consumer-AI, and route guardrail remains green.",
+        "revertRule": "Revert the isolated ranking variable on a declared guardrail failure or unmet 28-day decision rule; never revert a required factual correction to restore an unsupported claim or wrong entity identity."
+      },
+      "sources": {
+        "diagnosis": null,
+        "panelEvidence": [
+          {
+            "queryId": "west-valley-city-roofing-contractor",
+            "keyword": "roofing contractor west valley city"
+          },
+          {
+            "queryId": "west-valley-city-roof-repair",
+            "keyword": "roof repair west valley city"
+          },
+          {
+            "queryId": "west-valley-city-roof-replacement",
+            "keyword": "roof replacement west valley city"
+          },
+          {
+            "queryId": "west-valley-city-roofer",
+            "keyword": "roofer west valley city"
+          }
+        ]
+      }
+    },
+    {
+      "interventionPriority": 15,
+      "city": "Draper",
+      "slug": "draper",
+      "cohort": "core-measured",
+      "page": "locations/draper.html",
+      "panelId": "utah-draper-google-v1",
+      "lane": "owner-gated-core-integrity-then-single-variable-intent-test",
+      "decision": "Request input",
+      "evidenceFeatures": {
+        "observedAt": "2026-08-12T14:18:10.300Z",
+        "organicRanks": [
+          null,
+          null,
+          null,
+          null
+        ],
+        "bestMeasuredOrganicRank": null,
+        "measuredMeanOrganicRank": null,
+        "exactCidMapsNumberOne": 0,
+        "exactCidMapsReturned": 0,
+        "mapsPacksPresent": 4,
+        "mapsReadinessLane": "service-area-proof-before-exact-cid-planning",
+        "dominantMapsDisplacer": {
+          "name": "Pride Roofing & Contracting, LLC",
+          "cid": "15206834657984643450",
+          "domain": "google.com",
+          "appearances": 4,
+          "numberOneQueries": 3,
+          "bestRank": 1,
+          "keywords": [
+            "roofing contractor draper",
+            "roof repair draper",
+            "roof replacement draper",
+            "roofer draper"
+          ]
+        },
+        "googleAiOverviewsPresent": 0,
+        "googleAiOverviewOwnedQueries": [],
+        "protectedOrganicNumberOneQueries": [],
+        "intendedPageSelectedForEveryMeasuredRank": true,
+        "gscState": "complete-request-with-unreturned-rows",
+        "gscRequestedQueries": 4,
+        "gscReturnedQueries": 0,
+        "gscAlternateNormalizedUrls": [],
+        "serviceAreaStatus": "pending-current-profile-service-area-verification",
+        "identityProfile": "heber-keystone-cid",
+        "citySpecificEditorialAsset": true,
+        "architectureState": "not-evidenced",
+        "protectedRelatedRoutes": [],
+        "consumerAiState": "configured-manual-unmeasured-invalid-provider-credential",
+        "comparableWeeklyGooglePanels": 1,
+        "comparableWeeklyConsumerAiPanels": 0
+      },
+      "scoreVector": {
+        "businessValue": 10,
+        "confidence": 6,
+        "leadValue": 2,
+        "authorityValue": 5,
+        "learningValue": 6,
+        "implementationCost": 5,
+        "complianceRisk": 8,
+        "customerBlockerRisk": 8,
+        "maintenanceCost": 2,
+        "sourceBiasRisk": 2,
+        "recencyBiasRisk": 1
+      },
+      "selectedAction": "Obtain current Salt Lake Valley service-area evidence for Draper's separate Maps lane and request the exact core cleanup approval; after a green production receipt and fresh baseline, activate at most the already-pinned single-title experiment with every other intent surface held constant.",
+      "gate": "service-area-evidence-plus-explicit-owner-cleanup-approval-then-separate-ranking-experiment-approval",
+      "ownerApprovalPhrase": "I explicitly approve editing and publishing the five-page integrity cleanup defined in PR #242 and the Millcreek storm-child identity correction defined in the pinned Millcreek scope amendment.",
+      "acceptanceCheck": "Keep only if at least two of the four fixed commercial queries return exact organic ranks within the top 30 in each of the final two weekly panels, with no integrity regression. A current receipt separately classifies Draper for CID 5689850818145735734.",
+      "feedback": {
+        "cadence": "weekly",
+        "requiredComparablePanels": 4,
+        "currentSameWindowCompleteStreak": 0,
+        "verdict": "hold",
+        "keepRule": "Keep only a declared isolated ranking variable when its city-specific acceptance check passes and every protected integrity, URL-selection, Maps, AIO, consumer-AI, and route guardrail remains green.",
+        "revertRule": "Revert the isolated ranking variable on a declared guardrail failure or unmet 28-day decision rule; never revert a required factual correction to restore an unsupported claim or wrong entity identity."
+      },
+      "sources": {
+        "diagnosis": {
+          "file": "data/rank-tracker/DRAPER-ARCHITECTURE-DIAGNOSIS-2026-08-12.json",
+          "sha256": "2275639f44e73b2d3df1fd3665d257f643cfb53fca37bcd4e02f0a392b37982c"
+        },
+        "panelEvidence": [
+          {
+            "queryId": "draper-roofing-contractor",
+            "keyword": "roofing contractor draper"
+          },
+          {
+            "queryId": "draper-roof-repair",
+            "keyword": "roof repair draper"
+          },
+          {
+            "queryId": "draper-roof-replacement",
+            "keyword": "roof replacement draper"
+          },
+          {
+            "queryId": "draper-roofer",
+            "keyword": "roofer draper"
+          }
+        ]
+      }
+    },
+    {
+      "interventionPriority": 16,
+      "city": "South Salt Lake",
+      "slug": "south-salt-lake",
+      "cohort": "expansion-manual-baseline-measured",
+      "page": "locations/south-salt-lake.html",
+      "panelId": "utah-south-salt-lake-google-v1",
+      "lane": "service-area-proof-and-targeted-gsc-before-intent-change",
+      "decision": "Request input",
+      "evidenceFeatures": {
+        "observedAt": "2026-08-12T17:40:30.502Z",
+        "organicRanks": [
+          null,
+          14,
+          12,
+          null
+        ],
+        "bestMeasuredOrganicRank": 12,
+        "measuredMeanOrganicRank": 13,
+        "exactCidMapsNumberOne": 0,
+        "exactCidMapsReturned": 0,
+        "mapsPacksPresent": 3,
+        "mapsReadinessLane": "service-area-proof-before-exact-cid-planning",
+        "dominantMapsDisplacer": {
+          "name": "The Roof Doctor",
+          "cid": "16329927680093228178",
+          "domain": "google.com",
+          "appearances": 2,
+          "numberOneQueries": 2,
+          "bestRank": 1,
+          "keywords": [
+            "roof repair south salt lake",
+            "roof replacement south salt lake"
+          ]
+        },
+        "googleAiOverviewsPresent": 1,
+        "googleAiOverviewOwnedQueries": [],
+        "protectedOrganicNumberOneQueries": [],
+        "intendedPageSelectedForEveryMeasuredRank": true,
+        "gscState": "targeted-gsc-not-complete",
+        "gscRequestedQueries": 0,
+        "gscReturnedQueries": 0,
+        "gscAlternateNormalizedUrls": [],
+        "serviceAreaStatus": "pending-current-profile-service-area-verification",
+        "identityProfile": "heber-keystone-cid",
+        "citySpecificEditorialAsset": false,
+        "architectureState": "not-evidenced-bounded-panel-selects-main-when-ranked-and-exact-gsc-unmeasured",
+        "protectedRelatedRoutes": [],
+        "consumerAiState": "configured-manual-unmeasured-invalid-provider-credential",
+        "comparableWeeklyGooglePanels": 1,
+        "comparableWeeklyConsumerAiPanels": 0
+      },
+      "scoreVector": {
+        "businessValue": 10,
+        "confidence": 4,
+        "leadValue": 5,
+        "authorityValue": 7,
+        "learningValue": 9,
+        "implementationCost": 5,
+        "complianceRisk": 8,
+        "customerBlockerRisk": 8,
+        "maintenanceCost": 2,
+        "sourceBiasRisk": 2,
+        "recencyBiasRisk": 1
+      },
+      "selectedAction": "Obtain current Salt Lake Valley service-area evidence and the next exact-query GSC attribution for South Salt Lake; request the bounded expansion cleanup separately, but do not change identity or commercial intent until those evidence gates pass.",
+      "gate": "service-area-evidence-plus-targeted-gsc-plus-explicit-cleanup-approval",
+      "ownerApprovalPhrase": "I explicitly approve editing and publishing the 12-page Salt Lake Valley expansion integrity cleanup defined in packet frame-utah-slv-twelve-page-expansion-public-integrity-cleanup-v1, with expansion identities, titles, H1s, canonicals, and protected related routes unchanged.",
+      "acceptanceCheck": "A current receipt explicitly classifies South Salt Lake for CID 5689850818145735734, all four exact queries are requested without treating missing rows as zero, and any approved cleanup passes the full release gate.",
+      "feedback": {
+        "cadence": "weekly",
+        "requiredComparablePanels": 4,
+        "currentSameWindowCompleteStreak": 0,
+        "verdict": "hold",
+        "keepRule": "Keep only a declared isolated ranking variable when its city-specific acceptance check passes and every protected integrity, URL-selection, Maps, AIO, consumer-AI, and route guardrail remains green.",
+        "revertRule": "Revert the isolated ranking variable on a declared guardrail failure or unmet 28-day decision rule; never revert a required factual correction to restore an unsupported claim or wrong entity identity."
+      },
+      "sources": {
+        "diagnosis": null,
+        "panelEvidence": [
+          {
+            "queryId": "south-salt-lake-roofing-contractor",
+            "keyword": "roofing contractor south salt lake"
+          },
+          {
+            "queryId": "south-salt-lake-roof-repair",
+            "keyword": "roof repair south salt lake"
+          },
+          {
+            "queryId": "south-salt-lake-roof-replacement",
+            "keyword": "roof replacement south salt lake"
+          },
+          {
+            "queryId": "south-salt-lake-roofer",
+            "keyword": "roofer south salt lake"
+          }
+        ]
+      }
+    },
+    {
+      "interventionPriority": 17,
+      "city": "West Jordan",
+      "slug": "west-jordan",
+      "cohort": "expansion-manual-baseline-measured",
+      "page": "locations/west-jordan.html",
+      "panelId": "utah-west-jordan-google-v1",
+      "lane": "service-area-proof-and-targeted-gsc-before-intent-change",
+      "decision": "Request input",
+      "evidenceFeatures": {
+        "observedAt": "2026-08-12T17:40:30.503Z",
+        "organicRanks": [
+          null,
+          19,
+          14,
+          null
+        ],
+        "bestMeasuredOrganicRank": 14,
+        "measuredMeanOrganicRank": 16.5,
+        "exactCidMapsNumberOne": 0,
+        "exactCidMapsReturned": 0,
+        "mapsPacksPresent": 4,
+        "mapsReadinessLane": "service-area-proof-before-exact-cid-planning",
+        "dominantMapsDisplacer": {
+          "name": "West Jordan Roofing Solutions",
+          "cid": "12317812539198406731",
+          "domain": "google.com",
+          "appearances": 3,
+          "numberOneQueries": 3,
+          "bestRank": 1,
+          "keywords": [
+            "roofing contractor west jordan",
+            "roof repair west jordan",
+            "roofer west jordan"
+          ]
+        },
+        "googleAiOverviewsPresent": 0,
+        "googleAiOverviewOwnedQueries": [],
+        "protectedOrganicNumberOneQueries": [],
+        "intendedPageSelectedForEveryMeasuredRank": true,
+        "gscState": "targeted-gsc-not-complete",
+        "gscRequestedQueries": 0,
+        "gscReturnedQueries": 0,
+        "gscAlternateNormalizedUrls": [],
+        "serviceAreaStatus": "pending-current-profile-service-area-verification",
+        "identityProfile": "heber-keystone-cid",
+        "citySpecificEditorialAsset": true,
+        "architectureState": "not-evidenced-bounded-panel-selects-main-when-ranked-and-exact-gsc-unmeasured",
+        "protectedRelatedRoutes": [
+          "blog/west-jordan/roof-leak-after-rainstorm.html"
+        ],
+        "consumerAiState": "configured-manual-unmeasured-invalid-provider-credential",
+        "comparableWeeklyGooglePanels": 1,
+        "comparableWeeklyConsumerAiPanels": 0
+      },
+      "scoreVector": {
+        "businessValue": 10,
+        "confidence": 4,
+        "leadValue": 5,
+        "authorityValue": 5,
+        "learningValue": 9,
+        "implementationCost": 5,
+        "complianceRisk": 8,
+        "customerBlockerRisk": 8,
+        "maintenanceCost": 2,
+        "sourceBiasRisk": 2,
+        "recencyBiasRisk": 1
+      },
+      "selectedAction": "Obtain current Salt Lake Valley service-area evidence and the next exact-query GSC attribution for West Jordan; request the bounded expansion cleanup separately, but do not change identity or commercial intent until those evidence gates pass.",
+      "gate": "service-area-evidence-plus-targeted-gsc-plus-explicit-cleanup-approval",
+      "ownerApprovalPhrase": "I explicitly approve editing and publishing the 12-page Salt Lake Valley expansion integrity cleanup defined in packet frame-utah-slv-twelve-page-expansion-public-integrity-cleanup-v1, with expansion identities, titles, H1s, canonicals, and protected related routes unchanged.",
+      "acceptanceCheck": "A current receipt explicitly classifies West Jordan for CID 5689850818145735734, all four exact queries are requested without treating missing rows as zero, and any approved cleanup passes the full release gate.",
+      "feedback": {
+        "cadence": "weekly",
+        "requiredComparablePanels": 4,
+        "currentSameWindowCompleteStreak": 0,
+        "verdict": "hold",
+        "keepRule": "Keep only a declared isolated ranking variable when its city-specific acceptance check passes and every protected integrity, URL-selection, Maps, AIO, consumer-AI, and route guardrail remains green.",
+        "revertRule": "Revert the isolated ranking variable on a declared guardrail failure or unmet 28-day decision rule; never revert a required factual correction to restore an unsupported claim or wrong entity identity."
+      },
+      "sources": {
+        "diagnosis": null,
+        "panelEvidence": [
+          {
+            "queryId": "west-jordan-roofing-contractor",
+            "keyword": "roofing contractor west jordan"
+          },
+          {
+            "queryId": "west-jordan-roof-repair",
+            "keyword": "roof repair west jordan"
+          },
+          {
+            "queryId": "west-jordan-roof-replacement",
+            "keyword": "roof replacement west jordan"
+          },
+          {
+            "queryId": "west-jordan-roofer",
+            "keyword": "roofer west jordan"
+          }
+        ]
+      }
+    }
+  ]
+}

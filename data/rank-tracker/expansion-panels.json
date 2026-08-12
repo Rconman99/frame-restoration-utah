@@ -1,0 +1,99 @@
+{
+  "schemaVersion": 1,
+  "registryId": "utah-salt-lake-valley-google-expansion-v1",
+  "cadence": "manual-baseline-before-weekly-admission",
+  "sourceOfTruth": {
+    "candidateRegistry": "data/rank-tracker/panels.json",
+    "profileCid": "5689850818145735734",
+    "candidateCount": 12,
+    "observedAt": "2026-08-12"
+  },
+  "scopeGuard": "Read-only search measurement for existing Salt Lake County target pages. Inclusion does not assert that a city is saved on the Salt Lake Valley service-area profile, authorize a profile mutation, or admit the city to recurring weekly spend. Exact-CID scoring reports only whether the verified profile appeared in the measured SERP.",
+  "admissionRule": "Run one complete manual baseline, validate all 48 results, classify integrity and route architecture, verify current service-area evidence separately, then explicitly approve any city for the recurring weekly registry.",
+  "panels": [
+    {
+      "id": "utah-bluffdale-google-v1",
+      "configPath": "data/rank-tracker/expansion/bluffdale/config.json",
+      "status": "active",
+      "evidenceClass": "existing-salt-lake-county-route-measurement-only",
+      "route": "/locations/bluffdale"
+    },
+    {
+      "id": "utah-herriman-google-v1",
+      "configPath": "data/rank-tracker/expansion/herriman/config.json",
+      "status": "active",
+      "evidenceClass": "existing-salt-lake-county-route-measurement-only",
+      "route": "/locations/herriman"
+    },
+    {
+      "id": "utah-kearns-google-v1",
+      "configPath": "data/rank-tracker/expansion/kearns/config.json",
+      "status": "active",
+      "evidenceClass": "existing-salt-lake-county-route-measurement-only",
+      "route": "/locations/kearns"
+    },
+    {
+      "id": "utah-magna-google-v1",
+      "configPath": "data/rank-tracker/expansion/magna/config.json",
+      "status": "active",
+      "evidenceClass": "existing-salt-lake-county-route-measurement-only",
+      "route": "/locations/magna"
+    },
+    {
+      "id": "utah-midvale-google-v1",
+      "configPath": "data/rank-tracker/expansion/midvale/config.json",
+      "status": "active",
+      "evidenceClass": "existing-salt-lake-county-route-measurement-only",
+      "route": "/locations/midvale"
+    },
+    {
+      "id": "utah-murray-google-v1",
+      "configPath": "data/rank-tracker/expansion/murray/config.json",
+      "status": "active",
+      "evidenceClass": "existing-salt-lake-county-route-measurement-only",
+      "route": "/locations/murray"
+    },
+    {
+      "id": "utah-riverton-google-v1",
+      "configPath": "data/rank-tracker/expansion/riverton/config.json",
+      "status": "active",
+      "evidenceClass": "existing-salt-lake-county-route-measurement-only",
+      "route": "/locations/riverton"
+    },
+    {
+      "id": "utah-south-jordan-google-v1",
+      "configPath": "data/rank-tracker/expansion/south-jordan/config.json",
+      "status": "active",
+      "evidenceClass": "existing-salt-lake-county-route-measurement-only",
+      "route": "/locations/south-jordan"
+    },
+    {
+      "id": "utah-south-salt-lake-google-v1",
+      "configPath": "data/rank-tracker/expansion/south-salt-lake/config.json",
+      "status": "active",
+      "evidenceClass": "existing-salt-lake-county-route-measurement-only",
+      "route": "/locations/south-salt-lake"
+    },
+    {
+      "id": "utah-taylorsville-google-v1",
+      "configPath": "data/rank-tracker/expansion/taylorsville/config.json",
+      "status": "active",
+      "evidenceClass": "existing-salt-lake-county-route-measurement-only",
+      "route": "/locations/taylorsville"
+    },
+    {
+      "id": "utah-west-jordan-google-v1",
+      "configPath": "data/rank-tracker/expansion/west-jordan/config.json",
+      "status": "active",
+      "evidenceClass": "existing-salt-lake-county-route-measurement-only",
+      "route": "/locations/west-jordan"
+    },
+    {
+      "id": "utah-west-valley-city-google-v1",
+      "configPath": "data/rank-tracker/expansion/west-valley-city/config.json",
+      "status": "active",
+      "evidenceClass": "existing-salt-lake-county-route-measurement-only",
+      "route": "/locations/west-valley-city"
+    }
+  ]
+}

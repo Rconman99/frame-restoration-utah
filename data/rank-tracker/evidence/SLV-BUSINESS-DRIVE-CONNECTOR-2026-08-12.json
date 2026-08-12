@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "evidenceId": "frame-utah-business-drive-connector-preflight-v1",
+  "market": "utah-salt-lake-valley",
+  "observedAt": "2026-08-12T20:36:24Z",
+  "status": "FAILED_CLOSED_CONNECTOR_ACCOUNT_MISMATCH",
+  "connector": {
+    "requiredAccount": "ryan@framerestorations.com",
+    "observedAccount": "ryanconwell99@gmail.com",
+    "match": false,
+    "verificationClass": "read-only-owner-preflight"
+  },
+  "evidenceSearchPerformed": false,
+  "acceptedPrimaryEvidenceCount": 0,
+  "publicMutationPerformed": false,
+  "source": {
+    "externalReceiptSha256": "c1ef99c795d7932d4497ab30395ab753720b1f7c88326e1d588da604cdb03951",
+    "note": "Portable redacted receipt derived from the local command-center audit. The source path is intentionally omitted because GitHub Actions cannot access the Mac-only filesystem."
+  },
+  "decision": "Do not search the personal Drive for Frame Utah evidence. Reconnect the claude.ai Google Drive connector to the required business account, verify the owner preflight, then rerun the read-only evidence audit.",
+  "prohibited": [
+    "No business-evidence claim may be inferred from this failed preflight.",
+    "No credential, homeowner, claim, policy, signature, or full-document content is stored in this receipt.",
+    "No Google Drive, GBP, directory, indexing, email, message, or public-site mutation is authorized."
+  ]
+}

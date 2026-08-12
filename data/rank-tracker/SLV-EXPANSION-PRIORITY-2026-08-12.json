@@ -1,0 +1,580 @@
+{
+  "schemaVersion": 1,
+  "ledgerId": "frame-utah-slv-expansion-priority-v1",
+  "market": "utah-salt-lake-valley",
+  "preparedAt": "2026-08-12T17:45:00Z",
+  "preparedFromCommit": "abb96cda25c47155f2484e96e432023eeeb47d55",
+  "status": "measured-diagnosis-only-no-public-authorization",
+  "publicMutationPerformed": false,
+  "objective": "Prioritize the twelve expansion cities toward the sustained 18-city #1 portfolio while protecting current #1 organic and Google AI Overview footholds.",
+  "sources": {
+    "registry": "data/rank-tracker/expansion-panels.json",
+    "panelObservedThrough": "2026-08-12T17:40:30.503Z",
+    "searchConsoleSnapshot": "data/seo/snapshots/2026-08-12.json",
+    "searchConsoleSnapshotSha256": "d26e17238e1e76ef203654cf1f9ce4d9c927bd4088560a55cb2b8f33ff282d14",
+    "integrityAudit": "data/authority/SLV-EXPANSION-INTEGRITY-AUDIT-2026-08-12.json",
+    "integrityAuditSha256": "0d2cd7b4ace705fc3922f4503d6cc44436c3b1f2eeeaa6e9c0935e54ed3213cb"
+  },
+  "score": {
+    "cities": 12,
+    "queries": 48,
+    "organicNumberOne": 2,
+    "exactCidMapsNumberOne": 0,
+    "googleAiOverviewsPresent": 2,
+    "googleAiOverviewCitations": 1,
+    "integrityBlockingFindingClasses": 73,
+    "provisionalWarnings": 12
+  },
+  "decisionRules": [
+    "Protect a measured #1 organic query and owned AIO citation before pursuing lower-ranked queries on the same page.",
+    "A fixed-panel rank outside top 30 is bounded measurement, not zero.",
+    "Aggregate GSC page data does not prove query cannibalization; wait for the 72-query targeted GSC URL pull.",
+    "Complete integrity cleanup through a separately approved public scope before any ranking experiment.",
+    "No expansion city enters recurring weekly provider spend until explicitly admitted."
+  ],
+  "cities": [
+    {
+      "priority": 1,
+      "city": "Magna",
+      "slug": "magna",
+      "lane": "protect-existing-number-one-and-aio-footholds",
+      "panelId": "utah-magna-google-v1",
+      "rankSource": "data/rank-tracker/expansion/magna/latest.json",
+      "observedAt": "2026-08-12T17:40:30.501Z",
+      "organicRanks": [
+        7,
+        2,
+        1,
+        3
+      ],
+      "measuredMeanRank": 3.25,
+      "outsideTop30Queries": [],
+      "organicNumberOneQueries": [
+        "roof replacement magna"
+      ],
+      "exactCidMapsNumberOne": 0,
+      "googleAiOverview": {
+        "present": 1,
+        "ownedCitations": 1
+      },
+      "selectedOrganicUrl": "https://www.framerestorationutah.com/locations/magna",
+      "intendedUrlSelectedForEveryMeasuredRank": true,
+      "gscAggregate": {
+        "window": {
+          "startDate": "2026-07-13",
+          "endDate": "2026-08-09"
+        },
+        "clicks": 0,
+        "impressions": 2340,
+        "position": 9.3
+      },
+      "protectedRelatedRoutes": [],
+      "integrity": {
+        "pageSha256": "37debc6a80634ab438ad6d61f73f3369f91d4c09cfbb3673133b99832a8d3d47",
+        "blockingFindingClasses": 6,
+        "provisionalWarnings": 1,
+        "identityState": "current-heber-keystone-pending-service-area-evidence"
+      },
+      "nextPermittedAction": "Preserve roof replacement magna at #1 and the owned Google AI Overview citation; complete evidence-safe integrity cleanup only after explicit approval, then observe before any title experiment."
+    },
+    {
+      "priority": 2,
+      "city": "Kearns",
+      "slug": "kearns",
+      "lane": "protect-existing-number-one-and-aio-footholds",
+      "panelId": "utah-kearns-google-v1",
+      "rankSource": "data/rank-tracker/expansion/kearns/latest.json",
+      "observedAt": "2026-08-12T17:40:30.500Z",
+      "organicRanks": [
+        14,
+        8,
+        1,
+        10
+      ],
+      "measuredMeanRank": 8.25,
+      "outsideTop30Queries": [],
+      "organicNumberOneQueries": [
+        "roof replacement kearns"
+      ],
+      "exactCidMapsNumberOne": 0,
+      "googleAiOverview": {
+        "present": 0,
+        "ownedCitations": 0
+      },
+      "selectedOrganicUrl": "https://www.framerestorationutah.com/locations/kearns",
+      "intendedUrlSelectedForEveryMeasuredRank": true,
+      "gscAggregate": {
+        "window": {
+          "startDate": "2026-07-13",
+          "endDate": "2026-08-09"
+        },
+        "clicks": 0,
+        "impressions": 2729,
+        "position": 20.2
+      },
+      "protectedRelatedRoutes": [],
+      "integrity": {
+        "pageSha256": "a33434df2765fd63b8b948622ee2c92910385e88151c58f82e8396a0916d6905",
+        "blockingFindingClasses": 6,
+        "provisionalWarnings": 1,
+        "identityState": "current-heber-keystone-pending-service-area-evidence"
+      },
+      "nextPermittedAction": "Preserve roof replacement kearns at #1; complete evidence-safe integrity cleanup only after explicit approval, then observe before any title experiment."
+    },
+    {
+      "priority": 3,
+      "city": "Murray",
+      "slug": "murray",
+      "lane": "closest-organic-improvement-after-integrity",
+      "panelId": "utah-murray-google-v1",
+      "rankSource": "data/rank-tracker/expansion/murray/latest.json",
+      "observedAt": "2026-08-12T17:40:30.501Z",
+      "organicRanks": [
+        12,
+        7,
+        4,
+        8
+      ],
+      "measuredMeanRank": 7.75,
+      "outsideTop30Queries": [],
+      "organicNumberOneQueries": [],
+      "exactCidMapsNumberOne": 0,
+      "googleAiOverview": {
+        "present": 0,
+        "ownedCitations": 0
+      },
+      "selectedOrganicUrl": "https://www.framerestorationutah.com/locations/murray",
+      "intendedUrlSelectedForEveryMeasuredRank": true,
+      "gscAggregate": {
+        "window": {
+          "startDate": "2026-07-13",
+          "endDate": "2026-08-09"
+        },
+        "clicks": 2,
+        "impressions": 834,
+        "position": 24.5
+      },
+      "protectedRelatedRoutes": [
+        "locations/murray/storm-damage.html",
+        "blog/murray/signs-you-need-new-roof.html",
+        "blog/murray/storm-damage-roofing-murray-utah.html"
+      ],
+      "integrity": {
+        "pageSha256": "3050e9d9dae8fcf4f98da2a7723f38e081110f24edbe93c2c72ac709f6fc45f4",
+        "blockingFindingClasses": 6,
+        "provisionalWarnings": 1,
+        "identityState": "current-heber-keystone-pending-service-area-evidence"
+      },
+      "nextPermittedAction": "Protect page-one commercial queries and strong storm/informational children; complete integrity diagnosis and exact GSC URL attribution before a single-variable title experiment."
+    },
+    {
+      "priority": 4,
+      "city": "Riverton",
+      "slug": "riverton",
+      "lane": "closest-organic-improvement-after-integrity",
+      "panelId": "utah-riverton-google-v1",
+      "rankSource": "data/rank-tracker/expansion/riverton/latest.json",
+      "observedAt": "2026-08-12T17:40:30.501Z",
+      "organicRanks": [
+        null,
+        4,
+        7,
+        10
+      ],
+      "measuredMeanRank": 7,
+      "outsideTop30Queries": [
+        "roofing contractor riverton"
+      ],
+      "organicNumberOneQueries": [],
+      "exactCidMapsNumberOne": 0,
+      "googleAiOverview": {
+        "present": 0,
+        "ownedCitations": 0
+      },
+      "selectedOrganicUrl": "https://www.framerestorationutah.com/locations/riverton",
+      "intendedUrlSelectedForEveryMeasuredRank": true,
+      "gscAggregate": {
+        "window": {
+          "startDate": "2026-07-13",
+          "endDate": "2026-08-09"
+        },
+        "clicks": 1,
+        "impressions": 1437,
+        "position": 29.3
+      },
+      "protectedRelatedRoutes": [
+        "blog/riverton/hail-damage-roof-inspection.html"
+      ],
+      "integrity": {
+        "pageSha256": "db3989d8a1ebfe33c61a75ada8feff50d31995b6c58c2f9ed405487633e42549",
+        "blockingFindingClasses": 6,
+        "provisionalWarnings": 1,
+        "identityState": "current-heber-keystone-pending-service-area-evidence"
+      },
+      "nextPermittedAction": "Protect page-one commercial queries and strong storm/informational children; complete integrity diagnosis and exact GSC URL attribution before a single-variable title experiment."
+    },
+    {
+      "priority": 5,
+      "city": "South Jordan",
+      "slug": "south-jordan",
+      "lane": "closest-organic-improvement-after-integrity",
+      "panelId": "utah-south-jordan-google-v1",
+      "rankSource": "data/rank-tracker/expansion/south-jordan/latest.json",
+      "observedAt": "2026-08-12T17:40:30.502Z",
+      "organicRanks": [
+        16,
+        8,
+        4,
+        12
+      ],
+      "measuredMeanRank": 10,
+      "outsideTop30Queries": [],
+      "organicNumberOneQueries": [],
+      "exactCidMapsNumberOne": 0,
+      "googleAiOverview": {
+        "present": 0,
+        "ownedCitations": 0
+      },
+      "selectedOrganicUrl": "https://www.framerestorationutah.com/locations/south-jordan",
+      "intendedUrlSelectedForEveryMeasuredRank": true,
+      "gscAggregate": {
+        "window": {
+          "startDate": "2026-07-13",
+          "endDate": "2026-08-09"
+        },
+        "clicks": 0,
+        "impressions": 732,
+        "position": 26.3
+      },
+      "protectedRelatedRoutes": [
+        "blog/south-jordan/roof-replacement-south-jordan-utah.html",
+        "blog/south-jordan/storm-damage-roof-repair-south-jordan-utah.html"
+      ],
+      "integrity": {
+        "pageSha256": "1d03e4a6779ba8d2dc2601b9a3bf1d879a98adee4ca85d28c70c683be414370f",
+        "blockingFindingClasses": 7,
+        "provisionalWarnings": 1,
+        "identityState": "current-heber-keystone-pending-service-area-evidence"
+      },
+      "nextPermittedAction": "Protect page-one commercial queries and strong storm/informational children; complete integrity diagnosis and exact GSC URL attribution before a single-variable title experiment."
+    },
+    {
+      "priority": 6,
+      "city": "Taylorsville",
+      "slug": "taylorsville",
+      "lane": "closest-organic-improvement-after-integrity",
+      "panelId": "utah-taylorsville-google-v1",
+      "rankSource": "data/rank-tracker/expansion/taylorsville/latest.json",
+      "observedAt": "2026-08-12T17:40:30.503Z",
+      "organicRanks": [
+        15,
+        7,
+        10,
+        18
+      ],
+      "measuredMeanRank": 12.5,
+      "outsideTop30Queries": [],
+      "organicNumberOneQueries": [],
+      "exactCidMapsNumberOne": 0,
+      "googleAiOverview": {
+        "present": 0,
+        "ownedCitations": 0
+      },
+      "selectedOrganicUrl": "https://www.framerestorationutah.com/locations/taylorsville",
+      "intendedUrlSelectedForEveryMeasuredRank": true,
+      "gscAggregate": {
+        "window": {
+          "startDate": "2026-07-13",
+          "endDate": "2026-08-09"
+        },
+        "clicks": 0,
+        "impressions": 1217,
+        "position": 17.9
+      },
+      "protectedRelatedRoutes": [],
+      "integrity": {
+        "pageSha256": "f8c64515c34c43609f66a3178c98cdb682149f6c0be2028130ea2e45706a841f",
+        "blockingFindingClasses": 6,
+        "provisionalWarnings": 1,
+        "identityState": "current-heber-keystone-pending-service-area-evidence"
+      },
+      "nextPermittedAction": "Protect page-one commercial queries and strong storm/informational children; complete integrity diagnosis and exact GSC URL attribution before a single-variable title experiment."
+    },
+    {
+      "priority": 7,
+      "city": "Bluffdale",
+      "slug": "bluffdale",
+      "lane": "broader-commercial-relevance-after-integrity",
+      "panelId": "utah-bluffdale-google-v1",
+      "rankSource": "data/rank-tracker/expansion/bluffdale/latest.json",
+      "observedAt": "2026-08-12T17:40:30.498Z",
+      "organicRanks": [
+        18,
+        11,
+        9,
+        17
+      ],
+      "measuredMeanRank": 13.75,
+      "outsideTop30Queries": [],
+      "organicNumberOneQueries": [],
+      "exactCidMapsNumberOne": 0,
+      "googleAiOverview": {
+        "present": 0,
+        "ownedCitations": 0
+      },
+      "selectedOrganicUrl": "https://www.framerestorationutah.com/locations/bluffdale",
+      "intendedUrlSelectedForEveryMeasuredRank": true,
+      "gscAggregate": {
+        "window": {
+          "startDate": "2026-07-13",
+          "endDate": "2026-08-09"
+        },
+        "clicks": 0,
+        "impressions": 1035,
+        "position": 33.9
+      },
+      "protectedRelatedRoutes": [
+        "blog/bluffdale/storm-damage-roof-repair-bluffdale.html"
+      ],
+      "integrity": {
+        "pageSha256": "1fe440cc5a7c9b8164cc4c961932361946f70bd05d7bc2ff96fab34fcdd43668",
+        "blockingFindingClasses": 7,
+        "provisionalWarnings": 1,
+        "identityState": "current-heber-keystone-pending-service-area-evidence"
+      },
+      "nextPermittedAction": "Hold public changes; obtain 72-query targeted GSC URL rows, then diagnose commercial-intent alignment while protecting any city-specific routes."
+    },
+    {
+      "priority": 8,
+      "city": "Midvale",
+      "slug": "midvale",
+      "lane": "broader-commercial-relevance-after-integrity",
+      "panelId": "utah-midvale-google-v1",
+      "rankSource": "data/rank-tracker/expansion/midvale/latest.json",
+      "observedAt": "2026-08-12T17:40:30.501Z",
+      "organicRanks": [
+        18,
+        15,
+        10,
+        16
+      ],
+      "measuredMeanRank": 14.75,
+      "outsideTop30Queries": [],
+      "organicNumberOneQueries": [],
+      "exactCidMapsNumberOne": 0,
+      "googleAiOverview": {
+        "present": 0,
+        "ownedCitations": 0
+      },
+      "selectedOrganicUrl": "https://www.framerestorationutah.com/locations/midvale",
+      "intendedUrlSelectedForEveryMeasuredRank": true,
+      "gscAggregate": {
+        "window": {
+          "startDate": "2026-07-13",
+          "endDate": "2026-08-09"
+        },
+        "clicks": 0,
+        "impressions": 1688,
+        "position": 33
+      },
+      "protectedRelatedRoutes": [
+        "locations/midvale/storm-damage.html"
+      ],
+      "integrity": {
+        "pageSha256": "fd7099aa201107a8f10f37b7b23791a7dea6b636ccdfa9e1371408b4cfb3377c",
+        "blockingFindingClasses": 5,
+        "provisionalWarnings": 1,
+        "identityState": "current-heber-keystone-pending-service-area-evidence"
+      },
+      "nextPermittedAction": "Hold public changes; obtain 72-query targeted GSC URL rows, then diagnose commercial-intent alignment while protecting any city-specific routes."
+    },
+    {
+      "priority": 9,
+      "city": "Herriman",
+      "slug": "herriman",
+      "lane": "broader-commercial-relevance-after-integrity",
+      "panelId": "utah-herriman-google-v1",
+      "rankSource": "data/rank-tracker/expansion/herriman/latest.json",
+      "observedAt": "2026-08-12T17:40:30.500Z",
+      "organicRanks": [
+        22,
+        14,
+        12,
+        26
+      ],
+      "measuredMeanRank": 18.5,
+      "outsideTop30Queries": [],
+      "organicNumberOneQueries": [],
+      "exactCidMapsNumberOne": 0,
+      "googleAiOverview": {
+        "present": 0,
+        "ownedCitations": 0
+      },
+      "selectedOrganicUrl": "https://www.framerestorationutah.com/locations/herriman",
+      "intendedUrlSelectedForEveryMeasuredRank": true,
+      "gscAggregate": {
+        "window": {
+          "startDate": "2026-07-13",
+          "endDate": "2026-08-09"
+        },
+        "clicks": 1,
+        "impressions": 1469,
+        "position": 16.7
+      },
+      "protectedRelatedRoutes": [
+        "blog/herriman/hail-damage-new-homes.html"
+      ],
+      "integrity": {
+        "pageSha256": "36b010060e1b32be882756aa3598d79ecf0a4a36f55ef4317b8366cbaf64670f",
+        "blockingFindingClasses": 6,
+        "provisionalWarnings": 1,
+        "identityState": "current-heber-keystone-pending-service-area-evidence"
+      },
+      "nextPermittedAction": "Hold public changes; obtain 72-query targeted GSC URL rows, then diagnose commercial-intent alignment while protecting any city-specific routes."
+    },
+    {
+      "priority": 10,
+      "city": "West Valley City",
+      "slug": "west-valley-city",
+      "lane": "broader-commercial-relevance-after-integrity",
+      "panelId": "utah-west-valley-city-google-v1",
+      "rankSource": "data/rank-tracker/expansion/west-valley-city/latest.json",
+      "observedAt": "2026-08-12T17:40:30.503Z",
+      "organicRanks": [
+        21,
+        16,
+        11,
+        16
+      ],
+      "measuredMeanRank": 16,
+      "outsideTop30Queries": [],
+      "organicNumberOneQueries": [],
+      "exactCidMapsNumberOne": 0,
+      "googleAiOverview": {
+        "present": 0,
+        "ownedCitations": 0
+      },
+      "selectedOrganicUrl": "https://www.framerestorationutah.com/locations/west-valley-city",
+      "intendedUrlSelectedForEveryMeasuredRank": true,
+      "gscAggregate": {
+        "window": {
+          "startDate": "2026-07-13",
+          "endDate": "2026-08-09"
+        },
+        "clicks": 0,
+        "impressions": 1964,
+        "position": 16.3
+      },
+      "protectedRelatedRoutes": [
+        "blog/west-valley-city/roof-replacement-cost.html"
+      ],
+      "integrity": {
+        "pageSha256": "085c533f23c16fcb3ced6f7f326d1ae060c3f1f0c88dcf0a8eff9ec3607c496d",
+        "blockingFindingClasses": 6,
+        "provisionalWarnings": 1,
+        "identityState": "current-heber-keystone-pending-service-area-evidence"
+      },
+      "nextPermittedAction": "Hold public changes; obtain 72-query targeted GSC URL rows, then diagnose commercial-intent alignment while protecting any city-specific routes."
+    },
+    {
+      "priority": 11,
+      "city": "South Salt Lake",
+      "slug": "south-salt-lake",
+      "lane": "architecture-first-before-intent-experiment",
+      "panelId": "utah-south-salt-lake-google-v1",
+      "rankSource": "data/rank-tracker/expansion/south-salt-lake/latest.json",
+      "observedAt": "2026-08-12T17:40:30.502Z",
+      "organicRanks": [
+        null,
+        14,
+        12,
+        null
+      ],
+      "measuredMeanRank": 13,
+      "outsideTop30Queries": [
+        "roofing contractor south salt lake",
+        "roofer south salt lake"
+      ],
+      "organicNumberOneQueries": [],
+      "exactCidMapsNumberOne": 0,
+      "googleAiOverview": {
+        "present": 1,
+        "ownedCitations": 0
+      },
+      "selectedOrganicUrl": "https://www.framerestorationutah.com/locations/south-salt-lake",
+      "intendedUrlSelectedForEveryMeasuredRank": true,
+      "gscAggregate": {
+        "window": {
+          "startDate": "2026-07-13",
+          "endDate": "2026-08-09"
+        },
+        "clicks": 0,
+        "impressions": 37,
+        "position": 47.1
+      },
+      "protectedRelatedRoutes": [],
+      "integrity": {
+        "pageSha256": "0fdb0d1bb5eac270f298be2474de58e4110ca8ba34f2247e84b66b22bf4ef22a",
+        "blockingFindingClasses": 6,
+        "provisionalWarnings": 1,
+        "identityState": "current-heber-keystone-pending-service-area-evidence"
+      },
+      "nextPermittedAction": "Investigate the 2 outside-top-30 commercial queries with targeted GSC URL rows and internal-link/route analysis; do not infer cannibalization or rewrite the page yet."
+    },
+    {
+      "priority": 12,
+      "city": "West Jordan",
+      "slug": "west-jordan",
+      "lane": "architecture-first-before-intent-experiment",
+      "panelId": "utah-west-jordan-google-v1",
+      "rankSource": "data/rank-tracker/expansion/west-jordan/latest.json",
+      "observedAt": "2026-08-12T17:40:30.503Z",
+      "organicRanks": [
+        null,
+        19,
+        14,
+        null
+      ],
+      "measuredMeanRank": 16.5,
+      "outsideTop30Queries": [
+        "roofing contractor west jordan",
+        "roofer west jordan"
+      ],
+      "organicNumberOneQueries": [],
+      "exactCidMapsNumberOne": 0,
+      "googleAiOverview": {
+        "present": 0,
+        "ownedCitations": 0
+      },
+      "selectedOrganicUrl": "https://www.framerestorationutah.com/locations/west-jordan",
+      "intendedUrlSelectedForEveryMeasuredRank": true,
+      "gscAggregate": {
+        "window": {
+          "startDate": "2026-07-13",
+          "endDate": "2026-08-09"
+        },
+        "clicks": 0,
+        "impressions": 57,
+        "position": 21.3
+      },
+      "protectedRelatedRoutes": [
+        "blog/west-jordan/roof-leak-after-rainstorm.html"
+      ],
+      "integrity": {
+        "pageSha256": "d68f764d7adea69b6c4384bbd46a4d85710bfa1961ca55bd0645e6d936a1e750",
+        "blockingFindingClasses": 6,
+        "provisionalWarnings": 1,
+        "identityState": "current-heber-keystone-pending-service-area-evidence"
+      },
+      "nextPermittedAction": "Investigate the 2 outside-top-30 commercial queries with targeted GSC URL rows and internal-link/route analysis; do not infer cannibalization or rewrite the page yet."
+    }
+  ],
+  "prohibited": [
+    "public page edits from this ledger",
+    "GBP or service-area mutations",
+    "directory, review, outreach, indexing, ads, DNS, or profile mutations",
+    "route deletion, redirect, canonicalization, or noindex without exact query-to-URL evidence",
+    "bundling integrity cleanup with a ranking experiment",
+    "treating missing GSC rows or consumer-AI data as zero"
+  ]
+}
