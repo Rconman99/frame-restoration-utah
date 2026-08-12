@@ -1,0 +1,98 @@
+{
+  "artifact": "frame-seo-intervention",
+  "version": "frame-seo-intervention.v1",
+  "id": "utah-slc-entity-trust-correction-2026-08-12",
+  "market": "utah",
+  "city": "salt-lake-city",
+  "status": "awaiting-production",
+  "classification": "integrity-required-observed-for-ranking-impact",
+  "page": "https://www.framerestorationutah.com/locations/salt-lake-city",
+  "baseline": {
+    "google": {
+      "observedAt": "2026-08-12T00:55:47.468Z",
+      "sourceArtifact": "data/rank-tracker/2026-08-12.json",
+      "panel": "utah-salt-lake-city-google-v1",
+      "device": "mobile",
+      "depth": 30,
+      "queries": 4,
+      "organicRanked": 1,
+      "bestOrganicRank": 23,
+      "mapPackMatched": 0,
+      "aiOverviewCitations": 0
+    },
+    "consumerAi": {
+      "observedAt": "2026-08-11",
+      "sourceArtifact": "previews/city-pages/salt-lake-city.html",
+      "providers": ["chatgpt", "perplexity", "gemini"],
+      "providerPromptPairs": 9,
+      "named": 0,
+      "cited": 0,
+      "limitation": "The repository retains the fixed-panel aggregate but not the raw provider answer rows. Treat this as an aggregate starting baseline, not a claim about all AI answers."
+    }
+  },
+  "hypothesis": "Replacing stale BBB URLs, unstable grade claims, and unsupported manufacturer credentials with evidence-backed accreditation and identity facts will reduce contradictory entity signals and improve Frame's eligibility for trusted organic and answer-engine citations.",
+  "changeSet": {
+    "type": "third-party-trust-and-entity-consistency",
+    "scope": [
+      "canonical BBB profile in public sameAs and links",
+      "BBB accreditation without a changeable letter grade",
+      "unsupported CertainTeed/TAMKO credential removal",
+      "content-generator and public-surface regressions",
+      "dated evidence and NAP correction packet"
+    ],
+    "evidence": [
+      "data/authority/BBB-PROFILE-VERIFICATION-2026-08-12.md",
+      "data/authority/MANUFACTURER-CREDENTIAL-REVIEW-2026-08-12.md"
+    ],
+    "sourceReceipt": "qa/receipts/bbb-trust-correction-source-20260812.json"
+  },
+  "measurement": {
+    "startsAfterProductionDeployment": true,
+    "deployedAt": null,
+    "evaluationWindowDays": 28,
+    "earliestEvaluationAt": null,
+    "weeklyChecks": {
+      "cadence": "Monday",
+      "nextGooglePanelDate": "2026-08-17",
+      "googleSource": "data/rank-tracker/latest.json",
+      "consumerAiPanel": "same fixed provider/prompt panel used for the 2026-08-11 aggregate"
+    },
+    "metrics": [
+      "organic_rank_by_fixed_query",
+      "exact_cid_map_pack_rank",
+      "google_ai_overview_citation_rate",
+      "consumer_ai_named_mention_rate",
+      "consumer_ai_owned_domain_citation_rate",
+      "public_trust_surface_regressions"
+    ],
+    "decision": "pending-observation",
+    "result": null,
+    "decidedAt": null
+  },
+  "decisionPolicy": {
+    "integrityCorrection": "keep",
+    "rankingInterpretation": "Observe for four weeks, but do not attribute movement causally because the homepage commercial-title experiment is already running.",
+    "revertOnlyWhen": [
+      "the official BBB source no longer supports accreditation",
+      "the canonical BBB profile URL changes",
+      "primary manufacturer evidence supports a narrower exact credential and the claim registry is updated"
+    ],
+    "neverRestore": [
+      "a cached BBB letter grade",
+      "a manufacturer certification without registered primary evidence"
+    ]
+  },
+  "confounds": [
+    "utah-homepage-commercial-title-2026-08-09 is running",
+    "this is a required truth correction across many routes, not an isolated content test",
+    "no GBP, indexing, directory, review, or outreach mutation is part of this change"
+  ],
+  "publicSideEffects": [],
+  "prohibitedSideEffects": [
+    "no GBP edits or posts",
+    "no directory submissions",
+    "no review requests or incentives",
+    "no indexing requests",
+    "no manufactured credentials or local proof"
+  ]
+}

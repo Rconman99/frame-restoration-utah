@@ -20,7 +20,8 @@
 **DOPL License:** #14256097-5501
 **Entity #:** 14602083-0160
 **Insurance:** Crum & Forster, $1M/$2M CGL, Policy BAS-62946-1
-**Certifications:** CertainTeed Certified, Tamko Certified
+**Manufacturer credentials:** Not approved for publication; obtain current
+primary-source evidence before claiming certification or locator eligibility.
 **Categories:** Roofing Contractor, Storm Damage Repair, General Contractor
 
 **Progress: 11 of 47 completed (23%)**
@@ -50,7 +51,7 @@ Verified via Data Axle search, BuildZoom, CertainTeed, and web search across all
 | 2 | Yelp | 93 | biz.yelp.com | ✅ DONE | Listing claimed |
 | 3 | Bing Places | 94 | bingplaces.com | ✅ DONE | Imported from GBP |
 | 4 | Apple Business Connect | 100 | businessconnect.apple.com | ✅ DONE | Listing claimed |
-| 5 | Better Business Bureau (BBB) | 86 | bbb.org | ✅ DONE | A+ accredited |
+| 5 | Better Business Bureau (BBB) | 86 | bbb.org | ⚠️ NAP CORRECTION | Accredited; public phone and website still need owner-authenticated correction |
 | 6 | Facebook Business Page | 96 | facebook.com | ✅ DONE | Page created, linked to website |
 | 7 | Thumbtack | 78 | thumbtack.com | ✅ DONE | Pro profile created |
 | 8 | Angi (formerly Angie's List) | 78 | angi.com | ⏳ IN PROGRESS | Paid $288, waiting on sales rep |
@@ -70,8 +71,8 @@ Verified via Data Axle search, BuildZoom, CertainTeed, and web search across all
 
 | # | Directory | DA | URL | Status | Notes |
 |---|-----------|-----|-----|--------|-------|
-| 13 | CertainTeed Contractor Locator | 62 | certainteed.com/find-a-pro | 🔜 TODO | Search tool broken — contact CertainTeed rep directly |
-| 14 | Tamko Contractor Locator | 55 | tamko.com | 🔜 TODO | Already certified — verify listing is live |
+| 13 | CertainTeed Contractor Locator | 62 | certainteed.com/find-a-pro | ⏸ HOLD | Verify credential and locator eligibility from primary-source evidence before submission |
+| 14 | Tamko Contractor Locator | 55 | tamko.com | ⏸ HOLD | Verify credential and locator eligibility from primary-source evidence before submission |
 | 15 | Roofing Contractor Directory | 58 | roofingcontractor.com | 🔜 TODO | Industry publication directory |
 | 16 | Porch.com | 72 | porch.com | 🔜 TODO | CONFIRMED NOT LISTED. Free listing. |
 | 17 | Houzz | 90 | houzz.com | 🔜 TODO | CONFIRMED NOT LISTED. Free pro profile. |
