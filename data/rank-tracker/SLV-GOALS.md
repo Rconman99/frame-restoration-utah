@@ -17,18 +17,20 @@ Missing results are recorded as outside the measured top 30, not converted into 
 
 | City | Evidence class | Google panel | Current state |
 |---|---|---|---|
-| Salt Lake City | separately verified Salt Lake profile identity | 4 queries | Organic `>30 / 25 / 23 / >30`; exact-CID maps `0/4`; AIO citations `0/4` |
-| Millcreek | saved service area observed in the 2026-08-11 owner-panel audit | 4 queries | Organic `4 / 4 / 3 / 5`; exact-CID maps `0/4`; AIO citations `0/4` |
-| Cottonwood Heights | documented SLV location-page wave target | 4 queries | Organic `16 / 12 / 14 / 15`; exact-CID maps `0/4`; AIO citations `0/4` |
-| Holladay | documented SLV location-page wave target | 4 queries | Organic `17 / 11 / 4 / 12`; exact-CID maps `0/4`; AIO citations `0/4` |
-| Sandy | documented SLV location-page wave target | 4 queries | Organic `14 / 14 / 4 / 11`; exact-CID maps `0/4`; AIO citations `0/4` |
+| Salt Lake City | separately verified Salt Lake profile identity | 4 queries | Organic `>30 / 25 / 19 / >30`; exact-CID maps `0/4`; AIO citations `0/4` |
+| Millcreek | saved service area observed in the 2026-08-11 owner-panel audit | 4 queries | Organic `4 / 4 / 3 / 5`; exact-CID maps `0/4`; AIO citations `1/4` |
+| Cottonwood Heights | documented SLV location-page wave target | 4 queries | Organic `15 / 10 / 15 / 14`; exact-CID maps `0/4`; AIO citations `0/4` |
+| Holladay | documented SLV location-page wave target | 4 queries | Organic `17 / 10 / 4 / 12`; exact-CID maps `0/4`; AIO citations `0/4` |
+| Sandy | documented SLV location-page wave target | 4 queries | Organic `17 / 13 / 13 / 11`; exact-CID maps `0/4`; AIO citations `0/4` |
 | Draper | documented SLV location-page wave target | 4 queries | Organic `>30 / >30 / >30 / >30`; exact-CID maps `0/4`; AIO citations `0/4` |
 
 The six-city matrix costs an estimated **$0.0576 per weekly run** (24 task-queue SERPs at mobile depth 30 with asynchronous AI Overview loading), or about **$0.25 per average month**. The runner collects every city before writing any report so a provider failure cannot masquerade as a complete weekly matrix.
 
-Baseline order in the table is roofing contractor / roof repair / roof replacement / roofer. It was observed at `2026-08-12T05:40:51Z` in cloud run `31567055576`. A second same-day read moved some positions, which is expected SERP noise and reinforces the weekly/four-week decision cadence; it is not a reason to rewrite pages between reads.
+Baseline order in the table is roofing contractor / roof repair / roof replacement / roofer. The current corrected read was observed at `2026-08-12T14:18:10Z` in cloud run `31605440997`. Organic Maps ranks exclude DataForSEO local-pack members marked `is_paid: true`; paid placements remain in separately labeled evidence and can never satisfy an exact-CID Maps goal. Same-day organic movement is treated as SERP noise and is not a reason to rewrite pages between weekly reads.
 
-The evidence-backed execution sequence is recorded in `SLV-PRIORITY-2026-08-12.json`. Salt Lake City remains in its existing observation window. Millcreek is the first expansion candidate because it is the only observed saved service area and already ranks `4 / 4 / 3 / 5`. Public experiments are held behind the priority ledger's claim-integrity gate so unsupported page copy cannot become the basis of a ranking win.
+The corrected read also captured the first activated-city AEO foothold: Google's AI Overview for `roof repair millcreek` cited `https://www.framerestorationutah.com/locations/millcreek`. That is one query observation, not a completed city goal; preserve it and require repeated weekly reads before calling it sustained.
+
+The evidence-backed execution sequence is recorded in `SLV-PRIORITY-2026-08-12.json`. Salt Lake City remains in its existing observation window. Millcreek is the first expansion candidate because it is the only observed saved service area, ranks `4 / 4 / 3 / 5`, and now has one observed owned-domain AIO citation. Public experiments remain held behind the priority ledger's claim-integrity gate so unsupported page copy cannot become the basis of a ranking win.
 
 ## Mapped expansion — not activated yet
 
