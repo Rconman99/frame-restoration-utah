@@ -22,6 +22,18 @@ const normalizeDomain = (value) => String(value || '')
 
 const normalizePhone = (value) => String(value || '').replace(/\D/g, '').slice(-10);
 
+const cleanText = (value) => String(value || '').replace(/\s+/g, ' ').trim() || null;
+
+function itemDomain(item) {
+  if (item?.domain) return normalizeDomain(item.domain) || null;
+  if (!item?.url) return null;
+  try {
+    return normalizeDomain(new URL(item.url).hostname) || null;
+  } catch {
+    return null;
+  }
+}
+
 function sameDomain(candidate, target) {
   const actual = normalizeDomain(candidate);
   const expected = normalizeDomain(target);
@@ -54,16 +66,33 @@ export function extractRank(result, target) {
     mapPackRank: null,
     aiOverviewPresent: false,
     aiOverviewCited: false,
+    organicLeaders: [],
+    mapPackLeaders: [],
+    aiOverviewSources: [],
     serpFeatures: [],
   };
   let mapPosition = 0;
+  const aiSourceKeys = new Set();
 
   for (const item of items) {
     if (item?.type) features.add(item.type);
 
-    if (item?.type === 'organic' && reading.organicRank === null && sameDomain(item.domain, target.domain)) {
+    if (item?.type === 'organic' && reading.organicRank === null && sameDomain(item.domain || item.url, target.domain)) {
       reading.organicRank = item.rank_group ?? item.rank_absolute ?? null;
       reading.rankingUrl = item.url || null;
+    }
+
+    if (item?.type === 'organic') {
+      const rank = item.rank_group ?? item.rank_absolute ?? null;
+      if (Number.isInteger(rank) && rank >= 1 && rank <= 3) {
+        reading.organicLeaders.push({
+          rank,
+          domain: itemDomain(item),
+          url: item.url || null,
+          title: cleanText(item.title),
+          isTarget: sameDomain(item.domain || item.url, target.domain),
+        });
+      }
     }
 
     if (item?.type === 'local_pack') {
@@ -71,8 +100,20 @@ export function extractRank(result, target) {
       const members = Array.isArray(item.items) && item.items.length ? item.items : [item];
       for (const member of members) {
         mapPosition += 1;
-        if (reading.mapPackRank === null && sameBusiness(member, target)) {
-          reading.mapPackRank = member.rank_group ?? mapPosition;
+        const rank = member.rank_group ?? mapPosition;
+        const isTarget = sameBusiness(member, target);
+        if (reading.mapPackRank === null && isTarget) {
+          reading.mapPackRank = rank;
+        }
+        if (Number.isInteger(rank) && rank >= 1 && rank <= 3) {
+          reading.mapPackLeaders.push({
+            rank,
+            name: cleanText(member.title || member.name),
+            cid: member.cid ? String(member.cid) : null,
+            domain: itemDomain(member),
+            url: member.url || null,
+            isTarget,
+          });
         }
       }
     }
@@ -85,9 +126,26 @@ export function extractRank(result, target) {
         ...nestedItems.flatMap((nested) => Array.isArray(nested.references) ? nested.references : []),
       ];
       reading.aiOverviewCited ||= references.some((reference) => referenceMatches(reference, target.domain));
+      for (const reference of references) {
+        const domain = itemDomain(reference);
+        const url = reference.url || null;
+        const key = `${domain || ''}\n${url || ''}`;
+        if ((!domain && !url) || aiSourceKeys.has(key) || reading.aiOverviewSources.length >= 10) continue;
+        aiSourceKeys.add(key);
+        reading.aiOverviewSources.push({
+          domain,
+          url,
+          title: cleanText(reference.title),
+          isTarget: referenceMatches(reference, target.domain),
+        });
+      }
     }
   }
 
+  reading.organicLeaders.sort((a, b) => a.rank - b.rank);
+  reading.organicLeaders = reading.organicLeaders.slice(0, 3);
+  reading.mapPackLeaders.sort((a, b) => a.rank - b.rank);
+  reading.mapPackLeaders = reading.mapPackLeaders.slice(0, 3);
   reading.serpFeatures = [...features].filter((type) => type !== 'organic').sort();
   return reading;
 }
@@ -203,6 +261,24 @@ export function markdownReport(report) {
     `| ${result.keyword} | ${rank(result.organicRank)} | ${rank(result.mapPackRank)} | ${result.aiOverviewPresent ? 'Yes' : 'No'} | ${result.aiOverviewCited ? 'Yes' : 'No'} |`
   ));
   const title = report.city ? `${report.city} Google rank tracker` : 'Salt Lake City Google rank tracker';
+  const leaderLines = report.results.flatMap((result) => {
+    const organic = result.organicLeaders.length
+      ? result.organicLeaders.map((leader) => `#${leader.rank} ${leader.domain || leader.title || 'unknown'}${leader.isTarget ? ' (Frame)' : ''}`).join('; ')
+      : 'not returned';
+    const maps = result.mapPackLeaders.length
+      ? result.mapPackLeaders.map((leader) => `#${leader.rank} ${leader.name || leader.domain || 'unknown'}${leader.cid ? ` [CID ${leader.cid}]` : ''}${leader.isTarget ? ' (Frame)' : ''}`).join('; ')
+      : (result.mapPackPresent ? 'present, leaders not returned' : 'no local pack');
+    const aio = result.aiOverviewSources.length
+      ? result.aiOverviewSources.map((source) => `${source.domain || source.title || 'unknown'}${source.isTarget ? ' (Frame)' : ''}`).join('; ')
+      : (result.aiOverviewPresent ? 'present, sources not returned' : 'no AI Overview');
+    return [
+      `### ${result.keyword}`,
+      `- Organic top 3: ${organic}.`,
+      `- Map-pack top 3: ${maps}.`,
+      `- AI Overview sources: ${aio}.`,
+      '',
+    ];
+  });
   return `# ${title} — ${report.date}\n\n`
     + `- Panel: \`${report.panelId}\`\n`
     + `- Provider: ${report.provider.name} ${report.provider.mode}\n`
@@ -213,6 +289,8 @@ export function markdownReport(report) {
     + '| Query | Organic | Exact-CID map pack | AI Overview | Frame cited in AI Overview |\n'
     + '|---|---:|---:|---:|---:|\n'
     + `${rows.join('\n')}\n\n`
+    + '## Displacement targets\n\n'
+    + `${leaderLines.join('\n')}`
     + `> A missing rank means the exact target was not found within this fixed top-${report.provider.depth} mobile panel. It is not proof of visibility outside the measured depth or location.\n`;
 }
 

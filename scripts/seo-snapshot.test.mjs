@@ -98,8 +98,16 @@ test("committed DataForSEO panels preserve exact ranks and measured >depth rows"
       panelId: "panel-1",
       observedAt: "2026-08-12T05:40:51.327Z",
       results: [
-        { id: "k1", keyword: "roofing contractor millcreek", organicRank: 4, rankingUrl: "https://example.com/millcreek", mapPackRank: null, aiOverviewPresent: false, aiOverviewCited: false },
-        { id: "k2", keyword: "roofer millcreek", organicRank: null, rankingUrl: null, mapPackRank: 1, aiOverviewPresent: true, aiOverviewCited: true },
+        {
+          id: "k1", keyword: "roofing contractor millcreek", organicRank: 4, rankingUrl: "https://example.com/millcreek", mapPackRank: null, aiOverviewPresent: false, aiOverviewCited: false,
+          organicLeaders: [{ rank: 1, domain: "leader.example", url: "https://leader.example/millcreek", title: "Leader", isTarget: false }],
+          mapPackLeaders: [{ rank: 1, name: "Map Leader", cid: "123", domain: null, url: null, isTarget: false }],
+          aiOverviewSources: [],
+        },
+        {
+          id: "k2", keyword: "roofer millcreek", organicRank: null, rankingUrl: null, mapPackRank: 1, aiOverviewPresent: true, aiOverviewCited: true,
+          organicLeaders: [], mapPackLeaders: [], aiOverviewSources: [{ domain: "framerestorationutah.com", url: "https://www.framerestorationutah.com/", title: "Frame", isTarget: true }],
+        },
       ],
     }));
 
@@ -112,6 +120,9 @@ test("committed DataForSEO panels preserve exact ranks and measured >depth rows"
     assert.equal(state.ranks[1].outsideTop, 30);
     assert.equal(state.ranks[1].mapPackRank, 1);
     assert.equal(state.ranks[1].aiOverviewCited, true);
+    assert.equal(state.ranks[0].organicLeaders[0].domain, "leader.example");
+    assert.equal(state.ranks[0].mapPackLeaders[0].cid, "123");
+    assert.equal(state.ranks[1].aiOverviewSources[0].isTarget, true);
   } finally {
     fs.rmSync(dir, { recursive: true, force: true });
   }

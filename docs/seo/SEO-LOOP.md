@@ -74,6 +74,13 @@ Each readout now includes:
 - aggregate progress toward organic #1 and Maps #1 across all 24 query rows;
 - a stale warning when the newest weekly panel is more than eight days old.
 
+The weekly rank artifacts also retain the organic top three, local-pack top
+three (including public CID attribution), and AI Overview source domains for
+every fixed query. These are displacement evidence, not an instruction to copy
+competitor pages or listings. They show which entity/page must be surpassed and
+which third-party sources already earn citations before a bounded experiment is
+chosen.
+
 The loader fails closed per panel. A missing, corrupt, incomplete, or mismatched report produces
 explicitly unmeasured rows plus a named source issue; it cannot silently reuse partial results as a
 complete weekly matrix.

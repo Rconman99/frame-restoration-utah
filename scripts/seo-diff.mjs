@@ -420,6 +420,38 @@ export function rankPanelLines(snapshot) {
   return lines;
 }
 
+function leaderLabel(leader, type) {
+  const name = type === "organic"
+    ? (leader.domain || leader.title || "unknown")
+    : (leader.name || leader.domain || "unknown");
+  const cid = type === "map" && leader.cid ? ` [CID ${leader.cid}]` : "";
+  return `#${leader.rank} ${name}${cid}${leader.isTarget ? " (Frame)" : ""}`;
+}
+
+/** Current top-three occupants for the fixed query panel, never inferred from rank alone. */
+export function displacementLines(snapshot) {
+  const rows = (snapshot.ranks || []).filter(rankRowMeasured);
+  const hasEvidence = rows.some((row) =>
+    (row.organicLeaders || []).length
+    || (row.mapPackLeaders || []).length
+    || (row.aiOverviewSources || []).length,
+  );
+  if (!hasEvidence) return [];
+
+  const lines = ["### Fixed-panel displacement targets"];
+  for (const row of rows) {
+    const organic = (row.organicLeaders || []).map((leader) => leaderLabel(leader, "organic")).join("; ") || "not returned";
+    const maps = (row.mapPackLeaders || []).map((leader) => leaderLabel(leader, "map")).join("; ")
+      || (row.mapPackPresent ? "present, leaders not returned" : "no local pack");
+    const aio = (row.aiOverviewSources || []).map((source) =>
+      `${source.domain || source.title || "unknown"}${source.isTarget ? " (Frame)" : ""}`,
+    ).join("; ") || (row.aiOverviewPresent ? "present, sources not returned" : "no AI Overview");
+    lines.push(`- ${row.city} — “${row.keyword}”: organic ${organic}; maps ${maps}; AIO ${aio}.`);
+  }
+  lines.push("- Use these as displacement evidence; do not copy competitor content or listings.");
+  return lines;
+}
+
 function citySlug(city) {
   return String(city)
     .normalize("NFKD")
@@ -569,7 +601,10 @@ export function renderReadout(diff, { deadman = null, now = new Date() } = {}) {
     }
   }
 
-  lines.push("", ...rankPanelLines(s), "", ...slvGscLines(s));
+  const displacement = displacementLines(s);
+  lines.push("", ...rankPanelLines(s));
+  if (displacement.length) lines.push("", ...displacement);
+  lines.push("", ...slvGscLines(s));
 
   // Say what was withheld and why. A silently shortened list reads as "nothing
   // else qualified", which is a different and false claim.
