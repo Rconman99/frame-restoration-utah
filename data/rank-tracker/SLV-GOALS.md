@@ -17,14 +17,16 @@ Missing results are recorded as outside the measured top 30, not converted into 
 
 | City | Evidence class | Google panel | Current state |
 |---|---|---|---|
-| Salt Lake City | separately verified Salt Lake profile identity | 4 queries | Active; baseline captured 2026-08-12 |
-| Millcreek | saved service area observed in the 2026-08-11 owner-panel audit | 4 queries | Active; first city baseline pending |
-| Cottonwood Heights | documented SLV location-page wave target | 4 queries | Active measurement only; first baseline pending |
-| Holladay | documented SLV location-page wave target | 4 queries | Active measurement only; first baseline pending |
-| Sandy | documented SLV location-page wave target | 4 queries | Active measurement only; first baseline pending |
-| Draper | documented SLV location-page wave target | 4 queries | Active measurement only; first baseline pending |
+| Salt Lake City | separately verified Salt Lake profile identity | 4 queries | Organic `>30 / 25 / 23 / >30`; exact-CID maps `0/4`; AIO citations `0/4` |
+| Millcreek | saved service area observed in the 2026-08-11 owner-panel audit | 4 queries | Organic `4 / 4 / 3 / 5`; exact-CID maps `0/4`; AIO citations `0/4` |
+| Cottonwood Heights | documented SLV location-page wave target | 4 queries | Organic `16 / 12 / 14 / 15`; exact-CID maps `0/4`; AIO citations `0/4` |
+| Holladay | documented SLV location-page wave target | 4 queries | Organic `17 / 11 / 4 / 12`; exact-CID maps `0/4`; AIO citations `0/4` |
+| Sandy | documented SLV location-page wave target | 4 queries | Organic `14 / 14 / 4 / 11`; exact-CID maps `0/4`; AIO citations `0/4` |
+| Draper | documented SLV location-page wave target | 4 queries | Organic `>30 / >30 / >30 / >30`; exact-CID maps `0/4`; AIO citations `0/4` |
 
 The six-city matrix costs an estimated **$0.0576 per weekly run** (24 task-queue SERPs at mobile depth 30 with asynchronous AI Overview loading), or about **$0.25 per average month**. The runner collects every city before writing any report so a provider failure cannot masquerade as a complete weekly matrix.
+
+Baseline order in the table is roofing contractor / roof repair / roof replacement / roofer. It was observed at `2026-08-12T05:40:51Z` in cloud run `31567055576`. A second same-day read moved some positions, which is expected SERP noise and reinforces the weekly/four-week decision cadence; it is not a reason to rewrite pages between reads.
 
 ## Mapped expansion — not activated yet
 
