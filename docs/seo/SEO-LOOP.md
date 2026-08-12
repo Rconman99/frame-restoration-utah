@@ -70,6 +70,7 @@ Each readout now includes:
 - all six cities in fixed contractor / repair / replacement / roofer order;
 - exact organic ranks or the honest `>30` bound;
 - exact-CID Maps #1 coverage and Google AI Overview citation coverage;
+- per-city GSC main-page demand, strongest child route, and the retained roofing-query floor;
 - aggregate progress toward organic #1 and Maps #1 across all 24 query rows;
 - a stale warning when the newest weekly panel is more than eight days old.
 
