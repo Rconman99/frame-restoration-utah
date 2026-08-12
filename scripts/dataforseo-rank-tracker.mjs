@@ -144,6 +144,16 @@ export function buildTasks(config) {
   }));
 }
 
+export function buildTaskMatrix(configs) {
+  const tasks = configs.flatMap((config) => buildTasks(config));
+  const tags = new Set();
+  for (const task of tasks) {
+    if (tags.has(task.tag)) throw new Error(`Duplicate keyword id across rank panels: ${task.tag}`);
+    tags.add(task.tag);
+  }
+  return tasks;
+}
+
 export function estimatedPanelCost(config) {
   const queueBase = 0.0006;
   const depthCost = queueBase * Math.max(1, Math.ceil(config.depth / 10));
@@ -255,9 +265,10 @@ async function providerCall(endpoint, auth, options = {}) {
   throw new Error(`DataForSEO ${endpoint} failed after 3 attempts: ${lastError.message}`);
 }
 
-async function fetchTaskQueue(config) {
+async function fetchTaskQueue(configs) {
+  const tasks = buildTaskMatrix(configs);
   const auth = credentials();
-  const posted = await providerCall(TASK_POST, auth, { method: 'POST', body: buildTasks(config) });
+  const posted = await providerCall(TASK_POST, auth, { method: 'POST', body: tasks });
   const taskIds = new Map();
   for (const task of posted.tasks || []) {
     if (![20000, 20100].includes(task.status_code)) {
@@ -266,8 +277,8 @@ async function fetchTaskQueue(config) {
     if (!task.id || !task.data?.tag) throw new Error('Provider did not return a task id and tag');
     taskIds.set(task.id, task.data.tag);
   }
-  if (taskIds.size !== config.keywords.length) {
-    throw new Error(`Provider accepted ${taskIds.size}/${config.keywords.length} tasks`);
+  if (taskIds.size !== tasks.length) {
+    throw new Error(`Provider accepted ${taskIds.size}/${tasks.length} tasks`);
   }
 
   const pending = new Set(taskIds.keys());
@@ -361,16 +372,15 @@ async function main(args = process.argv.slice(2)) {
     return;
   }
 
-  // Collect every provider result before writing any file. A failed or partial
-  // city leaves the previous complete weekly matrix untouched.
-  const reports = [];
-  for (const entry of entries) {
-    console.log(`Measuring ${entry.config.panelId} (${entry.config.locationName}).`);
-    reports.push({
-      report: buildReport(entry.config, await fetchTaskQueue(entry.config)),
-      outputDir: entry.outputDir,
-    });
-  }
+  // Submit every city in one provider batch, then collect every result before
+  // writing any file. A failed or partial matrix leaves the previous complete
+  // weekly matrix untouched.
+  console.log(`Measuring ${entries.length} panel(s) and ${queryCount} queries in one task batch.`);
+  const rawMatrix = await fetchTaskQueue(entries.map((entry) => entry.config));
+  const reports = entries.map((entry) => ({
+    report: buildReport(entry.config, rawMatrix),
+    outputDir: entry.outputDir,
+  }));
   for (const { report, outputDir } of reports) await persistReport(report, outputDir);
   for (const { report } of reports) {
     console.log(`Wrote complete ${report.date} ${report.panelId}: organic ${report.summary.organicRanked}/${report.summary.queries}, exact-CID map pack ${report.summary.mapPackMatched}/${report.summary.queries}, AIO citations ${report.summary.aiOverviewCitations}/${report.summary.queries}.`);
