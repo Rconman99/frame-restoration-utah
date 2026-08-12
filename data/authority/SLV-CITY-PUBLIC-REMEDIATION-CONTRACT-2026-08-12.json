@@ -1,0 +1,86 @@
+{
+  "schemaVersion": 1,
+  "market": "UT",
+  "reviewedAt": "2026-08-12",
+  "publicMutationStatus": "awaiting-explicit-owner-approval",
+  "sourceLedger": "data/authority/SLV-CITY-CLAIM-EVIDENCE-AUDIT-2026-08-12.md",
+  "targetPages": [
+    "locations/millcreek.html",
+    "locations/sandy.html",
+    "locations/holladay.html",
+    "locations/cottonwood-heights.html",
+    "locations/draper.html"
+  ],
+  "identity": {
+    "verifiedSaltLakeValleyCid": "5689850818145735734",
+    "heberCid": "8458659884566588108",
+    "saltLakeValleySameAs": [
+      "https://www.google.com/maps?cid=5689850818145735734",
+      "https://www.facebook.com/61572258054303",
+      "https://www.instagram.com/framerestorationutah",
+      "https://www.buildzoom.com/contractor/frame-restoration-utah-llc",
+      "https://reviews.birdeye.com/frame-restoration-utah-177732760787552",
+      "https://www.wikidata.org/wiki/Q140989115"
+    ],
+    "requiredSaltLakeValleyPages": [
+      "locations/millcreek.html"
+    ],
+    "measurementOnlyPendingServiceAreaEvidence": [
+      "locations/sandy.html",
+      "locations/holladay.html",
+      "locations/cottonwood-heights.html",
+      "locations/draper.html"
+    ],
+    "decision": "Millcreek must use the verified Salt Lake Valley service-area profile. The four pending-evidence pages retain the current business keystone until current service-area evidence establishes whether a Salt Lake Valley override applies; the keystone must not be described as a city-specific GBP."
+  },
+  "blockedClaimClasses": [
+    {
+      "id": "pricing-ranges",
+      "replacement": "Explain that price depends on measured roof area, access, pitch, assembly, material, and discovered conditions; invite a written scope without publishing an unsupported range."
+    },
+    {
+      "id": "exact-response-or-availability",
+      "replacement": "Offer phone and scheduling options without promising 24/7 coverage, exact travel time, or a universal response window."
+    },
+    {
+      "id": "universal-permit-handling",
+      "replacement": "Direct the homeowner to the municipality for current requirements and state that permit responsibility must be confirmed in the written project scope."
+    },
+    {
+      "id": "unverified-insurance-credentials",
+      "replacement": "Retain the verified Utah DOPL license and BBB accreditation only. Do not publish general-liability or workers-compensation assertions until current evidence is registered."
+    },
+    {
+      "id": "universal-project-duration",
+      "replacement": "State that timing is confirmed after roof assembly, scope, access, weather, material availability, and permit requirements are known."
+    },
+    {
+      "id": "unsourced-roof-life-or-hail-frequency",
+      "replacement": "Describe observable conditions and link to primary weather or municipal sources; do not quantify citywide frequency or years of life lost without registered evidence."
+    },
+    {
+      "id": "unverified-city-project-or-review-attribution",
+      "replacement": "Use non-project neighborhood and jurisdiction context. A review or image may be attributed to a city only when the private project record or public review itself establishes that city."
+    }
+  ],
+  "provisionalClaims": [
+    {
+      "id": "10-year-workmanship-warranty",
+      "status": "preserve-pending-business-account-verification",
+      "decision": "Do not expand the claim or add it to the verified registry. Preserve it during this correction unless the owner supplies a conflicting current instrument."
+    }
+  ],
+  "releaseGate": {
+    "requiresExplicitOwnerApproval": true,
+    "requiredChecks": [
+      "npm run audit:slv-city-integrity",
+      "npm run audit:claims",
+      "node scripts/audit-public-seo-surface.mjs",
+      "source build-gate receipt",
+      "five-viewport immutable-preview build-gate receipt",
+      "production build-gate receipt after authorized release"
+    ],
+    "measurementWindowDays": 28,
+    "decisionRule": "Keep only if integrity stays green and the fixed weekly organic, exact-CID Maps, Google AIO, ChatGPT, Perplexity, and Gemini readings improve or hold without a material regression."
+  }
+}
