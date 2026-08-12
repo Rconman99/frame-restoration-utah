@@ -37,6 +37,19 @@ function pageSignals(file) {
   };
 }
 
+function visibleTermCounts(file, terms) {
+  const html = fs.readFileSync(file, "utf8");
+  const body = html.match(/<body[^>]*>([\s\S]*?)<\/body>/i)?.[1] || html;
+  const text = body
+    .replace(/<script[\s\S]*?<\/script>/gi, " ")
+    .replace(/<style[\s\S]*?<\/style>/gi, " ")
+    .replace(/<[^>]+>/g, " ")
+    .replace(/&[a-z0-9#]+;/gi, " ")
+    .replace(/\s+/g, " ")
+    .toLowerCase();
+  return Object.fromEntries(terms.map((term) => [term, text.split(term).length - 1]));
+}
+
 function inboundLinks(target) {
   const htmlFiles = [];
   const walk = (dir) => {
@@ -134,6 +147,10 @@ for (const route of diagnosis.evidence.routes) {
   if (signals.title !== route.title) fail(`${route.file} title drifted`);
   if (route.h1 && signals.h1 !== route.h1) fail(`${route.file} H1 drifted`);
   if (signals.canonical !== route.canonical) fail(`${route.file} canonical drifted`);
+  if (route.visibleTermCounts) {
+    const actualCounts = visibleTermCounts(file, Object.keys(route.visibleTermCounts));
+    if (JSON.stringify(actualCounts) !== JSON.stringify(route.visibleTermCounts)) fail(`${route.file} visible-term counts drifted`);
+  }
   const target = new URL(route.canonical).pathname.replace(/\/$/, "") || "/";
   if (inboundLinks(target) !== route.inboundInternalLinks) fail(`${route.file} inbound internal-link count drifted`);
 }
