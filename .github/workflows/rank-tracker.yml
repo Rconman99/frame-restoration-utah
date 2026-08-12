@@ -38,6 +38,12 @@ jobs:
           DATAFORSEO_PASSWORD: ${{ secrets.DATAFORSEO_PASSWORD }}
         run: node scripts/dataforseo-rank-tracker.mjs --registry data/rank-tracker/panels.json
 
+      - name: Refresh the six-city goal contract from the complete matrix
+        run: npm run sync:slv-city-goals
+
+      - name: Validate the refreshed six-city goal contract
+        run: npm run audit:slv-city-goals
+
       - name: Add measurement summary
         if: always()
         run: |

@@ -1,0 +1,62 @@
+name: SLV city goal program
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/slv-city-goal-program.yml'
+      - 'data/rank-tracker/SLV-CITY-GOAL-PROGRAM-2026-08-12.json'
+      - 'data/rank-tracker/panels.json'
+      - 'data/rank-tracker/config.json'
+      - 'data/rank-tracker/latest.json'
+      - 'data/rank-tracker/panels/**/config.json'
+      - 'data/rank-tracker/panels/**/latest.json'
+      - 'data/authority/SLV-CITY-PUBLIC-REMEDIATION-CONTRACT-2026-08-12.json'
+      - 'locations/millcreek.html'
+      - 'locations/sandy.html'
+      - 'locations/holladay.html'
+      - 'locations/cottonwood-heights.html'
+      - 'locations/draper.html'
+      - 'scripts/audit-slv-city-integrity.mjs'
+      - 'scripts/sync-slv-city-goal-program.mjs'
+      - 'scripts/validate-slv-city-goal-program.mjs'
+      - 'package.json'
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/slv-city-goal-program.yml'
+      - 'data/rank-tracker/SLV-CITY-GOAL-PROGRAM-2026-08-12.json'
+      - 'data/rank-tracker/panels.json'
+      - 'data/rank-tracker/config.json'
+      - 'data/rank-tracker/latest.json'
+      - 'data/rank-tracker/panels/**/config.json'
+      - 'data/rank-tracker/panels/**/latest.json'
+      - 'data/authority/SLV-CITY-PUBLIC-REMEDIATION-CONTRACT-2026-08-12.json'
+      - 'locations/millcreek.html'
+      - 'locations/sandy.html'
+      - 'locations/holladay.html'
+      - 'locations/cottonwood-heights.html'
+      - 'locations/draper.html'
+      - 'scripts/audit-slv-city-integrity.mjs'
+      - 'scripts/sync-slv-city-goal-program.mjs'
+      - 'scripts/validate-slv-city-goal-program.mjs'
+      - 'package.json'
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+
+      - name: Set up Node.js
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '24'
+
+      - name: Validate all six city goals against current evidence
+        run: npm run audit:slv-city-goals
