@@ -1,0 +1,228 @@
+{
+  "schemaVersion": 1,
+  "diagnosisId": "frame-utah-cottonwood-heights-commercial-architecture-v1",
+  "market": "utah",
+  "city": "Cottonwood Heights",
+  "preparedAt": "2026-08-12T17:07:11Z",
+  "preparedFromCommit": "abb96cda25c47155f2484e96e432023eeeb47d55",
+  "status": "diagnosed-awaiting-owner-gated-integrity-cleanup-and-fresh-baseline",
+  "publicMutationPerformed": false,
+  "identityEvidence": "documented-slv-target-measurement-only",
+  "serviceAreaStatus": "pending-current-profile-service-area-verification",
+  "question": "Are Cottonwood Heights storm and informational routes competing for the four fixed commercial queries, or does the selected main page have a broad-intent alignment gap?",
+  "decision": {
+    "currentCommercialCannibalization": "not-evidenced",
+    "primaryDiagnosis": "commercial-intent-alignment-gap",
+    "confidence": "moderate",
+    "summary": "The August 12 fixed mobile panel selects the self-canonical Cottonwood Heights city page for all four commercial queries at positions 15, 10, 15, and 14. The exact Search Console request returns no rows for those four queries, which is unknown or withheld demand rather than zero. The storm child and wind guide have strong aggregate visibility for storm-specific demand, but no measured fixed-query association. The main page has 21 inbound internal links and its title and H1 emphasize premium reroofing while the fixed panel targets broader roofing-contractor, repair, replacement, and roofer intent. Preserve every route and consider only a later owner-gated title test.",
+    "limits": [
+      "A targeted Search Console request with no returned row means unknown or withheld demand, not zero impressions and not proof that no URL is indexed.",
+      "Search Console is blended across devices and its window ends three days before the fixed mobile panel.",
+      "Aggregate storm-route visibility is separate from fixed commercial query-to-page attribution and must not be treated as cannibalization proof.",
+      "The fixed panel is one mobile Android location sample per query and must be repeated weekly before a keep/revert decision.",
+      "Service-area inclusion for Cottonwood Heights on the current Salt Lake Valley profile remains unverified, so this diagnosis does not authorize GBP, Maps, hasMap, or sameAs changes."
+    ]
+  },
+  "evidence": {
+    "fixedPanel": {
+      "file": "data/rank-tracker/panels/cottonwood-heights/2026-08-12.json",
+      "sha256": "e75e0589715192849f630a2a9c4b6f39de76f7b1fe063b59d227f829801e6bc1",
+      "observedAt": "2026-08-12T14:18:10.299Z",
+      "provider": "DataForSEO task queue",
+      "device": "mobile",
+      "os": "android",
+      "depth": 30,
+      "locationName": "Cottonwood Heights,Utah,United States",
+      "queries": [
+        "roofing contractor cottonwood heights",
+        "roof repair cottonwood heights",
+        "roof replacement cottonwood heights",
+        "roofer cottonwood heights"
+      ],
+      "organicRanks": [
+        15,
+        10,
+        15,
+        14
+      ],
+      "rankingUrl": "https://www.framerestorationutah.com/locations/cottonwood-heights",
+      "allQueriesSelectMainPage": true,
+      "exactCidMapMatches": 0,
+      "aiOverviewsPresent": 0,
+      "aiOverviewCitations": 0
+    },
+    "searchConsole": {
+      "file": "data/seo/snapshots/2026-08-12.json",
+      "sha256": "d26e17238e1e76ef203654cf1f9ce4d9c927bd4088560a55cb2b8f33ff282d14",
+      "window": {
+        "startDate": "2026-07-13",
+        "endDate": "2026-08-09"
+      },
+      "targetedCommercialQueriesRequested": 4,
+      "targetedCommercialRowsReturned": 0,
+      "aggregatePages": [
+        {
+          "page": "https://www.framerestorationutah.com/locations/cottonwood-heights",
+          "clicks": 0,
+          "impressions": 2483,
+          "position": 29.9
+        },
+        {
+          "page": "https://www.framerestorationutah.com/locations/cottonwood-heights/storm-damage",
+          "clicks": 0,
+          "impressions": 1181,
+          "position": 8.5
+        },
+        {
+          "page": "https://www.framerestorationutah.com/blog/cottonwood-heights/wind-damage-roof-repair-cottonwood-heights",
+          "clicks": 0,
+          "impressions": 1134,
+          "position": 3.5
+        },
+        {
+          "page": "https://www.framerestorationutah.com/blog/cottonwood-heights/roof-replacement-cottonwood-heights-utah",
+          "clicks": 0,
+          "impressions": 6,
+          "position": 7.7
+        }
+      ]
+    },
+    "routes": [
+      {
+        "file": "locations/cottonwood-heights.html",
+        "sha256": "b8ccc4c320414d217a76d582da2bba9c2599ca47c7861c50490b626bc2b8e8b1",
+        "role": "commercial-city-hub",
+        "title": "Premium Reroofing Cottonwood Heights UT | Frame Restoration Utah",
+        "h1": "Premium Reroofing in Cottonwood Heights",
+        "canonical": "https://www.framerestorationutah.com/locations/cottonwood-heights",
+        "inboundInternalLinks": 21,
+        "visibleTermCounts": {
+          "roofer": 0,
+          "roofing contractor": 0,
+          "roof repair": 4,
+          "roof replacement": 12,
+          "reroof": 6,
+          "storm damage": 4,
+          "wind damage": 1
+        }
+      },
+      {
+        "file": "locations/cottonwood-heights/storm-damage.html",
+        "sha256": "8a5980a0e37e13ddf3f77e825ea4715dbbba2482f6de631beda3fd6818c8ebc3",
+        "role": "storm-specific-child",
+        "title": "Cottonwood Heights Storm Roof Repair | Frame Restoration",
+        "h1": "Storm Damage Roof Repair in Cottonwood Heights",
+        "canonical": "https://www.framerestorationutah.com/locations/cottonwood-heights/storm-damage",
+        "inboundInternalLinks": 2
+      },
+      {
+        "file": "blog/cottonwood-heights/roof-replacement-cottonwood-heights-utah.html",
+        "sha256": "57d108ace4dcc6155d6eaeca0855b5ceb32d206d001b8441ddd7431c0c59144e",
+        "role": "informational-roof-replacement-guide",
+        "title": "Roof Replacement Cottonwood Heights Utah | Frame Restoration Utah",
+        "h1": "Roof Replacement Cottonwood Heights Utah",
+        "canonical": "https://www.framerestorationutah.com/blog/cottonwood-heights/roof-replacement-cottonwood-heights-utah",
+        "inboundInternalLinks": 4,
+        "risk": "watch-only; no targeted fixed-query row currently selects this guide"
+      },
+      {
+        "file": "blog/cottonwood-heights/wind-damage-roof-repair-cottonwood-heights.html",
+        "sha256": "8888538e5f4c2bbfe169633db828941f0eacbac84a9f8af98bc966aef2a67ad3",
+        "role": "informational-wind-damage-guide",
+        "title": "Cottonwood Heights Wind Roof Repair | Frame Restoration Utah",
+        "h1": "Wind Damage Roof Repair in Cottonwood Heights, Utah: What to Do + What It Costs (2026)",
+        "canonical": "https://www.framerestorationutah.com/blog/cottonwood-heights/wind-damage-roof-repair-cottonwood-heights",
+        "inboundInternalLinks": 1,
+        "risk": "protect storm-specific visibility; no targeted fixed-query row currently selects this guide"
+      }
+    ],
+    "integrityGate": {
+      "packet": "data/authority/SLV-CITY-PUBLIC-REMEDIATION-PACKET-2026-08-12.json",
+      "packetSha256": "b1616942e2e46f33a847d75a9fc75a084585983c91f444ade1ebd84d11b69333",
+      "blockingFindingClasses": 7,
+      "provisionalWarnings": 1,
+      "cleanupStatus": "awaiting-explicit-owner-approval"
+    }
+  },
+  "hypotheses": [
+    {
+      "priority": 1,
+      "id": "commercial-title-mismatch",
+      "state": "supported",
+      "why": "The current panel consistently selects the intended city page, but the page remains outside the top ten for three queries. Its title and H1 use the narrower premium-reroofing framing, while roofer and roofing contractor are absent from visible main-page copy."
+    },
+    {
+      "priority": 2,
+      "id": "storm-or-blog-cannibalization",
+      "state": "not-evidenced",
+      "why": "The current mobile panel selects the main page for all four commercial queries. Search Console returns no exact fixed-query rows, so strong aggregate storm demand cannot identify the storm child or wind guide as a commercial-query competitor."
+    },
+    {
+      "priority": 3,
+      "id": "roof-replacement-blog-overlap",
+      "state": "watch-only",
+      "why": "The guide uses exact roof-replacement language but has only six aggregate impressions and four inbound links. No fixed-query row attributes roof replacement cottonwood heights to it; preserve and monitor."
+    },
+    {
+      "priority": 4,
+      "id": "entity-and-service-area-distance",
+      "state": "unresolved-owner-evidence-gap",
+      "why": "The exact Salt Lake Valley CID does not appear in any of the four Cottonwood Heights local packs, and current profile service-area inclusion has not been verified. This can affect Maps but does not authorize a profile mutation."
+    }
+  ],
+  "nextExperiment": {
+    "id": "cottonwood-heights-commercial-title-alignment-v1",
+    "status": "draft-only-do-not-apply-before-prerequisites",
+    "page": "locations/cottonwood-heights.html",
+    "singleVariable": "html-title",
+    "currentValue": "Premium Reroofing Cottonwood Heights UT | Frame Restoration Utah",
+    "proposedValue": "Cottonwood Heights Roofing Contractor | Frame Restoration",
+    "heldConstant": [
+      "H1",
+      "meta description",
+      "canonical",
+      "body copy",
+      "schema",
+      "internal links",
+      "storm child",
+      "Cottonwood Heights blog routes",
+      "GBP and all public third-party profiles"
+    ],
+    "prerequisites": [
+      "Receive explicit owner approval for and complete the five-page integrity cleanup defined by the pinned remediation packet.",
+      "Pass the cleanup's source, immutable-preview five-viewport, and production surface receipts.",
+      "Capture a fresh post-cleanup 24-query Google baseline and complete consumer-AI baseline; do not treat the invalid Bright Data credential as measured zero.",
+      "Wait for the integrity cleanup observation window or explicitly declare this title test as a separate uncontaminated experiment after the fresh baseline.",
+      "Receive separate explicit owner approval for this public title-only experiment.",
+      "Verify the page SHA, current title, and four-query main-page selection still match this diagnosis; regenerate if any changed."
+    ],
+    "measurement": {
+      "panel": "utah-cottonwood-heights-google-v1",
+      "cadence": "weekly",
+      "windowDays": 28,
+      "baselineOrganicRanks": [
+        15,
+        10,
+        15,
+        14
+      ],
+      "baselineMeanRank": 13.5,
+      "primaryDecisionRule": "Keep only if roofing contractor cottonwood heights is position 10 or better in each of the final two weekly panels and the four-query mean rank is 11.5 or better in both panels.",
+      "guardrails": [
+        "Roof repair remains position 12 or better and no other fixed query falls below position 17 in either final weekly panel.",
+        "The intended Cottonwood Heights city page remains the selected organic URL for all four fixed queries.",
+        "No material regression in the storm child or wind guide's Search Console clicks, impressions, or average position compared with the declared pre-experiment window.",
+        "No new multi-URL fixed-query evidence involving the storm child or either guide.",
+        "No loss of canonical, schema, NAP, mobile UI, or public-claim gate coverage.",
+        "Consumer-AI named-citation rates are recorded per engine; missing provider data remains unmeasured, never zero."
+      ],
+      "revertRule": "Revert the isolated title commit if the primary decision rule is not met after 28 days, if a guardrail fails, or if the experiment becomes contaminated by another Cottonwood Heights intent change."
+    }
+  },
+  "prohibited": [
+    "Publishing this draft experiment without the listed owner and release gates.",
+    "Redirecting, canonicalizing, noindexing, or deleting the city page, storm child, or either Cottonwood Heights guide on current evidence.",
+    "Changing GBP, service areas, hasMap, sameAs, directories, reviews, outreach, indexing, ads, DNS, or public profiles from this diagnosis.",
+    "Treating missing Search Console rows, absent AI provider data, or an outside-top-30 rank as zero."
+  ]
+}
