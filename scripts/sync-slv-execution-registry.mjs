@@ -20,6 +20,7 @@ const sourceFiles = {
   coreCleanupPacket: "data/authority/SLV-CITY-PUBLIC-REMEDIATION-PACKET-2026-08-12.json",
   millcreekAmendment: "data/authority/MILLCREEK-PUBLIC-IDENTITY-SCOPE-AMENDMENT-2026-08-12.json",
   expansionCleanupPacket: "data/authority/SLV-EXPANSION-PUBLIC-REMEDIATION-PACKET-2026-08-12.json",
+  expansionArchitecture: "data/rank-tracker/SLV-EXPANSION-ARCHITECTURE-2026-08-12.json",
 };
 const externalEvidence = {
   businessDriveReceipt: "/Users/agenticmac/territory-command/data/command-center/utah-seo/drive-evidence/drive-evidence-audit-20260812T175850Z.json",
