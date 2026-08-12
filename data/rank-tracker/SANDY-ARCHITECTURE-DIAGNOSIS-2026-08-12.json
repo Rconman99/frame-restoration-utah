@@ -1,0 +1,246 @@
+{
+  "schemaVersion": 1,
+  "diagnosisId": "frame-utah-sandy-commercial-architecture-v1",
+  "market": "utah",
+  "city": "Sandy",
+  "preparedAt": "2026-08-12T16:59:32Z",
+  "preparedFromCommit": "abb96cda25c47155f2484e96e432023eeeb47d55",
+  "status": "diagnosed-awaiting-owner-gated-integrity-cleanup-and-fresh-baseline",
+  "publicMutationPerformed": false,
+  "identityEvidence": "documented-slv-target-measurement-only",
+  "serviceAreaStatus": "pending-current-profile-service-area-verification",
+  "question": "Is another Sandy route competing for the four fixed commercial queries, or is the correct main page selected but narrowly framed for premium reroofing?",
+  "decision": {
+    "currentCommercialCannibalization": "not-evidenced",
+    "primaryDiagnosis": "commercial-intent-alignment-gap",
+    "confidence": "moderate-high",
+    "summary": "The August 12 fixed mobile panel and all four targeted Search Console query-to-page rows select the self-canonical Sandy city page. The storm child and two Sandy guides are self-canonical and no fixed commercial query is attributed to them. The main page has 62 inbound internal links, but its title and H1 emphasize premium reroofing while the broadest fixed query, roofing contractor sandy, ranks 17. Current evidence supports preserving every route and testing only the main HTML title after the owner-gated integrity cleanup and a fresh baseline.",
+    "limits": [
+      "Search Console is blended across devices and its window ends three days before the fixed mobile panel.",
+      "Targeted Search Console rows can be withheld at low volume; the four returned Sandy rows prove observed association but do not represent all demand.",
+      "The fixed panel is one mobile Android location sample per query and must be repeated weekly before a keep/revert decision.",
+      "Service-area inclusion for Sandy on the current Salt Lake Valley profile remains unverified, so this diagnosis does not authorize GBP, Maps, hasMap, or sameAs changes."
+    ]
+  },
+  "evidence": {
+    "fixedPanel": {
+      "file": "data/rank-tracker/panels/sandy/2026-08-12.json",
+      "sha256": "0ae0e40fa8950f95086ec6c46efbf4942962683c882499435df0ce98b18778a5",
+      "observedAt": "2026-08-12T14:18:10.300Z",
+      "provider": "DataForSEO task queue",
+      "device": "mobile",
+      "os": "android",
+      "depth": 30,
+      "locationName": "Sandy,Utah,United States",
+      "queries": [
+        "roofing contractor sandy",
+        "roof repair sandy",
+        "roof replacement sandy",
+        "roofer sandy"
+      ],
+      "organicRanks": [
+        17,
+        13,
+        13,
+        11
+      ],
+      "rankingUrl": "https://www.framerestorationutah.com/locations/sandy",
+      "allQueriesSelectMainPage": true,
+      "exactCidMapMatches": 0,
+      "aiOverviewsPresent": 0,
+      "aiOverviewCitations": 0
+    },
+    "searchConsole": {
+      "file": "data/seo/snapshots/2026-08-12.json",
+      "sha256": "d26e17238e1e76ef203654cf1f9ce4d9c927bd4088560a55cb2b8f33ff282d14",
+      "window": {
+        "startDate": "2026-07-13",
+        "endDate": "2026-08-09"
+      },
+      "targetedCommercialQueriesRequested": 4,
+      "targetedCommercialQueriesReturned": 4,
+      "targetedCommercialRowsReturned": 4,
+      "multiUrlQueriesReturned": 0,
+      "rows": [
+        {
+          "query": "roof repair sandy",
+          "page": "https://www.framerestorationutah.com/locations/sandy",
+          "clicks": 0,
+          "impressions": 50,
+          "position": 16.9
+        },
+        {
+          "query": "roof replacement sandy",
+          "page": "https://www.framerestorationutah.com/locations/sandy",
+          "clicks": 0,
+          "impressions": 43,
+          "position": 9
+        },
+        {
+          "query": "roofer sandy",
+          "page": "https://www.framerestorationutah.com/locations/sandy",
+          "clicks": 0,
+          "impressions": 10,
+          "position": 11.9
+        },
+        {
+          "query": "roofing contractor sandy",
+          "page": "https://www.framerestorationutah.com/locations/sandy",
+          "clicks": 0,
+          "impressions": 15,
+          "position": 23.7
+        }
+      ],
+      "aggregatePages": [
+        {
+          "page": "https://www.framerestorationutah.com/locations/sandy",
+          "clicks": 0,
+          "impressions": 3521,
+          "position": 23.6
+        },
+        {
+          "page": "https://www.framerestorationutah.com/locations/sandy/storm-damage",
+          "clicks": 0,
+          "impressions": 286,
+          "position": 47.5
+        }
+      ]
+    },
+    "routes": [
+      {
+        "file": "locations/sandy.html",
+        "sha256": "6990e62cc9fbaff508cef8d1c14a9d1775d29e111bd77f6eb870cb6256c53093",
+        "role": "commercial-city-hub",
+        "title": "Premium Reroofing Sandy UT | Frame Restoration Utah",
+        "h1": "Premium Reroofing in Sandy",
+        "canonical": "https://www.framerestorationutah.com/locations/sandy",
+        "inboundInternalLinks": 62,
+        "visibleTermCounts": {
+          "roofer": 0,
+          "roofing contractor": 1,
+          "roof repair": 3,
+          "roof replacement": 13,
+          "reroof": 5,
+          "storm damage": 4
+        }
+      },
+      {
+        "file": "locations/sandy/storm-damage.html",
+        "sha256": "e50e0684989a6643e3d5f51792b3aae3d5c9592639685078275aa8589448c026",
+        "role": "storm-specific-child",
+        "title": "Sandy Storm Damage Roof Repair | Frame Restoration Utah",
+        "h1": "Storm Damage Roof Repair in Sandy",
+        "canonical": "https://www.framerestorationutah.com/locations/sandy/storm-damage",
+        "inboundInternalLinks": 2
+      },
+      {
+        "file": "blog/sandy/roof-leak-repair-sandy-84070.html",
+        "sha256": "f3a900ea7e5a950b3a438f6c14d4189290d6a3f98de3343f52245a841da515b9",
+        "role": "informational-roof-leak-guide",
+        "title": "Roof Leak Repair in Sandy | Frame Restoration Utah",
+        "h1": "Understanding Roof Leaks in Sandy &mdash; Causes, Prevention &amp; Professional Repair",
+        "canonical": "https://www.framerestorationutah.com/blog/sandy/roof-leak-repair-sandy-84070",
+        "inboundInternalLinks": 5,
+        "risk": "watch-only; no fixed commercial query row currently selects this guide"
+      },
+      {
+        "file": "blog/sandy/spring-hail-damage-roof.html",
+        "sha256": "8e264875f211af360586acb3c700d0e8b04c2de405fbfeb0a18c2a93a2be0698",
+        "role": "informational-hail-guide",
+        "title": "Spring Hail Season in Sandy, — Roof Protection & Resilience Guide",
+        "h1": "Spring Hail Storms in Sandy &mdash; How to Protect Your Roof and What to Do After a Hit",
+        "canonical": "https://www.framerestorationutah.com/blog/sandy/spring-hail-damage-roof",
+        "inboundInternalLinks": 12,
+        "risk": "watch-only; no fixed commercial query row currently selects this guide"
+      }
+    ],
+    "integrityGate": {
+      "packet": "data/authority/SLV-CITY-PUBLIC-REMEDIATION-PACKET-2026-08-12.json",
+      "packetSha256": "b1616942e2e46f33a847d75a9fc75a084585983c91f444ade1ebd84d11b69333",
+      "sandyBlockingFindingClasses": 8,
+      "sandyProvisionalWarnings": 1,
+      "cleanupStatus": "awaiting-explicit-owner-approval"
+    }
+  },
+  "hypotheses": [
+    {
+      "priority": 1,
+      "id": "commercial-title-mismatch",
+      "state": "supported",
+      "why": "Both measurement systems select the correct main page, but the fixed panel ranks it 17 for roofing contractor. The title and H1 use narrower premium-reroofing framing while current leaders explicitly target roofing contractor or roofers in Sandy."
+    },
+    {
+      "priority": 2,
+      "id": "internal-authority-deficit",
+      "state": "not-supported",
+      "why": "The main page has 62 inbound internal links versus two for the storm child, five for the roof-leak guide, and 12 for the hail guide. Internal-link scarcity is not the primary measured gap."
+    },
+    {
+      "priority": 3,
+      "id": "sandy-child-or-blog-cannibalization",
+      "state": "not-evidenced",
+      "why": "All four targeted GSC rows and all four current mobile SERPs select the main page. Preserve the self-canonical storm and informational routes and watch future multi-URL evidence."
+    },
+    {
+      "priority": 4,
+      "id": "entity-and-service-area-distance",
+      "state": "unresolved-owner-evidence-gap",
+      "why": "The exact Salt Lake Valley CID does not appear in any of the four Sandy local packs, and Sandy's current profile service-area inclusion has not been verified. This can affect Maps but does not authorize a profile mutation."
+    }
+  ],
+  "nextExperiment": {
+    "id": "sandy-commercial-title-alignment-v1",
+    "status": "draft-only-do-not-apply-before-prerequisites",
+    "page": "locations/sandy.html",
+    "singleVariable": "html-title",
+    "currentValue": "Premium Reroofing Sandy UT | Frame Restoration Utah",
+    "proposedValue": "Sandy Roofing Contractor | Frame Restoration Utah",
+    "heldConstant": [
+      "H1",
+      "meta description",
+      "canonical",
+      "body copy",
+      "schema",
+      "internal links",
+      "storm child",
+      "Sandy blog routes",
+      "GBP and all public third-party profiles"
+    ],
+    "prerequisites": [
+      "Receive explicit owner approval for and complete the five-page integrity cleanup defined by the pinned remediation packet.",
+      "Pass the cleanup's source, immutable-preview five-viewport, and production surface receipts.",
+      "Capture a fresh post-cleanup 24-query Google baseline and complete consumer-AI baseline; do not treat the invalid Bright Data credential as measured zero.",
+      "Wait for the integrity cleanup observation window or explicitly declare this title test as a separate uncontaminated experiment after the fresh baseline.",
+      "Receive separate explicit owner approval for this public title-only experiment.",
+      "Verify the page SHA, current title, and four-query main-page selection still match this diagnosis; regenerate if any changed."
+    ],
+    "measurement": {
+      "panel": "utah-sandy-google-v1",
+      "cadence": "weekly",
+      "windowDays": 28,
+      "baselineOrganicRanks": [
+        17,
+        13,
+        13,
+        11
+      ],
+      "baselineMeanRank": 13.5,
+      "primaryDecisionRule": "Keep only if roofing contractor sandy is position 12 or better in each of the final two weekly panels and the four-query mean rank is 11.5 or better in both panels.",
+      "guardrails": [
+        "Roof repair and roof replacement remain position 15 or better, and roofer remains position 13 or better, in each of the final two weekly panels.",
+        "The intended Sandy city page remains the selected organic URL for all four fixed queries.",
+        "No material regression in the Sandy storm child's Search Console clicks, impressions, or average position compared with the declared pre-experiment window.",
+        "No new multi-URL fixed-query evidence involving the storm child or either Sandy guide.",
+        "No loss of canonical, schema, NAP, mobile UI, or public-claim gate coverage.",
+        "Consumer-AI named-citation rates are recorded per engine; missing provider data remains unmeasured, never zero."
+      ],
+      "revertRule": "Revert the isolated title commit if the primary decision rule is not met after 28 days, if a guardrail fails, or if the experiment becomes contaminated by another Sandy intent change."
+    }
+  },
+  "prohibited": [
+    "Publishing this draft experiment without the listed owner and release gates.",
+    "Redirecting, canonicalizing, noindexing, or deleting the Sandy city page, storm child, or either Sandy guide on current evidence.",
+    "Changing GBP, service areas, hasMap, sameAs, directories, reviews, outreach, indexing, ads, DNS, or public profiles from this diagnosis.",
+    "Treating missing Search Console rows, absent AI provider data, or an outside-top-30 rank as zero."
+  ]
+}
