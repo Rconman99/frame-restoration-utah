@@ -32,6 +32,8 @@ on:
       - 'data/rank-tracker/evidence/SLV-CONSUMER-AI-SUITE-2026-08-12.json'
       - 'data/rank-tracker/consumer-ai-imports/**/*.json'
       - 'data/rank-tracker/evidence/SLV-BUSINESS-DRIVE-CONNECTOR-2026-08-12.json'
+      - 'data/rank-tracker/evidence/SLV-GBP-OWNER-VIEW-LATEST.json'
+      - 'data/authority/templates/SLV-GBP-OWNER-EVIDENCE-INPUT.template.json'
       - 'data/rank-tracker/expansion-panels.json'
       - 'data/rank-tracker/panels/holladay/2026-08-12.json'
       - 'data/rank-tracker/panels/sandy/2026-08-12.json'
@@ -71,6 +73,11 @@ on:
       - 'scripts/sync-slv-city-goal-program.mjs'
       - 'scripts/validate-slv-city-goal-program.mjs'
       - 'scripts/validate-slv-business-drive-evidence.mjs'
+      - 'scripts/validate-slv-gbp-owner-evidence.mjs'
+      - 'scripts/import-slv-gbp-owner-evidence.mjs'
+      - 'scripts/lib/slv-gbp-owner-evidence.mjs'
+      - 'scripts/lib/slv-gbp-owner-evidence.test.mjs'
+      - 'scripts/test-import-slv-gbp-owner-evidence.mjs'
       - 'scripts/validate-draper-architecture-diagnosis.mjs'
       - 'scripts/validate-holladay-architecture-diagnosis.mjs'
       - 'scripts/validate-sandy-architecture-diagnosis.mjs'
@@ -134,6 +141,8 @@ on:
       - 'data/rank-tracker/evidence/SLV-CONSUMER-AI-SUITE-2026-08-12.json'
       - 'data/rank-tracker/consumer-ai-imports/**/*.json'
       - 'data/rank-tracker/evidence/SLV-BUSINESS-DRIVE-CONNECTOR-2026-08-12.json'
+      - 'data/rank-tracker/evidence/SLV-GBP-OWNER-VIEW-LATEST.json'
+      - 'data/authority/templates/SLV-GBP-OWNER-EVIDENCE-INPUT.template.json'
       - 'data/rank-tracker/expansion-panels.json'
       - 'data/rank-tracker/panels/holladay/2026-08-12.json'
       - 'data/rank-tracker/panels/sandy/2026-08-12.json'
@@ -173,6 +182,11 @@ on:
       - 'scripts/sync-slv-city-goal-program.mjs'
       - 'scripts/validate-slv-city-goal-program.mjs'
       - 'scripts/validate-slv-business-drive-evidence.mjs'
+      - 'scripts/validate-slv-gbp-owner-evidence.mjs'
+      - 'scripts/import-slv-gbp-owner-evidence.mjs'
+      - 'scripts/lib/slv-gbp-owner-evidence.mjs'
+      - 'scripts/lib/slv-gbp-owner-evidence.test.mjs'
+      - 'scripts/test-import-slv-gbp-owner-evidence.mjs'
       - 'scripts/validate-draper-architecture-diagnosis.mjs'
       - 'scripts/validate-holladay-architecture-diagnosis.mjs'
       - 'scripts/validate-sandy-architecture-diagnosis.mjs'
@@ -225,6 +239,9 @@ jobs:
 
       - name: Validate bounded business Drive evidence handling
         run: npm run audit:slv-business-drive-evidence
+
+      - name: Validate sanitized owner-view GBP evidence handling
+        run: npm run audit:slv-gbp-owner-evidence
 
       - name: Validate the owner-gated five-page remediation packet
         run: npm run audit:slv-public-remediation-packet

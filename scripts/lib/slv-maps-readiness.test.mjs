@@ -36,6 +36,16 @@ test("a verified city with the Heber entity is held for owner-gated identity cor
   }), "owner-gated-page-identity-correction");
 });
 
+test("a city confirmed absent from the saved service areas cannot enter exact-CID planning", () => {
+  assert.equal(mapsReadinessLane({
+    city: "Sandy",
+    serviceAreaStatus: "not-saved-current-profile-service-area",
+    identityProfile: "heber-keystone-cid",
+    exactCidReviewState: "measured-exact-cid",
+    ownerProfileCompletenessState: "measured-exact-cid-owner-view",
+  }), "not-saved-service-area-no-exact-cid-planning");
+});
+
 test("an aligned city requires exact-CID prominence evidence before displacement work", () => {
   assert.equal(mapsReadinessLane({
     city: "Salt Lake City",

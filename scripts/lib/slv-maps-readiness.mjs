@@ -31,6 +31,7 @@ export function aggregateMapsLeaders(queries = []) {
 
 export function mapsReadinessLane({ city, serviceAreaStatus, identityProfile, exactCidReviewState, ownerProfileCompletenessState }) {
   if (serviceAreaStatus?.startsWith("pending-")) return "service-area-proof-before-exact-cid-planning";
+  if (serviceAreaStatus?.startsWith("not-saved-")) return "not-saved-service-area-no-exact-cid-planning";
   if (identityProfile !== "salt-lake-valley-exact-cid") return "owner-gated-page-identity-correction";
   if (exactCidReviewState !== "measured-exact-cid" || ownerProfileCompletenessState !== "measured-exact-cid-owner-view") return "exact-cid-review-and-owner-profile-audit";
   if (city === "Salt Lake City") return "weekly-exact-cid-displacement-measurement";

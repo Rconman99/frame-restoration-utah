@@ -58,6 +58,12 @@
       "a document found under the wrong Drive account"
     ]
   },
+  "intake": {
+    "template": "data/authority/templates/SLV-GBP-OWNER-EVIDENCE-INPUT.template.json",
+    "sanitizedReceipt": "data/rank-tracker/evidence/SLV-GBP-OWNER-VIEW-LATEST.json",
+    "command": "npm run import:slv-gbp-owner-evidence -- --input /absolute/path/outside-the-repository/evidence.json --write",
+    "rule": "Do not add screenshots or the completed private transcription to Git. Import only through the validator so wrong-account, wrong-CID, stale, incomplete, edited, or privacy-unsafe evidence fails closed."
+  },
   "drivePreflight": {
     "portableReceipt": "data/rank-tracker/evidence/SLV-BUSINESS-DRIVE-CONNECTOR-2026-08-12.json",
     "state": "business-account-search-complete-current-gbp-proof-not-found",

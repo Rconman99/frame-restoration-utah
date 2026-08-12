@@ -4,6 +4,7 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { validateOwnerEvidenceReceipt } from "./lib/slv-gbp-owner-evidence.mjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const read = (file) => JSON.parse(fs.readFileSync(path.join(root, file), "utf8"));
@@ -14,6 +15,8 @@ const expansionRegistry = read(portfolio.sources.expansionGoogleRegistry);
 const expansionIntegrity = read(portfolio.sources.expansionIntegrityAudit);
 const consumerAi = read(portfolio.sources.consumerAiLedger);
 const consumerAiByCity = new Map(consumerAi.cities.map((city) => [city.city, city]));
+const ownerEvidence = read(portfolio.sources.ownerViewGbpEvidence);
+validateOwnerEvidenceReceipt(ownerEvidence, { expectedCities: portfolio.cityGoals.map((goal) => goal.city) });
 
 assert.equal(portfolio.schemaVersion, 1);
 assert.equal(portfolio.status, "active-not-achieved");
@@ -79,7 +82,11 @@ for (const goal of expansionGoals) {
     ownedCitations: report.summary.aiOverviewCitations,
   });
   assert.equal(goal.current.consumerAi, consumerAiByCity.get(goal.city).state);
-  assert.equal(goal.serviceAreaStatus, "pending-current-profile-service-area-verification");
+  assert.ok([
+    "pending-current-profile-service-area-verification",
+    "saved-current-profile-service-area-observed",
+    "not-saved-current-profile-service-area",
+  ].includes(goal.serviceAreaStatus), `${goal.city} has an unsupported service-area evidence state`);
   assert.equal(goal.page, `${panel.route.slice(1)}.html`);
   assert.ok(fs.existsSync(path.join(root, goal.page)), `missing expansion page: ${goal.page}`);
 }
@@ -106,6 +113,11 @@ assert.deepEqual(score, {
 });
 assert.equal(portfolio.cohorts.expansion.estimatedOneTimeBaselineCostUsd, 0.1152);
 assert.equal(portfolio.gates.expansionAdmission, "manual-baseline-plus-city-integrity-and-service-area-evidence-before-recurring-spend");
+assert.equal(portfolio.gates.businessDriveEvidence, ownerEvidence.status === "MEASURED_EXACT_CID_OWNER_VIEW"
+  ? ownerEvidence.summary.knownProfileFields === 12 && ownerEvidence.summary.unknown === 0
+    ? "business-account-search-and-current-owner-view-gbp-proof-complete"
+    : "business-account-search-complete-partial-current-owner-view-gbp-proof-registered"
+  : "business-account-search-complete-current-owner-view-gbp-proof-required");
 assert.equal(expansionIntegrity.summary.checkedPages, 12);
 assert.equal(expansionIntegrity.summary.blockingFindingClasses, 73);
 assert.equal(expansionIntegrity.summary.provisionalWarningClasses, 12);

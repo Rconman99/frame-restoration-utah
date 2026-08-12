@@ -29,6 +29,8 @@
     "audit:slv-city-integrity:report": "node scripts/audit-slv-city-integrity.mjs",
     "audit:slv-city-goals": "node scripts/sync-slv-city-goal-program.mjs --check && node scripts/validate-slv-city-goal-program.mjs",
     "audit:slv-business-drive-evidence": "node scripts/validate-slv-business-drive-evidence.mjs",
+    "audit:slv-gbp-owner-evidence": "node --test scripts/lib/slv-gbp-owner-evidence.test.mjs scripts/test-import-slv-gbp-owner-evidence.mjs && node scripts/validate-slv-gbp-owner-evidence.mjs",
+    "import:slv-gbp-owner-evidence": "node scripts/import-slv-gbp-owner-evidence.mjs",
     "audit:slv-public-remediation-packet": "node scripts/sync-slv-public-remediation-packet.mjs --check",
     "audit:draper-architecture": "node scripts/validate-draper-architecture-diagnosis.mjs",
     "audit:holladay-architecture": "node scripts/validate-holladay-architecture-diagnosis.mjs",

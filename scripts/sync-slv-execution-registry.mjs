@@ -29,6 +29,7 @@ const sourceFiles = {
   mapsReadiness: "data/rank-tracker/SLV-MAPS-READINESS-2026-08-12.json",
   ownerProfileAuditRequest: "data/authority/SLV-GBP-OWNER-AUDIT-REQUEST-2026-08-12.json",
   businessDriveReceipt: "data/rank-tracker/evidence/SLV-BUSINESS-DRIVE-CONNECTOR-2026-08-12.json",
+  ownerViewGbpEvidence: "data/rank-tracker/evidence/SLV-GBP-OWNER-VIEW-LATEST.json",
 };
 const externalEvidence = {
   businessDriveReceipt: sourceFiles.businessDriveReceipt,
@@ -51,6 +52,9 @@ const consumerAi = read(sourceFiles.consumerAi);
 const interventions = read(sourceFiles.interventions);
 const mapsReadiness = read(sourceFiles.mapsReadiness);
 const ownerProfileAuditRequest = read(sourceFiles.ownerProfileAuditRequest);
+const ownerViewGbpEvidence = read(sourceFiles.ownerViewGbpEvidence);
+const ownerProfileEvidenceComplete = ownerViewGbpEvidence.status === "MEASURED_EXACT_CID_OWNER_VIEW"
+  && ownerViewGbpEvidence.summary.knownProfileFields === 12;
 const goals = new Map(portfolio.cityGoals.map((goal) => [goal.city, goal]));
 const gscByCity = new Map(gscAttribution.cities.map((city) => [city.city, city]));
 const expansionRows = new Map(expansionPriority.cities.map((city) => [city.city, city]));
@@ -340,19 +344,19 @@ const registry = {
     },
   ],
   ownerEvidenceNeeded: [
-    {
+    ...(ownerProfileEvidenceComplete ? [] : [{
       id: ownerProfileAuditRequest.requestId,
       state: ownerProfileAuditRequest.delivery.state,
       file: sourceFiles.ownerProfileAuditRequest,
       publicMutationPerformed: false,
-    },
-    {
+    }]),
+    ...(mapsReadiness.summary.citiesPendingServiceAreaEvidence === 0 ? [] : [{
       id: "frame-utah-slv-current-service-area-evidence-v1",
       state: "ready-not-sent",
       file: "data/authority/SLV-SERVICE-AREA-EVIDENCE-REQUEST-2026-08-12.json",
       cities: mapsReadiness.summary.citiesPendingServiceAreaEvidence,
       publicMutationPerformed: false,
-    },
+    }]),
   ],
   prohibited: [
     "No public page edit before the exact governing owner approval is recorded.",
@@ -385,7 +389,11 @@ assert.equal(gscByCity.size, 18);
 assert.equal(interventionByCity.size, 18);
 assert.equal(mapsByCity.size, 18);
 assert.equal(mapsReadiness.summary.exactCidNumberOne, registry.score.exactCidMapsNumberOne);
-assert.equal(registry.ownerEvidenceNeeded.length, 2);
+assert.equal(
+  registry.ownerEvidenceNeeded.length,
+  (ownerProfileEvidenceComplete ? 0 : 1)
+    + (mapsReadiness.summary.citiesPendingServiceAreaEvidence === 0 ? 0 : 1),
+);
 assert.equal(registry.cities.reduce((sum, city) => sum + city.gscAttribution.requestedQueries, 0), gscAttribution.summary.requestedQueries);
 assert.equal(registry.connectionNeeded.length, consumerAi.summary.citiesWithCompleteReading > 0 ? 0 : 1);
 assert.equal(registry.ownerApprovalsNeeded.length, 3);

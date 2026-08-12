@@ -36,6 +36,15 @@ test("pending service-area evidence blocks expansion intent changes even with an
   }), "service-area-proof-and-targeted-gsc-before-intent-change");
 });
 
+test("a measured not-saved city cannot enter the exact-CID optimization lane", () => {
+  assert.equal(interventionLane({
+    city: "Midvale",
+    cohort: "expansion-manual-baseline-measured",
+    serviceAreaStatus: "not-saved-current-profile-service-area",
+    gscState: "measured",
+  }), "not-saved-service-area-no-exact-cid-planning");
+});
+
 test("score vectors are bounded and reward corroborated footholds without hiding compliance cost", () => {
   const vector = scoreVector({
     ranks: [7, 2, 1, 3],

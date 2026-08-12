@@ -29,6 +29,12 @@
     "A current dated owner-view screenshot set or export that unmistakably identifies CID 5689850818145735734 and shows the requested fields.",
     "A current owner-authored field matrix transcribed from the exact profile, with unknown or inaccessible fields marked Unknown rather than guessed."
   ],
+  "intake": {
+    "template": "data/authority/templates/SLV-GBP-OWNER-EVIDENCE-INPUT.template.json",
+    "sanitizedReceipt": "data/rank-tracker/evidence/SLV-GBP-OWNER-VIEW-LATEST.json",
+    "command": "npm run import:slv-gbp-owner-evidence -- --input /absolute/path/outside-the-repository/evidence.json --write",
+    "rule": "Copy the template to an absolute private path outside the repository before completing it. Keep the completed transcription and screenshots outside Git. The importer validates the exact account/CID, freshness, read-only attestation, complete city matrix, and privacy controls before writing only the sanitized receipt."
+  },
   "notAccepted": [
     "a public Google result without exact profile attribution",
     "the Heber profile or Heber review export",
