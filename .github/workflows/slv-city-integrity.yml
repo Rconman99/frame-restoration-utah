@@ -1,0 +1,48 @@
+name: Salt Lake Valley city integrity debt
+
+on:
+  pull_request:
+    paths:
+      - 'locations/millcreek.html'
+      - 'locations/sandy.html'
+      - 'locations/holladay.html'
+      - 'locations/cottonwood-heights.html'
+      - 'locations/draper.html'
+      - 'data/authority/SLV-CITY-CLAIM-EVIDENCE-AUDIT-2026-08-12.md'
+      - 'data/authority/SLV-CITY-PUBLIC-REMEDIATION-CONTRACT-2026-08-12.json'
+      - 'data/route-factory/business.json'
+      - 'scripts/audit-slv-city-integrity.mjs'
+      - 'package.json'
+      - '.github/workflows/slv-city-integrity.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'locations/millcreek.html'
+      - 'locations/sandy.html'
+      - 'locations/holladay.html'
+      - 'locations/cottonwood-heights.html'
+      - 'locations/draper.html'
+      - 'data/authority/SLV-CITY-CLAIM-EVIDENCE-AUDIT-2026-08-12.md'
+      - 'data/authority/SLV-CITY-PUBLIC-REMEDIATION-CONTRACT-2026-08-12.json'
+      - 'data/route-factory/business.json'
+      - 'scripts/audit-slv-city-integrity.mjs'
+      - 'package.json'
+      - '.github/workflows/slv-city-integrity.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  report:
+    name: Report disputed claims and Millcreek entity drift (advisory)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - name: Set up Node.js
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '24'
+      - name: Report current Salt Lake Valley integrity debt
+        run: npm run audit:slv-city-integrity:report
+
