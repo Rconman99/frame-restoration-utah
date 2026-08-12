@@ -7,7 +7,9 @@ import { fileURLToPath } from "node:url";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const diagnosisFile = path.join(root, "data/rank-tracker/MILLCREEK-IDENTITY-ARCHITECTURE-DIAGNOSIS-2026-08-12.json");
+const amendmentFile = path.join(root, "data/authority/MILLCREEK-PUBLIC-IDENTITY-SCOPE-AMENDMENT-2026-08-12.json");
 const diagnosis = JSON.parse(fs.readFileSync(diagnosisFile, "utf8"));
+const amendment = JSON.parse(fs.readFileSync(amendmentFile, "utf8"));
 const readJson = (file) => JSON.parse(fs.readFileSync(file, "utf8"));
 const sha256 = (file) => crypto.createHash("sha256").update(fs.readFileSync(file)).digest("hex");
 const stripTags = (value) => String(value).replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
@@ -147,6 +149,31 @@ if (findings.length !== diagnosis.evidence.integrityGate.mainPageBlockingFinding
   fail("integrity findings drifted");
 }
 if (packet.sourceFiles.some((row) => row.file === diagnosis.evidence.identity.scopeGap.file)) fail("storm child is now in packet scope; regenerate diagnosis");
+
+if (amendment.schemaVersion !== 1 || amendment.publicMutationPerformed !== false) fail("scope-amendment schema/public-mutation contract drifted");
+if (amendment.status !== "draft-only-awaiting-explicit-owner-approval") fail("scope amendment no longer has the owner gate");
+if (amendment.parentPacket.file !== diagnosis.evidence.integrityGate.packet || amendment.parentPacket.sha256 !== diagnosis.evidence.integrityGate.packetSha256) {
+  fail("scope amendment no longer pins the parent packet");
+}
+if (amendment.source.file !== diagnosis.evidence.identity.scopeGap.file || amendment.source.sha256 !== diagnosis.evidence.routes[1].sha256) {
+  fail("scope amendment no longer pins the nested storm child");
+}
+const stormSignals = pageSignals(path.join(root, amendment.source.file));
+if (stormSignals.contractor?.hasMap !== amendment.source.currentHasMap ||
+    JSON.stringify(stormSignals.contractor?.sameAs) !== JSON.stringify(amendment.source.currentSameAs)) {
+  fail("scope amendment current storm-child identity drifted");
+}
+if (amendment.approvedMutationIfAuthorized.replaceHasMapWith !== `https://www.google.com/maps?cid=${diagnosis.evidence.identity.verifiedSaltLakeValleyCid}` ||
+    JSON.stringify(amendment.approvedMutationIfAuthorized.replaceSameAsWith) !== JSON.stringify(diagnosis.evidence.identity.reviewedSaltLakeValleySameAs)) {
+  fail("scope amendment target identity drifted");
+}
+if (!amendment.releaseGate.requiredApprovalPhrase.includes("PR #242") || !amendment.releaseGate.requiredApprovalPhrase.includes("storm-child identity correction")) {
+  fail("scope amendment exact owner-approval phrase is incomplete");
+}
+if (!amendment.approvedMutationIfAuthorized.heldConstant.includes("visible body copy") ||
+    !amendment.prohibited.some((row) => row.includes("non-identity field"))) {
+  fail("scope amendment does not isolate identity-only changes");
+}
 
 const action = diagnosis.nextControlledAction;
 if (action.status !== "draft-only-do-not-apply-before-owner-and-release-gates") fail("cleanup action gate drifted");
