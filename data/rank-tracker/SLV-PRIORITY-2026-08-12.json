@@ -2,7 +2,7 @@
   "artifact": "frame-slv-city-priority",
   "version": "frame-slv-city-priority.v1",
   "market": "utah",
-  "observedAt": "2026-08-12T05:40:51.327Z",
+  "observedAt": "2026-08-12T14:18:10.300Z",
   "status": "decision-ready-with-integrity-gate",
   "goal": {
     "organic": "Sustain position 1 for all four fixed mobile queries in every activated city.",
@@ -11,16 +11,22 @@
   },
   "sources": {
     "googleRankMatrix": "data/rank-tracker/panels/*/latest.json",
-    "rankObservedAt": "2026-08-12T05:40:51.327Z",
-    "rankWorkflowRun": "https://github.com/Rconman99/frame-restoration-utah/actions/runs/31567055576",
-    "gscSnapshot": "data/seo/snapshots/2026-08-11.json",
+    "rankObservedAt": "2026-08-12T14:18:10.300Z",
+    "rankWorkflowRun": "https://github.com/Rconman99/frame-restoration-utah/actions/runs/31605440997",
+    "gscSnapshot": "data/seo/snapshots/2026-08-12.json",
     "gscWindow": {
-      "startDate": "2026-07-12",
-      "endDate": "2026-08-08",
-      "queryCoverageLimitation": "398 of 3607 queries are retained, representing 57.2% of impressions. Missing city-query rows are unknown, not zero."
+      "startDate": "2026-07-13",
+      "endDate": "2026-08-09",
+      "queryCoverageLimitation": "398 of 3612 queries are retained, representing 57.5% of impressions. Missing city-query rows are unknown, not zero."
     },
     "identityAudit": "qa/SLC-ADOPTION-AUDIT-2026-08-11.md",
     "claimRegistry": "data/route-factory/claim-registry.json"
+  },
+  "measurementCorrection": {
+    "organicMapsRule": "Exclude DataForSEO local-pack members marked is_paid true before calculating organic Maps position.",
+    "paidEvidenceRule": "Retain paid local placements in a separately labeled list; a paid target placement cannot satisfy the exact-CID Maps goal.",
+    "firstAeoFoothold": "Google AI Overview cited Frame's owned Millcreek page for roof repair millcreek in the corrected panel.",
+    "propagatedReadout": "data/seo/readouts/2026-08-12.md"
   },
   "identityBoundary": {
     "saltLakeCity": "Separately verified service-area profile under ryan@framerestorations.com.",
@@ -79,7 +85,7 @@
       "organicRanks": {
         "roofing contractor salt lake city": null,
         "roof repair salt lake city": 25,
-        "roof replacement salt lake city": 23,
+        "roof replacement salt lake city": 19,
         "roofer salt lake city": null
       },
       "exactCidMapMatches": 0,
@@ -99,17 +105,22 @@
         "roofer millcreek": 5
       },
       "exactCidMapMatches": 0,
-      "aiOverviewCitations": 0,
+      "aiOverviewCitations": 1,
+      "aiOverviewEvidence": {
+        "query": "roof repair millcreek",
+        "ownedUrl": "https://www.framerestorationutah.com/locations/millcreek",
+        "status": "first-observation-requires-weekly-confirmation"
+      },
       "gscPage": {
         "url": "https://www.framerestorationutah.com/locations/millcreek",
         "clicks": 1,
-        "impressions": 212,
-        "position": 34
+        "impressions": 218,
+        "position": 32
       },
       "proofAssets": [
         "images/projects/cities/millcreek-commercial-reroof.webp"
       ],
-      "why": "It is the only expansion city with current saved-service-area proof and all four commercial queries are already within positions 3-5.",
+      "why": "It is the only expansion city with current saved-service-area proof, all four commercial queries are within positions 3-5, and the corrected panel captured Frame's first activated-city owned-domain AIO citation.",
       "firstRankingExperiment": "After the integrity correction has its own fresh baseline, test title and H1 query alignment against the current Premium Reroofing wording without adding new claims."
     },
     {
@@ -118,9 +129,9 @@
       "state": "second",
       "identityEvidence": "measurement-only-pending-current-profile-service-area-verification",
       "organicRanks": {
-        "roofing contractor sandy": 14,
-        "roof repair sandy": 14,
-        "roof replacement sandy": 4,
+        "roofing contractor sandy": 17,
+        "roof repair sandy": 13,
+        "roof replacement sandy": 13,
         "roofer sandy": 11
       },
       "exactCidMapMatches": 0,
@@ -128,8 +139,8 @@
       "gscPage": {
         "url": "https://www.framerestorationutah.com/locations/sandy",
         "clicks": 0,
-        "impressions": 3359,
-        "position": 24.1
+        "impressions": 3521,
+        "position": 23.6
       },
       "gscQueries": [
         {
@@ -148,7 +159,7 @@
       "proofAssets": [
         "images/projects/cities/sandy-storm-damage-reroof-1.webp"
       ],
-      "why": "It has the strongest retained commercial-query demand and roof replacement is already position 4."
+      "why": "It has the strongest retained commercial-query demand. The corrected panel places its four organic targets at positions 17, 13, 13, and 11, so it needs broader authority and intent work after Millcreek rather than a single near-win title test."
     },
     {
       "priority": 3,
@@ -157,7 +168,7 @@
       "identityEvidence": "measurement-only-pending-current-profile-service-area-verification",
       "organicRanks": {
         "roofing contractor holladay": 17,
-        "roof repair holladay": 11,
+        "roof repair holladay": 10,
         "roof replacement holladay": 4,
         "roofer holladay": 12
       },
@@ -167,13 +178,13 @@
         {
           "url": "https://www.framerestorationutah.com/locations/holladay",
           "clicks": 0,
-          "impressions": 1383,
-          "position": 23.8
+          "impressions": 1390,
+          "position": 23.7
         },
         {
           "url": "https://www.framerestorationutah.com/locations/holladay/storm-damage",
           "clicks": 0,
-          "impressions": 921,
+          "impressions": 916,
           "position": 2.9
         }
       ],
@@ -188,10 +199,10 @@
       "state": "fourth",
       "identityEvidence": "measurement-only-pending-current-profile-service-area-verification",
       "organicRanks": {
-        "roofing contractor cottonwood heights": 16,
-        "roof repair cottonwood heights": 12,
-        "roof replacement cottonwood heights": 14,
-        "roofer cottonwood heights": 15
+        "roofing contractor cottonwood heights": 15,
+        "roof repair cottonwood heights": 10,
+        "roof replacement cottonwood heights": 15,
+        "roofer cottonwood heights": 14
       },
       "exactCidMapMatches": 0,
       "aiOverviewCitations": 0,
@@ -199,14 +210,14 @@
         {
           "url": "https://www.framerestorationutah.com/locations/cottonwood-heights",
           "clicks": 0,
-          "impressions": 2508,
+          "impressions": 2483,
           "position": 29.9
         },
         {
           "url": "https://www.framerestorationutah.com/locations/cottonwood-heights/storm-damage",
           "clicks": 0,
-          "impressions": 1190,
-          "position": 8.4
+          "impressions": 1181,
+          "position": 8.5
         }
       ],
       "proofAssets": [
@@ -230,8 +241,8 @@
       "gscPage": {
         "url": "https://www.framerestorationutah.com/locations/draper/storm-damage",
         "clicks": 0,
-        "impressions": 2972,
-        "position": 9.4
+        "impressions": 2944,
+        "position": 9.3
       },
       "gscQueries": [
         {
