@@ -151,6 +151,13 @@ test("SLV GSC demand joins exact city pages, strongest children, and retained ro
         { query: "smoke damage restoration sandy ut", clicks: 0, impressions: 500, position: 30 },
         { query: "best roofing companies in salt lake city", clicks: 0, impressions: 5, position: 47.2 },
       ],
+      tracked_query_pages: {
+        requested: ["roof repair sandy", "roofing contractor sandy", "roof repair salt lake city"],
+        rows: [
+          { query: "roof repair sandy", page: "https://www.framerestorationutah.com/locations/sandy", impressions: 10, clicks: 0, position: 31 },
+          { query: "roof repair sandy", page: "https://www.framerestorationutah.com/locations/sandy/storm-damage", impressions: 2, clicks: 0, position: 44 },
+        ],
+      },
     },
   })).join("\n");
   assert.match(output, /Salt Lake City: main page not retained/);
@@ -158,6 +165,8 @@ test("SLV GSC demand joins exact city pages, strongest children, and retained ro
   assert.match(output, /Sandy: main page 3521 impr \/ 0 clicks \/ avg pos 23\.6/);
   assert.match(output, /strongest child \/locations\/sandy\/storm-damage at 900 impr/);
   assert.match(output, /retained roofing-query floor 1949 impr \/ 0 clicks across 2 rows/);
+  assert.match(output, /targeted fixed-query URL evidence 1\/1 queries returned \(1 main-page row, 1 child row, 0 other rows, 1 multi-URL query\)/);
+  assert.match(output, /Salt Lake City:.*targeted fixed-query URL request returned no rows for 1 query \(unknown demand, not zero\)/);
   assert.doesNotMatch(output, /2449 impr/, "non-roof smoke-restoration demand must not be counted");
   assert.match(output, /Coverage caveat: showing 4 of 100 queries \(25\.0% of impressions\)/);
 });

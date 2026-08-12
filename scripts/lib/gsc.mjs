@@ -32,6 +32,35 @@ const DEFAULT_SITE = "https://www.framerestorationutah.com/";
 const QUERY_FETCH_LIMIT = 5000;
 const QUERY_STORE_PER_ORDER = 200; // union of by-clicks and by-impressions, so <= 400 rows
 
+function escapeRe2Literal(value) {
+  return String(value).replace(/[\\^$.*+?()[\]{}|]/g, "\\$&");
+}
+
+/**
+ * Build one exact, case-insensitive RE2 filter for the fixed rank panel.
+ * Search Analytics sorts by clicks and may omit a zero-click query from the
+ * broad query+page pull. A targeted filter lets the loop ask which URL Google
+ * associated with every declared panel query instead of inferring it from a
+ * city page's aggregate impressions.
+ */
+export function trackedQueryFilter(queries = []) {
+  const requested = [...new Set(queries.map((query) => String(query).trim()).filter(Boolean))];
+  if (requested.length === 0) return null;
+  const expression = `(?i)^(?:${requested.map(escapeRe2Literal).join("|")})$`;
+  if (Buffer.byteLength(expression, "utf8") > 4096) {
+    throw new Error("tracked query filter exceeds Search Console's 4096-byte expression limit");
+  }
+  return {
+    requested,
+    dimensionFilterGroups: [
+      {
+        groupType: "and",
+        filters: [{ dimension: "query", operator: "includingRegex", expression }],
+      },
+    ],
+  };
+}
+
 function b64url(input) {
   return Buffer.from(input).toString("base64url");
 }
@@ -115,6 +144,9 @@ export async function querySearchAnalytics(token, siteUrl, body, { fetchImpl = f
  *                 every 1-click one no matter how many impressions they carry.
  *   top_query_pages: { query: page } for top queries at position 4-15
  *   top_pages:    first 200 rows by impressions desc {page, clicks, impressions, position(1dp)}
+ *   tracked_query_pages: exact query->URL rows for the declared fixed rank
+ *                 panel. An empty rows array means the targeted API request
+ *                 returned no row; it does NOT mean zero impressions.
  *   truncated:    true when ANY query row was dropped — by the fetch limit or by
  *                 the 200-row storage cap. Both are invisibility; only reporting the
  *                 fetch limit would claim full coverage on a 400-row pull that stored 200.
@@ -122,7 +154,7 @@ export async function querySearchAnalytics(token, siteUrl, body, { fetchImpl = f
  *                 were dropped instead of just that some were.
  *   window:       {startDate, endDate}
  */
-export async function fetchGscSections({ env = process.env, fetchImpl = fetch, now = new Date() } = {}) {
+export async function fetchGscSections({ env = process.env, fetchImpl = fetch, now = new Date(), trackedQueries = [] } = {}) {
   const sa = readServiceAccount(env);
   if (!sa) return null; // not configured — caller records available:false, reason not_configured
   const siteUrl = env.GSC_SITE_URL || DEFAULT_SITE;
@@ -195,6 +227,40 @@ export async function fetchGscSections({ env = process.env, fetchImpl = fetch, n
     }
   }
 
+  // G3b: targeted query+page rows for the exact fixed panel. The unfiltered G3
+  // request is still needed for general quick wins, but it is clicks-sorted and
+  // bounded. That made the Draper architecture diagnosis impossible: the storm
+  // child had page-level demand while all four commercial queries were outside
+  // the rank tracker's top 30, yet the snapshot could not say which Frame URL
+  // (if any) Google associated with those exact commercial queries.
+  const trackedFilter = trackedQueryFilter(trackedQueries);
+  let tracked_query_pages = { requested: [], rows: [] };
+  if (trackedFilter) {
+    const trackedRows = await querySearchAnalytics(
+      token,
+      siteUrl,
+      {
+        ...common,
+        dimensions: ["query", "page"],
+        dimensionFilterGroups: trackedFilter.dimensionFilterGroups,
+        rowLimit: 25000,
+      },
+      { fetchImpl },
+    );
+    tracked_query_pages = {
+      requested: trackedFilter.requested,
+      rows: trackedRows
+        .map((r) => ({
+          query: r.keys[0],
+          page: r.keys[1],
+          clicks: r.clicks || 0,
+          impressions: r.impressions || 0,
+          position: Math.round((r.position || 0) * 10) / 10,
+        }))
+        .sort((a, b) => a.query.localeCompare(b.query) || b.impressions - a.impressions || a.position - b.position),
+    };
+  }
+
   // G4: the page dimension on its own. G3 above fetches query+page but keeps only a
   // query->page string map, discarding every metric, so nothing downstream can answer
   // "which pages earn impressions and where do they rank". Summing G3 by page is NOT a
@@ -224,6 +290,7 @@ export async function fetchGscSections({ env = process.env, fetchImpl = fetch, n
     by_date,
     top_queries,
     top_query_pages,
+    tracked_query_pages,
     top_pages,
     queries_seen: queryRows.length,
     queries_stored: top_queries.length,

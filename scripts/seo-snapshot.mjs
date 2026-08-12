@@ -11,7 +11,8 @@
  *   { date, source, site, crawl:{pages, issues}, ranks:[], gsc:{available,
  *     clicks28d, impressions28d, top_queries}, ai_visibility:{measured, ...} }
  * Extra keys this loop adds (documented in docs/seo/SEO-LOOP.md): gsc.by_date,
- * gsc.top_query_pages, gsc.top_pages, gsc.window, gsc.reason, gsc.truncated, crawl.by_status,
+ * gsc.top_query_pages, gsc.tracked_query_pages, gsc.top_pages, gsc.window,
+ * gsc.reason, gsc.truncated, crawl.by_status,
  * crawl.indexable_pages, crawl.fetched_at. Consumers must preserve keys they
  * do not recognise.
  *
@@ -283,10 +284,22 @@ export async function buildSnapshot({
     return { failed: true, reason: `crawl could not complete: ${crawl.reason}` };
   }
 
+  // Read the committed rank panel before GSC so Search Console can target the
+  // exact same query contract and preserve query->URL evidence even when those
+  // rows fall outside its broad clicks-sorted response.
+  const rankState = rankReadImpl();
+  const trackedQueries = rankState.ranks
+    .filter((row) => row.measured !== false && typeof row.keyword === "string")
+    .map((row) => row.keyword);
+
   // ---- GSC (optional — degrades to not-measured, never to zero-filled) ----
   let gsc = { available: false, clicks28d: 0, impressions28d: 0, top_queries: [], top_pages: [], reason: "not_configured" };
   try {
-    const sections = await fetchGscSections({ env, ...(gscFetchImpl ? { fetchImpl: gscFetchImpl } : {}) });
+    const sections = await fetchGscSections({
+      env,
+      trackedQueries,
+      ...(gscFetchImpl ? { fetchImpl: gscFetchImpl } : {}),
+    });
     if (sections) {
       // Spread, do not enumerate. This was a hand-maintained field-by-field copy
       // and it silently dropped `queries_stored_impressions` when that field was
@@ -303,7 +316,6 @@ export async function buildSnapshot({
   }
 
   // ---- Ranks: consume the complete committed weekly matrix, no provider call ----
-  const rankState = rankReadImpl();
   const ranks = rankState.ranks;
 
   const snapshot = {

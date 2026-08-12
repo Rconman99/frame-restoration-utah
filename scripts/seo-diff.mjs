@@ -520,6 +520,40 @@ export function slvGscLines(snapshot) {
     } else {
       parts.push("no city roofing query retained in the bounded query set (unknown, not zero)");
     }
+
+    const tracked = snapshot.gsc.tracked_query_pages;
+    if (Array.isArray(tracked?.requested) && Array.isArray(tracked?.rows)) {
+      const fixedQueries = (snapshot.ranks || [])
+        .filter((row) => row.city === city && typeof row.keyword === "string")
+        .map((row) => row.keyword.toLowerCase());
+      const requested = fixedQueries.filter((query) => tracked.requested.some((value) => String(value).toLowerCase() === query));
+      if (requested.length > 0) {
+        const rows = tracked.rows.filter((row) => requested.includes(String(row.query).toLowerCase()));
+        const returnedQueries = new Set(rows.map((row) => String(row.query).toLowerCase()));
+        if (rows.length === 0) {
+          parts.push(
+            `targeted fixed-query URL request returned no rows for ${requested.length} ` +
+              `quer${requested.length === 1 ? "y" : "ies"} (unknown demand, not zero)`,
+          );
+        } else {
+          const paths = rows.map((row) => urlPath(row.page));
+          const mainRows = paths.filter((value) => value === mainPath).length;
+          const childRows = paths.filter((value) => value?.startsWith(`${mainPath}/`)).length;
+          const otherRows = rows.length - mainRows - childRows;
+          const queryCounts = new Map();
+          for (const row of rows) {
+            const query = String(row.query).toLowerCase();
+            queryCounts.set(query, (queryCounts.get(query) || 0) + 1);
+          }
+          const multiUrl = [...queryCounts.values()].filter((count) => count > 1).length;
+          parts.push(
+            `targeted fixed-query URL evidence ${returnedQueries.size}/${requested.length} queries returned ` +
+              `(${mainRows} main-page row${mainRows === 1 ? "" : "s"}, ${childRows} child row${childRows === 1 ? "" : "s"}, ` +
+              `${otherRows} other row${otherRows === 1 ? "" : "s"}, ${multiUrl} multi-URL quer${multiUrl === 1 ? "y" : "ies"})`,
+          );
+        }
+      }
+    }
     lines.push(`- ${city}: ${parts.join("; ")}.`);
   }
 
