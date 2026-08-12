@@ -4,7 +4,7 @@
 - Provider: DataForSEO task-queue
 - Location: Draper,Utah,United States
 - Device/depth: mobile / top 30
-- Observed: 2026-08-12T05:33:54.992Z
+- Observed: 2026-08-12T05:40:51.327Z
 - Estimated panel cost: $0.0096
 
 | Query | Organic | Exact-CID map pack | AI Overview | Frame cited in AI Overview |

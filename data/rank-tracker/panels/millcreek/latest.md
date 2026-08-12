@@ -4,13 +4,13 @@
 - Provider: DataForSEO task-queue
 - Location: Millcreek,Utah,United States
 - Device/depth: mobile / top 30
-- Observed: 2026-08-12T05:25:41.903Z
+- Observed: 2026-08-12T05:40:51.327Z
 - Estimated panel cost: $0.0096
 
 | Query | Organic | Exact-CID map pack | AI Overview | Frame cited in AI Overview |
 |---|---:|---:|---:|---:|
-| roofing contractor millcreek | #5 | Not found in top 30 | No | No |
-| roof repair millcreek | #5 | Not found in top 30 | No | No |
+| roofing contractor millcreek | #4 | Not found in top 30 | No | No |
+| roof repair millcreek | #4 | Not found in top 30 | No | No |
 | roof replacement millcreek | #3 | Not found in top 30 | No | No |
 | roofer millcreek | #5 | Not found in top 30 | No | No |
 

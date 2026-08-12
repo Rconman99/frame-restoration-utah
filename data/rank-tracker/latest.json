@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "kind": "frame-slc-google-rank-baseline",
   "panelId": "utah-salt-lake-city-google-v1",
-  "observedAt": "2026-08-12T05:18:22.795Z",
+  "observedAt": "2026-08-12T05:40:51.325Z",
   "date": "2026-08-12",
   "city": "Salt Lake City",
   "market": "utah",
@@ -26,7 +26,7 @@
     "queries": 4,
     "organicRanked": 2,
     "mapPackMatched": 0,
-    "aiOverviewsPresent": 2,
+    "aiOverviewsPresent": 1,
     "aiOverviewCitations": 0
   },
   "results": [
@@ -42,13 +42,14 @@
       "serpFeatures": [
         "ai_overview",
         "people_also_ask",
-        "people_also_search"
+        "people_also_search",
+        "related_searches"
       ]
     },
     {
       "id": "slc-roof-repair",
       "keyword": "roof repair salt lake city",
-      "organicRank": 24,
+      "organicRank": 25,
       "rankingUrl": "https://www.framerestorationutah.com/locations/salt-lake-city",
       "mapPackPresent": true,
       "mapPackRank": null,
@@ -63,17 +64,18 @@
     {
       "id": "slc-roof-replacement",
       "keyword": "roof replacement salt lake city",
-      "organicRank": 19,
+      "organicRank": 23,
       "rankingUrl": "https://www.framerestorationutah.com/locations/salt-lake-city",
       "mapPackPresent": true,
       "mapPackRank": null,
-      "aiOverviewPresent": true,
+      "aiOverviewPresent": false,
       "aiOverviewCited": false,
       "serpFeatures": [
-        "ai_overview",
+        "discussions_and_forums",
         "local_pack",
         "people_also_ask",
-        "people_also_search"
+        "people_also_search",
+        "related_searches"
       ]
     },
     {

@@ -4,13 +4,13 @@
 - Provider: DataForSEO task-queue
 - Location: Holladay,Utah,United States
 - Device/depth: mobile / top 30
-- Observed: 2026-08-12T05:25:08.590Z
+- Observed: 2026-08-12T05:40:51.327Z
 - Estimated panel cost: $0.0096
 
 | Query | Organic | Exact-CID map pack | AI Overview | Frame cited in AI Overview |
 |---|---:|---:|---:|---:|
 | roofing contractor holladay | #17 | Not found in top 30 | No | No |
-| roof repair holladay | #10 | Not found in top 30 | No | No |
+| roof repair holladay | #11 | Not found in top 30 | No | No |
 | roof replacement holladay | #4 | Not found in top 30 | No | No |
 | roofer holladay | #12 | Not found in top 30 | No | No |
 
