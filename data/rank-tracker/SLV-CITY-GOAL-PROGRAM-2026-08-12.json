@@ -1,0 +1,291 @@
+{
+  "schemaVersion": 1,
+  "programId": "frame-utah-salt-lake-valley-number-one-v1",
+  "market": "utah-salt-lake-valley",
+  "asOf": "2026-08-12T15:54:34.000Z",
+  "status": "active-not-achieved",
+  "goal": {
+    "organic": {
+      "targetRank": 1,
+      "queriesPerCity": 4,
+      "sustainRule": "Hold position 1 on the same fixed weekly mobile panel; one observation is not completion."
+    },
+    "maps": {
+      "targetRank": 1,
+      "exactCid": "5689850818145735734",
+      "queriesPerCity": 4,
+      "sustainRule": "Only an unpaid local-pack match to the exact CID can satisfy the goal."
+    },
+    "answerEngines": {
+      "googleAiOverview": "Cite an owned Frame domain whenever an AI Overview is present on the fixed Google panel.",
+      "consumerEngines": [
+        "chatgpt",
+        "perplexity",
+        "gemini"
+      ],
+      "target": "Frame is both named and cited in every response on the matching fixed three-prompt city panel.",
+      "sustainRule": "Measure weekly and require a 28-day keep/revert window before declaring a move durable."
+    }
+  },
+  "fixedOrganicQueryIntents": [
+    "roofing contractor {city}",
+    "roof repair {city}",
+    "roof replacement {city}",
+    "roofer {city}"
+  ],
+  "authoritativeSources": {
+    "googlePanelRegistry": "data/rank-tracker/panels.json",
+    "googlePanelObservedAt": "2026-08-12T14:18:10.300Z",
+    "googlePanelWorkflowRun": "https://github.com/Rconman99/frame-restoration-utah/actions/runs/31605440997",
+    "priorityLedger": "data/rank-tracker/SLV-PRIORITY-2026-08-12.json",
+    "integrityContract": "data/authority/SLV-CITY-PUBLIC-REMEDIATION-CONTRACT-2026-08-12.json",
+    "claimEvidenceLedger": "data/authority/SLV-CITY-CLAIM-EVIDENCE-AUDIT-2026-08-12.md",
+    "consumerAiTracker": {
+      "repository": "Rconman99/geo-aeo-tracker",
+      "releasedCommit": "ac167a84cf55abbe622ed25fbe819d0913106763",
+      "workflow": "frame-utah-slc-panel.yml",
+      "failedLiveRun": "https://github.com/Rconman99/geo-aeo-tracker/actions/runs/31610098484"
+    },
+    "businessDriveAudit": {
+      "status": "failed-closed-connector-account-mismatch",
+      "observedAt": "2026-08-12T15:54:34.000Z",
+      "jsonReceiptSha256": "5715c0de5daccb85570f982cf5a12202459184f8af2ab26335d7242146eb3cbb",
+      "markdownReceiptSha256": "d32407477c61434f88ed65a9aa6b4543d9de0d14d2079266bd443b0ce60dc3b0",
+      "acceptedPrimaryEvidenceCount": 0,
+      "driveMutations": 0
+    }
+  },
+  "programGates": {
+    "consumerAiCredential": {
+      "status": "owner-action-required",
+      "reason": "The existing BRIGHT_DATA_KEY produced HTTP 401 Auth method is not supported and is not a valid Bright Data user API key.",
+      "nextAction": "Create a Bright Data user API key in account settings, store it as a sensitive Vercel Production variable, mirror it to the GitHub Actions secret without exposing it, then run Salt Lake City and Millcreek separately."
+    },
+    "businessDrive": {
+      "status": "owner-action-required",
+      "reason": "Both available Google Drive connector checks resolved to the personal account, so the required business-account corpus was not searched.",
+      "nextAction": "Reconnect the Drive connector to ryan@framerestorations.com and rerun the read-only evidence audit before accepting private proof."
+    },
+    "publicCityPages": {
+      "status": "explicit-owner-approval-required",
+      "affectedCities": [
+        "Millcreek",
+        "Sandy",
+        "Holladay",
+        "Cottonwood Heights",
+        "Draper"
+      ],
+      "integrityFailures": 40,
+      "provisionalWarnings": 5,
+      "rule": "Do not edit or publish the five customer-facing pages until the owner explicitly approves the public cleanup."
+    },
+    "saltLakeCityObservation": {
+      "status": "hold",
+      "earliestEvaluationAt": "2026-09-09T04:40:58.000Z",
+      "rule": "Do not stack another Salt Lake City page variable before the current trust-correction window is evaluated."
+    }
+  },
+  "currentScore": {
+    "organicNumberOneQueries": 0,
+    "organicQueriesMeasured": 24,
+    "exactCidMapsNumberOneQueries": 0,
+    "exactCidMapsQueriesMeasured": 24,
+    "googleAiOverviewCitations": 1,
+    "googleAiOverviewsPresent": 2,
+    "consumerAiCompleteCityPanels": 0,
+    "citiesAtSustainedGoal": 0,
+    "citiesTracked": 6
+  },
+  "cityTracks": [
+    {
+      "priority": 0,
+      "city": "Salt Lake City",
+      "slug": "salt-lake-city",
+      "panelId": "utah-salt-lake-city-google-v1",
+      "rankSource": "data/rank-tracker/latest.json",
+      "page": "locations/salt-lake-city.html",
+      "identityEvidence": "verified-profile-identity-city",
+      "serviceAreaStatus": "verified-profile-identity-city",
+      "organicRanks": [
+        null,
+        25,
+        19,
+        null
+      ],
+      "exactCidMapsRanks": [
+        null,
+        null,
+        null,
+        null
+      ],
+      "aiOverview": {
+        "present": 1,
+        "ownedCitations": 0
+      },
+      "consumerAi": "blocked-invalid-provider-credential",
+      "phase": "observe-existing-experiment",
+      "nextPermittedAction": "Run the fixed weekly Google panel and, after credential replacement, the fixed consumer-AI panel; do not change the page before 2026-09-09T04:40:58Z."
+    },
+    {
+      "priority": 1,
+      "city": "Millcreek",
+      "slug": "millcreek",
+      "panelId": "utah-millcreek-google-v1",
+      "rankSource": "data/rank-tracker/panels/millcreek/latest.json",
+      "page": "locations/millcreek.html",
+      "identityEvidence": "verified-profile-saved-service-area",
+      "serviceAreaStatus": "saved-service-area-observed",
+      "organicRanks": [
+        4,
+        4,
+        3,
+        5
+      ],
+      "exactCidMapsRanks": [
+        null,
+        null,
+        null,
+        null
+      ],
+      "aiOverview": {
+        "present": 1,
+        "ownedCitations": 1
+      },
+      "consumerAi": "blocked-invalid-provider-credential",
+      "phase": "first-after-public-integrity-cleanup",
+      "nextPermittedAction": "Preserve the first AIO foothold, replace the consumer-AI key, and prepare the claim/identity cleanup; publish only after explicit approval and the full release gate."
+    },
+    {
+      "priority": 2,
+      "city": "Sandy",
+      "slug": "sandy",
+      "panelId": "utah-sandy-google-v1",
+      "rankSource": "data/rank-tracker/panels/sandy/latest.json",
+      "page": "locations/sandy.html",
+      "identityEvidence": "documented-slv-target-measurement-only",
+      "serviceAreaStatus": "pending-current-profile-service-area-verification",
+      "organicRanks": [
+        17,
+        13,
+        13,
+        11
+      ],
+      "exactCidMapsRanks": [
+        null,
+        null,
+        null,
+        null
+      ],
+      "aiOverview": {
+        "present": 0,
+        "ownedCitations": 0
+      },
+      "consumerAi": "configured-manual-measurement-only-blocked-invalid-provider-credential",
+      "phase": "integrity-and-service-area-evidence",
+      "nextPermittedAction": "Measure weekly and prepare evidence-safe claim replacements; do not assert a city GBP or publish without explicit approval."
+    },
+    {
+      "priority": 3,
+      "city": "Holladay",
+      "slug": "holladay",
+      "panelId": "utah-holladay-google-v1",
+      "rankSource": "data/rank-tracker/panels/holladay/latest.json",
+      "page": "locations/holladay.html",
+      "identityEvidence": "documented-slv-target-measurement-only",
+      "serviceAreaStatus": "pending-current-profile-service-area-verification",
+      "organicRanks": [
+        17,
+        10,
+        4,
+        12
+      ],
+      "exactCidMapsRanks": [
+        null,
+        null,
+        null,
+        null
+      ],
+      "aiOverview": {
+        "present": 0,
+        "ownedCitations": 0
+      },
+      "consumerAi": "configured-manual-measurement-only-blocked-invalid-provider-credential",
+      "phase": "integrity-and-service-area-evidence",
+      "nextPermittedAction": "Protect the position-4 roof-replacement foothold while preparing removal of unverified city review/project attribution; publish only after explicit approval."
+    },
+    {
+      "priority": 4,
+      "city": "Cottonwood Heights",
+      "slug": "cottonwood-heights",
+      "panelId": "utah-cottonwood-heights-google-v1",
+      "rankSource": "data/rank-tracker/panels/cottonwood-heights/latest.json",
+      "page": "locations/cottonwood-heights.html",
+      "identityEvidence": "documented-slv-target-measurement-only",
+      "serviceAreaStatus": "pending-current-profile-service-area-verification",
+      "organicRanks": [
+        15,
+        10,
+        15,
+        14
+      ],
+      "exactCidMapsRanks": [
+        null,
+        null,
+        null,
+        null
+      ],
+      "aiOverview": {
+        "present": 0,
+        "ownedCitations": 0
+      },
+      "consumerAi": "configured-manual-measurement-only-blocked-invalid-provider-credential",
+      "phase": "integrity-and-service-area-evidence",
+      "nextPermittedAction": "Measure weekly and prepare evidence-safe local context without treating the neighborhood image as completed-project proof."
+    },
+    {
+      "priority": 5,
+      "city": "Draper",
+      "slug": "draper",
+      "panelId": "utah-draper-google-v1",
+      "rankSource": "data/rank-tracker/panels/draper/latest.json",
+      "page": "locations/draper.html",
+      "identityEvidence": "documented-slv-target-measurement-only",
+      "serviceAreaStatus": "pending-current-profile-service-area-verification",
+      "organicRanks": [
+        null,
+        null,
+        null,
+        null
+      ],
+      "exactCidMapsRanks": [
+        null,
+        null,
+        null,
+        null
+      ],
+      "aiOverview": {
+        "present": 0,
+        "ownedCitations": 0
+      },
+      "consumerAi": "configured-manual-measurement-only-blocked-invalid-provider-credential",
+      "phase": "architecture-diagnosis-and-integrity",
+      "nextPermittedAction": "Diagnose the main-page versus storm-route intent and internal-link architecture without editing public copy; preserve the storm route's existing search foothold."
+    }
+  ],
+  "decisionOrder": [
+    "Replace and harden the Bright Data user API key without exposing it.",
+    "Run complete Salt Lake City and Millcreek consumer-AI baselines separately.",
+    "Reconnect the business Drive account and rerun the read-only primary-evidence audit.",
+    "Obtain explicit owner approval for the five-page public integrity cleanup.",
+    "Correct the five pages, pass strict integrity plus source/preview/production gates, and capture a new baseline.",
+    "Evaluate one declared city variable at a time after 28 days; keep only measured gains and revert losses."
+  ],
+  "prohibited": [
+    "doorway pages",
+    "fabricated reviews or project proof",
+    "NAP drift",
+    "unsupported claims",
+    "unapproved GBP, directory, indexing, outreach, or public-page mutations",
+    "declaring success from one observation or an incomplete panel"
+  ]
+}

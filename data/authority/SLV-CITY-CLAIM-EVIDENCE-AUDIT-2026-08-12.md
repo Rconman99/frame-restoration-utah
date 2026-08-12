@@ -8,6 +8,8 @@ The available Drive connector was authenticated to `ryanconwell99@gmail.com`, no
 
 On 2026-08-12, a second read-only search through the Codex Google Drive connector confirmed the authenticated profile as `ryanconwell99@gmail.com`. Searches for certificate of liability, workers compensation, certificate of insurance, workmanship/roof warranty, building permits, roofing contracts, invoices, and each target city returned website exports, internal task lists, generic guides, or unrelated files rather than a current primary instrument. Those self-referential and draft materials were rejected as evidence. The public-use decisions below therefore remain unchanged.
 
+At `2026-08-12T15:54:34Z`, a third audit attempted to use the approved Claude bridge specifically to reach the Frame business Drive. Its identity preflight again resolved the active connector to `ryanconwell99@gmail.com`, not `ryan@framerestorations.com`, so it failed closed before running any business-content query. It accepted zero evidence, disclosed zero sensitive fields, and made zero Drive, sharing, message, or publishing mutations. Secretless receipt hashes: JSON `5715c0de5daccb85570f982cf5a12202459184f8af2ab26335d7242146eb3cbb`; Markdown `d32407477c61434f88ed65a9aa6b4543d9de0d14d2079266bd443b0ce60dc3b0`. This strengthens the access-gap finding but does not establish that the business Drive lacks the requested evidence.
+
 ## Evidence ledger
 
 | Claim class | Status | Sanitized evidence | Public-use decision |

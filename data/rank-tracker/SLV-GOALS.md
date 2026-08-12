@@ -2,6 +2,8 @@
 
 This ledger turns the owner goal into fixed, falsifiable measurements. It is an internal measurement contract, not a public service-area claim or a guarantee that rankings can be forced.
 
+The machine-checked operating contract is `SLV-CITY-GOAL-PROGRAM-2026-08-12.json`. It binds each city goal to its current Google panel, exact identity evidence, consumer-AI measurement state, integrity/public-approval gates, and next permitted action. The weekly tracker runs `npm run sync:slv-city-goals` only after all 24 provider results succeed, then `npm run audit:slv-city-goals` fails if that control file drifts from the six latest fixed panels or the five-page integrity contract.
+
 ## One target for every activated city
 
 For each city, sustain all of the following on the same fixed mobile panel:
