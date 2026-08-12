@@ -57,6 +57,7 @@
         "Every portfolio city appears exactly once with four fixed query evidence rows.",
         "Salt Lake City remains time-frozen; Millcreek uses the verified identity lane; Magna and Kearns use protected-foothold lanes.",
         "Every pending service-area city requires current evidence before exact-CID identity planning.",
+        "A negligible pre-redirect alternate trace cannot create an architecture intervention; a pre-redirect tie remains monitor-only until a fully post-redirect window exists.",
         "Every score component is an integer from 0 through 10.",
         "No candidate authorizes a public mutation, and every public candidate carries the exact governing approval phrase."
       ]
@@ -75,6 +76,10 @@
       "file": "data/rank-tracker/SLV-GSC-URL-ATTRIBUTION-LATEST.json",
       "sha256": "d464bab364c91ab2ec6433cece96cadc6ac5fc775477dddfce39ff9028f36cb9"
     },
+    "gscSplitUrlDiagnosis": {
+      "file": "data/rank-tracker/SLV-GSC-SPLIT-URL-DIAGNOSIS-2026-08-12.json",
+      "sha256": "974c33fb9410fa606761eea8c4a946e5809776f5b317b0236d77009972c07142"
+    },
     "displacement": {
       "file": "data/rank-tracker/SLV-COMPETITOR-DISPLACEMENT-2026-08-12.json",
       "sha256": "aed18abd061963d5dd0280dc7575060640daa9f89e98bd77a91dca80a449ef7a"
@@ -89,7 +94,7 @@
     },
     "expansionArchitecture": {
       "file": "data/rank-tracker/SLV-EXPANSION-ARCHITECTURE-2026-08-12.json",
-      "sha256": "c8c41e02831376979c8d016448fcb5df73d632c5b86fedef6ebde14708c7c3da"
+      "sha256": "5a95b1df2a230bc3d9fc1a0350a951603db631574df3660136c0f49b60f654eb"
     },
     "corePriority": {
       "file": "data/rank-tracker/SLV-PRIORITY-2026-08-12.json",
@@ -122,23 +127,23 @@
     "diagnoses": {
       "Millcreek": {
         "file": "data/rank-tracker/MILLCREEK-IDENTITY-ARCHITECTURE-DIAGNOSIS-2026-08-12.json",
-        "sha256": "68320ed7967996f08a4086d1d878b24851817263c0735dd1a28e93f720c97195"
+        "sha256": "72cd9962922d856cc990c028cc314d8f4cd03fa864df3ab1ea9f8ea5e4028949"
       },
       "Sandy": {
         "file": "data/rank-tracker/SANDY-ARCHITECTURE-DIAGNOSIS-2026-08-12.json",
-        "sha256": "2c00c3ad8e871dafdf3e47f36e2f4b4aa4fbf57789dd3d2da3cae562dd9da361"
+        "sha256": "0bfdd821549b5558448a9d63bc5e705ffc3d89d297cc7d00dec5269da3bcc2b1"
       },
       "Holladay": {
         "file": "data/rank-tracker/HOLLADAY-ARCHITECTURE-DIAGNOSIS-2026-08-12.json",
-        "sha256": "4d287342ad3ed4b2ffe0f3e25c1de07a04f96b3271fdcc5b02cb55eb9b1d3154"
+        "sha256": "ec3be9fa8892ad8a84dd86f099412eea814584bc6e26d7d3d6930d6d6324f1c9"
       },
       "Cottonwood Heights": {
         "file": "data/rank-tracker/COTTONWOOD-HEIGHTS-ARCHITECTURE-DIAGNOSIS-2026-08-12.json",
-        "sha256": "dd452e8b48883f9816a180a2cac79ffff2a0545c86178c3c992980c1bd80ef35"
+        "sha256": "ab0e266cdcad64fc4333560e162ee6c131a3ac38e49189d00b3d7e482f6633ee"
       },
       "Draper": {
         "file": "data/rank-tracker/DRAPER-ARCHITECTURE-DIAGNOSIS-2026-08-12.json",
-        "sha256": "2275639f44e73b2d3df1fd3665d257f643cfb53fca37bcd4e02f0a392b37982c"
+        "sha256": "119028bece039bed51e6dd586e8da4e8a64ce1fb15f4ec80edf4e945a5a93c76"
       }
     }
   },
@@ -152,12 +157,12 @@
     "citiesWithAllFourTargetedGscQueriesRequested": 18,
     "citiesAtSustainedGoal": 0,
     "laneCounts": {
-      "diagnose-url-consolidation-before-intent-change": 2,
+      "diagnose-url-consolidation-before-intent-change": 1,
       "observe-time-gated-slc-experiment": 1,
       "owner-gated-core-integrity-then-single-variable-intent-test": 3,
       "owner-gated-verified-identity-and-integrity-cleanup": 1,
       "protect-foothold-before-cleanup-or-intent-change": 2,
-      "service-area-proof-and-targeted-gsc-before-intent-change": 9
+      "service-area-proof-and-targeted-gsc-before-intent-change": 10
     }
   },
   "systemNextActions": [
@@ -255,6 +260,7 @@
         "gscRequestedQueries": 4,
         "gscReturnedQueries": 2,
         "gscAlternateNormalizedUrls": [],
+        "gscUrlDiagnosis": null,
         "serviceAreaStatus": "verified-profile-identity-city",
         "identityProfile": "salt-lake-valley-exact-cid",
         "citySpecificEditorialAsset": true,
@@ -357,6 +363,7 @@
         "gscRequestedQueries": 4,
         "gscReturnedQueries": 0,
         "gscAlternateNormalizedUrls": [],
+        "gscUrlDiagnosis": null,
         "serviceAreaStatus": "saved-service-area-observed",
         "identityProfile": "heber-keystone-cid",
         "citySpecificEditorialAsset": true,
@@ -394,7 +401,7 @@
       "sources": {
         "diagnosis": {
           "file": "data/rank-tracker/MILLCREEK-IDENTITY-ARCHITECTURE-DIAGNOSIS-2026-08-12.json",
-          "sha256": "68320ed7967996f08a4086d1d878b24851817263c0735dd1a28e93f720c97195"
+          "sha256": "72cd9962922d856cc990c028cc314d8f4cd03fa864df3ab1ea9f8ea5e4028949"
         },
         "panelEvidence": [
           {
@@ -464,6 +471,7 @@
         "gscRequestedQueries": 4,
         "gscReturnedQueries": 0,
         "gscAlternateNormalizedUrls": [],
+        "gscUrlDiagnosis": null,
         "serviceAreaStatus": "pending-current-profile-service-area-verification",
         "identityProfile": "heber-keystone-cid",
         "citySpecificEditorialAsset": false,
@@ -567,6 +575,7 @@
         "gscRequestedQueries": 4,
         "gscReturnedQueries": 1,
         "gscAlternateNormalizedUrls": [],
+        "gscUrlDiagnosis": null,
         "serviceAreaStatus": "pending-current-profile-service-area-verification",
         "identityProfile": "heber-keystone-cid",
         "citySpecificEditorialAsset": false,
@@ -668,6 +677,7 @@
         "gscRequestedQueries": 4,
         "gscReturnedQueries": 4,
         "gscAlternateNormalizedUrls": [],
+        "gscUrlDiagnosis": null,
         "serviceAreaStatus": "pending-current-profile-service-area-verification",
         "identityProfile": "heber-keystone-cid",
         "citySpecificEditorialAsset": true,
@@ -705,7 +715,7 @@
       "sources": {
         "diagnosis": {
           "file": "data/rank-tracker/SANDY-ARCHITECTURE-DIAGNOSIS-2026-08-12.json",
-          "sha256": "2c00c3ad8e871dafdf3e47f36e2f4b4aa4fbf57789dd3d2da3cae562dd9da361"
+          "sha256": "0bfdd821549b5558448a9d63bc5e705ffc3d89d297cc7d00dec5269da3bcc2b1"
         },
         "panelEvidence": [
           {
@@ -776,10 +786,23 @@
           "framerestorationutah.com/blog/holladay/roof-replacement-holladay-utah",
           "framerestorationutah.com/salt-lake-city"
         ],
+        "gscUrlDiagnosis": {
+          "disposition": "await-full-post-redirect-window",
+          "currentCannibalization": "not-proven",
+          "requiredRecheck": {
+            "firstFullyPostRedirectWindow": {
+              "startDateOnOrAfter": "2026-08-11",
+              "endDateOnOrAfter": "2026-09-07"
+            },
+            "expectedAvailableNoEarlierThan": "2026-09-10",
+            "action": "Refresh the exact-query URL attribution. If the legacy route is absent and the intended page remains selected, close the consolidation watch. Diagnose any persistent alternate before considering a separately approved single-variable intent experiment."
+          },
+          "activeAttributionSnapshotSha256": "a1b7d5aa2acc3a5b663da345ba6eb7242e411661807ae1296f50854702b1a7eb"
+        },
         "serviceAreaStatus": "pending-current-profile-service-area-verification",
         "identityProfile": "heber-keystone-cid",
         "citySpecificEditorialAsset": true,
-        "architectureState": "not-evidenced",
+        "architectureState": "not-proven",
         "protectedRelatedRoutes": [],
         "consumerAiState": "configured-manual-unmeasured-invalid-provider-credential",
         "comparableWeeklyGooglePanels": 1,
@@ -813,7 +836,7 @@
       "sources": {
         "diagnosis": {
           "file": "data/rank-tracker/HOLLADAY-ARCHITECTURE-DIAGNOSIS-2026-08-12.json",
-          "sha256": "4d287342ad3ed4b2ffe0f3e25c1de07a04f96b3271fdcc5b02cb55eb9b1d3154"
+          "sha256": "ec3be9fa8892ad8a84dd86f099412eea814584bc6e26d7d3d6930d6d6324f1c9"
         },
         "panelEvidence": [
           {
@@ -880,6 +903,7 @@
         "gscRequestedQueries": 4,
         "gscReturnedQueries": 0,
         "gscAlternateNormalizedUrls": [],
+        "gscUrlDiagnosis": null,
         "serviceAreaStatus": "pending-current-profile-service-area-verification",
         "identityProfile": "heber-keystone-cid",
         "citySpecificEditorialAsset": true,
@@ -917,7 +941,7 @@
       "sources": {
         "diagnosis": {
           "file": "data/rank-tracker/COTTONWOOD-HEIGHTS-ARCHITECTURE-DIAGNOSIS-2026-08-12.json",
-          "sha256": "dd452e8b48883f9816a180a2cac79ffff2a0545c86178c3c992980c1bd80ef35"
+          "sha256": "ab0e266cdcad64fc4333560e162ee6c131a3ac38e49189d00b3d7e482f6633ee"
         },
         "panelEvidence": [
           {
@@ -984,6 +1008,7 @@
         "gscRequestedQueries": 4,
         "gscReturnedQueries": 3,
         "gscAlternateNormalizedUrls": [],
+        "gscUrlDiagnosis": null,
         "serviceAreaStatus": "pending-current-profile-service-area-verification",
         "identityProfile": "heber-keystone-cid",
         "citySpecificEditorialAsset": true,
@@ -1089,6 +1114,7 @@
         "gscRequestedQueries": 4,
         "gscReturnedQueries": 2,
         "gscAlternateNormalizedUrls": [],
+        "gscUrlDiagnosis": null,
         "serviceAreaStatus": "pending-current-profile-service-area-verification",
         "identityProfile": "heber-keystone-cid",
         "citySpecificEditorialAsset": true,
@@ -1192,6 +1218,7 @@
         "gscRequestedQueries": 4,
         "gscReturnedQueries": 3,
         "gscAlternateNormalizedUrls": [],
+        "gscUrlDiagnosis": null,
         "serviceAreaStatus": "pending-current-profile-service-area-verification",
         "identityProfile": "heber-keystone-cid",
         "citySpecificEditorialAsset": true,
@@ -1295,6 +1322,7 @@
         "gscRequestedQueries": 4,
         "gscReturnedQueries": 0,
         "gscAlternateNormalizedUrls": [],
+        "gscUrlDiagnosis": null,
         "serviceAreaStatus": "pending-current-profile-service-area-verification",
         "identityProfile": "heber-keystone-cid",
         "citySpecificEditorialAsset": false,
@@ -1396,6 +1424,7 @@
         "gscRequestedQueries": 4,
         "gscReturnedQueries": 0,
         "gscAlternateNormalizedUrls": [],
+        "gscUrlDiagnosis": null,
         "serviceAreaStatus": "pending-current-profile-service-area-verification",
         "identityProfile": "heber-keystone-cid",
         "citySpecificEditorialAsset": true,
@@ -1499,6 +1528,7 @@
         "gscRequestedQueries": 4,
         "gscReturnedQueries": 0,
         "gscAlternateNormalizedUrls": [],
+        "gscUrlDiagnosis": null,
         "serviceAreaStatus": "pending-current-profile-service-area-verification",
         "identityProfile": "heber-keystone-cid",
         "citySpecificEditorialAsset": false,
@@ -1564,7 +1594,7 @@
       "cohort": "expansion-manual-baseline-measured",
       "page": "locations/herriman.html",
       "panelId": "utah-herriman-google-v1",
-      "lane": "diagnose-url-consolidation-before-intent-change",
+      "lane": "service-area-proof-and-targeted-gsc-before-intent-change",
       "decision": "Request input",
       "evidenceFeatures": {
         "observedAt": "2026-08-12T17:40:30.500Z",
@@ -1604,10 +1634,19 @@
         "gscAlternateNormalizedUrls": [
           "framerestorationutah.com/salt-lake-city"
         ],
+        "gscUrlDiagnosis": {
+          "disposition": "monitor-negligible-historical-trace",
+          "currentCannibalization": "not-evidenced",
+          "requiredRecheck": {
+            "cadence": "normal-daily-gsc-refresh",
+            "action": "Keep the intended Herriman page and existing redirect unchanged. Escalate only if a future complete window shows a persistent alternate with material impression share or the fixed panel stops selecting the intended page."
+          },
+          "activeAttributionSnapshotSha256": "a1b7d5aa2acc3a5b663da345ba6eb7242e411661807ae1296f50854702b1a7eb"
+        },
         "serviceAreaStatus": "pending-current-profile-service-area-verification",
         "identityProfile": "heber-keystone-cid",
         "citySpecificEditorialAsset": true,
-        "architectureState": "not-proven-blended-gsc-multi-url-evidence-requires-timing-and-routing-diagnosis",
+        "architectureState": "not-evidenced",
         "protectedRelatedRoutes": [
           "blog/herriman/hail-damage-new-homes.html"
         ],
@@ -1621,17 +1660,17 @@
         "leadValue": 5,
         "authorityValue": 5,
         "learningValue": 6,
-        "implementationCost": 3,
-        "complianceRisk": 1,
+        "implementationCost": 5,
+        "complianceRisk": 8,
         "customerBlockerRisk": 8,
         "maintenanceCost": 2,
         "sourceBiasRisk": 2,
         "recencyBiasRisk": 1
       },
-      "selectedAction": "Obtain current Salt Lake Valley service-area evidence and the next exact-query GSC attribution for Herriman; request the bounded expansion cleanup separately, but do not change identity or commercial intent until those evidence gates pass.",
-      "gate": "service-area-evidence-plus-targeted-gsc-plus-explicit-cleanup-approval",
+      "selectedAction": "Treat Herriman's negligible pre-redirect alternate trace as non-actionable and keep its intended page, redirect, canonicals, and related routes unchanged. Obtain current Salt Lake Valley service-area evidence for the separate Maps lane and request only the bounded expansion integrity cleanup; continue normal exact-query GSC monitoring without opening a URL-consolidation intervention.",
+      "gate": "service-area-evidence-plus-explicit-cleanup-approval-with-url-consolidation-closed",
       "ownerApprovalPhrase": "I explicitly approve editing and publishing the 12-page Salt Lake Valley expansion integrity cleanup defined in packet frame-utah-slv-twelve-page-expansion-public-integrity-cleanup-v1, with expansion identities, titles, H1s, canonicals, and protected related routes unchanged.",
-      "acceptanceCheck": "A current receipt explicitly classifies Herriman for CID 5689850818145735734, all four exact queries are requested without treating missing rows as zero, and any approved cleanup passes the full release gate.",
+      "acceptanceCheck": "A current receipt explicitly classifies Herriman for CID 5689850818145735734, any approved cleanup passes the full release gate, and the intended page remains selected; a future alternate URL is escalated only if it has material persistent share or the fixed panel stops selecting the intended page.",
       "feedback": {
         "cadence": "weekly",
         "requiredComparablePanels": 4,
@@ -1707,6 +1746,7 @@
         "gscRequestedQueries": 4,
         "gscReturnedQueries": 1,
         "gscAlternateNormalizedUrls": [],
+        "gscUrlDiagnosis": null,
         "serviceAreaStatus": "pending-current-profile-service-area-verification",
         "identityProfile": "heber-keystone-cid",
         "citySpecificEditorialAsset": true,
@@ -1810,6 +1850,7 @@
         "gscRequestedQueries": 4,
         "gscReturnedQueries": 0,
         "gscAlternateNormalizedUrls": [],
+        "gscUrlDiagnosis": null,
         "serviceAreaStatus": "pending-current-profile-service-area-verification",
         "identityProfile": "heber-keystone-cid",
         "citySpecificEditorialAsset": true,
@@ -1847,7 +1888,7 @@
       "sources": {
         "diagnosis": {
           "file": "data/rank-tracker/DRAPER-ARCHITECTURE-DIAGNOSIS-2026-08-12.json",
-          "sha256": "2275639f44e73b2d3df1fd3665d257f643cfb53fca37bcd4e02f0a392b37982c"
+          "sha256": "119028bece039bed51e6dd586e8da4e8a64ce1fb15f4ec80edf4e945a5a93c76"
         },
         "panelEvidence": [
           {
@@ -1912,6 +1953,7 @@
         "gscRequestedQueries": 4,
         "gscReturnedQueries": 0,
         "gscAlternateNormalizedUrls": [],
+        "gscUrlDiagnosis": null,
         "serviceAreaStatus": "pending-current-profile-service-area-verification",
         "identityProfile": "heber-keystone-cid",
         "citySpecificEditorialAsset": false,
@@ -2012,6 +2054,7 @@
         "gscRequestedQueries": 4,
         "gscReturnedQueries": 3,
         "gscAlternateNormalizedUrls": [],
+        "gscUrlDiagnosis": null,
         "serviceAreaStatus": "pending-current-profile-service-area-verification",
         "identityProfile": "heber-keystone-cid",
         "citySpecificEditorialAsset": true,

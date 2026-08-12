@@ -31,7 +31,7 @@
     },
     "expansionPriority": {
       "file": "data/rank-tracker/SLV-EXPANSION-PRIORITY-2026-08-12.json",
-      "sha256": "6351f421eaf34d7de8a36544218b609f5bffd09f45a43ba99344a3a422e43542"
+      "sha256": "aa4eb86ba041b9a435e1f96b2979012a45f430f7f3569b8d2233b2cf08cc0f82"
     },
     "displacement": {
       "file": "data/rank-tracker/SLV-COMPETITOR-DISPLACEMENT-2026-08-12.json",
@@ -51,7 +51,7 @@
     },
     "expansionArchitecture": {
       "file": "data/rank-tracker/SLV-EXPANSION-ARCHITECTURE-2026-08-12.json",
-      "sha256": "c8c41e02831376979c8d016448fcb5df73d632c5b86fedef6ebde14708c7c3da"
+      "sha256": "5a95b1df2a230bc3d9fc1a0350a951603db631574df3660136c0f49b60f654eb"
     },
     "entityHealth": {
       "file": "data/rank-tracker/SLV-ENTITY-HEALTH-2026-08-12.json",
@@ -71,7 +71,7 @@
     },
     "interventions": {
       "file": "data/rank-tracker/SLV-INTERVENTION-QUEUE-2026-08-12.json",
-      "sha256": "bff92315372ff5ba80c0e7039337c953e7bf4b1e90a9e3442864c04a58bc36b2"
+      "sha256": "2f5b434ed2096a91b55fb6abd2de37398bbc6ff0abcdba85a97fc85fe1d4677d"
     },
     "mapsReadiness": {
       "file": "data/rank-tracker/SLV-MAPS-READINESS-2026-08-12.json",
@@ -1547,26 +1547,26 @@
         ],
         "nextEvidenceAction": "Inspect the alternate URLs against redirect dates, canonicals, current live routing, and query intent. Treat this blended 28-day evidence as a diagnosis trigger, not proof of current cannibalization or permission to redirect."
       },
-      "lane": "diagnose-url-consolidation-before-intent-change",
-      "action": "Obtain current Salt Lake Valley service-area evidence and the next exact-query GSC attribution for Herriman; request the bounded expansion cleanup separately, but do not change identity or commercial intent until those evidence gates pass.",
+      "lane": "service-area-proof-and-targeted-gsc-before-intent-change",
+      "action": "Treat Herriman's negligible pre-redirect alternate trace as non-actionable and keep its intended page, redirect, canonicals, and related routes unchanged. Obtain current Salt Lake Valley service-area evidence for the separate Maps lane and request only the bounded expansion integrity cleanup; continue normal exact-query GSC monitoring without opening a URL-consolidation intervention.",
       "actionClass": "owner-or-evidence-input-needed",
-      "gate": "service-area-evidence-plus-targeted-gsc-plus-explicit-cleanup-approval",
+      "gate": "service-area-evidence-plus-explicit-cleanup-approval-with-url-consolidation-closed",
       "publicApprovalPacket": "data/authority/SLV-EXPANSION-PUBLIC-REMEDIATION-PACKET-2026-08-12.json",
       "ownerApprovalPhrase": "I explicitly approve editing and publishing the 12-page Salt Lake Valley expansion integrity cleanup defined in packet frame-utah-slv-twelve-page-expansion-public-integrity-cleanup-v1, with expansion identities, titles, H1s, canonicals, and protected related routes unchanged.",
       "intervention": {
-        "lane": "diagnose-url-consolidation-before-intent-change",
+        "lane": "service-area-proof-and-targeted-gsc-before-intent-change",
         "decision": "Request input",
-        "selectedAction": "Obtain current Salt Lake Valley service-area evidence and the next exact-query GSC attribution for Herriman; request the bounded expansion cleanup separately, but do not change identity or commercial intent until those evidence gates pass.",
-        "gate": "service-area-evidence-plus-targeted-gsc-plus-explicit-cleanup-approval",
-        "acceptanceCheck": "A current receipt explicitly classifies Herriman for CID 5689850818145735734, all four exact queries are requested without treating missing rows as zero, and any approved cleanup passes the full release gate.",
+        "selectedAction": "Treat Herriman's negligible pre-redirect alternate trace as non-actionable and keep its intended page, redirect, canonicals, and related routes unchanged. Obtain current Salt Lake Valley service-area evidence for the separate Maps lane and request only the bounded expansion integrity cleanup; continue normal exact-query GSC monitoring without opening a URL-consolidation intervention.",
+        "gate": "service-area-evidence-plus-explicit-cleanup-approval-with-url-consolidation-closed",
+        "acceptanceCheck": "A current receipt explicitly classifies Herriman for CID 5689850818145735734, any approved cleanup passes the full release gate, and the intended page remains selected; a future alternate URL is escalated only if it has material persistent share or the fixed panel stops selecting the intended page.",
         "scoreVector": {
           "businessValue": 10,
           "confidence": 6,
           "leadValue": 5,
           "authorityValue": 5,
           "learningValue": 6,
-          "implementationCost": 3,
-          "complianceRisk": 1,
+          "implementationCost": 5,
+          "complianceRisk": 8,
           "customerBlockerRisk": 8,
           "maintenanceCost": 2,
           "sourceBiasRisk": 2,
