@@ -56,6 +56,10 @@
     "entityHealth": {
       "file": "data/rank-tracker/SLV-ENTITY-HEALTH-2026-08-12.json",
       "sha256": "523da59da054f3508e2192c6771bf50d4b59e0c10588cece13201e7e3a9d3e4c"
+    },
+    "weeklyDecisions": {
+      "file": "data/rank-tracker/SLV-WEEKLY-DECISIONS-2026-08-12.json",
+      "sha256": "73c9a0d20bd3d3cefbb2ba6593565d11aa6ea31673cdd7f7093ffd02fe457835"
     }
   },
   "externalEvidence": {
@@ -127,6 +131,13 @@
         "Taylorsville"
       ],
       "decision": "Add city-specific editorial support only when real local evidence exists and the public release and doorway-page gates pass; protect Magna and Kearns ranking footholds."
+    },
+    {
+      "id": "weekly-keep-revert-decisions",
+      "class": "system-fixable-on-measurement-cadence",
+      "state": "active-no-premature-ranking-verdicts",
+      "source": "data/rank-tracker/SLV-WEEKLY-DECISIONS-2026-08-12.json",
+      "decision": "Keep the required SLC factual correction, hold all 18 ranking lanes until their comparable evidence contracts are satisfied, and preserve the Magna/Kearns #1 footholds."
     }
   ],
   "connectionNeeded": [

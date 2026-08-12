@@ -22,6 +22,7 @@ const sourceFiles = {
   expansionCleanupPacket: "data/authority/SLV-EXPANSION-PUBLIC-REMEDIATION-PACKET-2026-08-12.json",
   expansionArchitecture: "data/rank-tracker/SLV-EXPANSION-ARCHITECTURE-2026-08-12.json",
   entityHealth: "data/rank-tracker/SLV-ENTITY-HEALTH-2026-08-12.json",
+  weeklyDecisions: "data/rank-tracker/SLV-WEEKLY-DECISIONS-2026-08-12.json",
 };
 const externalEvidence = {
   businessDriveReceipt: "/Users/agenticmac/territory-command/data/command-center/utah-seo/drive-evidence/drive-evidence-audit-20260812T175850Z.json",
@@ -39,6 +40,7 @@ const coreCleanup = read(sourceFiles.coreCleanupPacket);
 const millcreekAmendment = read(sourceFiles.millcreekAmendment);
 const expansionCleanup = read(sourceFiles.expansionCleanupPacket);
 const entityHealth = read(sourceFiles.entityHealth);
+const weeklyDecisions = read(sourceFiles.weeklyDecisions);
 const goals = new Map(portfolio.cityGoals.map((goal) => [goal.city, goal]));
 const expansionRows = new Map(expansionPriority.cities.map((city) => [city.city, city]));
 const queryRows = new Map();
@@ -214,6 +216,13 @@ const registry = {
       cities: entityHealth.editorial.evidenceFirstGaps,
       decision: "Add city-specific editorial support only when real local evidence exists and the public release and doorway-page gates pass; protect Magna and Kearns ranking footholds.",
     },
+    {
+      id: "weekly-keep-revert-decisions",
+      class: "system-fixable-on-measurement-cadence",
+      state: "active-no-premature-ranking-verdicts",
+      source: sourceFiles.weeklyDecisions,
+      decision: "Keep the required SLC factual correction, hold all 18 ranking lanes until their comparable evidence contracts are satisfied, and preserve the Magna/Kearns #1 footholds.",
+    },
   ],
   connectionNeeded: [
     {
@@ -271,6 +280,10 @@ assert.equal(registry.score.citiesAtSustainedGoal, 0);
 assert.ok(["unmeasured", "measured-exact-cid"].includes(entityHealth.reviews.saltLakeValley.state));
 assert.equal(entityHealth.reviews.heber.aggregateReviewCount, 34);
 assert.equal(entityHealth.editorial.evidenceFirstGaps.length, 5);
+assert.equal(weeklyDecisions.summary.integrityKeep, 1);
+assert.equal(weeklyDecisions.summary.rankingHold, 18);
+assert.equal(weeklyDecisions.summary.rankingKeep, 0);
+assert.equal(weeklyDecisions.summary.rankingRevert, 0);
 assert.deepEqual(registry.cities.filter((city) => city.measurement.organicNumberOne.length).map((city) => city.city), ["Magna", "Kearns"]);
 assert.equal(registry.connectionNeeded.length, 2);
 assert.equal(registry.ownerApprovalsNeeded.length, 3);

@@ -1,0 +1,1879 @@
+{
+  "schemaVersion": 1,
+  "decisionId": "frame-utah-slv-weekly-keep-revert-v1",
+  "market": "utah-salt-lake-valley",
+  "asOf": "2026-08-12T17:40:30.503Z",
+  "status": "active-insufficient-four-week-history",
+  "publicMutationPerformed": false,
+  "policy": {
+    "requiredConsecutiveWeeklyPanels": 4,
+    "integrityTruthRule": "Keep required factual corrections; never restore unsupported claims, stale credentials, or wrong entity identity to chase rank.",
+    "rankingRule": "Keep or revert only an isolated ranking variable after four comparable weekly panels, a complete same-window consumer-AI panel, green integrity, intended URL selection, and no material guardrail regression.",
+    "missingDataRule": "Missing panels, provider failures, absent consumer-AI runs, and withheld GSC rows remain unmeasured; they cannot produce a keep, revert, failure, or completion claim.",
+    "protectionRule": "A current #1 organic query or owned AIO citation is a protected foothold, not city completion."
+  },
+  "sources": {
+    "portfolio": {
+      "file": "data/rank-tracker/SLV-18-CITY-GOAL-PORTFOLIO-2026-08-12.json",
+      "sha256": "43e387e853993b636e43a293460f20f2ae880decd2e88512a6882ef79433f8f6"
+    },
+    "saltLakeCityExperiment": {
+      "file": "data/seo-experiments/utah-slc-entity-trust-correction-2026-08-12.json",
+      "sha256": "4ea4c57b9055571e287da12a389c5903d012b9083f747bcd4675b0bac482be27"
+    },
+    "panels": {
+      "salt-lake-city": [
+        {
+          "file": "data/rank-tracker/2026-08-11.json",
+          "sha256": "0d01191d8cede92c44bdc73add0ed09621734c54ccf0848ba5ef165d74038fe7"
+        },
+        {
+          "file": "data/rank-tracker/2026-08-12.json",
+          "sha256": "c950426c484a8e0eed6920e5c5a3b584acca30b981159f70d4074a2ee7c6b18e"
+        }
+      ],
+      "millcreek": [
+        {
+          "file": "data/rank-tracker/panels/millcreek/2026-08-12.json",
+          "sha256": "0467c2d4b323706e5e6c90a97e0c1585385beaaa8401a4eece7753aa9476c1e8"
+        }
+      ],
+      "sandy": [
+        {
+          "file": "data/rank-tracker/panels/sandy/2026-08-12.json",
+          "sha256": "0ae0e40fa8950f95086ec6c46efbf4942962683c882499435df0ce98b18778a5"
+        }
+      ],
+      "holladay": [
+        {
+          "file": "data/rank-tracker/panels/holladay/2026-08-12.json",
+          "sha256": "68e170a9e9b9bc3c48b2b9f686a4b3b75ac027727aa5d1e1a711ad059185adc1"
+        }
+      ],
+      "cottonwood-heights": [
+        {
+          "file": "data/rank-tracker/panels/cottonwood-heights/2026-08-12.json",
+          "sha256": "e75e0589715192849f630a2a9c4b6f39de76f7b1fe063b59d227f829801e6bc1"
+        }
+      ],
+      "draper": [
+        {
+          "file": "data/rank-tracker/panels/draper/2026-08-12.json",
+          "sha256": "ed069233df5012f386418bbe66813994cf1a85141c55430d106e42cacd129103"
+        }
+      ],
+      "bluffdale": [
+        {
+          "file": "data/rank-tracker/expansion/bluffdale/2026-08-12.json",
+          "sha256": "82a19cc677596cb1344034ee86df0e5be7c26011afe5d12ec962c9636d95b65f"
+        }
+      ],
+      "herriman": [
+        {
+          "file": "data/rank-tracker/expansion/herriman/2026-08-12.json",
+          "sha256": "05fcb7297f55cb49cafdb3709380133e47d2527e4f932bb03b73921a4dc90a67"
+        }
+      ],
+      "kearns": [
+        {
+          "file": "data/rank-tracker/expansion/kearns/2026-08-12.json",
+          "sha256": "d6f0ebbe6460d8e21fe0e05ffd76e5c21a48073ed8cf3635ddc0dcfa9c13c34b"
+        }
+      ],
+      "magna": [
+        {
+          "file": "data/rank-tracker/expansion/magna/2026-08-12.json",
+          "sha256": "5880fcd8dc75e9c92e2ffe7eb9718bd34a70260a7e70ae24d047506cced528db"
+        }
+      ],
+      "midvale": [
+        {
+          "file": "data/rank-tracker/expansion/midvale/2026-08-12.json",
+          "sha256": "ac0d21733c8f67c48ffdb67d3f7f79849dda932a0f363745afdbde63cdf4e073"
+        }
+      ],
+      "murray": [
+        {
+          "file": "data/rank-tracker/expansion/murray/2026-08-12.json",
+          "sha256": "b913a598db2aec876beae7d40ae66bf503782aaffc42b35ed311196c7af834af"
+        }
+      ],
+      "riverton": [
+        {
+          "file": "data/rank-tracker/expansion/riverton/2026-08-12.json",
+          "sha256": "c801435611176c70be5f4b7cc9b3b72d757502b03357f647e0fa0d0c02cfaf63"
+        }
+      ],
+      "south-jordan": [
+        {
+          "file": "data/rank-tracker/expansion/south-jordan/2026-08-12.json",
+          "sha256": "89b9e76808710db8afa4fc3cca315eafb87b72b6f0bd9d4424587d858ca0ce3b"
+        }
+      ],
+      "south-salt-lake": [
+        {
+          "file": "data/rank-tracker/expansion/south-salt-lake/2026-08-12.json",
+          "sha256": "ba434f1d8a815158995e0224f4d8e21c75a6b079de438aa406a99a3ea451b10b"
+        }
+      ],
+      "taylorsville": [
+        {
+          "file": "data/rank-tracker/expansion/taylorsville/2026-08-12.json",
+          "sha256": "86d2484c45af65240baca04d70bdfe12bf4fec0fea26d2ff8f0073601663af0b"
+        }
+      ],
+      "west-jordan": [
+        {
+          "file": "data/rank-tracker/expansion/west-jordan/2026-08-12.json",
+          "sha256": "bf339dd6015b0272944ac909321aa767cc9d44f871fd720513aa8c7781cdb7ac"
+        }
+      ],
+      "west-valley-city": [
+        {
+          "file": "data/rank-tracker/expansion/west-valley-city/2026-08-12.json",
+          "sha256": "e7f043ca143481f1bbe30c31bef2082f5a551f467abc9a4ca2884e5f9fd15b12"
+        }
+      ]
+    }
+  },
+  "summary": {
+    "cities": 18,
+    "integrityKeep": 1,
+    "integrityPendingApproval": 17,
+    "rankingKeep": 0,
+    "rankingRevert": 0,
+    "rankingHold": 18,
+    "protectedOrganicNumberOneQueries": 2,
+    "protectedGoogleAiOverviewCitations": 2,
+    "citiesAtSustainedGoal": 0
+  },
+  "nextDecisionDate": "2026-08-17",
+  "nextAction": "Run the scheduled six-city core Google panel on 2026-08-17. Do not admit the 12 expansion cities to recurring paid measurement without explicit spend approval, and do not call a ranking keep/revert before comparable evidence exists.",
+  "cities": [
+    {
+      "city": "Salt Lake City",
+      "slug": "salt-lake-city",
+      "cohort": "core-measured",
+      "panelId": "utah-salt-lake-city-google-v1",
+      "page": "locations/salt-lake-city.html",
+      "latestObservedAt": "2026-08-12T14:18:10.297Z",
+      "rawDatedGoogleReports": 2,
+      "comparableWeeklyGooglePanels": 1,
+      "consumerAiState": "blocked-invalid-provider-credential",
+      "protectedFootholds": {
+        "organicNumberOneQueries": [],
+        "googleAiOverviewCitedQueries": []
+      },
+      "sustainedProgress": {
+        "requiredConsecutiveWeeklyPanels": 4,
+        "allFourOrganicNumberOneStreak": 0,
+        "allFourExactCidMapsNumberOneStreak": 0,
+        "allObservedAiOverviewsCitedStreak": 0,
+        "intendedPageSelectionStreak": 1,
+        "consumerAiCompleteStreak": 0,
+        "cityAtSustainedGoal": false
+      },
+      "decisions": {
+        "integrity": {
+          "verdict": "keep",
+          "reason": "The BBB and manufacturer-credential edits are required factual corrections. Their contract forbids restoring stale grades or unsupported credentials even if ranks fluctuate."
+        },
+        "ranking": {
+          "verdict": "hold",
+          "reason": "Only 1/4 required post-deployment Google panels exist and the earliest evaluation is 2026-09-09T04:40:58.000Z; keep the SLC page frozen.",
+          "activeExperiment": "utah-slc-entity-trust-correction-2026-08-12",
+          "postDeploymentGooglePanels": 1,
+          "requiredGooglePanels": 4,
+          "earliestEvaluationAt": "2026-09-09T04:40:58.000Z",
+          "calendarGatePassedAtLatestPanel": false,
+          "confounds": [
+            "utah-homepage-commercial-title-2026-08-09 is running",
+            "this is a required truth correction across many routes, not an isolated content test",
+            "no GBP, indexing, directory, review, or outreach mutation is part of this change"
+          ]
+        }
+      },
+      "queryStreaks": [
+        {
+          "queryId": "slc-roofing-contractor",
+          "keyword": "roofing contractor salt lake city",
+          "current": {
+            "organicRank": null,
+            "exactCidMapRank": null,
+            "aiOverviewPresent": true,
+            "aiOverviewCited": false,
+            "rankingUrl": null
+          },
+          "consecutiveOrganicNumberOnePanels": 0,
+          "consecutiveExactCidMapsNumberOnePanels": 0,
+          "intendedPageSelected": true
+        },
+        {
+          "queryId": "slc-roof-repair",
+          "keyword": "roof repair salt lake city",
+          "current": {
+            "organicRank": 25,
+            "exactCidMapRank": null,
+            "aiOverviewPresent": false,
+            "aiOverviewCited": false,
+            "rankingUrl": "https://www.framerestorationutah.com/locations/salt-lake-city"
+          },
+          "consecutiveOrganicNumberOnePanels": 0,
+          "consecutiveExactCidMapsNumberOnePanels": 0,
+          "intendedPageSelected": true
+        },
+        {
+          "queryId": "slc-roof-replacement",
+          "keyword": "roof replacement salt lake city",
+          "current": {
+            "organicRank": 19,
+            "exactCidMapRank": null,
+            "aiOverviewPresent": false,
+            "aiOverviewCited": false,
+            "rankingUrl": "https://www.framerestorationutah.com/locations/salt-lake-city"
+          },
+          "consecutiveOrganicNumberOnePanels": 0,
+          "consecutiveExactCidMapsNumberOnePanels": 0,
+          "intendedPageSelected": true
+        },
+        {
+          "queryId": "slc-roofer",
+          "keyword": "roofer salt lake city",
+          "current": {
+            "organicRank": null,
+            "exactCidMapRank": null,
+            "aiOverviewPresent": false,
+            "aiOverviewCited": false,
+            "rankingUrl": null
+          },
+          "consecutiveOrganicNumberOnePanels": 0,
+          "consecutiveExactCidMapsNumberOnePanels": 0,
+          "intendedPageSelected": true
+        }
+      ]
+    },
+    {
+      "city": "Millcreek",
+      "slug": "millcreek",
+      "cohort": "core-measured",
+      "panelId": "utah-millcreek-google-v1",
+      "page": "locations/millcreek.html",
+      "latestObservedAt": "2026-08-12T14:18:10.299Z",
+      "rawDatedGoogleReports": 1,
+      "comparableWeeklyGooglePanels": 1,
+      "consumerAiState": "blocked-invalid-provider-credential",
+      "protectedFootholds": {
+        "organicNumberOneQueries": [],
+        "googleAiOverviewCitedQueries": [
+          "roof repair millcreek"
+        ]
+      },
+      "sustainedProgress": {
+        "requiredConsecutiveWeeklyPanels": 4,
+        "allFourOrganicNumberOneStreak": 0,
+        "allFourExactCidMapsNumberOneStreak": 0,
+        "allObservedAiOverviewsCitedStreak": 1,
+        "intendedPageSelectionStreak": 1,
+        "consumerAiCompleteStreak": 0,
+        "cityAtSustainedGoal": false
+      },
+      "decisions": {
+        "integrity": {
+          "verdict": "pending-owner-approval",
+          "reason": "The bounded integrity cleanup has not been published; no keep/revert decision exists for an unapplied change."
+        },
+        "ranking": {
+          "verdict": "hold",
+          "reason": "Only 1/4 comparable weekly Google panels exist and no isolated ranking experiment is running.",
+          "activeExperiment": null,
+          "observedGooglePanels": 1,
+          "requiredGooglePanels": 4
+        }
+      },
+      "queryStreaks": [
+        {
+          "queryId": "millcreek-roofing-contractor",
+          "keyword": "roofing contractor millcreek",
+          "current": {
+            "organicRank": 4,
+            "exactCidMapRank": null,
+            "aiOverviewPresent": false,
+            "aiOverviewCited": false,
+            "rankingUrl": "https://www.framerestorationutah.com/locations/millcreek"
+          },
+          "consecutiveOrganicNumberOnePanels": 0,
+          "consecutiveExactCidMapsNumberOnePanels": 0,
+          "intendedPageSelected": true
+        },
+        {
+          "queryId": "millcreek-roof-repair",
+          "keyword": "roof repair millcreek",
+          "current": {
+            "organicRank": 4,
+            "exactCidMapRank": null,
+            "aiOverviewPresent": true,
+            "aiOverviewCited": true,
+            "rankingUrl": "https://www.framerestorationutah.com/locations/millcreek"
+          },
+          "consecutiveOrganicNumberOnePanels": 0,
+          "consecutiveExactCidMapsNumberOnePanels": 0,
+          "intendedPageSelected": true
+        },
+        {
+          "queryId": "millcreek-roof-replacement",
+          "keyword": "roof replacement millcreek",
+          "current": {
+            "organicRank": 3,
+            "exactCidMapRank": null,
+            "aiOverviewPresent": false,
+            "aiOverviewCited": false,
+            "rankingUrl": "https://www.framerestorationutah.com/locations/millcreek"
+          },
+          "consecutiveOrganicNumberOnePanels": 0,
+          "consecutiveExactCidMapsNumberOnePanels": 0,
+          "intendedPageSelected": true
+        },
+        {
+          "queryId": "millcreek-roofer",
+          "keyword": "roofer millcreek",
+          "current": {
+            "organicRank": 5,
+            "exactCidMapRank": null,
+            "aiOverviewPresent": false,
+            "aiOverviewCited": false,
+            "rankingUrl": "https://www.framerestorationutah.com/locations/millcreek"
+          },
+          "consecutiveOrganicNumberOnePanels": 0,
+          "consecutiveExactCidMapsNumberOnePanels": 0,
+          "intendedPageSelected": true
+        }
+      ]
+    },
+    {
+      "city": "Sandy",
+      "slug": "sandy",
+      "cohort": "core-measured",
+      "panelId": "utah-sandy-google-v1",
+      "page": "locations/sandy.html",
+      "latestObservedAt": "2026-08-12T14:18:10.300Z",
+      "rawDatedGoogleReports": 1,
+      "comparableWeeklyGooglePanels": 1,
+      "consumerAiState": "configured-manual-measurement-only-blocked-invalid-provider-credential",
+      "protectedFootholds": {
+        "organicNumberOneQueries": [],
+        "googleAiOverviewCitedQueries": []
+      },
+      "sustainedProgress": {
+        "requiredConsecutiveWeeklyPanels": 4,
+        "allFourOrganicNumberOneStreak": 0,
+        "allFourExactCidMapsNumberOneStreak": 0,
+        "allObservedAiOverviewsCitedStreak": 1,
+        "intendedPageSelectionStreak": 1,
+        "consumerAiCompleteStreak": 0,
+        "cityAtSustainedGoal": false
+      },
+      "decisions": {
+        "integrity": {
+          "verdict": "pending-owner-approval",
+          "reason": "The bounded integrity cleanup has not been published; no keep/revert decision exists for an unapplied change."
+        },
+        "ranking": {
+          "verdict": "hold",
+          "reason": "Only 1/4 comparable weekly Google panels exist and no isolated ranking experiment is running.",
+          "activeExperiment": null,
+          "observedGooglePanels": 1,
+          "requiredGooglePanels": 4
+        }
+      },
+      "queryStreaks": [
+        {
+          "queryId": "sandy-roofing-contractor",
+          "keyword": "roofing contractor sandy",
+          "current": {
+            "organicRank": 17,
+            "exactCidMapRank": null,
+            "aiOverviewPresent": false,
+            "aiOverviewCited": false,
+            "rankingUrl": "https://www.framerestorationutah.com/locations/sandy"
+          },
+          "consecutiveOrganicNumberOnePanels": 0,
+          "consecutiveExactCidMapsNumberOnePanels": 0,
+          "intendedPageSelected": true
+        },
+        {
+          "queryId": "sandy-roof-repair",
+          "keyword": "roof repair sandy",
+          "current": {
+            "organicRank": 13,
+            "exactCidMapRank": null,
+            "aiOverviewPresent": false,
+            "aiOverviewCited": false,
+            "rankingUrl": "https://www.framerestorationutah.com/locations/sandy"
+          },
+          "consecutiveOrganicNumberOnePanels": 0,
+          "consecutiveExactCidMapsNumberOnePanels": 0,
+          "intendedPageSelected": true
+        },
+        {
+          "queryId": "sandy-roof-replacement",
+          "keyword": "roof replacement sandy",
+          "current": {
+            "organicRank": 13,
+            "exactCidMapRank": null,
+            "aiOverviewPresent": false,
+            "aiOverviewCited": false,
+            "rankingUrl": "https://www.framerestorationutah.com/locations/sandy"
+          },
+          "consecutiveOrganicNumberOnePanels": 0,
+          "consecutiveExactCidMapsNumberOnePanels": 0,
+          "intendedPageSelected": true
+        },
+        {
+          "queryId": "sandy-roofer",
+          "keyword": "roofer sandy",
+          "current": {
+            "organicRank": 11,
+            "exactCidMapRank": null,
+            "aiOverviewPresent": false,
+            "aiOverviewCited": false,
+            "rankingUrl": "https://www.framerestorationutah.com/locations/sandy"
+          },
+          "consecutiveOrganicNumberOnePanels": 0,
+          "consecutiveExactCidMapsNumberOnePanels": 0,
+          "intendedPageSelected": true
+        }
+      ]
+    },
+    {
+      "city": "Holladay",
+      "slug": "holladay",
+      "cohort": "core-measured",
+      "panelId": "utah-holladay-google-v1",
+      "page": "locations/holladay.html",
+      "latestObservedAt": "2026-08-12T14:18:10.299Z",
+      "rawDatedGoogleReports": 1,
+      "comparableWeeklyGooglePanels": 1,
+      "consumerAiState": "configured-manual-measurement-only-blocked-invalid-provider-credential",
+      "protectedFootholds": {
+        "organicNumberOneQueries": [],
+        "googleAiOverviewCitedQueries": []
+      },
+      "sustainedProgress": {
+        "requiredConsecutiveWeeklyPanels": 4,
+        "allFourOrganicNumberOneStreak": 0,
+        "allFourExactCidMapsNumberOneStreak": 0,
+        "allObservedAiOverviewsCitedStreak": 1,
+        "intendedPageSelectionStreak": 1,
+        "consumerAiCompleteStreak": 0,
+        "cityAtSustainedGoal": false
+      },
+      "decisions": {
+        "integrity": {
+          "verdict": "pending-owner-approval",
+          "reason": "The bounded integrity cleanup has not been published; no keep/revert decision exists for an unapplied change."
+        },
+        "ranking": {
+          "verdict": "hold",
+          "reason": "Only 1/4 comparable weekly Google panels exist and no isolated ranking experiment is running.",
+          "activeExperiment": null,
+          "observedGooglePanels": 1,
+          "requiredGooglePanels": 4
+        }
+      },
+      "queryStreaks": [
+        {
+          "queryId": "holladay-roofing-contractor",
+          "keyword": "roofing contractor holladay",
+          "current": {
+            "organicRank": 17,
+            "exactCidMapRank": null,
+            "aiOverviewPresent": false,
+            "aiOverviewCited": false,
+            "rankingUrl": "https://www.framerestorationutah.com/locations/holladay"
+          },
+          "consecutiveOrganicNumberOnePanels": 0,
+          "consecutiveExactCidMapsNumberOnePanels": 0,
+          "intendedPageSelected": true
+        },
+        {
+          "queryId": "holladay-roof-repair",
+          "keyword": "roof repair holladay",
+          "current": {
+            "organicRank": 10,
+            "exactCidMapRank": null,
+            "aiOverviewPresent": false,
+            "aiOverviewCited": false,
+            "rankingUrl": "https://www.framerestorationutah.com/locations/holladay"
+          },
+          "consecutiveOrganicNumberOnePanels": 0,
+          "consecutiveExactCidMapsNumberOnePanels": 0,
+          "intendedPageSelected": true
+        },
+        {
+          "queryId": "holladay-roof-replacement",
+          "keyword": "roof replacement holladay",
+          "current": {
+            "organicRank": 4,
+            "exactCidMapRank": null,
+            "aiOverviewPresent": false,
+            "aiOverviewCited": false,
+            "rankingUrl": "https://www.framerestorationutah.com/locations/holladay"
+          },
+          "consecutiveOrganicNumberOnePanels": 0,
+          "consecutiveExactCidMapsNumberOnePanels": 0,
+          "intendedPageSelected": true
+        },
+        {
+          "queryId": "holladay-roofer",
+          "keyword": "roofer holladay",
+          "current": {
+            "organicRank": 12,
+            "exactCidMapRank": null,
+            "aiOverviewPresent": false,
+            "aiOverviewCited": false,
+            "rankingUrl": "https://www.framerestorationutah.com/locations/holladay"
+          },
+          "consecutiveOrganicNumberOnePanels": 0,
+          "consecutiveExactCidMapsNumberOnePanels": 0,
+          "intendedPageSelected": true
+        }
+      ]
+    },
+    {
+      "city": "Cottonwood Heights",
+      "slug": "cottonwood-heights",
+      "cohort": "core-measured",
+      "panelId": "utah-cottonwood-heights-google-v1",
+      "page": "locations/cottonwood-heights.html",
+      "latestObservedAt": "2026-08-12T14:18:10.299Z",
+      "rawDatedGoogleReports": 1,
+      "comparableWeeklyGooglePanels": 1,
+      "consumerAiState": "configured-manual-measurement-only-blocked-invalid-provider-credential",
+      "protectedFootholds": {
+        "organicNumberOneQueries": [],
+        "googleAiOverviewCitedQueries": []
+      },
+      "sustainedProgress": {
+        "requiredConsecutiveWeeklyPanels": 4,
+        "allFourOrganicNumberOneStreak": 0,
+        "allFourExactCidMapsNumberOneStreak": 0,
+        "allObservedAiOverviewsCitedStreak": 1,
+        "intendedPageSelectionStreak": 1,
+        "consumerAiCompleteStreak": 0,
+        "cityAtSustainedGoal": false
+      },
+      "decisions": {
+        "integrity": {
+          "verdict": "pending-owner-approval",
+          "reason": "The bounded integrity cleanup has not been published; no keep/revert decision exists for an unapplied change."
+        },
+        "ranking": {
+          "verdict": "hold",
+          "reason": "Only 1/4 comparable weekly Google panels exist and no isolated ranking experiment is running.",
+          "activeExperiment": null,
+          "observedGooglePanels": 1,
+          "requiredGooglePanels": 4
+        }
+      },
+      "queryStreaks": [
+        {
+          "queryId": "cottonwood-heights-roofing-contractor",
+          "keyword": "roofing contractor cottonwood heights",
+          "current": {
+            "organicRank": 15,
+            "exactCidMapRank": null,
+            "aiOverviewPresent": false,
+            "aiOverviewCited": false,
+            "rankingUrl": "https://www.framerestorationutah.com/locations/cottonwood-heights"
+          },
+          "consecutiveOrganicNumberOnePanels": 0,
+          "consecutiveExactCidMapsNumberOnePanels": 0,
+          "intendedPageSelected": true
+        },
+        {
+          "queryId": "cottonwood-heights-roof-repair",
+          "keyword": "roof repair cottonwood heights",
+          "current": {
+            "organicRank": 10,
+            "exactCidMapRank": null,
+            "aiOverviewPresent": false,
+            "aiOverviewCited": false,
+            "rankingUrl": "https://www.framerestorationutah.com/locations/cottonwood-heights"
+          },
+          "consecutiveOrganicNumberOnePanels": 0,
+          "consecutiveExactCidMapsNumberOnePanels": 0,
+          "intendedPageSelected": true
+        },
+        {
+          "queryId": "cottonwood-heights-roof-replacement",
+          "keyword": "roof replacement cottonwood heights",
+          "current": {
+            "organicRank": 15,
+            "exactCidMapRank": null,
+            "aiOverviewPresent": false,
+            "aiOverviewCited": false,
+            "rankingUrl": "https://www.framerestorationutah.com/locations/cottonwood-heights"
+          },
+          "consecutiveOrganicNumberOnePanels": 0,
+          "consecutiveExactCidMapsNumberOnePanels": 0,
+          "intendedPageSelected": true
+        },
+        {
+          "queryId": "cottonwood-heights-roofer",
+          "keyword": "roofer cottonwood heights",
+          "current": {
+            "organicRank": 14,
+            "exactCidMapRank": null,
+            "aiOverviewPresent": false,
+            "aiOverviewCited": false,
+            "rankingUrl": "https://www.framerestorationutah.com/locations/cottonwood-heights"
+          },
+          "consecutiveOrganicNumberOnePanels": 0,
+          "consecutiveExactCidMapsNumberOnePanels": 0,
+          "intendedPageSelected": true
+        }
+      ]
+    },
+    {
+      "city": "Draper",
+      "slug": "draper",
+      "cohort": "core-measured",
+      "panelId": "utah-draper-google-v1",
+      "page": "locations/draper.html",
+      "latestObservedAt": "2026-08-12T14:18:10.300Z",
+      "rawDatedGoogleReports": 1,
+      "comparableWeeklyGooglePanels": 1,
+      "consumerAiState": "configured-manual-measurement-only-blocked-invalid-provider-credential",
+      "protectedFootholds": {
+        "organicNumberOneQueries": [],
+        "googleAiOverviewCitedQueries": []
+      },
+      "sustainedProgress": {
+        "requiredConsecutiveWeeklyPanels": 4,
+        "allFourOrganicNumberOneStreak": 0,
+        "allFourExactCidMapsNumberOneStreak": 0,
+        "allObservedAiOverviewsCitedStreak": 1,
+        "intendedPageSelectionStreak": 1,
+        "consumerAiCompleteStreak": 0,
+        "cityAtSustainedGoal": false
+      },
+      "decisions": {
+        "integrity": {
+          "verdict": "pending-owner-approval",
+          "reason": "The bounded integrity cleanup has not been published; no keep/revert decision exists for an unapplied change."
+        },
+        "ranking": {
+          "verdict": "hold",
+          "reason": "Only 1/4 comparable weekly Google panels exist and no isolated ranking experiment is running.",
+          "activeExperiment": null,
+          "observedGooglePanels": 1,
+          "requiredGooglePanels": 4
+        }
+      },
+      "queryStreaks": [
+        {
+          "queryId": "draper-roofing-contractor",
+          "keyword": "roofing contractor draper",
+          "current": {
+            "organicRank": null,
+            "exactCidMapRank": null,
+            "aiOverviewPresent": false,
+            "aiOverviewCited": false,
+            "rankingUrl": null
+          },
+          "consecutiveOrganicNumberOnePanels": 0,
+          "consecutiveExactCidMapsNumberOnePanels": 0,
+          "intendedPageSelected": true
+        },
+        {
+          "queryId": "draper-roof-repair",
+          "keyword": "roof repair draper",
+          "current": {
+            "organicRank": null,
+            "exactCidMapRank": null,
+            "aiOverviewPresent": false,
+            "aiOverviewCited": false,
+            "rankingUrl": null
+          },
+          "consecutiveOrganicNumberOnePanels": 0,
+          "consecutiveExactCidMapsNumberOnePanels": 0,
+          "intendedPageSelected": true
+        },
+        {
+          "queryId": "draper-roof-replacement",
+          "keyword": "roof replacement draper",
+          "current": {
+            "organicRank": null,
+            "exactCidMapRank": null,
+            "aiOverviewPresent": false,
+            "aiOverviewCited": false,
+            "rankingUrl": null
+          },
+          "consecutiveOrganicNumberOnePanels": 0,
+          "consecutiveExactCidMapsNumberOnePanels": 0,
+          "intendedPageSelected": true
+        },
+        {
+          "queryId": "draper-roofer",
+          "keyword": "roofer draper",
+          "current": {
+            "organicRank": null,
+            "exactCidMapRank": null,
+            "aiOverviewPresent": false,
+            "aiOverviewCited": false,
+            "rankingUrl": null
+          },
+          "consecutiveOrganicNumberOnePanels": 0,
+          "consecutiveExactCidMapsNumberOnePanels": 0,
+          "intendedPageSelected": true
+        }
+      ]
+    },
+    {
+      "city": "Bluffdale",
+      "slug": "bluffdale",
+      "cohort": "expansion-manual-baseline-measured",
+      "panelId": "utah-bluffdale-google-v1",
+      "page": "locations/bluffdale.html",
+      "latestObservedAt": "2026-08-12T17:40:30.498Z",
+      "rawDatedGoogleReports": 1,
+      "comparableWeeklyGooglePanels": 1,
+      "consumerAiState": "configured-manual-measurement-only-blocked-invalid-provider-credential",
+      "protectedFootholds": {
+        "organicNumberOneQueries": [],
+        "googleAiOverviewCitedQueries": []
+      },
+      "sustainedProgress": {
+        "requiredConsecutiveWeeklyPanels": 4,
+        "allFourOrganicNumberOneStreak": 0,
+        "allFourExactCidMapsNumberOneStreak": 0,
+        "allObservedAiOverviewsCitedStreak": 1,
+        "intendedPageSelectionStreak": 1,
+        "consumerAiCompleteStreak": 0,
+        "cityAtSustainedGoal": false
+      },
+      "decisions": {
+        "integrity": {
+          "verdict": "pending-owner-approval",
+          "reason": "The bounded integrity cleanup has not been published; no keep/revert decision exists for an unapplied change."
+        },
+        "ranking": {
+          "verdict": "hold",
+          "reason": "Only 1/4 comparable weekly Google panels exist and no isolated ranking experiment is running.",
+          "activeExperiment": null,
+          "observedGooglePanels": 1,
+          "requiredGooglePanels": 4
+        }
+      },
+      "queryStreaks": [
+        {
+          "queryId": "bluffdale-roofing-contractor",
+          "keyword": "roofing contractor bluffdale",
+          "current": {
+            "organicRank": 18,
+            "exactCidMapRank": null,
+            "aiOverviewPresent": false,
+            "aiOverviewCited": false,
+            "rankingUrl": "https://www.framerestorationutah.com/locations/bluffdale"
+          },
+          "consecutiveOrganicNumberOnePanels": 0,
+          "consecutiveExactCidMapsNumberOnePanels": 0,
+          "intendedPageSelected": true
+        },
+        {
+          "queryId": "bluffdale-roof-repair",
+          "keyword": "roof repair bluffdale",
+          "current": {
+            "organicRank": 11,
+            "exactCidMapRank": null,
+            "aiOverviewPresent": false,
+            "aiOverviewCited": false,
+            "rankingUrl": "https://www.framerestorationutah.com/locations/bluffdale"
+          },
+          "consecutiveOrganicNumberOnePanels": 0,
+          "consecutiveExactCidMapsNumberOnePanels": 0,
+          "intendedPageSelected": true
+        },
+        {
+          "queryId": "bluffdale-roof-replacement",
+          "keyword": "roof replacement bluffdale",
+          "current": {
+            "organicRank": 9,
+            "exactCidMapRank": null,
+            "aiOverviewPresent": false,
+            "aiOverviewCited": false,
+            "rankingUrl": "https://www.framerestorationutah.com/locations/bluffdale"
+          },
+          "consecutiveOrganicNumberOnePanels": 0,
+          "consecutiveExactCidMapsNumberOnePanels": 0,
+          "intendedPageSelected": true
+        },
+        {
+          "queryId": "bluffdale-roofer",
+          "keyword": "roofer bluffdale",
+          "current": {
+            "organicRank": 17,
+            "exactCidMapRank": null,
+            "aiOverviewPresent": false,
+            "aiOverviewCited": false,
+            "rankingUrl": "https://www.framerestorationutah.com/locations/bluffdale"
+          },
+          "consecutiveOrganicNumberOnePanels": 0,
+          "consecutiveExactCidMapsNumberOnePanels": 0,
+          "intendedPageSelected": true
+        }
+      ]
+    },
+    {
+      "city": "Herriman",
+      "slug": "herriman",
+      "cohort": "expansion-manual-baseline-measured",
+      "panelId": "utah-herriman-google-v1",
+      "page": "locations/herriman.html",
+      "latestObservedAt": "2026-08-12T17:40:30.500Z",
+      "rawDatedGoogleReports": 1,
+      "comparableWeeklyGooglePanels": 1,
+      "consumerAiState": "configured-manual-measurement-only-blocked-invalid-provider-credential",
+      "protectedFootholds": {
+        "organicNumberOneQueries": [],
+        "googleAiOverviewCitedQueries": []
+      },
+      "sustainedProgress": {
+        "requiredConsecutiveWeeklyPanels": 4,
+        "allFourOrganicNumberOneStreak": 0,
+        "allFourExactCidMapsNumberOneStreak": 0,
+        "allObservedAiOverviewsCitedStreak": 1,
+        "intendedPageSelectionStreak": 1,
+        "consumerAiCompleteStreak": 0,
+        "cityAtSustainedGoal": false
+      },
+      "decisions": {
+        "integrity": {
+          "verdict": "pending-owner-approval",
+          "reason": "The bounded integrity cleanup has not been published; no keep/revert decision exists for an unapplied change."
+        },
+        "ranking": {
+          "verdict": "hold",
+          "reason": "Only 1/4 comparable weekly Google panels exist and no isolated ranking experiment is running.",
+          "activeExperiment": null,
+          "observedGooglePanels": 1,
+          "requiredGooglePanels": 4
+        }
+      },
+      "queryStreaks": [
+        {
+          "queryId": "herriman-roofing-contractor",
+          "keyword": "roofing contractor herriman",
+          "current": {
+            "organicRank": 22,
+            "exactCidMapRank": null,
+            "aiOverviewPresent": false,
+            "aiOverviewCited": false,
+            "rankingUrl": "https://www.framerestorationutah.com/locations/herriman"
+          },
+          "consecutiveOrganicNumberOnePanels": 0,
+          "consecutiveExactCidMapsNumberOnePanels": 0,
+          "intendedPageSelected": true
+        },
+        {
+          "queryId": "herriman-roof-repair",
+          "keyword": "roof repair herriman",
+          "current": {
+            "organicRank": 14,
+            "exactCidMapRank": null,
+            "aiOverviewPresent": false,
+            "aiOverviewCited": false,
+            "rankingUrl": "https://www.framerestorationutah.com/locations/herriman"
+          },
+          "consecutiveOrganicNumberOnePanels": 0,
+          "consecutiveExactCidMapsNumberOnePanels": 0,
+          "intendedPageSelected": true
+        },
+        {
+          "queryId": "herriman-roof-replacement",
+          "keyword": "roof replacement herriman",
+          "current": {
+            "organicRank": 12,
+            "exactCidMapRank": null,
+            "aiOverviewPresent": false,
+            "aiOverviewCited": false,
+            "rankingUrl": "https://www.framerestorationutah.com/locations/herriman"
+          },
+          "consecutiveOrganicNumberOnePanels": 0,
+          "consecutiveExactCidMapsNumberOnePanels": 0,
+          "intendedPageSelected": true
+        },
+        {
+          "queryId": "herriman-roofer",
+          "keyword": "roofer herriman",
+          "current": {
+            "organicRank": 26,
+            "exactCidMapRank": null,
+            "aiOverviewPresent": false,
+            "aiOverviewCited": false,
+            "rankingUrl": "https://www.framerestorationutah.com/locations/herriman"
+          },
+          "consecutiveOrganicNumberOnePanels": 0,
+          "consecutiveExactCidMapsNumberOnePanels": 0,
+          "intendedPageSelected": true
+        }
+      ]
+    },
+    {
+      "city": "Kearns",
+      "slug": "kearns",
+      "cohort": "expansion-manual-baseline-measured",
+      "panelId": "utah-kearns-google-v1",
+      "page": "locations/kearns.html",
+      "latestObservedAt": "2026-08-12T17:40:30.500Z",
+      "rawDatedGoogleReports": 1,
+      "comparableWeeklyGooglePanels": 1,
+      "consumerAiState": "configured-manual-measurement-only-blocked-invalid-provider-credential",
+      "protectedFootholds": {
+        "organicNumberOneQueries": [
+          "roof replacement kearns"
+        ],
+        "googleAiOverviewCitedQueries": []
+      },
+      "sustainedProgress": {
+        "requiredConsecutiveWeeklyPanels": 4,
+        "allFourOrganicNumberOneStreak": 0,
+        "allFourExactCidMapsNumberOneStreak": 0,
+        "allObservedAiOverviewsCitedStreak": 1,
+        "intendedPageSelectionStreak": 1,
+        "consumerAiCompleteStreak": 0,
+        "cityAtSustainedGoal": false
+      },
+      "decisions": {
+        "integrity": {
+          "verdict": "pending-owner-approval",
+          "reason": "The bounded integrity cleanup has not been published; no keep/revert decision exists for an unapplied change."
+        },
+        "ranking": {
+          "verdict": "hold",
+          "reason": "Only 1/4 comparable weekly Google panels exist and no isolated ranking experiment is running.",
+          "activeExperiment": null,
+          "observedGooglePanels": 1,
+          "requiredGooglePanels": 4
+        }
+      },
+      "queryStreaks": [
+        {
+          "queryId": "kearns-roofing-contractor",
+          "keyword": "roofing contractor kearns",
+          "current": {
+            "organicRank": 14,
+            "exactCidMapRank": null,
+            "aiOverviewPresent": false,
+            "aiOverviewCited": false,
+            "rankingUrl": "https://www.framerestorationutah.com/locations/kearns"
+          },
+          "consecutiveOrganicNumberOnePanels": 0,
+          "consecutiveExactCidMapsNumberOnePanels": 0,
+          "intendedPageSelected": true
+        },
+        {
+          "queryId": "kearns-roof-repair",
+          "keyword": "roof repair kearns",
+          "current": {
+            "organicRank": 8,
+            "exactCidMapRank": null,
+            "aiOverviewPresent": false,
+            "aiOverviewCited": false,
+            "rankingUrl": "https://www.framerestorationutah.com/locations/kearns"
+          },
+          "consecutiveOrganicNumberOnePanels": 0,
+          "consecutiveExactCidMapsNumberOnePanels": 0,
+          "intendedPageSelected": true
+        },
+        {
+          "queryId": "kearns-roof-replacement",
+          "keyword": "roof replacement kearns",
+          "current": {
+            "organicRank": 1,
+            "exactCidMapRank": null,
+            "aiOverviewPresent": false,
+            "aiOverviewCited": false,
+            "rankingUrl": "https://www.framerestorationutah.com/locations/kearns"
+          },
+          "consecutiveOrganicNumberOnePanels": 1,
+          "consecutiveExactCidMapsNumberOnePanels": 0,
+          "intendedPageSelected": true
+        },
+        {
+          "queryId": "kearns-roofer",
+          "keyword": "roofer kearns",
+          "current": {
+            "organicRank": 10,
+            "exactCidMapRank": null,
+            "aiOverviewPresent": false,
+            "aiOverviewCited": false,
+            "rankingUrl": "https://www.framerestorationutah.com/locations/kearns"
+          },
+          "consecutiveOrganicNumberOnePanels": 0,
+          "consecutiveExactCidMapsNumberOnePanels": 0,
+          "intendedPageSelected": true
+        }
+      ]
+    },
+    {
+      "city": "Magna",
+      "slug": "magna",
+      "cohort": "expansion-manual-baseline-measured",
+      "panelId": "utah-magna-google-v1",
+      "page": "locations/magna.html",
+      "latestObservedAt": "2026-08-12T17:40:30.501Z",
+      "rawDatedGoogleReports": 1,
+      "comparableWeeklyGooglePanels": 1,
+      "consumerAiState": "configured-manual-measurement-only-blocked-invalid-provider-credential",
+      "protectedFootholds": {
+        "organicNumberOneQueries": [
+          "roof replacement magna"
+        ],
+        "googleAiOverviewCitedQueries": [
+          "roof replacement magna"
+        ]
+      },
+      "sustainedProgress": {
+        "requiredConsecutiveWeeklyPanels": 4,
+        "allFourOrganicNumberOneStreak": 0,
+        "allFourExactCidMapsNumberOneStreak": 0,
+        "allObservedAiOverviewsCitedStreak": 1,
+        "intendedPageSelectionStreak": 1,
+        "consumerAiCompleteStreak": 0,
+        "cityAtSustainedGoal": false
+      },
+      "decisions": {
+        "integrity": {
+          "verdict": "pending-owner-approval",
+          "reason": "The bounded integrity cleanup has not been published; no keep/revert decision exists for an unapplied change."
+        },
+        "ranking": {
+          "verdict": "hold",
+          "reason": "Only 1/4 comparable weekly Google panels exist and no isolated ranking experiment is running.",
+          "activeExperiment": null,
+          "observedGooglePanels": 1,
+          "requiredGooglePanels": 4
+        }
+      },
+      "queryStreaks": [
+        {
+          "queryId": "magna-roofing-contractor",
+          "keyword": "roofing contractor magna",
+          "current": {
+            "organicRank": 7,
+            "exactCidMapRank": null,
+            "aiOverviewPresent": false,
+            "aiOverviewCited": false,
+            "rankingUrl": "https://www.framerestorationutah.com/locations/magna"
+          },
+          "consecutiveOrganicNumberOnePanels": 0,
+          "consecutiveExactCidMapsNumberOnePanels": 0,
+          "intendedPageSelected": true
+        },
+        {
+          "queryId": "magna-roof-repair",
+          "keyword": "roof repair magna",
+          "current": {
+            "organicRank": 2,
+            "exactCidMapRank": null,
+            "aiOverviewPresent": false,
+            "aiOverviewCited": false,
+            "rankingUrl": "https://www.framerestorationutah.com/locations/magna"
+          },
+          "consecutiveOrganicNumberOnePanels": 0,
+          "consecutiveExactCidMapsNumberOnePanels": 0,
+          "intendedPageSelected": true
+        },
+        {
+          "queryId": "magna-roof-replacement",
+          "keyword": "roof replacement magna",
+          "current": {
+            "organicRank": 1,
+            "exactCidMapRank": null,
+            "aiOverviewPresent": true,
+            "aiOverviewCited": true,
+            "rankingUrl": "https://www.framerestorationutah.com/locations/magna"
+          },
+          "consecutiveOrganicNumberOnePanels": 1,
+          "consecutiveExactCidMapsNumberOnePanels": 0,
+          "intendedPageSelected": true
+        },
+        {
+          "queryId": "magna-roofer",
+          "keyword": "roofer magna",
+          "current": {
+            "organicRank": 3,
+            "exactCidMapRank": null,
+            "aiOverviewPresent": false,
+            "aiOverviewCited": false,
+            "rankingUrl": "https://www.framerestorationutah.com/locations/magna"
+          },
+          "consecutiveOrganicNumberOnePanels": 0,
+          "consecutiveExactCidMapsNumberOnePanels": 0,
+          "intendedPageSelected": true
+        }
+      ]
+    },
+    {
+      "city": "Midvale",
+      "slug": "midvale",
+      "cohort": "expansion-manual-baseline-measured",
+      "panelId": "utah-midvale-google-v1",
+      "page": "locations/midvale.html",
+      "latestObservedAt": "2026-08-12T17:40:30.501Z",
+      "rawDatedGoogleReports": 1,
+      "comparableWeeklyGooglePanels": 1,
+      "consumerAiState": "configured-manual-measurement-only-blocked-invalid-provider-credential",
+      "protectedFootholds": {
+        "organicNumberOneQueries": [],
+        "googleAiOverviewCitedQueries": []
+      },
+      "sustainedProgress": {
+        "requiredConsecutiveWeeklyPanels": 4,
+        "allFourOrganicNumberOneStreak": 0,
+        "allFourExactCidMapsNumberOneStreak": 0,
+        "allObservedAiOverviewsCitedStreak": 1,
+        "intendedPageSelectionStreak": 1,
+        "consumerAiCompleteStreak": 0,
+        "cityAtSustainedGoal": false
+      },
+      "decisions": {
+        "integrity": {
+          "verdict": "pending-owner-approval",
+          "reason": "The bounded integrity cleanup has not been published; no keep/revert decision exists for an unapplied change."
+        },
+        "ranking": {
+          "verdict": "hold",
+          "reason": "Only 1/4 comparable weekly Google panels exist and no isolated ranking experiment is running.",
+          "activeExperiment": null,
+          "observedGooglePanels": 1,
+          "requiredGooglePanels": 4
+        }
+      },
+      "queryStreaks": [
+        {
+          "queryId": "midvale-roofing-contractor",
+          "keyword": "roofing contractor midvale",
+          "current": {
+            "organicRank": 18,
+            "exactCidMapRank": null,
+            "aiOverviewPresent": false,
+            "aiOverviewCited": false,
+            "rankingUrl": "https://www.framerestorationutah.com/locations/midvale"
+          },
+          "consecutiveOrganicNumberOnePanels": 0,
+          "consecutiveExactCidMapsNumberOnePanels": 0,
+          "intendedPageSelected": true
+        },
+        {
+          "queryId": "midvale-roof-repair",
+          "keyword": "roof repair midvale",
+          "current": {
+            "organicRank": 15,
+            "exactCidMapRank": null,
+            "aiOverviewPresent": false,
+            "aiOverviewCited": false,
+            "rankingUrl": "https://www.framerestorationutah.com/locations/midvale"
+          },
+          "consecutiveOrganicNumberOnePanels": 0,
+          "consecutiveExactCidMapsNumberOnePanels": 0,
+          "intendedPageSelected": true
+        },
+        {
+          "queryId": "midvale-roof-replacement",
+          "keyword": "roof replacement midvale",
+          "current": {
+            "organicRank": 10,
+            "exactCidMapRank": null,
+            "aiOverviewPresent": false,
+            "aiOverviewCited": false,
+            "rankingUrl": "https://www.framerestorationutah.com/locations/midvale"
+          },
+          "consecutiveOrganicNumberOnePanels": 0,
+          "consecutiveExactCidMapsNumberOnePanels": 0,
+          "intendedPageSelected": true
+        },
+        {
+          "queryId": "midvale-roofer",
+          "keyword": "roofer midvale",
+          "current": {
+            "organicRank": 16,
+            "exactCidMapRank": null,
+            "aiOverviewPresent": false,
+            "aiOverviewCited": false,
+            "rankingUrl": "https://www.framerestorationutah.com/locations/midvale"
+          },
+          "consecutiveOrganicNumberOnePanels": 0,
+          "consecutiveExactCidMapsNumberOnePanels": 0,
+          "intendedPageSelected": true
+        }
+      ]
+    },
+    {
+      "city": "Murray",
+      "slug": "murray",
+      "cohort": "expansion-manual-baseline-measured",
+      "panelId": "utah-murray-google-v1",
+      "page": "locations/murray.html",
+      "latestObservedAt": "2026-08-12T17:40:30.501Z",
+      "rawDatedGoogleReports": 1,
+      "comparableWeeklyGooglePanels": 1,
+      "consumerAiState": "configured-manual-measurement-only-blocked-invalid-provider-credential",
+      "protectedFootholds": {
+        "organicNumberOneQueries": [],
+        "googleAiOverviewCitedQueries": []
+      },
+      "sustainedProgress": {
+        "requiredConsecutiveWeeklyPanels": 4,
+        "allFourOrganicNumberOneStreak": 0,
+        "allFourExactCidMapsNumberOneStreak": 0,
+        "allObservedAiOverviewsCitedStreak": 1,
+        "intendedPageSelectionStreak": 1,
+        "consumerAiCompleteStreak": 0,
+        "cityAtSustainedGoal": false
+      },
+      "decisions": {
+        "integrity": {
+          "verdict": "pending-owner-approval",
+          "reason": "The bounded integrity cleanup has not been published; no keep/revert decision exists for an unapplied change."
+        },
+        "ranking": {
+          "verdict": "hold",
+          "reason": "Only 1/4 comparable weekly Google panels exist and no isolated ranking experiment is running.",
+          "activeExperiment": null,
+          "observedGooglePanels": 1,
+          "requiredGooglePanels": 4
+        }
+      },
+      "queryStreaks": [
+        {
+          "queryId": "murray-roofing-contractor",
+          "keyword": "roofing contractor murray",
+          "current": {
+            "organicRank": 12,
+            "exactCidMapRank": null,
+            "aiOverviewPresent": false,
+            "aiOverviewCited": false,
+            "rankingUrl": "https://www.framerestorationutah.com/locations/murray"
+          },
+          "consecutiveOrganicNumberOnePanels": 0,
+          "consecutiveExactCidMapsNumberOnePanels": 0,
+          "intendedPageSelected": true
+        },
+        {
+          "queryId": "murray-roof-repair",
+          "keyword": "roof repair murray",
+          "current": {
+            "organicRank": 7,
+            "exactCidMapRank": null,
+            "aiOverviewPresent": false,
+            "aiOverviewCited": false,
+            "rankingUrl": "https://www.framerestorationutah.com/locations/murray"
+          },
+          "consecutiveOrganicNumberOnePanels": 0,
+          "consecutiveExactCidMapsNumberOnePanels": 0,
+          "intendedPageSelected": true
+        },
+        {
+          "queryId": "murray-roof-replacement",
+          "keyword": "roof replacement murray",
+          "current": {
+            "organicRank": 4,
+            "exactCidMapRank": null,
+            "aiOverviewPresent": false,
+            "aiOverviewCited": false,
+            "rankingUrl": "https://www.framerestorationutah.com/locations/murray"
+          },
+          "consecutiveOrganicNumberOnePanels": 0,
+          "consecutiveExactCidMapsNumberOnePanels": 0,
+          "intendedPageSelected": true
+        },
+        {
+          "queryId": "murray-roofer",
+          "keyword": "roofer murray",
+          "current": {
+            "organicRank": 8,
+            "exactCidMapRank": null,
+            "aiOverviewPresent": false,
+            "aiOverviewCited": false,
+            "rankingUrl": "https://www.framerestorationutah.com/locations/murray"
+          },
+          "consecutiveOrganicNumberOnePanels": 0,
+          "consecutiveExactCidMapsNumberOnePanels": 0,
+          "intendedPageSelected": true
+        }
+      ]
+    },
+    {
+      "city": "Riverton",
+      "slug": "riverton",
+      "cohort": "expansion-manual-baseline-measured",
+      "panelId": "utah-riverton-google-v1",
+      "page": "locations/riverton.html",
+      "latestObservedAt": "2026-08-12T17:40:30.501Z",
+      "rawDatedGoogleReports": 1,
+      "comparableWeeklyGooglePanels": 1,
+      "consumerAiState": "configured-manual-measurement-only-blocked-invalid-provider-credential",
+      "protectedFootholds": {
+        "organicNumberOneQueries": [],
+        "googleAiOverviewCitedQueries": []
+      },
+      "sustainedProgress": {
+        "requiredConsecutiveWeeklyPanels": 4,
+        "allFourOrganicNumberOneStreak": 0,
+        "allFourExactCidMapsNumberOneStreak": 0,
+        "allObservedAiOverviewsCitedStreak": 1,
+        "intendedPageSelectionStreak": 1,
+        "consumerAiCompleteStreak": 0,
+        "cityAtSustainedGoal": false
+      },
+      "decisions": {
+        "integrity": {
+          "verdict": "pending-owner-approval",
+          "reason": "The bounded integrity cleanup has not been published; no keep/revert decision exists for an unapplied change."
+        },
+        "ranking": {
+          "verdict": "hold",
+          "reason": "Only 1/4 comparable weekly Google panels exist and no isolated ranking experiment is running.",
+          "activeExperiment": null,
+          "observedGooglePanels": 1,
+          "requiredGooglePanels": 4
+        }
+      },
+      "queryStreaks": [
+        {
+          "queryId": "riverton-roofing-contractor",
+          "keyword": "roofing contractor riverton",
+          "current": {
+            "organicRank": null,
+            "exactCidMapRank": null,
+            "aiOverviewPresent": false,
+            "aiOverviewCited": false,
+            "rankingUrl": null
+          },
+          "consecutiveOrganicNumberOnePanels": 0,
+          "consecutiveExactCidMapsNumberOnePanels": 0,
+          "intendedPageSelected": true
+        },
+        {
+          "queryId": "riverton-roof-repair",
+          "keyword": "roof repair riverton",
+          "current": {
+            "organicRank": 4,
+            "exactCidMapRank": null,
+            "aiOverviewPresent": false,
+            "aiOverviewCited": false,
+            "rankingUrl": "https://www.framerestorationutah.com/locations/riverton"
+          },
+          "consecutiveOrganicNumberOnePanels": 0,
+          "consecutiveExactCidMapsNumberOnePanels": 0,
+          "intendedPageSelected": true
+        },
+        {
+          "queryId": "riverton-roof-replacement",
+          "keyword": "roof replacement riverton",
+          "current": {
+            "organicRank": 7,
+            "exactCidMapRank": null,
+            "aiOverviewPresent": false,
+            "aiOverviewCited": false,
+            "rankingUrl": "https://www.framerestorationutah.com/locations/riverton"
+          },
+          "consecutiveOrganicNumberOnePanels": 0,
+          "consecutiveExactCidMapsNumberOnePanels": 0,
+          "intendedPageSelected": true
+        },
+        {
+          "queryId": "riverton-roofer",
+          "keyword": "roofer riverton",
+          "current": {
+            "organicRank": 10,
+            "exactCidMapRank": null,
+            "aiOverviewPresent": false,
+            "aiOverviewCited": false,
+            "rankingUrl": "https://www.framerestorationutah.com/locations/riverton"
+          },
+          "consecutiveOrganicNumberOnePanels": 0,
+          "consecutiveExactCidMapsNumberOnePanels": 0,
+          "intendedPageSelected": true
+        }
+      ]
+    },
+    {
+      "city": "South Jordan",
+      "slug": "south-jordan",
+      "cohort": "expansion-manual-baseline-measured",
+      "panelId": "utah-south-jordan-google-v1",
+      "page": "locations/south-jordan.html",
+      "latestObservedAt": "2026-08-12T17:40:30.502Z",
+      "rawDatedGoogleReports": 1,
+      "comparableWeeklyGooglePanels": 1,
+      "consumerAiState": "configured-manual-measurement-only-blocked-invalid-provider-credential",
+      "protectedFootholds": {
+        "organicNumberOneQueries": [],
+        "googleAiOverviewCitedQueries": []
+      },
+      "sustainedProgress": {
+        "requiredConsecutiveWeeklyPanels": 4,
+        "allFourOrganicNumberOneStreak": 0,
+        "allFourExactCidMapsNumberOneStreak": 0,
+        "allObservedAiOverviewsCitedStreak": 1,
+        "intendedPageSelectionStreak": 1,
+        "consumerAiCompleteStreak": 0,
+        "cityAtSustainedGoal": false
+      },
+      "decisions": {
+        "integrity": {
+          "verdict": "pending-owner-approval",
+          "reason": "The bounded integrity cleanup has not been published; no keep/revert decision exists for an unapplied change."
+        },
+        "ranking": {
+          "verdict": "hold",
+          "reason": "Only 1/4 comparable weekly Google panels exist and no isolated ranking experiment is running.",
+          "activeExperiment": null,
+          "observedGooglePanels": 1,
+          "requiredGooglePanels": 4
+        }
+      },
+      "queryStreaks": [
+        {
+          "queryId": "south-jordan-roofing-contractor",
+          "keyword": "roofing contractor south jordan",
+          "current": {
+            "organicRank": 16,
+            "exactCidMapRank": null,
+            "aiOverviewPresent": false,
+            "aiOverviewCited": false,
+            "rankingUrl": "https://www.framerestorationutah.com/locations/south-jordan"
+          },
+          "consecutiveOrganicNumberOnePanels": 0,
+          "consecutiveExactCidMapsNumberOnePanels": 0,
+          "intendedPageSelected": true
+        },
+        {
+          "queryId": "south-jordan-roof-repair",
+          "keyword": "roof repair south jordan",
+          "current": {
+            "organicRank": 8,
+            "exactCidMapRank": null,
+            "aiOverviewPresent": false,
+            "aiOverviewCited": false,
+            "rankingUrl": "https://www.framerestorationutah.com/locations/south-jordan"
+          },
+          "consecutiveOrganicNumberOnePanels": 0,
+          "consecutiveExactCidMapsNumberOnePanels": 0,
+          "intendedPageSelected": true
+        },
+        {
+          "queryId": "south-jordan-roof-replacement",
+          "keyword": "roof replacement south jordan",
+          "current": {
+            "organicRank": 4,
+            "exactCidMapRank": null,
+            "aiOverviewPresent": false,
+            "aiOverviewCited": false,
+            "rankingUrl": "https://www.framerestorationutah.com/locations/south-jordan"
+          },
+          "consecutiveOrganicNumberOnePanels": 0,
+          "consecutiveExactCidMapsNumberOnePanels": 0,
+          "intendedPageSelected": true
+        },
+        {
+          "queryId": "south-jordan-roofer",
+          "keyword": "roofer south jordan",
+          "current": {
+            "organicRank": 12,
+            "exactCidMapRank": null,
+            "aiOverviewPresent": false,
+            "aiOverviewCited": false,
+            "rankingUrl": "https://www.framerestorationutah.com/locations/south-jordan"
+          },
+          "consecutiveOrganicNumberOnePanels": 0,
+          "consecutiveExactCidMapsNumberOnePanels": 0,
+          "intendedPageSelected": true
+        }
+      ]
+    },
+    {
+      "city": "South Salt Lake",
+      "slug": "south-salt-lake",
+      "cohort": "expansion-manual-baseline-measured",
+      "panelId": "utah-south-salt-lake-google-v1",
+      "page": "locations/south-salt-lake.html",
+      "latestObservedAt": "2026-08-12T17:40:30.502Z",
+      "rawDatedGoogleReports": 1,
+      "comparableWeeklyGooglePanels": 1,
+      "consumerAiState": "configured-manual-measurement-only-blocked-invalid-provider-credential",
+      "protectedFootholds": {
+        "organicNumberOneQueries": [],
+        "googleAiOverviewCitedQueries": []
+      },
+      "sustainedProgress": {
+        "requiredConsecutiveWeeklyPanels": 4,
+        "allFourOrganicNumberOneStreak": 0,
+        "allFourExactCidMapsNumberOneStreak": 0,
+        "allObservedAiOverviewsCitedStreak": 0,
+        "intendedPageSelectionStreak": 1,
+        "consumerAiCompleteStreak": 0,
+        "cityAtSustainedGoal": false
+      },
+      "decisions": {
+        "integrity": {
+          "verdict": "pending-owner-approval",
+          "reason": "The bounded integrity cleanup has not been published; no keep/revert decision exists for an unapplied change."
+        },
+        "ranking": {
+          "verdict": "hold",
+          "reason": "Only 1/4 comparable weekly Google panels exist and no isolated ranking experiment is running.",
+          "activeExperiment": null,
+          "observedGooglePanels": 1,
+          "requiredGooglePanels": 4
+        }
+      },
+      "queryStreaks": [
+        {
+          "queryId": "south-salt-lake-roofing-contractor",
+          "keyword": "roofing contractor south salt lake",
+          "current": {
+            "organicRank": null,
+            "exactCidMapRank": null,
+            "aiOverviewPresent": true,
+            "aiOverviewCited": false,
+            "rankingUrl": null
+          },
+          "consecutiveOrganicNumberOnePanels": 0,
+          "consecutiveExactCidMapsNumberOnePanels": 0,
+          "intendedPageSelected": true
+        },
+        {
+          "queryId": "south-salt-lake-roof-repair",
+          "keyword": "roof repair south salt lake",
+          "current": {
+            "organicRank": 14,
+            "exactCidMapRank": null,
+            "aiOverviewPresent": false,
+            "aiOverviewCited": false,
+            "rankingUrl": "https://www.framerestorationutah.com/locations/south-salt-lake"
+          },
+          "consecutiveOrganicNumberOnePanels": 0,
+          "consecutiveExactCidMapsNumberOnePanels": 0,
+          "intendedPageSelected": true
+        },
+        {
+          "queryId": "south-salt-lake-roof-replacement",
+          "keyword": "roof replacement south salt lake",
+          "current": {
+            "organicRank": 12,
+            "exactCidMapRank": null,
+            "aiOverviewPresent": false,
+            "aiOverviewCited": false,
+            "rankingUrl": "https://www.framerestorationutah.com/locations/south-salt-lake"
+          },
+          "consecutiveOrganicNumberOnePanels": 0,
+          "consecutiveExactCidMapsNumberOnePanels": 0,
+          "intendedPageSelected": true
+        },
+        {
+          "queryId": "south-salt-lake-roofer",
+          "keyword": "roofer south salt lake",
+          "current": {
+            "organicRank": null,
+            "exactCidMapRank": null,
+            "aiOverviewPresent": false,
+            "aiOverviewCited": false,
+            "rankingUrl": null
+          },
+          "consecutiveOrganicNumberOnePanels": 0,
+          "consecutiveExactCidMapsNumberOnePanels": 0,
+          "intendedPageSelected": true
+        }
+      ]
+    },
+    {
+      "city": "Taylorsville",
+      "slug": "taylorsville",
+      "cohort": "expansion-manual-baseline-measured",
+      "panelId": "utah-taylorsville-google-v1",
+      "page": "locations/taylorsville.html",
+      "latestObservedAt": "2026-08-12T17:40:30.503Z",
+      "rawDatedGoogleReports": 1,
+      "comparableWeeklyGooglePanels": 1,
+      "consumerAiState": "configured-manual-measurement-only-blocked-invalid-provider-credential",
+      "protectedFootholds": {
+        "organicNumberOneQueries": [],
+        "googleAiOverviewCitedQueries": []
+      },
+      "sustainedProgress": {
+        "requiredConsecutiveWeeklyPanels": 4,
+        "allFourOrganicNumberOneStreak": 0,
+        "allFourExactCidMapsNumberOneStreak": 0,
+        "allObservedAiOverviewsCitedStreak": 1,
+        "intendedPageSelectionStreak": 1,
+        "consumerAiCompleteStreak": 0,
+        "cityAtSustainedGoal": false
+      },
+      "decisions": {
+        "integrity": {
+          "verdict": "pending-owner-approval",
+          "reason": "The bounded integrity cleanup has not been published; no keep/revert decision exists for an unapplied change."
+        },
+        "ranking": {
+          "verdict": "hold",
+          "reason": "Only 1/4 comparable weekly Google panels exist and no isolated ranking experiment is running.",
+          "activeExperiment": null,
+          "observedGooglePanels": 1,
+          "requiredGooglePanels": 4
+        }
+      },
+      "queryStreaks": [
+        {
+          "queryId": "taylorsville-roofing-contractor",
+          "keyword": "roofing contractor taylorsville",
+          "current": {
+            "organicRank": 15,
+            "exactCidMapRank": null,
+            "aiOverviewPresent": false,
+            "aiOverviewCited": false,
+            "rankingUrl": "https://www.framerestorationutah.com/locations/taylorsville"
+          },
+          "consecutiveOrganicNumberOnePanels": 0,
+          "consecutiveExactCidMapsNumberOnePanels": 0,
+          "intendedPageSelected": true
+        },
+        {
+          "queryId": "taylorsville-roof-repair",
+          "keyword": "roof repair taylorsville",
+          "current": {
+            "organicRank": 7,
+            "exactCidMapRank": null,
+            "aiOverviewPresent": false,
+            "aiOverviewCited": false,
+            "rankingUrl": "https://www.framerestorationutah.com/locations/taylorsville"
+          },
+          "consecutiveOrganicNumberOnePanels": 0,
+          "consecutiveExactCidMapsNumberOnePanels": 0,
+          "intendedPageSelected": true
+        },
+        {
+          "queryId": "taylorsville-roof-replacement",
+          "keyword": "roof replacement taylorsville",
+          "current": {
+            "organicRank": 10,
+            "exactCidMapRank": null,
+            "aiOverviewPresent": false,
+            "aiOverviewCited": false,
+            "rankingUrl": "https://www.framerestorationutah.com/locations/taylorsville"
+          },
+          "consecutiveOrganicNumberOnePanels": 0,
+          "consecutiveExactCidMapsNumberOnePanels": 0,
+          "intendedPageSelected": true
+        },
+        {
+          "queryId": "taylorsville-roofer",
+          "keyword": "roofer taylorsville",
+          "current": {
+            "organicRank": 18,
+            "exactCidMapRank": null,
+            "aiOverviewPresent": false,
+            "aiOverviewCited": false,
+            "rankingUrl": "https://www.framerestorationutah.com/locations/taylorsville"
+          },
+          "consecutiveOrganicNumberOnePanels": 0,
+          "consecutiveExactCidMapsNumberOnePanels": 0,
+          "intendedPageSelected": true
+        }
+      ]
+    },
+    {
+      "city": "West Jordan",
+      "slug": "west-jordan",
+      "cohort": "expansion-manual-baseline-measured",
+      "panelId": "utah-west-jordan-google-v1",
+      "page": "locations/west-jordan.html",
+      "latestObservedAt": "2026-08-12T17:40:30.503Z",
+      "rawDatedGoogleReports": 1,
+      "comparableWeeklyGooglePanels": 1,
+      "consumerAiState": "configured-manual-measurement-only-blocked-invalid-provider-credential",
+      "protectedFootholds": {
+        "organicNumberOneQueries": [],
+        "googleAiOverviewCitedQueries": []
+      },
+      "sustainedProgress": {
+        "requiredConsecutiveWeeklyPanels": 4,
+        "allFourOrganicNumberOneStreak": 0,
+        "allFourExactCidMapsNumberOneStreak": 0,
+        "allObservedAiOverviewsCitedStreak": 1,
+        "intendedPageSelectionStreak": 1,
+        "consumerAiCompleteStreak": 0,
+        "cityAtSustainedGoal": false
+      },
+      "decisions": {
+        "integrity": {
+          "verdict": "pending-owner-approval",
+          "reason": "The bounded integrity cleanup has not been published; no keep/revert decision exists for an unapplied change."
+        },
+        "ranking": {
+          "verdict": "hold",
+          "reason": "Only 1/4 comparable weekly Google panels exist and no isolated ranking experiment is running.",
+          "activeExperiment": null,
+          "observedGooglePanels": 1,
+          "requiredGooglePanels": 4
+        }
+      },
+      "queryStreaks": [
+        {
+          "queryId": "west-jordan-roofing-contractor",
+          "keyword": "roofing contractor west jordan",
+          "current": {
+            "organicRank": null,
+            "exactCidMapRank": null,
+            "aiOverviewPresent": false,
+            "aiOverviewCited": false,
+            "rankingUrl": null
+          },
+          "consecutiveOrganicNumberOnePanels": 0,
+          "consecutiveExactCidMapsNumberOnePanels": 0,
+          "intendedPageSelected": true
+        },
+        {
+          "queryId": "west-jordan-roof-repair",
+          "keyword": "roof repair west jordan",
+          "current": {
+            "organicRank": 19,
+            "exactCidMapRank": null,
+            "aiOverviewPresent": false,
+            "aiOverviewCited": false,
+            "rankingUrl": "https://www.framerestorationutah.com/locations/west-jordan"
+          },
+          "consecutiveOrganicNumberOnePanels": 0,
+          "consecutiveExactCidMapsNumberOnePanels": 0,
+          "intendedPageSelected": true
+        },
+        {
+          "queryId": "west-jordan-roof-replacement",
+          "keyword": "roof replacement west jordan",
+          "current": {
+            "organicRank": 14,
+            "exactCidMapRank": null,
+            "aiOverviewPresent": false,
+            "aiOverviewCited": false,
+            "rankingUrl": "https://www.framerestorationutah.com/locations/west-jordan"
+          },
+          "consecutiveOrganicNumberOnePanels": 0,
+          "consecutiveExactCidMapsNumberOnePanels": 0,
+          "intendedPageSelected": true
+        },
+        {
+          "queryId": "west-jordan-roofer",
+          "keyword": "roofer west jordan",
+          "current": {
+            "organicRank": null,
+            "exactCidMapRank": null,
+            "aiOverviewPresent": false,
+            "aiOverviewCited": false,
+            "rankingUrl": null
+          },
+          "consecutiveOrganicNumberOnePanels": 0,
+          "consecutiveExactCidMapsNumberOnePanels": 0,
+          "intendedPageSelected": true
+        }
+      ]
+    },
+    {
+      "city": "West Valley City",
+      "slug": "west-valley-city",
+      "cohort": "expansion-manual-baseline-measured",
+      "panelId": "utah-west-valley-city-google-v1",
+      "page": "locations/west-valley-city.html",
+      "latestObservedAt": "2026-08-12T17:40:30.503Z",
+      "rawDatedGoogleReports": 1,
+      "comparableWeeklyGooglePanels": 1,
+      "consumerAiState": "configured-manual-measurement-only-blocked-invalid-provider-credential",
+      "protectedFootholds": {
+        "organicNumberOneQueries": [],
+        "googleAiOverviewCitedQueries": []
+      },
+      "sustainedProgress": {
+        "requiredConsecutiveWeeklyPanels": 4,
+        "allFourOrganicNumberOneStreak": 0,
+        "allFourExactCidMapsNumberOneStreak": 0,
+        "allObservedAiOverviewsCitedStreak": 1,
+        "intendedPageSelectionStreak": 1,
+        "consumerAiCompleteStreak": 0,
+        "cityAtSustainedGoal": false
+      },
+      "decisions": {
+        "integrity": {
+          "verdict": "pending-owner-approval",
+          "reason": "The bounded integrity cleanup has not been published; no keep/revert decision exists for an unapplied change."
+        },
+        "ranking": {
+          "verdict": "hold",
+          "reason": "Only 1/4 comparable weekly Google panels exist and no isolated ranking experiment is running.",
+          "activeExperiment": null,
+          "observedGooglePanels": 1,
+          "requiredGooglePanels": 4
+        }
+      },
+      "queryStreaks": [
+        {
+          "queryId": "west-valley-city-roofing-contractor",
+          "keyword": "roofing contractor west valley city",
+          "current": {
+            "organicRank": 21,
+            "exactCidMapRank": null,
+            "aiOverviewPresent": false,
+            "aiOverviewCited": false,
+            "rankingUrl": "https://www.framerestorationutah.com/locations/west-valley-city"
+          },
+          "consecutiveOrganicNumberOnePanels": 0,
+          "consecutiveExactCidMapsNumberOnePanels": 0,
+          "intendedPageSelected": true
+        },
+        {
+          "queryId": "west-valley-city-roof-repair",
+          "keyword": "roof repair west valley city",
+          "current": {
+            "organicRank": 16,
+            "exactCidMapRank": null,
+            "aiOverviewPresent": false,
+            "aiOverviewCited": false,
+            "rankingUrl": "https://www.framerestorationutah.com/locations/west-valley-city"
+          },
+          "consecutiveOrganicNumberOnePanels": 0,
+          "consecutiveExactCidMapsNumberOnePanels": 0,
+          "intendedPageSelected": true
+        },
+        {
+          "queryId": "west-valley-city-roof-replacement",
+          "keyword": "roof replacement west valley city",
+          "current": {
+            "organicRank": 11,
+            "exactCidMapRank": null,
+            "aiOverviewPresent": false,
+            "aiOverviewCited": false,
+            "rankingUrl": "https://www.framerestorationutah.com/locations/west-valley-city"
+          },
+          "consecutiveOrganicNumberOnePanels": 0,
+          "consecutiveExactCidMapsNumberOnePanels": 0,
+          "intendedPageSelected": true
+        },
+        {
+          "queryId": "west-valley-city-roofer",
+          "keyword": "roofer west valley city",
+          "current": {
+            "organicRank": 16,
+            "exactCidMapRank": null,
+            "aiOverviewPresent": false,
+            "aiOverviewCited": false,
+            "rankingUrl": "https://www.framerestorationutah.com/locations/west-valley-city"
+          },
+          "consecutiveOrganicNumberOnePanels": 0,
+          "consecutiveExactCidMapsNumberOnePanels": 0,
+          "intendedPageSelected": true
+        }
+      ]
+    }
+  ]
+}
