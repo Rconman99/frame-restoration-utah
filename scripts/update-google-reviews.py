@@ -22,8 +22,9 @@ Environment:
                                     Frame's 8458659884566588108
   REVIEWS_PROVIDER     (optional) — force 'dataforseo' or 'serpapi'
   SERPAPI_KEY          (fallback) — SerpAPI private key
-  SERPAPI_DATA_ID      (optional) — Google Maps data_id override; defaults to
-                                    0x874df59069be3e09:0x756332595f702acc
+  SERPAPI_DATA_ID      (optional) — exact Google Maps data_id for SerpAPI.
+                                    Required when GOOGLE_CID overrides Heber;
+                                    its hex CID suffix must match GOOGLE_CID.
 
 Exit codes:
   0 = files updated (changed count or rating)
@@ -88,6 +89,57 @@ TARGETS = [
 _DFS_CACHE: dict | None = None
 _QUOTA_CACHE: int | None = None
 _QUOTA_CHECKED = False
+
+
+def _cid_from_data_id(data_id: str) -> str | None:
+    """Return the decimal CID encoded in a Google Maps data_id."""
+    try:
+        parts = str(data_id or "").split(":")
+        if len(parts) != 2 or not parts[1].lower().startswith("0x"):
+            return None
+        return str(int(parts[1], 16))
+    except (TypeError, ValueError):
+        return None
+
+
+def _target_cid() -> str:
+    """The exact Google listing this run is allowed to read."""
+    return str(os.environ.get("GOOGLE_CID") or DEFAULT_CID).strip()
+
+
+def _serpapi_data_id() -> str:
+    """Resolve a SerpAPI target that is provably the same listing as GOOGLE_CID.
+
+    DataForSEO accepts a decimal CID; SerpAPI requires its longer Maps data_id.
+    An alternate-CID run must never fall back to DEFAULT_DATA_ID (Heber).
+    """
+    cid = _target_cid()
+    explicit = str(os.environ.get("SERPAPI_DATA_ID") or "").strip()
+    if not explicit:
+        if cid != DEFAULT_CID:
+            raise SystemExit(
+                "ERROR: GOOGLE_CID override cannot fall back to SerpAPI without "
+                "a matching SERPAPI_DATA_ID; refusing to read the default Heber listing"
+            )
+        return DEFAULT_DATA_ID
+
+    encoded_cid = _cid_from_data_id(explicit)
+    if encoded_cid is None:
+        raise SystemExit("ERROR: SERPAPI_DATA_ID is malformed; refusing an unpinned review lookup")
+    if encoded_cid != cid:
+        raise SystemExit(
+            f"ERROR: SERPAPI_DATA_ID encodes CID {encoded_cid}, not requested GOOGLE_CID {cid}; "
+            "refusing cross-profile review data"
+        )
+    return explicit
+
+
+def _source_identity() -> dict:
+    """Secretless listing identity persisted with review exports."""
+    cid = _target_cid()
+    explicit = str(os.environ.get("SERPAPI_DATA_ID") or "").strip()
+    data_id = explicit or (DEFAULT_DATA_ID if cid == DEFAULT_CID else None)
+    return {"google_cid": cid, "data_id": data_id}
 
 # Below this many SerpAPI searches remaining, route to DataForSEO instead.
 # Rationale: the SerpAPI plan is PREPAID and use-it-or-lose-it, so spending it
@@ -200,7 +252,7 @@ def _fetch_dataforseo(depth: int = REVIEWS_FULL_LIMIT) -> dict | None:
     if _DFS_CACHE is not None:
         return _DFS_CACHE
 
-    cid = os.environ.get("GOOGLE_CID", DEFAULT_CID)
+    cid = _target_cid()
     payload = [{
         "keyword": f"cid:{cid}",
         "language_code": "en",
@@ -299,7 +351,7 @@ def fetch_place() -> dict:
 def _fetch_place_serpapi() -> dict:
     """Call SerpAPI's Google Maps engine for review count + rating."""
     api_key = os.environ.get("SERPAPI_KEY")
-    data_id = os.environ.get("SERPAPI_DATA_ID", DEFAULT_DATA_ID)
+    data_id = _serpapi_data_id()
     if not api_key:
         raise SystemExit("ERROR: set SERPAPI_KEY")
 
@@ -363,7 +415,7 @@ def _fetch_reviews_serpapi(limit: int = REVIEWS_FEED_LIMIT) -> list[dict]:
     the existing reviews.json if the feed comes back empty.
     """
     api_key = os.environ.get("SERPAPI_KEY")
-    data_id = os.environ.get("SERPAPI_DATA_ID", DEFAULT_DATA_ID)
+    data_id = _serpapi_data_id()
     if not api_key:
         return []
 
@@ -445,7 +497,7 @@ def _fetch_all_reviews_serpapi(limit: int = REVIEWS_FULL_LIMIT) -> list[dict]:
     [] and the caller preserves the existing file (or skips writing).
     """
     api_key = os.environ.get("SERPAPI_KEY")
-    data_id = os.environ.get("SERPAPI_DATA_ID", DEFAULT_DATA_ID)
+    data_id = _serpapi_data_id()
     if not api_key:
         return []
 
@@ -498,7 +550,7 @@ def write_reviews_full_json(reviews: list[dict], place: dict) -> bool:
         return False
     payload = {
         "source": "google_maps_reviews",
-        "data_id": os.environ.get("SERPAPI_DATA_ID", DEFAULT_DATA_ID),
+        **_source_identity(),
         "aggregate": {
             "rating": place.get("rating"),
             "review_count": place.get("count"),
@@ -584,7 +636,7 @@ def write_reviews_json(place: dict, reviews: list[dict]) -> bool:
     payload = {
         "source": "google",
         "place_name": place.get("name") or existing.get("place_name") or "Frame Restoration Utah",
-        "data_id": os.environ.get("SERPAPI_DATA_ID", DEFAULT_DATA_ID),
+        **_source_identity(),
         "aggregate": {
             "rating": place["rating"],
             "review_count": place["count"],
