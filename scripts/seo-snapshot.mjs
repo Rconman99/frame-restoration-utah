@@ -150,6 +150,7 @@ export function readTrackedRanks({ rootDir = root } = {}) {
   let panelsMeasured = 0;
   let queriesExpected = 0;
   let queriesMeasured = 0;
+  let queriesExpectedKnown = true;
 
   if (panels.length === 0) issues.push("registry: no_active_panels");
 
@@ -164,6 +165,7 @@ export function readTrackedRanks({ rootDir = root } = {}) {
     try {
       config = readJson(configFile);
     } catch (err) {
+      queriesExpectedKnown = false;
       issues.push(`${panel.id}: config unreadable (${err.message})`);
       continue;
     }
@@ -205,7 +207,7 @@ export function readTrackedRanks({ rootDir = root } = {}) {
       const validRankingUrl = row?.rankingUrl === null || typeof row?.rankingUrl === "string";
       return row && row.keyword === keyword && validOrganicRank && validRankingUrl;
     });
-    if (!complete || byId.size !== keywords.length || !validObservedAt) {
+    if (!complete || byId.size !== keywords.length || report.results.length !== keywords.length || !validObservedAt) {
       const reason = "latest_report_incomplete";
       issues.push(`${panel.id}: ${reason}`);
       ranks.push(...unmeasuredRows(config, panel.id, reason));
@@ -242,7 +244,8 @@ export function readTrackedRanks({ rootDir = root } = {}) {
       registryId: registry.registryId || null,
       panelsExpected: panels.length,
       panelsMeasured,
-      queriesExpected,
+      queriesExpected: queriesExpectedKnown ? queriesExpected : null,
+      queriesExpectedKnown,
       queriesMeasured,
       oldestObservedAt: observedAt.length ? [...observedAt].sort()[0] : null,
       newestObservedAt: observedAt.length ? [...observedAt].sort().at(-1) : null,

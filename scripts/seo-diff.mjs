@@ -380,17 +380,24 @@ export function rankPanelLines(snapshot) {
   }
 
   const measuredRows = rows.filter(rankRowMeasured);
-  const observed = measurement?.newestObservedAt || measuredRows.map((row) => row.observedAt).filter(Boolean).sort().at(-1) || null;
+  const rowObservations = measuredRows.map((row) => row.observedAt).filter(Boolean).sort();
+  const oldestObserved = measurement?.oldestObservedAt || rowObservations[0] || measurement?.newestObservedAt || null;
+  const newestObserved = measurement?.newestObservedAt || rowObservations.at(-1) || measurement?.oldestObservedAt || null;
+  const observed = newestObserved;
+  const observedLabel = oldestObserved && newestObserved && oldestObserved !== newestObserved
+    ? `${oldestObserved} → ${newestObserved}`
+    : observed;
   const expected = measurement?.queriesExpected ?? rows.length;
+  const expectedLabel = measurement?.queriesExpectedKnown === false ? "?" : expected;
   const measured = measurement?.queriesMeasured ?? measuredRows.length;
   let freshness = "";
-  if (observed) {
-    const ageDays = (Date.parse(`${snapshot.date}T23:59:59Z`) - Date.parse(observed)) / 86400000;
+  if (oldestObserved) {
+    const ageDays = (Date.parse(`${snapshot.date}T23:59:59Z`) - Date.parse(oldestObserved)) / 86400000;
     if (Number.isFinite(ageDays) && ageDays > 8) freshness = ` — **STALE ${Math.floor(ageDays)}d; weekly rank workflow needs attention**`;
   }
   const sourceLabel = measurement?.source === "dataforseo-task-queue" ? "DataForSEO task-queue panel" : "Rank panel";
   const completeness = measurement?.available === false ? " — **INCOMPLETE**" : "";
-  lines.push(`- ${sourceLabel}: ${measured}/${expected} queries measured${observed ? ` at ${observed}` : ""}${freshness}${completeness}.`);
+  lines.push(`- ${sourceLabel}: ${measured}/${expectedLabel} queries measured${observedLabel ? ` at ${observedLabel}` : ""}${freshness}${completeness}.`);
   for (const issue of measurement?.issues || []) lines.push(`- Rank source issue: ${issue}`);
 
   const byCity = new Map();
@@ -409,7 +416,7 @@ export function rankPanelLines(snapshot) {
 
   const organicOnes = measuredRows.filter((row) => row.position === 1).length;
   const mapOnes = measuredRows.filter((row) => row.mapPackRank === 1).length;
-  lines.push(`- Goal coverage: organic #1 \`${organicOnes}/${expected}\`; exact-CID maps #1 \`${mapOnes}/${expected}\`. Order is contractor / repair / replacement / roofer.`);
+  lines.push(`- Goal coverage: organic #1 \`${organicOnes}/${expectedLabel}\`; exact-CID maps #1 \`${mapOnes}/${expectedLabel}\`. Order is contractor / repair / replacement / roofer.`);
   return lines;
 }
 

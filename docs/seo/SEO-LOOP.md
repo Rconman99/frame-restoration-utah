@@ -15,7 +15,7 @@ output, orphan pages by live link graph, Search Console ingestion, the committed
 DataForSEO matrix, and a regression-first daily readout with a 48h crawl deadman plus rank freshness.
 
 Run: `node scripts/seo-snapshot.mjs && node scripts/seo-diff.mjs`
-Tests: `node --test scripts/seo-diff.test.mjs scripts/seo-crawl.test.mjs`
+Tests: `node --test scripts/seo-diff.test.mjs scripts/seo-crawl.test.mjs scripts/lib/gsc.test.mjs scripts/seo-snapshot.test.mjs`
 Schedule: daily ~06:37 Denver (`12:37` UTC), staggered off the sibling market's window so the two
 never contend. Also `workflow_dispatch`.
 
