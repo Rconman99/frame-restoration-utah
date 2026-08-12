@@ -44,6 +44,8 @@
     "audit:slv-expansion-public-remediation-packet": "node scripts/sync-slv-expansion-public-remediation-packet.mjs --check",
     "sync:slv-expansion-public-remediation-packet": "node scripts/sync-slv-expansion-public-remediation-packet.mjs --write",
     "audit:slv-expansion-priority": "node scripts/validate-slv-expansion-priority.mjs",
+    "audit:slv-competitor-displacement": "node scripts/sync-slv-competitor-displacement.mjs --check",
+    "sync:slv-competitor-displacement": "node scripts/sync-slv-competitor-displacement.mjs --write",
     "sync:slv-city-goals": "node scripts/sync-slv-city-goal-program.mjs --write",
     "sync:slv-public-remediation-packet": "node scripts/sync-slv-public-remediation-packet.mjs --write",
     "audit:shared-assets": "node scripts/sync-shared-asset-versions.mjs --check",
