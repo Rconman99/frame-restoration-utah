@@ -5,6 +5,7 @@ import path from "node:path";
 
 const repoRoot = process.cwd();
 const strict = process.argv.includes("--strict");
+const details = process.argv.includes("--details");
 const contractPath = path.join(
   repoRoot,
   "data/authority/SLV-CITY-PUBLIC-REMEDIATION-CONTRACT-2026-08-12.json",
@@ -163,6 +164,10 @@ const summary = {
   publicMutationStatus: contract.publicMutationStatus,
   mode: strict ? "strict" : "report",
 };
+if (details) {
+  summary.failureDetails = failures;
+  summary.warningDetails = warnings;
+}
 console.log(JSON.stringify(summary, null, 2));
 
 if (strict && failures.length) process.exit(1);
