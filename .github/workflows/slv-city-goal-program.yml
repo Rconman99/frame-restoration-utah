@@ -11,6 +11,7 @@ on:
       - 'data/rank-tracker/COTTONWOOD-HEIGHTS-ARCHITECTURE-DIAGNOSIS-2026-08-12.json'
       - 'data/rank-tracker/MILLCREEK-IDENTITY-ARCHITECTURE-DIAGNOSIS-2026-08-12.json'
       - 'data/rank-tracker/SLV-18-CITY-GOAL-PORTFOLIO-2026-08-12.json'
+      - 'data/rank-tracker/SLV-EXPANSION-PRIORITY-2026-08-12.json'
       - 'data/rank-tracker/expansion-panels.json'
       - 'data/rank-tracker/panels/holladay/2026-08-12.json'
       - 'data/rank-tracker/panels/sandy/2026-08-12.json'
@@ -55,6 +56,7 @@ on:
       - 'scripts/validate-millcreek-identity-architecture-diagnosis.mjs'
       - 'scripts/validate-slv-18-city-goal-portfolio.mjs'
       - 'scripts/audit-slv-expansion-integrity.mjs'
+      - 'scripts/validate-slv-expansion-priority.mjs'
       - 'package.json'
   push:
     branches:
@@ -68,6 +70,7 @@ on:
       - 'data/rank-tracker/COTTONWOOD-HEIGHTS-ARCHITECTURE-DIAGNOSIS-2026-08-12.json'
       - 'data/rank-tracker/MILLCREEK-IDENTITY-ARCHITECTURE-DIAGNOSIS-2026-08-12.json'
       - 'data/rank-tracker/SLV-18-CITY-GOAL-PORTFOLIO-2026-08-12.json'
+      - 'data/rank-tracker/SLV-EXPANSION-PRIORITY-2026-08-12.json'
       - 'data/rank-tracker/expansion-panels.json'
       - 'data/rank-tracker/panels/holladay/2026-08-12.json'
       - 'data/rank-tracker/panels/sandy/2026-08-12.json'
@@ -112,6 +115,7 @@ on:
       - 'scripts/validate-millcreek-identity-architecture-diagnosis.mjs'
       - 'scripts/validate-slv-18-city-goal-portfolio.mjs'
       - 'scripts/audit-slv-expansion-integrity.mjs'
+      - 'scripts/validate-slv-expansion-priority.mjs'
       - 'package.json'
 
 permissions:
@@ -144,3 +148,6 @@ jobs:
 
       - name: Validate the pinned 12-city expansion integrity audit
         run: npm run audit:slv-expansion-integrity
+
+      - name: Validate the measured 12-city expansion priority ledger
+        run: npm run audit:slv-expansion-priority

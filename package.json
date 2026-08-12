@@ -41,6 +41,7 @@
     "audit:slv-expansion-integrity": "node scripts/audit-slv-expansion-integrity.mjs --check",
     "audit:slv-expansion-integrity:report": "node scripts/audit-slv-expansion-integrity.mjs",
     "sync:slv-expansion-integrity": "node scripts/audit-slv-expansion-integrity.mjs --write",
+    "audit:slv-expansion-priority": "node scripts/validate-slv-expansion-priority.mjs",
     "sync:slv-city-goals": "node scripts/sync-slv-city-goal-program.mjs --write",
     "sync:slv-public-remediation-packet": "node scripts/sync-slv-public-remediation-packet.mjs --write",
     "audit:shared-assets": "node scripts/sync-shared-asset-versions.mjs --check",
