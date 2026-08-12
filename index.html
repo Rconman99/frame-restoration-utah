@@ -430,6 +430,7 @@
     @media (max-width: 900px) {
       html { scroll-padding-bottom: calc(118px + env(safe-area-inset-bottom, 0px)); }
       a, button, input, select, textarea, video[controls], [tabindex]:not([tabindex="-1"]) {
+        scroll-margin-top: calc(100px + env(safe-area-inset-top, 0px));
         scroll-margin-bottom: calc(118px + env(safe-area-inset-bottom, 0px));
       }
       nav { height: 84px; }
@@ -772,12 +773,22 @@
     .video-curve { width: 100%; line-height: 0; margin-bottom: 0; }
     .video-curve svg { width: 100%; height: 80px; display: block; }
     .video-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: center; max-width: 1200px; margin: 0 auto; padding: 40px 24px 0; }
-    .video-player video { width: 100%; border-radius: 8px; display: block; box-shadow: 0 8px 30px rgba(0,0,0,0.15); }
+    .video-player video { width: 100%; aspect-ratio: 16 / 9; object-fit: contain; background: #000; border-radius: 8px; display: block; box-shadow: 0 8px 30px rgba(0,0,0,0.15); }
     .video-headline h2 { font-family: 'Archivo Black', sans-serif; font-size: clamp(24px, 3vw, 38px); text-transform: uppercase; color: var(--navy); line-height: 1.25; }
     .video-headline .gold { color: var(--gold); }
     @media (max-width: 768px) {
       .video-grid { grid-template-columns: 1fr; gap: 32px; text-align: center; }
       .video-headline h2 { font-size: 22px; }
+    }
+    @media (max-height: 420px) and (max-width: 900px) {
+      .video-grid { padding-top: 24px; }
+      .video-player video {
+        width: auto;
+        max-width: 100%;
+        height: calc(100dvh - 180px);
+        min-height: 160px;
+        margin: 0 auto;
+      }
     }
 
     /* ─── WATCH-IN-ACTION SECTION ─── */
@@ -836,6 +847,7 @@
     /* prefers-reduced-motion: don't autoplay the featured drone loop for users who opt out of motion */
     @media (prefers-reduced-motion: reduce) {
       #fresh-aerials .fa-feature-video video { /* stops the loop visually — JS also pauses it */ }
+      .js-ready .reveal { transition: none; }
     }
 
     /* ─── TESTIMONIALS ─── */
@@ -868,7 +880,7 @@
     }
     .rc-author { font-family: 'Archivo Black', sans-serif; font-size: 14px; color: var(--navy); text-transform: uppercase; letter-spacing: 1px; }
     .rc-city { font-size: 13px; color: var(--gray); margin-top: 2px; }
-    .rc-arrow { position: absolute; top: 50%; transform: translateY(-50%); width: 40px; height: 40px; background: var(--navy); color: var(--gold); border: 2px solid var(--navy); font-family: 'Archivo Black', sans-serif; font-size: 22px; line-height: 1; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; padding-bottom: 4px; z-index: 2; }
+    .rc-arrow { position: absolute; top: 50%; transform: translateY(-50%); width: 44px; height: 44px; background: var(--navy); color: var(--gold); border: 2px solid var(--navy); font-family: 'Archivo Black', sans-serif; font-size: 22px; line-height: 1; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; padding-bottom: 4px; z-index: 2; }
     .rc-arrow:hover { background: var(--gold); color: var(--navy); border-color: var(--gold); }
     .rc-arrow:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
     .rc-prev { left: 0; }
