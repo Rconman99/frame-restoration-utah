@@ -151,6 +151,22 @@ const registry = {
   score: portfolio.portfolioScore,
   sources: Object.fromEntries(Object.entries(sourceFiles).map(([key, file]) => [key, { file, sha256: localHash(file) }])),
   externalEvidence,
+  consumerAiConfiguration: {
+    repository: "Rconman99/geo-aeo-tracker",
+    pullRequest: "https://github.com/Rconman99/geo-aeo-tracker/pull/4",
+    reviewedHeadSha: "59c513ef99e307f51becb74a975e7ced4a97ec15",
+    squashMergeSha: "cdb05834e8dc9ab641dc67cefa16c35dd0bbfdd6",
+    mergedAt: "2026-08-12T18:15:39Z",
+    deploymentId: "dpl_2vFobCKzCY3vmLctDtYXNJ9vAEts",
+    deploymentUrl: "https://geo-aeo-tracker-kiscc4eph-ryans-projects-51d84217.vercel.app",
+    deploymentTarget: "production",
+    deploymentStatus: "READY",
+    deploymentVerifiedAt: "2026-08-12T18:16:20Z",
+    configuredCities: 18,
+    boundedProviderPromptRows: 162,
+    automaticallyScheduledCities: ["Salt Lake City", "Millcreek"],
+    state: "configuration-live-measurement-blocked-invalid-provider-key",
+  },
   systemActions: [
     {
       id: "land-diagnosis-bundle",
