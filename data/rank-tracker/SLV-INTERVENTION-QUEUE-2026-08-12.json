@@ -83,6 +83,10 @@
       "file": "data/rank-tracker/SLV-ENTITY-HEALTH-2026-08-12.json",
       "sha256": "780e654065caa082745073d6d12f2249153cacc9e45614162f649fabff2f5f04"
     },
+    "mapsReadiness": {
+      "file": "data/rank-tracker/SLV-MAPS-READINESS-2026-08-12.json",
+      "sha256": "4ffa3c72d26abbc232e465a4adf34d067459df047eb6e8b80a48117e7b3ea88c"
+    },
     "expansionArchitecture": {
       "file": "data/rank-tracker/SLV-EXPANSION-ARCHITECTURE-2026-08-12.json",
       "sha256": "583b9a8299b776ede28a3c8935bd4ec82d23fe06dffd8b4865390b2dff92c14d"
@@ -106,6 +110,10 @@
     "serviceAreaRequest": {
       "file": "data/authority/SLV-SERVICE-AREA-EVIDENCE-REQUEST-2026-08-12.json",
       "sha256": "5c42463b915a993c7ec7288c22debc98644b8f9718b81ec80afebe768a13d670"
+    },
+    "ownerProfileAuditRequest": {
+      "file": "data/authority/SLV-GBP-OWNER-AUDIT-REQUEST-2026-08-12.json",
+      "sha256": "88e701fc0438260e4249a4b38ebb6e872dd454c2389a21311e67210b1ca0777d"
     },
     "driveReceipt": {
       "file": "data/rank-tracker/evidence/SLV-BUSINESS-DRIVE-CONNECTOR-2026-08-12.json",
@@ -156,7 +164,8 @@
     "Keep the SLC page frozen and run the next core Google panel on 2026-08-17.",
     "Refresh all 72 exact-query GSC URL attributions after this queue lands; preserve unreturned rows as unmeasured.",
     "Import only complete nine-row consumer-AI panels after a valid provider credential produces a committed reading.",
-    "Run the exact-CID Salt Lake Valley review baseline after this branch lands; never mix in the Heber review export."
+    "Run the exact-CID Salt Lake Valley review baseline after this branch lands; never mix in the Heber review export.",
+    "Collect the read-only exact-CID owner profile audit before proposing a GBP relevance or prominence change; no profile edit is authorized."
   ],
   "customerRequests": [
     {
@@ -181,6 +190,12 @@
         "West Valley City"
       ],
       "file": "data/authority/SLV-SERVICE-AREA-EVIDENCE-REQUEST-2026-08-12.json"
+    },
+    {
+      "id": "frame-utah-slv-exact-cid-owner-profile-audit-v1",
+      "state": "draft-only-not-sent",
+      "file": "data/authority/SLV-GBP-OWNER-AUDIT-REQUEST-2026-08-12.json",
+      "action": "Open the Salt Lake Valley profile for CID 5689850818145735734 while signed in as ryan@framerestorations.com and provide a current read-only receipt for the requested fields. Do not change anything and do not send passwords or private address details."
     },
     {
       "id": "business-drive-connector-account",
@@ -216,6 +231,22 @@
         "bestMeasuredOrganicRank": 19,
         "measuredMeanOrganicRank": 22,
         "exactCidMapsNumberOne": 0,
+        "exactCidMapsReturned": 0,
+        "mapsPacksPresent": 3,
+        "mapsReadinessLane": "exact-cid-review-and-owner-profile-audit",
+        "dominantMapsDisplacer": {
+          "name": "The Roof Doctor",
+          "cid": "16329927680093228178",
+          "domain": "google.com",
+          "appearances": 3,
+          "numberOneQueries": 3,
+          "bestRank": 1,
+          "keywords": [
+            "roof repair salt lake city",
+            "roof replacement salt lake city",
+            "roofer salt lake city"
+          ]
+        },
         "googleAiOverviewsPresent": 1,
         "googleAiOverviewOwnedQueries": [],
         "protectedOrganicNumberOneQueries": [],
@@ -300,6 +331,22 @@
         "bestMeasuredOrganicRank": 3,
         "measuredMeanOrganicRank": 4,
         "exactCidMapsNumberOne": 0,
+        "exactCidMapsReturned": 0,
+        "mapsPacksPresent": 3,
+        "mapsReadinessLane": "owner-gated-page-identity-correction",
+        "dominantMapsDisplacer": {
+          "name": "Millcreek Roof Repair",
+          "cid": "15265859284064313678",
+          "domain": "google.com",
+          "appearances": 3,
+          "numberOneQueries": 2,
+          "bestRank": 1,
+          "keywords": [
+            "roofing contractor millcreek",
+            "roof replacement millcreek",
+            "roofer millcreek"
+          ]
+        },
         "googleAiOverviewsPresent": 1,
         "googleAiOverviewOwnedQueries": [
           "roof repair millcreek"
@@ -389,6 +436,22 @@
         "bestMeasuredOrganicRank": 1,
         "measuredMeanOrganicRank": 3.25,
         "exactCidMapsNumberOne": 0,
+        "exactCidMapsReturned": 0,
+        "mapsPacksPresent": 4,
+        "mapsReadinessLane": "service-area-proof-before-exact-cid-planning",
+        "dominantMapsDisplacer": {
+          "name": "Classic Roofing and Exteriors",
+          "cid": "10315170581426755444",
+          "domain": "google.com",
+          "appearances": 3,
+          "numberOneQueries": 3,
+          "bestRank": 1,
+          "keywords": [
+            "roofing contractor magna",
+            "roof repair magna",
+            "roof replacement magna"
+          ]
+        },
         "googleAiOverviewsPresent": 1,
         "googleAiOverviewOwnedQueries": [
           "roof replacement magna"
@@ -477,6 +540,23 @@
         "bestMeasuredOrganicRank": 1,
         "measuredMeanOrganicRank": 8.25,
         "exactCidMapsNumberOne": 0,
+        "exactCidMapsReturned": 0,
+        "mapsPacksPresent": 4,
+        "mapsReadinessLane": "service-area-proof-before-exact-cid-planning",
+        "dominantMapsDisplacer": {
+          "name": "Reliable Roofing Kearns",
+          "cid": "13010928145203840528",
+          "domain": "google.com",
+          "appearances": 4,
+          "numberOneQueries": 2,
+          "bestRank": 1,
+          "keywords": [
+            "roofing contractor kearns",
+            "roof repair kearns",
+            "roof replacement kearns",
+            "roofer kearns"
+          ]
+        },
         "googleAiOverviewsPresent": 0,
         "googleAiOverviewOwnedQueries": [],
         "protectedOrganicNumberOneQueries": [
@@ -563,6 +643,23 @@
         "bestMeasuredOrganicRank": 11,
         "measuredMeanOrganicRank": 13.5,
         "exactCidMapsNumberOne": 0,
+        "exactCidMapsReturned": 0,
+        "mapsPacksPresent": 4,
+        "mapsReadinessLane": "service-area-proof-before-exact-cid-planning",
+        "dominantMapsDisplacer": {
+          "name": "ReRoofIt",
+          "cid": "3305979678440818523",
+          "domain": "google.com",
+          "appearances": 4,
+          "numberOneQueries": 3,
+          "bestRank": 1,
+          "keywords": [
+            "roofing contractor sandy",
+            "roof repair sandy",
+            "roof replacement sandy",
+            "roofer sandy"
+          ]
+        },
         "googleAiOverviewsPresent": 0,
         "googleAiOverviewOwnedQueries": [],
         "protectedOrganicNumberOneQueries": [],
@@ -650,6 +747,23 @@
         "bestMeasuredOrganicRank": 4,
         "measuredMeanOrganicRank": 10.75,
         "exactCidMapsNumberOne": 0,
+        "exactCidMapsReturned": 0,
+        "mapsPacksPresent": 4,
+        "mapsReadinessLane": "service-area-proof-before-exact-cid-planning",
+        "dominantMapsDisplacer": {
+          "name": "True North Roofing",
+          "cid": "5387650211366766810",
+          "domain": "google.com",
+          "appearances": 4,
+          "numberOneQueries": 4,
+          "bestRank": 1,
+          "keywords": [
+            "roofing contractor holladay",
+            "roof repair holladay",
+            "roof replacement holladay",
+            "roofer holladay"
+          ]
+        },
         "googleAiOverviewsPresent": 0,
         "googleAiOverviewOwnedQueries": [],
         "protectedOrganicNumberOneQueries": [],
@@ -741,6 +855,23 @@
         "bestMeasuredOrganicRank": 10,
         "measuredMeanOrganicRank": 13.5,
         "exactCidMapsNumberOne": 0,
+        "exactCidMapsReturned": 0,
+        "mapsPacksPresent": 4,
+        "mapsReadinessLane": "service-area-proof-before-exact-cid-planning",
+        "dominantMapsDisplacer": {
+          "name": "Utah Roofing Pros",
+          "cid": "4118570990011609504",
+          "domain": "google.com",
+          "appearances": 4,
+          "numberOneQueries": 4,
+          "bestRank": 1,
+          "keywords": [
+            "roofing contractor cottonwood heights",
+            "roof repair cottonwood heights",
+            "roof replacement cottonwood heights",
+            "roofer cottonwood heights"
+          ]
+        },
         "googleAiOverviewsPresent": 0,
         "googleAiOverviewOwnedQueries": [],
         "protectedOrganicNumberOneQueries": [],
@@ -828,6 +959,23 @@
         "bestMeasuredOrganicRank": 4,
         "measuredMeanOrganicRank": 7.75,
         "exactCidMapsNumberOne": 0,
+        "exactCidMapsReturned": 0,
+        "mapsPacksPresent": 4,
+        "mapsReadinessLane": "service-area-proof-before-exact-cid-planning",
+        "dominantMapsDisplacer": {
+          "name": "Milne Brothers Roofing",
+          "cid": "7936184157434939732",
+          "domain": "google.com",
+          "appearances": 4,
+          "numberOneQueries": 2,
+          "bestRank": 1,
+          "keywords": [
+            "roofing contractor murray",
+            "roof repair murray",
+            "roof replacement murray",
+            "roofer murray"
+          ]
+        },
         "googleAiOverviewsPresent": 0,
         "googleAiOverviewOwnedQueries": [],
         "protectedOrganicNumberOneQueries": [],
@@ -916,6 +1064,23 @@
         "bestMeasuredOrganicRank": 4,
         "measuredMeanOrganicRank": 7,
         "exactCidMapsNumberOne": 0,
+        "exactCidMapsReturned": 0,
+        "mapsPacksPresent": 4,
+        "mapsReadinessLane": "service-area-proof-before-exact-cid-planning",
+        "dominantMapsDisplacer": {
+          "name": "Mountain Valley Roofing",
+          "cid": "1336901996070958999",
+          "domain": "google.com",
+          "appearances": 4,
+          "numberOneQueries": 3,
+          "bestRank": 1,
+          "keywords": [
+            "roofing contractor riverton",
+            "roof repair riverton",
+            "roof replacement riverton",
+            "roofer riverton"
+          ]
+        },
         "googleAiOverviewsPresent": 0,
         "googleAiOverviewOwnedQueries": [],
         "protectedOrganicNumberOneQueries": [],
@@ -1002,6 +1167,23 @@
         "bestMeasuredOrganicRank": 4,
         "measuredMeanOrganicRank": 10,
         "exactCidMapsNumberOne": 0,
+        "exactCidMapsReturned": 0,
+        "mapsPacksPresent": 4,
+        "mapsReadinessLane": "service-area-proof-before-exact-cid-planning",
+        "dominantMapsDisplacer": {
+          "name": "Top Local Roofing",
+          "cid": "6716199756783041358",
+          "domain": "google.com",
+          "appearances": 4,
+          "numberOneQueries": 3,
+          "bestRank": 1,
+          "keywords": [
+            "roofing contractor south jordan",
+            "roof repair south jordan",
+            "roof replacement south jordan",
+            "roofer south jordan"
+          ]
+        },
         "googleAiOverviewsPresent": 0,
         "googleAiOverviewOwnedQueries": [],
         "protectedOrganicNumberOneQueries": [],
@@ -1089,6 +1271,22 @@
         "bestMeasuredOrganicRank": 7,
         "measuredMeanOrganicRank": 12.5,
         "exactCidMapsNumberOne": 0,
+        "exactCidMapsReturned": 0,
+        "mapsPacksPresent": 4,
+        "mapsReadinessLane": "service-area-proof-before-exact-cid-planning",
+        "dominantMapsDisplacer": {
+          "name": "The Roof Doctor",
+          "cid": "16329927680093228178",
+          "domain": "google.com",
+          "appearances": 3,
+          "numberOneQueries": 2,
+          "bestRank": 1,
+          "keywords": [
+            "roofing contractor taylorsville",
+            "roof repair taylorsville",
+            "roof replacement taylorsville"
+          ]
+        },
         "googleAiOverviewsPresent": 0,
         "googleAiOverviewOwnedQueries": [],
         "protectedOrganicNumberOneQueries": [],
@@ -1173,6 +1371,23 @@
         "bestMeasuredOrganicRank": 9,
         "measuredMeanOrganicRank": 13.75,
         "exactCidMapsNumberOne": 0,
+        "exactCidMapsReturned": 0,
+        "mapsPacksPresent": 4,
+        "mapsReadinessLane": "service-area-proof-before-exact-cid-planning",
+        "dominantMapsDisplacer": {
+          "name": "The Roofing Contractor",
+          "cid": "10363506003073586853",
+          "domain": "google.com",
+          "appearances": 4,
+          "numberOneQueries": 3,
+          "bestRank": 1,
+          "keywords": [
+            "roofing contractor bluffdale",
+            "roof repair bluffdale",
+            "roof replacement bluffdale",
+            "roofer bluffdale"
+          ]
+        },
         "googleAiOverviewsPresent": 0,
         "googleAiOverviewOwnedQueries": [],
         "protectedOrganicNumberOneQueries": [],
@@ -1259,6 +1474,23 @@
         "bestMeasuredOrganicRank": 10,
         "measuredMeanOrganicRank": 14.75,
         "exactCidMapsNumberOne": 0,
+        "exactCidMapsReturned": 0,
+        "mapsPacksPresent": 4,
+        "mapsReadinessLane": "service-area-proof-before-exact-cid-planning",
+        "dominantMapsDisplacer": {
+          "name": "Xperience Roofing",
+          "cid": "8697029845329445458",
+          "domain": "google.com",
+          "appearances": 4,
+          "numberOneQueries": 3,
+          "bestRank": 1,
+          "keywords": [
+            "roofing contractor midvale",
+            "roof repair midvale",
+            "roof replacement midvale",
+            "roofer midvale"
+          ]
+        },
         "googleAiOverviewsPresent": 0,
         "googleAiOverviewOwnedQueries": [],
         "protectedOrganicNumberOneQueries": [],
@@ -1345,6 +1577,23 @@
         "bestMeasuredOrganicRank": 12,
         "measuredMeanOrganicRank": 18.5,
         "exactCidMapsNumberOne": 0,
+        "exactCidMapsReturned": 0,
+        "mapsPacksPresent": 4,
+        "mapsReadinessLane": "service-area-proof-before-exact-cid-planning",
+        "dominantMapsDisplacer": {
+          "name": "RoofKap",
+          "cid": "12684491778996500074",
+          "domain": "google.com",
+          "appearances": 4,
+          "numberOneQueries": 4,
+          "bestRank": 1,
+          "keywords": [
+            "roofing contractor herriman",
+            "roof repair herriman",
+            "roof replacement herriman",
+            "roofer herriman"
+          ]
+        },
         "googleAiOverviewsPresent": 0,
         "googleAiOverviewOwnedQueries": [],
         "protectedOrganicNumberOneQueries": [],
@@ -1431,6 +1680,23 @@
         "bestMeasuredOrganicRank": 11,
         "measuredMeanOrganicRank": 16,
         "exactCidMapsNumberOne": 0,
+        "exactCidMapsReturned": 0,
+        "mapsPacksPresent": 4,
+        "mapsReadinessLane": "service-area-proof-before-exact-cid-planning",
+        "dominantMapsDisplacer": {
+          "name": "Classic Roofing and Exteriors",
+          "cid": "10315170581426755444",
+          "domain": "google.com",
+          "appearances": 4,
+          "numberOneQueries": 3,
+          "bestRank": 1,
+          "keywords": [
+            "roofing contractor west valley city",
+            "roof repair west valley city",
+            "roof replacement west valley city",
+            "roofer west valley city"
+          ]
+        },
         "googleAiOverviewsPresent": 0,
         "googleAiOverviewOwnedQueries": [],
         "protectedOrganicNumberOneQueries": [],
@@ -1517,6 +1783,23 @@
         "bestMeasuredOrganicRank": null,
         "measuredMeanOrganicRank": null,
         "exactCidMapsNumberOne": 0,
+        "exactCidMapsReturned": 0,
+        "mapsPacksPresent": 4,
+        "mapsReadinessLane": "service-area-proof-before-exact-cid-planning",
+        "dominantMapsDisplacer": {
+          "name": "Pride Roofing & Contracting, LLC",
+          "cid": "15206834657984643450",
+          "domain": "google.com",
+          "appearances": 4,
+          "numberOneQueries": 3,
+          "bestRank": 1,
+          "keywords": [
+            "roofing contractor draper",
+            "roof repair draper",
+            "roof replacement draper",
+            "roofer draper"
+          ]
+        },
         "googleAiOverviewsPresent": 0,
         "googleAiOverviewOwnedQueries": [],
         "protectedOrganicNumberOneQueries": [],
@@ -1604,6 +1887,21 @@
         "bestMeasuredOrganicRank": 12,
         "measuredMeanOrganicRank": 13,
         "exactCidMapsNumberOne": 0,
+        "exactCidMapsReturned": 0,
+        "mapsPacksPresent": 3,
+        "mapsReadinessLane": "service-area-proof-before-exact-cid-planning",
+        "dominantMapsDisplacer": {
+          "name": "The Roof Doctor",
+          "cid": "16329927680093228178",
+          "domain": "google.com",
+          "appearances": 2,
+          "numberOneQueries": 2,
+          "bestRank": 1,
+          "keywords": [
+            "roof repair south salt lake",
+            "roof replacement south salt lake"
+          ]
+        },
         "googleAiOverviewsPresent": 1,
         "googleAiOverviewOwnedQueries": [],
         "protectedOrganicNumberOneQueries": [],
@@ -1688,6 +1986,22 @@
         "bestMeasuredOrganicRank": 14,
         "measuredMeanOrganicRank": 16.5,
         "exactCidMapsNumberOne": 0,
+        "exactCidMapsReturned": 0,
+        "mapsPacksPresent": 4,
+        "mapsReadinessLane": "service-area-proof-before-exact-cid-planning",
+        "dominantMapsDisplacer": {
+          "name": "West Jordan Roofing Solutions",
+          "cid": "12317812539198406731",
+          "domain": "google.com",
+          "appearances": 3,
+          "numberOneQueries": 3,
+          "bestRank": 1,
+          "keywords": [
+            "roofing contractor west jordan",
+            "roof repair west jordan",
+            "roofer west jordan"
+          ]
+        },
         "googleAiOverviewsPresent": 0,
         "googleAiOverviewOwnedQueries": [],
         "protectedOrganicNumberOneQueries": [],

@@ -26,6 +26,8 @@ const sourceFiles = {
   gscAttribution: "data/rank-tracker/SLV-GSC-URL-ATTRIBUTION-LATEST.json",
   consumerAi: "data/rank-tracker/SLV-CONSUMER-AI-LATEST.json",
   interventions: "data/rank-tracker/SLV-INTERVENTION-QUEUE-2026-08-12.json",
+  mapsReadiness: "data/rank-tracker/SLV-MAPS-READINESS-2026-08-12.json",
+  ownerProfileAuditRequest: "data/authority/SLV-GBP-OWNER-AUDIT-REQUEST-2026-08-12.json",
   businessDriveReceipt: "data/rank-tracker/evidence/SLV-BUSINESS-DRIVE-CONNECTOR-2026-08-12.json",
 };
 const externalEvidence = {
@@ -48,10 +50,13 @@ const weeklyDecisions = read(sourceFiles.weeklyDecisions);
 const gscAttribution = read(sourceFiles.gscAttribution);
 const consumerAi = read(sourceFiles.consumerAi);
 const interventions = read(sourceFiles.interventions);
+const mapsReadiness = read(sourceFiles.mapsReadiness);
+const ownerProfileAuditRequest = read(sourceFiles.ownerProfileAuditRequest);
 const goals = new Map(portfolio.cityGoals.map((goal) => [goal.city, goal]));
 const gscByCity = new Map(gscAttribution.cities.map((city) => [city.city, city]));
 const expansionRows = new Map(expansionPriority.cities.map((city) => [city.city, city]));
 const interventionByCity = new Map(interventions.candidates.map((candidate) => [candidate.city, candidate]));
+const mapsByCity = new Map(mapsReadiness.cities.map((city) => [city.city, city]));
 const queryRows = new Map();
 for (const query of displacement.queries) {
   if (!queryRows.has(query.city)) queryRows.set(query.city, []);
@@ -132,7 +137,8 @@ const cities = cityOrder.map((city, index) => {
   const aioOwned = queries.filter((query) => query.target.aiOverviewCited).map((query) => query.keyword);
   const action = actionFor(city);
   const intervention = interventionByCity.get(city);
-  assert.ok(intervention, `missing intervention: ${city}`);
+  const maps = mapsByCity.get(city);
+  assert.ok(intervention && maps, `missing intervention or Maps readiness: ${city}`);
   return {
     executionPriority: index,
     city,
@@ -172,6 +178,15 @@ const cities = cityOrder.map((city, index) => {
       acceptanceCheck: intervention.acceptanceCheck,
       scoreVector: intervention.scoreVector,
       feedback: intervention.feedback,
+    },
+    mapsReadiness: {
+      lane: maps.lane,
+      packsPresent: maps.maps.packsPresent,
+      exactCidReturned: maps.maps.exactCidReturned,
+      exactCidNumberOne: maps.maps.exactCidNumberOne,
+      dominantDisplacer: maps.maps.dominantDisplacers[0] || null,
+      nextAction: maps.nextAction,
+      mutationAuthorized: maps.publicMutationAuthorized,
     },
     universalDependencies: [
       "valid Bright Data user API key for ChatGPT/Perplexity/Gemini panels",
@@ -280,6 +295,15 @@ const registry = {
       source: sourceFiles.interventions,
       decision: "Re-rank each city's next action after every complete Google, GSC, review, entity-health, or consumer-AI refresh; protect existing footholds and preserve every explicit evidence and owner gate.",
     },
+    {
+      id: "exact-cid-maps-readiness",
+      class: "system-fixable-on-evidence-refresh",
+      state: mapsReadiness.summary.citiesReadyForMapsIntervention === 0 ? "owner-evidence-and-exact-cid-review-baselines-needed" : "city-maps-lanes-ready-for-reviewed-selection",
+      source: sourceFiles.mapsReadiness,
+      exactCidReturned: mapsReadiness.summary.exactCidReturned,
+      citiesPendingServiceAreaEvidence: mapsReadiness.summary.citiesPendingServiceAreaEvidence,
+      decision: "Use Google's relevance, distance, and prominence model per city; measure distance, verify relevance facts, and earn prominence without fake locations, duplicate profiles, name/category stuffing, or review manipulation.",
+    },
   ],
   connectionNeeded: [
     {
@@ -321,6 +345,21 @@ const registry = {
       publicMutationPerformed: false,
     },
   ],
+  ownerEvidenceNeeded: [
+    {
+      id: ownerProfileAuditRequest.requestId,
+      state: ownerProfileAuditRequest.delivery.state,
+      file: sourceFiles.ownerProfileAuditRequest,
+      publicMutationPerformed: false,
+    },
+    {
+      id: "frame-utah-slv-current-service-area-evidence-v1",
+      state: "ready-not-sent",
+      file: "data/authority/SLV-SERVICE-AREA-EVIDENCE-REQUEST-2026-08-12.json",
+      cities: mapsReadiness.summary.citiesPendingServiceAreaEvidence,
+      publicMutationPerformed: false,
+    },
+  ],
   prohibited: [
     "No public page edit before the exact governing owner approval is recorded.",
     "No GBP, review, directory, service-area, indexing, outreach, DNS, ads, owner-message, or other public-account mutation from this registry.",
@@ -350,12 +389,16 @@ assert.equal(consumerAi.summary.cities, 18);
 assert.equal(interventions.summary.cities, 18);
 assert.equal(gscByCity.size, 18);
 assert.equal(interventionByCity.size, 18);
+assert.equal(mapsByCity.size, 18);
+assert.equal(mapsReadiness.summary.exactCidNumberOne, registry.score.exactCidMapsNumberOne);
+assert.equal(registry.ownerEvidenceNeeded.length, 2);
 assert.equal(registry.cities.reduce((sum, city) => sum + city.gscAttribution.requestedQueries, 0), gscAttribution.summary.requestedQueries);
 assert.equal(registry.connectionNeeded.length, consumerAi.summary.citiesWithCompleteReading > 0 ? 1 : 2);
 assert.equal(registry.ownerApprovalsNeeded.length, 3);
 assert.ok(registry.cities.every((city) => city.completionContract.includes("four consecutive weekly panels")));
 assert.ok(registry.cities.every((city) => city.universalDependencies.length === 3));
 assert.ok(registry.cities.every((city) => city.intervention.feedback.requiredComparablePanels === 4));
+assert.ok(registry.cities.every((city) => city.mapsReadiness.mutationAuthorized === false));
 
 const nextText = `${JSON.stringify(registry, null, 2)}\n`;
 const fullOutputPath = path.join(root, outputPath);

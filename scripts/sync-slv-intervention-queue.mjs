@@ -19,12 +19,14 @@ const sourceFiles = {
   gscAttribution: "data/rank-tracker/SLV-GSC-URL-ATTRIBUTION-LATEST.json",
   displacement: "data/rank-tracker/SLV-COMPETITOR-DISPLACEMENT-2026-08-12.json",
   entityHealth: "data/rank-tracker/SLV-ENTITY-HEALTH-2026-08-12.json",
+  mapsReadiness: "data/rank-tracker/SLV-MAPS-READINESS-2026-08-12.json",
   expansionArchitecture: "data/rank-tracker/SLV-EXPANSION-ARCHITECTURE-2026-08-12.json",
   corePriority: "data/rank-tracker/SLV-PRIORITY-2026-08-12.json",
   coreCleanup: "data/authority/SLV-CITY-PUBLIC-REMEDIATION-PACKET-2026-08-12.json",
   millcreekAmendment: "data/authority/MILLCREEK-PUBLIC-IDENTITY-SCOPE-AMENDMENT-2026-08-12.json",
   expansionCleanup: "data/authority/SLV-EXPANSION-PUBLIC-REMEDIATION-PACKET-2026-08-12.json",
   serviceAreaRequest: "data/authority/SLV-SERVICE-AREA-EVIDENCE-REQUEST-2026-08-12.json",
+  ownerProfileAuditRequest: "data/authority/SLV-GBP-OWNER-AUDIT-REQUEST-2026-08-12.json",
   driveReceipt: "data/rank-tracker/evidence/SLV-BUSINESS-DRIVE-CONNECTOR-2026-08-12.json",
 };
 const diagnosisFiles = {
@@ -41,16 +43,19 @@ const weekly = read(sourceFiles.weeklyDecisions);
 const gsc = read(sourceFiles.gscAttribution);
 const displacement = read(sourceFiles.displacement);
 const entityHealth = read(sourceFiles.entityHealth);
+const mapsReadiness = read(sourceFiles.mapsReadiness);
 const expansionArchitecture = read(sourceFiles.expansionArchitecture);
 const corePriority = read(sourceFiles.corePriority);
 const coreCleanup = read(sourceFiles.coreCleanup);
 const millcreekAmendment = read(sourceFiles.millcreekAmendment);
 const expansionCleanup = read(sourceFiles.expansionCleanup);
 const serviceAreaRequest = read(sourceFiles.serviceAreaRequest);
+const ownerProfileAuditRequest = read(sourceFiles.ownerProfileAuditRequest);
 const driveReceipt = read(sourceFiles.driveReceipt);
 const decisionsByCity = new Map(weekly.cities.map((city) => [city.city, city]));
 const gscByCity = new Map(gsc.cities.map((city) => [city.city, city]));
 const entityByCity = new Map(entityHealth.cities.map((city) => [city.city, city]));
+const mapsByCity = new Map(mapsReadiness.cities.map((city) => [city.city, city]));
 const expansionArchitectureByCity = new Map(expansionArchitecture.cities.map((city) => [city.city, city]));
 const queriesByCity = new Map();
 for (const query of displacement.queries) {
@@ -117,8 +122,9 @@ const candidates = portfolio.cityGoals.map((goal) => {
   const decision = decisionsByCity.get(goal.city);
   const gscCity = gscByCity.get(goal.city);
   const entity = entityByCity.get(goal.city);
+  const maps = mapsByCity.get(goal.city);
   const queries = queriesByCity.get(goal.city) || [];
-  assert.ok(decision && gscCity && entity, `missing joined evidence: ${goal.city}`);
+  assert.ok(decision && gscCity && entity && maps, `missing joined evidence: ${goal.city}`);
   assert.equal(queries.length, 4, `fixed query evidence mismatch: ${goal.city}`);
   const diagnosisFile = diagnosisFiles[goal.city] || null;
   const diagnosis = diagnosisFile ? read(diagnosisFile) : null;
@@ -161,6 +167,10 @@ const candidates = portfolio.cityGoals.map((goal) => {
       bestMeasuredOrganicRank: bestMeasuredRank(goal.current.organicRanks),
       measuredMeanOrganicRank: measuredMeanRank(goal.current.organicRanks),
       exactCidMapsNumberOne: queries.filter((query) => query.target.exactCidMapRank === 1).length,
+      exactCidMapsReturned: maps.maps.exactCidReturned,
+      mapsPacksPresent: maps.maps.packsPresent,
+      mapsReadinessLane: maps.lane,
+      dominantMapsDisplacer: maps.maps.dominantDisplacers[0] || null,
       googleAiOverviewsPresent: goal.current.googleAiOverview.present,
       googleAiOverviewOwnedQueries: aioOwned,
       protectedOrganicNumberOneQueries: organicNumberOne,
@@ -273,7 +283,8 @@ const queue = {
     "Keep the SLC page frozen and run the next core Google panel on 2026-08-17.",
     "Refresh all 72 exact-query GSC URL attributions after this queue lands; preserve unreturned rows as unmeasured.",
     "Import only complete nine-row consumer-AI panels after a valid provider credential produces a committed reading.",
-    "Run the exact-CID Salt Lake Valley review baseline after this branch lands; never mix in the Heber review export."
+    "Run the exact-CID Salt Lake Valley review baseline after this branch lands; never mix in the Heber review export.",
+    "Collect the read-only exact-CID owner profile audit before proposing a GBP relevance or prominence change; no profile edit is authorized."
   ],
   customerRequests: [
     {
@@ -281,6 +292,12 @@ const queue = {
       state: serviceAreaRequest.delivery.state,
       cities: serviceAreaRequest.citiesRequiringCurrentEvidence,
       file: sourceFiles.serviceAreaRequest,
+    },
+    {
+      id: ownerProfileAuditRequest.requestId,
+      state: ownerProfileAuditRequest.delivery.state,
+      file: sourceFiles.ownerProfileAuditRequest,
+      action: ownerProfileAuditRequest.delivery.ownerAsk,
     },
     {
       id: "business-drive-connector-account",
@@ -307,9 +324,11 @@ assert.equal(candidates.find((candidate) => candidate.city === "Millcreek").lane
 assert.ok(["Magna", "Kearns"].every((city) => candidates.find((candidate) => candidate.city === city).lane === "protect-foothold-before-cleanup-or-intent-change"));
 assert.equal(queue.summary.citiesPendingServiceAreaEvidence, 16);
 assert.equal(expansionArchitectureByCity.size, 12);
+assert.equal(mapsByCity.size, 18);
 assert.equal(queue.summary.protectedOrganicNumberOneQueries, portfolio.portfolioScore.fixedOrganicNumberOne);
 assert.equal(queue.summary.protectedGoogleAiOverviewCitations, portfolio.portfolioScore.googleAiOverviewCitations);
 assert.equal(queue.summary.citiesAtSustainedGoal, 0);
+assert.equal(mapsReadiness.summary.citiesReadyForMapsIntervention, 0);
 assert.equal(serviceAreaRequest.drivePreflight.externalReceiptSha256, driveReceipt.source.externalReceiptSha256);
 assert.equal(driveReceipt.evidenceSearchPerformed, false);
 assert.ok(candidates.every((candidate) => candidate.sources.panelEvidence.length === 4));

@@ -77,3 +77,12 @@ Rows and delivery drafts only. No email, SMS, Google Sheet, portal, GBP, DNS, tr
 - Required proof: a current dated owner-view service-area receipt plus the owner city matrix. A website route, historic note, rank, or wrong-account Drive result is not current GBP proof.
 - Artifact: `data/authority/SLV-SERVICE-AREA-EVIDENCE-REQUEST-2026-08-12.json`
 - Safety: do not send passwords; this request does not authorize GBP, page, schema, directory, review, indexing, outreach, ads, or DNS changes.
+
+## 2026-08-12 Salt Lake Valley exact-CID owner profile audit addendum
+
+- Request: `frame-utah-slv-exact-cid-owner-profile-audit-v1`
+- Status: ready, not sent
+- Scope: collect a current read-only owner-view completeness receipt for exact CID `5689850818145735734` under `ryan@framerestorations.com`.
+- Required fields: verification, real-world name, business type, address shown/hidden state, categories, services, hours, service areas, photo freshness, exact-CID rating/review count, and review-response coverage.
+- Artifact: `data/authority/SLV-GBP-OWNER-AUDIT-REQUEST-2026-08-12.json`
+- Safety: collect only; do not edit GBP, copy a private address, send credentials, create locations, change service areas, solicit reviews, or perform any public mutation.

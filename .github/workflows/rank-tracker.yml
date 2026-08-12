@@ -54,6 +54,7 @@ jobs:
           npm run sync:slv-competitor-displacement
           npm run sync:slv-gsc-attribution
           npm run sync:slv-expansion-architecture
+          npm run sync:slv-maps-readiness
           npm run sync:slv-interventions
           npm run sync:slv-execution-registry
 
@@ -66,6 +67,7 @@ jobs:
           npm run audit:slv-competitor-displacement
           npm run audit:slv-gsc-attribution
           npm run audit:slv-expansion-architecture
+          npm run audit:slv-maps-readiness
           npm run audit:slv-interventions
           npm run audit:slv-execution-registry
 

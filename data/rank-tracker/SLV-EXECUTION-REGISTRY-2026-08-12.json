@@ -71,7 +71,15 @@
     },
     "interventions": {
       "file": "data/rank-tracker/SLV-INTERVENTION-QUEUE-2026-08-12.json",
-      "sha256": "13d566c747a6a2c114147dd63ab4e1485026ad8fd49041cbf58c7e59c344e5eb"
+      "sha256": "689199630124aa7fea495222778b9de4adba570a5348244f51b8e1ccffa87c54"
+    },
+    "mapsReadiness": {
+      "file": "data/rank-tracker/SLV-MAPS-READINESS-2026-08-12.json",
+      "sha256": "4ffa3c72d26abbc232e465a4adf34d067459df047eb6e8b80a48117e7b3ea88c"
+    },
+    "ownerProfileAuditRequest": {
+      "file": "data/authority/SLV-GBP-OWNER-AUDIT-REQUEST-2026-08-12.json",
+      "sha256": "88e701fc0438260e4249a4b38ebb6e872dd454c2389a21311e67210b1ca0777d"
     },
     "businessDriveReceipt": {
       "file": "data/rank-tracker/evidence/SLV-BUSINESS-DRIVE-CONNECTOR-2026-08-12.json",
@@ -167,6 +175,15 @@
       "state": "active-no-public-authorization",
       "source": "data/rank-tracker/SLV-INTERVENTION-QUEUE-2026-08-12.json",
       "decision": "Re-rank each city's next action after every complete Google, GSC, review, entity-health, or consumer-AI refresh; protect existing footholds and preserve every explicit evidence and owner gate."
+    },
+    {
+      "id": "exact-cid-maps-readiness",
+      "class": "system-fixable-on-evidence-refresh",
+      "state": "owner-evidence-and-exact-cid-review-baselines-needed",
+      "source": "data/rank-tracker/SLV-MAPS-READINESS-2026-08-12.json",
+      "exactCidReturned": 0,
+      "citiesPendingServiceAreaEvidence": 16,
+      "decision": "Use Google's relevance, distance, and prominence model per city; measure distance, verify relevance facts, and earn prominence without fake locations, duplicate profiles, name/category stuffing, or review manipulation."
     }
   ],
   "connectionNeeded": [
@@ -213,6 +230,21 @@
       "scope": [
         "Admit the complete 12-city/48-query expansion panel to weekly DataForSEO task-queue runs at an estimated $0.1152 per complete run."
       ],
+      "publicMutationPerformed": false
+    }
+  ],
+  "ownerEvidenceNeeded": [
+    {
+      "id": "frame-utah-slv-exact-cid-owner-profile-audit-v1",
+      "state": "draft-only-not-sent",
+      "file": "data/authority/SLV-GBP-OWNER-AUDIT-REQUEST-2026-08-12.json",
+      "publicMutationPerformed": false
+    },
+    {
+      "id": "frame-utah-slv-current-service-area-evidence-v1",
+      "state": "ready-not-sent",
+      "file": "data/authority/SLV-SERVICE-AREA-EVIDENCE-REQUEST-2026-08-12.json",
+      "cities": 16,
       "publicMutationPerformed": false
     }
   ],
@@ -291,6 +323,27 @@
           "revertRule": "Revert the isolated ranking variable on a declared guardrail failure or unmet 28-day decision rule; never revert a required factual correction to restore an unsupported claim or wrong entity identity."
         }
       },
+      "mapsReadiness": {
+        "lane": "exact-cid-review-and-owner-profile-audit",
+        "packsPresent": 3,
+        "exactCidReturned": 0,
+        "exactCidNumberOne": 0,
+        "dominantDisplacer": {
+          "name": "The Roof Doctor",
+          "cid": "16329927680093228178",
+          "domain": "google.com",
+          "appearances": 3,
+          "numberOneQueries": 3,
+          "bestRank": 1,
+          "keywords": [
+            "roof repair salt lake city",
+            "roof replacement salt lake city",
+            "roofer salt lake city"
+          ]
+        },
+        "nextAction": "Keep the Salt Lake City page frozen, measure the exact-CID review baseline, collect the owner-view profile audit, and compare the next fixed weekly panel before proposing a relevance or prominence change.",
+        "mutationAuthorized": false
+      },
       "universalDependencies": [
         "valid Bright Data user API key for ChatGPT/Perplexity/Gemini panels",
         "business Drive connector authenticated as ryan@framerestorations.com for evidence search",
@@ -366,6 +419,27 @@
           "keepRule": "Keep only a declared isolated ranking variable when its city-specific acceptance check passes and every protected integrity, URL-selection, Maps, AIO, consumer-AI, and route guardrail remains green.",
           "revertRule": "Revert the isolated ranking variable on a declared guardrail failure or unmet 28-day decision rule; never revert a required factual correction to restore an unsupported claim or wrong entity identity."
         }
+      },
+      "mapsReadiness": {
+        "lane": "owner-gated-page-identity-correction",
+        "packsPresent": 3,
+        "exactCidReturned": 0,
+        "exactCidNumberOne": 0,
+        "dominantDisplacer": {
+          "name": "Millcreek Roof Repair",
+          "cid": "15265859284064313678",
+          "domain": "google.com",
+          "appearances": 3,
+          "numberOneQueries": 2,
+          "bestRank": 1,
+          "keywords": [
+            "roofing contractor millcreek",
+            "roof replacement millcreek",
+            "roofer millcreek"
+          ]
+        },
+        "nextAction": "Collect the exact-CID review and owner-profile baselines, then request the pinned Millcreek page-identity correction separately; preserve the owned AIO citation and do not edit GBP from this ledger.",
+        "mutationAuthorized": false
       },
       "universalDependencies": [
         "valid Bright Data user API key for ChatGPT/Perplexity/Gemini panels",
@@ -445,6 +519,27 @@
           "revertRule": "Revert the isolated ranking variable on a declared guardrail failure or unmet 28-day decision rule; never revert a required factual correction to restore an unsupported claim or wrong entity identity."
         }
       },
+      "mapsReadiness": {
+        "lane": "service-area-proof-before-exact-cid-planning",
+        "packsPresent": 4,
+        "exactCidReturned": 0,
+        "exactCidNumberOne": 0,
+        "dominantDisplacer": {
+          "name": "Classic Roofing and Exteriors",
+          "cid": "10315170581426755444",
+          "domain": "google.com",
+          "appearances": 3,
+          "numberOneQueries": 3,
+          "bestRank": 1,
+          "keywords": [
+            "roofing contractor magna",
+            "roof repair magna",
+            "roof replacement magna"
+          ]
+        },
+        "nextAction": "Obtain current owner-view service-area evidence for Magna and the read-only exact-CID profile audit; do not attach the Salt Lake CID to the city page or edit GBP unless a later reviewed scope is explicitly approved.",
+        "mutationAuthorized": false
+      },
       "universalDependencies": [
         "valid Bright Data user API key for ChatGPT/Perplexity/Gemini panels",
         "business Drive connector authenticated as ryan@framerestorations.com for evidence search",
@@ -521,6 +616,28 @@
           "revertRule": "Revert the isolated ranking variable on a declared guardrail failure or unmet 28-day decision rule; never revert a required factual correction to restore an unsupported claim or wrong entity identity."
         }
       },
+      "mapsReadiness": {
+        "lane": "service-area-proof-before-exact-cid-planning",
+        "packsPresent": 4,
+        "exactCidReturned": 0,
+        "exactCidNumberOne": 0,
+        "dominantDisplacer": {
+          "name": "Reliable Roofing Kearns",
+          "cid": "13010928145203840528",
+          "domain": "google.com",
+          "appearances": 4,
+          "numberOneQueries": 2,
+          "bestRank": 1,
+          "keywords": [
+            "roofing contractor kearns",
+            "roof repair kearns",
+            "roof replacement kearns",
+            "roofer kearns"
+          ]
+        },
+        "nextAction": "Obtain current owner-view service-area evidence for Kearns and the read-only exact-CID profile audit; do not attach the Salt Lake CID to the city page or edit GBP unless a later reviewed scope is explicitly approved.",
+        "mutationAuthorized": false
+      },
       "universalDependencies": [
         "valid Bright Data user API key for ChatGPT/Perplexity/Gemini panels",
         "business Drive connector authenticated as ryan@framerestorations.com for evidence search",
@@ -594,6 +711,28 @@
           "keepRule": "Keep only a declared isolated ranking variable when its city-specific acceptance check passes and every protected integrity, URL-selection, Maps, AIO, consumer-AI, and route guardrail remains green.",
           "revertRule": "Revert the isolated ranking variable on a declared guardrail failure or unmet 28-day decision rule; never revert a required factual correction to restore an unsupported claim or wrong entity identity."
         }
+      },
+      "mapsReadiness": {
+        "lane": "service-area-proof-before-exact-cid-planning",
+        "packsPresent": 4,
+        "exactCidReturned": 0,
+        "exactCidNumberOne": 0,
+        "dominantDisplacer": {
+          "name": "ReRoofIt",
+          "cid": "3305979678440818523",
+          "domain": "google.com",
+          "appearances": 4,
+          "numberOneQueries": 3,
+          "bestRank": 1,
+          "keywords": [
+            "roofing contractor sandy",
+            "roof repair sandy",
+            "roof replacement sandy",
+            "roofer sandy"
+          ]
+        },
+        "nextAction": "Obtain current owner-view service-area evidence for Sandy and the read-only exact-CID profile audit; do not attach the Salt Lake CID to the city page or edit GBP unless a later reviewed scope is explicitly approved.",
+        "mutationAuthorized": false
       },
       "universalDependencies": [
         "valid Bright Data user API key for ChatGPT/Perplexity/Gemini panels",
@@ -673,6 +812,28 @@
           "revertRule": "Revert the isolated ranking variable on a declared guardrail failure or unmet 28-day decision rule; never revert a required factual correction to restore an unsupported claim or wrong entity identity."
         }
       },
+      "mapsReadiness": {
+        "lane": "service-area-proof-before-exact-cid-planning",
+        "packsPresent": 4,
+        "exactCidReturned": 0,
+        "exactCidNumberOne": 0,
+        "dominantDisplacer": {
+          "name": "True North Roofing",
+          "cid": "5387650211366766810",
+          "domain": "google.com",
+          "appearances": 4,
+          "numberOneQueries": 4,
+          "bestRank": 1,
+          "keywords": [
+            "roofing contractor holladay",
+            "roof repair holladay",
+            "roof replacement holladay",
+            "roofer holladay"
+          ]
+        },
+        "nextAction": "Obtain current owner-view service-area evidence for Holladay and the read-only exact-CID profile audit; do not attach the Salt Lake CID to the city page or edit GBP unless a later reviewed scope is explicitly approved.",
+        "mutationAuthorized": false
+      },
       "universalDependencies": [
         "valid Bright Data user API key for ChatGPT/Perplexity/Gemini panels",
         "business Drive connector authenticated as ryan@framerestorations.com for evidence search",
@@ -746,6 +907,28 @@
           "keepRule": "Keep only a declared isolated ranking variable when its city-specific acceptance check passes and every protected integrity, URL-selection, Maps, AIO, consumer-AI, and route guardrail remains green.",
           "revertRule": "Revert the isolated ranking variable on a declared guardrail failure or unmet 28-day decision rule; never revert a required factual correction to restore an unsupported claim or wrong entity identity."
         }
+      },
+      "mapsReadiness": {
+        "lane": "service-area-proof-before-exact-cid-planning",
+        "packsPresent": 4,
+        "exactCidReturned": 0,
+        "exactCidNumberOne": 0,
+        "dominantDisplacer": {
+          "name": "Utah Roofing Pros",
+          "cid": "4118570990011609504",
+          "domain": "google.com",
+          "appearances": 4,
+          "numberOneQueries": 4,
+          "bestRank": 1,
+          "keywords": [
+            "roofing contractor cottonwood heights",
+            "roof repair cottonwood heights",
+            "roof replacement cottonwood heights",
+            "roofer cottonwood heights"
+          ]
+        },
+        "nextAction": "Obtain current owner-view service-area evidence for Cottonwood Heights and the read-only exact-CID profile audit; do not attach the Salt Lake CID to the city page or edit GBP unless a later reviewed scope is explicitly approved.",
+        "mutationAuthorized": false
       },
       "universalDependencies": [
         "valid Bright Data user API key for ChatGPT/Perplexity/Gemini panels",
@@ -821,6 +1004,28 @@
           "revertRule": "Revert the isolated ranking variable on a declared guardrail failure or unmet 28-day decision rule; never revert a required factual correction to restore an unsupported claim or wrong entity identity."
         }
       },
+      "mapsReadiness": {
+        "lane": "service-area-proof-before-exact-cid-planning",
+        "packsPresent": 4,
+        "exactCidReturned": 0,
+        "exactCidNumberOne": 0,
+        "dominantDisplacer": {
+          "name": "Milne Brothers Roofing",
+          "cid": "7936184157434939732",
+          "domain": "google.com",
+          "appearances": 4,
+          "numberOneQueries": 2,
+          "bestRank": 1,
+          "keywords": [
+            "roofing contractor murray",
+            "roof repair murray",
+            "roof replacement murray",
+            "roofer murray"
+          ]
+        },
+        "nextAction": "Obtain current owner-view service-area evidence for Murray and the read-only exact-CID profile audit; do not attach the Salt Lake CID to the city page or edit GBP unless a later reviewed scope is explicitly approved.",
+        "mutationAuthorized": false
+      },
       "universalDependencies": [
         "valid Bright Data user API key for ChatGPT/Perplexity/Gemini panels",
         "business Drive connector authenticated as ryan@framerestorations.com for evidence search",
@@ -894,6 +1099,28 @@
           "keepRule": "Keep only a declared isolated ranking variable when its city-specific acceptance check passes and every protected integrity, URL-selection, Maps, AIO, consumer-AI, and route guardrail remains green.",
           "revertRule": "Revert the isolated ranking variable on a declared guardrail failure or unmet 28-day decision rule; never revert a required factual correction to restore an unsupported claim or wrong entity identity."
         }
+      },
+      "mapsReadiness": {
+        "lane": "service-area-proof-before-exact-cid-planning",
+        "packsPresent": 4,
+        "exactCidReturned": 0,
+        "exactCidNumberOne": 0,
+        "dominantDisplacer": {
+          "name": "Mountain Valley Roofing",
+          "cid": "1336901996070958999",
+          "domain": "google.com",
+          "appearances": 4,
+          "numberOneQueries": 3,
+          "bestRank": 1,
+          "keywords": [
+            "roofing contractor riverton",
+            "roof repair riverton",
+            "roof replacement riverton",
+            "roofer riverton"
+          ]
+        },
+        "nextAction": "Obtain current owner-view service-area evidence for Riverton and the read-only exact-CID profile audit; do not attach the Salt Lake CID to the city page or edit GBP unless a later reviewed scope is explicitly approved.",
+        "mutationAuthorized": false
       },
       "universalDependencies": [
         "valid Bright Data user API key for ChatGPT/Perplexity/Gemini panels",
@@ -969,6 +1196,28 @@
           "revertRule": "Revert the isolated ranking variable on a declared guardrail failure or unmet 28-day decision rule; never revert a required factual correction to restore an unsupported claim or wrong entity identity."
         }
       },
+      "mapsReadiness": {
+        "lane": "service-area-proof-before-exact-cid-planning",
+        "packsPresent": 4,
+        "exactCidReturned": 0,
+        "exactCidNumberOne": 0,
+        "dominantDisplacer": {
+          "name": "Top Local Roofing",
+          "cid": "6716199756783041358",
+          "domain": "google.com",
+          "appearances": 4,
+          "numberOneQueries": 3,
+          "bestRank": 1,
+          "keywords": [
+            "roofing contractor south jordan",
+            "roof repair south jordan",
+            "roof replacement south jordan",
+            "roofer south jordan"
+          ]
+        },
+        "nextAction": "Obtain current owner-view service-area evidence for South Jordan and the read-only exact-CID profile audit; do not attach the Salt Lake CID to the city page or edit GBP unless a later reviewed scope is explicitly approved.",
+        "mutationAuthorized": false
+      },
       "universalDependencies": [
         "valid Bright Data user API key for ChatGPT/Perplexity/Gemini panels",
         "business Drive connector authenticated as ryan@framerestorations.com for evidence search",
@@ -1042,6 +1291,27 @@
           "keepRule": "Keep only a declared isolated ranking variable when its city-specific acceptance check passes and every protected integrity, URL-selection, Maps, AIO, consumer-AI, and route guardrail remains green.",
           "revertRule": "Revert the isolated ranking variable on a declared guardrail failure or unmet 28-day decision rule; never revert a required factual correction to restore an unsupported claim or wrong entity identity."
         }
+      },
+      "mapsReadiness": {
+        "lane": "service-area-proof-before-exact-cid-planning",
+        "packsPresent": 4,
+        "exactCidReturned": 0,
+        "exactCidNumberOne": 0,
+        "dominantDisplacer": {
+          "name": "The Roof Doctor",
+          "cid": "16329927680093228178",
+          "domain": "google.com",
+          "appearances": 3,
+          "numberOneQueries": 2,
+          "bestRank": 1,
+          "keywords": [
+            "roofing contractor taylorsville",
+            "roof repair taylorsville",
+            "roof replacement taylorsville"
+          ]
+        },
+        "nextAction": "Obtain current owner-view service-area evidence for Taylorsville and the read-only exact-CID profile audit; do not attach the Salt Lake CID to the city page or edit GBP unless a later reviewed scope is explicitly approved.",
+        "mutationAuthorized": false
       },
       "universalDependencies": [
         "valid Bright Data user API key for ChatGPT/Perplexity/Gemini panels",
@@ -1117,6 +1387,28 @@
           "revertRule": "Revert the isolated ranking variable on a declared guardrail failure or unmet 28-day decision rule; never revert a required factual correction to restore an unsupported claim or wrong entity identity."
         }
       },
+      "mapsReadiness": {
+        "lane": "service-area-proof-before-exact-cid-planning",
+        "packsPresent": 4,
+        "exactCidReturned": 0,
+        "exactCidNumberOne": 0,
+        "dominantDisplacer": {
+          "name": "The Roofing Contractor",
+          "cid": "10363506003073586853",
+          "domain": "google.com",
+          "appearances": 4,
+          "numberOneQueries": 3,
+          "bestRank": 1,
+          "keywords": [
+            "roofing contractor bluffdale",
+            "roof repair bluffdale",
+            "roof replacement bluffdale",
+            "roofer bluffdale"
+          ]
+        },
+        "nextAction": "Obtain current owner-view service-area evidence for Bluffdale and the read-only exact-CID profile audit; do not attach the Salt Lake CID to the city page or edit GBP unless a later reviewed scope is explicitly approved.",
+        "mutationAuthorized": false
+      },
       "universalDependencies": [
         "valid Bright Data user API key for ChatGPT/Perplexity/Gemini panels",
         "business Drive connector authenticated as ryan@framerestorations.com for evidence search",
@@ -1190,6 +1482,28 @@
           "keepRule": "Keep only a declared isolated ranking variable when its city-specific acceptance check passes and every protected integrity, URL-selection, Maps, AIO, consumer-AI, and route guardrail remains green.",
           "revertRule": "Revert the isolated ranking variable on a declared guardrail failure or unmet 28-day decision rule; never revert a required factual correction to restore an unsupported claim or wrong entity identity."
         }
+      },
+      "mapsReadiness": {
+        "lane": "service-area-proof-before-exact-cid-planning",
+        "packsPresent": 4,
+        "exactCidReturned": 0,
+        "exactCidNumberOne": 0,
+        "dominantDisplacer": {
+          "name": "Xperience Roofing",
+          "cid": "8697029845329445458",
+          "domain": "google.com",
+          "appearances": 4,
+          "numberOneQueries": 3,
+          "bestRank": 1,
+          "keywords": [
+            "roofing contractor midvale",
+            "roof repair midvale",
+            "roof replacement midvale",
+            "roofer midvale"
+          ]
+        },
+        "nextAction": "Obtain current owner-view service-area evidence for Midvale and the read-only exact-CID profile audit; do not attach the Salt Lake CID to the city page or edit GBP unless a later reviewed scope is explicitly approved.",
+        "mutationAuthorized": false
       },
       "universalDependencies": [
         "valid Bright Data user API key for ChatGPT/Perplexity/Gemini panels",
@@ -1265,6 +1579,28 @@
           "revertRule": "Revert the isolated ranking variable on a declared guardrail failure or unmet 28-day decision rule; never revert a required factual correction to restore an unsupported claim or wrong entity identity."
         }
       },
+      "mapsReadiness": {
+        "lane": "service-area-proof-before-exact-cid-planning",
+        "packsPresent": 4,
+        "exactCidReturned": 0,
+        "exactCidNumberOne": 0,
+        "dominantDisplacer": {
+          "name": "RoofKap",
+          "cid": "12684491778996500074",
+          "domain": "google.com",
+          "appearances": 4,
+          "numberOneQueries": 4,
+          "bestRank": 1,
+          "keywords": [
+            "roofing contractor herriman",
+            "roof repair herriman",
+            "roof replacement herriman",
+            "roofer herriman"
+          ]
+        },
+        "nextAction": "Obtain current owner-view service-area evidence for Herriman and the read-only exact-CID profile audit; do not attach the Salt Lake CID to the city page or edit GBP unless a later reviewed scope is explicitly approved.",
+        "mutationAuthorized": false
+      },
       "universalDependencies": [
         "valid Bright Data user API key for ChatGPT/Perplexity/Gemini panels",
         "business Drive connector authenticated as ryan@framerestorations.com for evidence search",
@@ -1338,6 +1674,28 @@
           "keepRule": "Keep only a declared isolated ranking variable when its city-specific acceptance check passes and every protected integrity, URL-selection, Maps, AIO, consumer-AI, and route guardrail remains green.",
           "revertRule": "Revert the isolated ranking variable on a declared guardrail failure or unmet 28-day decision rule; never revert a required factual correction to restore an unsupported claim or wrong entity identity."
         }
+      },
+      "mapsReadiness": {
+        "lane": "service-area-proof-before-exact-cid-planning",
+        "packsPresent": 4,
+        "exactCidReturned": 0,
+        "exactCidNumberOne": 0,
+        "dominantDisplacer": {
+          "name": "Classic Roofing and Exteriors",
+          "cid": "10315170581426755444",
+          "domain": "google.com",
+          "appearances": 4,
+          "numberOneQueries": 3,
+          "bestRank": 1,
+          "keywords": [
+            "roofing contractor west valley city",
+            "roof repair west valley city",
+            "roof replacement west valley city",
+            "roofer west valley city"
+          ]
+        },
+        "nextAction": "Obtain current owner-view service-area evidence for West Valley City and the read-only exact-CID profile audit; do not attach the Salt Lake CID to the city page or edit GBP unless a later reviewed scope is explicitly approved.",
+        "mutationAuthorized": false
       },
       "universalDependencies": [
         "valid Bright Data user API key for ChatGPT/Perplexity/Gemini panels",
@@ -1413,6 +1771,28 @@
           "revertRule": "Revert the isolated ranking variable on a declared guardrail failure or unmet 28-day decision rule; never revert a required factual correction to restore an unsupported claim or wrong entity identity."
         }
       },
+      "mapsReadiness": {
+        "lane": "service-area-proof-before-exact-cid-planning",
+        "packsPresent": 4,
+        "exactCidReturned": 0,
+        "exactCidNumberOne": 0,
+        "dominantDisplacer": {
+          "name": "Pride Roofing & Contracting, LLC",
+          "cid": "15206834657984643450",
+          "domain": "google.com",
+          "appearances": 4,
+          "numberOneQueries": 3,
+          "bestRank": 1,
+          "keywords": [
+            "roofing contractor draper",
+            "roof repair draper",
+            "roof replacement draper",
+            "roofer draper"
+          ]
+        },
+        "nextAction": "Obtain current owner-view service-area evidence for Draper and the read-only exact-CID profile audit; do not attach the Salt Lake CID to the city page or edit GBP unless a later reviewed scope is explicitly approved.",
+        "mutationAuthorized": false
+      },
       "universalDependencies": [
         "valid Bright Data user API key for ChatGPT/Perplexity/Gemini panels",
         "business Drive connector authenticated as ryan@framerestorations.com for evidence search",
@@ -1487,6 +1867,26 @@
           "revertRule": "Revert the isolated ranking variable on a declared guardrail failure or unmet 28-day decision rule; never revert a required factual correction to restore an unsupported claim or wrong entity identity."
         }
       },
+      "mapsReadiness": {
+        "lane": "service-area-proof-before-exact-cid-planning",
+        "packsPresent": 3,
+        "exactCidReturned": 0,
+        "exactCidNumberOne": 0,
+        "dominantDisplacer": {
+          "name": "The Roof Doctor",
+          "cid": "16329927680093228178",
+          "domain": "google.com",
+          "appearances": 2,
+          "numberOneQueries": 2,
+          "bestRank": 1,
+          "keywords": [
+            "roof repair south salt lake",
+            "roof replacement south salt lake"
+          ]
+        },
+        "nextAction": "Obtain current owner-view service-area evidence for South Salt Lake and the read-only exact-CID profile audit; do not attach the Salt Lake CID to the city page or edit GBP unless a later reviewed scope is explicitly approved.",
+        "mutationAuthorized": false
+      },
       "universalDependencies": [
         "valid Bright Data user API key for ChatGPT/Perplexity/Gemini panels",
         "business Drive connector authenticated as ryan@framerestorations.com for evidence search",
@@ -1560,6 +1960,27 @@
           "keepRule": "Keep only a declared isolated ranking variable when its city-specific acceptance check passes and every protected integrity, URL-selection, Maps, AIO, consumer-AI, and route guardrail remains green.",
           "revertRule": "Revert the isolated ranking variable on a declared guardrail failure or unmet 28-day decision rule; never revert a required factual correction to restore an unsupported claim or wrong entity identity."
         }
+      },
+      "mapsReadiness": {
+        "lane": "service-area-proof-before-exact-cid-planning",
+        "packsPresent": 4,
+        "exactCidReturned": 0,
+        "exactCidNumberOne": 0,
+        "dominantDisplacer": {
+          "name": "West Jordan Roofing Solutions",
+          "cid": "12317812539198406731",
+          "domain": "google.com",
+          "appearances": 3,
+          "numberOneQueries": 3,
+          "bestRank": 1,
+          "keywords": [
+            "roofing contractor west jordan",
+            "roof repair west jordan",
+            "roofer west jordan"
+          ]
+        },
+        "nextAction": "Obtain current owner-view service-area evidence for West Jordan and the read-only exact-CID profile audit; do not attach the Salt Lake CID to the city page or edit GBP unless a later reviewed scope is explicitly approved.",
+        "mutationAuthorized": false
       },
       "universalDependencies": [
         "valid Bright Data user API key for ChatGPT/Perplexity/Gemini panels",

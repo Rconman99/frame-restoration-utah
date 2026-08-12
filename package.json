@@ -50,6 +50,8 @@
     "sync:slv-execution-registry": "node scripts/sync-slv-execution-registry.mjs --write",
     "audit:slv-interventions": "node --test scripts/lib/slv-intervention-queue.test.mjs && node scripts/sync-slv-intervention-queue.mjs --check",
     "sync:slv-interventions": "node scripts/sync-slv-intervention-queue.mjs --write",
+    "audit:slv-maps-readiness": "node --test scripts/lib/slv-maps-readiness.test.mjs && node scripts/sync-slv-maps-readiness.mjs --check",
+    "sync:slv-maps-readiness": "node scripts/sync-slv-maps-readiness.mjs --write",
     "audit:slv-entity-health": "node scripts/sync-slv-entity-health.mjs --check",
     "sync:slv-entity-health": "node scripts/sync-slv-entity-health.mjs --write",
     "audit:slv-weekly-decisions": "node scripts/sync-slv-weekly-decisions.mjs --check",

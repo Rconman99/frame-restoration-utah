@@ -62,6 +62,7 @@ jobs:
           npm run sync:slv-competitor-displacement
           npm run sync:slv-gsc-attribution
           npm run sync:slv-expansion-architecture
+          npm run sync:slv-maps-readiness
           npm run sync:slv-interventions
           npm run sync:slv-execution-registry
           npm run audit:slv-entity-health
@@ -69,6 +70,7 @@ jobs:
           npm run audit:slv-competitor-displacement
           npm run audit:slv-gsc-attribution
           npm run audit:slv-expansion-architecture
+          npm run audit:slv-maps-readiness
           npm run audit:slv-interventions
           npm run audit:slv-execution-registry
 
@@ -94,6 +96,7 @@ jobs:
             data/rank-tracker/SLV-COMPETITOR-DISPLACEMENT-2026-08-12.json \
             data/rank-tracker/SLV-GSC-URL-ATTRIBUTION-LATEST.json \
             data/rank-tracker/SLV-EXPANSION-ARCHITECTURE-2026-08-12.json \
+            data/rank-tracker/SLV-MAPS-READINESS-2026-08-12.json \
             data/rank-tracker/SLV-INTERVENTION-QUEUE-2026-08-12.json \
             data/rank-tracker/SLV-EXECUTION-REGISTRY-2026-08-12.json
           if git diff --cached --quiet; then

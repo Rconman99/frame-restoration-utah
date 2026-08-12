@@ -229,9 +229,9 @@ const nextText = `${JSON.stringify(health, null, 2)}\n`;
 const fullOutputPath = path.join(root, outputPath);
 if (write) {
   fs.writeFileSync(fullOutputPath, nextText);
-  console.log(`SYNC SLV entity health: 18 pages, ${verifiedProfileCities.length} profile-verified cities, ${editorialGaps.length} editorial evidence gaps, SLC reviews unmeasured`);
+  console.log(`SYNC SLV entity health: 18 pages, ${verifiedProfileCities.length} profile-verified cities, ${editorialGaps.length} editorial evidence gaps, SLC reviews ${health.reviews.saltLakeValley.state}`);
 } else if (check) {
   assert.ok(fs.existsSync(fullOutputPath), `missing ${outputPath}`);
   assert.equal(fs.readFileSync(fullOutputPath, "utf8"), nextText, "SLV entity health is stale; run npm run sync:slv-entity-health");
-  console.log("PASS SLV entity health: 18 pages, clean scoped NAP, Heber reviews isolated, SLC reviews unmeasured");
+  console.log(`PASS SLV entity health: 18 pages, clean scoped NAP, Heber reviews isolated, SLC reviews ${health.reviews.saltLakeValley.state}`);
 }

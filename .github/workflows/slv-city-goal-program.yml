@@ -23,8 +23,10 @@ on:
       - 'data/rank-tracker/SLV-GSC-URL-ATTRIBUTION-LATEST.json'
       - 'data/rank-tracker/SLV-EXPANSION-ARCHITECTURE-2026-08-12.json'
       - 'data/rank-tracker/SLV-INTERVENTION-QUEUE-2026-08-12.json'
+      - 'data/rank-tracker/SLV-MAPS-READINESS-2026-08-12.json'
       - 'data/rank-tracker/SLV-COMPETITOR-DISPLACEMENT-2026-08-12.json'
       - 'data/authority/SLV-SERVICE-AREA-EVIDENCE-REQUEST-2026-08-12.json'
+      - 'data/authority/SLV-GBP-OWNER-AUDIT-REQUEST-2026-08-12.json'
       - 'data/rank-tracker/SLV-CONSUMER-AI-LATEST.json'
       - 'data/rank-tracker/evidence/SLV-CONSUMER-AI-SUITE-2026-08-12.json'
       - 'data/rank-tracker/consumer-ai-imports/**/*.json'
@@ -82,9 +84,12 @@ on:
       - 'scripts/sync-slv-gsc-attribution.mjs'
       - 'scripts/sync-slv-expansion-architecture.mjs'
       - 'scripts/sync-slv-intervention-queue.mjs'
+      - 'scripts/sync-slv-maps-readiness.mjs'
       - 'scripts/sync-slv-competitor-displacement.mjs'
       - 'scripts/lib/slv-intervention-queue.mjs'
       - 'scripts/lib/slv-intervention-queue.test.mjs'
+      - 'scripts/lib/slv-maps-readiness.mjs'
+      - 'scripts/lib/slv-maps-readiness.test.mjs'
       - 'scripts/lib/slv-gsc-attribution.mjs'
       - 'scripts/lib/slv-gsc-attribution.test.mjs'
       - 'scripts/sync-slv-consumer-ai.mjs'
@@ -117,8 +122,10 @@ on:
       - 'data/rank-tracker/SLV-GSC-URL-ATTRIBUTION-LATEST.json'
       - 'data/rank-tracker/SLV-EXPANSION-ARCHITECTURE-2026-08-12.json'
       - 'data/rank-tracker/SLV-INTERVENTION-QUEUE-2026-08-12.json'
+      - 'data/rank-tracker/SLV-MAPS-READINESS-2026-08-12.json'
       - 'data/rank-tracker/SLV-COMPETITOR-DISPLACEMENT-2026-08-12.json'
       - 'data/authority/SLV-SERVICE-AREA-EVIDENCE-REQUEST-2026-08-12.json'
+      - 'data/authority/SLV-GBP-OWNER-AUDIT-REQUEST-2026-08-12.json'
       - 'data/rank-tracker/SLV-CONSUMER-AI-LATEST.json'
       - 'data/rank-tracker/evidence/SLV-CONSUMER-AI-SUITE-2026-08-12.json'
       - 'data/rank-tracker/consumer-ai-imports/**/*.json'
@@ -176,9 +183,12 @@ on:
       - 'scripts/sync-slv-gsc-attribution.mjs'
       - 'scripts/sync-slv-expansion-architecture.mjs'
       - 'scripts/sync-slv-intervention-queue.mjs'
+      - 'scripts/sync-slv-maps-readiness.mjs'
       - 'scripts/sync-slv-competitor-displacement.mjs'
       - 'scripts/lib/slv-intervention-queue.mjs'
       - 'scripts/lib/slv-intervention-queue.test.mjs'
+      - 'scripts/lib/slv-maps-readiness.mjs'
+      - 'scripts/lib/slv-maps-readiness.test.mjs'
       - 'scripts/lib/slv-gsc-attribution.mjs'
       - 'scripts/lib/slv-gsc-attribution.test.mjs'
       - 'scripts/sync-slv-consumer-ai.mjs'
@@ -230,5 +240,6 @@ jobs:
           npm run audit:slv-gsc-attribution
           npm run audit:slv-expansion-architecture
           npm run audit:slv-competitor-displacement
+          npm run audit:slv-maps-readiness
           npm run audit:slv-interventions
           npm run audit:slv-execution-registry

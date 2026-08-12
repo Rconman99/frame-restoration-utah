@@ -1,0 +1,53 @@
+{
+  "schemaVersion": 1,
+  "requestId": "frame-utah-slv-exact-cid-owner-profile-audit-v1",
+  "market": "utah-salt-lake-valley",
+  "preparedAt": "2026-08-12T21:12:00Z",
+  "status": "ready-not-sent",
+  "evidenceState": "unmeasured-owner-view-audit-required",
+  "publicMutationPerformed": false,
+  "purpose": "Collect a current owner-view, read-only completeness receipt for the exact Salt Lake Valley Google Business Profile before proposing any profile edit or attributing a Maps deficiency to an unmeasured field.",
+  "targetProfile": {
+    "business": "Frame Restoration Utah LLC",
+    "cid": "5689850818145735734",
+    "requiredOwnerAccount": "ryan@framerestorations.com"
+  },
+  "requestedReadOnlyFields": [
+    "verification state",
+    "business name exactly as shown",
+    "business type: service-area or hybrid",
+    "whether the address is shown or hidden, without copying a private address into the repository",
+    "primary category and secondary categories",
+    "configured roofing services",
+    "regular hours and special-hours status",
+    "saved service-area list",
+    "most recent owner-uploaded photo date",
+    "Google rating and review count shown for the exact CID",
+    "review response coverage or an owner-view response-status summary"
+  ],
+  "acceptedEvidence": [
+    "A current dated owner-view screenshot set or export that unmistakably identifies CID 5689850818145735734 and shows the requested fields.",
+    "A current owner-authored field matrix transcribed from the exact profile, with unknown or inaccessible fields marked Unknown rather than guessed."
+  ],
+  "notAccepted": [
+    "a public Google result without exact profile attribution",
+    "the Heber profile or Heber review export",
+    "website copy, schema, or a location route",
+    "historic notes or a document found under the wrong Drive account",
+    "passwords, API keys, recovery codes, government IDs, private homeowner information, or credential-sheet fields"
+  ],
+  "delivery": {
+    "state": "draft-only-not-sent",
+    "existingCustomerRequestKey": "frame:frame-roofing-utah:customer_requests:google-access-map",
+    "ownerAsk": "Open the Salt Lake Valley profile for CID 5689850818145735734 while signed in as ryan@framerestorations.com and provide a current read-only receipt for the requested fields. Do not change anything and do not send passwords or private address details.",
+    "externalSendAuthorized": false
+  },
+  "unlockRule": "The receipt may identify a proposed relevance or prominence correction, but every GBP, review, service-area, category, service, hours, photo, post, or public-account change still requires a separately reviewed scope and explicit owner approval.",
+  "prohibited": [
+    "Do not edit the profile while collecting the receipt.",
+    "Do not create a duplicate profile, virtual office, fake location, or unsupported service area.",
+    "Do not add keywords to the real-world business name or categories solely for ranking.",
+    "Do not solicit, incentivize, gate, fabricate, or suppress reviews from this request.",
+    "Do not copy credentials or sensitive private data into repositories, reports, prompts, email, or text."
+  ]
+}
