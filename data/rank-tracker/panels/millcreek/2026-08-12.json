@@ -1,19 +1,19 @@
 {
   "schemaVersion": 1,
-  "kind": "frame-slc-google-rank-baseline",
-  "panelId": "utah-salt-lake-city-google-v1",
-  "observedAt": "2026-08-12T05:40:51.325Z",
+  "kind": "frame-slv-city-google-rank-baseline",
+  "panelId": "utah-millcreek-google-v1",
+  "observedAt": "2026-08-12T05:40:51.327Z",
   "date": "2026-08-12",
-  "city": "Salt Lake City",
+  "city": "Millcreek",
   "market": "utah",
-  "service": "roofing-contractor-salt-lake-city",
+  "service": "roofing-contractor-millcreek",
   "provider": {
     "name": "DataForSEO",
     "mode": "task-queue",
     "device": "mobile",
     "os": "android",
     "depth": 30,
-    "locationName": "Salt Lake City,Utah,United States",
+    "locationName": "Millcreek,Utah,United States",
     "estimatedPanelCostUsd": 0.0096
   },
   "target": {
@@ -24,33 +24,17 @@
   },
   "summary": {
     "queries": 4,
-    "organicRanked": 2,
+    "organicRanked": 4,
     "mapPackMatched": 0,
-    "aiOverviewsPresent": 1,
+    "aiOverviewsPresent": 0,
     "aiOverviewCitations": 0
   },
   "results": [
     {
-      "id": "slc-roofing-contractor",
-      "keyword": "roofing contractor salt lake city",
-      "organicRank": null,
-      "rankingUrl": null,
-      "mapPackPresent": false,
-      "mapPackRank": null,
-      "aiOverviewPresent": true,
-      "aiOverviewCited": false,
-      "serpFeatures": [
-        "ai_overview",
-        "people_also_ask",
-        "people_also_search",
-        "related_searches"
-      ]
-    },
-    {
-      "id": "slc-roof-repair",
-      "keyword": "roof repair salt lake city",
-      "organicRank": 25,
-      "rankingUrl": "https://www.framerestorationutah.com/locations/salt-lake-city",
+      "id": "millcreek-roofing-contractor",
+      "keyword": "roofing contractor millcreek",
+      "organicRank": 4,
+      "rankingUrl": "https://www.framerestorationutah.com/locations/millcreek",
       "mapPackPresent": true,
       "mapPackRank": null,
       "aiOverviewPresent": false,
@@ -62,33 +46,46 @@
       ]
     },
     {
-      "id": "slc-roof-replacement",
-      "keyword": "roof replacement salt lake city",
-      "organicRank": 23,
-      "rankingUrl": "https://www.framerestorationutah.com/locations/salt-lake-city",
+      "id": "millcreek-roof-repair",
+      "keyword": "roof repair millcreek",
+      "organicRank": 4,
+      "rankingUrl": "https://www.framerestorationutah.com/locations/millcreek",
       "mapPackPresent": true,
       "mapPackRank": null,
       "aiOverviewPresent": false,
       "aiOverviewCited": false,
       "serpFeatures": [
-        "discussions_and_forums",
         "local_pack",
         "people_also_ask",
-        "people_also_search",
-        "related_searches"
+        "people_also_search"
       ]
     },
     {
-      "id": "slc-roofer",
-      "keyword": "roofer salt lake city",
-      "organicRank": null,
-      "rankingUrl": null,
+      "id": "millcreek-roof-replacement",
+      "keyword": "roof replacement millcreek",
+      "organicRank": 3,
+      "rankingUrl": "https://www.framerestorationutah.com/locations/millcreek",
       "mapPackPresent": true,
       "mapPackRank": null,
       "aiOverviewPresent": false,
       "aiOverviewCited": false,
       "serpFeatures": [
         "local_pack",
+        "people_also_ask",
+        "people_also_search",
+        "popular_products"
+      ]
+    },
+    {
+      "id": "millcreek-roofer",
+      "keyword": "roofer millcreek",
+      "organicRank": 5,
+      "rankingUrl": "https://www.framerestorationutah.com/locations/millcreek",
+      "mapPackPresent": false,
+      "mapPackRank": null,
+      "aiOverviewPresent": false,
+      "aiOverviewCited": false,
+      "serpFeatures": [
         "people_also_ask",
         "people_also_search",
         "related_searches"

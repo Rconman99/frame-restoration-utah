@@ -6,8 +6,7 @@ import { fileURLToPath } from 'node:url';
 
 const SCRIPT_DIR = path.dirname(fileURLToPath(import.meta.url));
 const REPO_ROOT = path.resolve(SCRIPT_DIR, '..');
-const CONFIG_PATH = path.join(REPO_ROOT, 'data', 'rank-tracker', 'config.json');
-const OUTPUT_DIR = path.dirname(CONFIG_PATH);
+const DEFAULT_CONFIG_PATH = path.join(REPO_ROOT, 'data', 'rank-tracker', 'config.json');
 const API_ROOT = 'https://api.dataforseo.com/v3';
 const TASK_POST = '/serp/google/organic/task_post';
 const TASKS_READY = '/serp/google/organic/tasks_ready';
@@ -112,6 +111,26 @@ export function validateConfig(config) {
   return config;
 }
 
+export function validateRegistry(registry) {
+  const errors = [];
+  if (registry?.schemaVersion !== 1) errors.push('schemaVersion must be 1');
+  if (!registry?.registryId) errors.push('registryId is required');
+  if (!Array.isArray(registry?.panels) || registry.panels.length === 0) errors.push('at least one panel is required');
+  const ids = new Set();
+  const paths = new Set();
+  for (const panel of registry?.panels || []) {
+    if (!panel?.id || !panel?.configPath) errors.push('every panel needs id and configPath');
+    if (panel?.status && !['active', 'paused'].includes(panel.status)) errors.push(`invalid status for ${panel.id || 'panel'}: ${panel.status}`);
+    if (ids.has(panel?.id)) errors.push(`duplicate panel id: ${panel.id}`);
+    if (paths.has(panel?.configPath)) errors.push(`duplicate panel configPath: ${panel.configPath}`);
+    ids.add(panel?.id);
+    paths.add(panel?.configPath);
+  }
+  if (!(registry?.panels || []).some((panel) => panel.status !== 'paused')) errors.push('at least one panel must be active');
+  if (errors.length) throw new Error(`Invalid rank tracker registry:\n- ${errors.join('\n- ')}`);
+  return registry;
+}
+
 export function buildTasks(config) {
   return config.keywords.map(({ id, keyword }) => ({
     keyword,
@@ -123,6 +142,16 @@ export function buildTasks(config) {
     load_async_ai_overview: Boolean(config.loadAsyncAiOverview),
     tag: id,
   }));
+}
+
+export function buildTaskMatrix(configs) {
+  const tasks = configs.flatMap((config) => buildTasks(config));
+  const tags = new Set();
+  for (const task of tasks) {
+    if (tags.has(task.tag)) throw new Error(`Duplicate keyword id across rank panels: ${task.tag}`);
+    tags.add(task.tag);
+  }
+  return tasks;
 }
 
 export function estimatedPanelCost(config) {
@@ -140,10 +169,11 @@ export function buildReport(config, rawResults, observedAt = new Date().toISOStr
   const date = observedAt.slice(0, 10);
   return {
     schemaVersion: 1,
-    kind: 'frame-slc-google-rank-baseline',
+    kind: config.reportKind || 'frame-slc-google-rank-baseline',
     panelId: config.panelId,
     observedAt,
     date,
+    city: config.city || null,
     market: config.market,
     service: config.service,
     provider: {
@@ -167,12 +197,13 @@ export function buildReport(config, rawResults, observedAt = new Date().toISOStr
   };
 }
 
-function markdownReport(report) {
-  const rank = (value) => value === null ? 'Not found in top 30' : `#${value}`;
+export function markdownReport(report) {
+  const rank = (value) => value === null ? `Not found in top ${report.provider.depth}` : `#${value}`;
   const rows = report.results.map((result) => (
     `| ${result.keyword} | ${rank(result.organicRank)} | ${rank(result.mapPackRank)} | ${result.aiOverviewPresent ? 'Yes' : 'No'} | ${result.aiOverviewCited ? 'Yes' : 'No'} |`
   ));
-  return `# Salt Lake City Google rank tracker — ${report.date}\n\n`
+  const title = report.city ? `${report.city} Google rank tracker` : 'Salt Lake City Google rank tracker';
+  return `# ${title} — ${report.date}\n\n`
     + `- Panel: \`${report.panelId}\`\n`
     + `- Provider: ${report.provider.name} ${report.provider.mode}\n`
     + `- Location: ${report.provider.locationName}\n`
@@ -182,7 +213,7 @@ function markdownReport(report) {
     + '| Query | Organic | Exact-CID map pack | AI Overview | Frame cited in AI Overview |\n'
     + '|---|---:|---:|---:|---:|\n'
     + `${rows.join('\n')}\n\n`
-    + '> A missing rank means the exact target was not found within this fixed top-30 mobile panel. It is not proof of visibility outside the measured depth or location.\n';
+    + `> A missing rank means the exact target was not found within this fixed top-${report.provider.depth} mobile panel. It is not proof of visibility outside the measured depth or location.\n`;
 }
 
 async function atomicWrite(filePath, contents) {
@@ -191,12 +222,12 @@ async function atomicWrite(filePath, contents) {
   await fs.rename(tempPath, filePath);
 }
 
-async function persistReport(report) {
+async function persistReport(report, outputDir) {
   const json = `${JSON.stringify(report, null, 2)}\n`;
-  await fs.mkdir(OUTPUT_DIR, { recursive: true });
-  await atomicWrite(path.join(OUTPUT_DIR, `${report.date}.json`), json);
-  await atomicWrite(path.join(OUTPUT_DIR, 'latest.json'), json);
-  await atomicWrite(path.join(OUTPUT_DIR, 'latest.md'), markdownReport(report));
+  await fs.mkdir(outputDir, { recursive: true });
+  await atomicWrite(path.join(outputDir, `${report.date}.json`), json);
+  await atomicWrite(path.join(outputDir, 'latest.json'), json);
+  await atomicWrite(path.join(outputDir, 'latest.md'), markdownReport(report));
 }
 
 function credentials() {
@@ -234,9 +265,10 @@ async function providerCall(endpoint, auth, options = {}) {
   throw new Error(`DataForSEO ${endpoint} failed after 3 attempts: ${lastError.message}`);
 }
 
-async function fetchTaskQueue(config) {
+async function fetchTaskQueue(configs) {
+  const tasks = buildTaskMatrix(configs);
   const auth = credentials();
-  const posted = await providerCall(TASK_POST, auth, { method: 'POST', body: buildTasks(config) });
+  const posted = await providerCall(TASK_POST, auth, { method: 'POST', body: tasks });
   const taskIds = new Map();
   for (const task of posted.tasks || []) {
     if (![20000, 20100].includes(task.status_code)) {
@@ -245,8 +277,8 @@ async function fetchTaskQueue(config) {
     if (!task.id || !task.data?.tag) throw new Error('Provider did not return a task id and tag');
     taskIds.set(task.id, task.data.tag);
   }
-  if (taskIds.size !== config.keywords.length) {
-    throw new Error(`Provider accepted ${taskIds.size}/${config.keywords.length} tasks`);
+  if (taskIds.size !== tasks.length) {
+    throw new Error(`Provider accepted ${taskIds.size}/${tasks.length} tasks`);
   }
 
   const pending = new Set(taskIds.keys());
@@ -279,20 +311,80 @@ async function fetchTaskQueue(config) {
   return rawResults;
 }
 
-async function readConfig() {
-  return validateConfig(JSON.parse(await fs.readFile(CONFIG_PATH, 'utf8')));
+function repoPath(relativeOrAbsolute) {
+  const resolved = path.resolve(REPO_ROOT, relativeOrAbsolute);
+  const relative = path.relative(REPO_ROOT, resolved);
+  if (relative.startsWith('..') || path.isAbsolute(relative)) {
+    throw new Error(`Rank tracker path must stay inside the repository: ${relativeOrAbsolute}`);
+  }
+  return resolved;
 }
 
-async function main() {
-  const config = await readConfig();
-  if (process.argv.includes('--dry-run')) {
-    console.log(`Validated ${config.keywords.length} queries for ${config.locationName}.`);
-    console.log(`Estimated panel cost: $${estimatedPanelCost(config).toFixed(4)}.`);
+async function readConfig(configPath = DEFAULT_CONFIG_PATH) {
+  return validateConfig(JSON.parse(await fs.readFile(configPath, 'utf8')));
+}
+
+function argValue(args, name) {
+  const index = args.indexOf(name);
+  if (index === -1) return null;
+  if (!args[index + 1] || args[index + 1].startsWith('--')) throw new Error(`${name} requires a value`);
+  return args[index + 1];
+}
+
+async function registryEntries(registryPath) {
+  const registry = validateRegistry(JSON.parse(await fs.readFile(registryPath, 'utf8')));
+  const entries = [];
+  for (const panel of registry.panels.filter((candidate) => candidate.status !== 'paused')) {
+    const configPath = repoPath(panel.configPath);
+    const config = await readConfig(configPath);
+    if (config.panelId !== panel.id) {
+      throw new Error(`Registry id ${panel.id} does not match config panelId ${config.panelId}`);
+    }
+    entries.push({ config, configPath, outputDir: path.dirname(configPath) });
+  }
+  return { registry, entries };
+}
+
+async function main(args = process.argv.slice(2)) {
+  const dryRun = args.includes('--dry-run');
+  const registryArg = argValue(args, '--registry');
+  const configArg = argValue(args, '--config');
+  if (registryArg && configArg) throw new Error('Use either --registry or --config, not both');
+
+  let entries;
+  let label;
+  if (registryArg) {
+    const registryPath = repoPath(registryArg);
+    const loaded = await registryEntries(registryPath);
+    entries = loaded.entries;
+    label = loaded.registry.registryId;
+  } else {
+    const configPath = configArg ? repoPath(configArg) : DEFAULT_CONFIG_PATH;
+    entries = [{ config: await readConfig(configPath), configPath, outputDir: path.dirname(configPath) }];
+    label = entries[0].config.panelId;
+  }
+
+  const queryCount = entries.reduce((sum, entry) => sum + entry.config.keywords.length, 0);
+  const cost = entries.reduce((sum, entry) => sum + estimatedPanelCost(entry.config), 0);
+  if (dryRun) {
+    console.log(`Validated ${entries.length} panel(s) and ${queryCount} queries for ${label}.`);
+    console.log(`Estimated complete-matrix cost: $${cost.toFixed(4)}.`);
     return;
   }
-  const report = buildReport(config, await fetchTaskQueue(config));
-  await persistReport(report);
-  console.log(`Wrote complete ${report.date} panel: organic ${report.summary.organicRanked}/${report.summary.queries}, exact-CID map pack ${report.summary.mapPackMatched}/${report.summary.queries}, AIO citations ${report.summary.aiOverviewCitations}/${report.summary.queries}.`);
+
+  // Submit every city in one provider batch, then collect every result before
+  // writing any file. A failed or partial matrix leaves the previous complete
+  // weekly matrix untouched.
+  console.log(`Measuring ${entries.length} panel(s) and ${queryCount} queries in one task batch.`);
+  const rawMatrix = await fetchTaskQueue(entries.map((entry) => entry.config));
+  const reports = entries.map((entry) => ({
+    report: buildReport(entry.config, rawMatrix),
+    outputDir: entry.outputDir,
+  }));
+  for (const { report, outputDir } of reports) await persistReport(report, outputDir);
+  for (const { report } of reports) {
+    console.log(`Wrote complete ${report.date} ${report.panelId}: organic ${report.summary.organicRanked}/${report.summary.queries}, exact-CID map pack ${report.summary.mapPackMatched}/${report.summary.queries}, AIO citations ${report.summary.aiOverviewCitations}/${report.summary.queries}.`);
+  }
 }
 
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {

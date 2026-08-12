@@ -1,0 +1,67 @@
+{
+  "schemaVersion": 1,
+  "registryId": "utah-salt-lake-valley-google-core-v1",
+  "cadence": "weekly",
+  "sourceOfTruth": {
+    "cityWave": "data/SLV-LOCATION-WAVE-TRACKER.md",
+    "profileAudit": "qa/SLC-ADOPTION-AUDIT-2026-08-11.md",
+    "profileCid": "5689850818145735734",
+    "savedProfileServiceAreasObserved": [
+      "Millcreek"
+    ],
+    "observedAt": "2026-08-11"
+  },
+  "scopeGuard": "These are read-only search measurements for documented Salt Lake Valley target pages. Inclusion does not assert that a city is saved on the Salt Lake service-area profile. Exact-CID scoring only reports whether the verified profile appeared in the measured SERP.",
+  "expansionCandidates": [
+    { "city": "South Jordan", "route": "/locations/south-jordan", "status": "pending-current-profile-service-area-verification" },
+    { "city": "West Valley City", "route": "/locations/west-valley-city", "status": "pending-current-profile-service-area-verification" },
+    { "city": "West Jordan", "route": "/locations/west-jordan", "status": "pending-current-profile-service-area-verification" },
+    { "city": "Murray", "route": "/locations/murray", "status": "pending-current-profile-service-area-verification" },
+    { "city": "Riverton", "route": "/locations/riverton", "status": "pending-current-profile-service-area-verification" },
+    { "city": "Herriman", "route": "/locations/herriman", "status": "pending-current-profile-service-area-verification" },
+    { "city": "Bluffdale", "route": "/locations/bluffdale", "status": "pending-current-profile-service-area-verification" },
+    { "city": "Taylorsville", "route": "/locations/taylorsville", "status": "pending-current-profile-service-area-verification" },
+    { "city": "Midvale", "route": "/locations/midvale", "status": "pending-current-profile-service-area-verification" },
+    { "city": "South Salt Lake", "route": "/locations/south-salt-lake", "status": "pending-current-profile-service-area-verification" },
+    { "city": "Magna", "route": "/locations/magna", "status": "pending-current-profile-service-area-verification" },
+    { "city": "Kearns", "route": "/locations/kearns", "status": "pending-current-profile-service-area-verification" }
+  ],
+  "panels": [
+    {
+      "id": "utah-salt-lake-city-google-v1",
+      "configPath": "data/rank-tracker/config.json",
+      "status": "active",
+      "evidenceClass": "verified-profile-identity-city"
+    },
+    {
+      "id": "utah-cottonwood-heights-google-v1",
+      "configPath": "data/rank-tracker/panels/cottonwood-heights/config.json",
+      "status": "active",
+      "evidenceClass": "documented-slv-target-measurement-only"
+    },
+    {
+      "id": "utah-holladay-google-v1",
+      "configPath": "data/rank-tracker/panels/holladay/config.json",
+      "status": "active",
+      "evidenceClass": "documented-slv-target-measurement-only"
+    },
+    {
+      "id": "utah-millcreek-google-v1",
+      "configPath": "data/rank-tracker/panels/millcreek/config.json",
+      "status": "active",
+      "evidenceClass": "verified-profile-saved-service-area"
+    },
+    {
+      "id": "utah-sandy-google-v1",
+      "configPath": "data/rank-tracker/panels/sandy/config.json",
+      "status": "active",
+      "evidenceClass": "documented-slv-target-measurement-only"
+    },
+    {
+      "id": "utah-draper-google-v1",
+      "configPath": "data/rank-tracker/panels/draper/config.json",
+      "status": "active",
+      "evidenceClass": "documented-slv-target-measurement-only"
+    }
+  ]
+}
