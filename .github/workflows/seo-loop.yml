@@ -7,8 +7,9 @@ name: SEO loop (Utah)
 # Every run:
 #   1. scripts/seo-snapshot.mjs — live-crawls www.framerestorationutah.com (real
 #      status codes, redirect chains, noindex, thin content) + pulls Google
-#      Search Console when the GSC_SERVICE_ACCOUNT_JSON secret exists, and
-#      writes data/seo/snapshots/<date>.json. A failed crawl writes NO
+#      Search Console when the GSC_SERVICE_ACCOUNT_JSON secret exists, consumes
+#      the committed weekly DataForSEO matrix, and writes
+#      data/seo/snapshots/<date>.json. A failed crawl writes NO
 #      snapshot and fails the job — a fabricated "0 issues" snapshot would
 #      read as a clean bill of health in tomorrow's diff.
 #   2. scripts/seo-diff.mjs — regression-first diff vs the previous snapshot
@@ -38,6 +39,7 @@ on:
       - 'scripts/lib/gsc.mjs'
       - 'scripts/lib/gsc.test.mjs'
       - 'scripts/seo-snapshot.test.mjs'
+      - 'data/rank-tracker/**/*.json'
       - '.github/workflows/seo-loop.yml'
 
 permissions:
@@ -70,7 +72,7 @@ jobs:
         with:
           node-version: '22'
 
-      - name: Snapshot (crawl + GSC)
+      - name: Snapshot (crawl + GSC + committed fixed ranks)
         env:
           GSC_SERVICE_ACCOUNT_JSON: ${{ secrets.GSC_SERVICE_ACCOUNT_JSON }}
           GSC_SITE_URL: ${{ vars.GSC_SITE_URL }}

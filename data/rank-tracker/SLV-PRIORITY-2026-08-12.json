@@ -1,0 +1,274 @@
+{
+  "artifact": "frame-slv-city-priority",
+  "version": "frame-slv-city-priority.v1",
+  "market": "utah",
+  "observedAt": "2026-08-12T05:40:51.327Z",
+  "status": "decision-ready-with-integrity-gate",
+  "goal": {
+    "organic": "Sustain position 1 for all four fixed mobile queries in every activated city.",
+    "maps": "Sustain exact-CID position 1 for CID 5689850818145735734 on the same panel.",
+    "answerEngines": "Earn owned-domain citations in Google AI Overviews and named-and-cited visibility in the fixed ChatGPT, Perplexity, and Gemini panels."
+  },
+  "sources": {
+    "googleRankMatrix": "data/rank-tracker/panels/*/latest.json",
+    "rankObservedAt": "2026-08-12T05:40:51.327Z",
+    "rankWorkflowRun": "https://github.com/Rconman99/frame-restoration-utah/actions/runs/31567055576",
+    "gscSnapshot": "data/seo/snapshots/2026-08-11.json",
+    "gscWindow": {
+      "startDate": "2026-07-12",
+      "endDate": "2026-08-08",
+      "queryCoverageLimitation": "398 of 3607 queries are retained, representing 57.2% of impressions. Missing city-query rows are unknown, not zero."
+    },
+    "identityAudit": "qa/SLC-ADOPTION-AUDIT-2026-08-11.md",
+    "claimRegistry": "data/route-factory/claim-registry.json"
+  },
+  "identityBoundary": {
+    "saltLakeCity": "Separately verified service-area profile under ryan@framerestorations.com.",
+    "millcreek": "Only saved service area observed in the 2026-08-11 owner-panel audit.",
+    "measurementOnly": [
+      "Cottonwood Heights",
+      "Holladay",
+      "Sandy",
+      "Draper"
+    ],
+    "pendingCurrentProfileVerification": [
+      "South Jordan",
+      "West Valley City",
+      "West Jordan",
+      "Murray",
+      "Riverton",
+      "Herriman",
+      "Bluffdale",
+      "Taylorsville",
+      "Midvale",
+      "South Salt Lake",
+      "Magna",
+      "Kearns"
+    ],
+    "rule": "A published location route or historic service-area note does not prove the current Salt Lake GBP service area."
+  },
+  "integrityGate": {
+    "verdict": "red-block-pending-owner-clearance",
+    "reason": "The five expansion pages publish claims intentionally absent from the verified claim registry.",
+    "affectedPages": [
+      "locations/millcreek.html",
+      "locations/sandy.html",
+      "locations/holladay.html",
+      "locations/cottonwood-heights.html",
+      "locations/draper.html"
+    ],
+    "claimClasses": [
+      "city-specific price ranges",
+      "10-year workmanship warranty",
+      "general liability and workers compensation coverage",
+      "exact 15-minute travel claims",
+      "universal permit-handling promises",
+      "unsourced hail-season and roof-life-loss assertions",
+      "unsourced project-duration promises",
+      "city-specific review attribution without current proof"
+    ],
+    "interpretation": "This is not a finding that each claim is false. It is a finding that the current evidence contract cannot support publishing it.",
+    "requiredAction": "Source, narrow, or remove each claim; add a regression audit; run source, immutable-preview, and production surface receipts before starting a query-alignment experiment."
+  },
+  "cityPriority": [
+    {
+      "priority": 0,
+      "city": "Salt Lake City",
+      "state": "hold-existing-experiment",
+      "identityEvidence": "verified-profile-city",
+      "organicRanks": {
+        "roofing contractor salt lake city": null,
+        "roof repair salt lake city": 25,
+        "roof replacement salt lake city": 23,
+        "roofer salt lake city": null
+      },
+      "exactCidMapMatches": 0,
+      "aiOverviewCitations": 0,
+      "nextAction": "Measure weekly without another page change until the trust-correction evaluation window opens.",
+      "earliestEvaluationAt": "2026-09-09T04:40:58.000Z"
+    },
+    {
+      "priority": 1,
+      "city": "Millcreek",
+      "state": "first-after-integrity-gate",
+      "identityEvidence": "saved-service-area-observed",
+      "organicRanks": {
+        "roofing contractor millcreek": 4,
+        "roof repair millcreek": 4,
+        "roof replacement millcreek": 3,
+        "roofer millcreek": 5
+      },
+      "exactCidMapMatches": 0,
+      "aiOverviewCitations": 0,
+      "gscPage": {
+        "url": "https://www.framerestorationutah.com/locations/millcreek",
+        "clicks": 1,
+        "impressions": 212,
+        "position": 34
+      },
+      "proofAssets": [
+        "images/projects/cities/millcreek-commercial-reroof.webp"
+      ],
+      "why": "It is the only expansion city with current saved-service-area proof and all four commercial queries are already within positions 3-5.",
+      "firstRankingExperiment": "After the integrity correction has its own fresh baseline, test title and H1 query alignment against the current Premium Reroofing wording without adding new claims."
+    },
+    {
+      "priority": 2,
+      "city": "Sandy",
+      "state": "second",
+      "identityEvidence": "measurement-only-pending-current-profile-service-area-verification",
+      "organicRanks": {
+        "roofing contractor sandy": 14,
+        "roof repair sandy": 14,
+        "roof replacement sandy": 4,
+        "roofer sandy": 11
+      },
+      "exactCidMapMatches": 0,
+      "aiOverviewCitations": 0,
+      "gscPage": {
+        "url": "https://www.framerestorationutah.com/locations/sandy",
+        "clicks": 0,
+        "impressions": 3359,
+        "position": 24.1
+      },
+      "gscQueries": [
+        {
+          "query": "roof repair sandy ut",
+          "clicks": 0,
+          "impressions": 1041,
+          "position": 19.4
+        },
+        {
+          "query": "roofing sandy ut",
+          "clicks": 0,
+          "impressions": 908,
+          "position": 24.7
+        }
+      ],
+      "proofAssets": [
+        "images/projects/cities/sandy-storm-damage-reroof-1.webp"
+      ],
+      "why": "It has the strongest retained commercial-query demand and roof replacement is already position 4."
+    },
+    {
+      "priority": 3,
+      "city": "Holladay",
+      "state": "third",
+      "identityEvidence": "measurement-only-pending-current-profile-service-area-verification",
+      "organicRanks": {
+        "roofing contractor holladay": 17,
+        "roof repair holladay": 11,
+        "roof replacement holladay": 4,
+        "roofer holladay": 12
+      },
+      "exactCidMapMatches": 0,
+      "aiOverviewCitations": 0,
+      "gscPages": [
+        {
+          "url": "https://www.framerestorationutah.com/locations/holladay",
+          "clicks": 0,
+          "impressions": 1383,
+          "position": 23.8
+        },
+        {
+          "url": "https://www.framerestorationutah.com/locations/holladay/storm-damage",
+          "clicks": 0,
+          "impressions": 921,
+          "position": 2.9
+        }
+      ],
+      "proofAssets": [
+        "images/projects/cities/holladay-residential-reroof.webp"
+      ],
+      "why": "Roof replacement is position 4 and a separate storm route is already near the top, but the quoted city review must be verified or removed first."
+    },
+    {
+      "priority": 4,
+      "city": "Cottonwood Heights",
+      "state": "fourth",
+      "identityEvidence": "measurement-only-pending-current-profile-service-area-verification",
+      "organicRanks": {
+        "roofing contractor cottonwood heights": 16,
+        "roof repair cottonwood heights": 12,
+        "roof replacement cottonwood heights": 14,
+        "roofer cottonwood heights": 15
+      },
+      "exactCidMapMatches": 0,
+      "aiOverviewCitations": 0,
+      "gscPages": [
+        {
+          "url": "https://www.framerestorationutah.com/locations/cottonwood-heights",
+          "clicks": 0,
+          "impressions": 2508,
+          "position": 29.9
+        },
+        {
+          "url": "https://www.framerestorationutah.com/locations/cottonwood-heights/storm-damage",
+          "clicks": 0,
+          "impressions": 1190,
+          "position": 8.4
+        }
+      ],
+      "proofAssets": [
+        "images/projects/cities/cottonwood-heights-mt-olympus-golden-hour-2026-1200.jpg"
+      ],
+      "why": "Every commercial query is within positions 12-16 and the storm route has traction, but the hero is neighborhood context rather than verified completed-project proof."
+    },
+    {
+      "priority": 5,
+      "city": "Draper",
+      "state": "architecture-diagnosis-first",
+      "identityEvidence": "measurement-only-pending-current-profile-service-area-verification",
+      "organicRanks": {
+        "roofing contractor draper": null,
+        "roof repair draper": null,
+        "roof replacement draper": null,
+        "roofer draper": null
+      },
+      "exactCidMapMatches": 0,
+      "aiOverviewCitations": 0,
+      "gscPage": {
+        "url": "https://www.framerestorationutah.com/locations/draper/storm-damage",
+        "clicks": 0,
+        "impressions": 2972,
+        "position": 9.4
+      },
+      "gscQueries": [
+        {
+          "query": "storm damage repair draper ut",
+          "clicks": 0,
+          "impressions": 1069,
+          "position": 4
+        },
+        {
+          "query": "storm and wind damage repair draper ut",
+          "clicks": 0,
+          "impressions": 563,
+          "position": 3.1
+        }
+      ],
+      "proofAssets": [
+        "images/photos/frame-restoration-20.webp"
+      ],
+      "why": "The commercial page is outside the top 30 while the storm route ranks well. Diagnose intent overlap, internal links, and proof architecture before editing titles."
+    }
+  ],
+  "executionOrder": [
+    "Obtain owner clearance for the red-block claim cleanup.",
+    "Correct unsupported claims on the five expansion pages without changing title or H1 intent.",
+    "Add deterministic regression coverage for the corrected claim classes.",
+    "Run corpus plus source, immutable-preview, and production gates.",
+    "Capture a new fixed six-city baseline and open a 28-day integrity observation window.",
+    "Launch the Millcreek title/H1 alignment experiment as the first isolated ranking variable.",
+    "Proceed through Sandy, Holladay, Cottonwood Heights, and Draper using one declared variable and a four-week keep/revert decision per city."
+  ],
+  "publicSideEffects": [],
+  "prohibitedSideEffects": [
+    "no GBP edits or posts",
+    "no directory submissions",
+    "no review requests or incentives",
+    "no indexing requests",
+    "no fabricated local proof",
+    "no unsupported claims"
+  ]
+}

@@ -28,6 +28,8 @@ The six-city matrix costs an estimated **$0.0576 per weekly run** (24 task-queue
 
 Baseline order in the table is roofing contractor / roof repair / roof replacement / roofer. It was observed at `2026-08-12T05:40:51Z` in cloud run `31567055576`. A second same-day read moved some positions, which is expected SERP noise and reinforces the weekly/four-week decision cadence; it is not a reason to rewrite pages between reads.
 
+The evidence-backed execution sequence is recorded in `SLV-PRIORITY-2026-08-12.json`. Salt Lake City remains in its existing observation window. Millcreek is the first expansion candidate because it is the only observed saved service area and already ranks `4 / 4 / 3 / 5`. Public experiments are held behind the priority ledger's claim-integrity gate so unsupported page copy cannot become the basis of a ranking win.
+
 ## Mapped expansion — not activated yet
 
 The current market registry and live location routes also map these Salt Lake Valley communities: South Jordan, West Valley City, West Jordan, Murray, Riverton, Herriman, Bluffdale, Taylorsville, Midvale, South Salt Lake, Magna, and Kearns.
