@@ -1,4 +1,4 @@
-name: SLC DataForSEO rank tracker
+name: Salt Lake Valley DataForSEO rank tracker
 
 on:
   schedule:
@@ -10,7 +10,7 @@ permissions:
   contents: write
 
 concurrency:
-  group: slc-dataforseo-rank-tracker
+  group: slv-dataforseo-rank-tracker
   cancel-in-progress: false
 
 jobs:
@@ -29,21 +29,22 @@ jobs:
       - name: Test tracker parsing and fail-closed behavior
         run: node scripts/test-dataforseo-rank-tracker.mjs
 
-      - name: Validate the fixed SLC panel without provider spend
-        run: node scripts/dataforseo-rank-tracker.mjs --dry-run
+      - name: Validate the fixed Salt Lake Valley matrix without provider spend
+        run: node scripts/dataforseo-rank-tracker.mjs --registry data/rank-tracker/panels.json --dry-run
 
-      - name: Measure the complete SLC panel
+      - name: Measure the complete Salt Lake Valley matrix
         env:
           DATAFORSEO_LOGIN: ${{ secrets.DATAFORSEO_LOGIN }}
           DATAFORSEO_PASSWORD: ${{ secrets.DATAFORSEO_PASSWORD }}
-        run: node scripts/dataforseo-rank-tracker.mjs
+        run: node scripts/dataforseo-rank-tracker.mjs --registry data/rank-tracker/panels.json
 
       - name: Add measurement summary
         if: always()
         run: |
-          if [ -f data/rank-tracker/latest.md ]; then
-            cat data/rank-tracker/latest.md >> "$GITHUB_STEP_SUMMARY"
-          fi
+          while IFS= read -r report; do
+            cat "$report" >> "$GITHUB_STEP_SUMMARY"
+            echo >> "$GITHUB_STEP_SUMMARY"
+          done < <(find data/rank-tracker -name latest.md -type f | sort)
 
       - name: Commit the complete dated panel
         run: |
@@ -55,5 +56,5 @@ jobs:
             exit 0
           fi
           TODAY=$(date -u +%F)
-          git commit -m "chore(seo): SLC rank panel ${TODAY} [cloud]"
+          git commit -m "chore(seo): SLV rank matrix ${TODAY} [cloud]"
           git push
