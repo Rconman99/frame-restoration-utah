@@ -4,7 +4,7 @@
   "id": "utah-slc-entity-trust-correction-2026-08-12",
   "market": "utah",
   "city": "salt-lake-city",
-  "status": "awaiting-production",
+  "status": "running",
   "classification": "integrity-required-observed-for-ranking-impact",
   "page": "https://www.framerestorationutah.com/locations/salt-lake-city",
   "baseline": {
@@ -44,13 +44,21 @@
       "data/authority/BBB-PROFILE-VERIFICATION-2026-08-12.md",
       "data/authority/MANUFACTURER-CREDENTIAL-REVIEW-2026-08-12.md"
     ],
-    "sourceReceipt": "qa/receipts/bbb-trust-correction-source-20260812.json"
+    "sourceReceipt": "qa/receipts/bbb-trust-correction-source-20260812.json",
+    "production": {
+      "mergeCommit": "20a10b4ca966273dd91b23d43790123142a1de94",
+      "deploymentUrl": "https://frame-restoration-utah-fsxc2kq8f-ryans-projects-51d84217.vercel.app",
+      "canonicalUrl": "https://www.framerestorationutah.com",
+      "surfaceGateChecks": 400,
+      "surfaceGateFailures": 0,
+      "receiptSha256": "ea5da73113772bc7c84d2b956c8c073341e2e39e65c91391b01fff01eeda1b92"
+    }
   },
   "measurement": {
     "startsAfterProductionDeployment": true,
-    "deployedAt": null,
+    "deployedAt": "2026-08-12T04:40:58.000Z",
     "evaluationWindowDays": 28,
-    "earliestEvaluationAt": null,
+    "earliestEvaluationAt": "2026-09-09T04:40:58.000Z",
     "weeklyChecks": {
       "cadence": "Monday",
       "nextGooglePanelDate": "2026-08-17",
