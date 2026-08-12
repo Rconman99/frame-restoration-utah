@@ -29,6 +29,7 @@
     "audit:slv-city-integrity:report": "node scripts/audit-slv-city-integrity.mjs",
     "audit:slv-city-goals": "node scripts/sync-slv-city-goal-program.mjs --check && node scripts/validate-slv-city-goal-program.mjs",
     "audit:slv-public-remediation-packet": "node scripts/sync-slv-public-remediation-packet.mjs --check",
+    "audit:draper-architecture": "node scripts/validate-draper-architecture-diagnosis.mjs",
     "sync:slv-city-goals": "node scripts/sync-slv-city-goal-program.mjs --write",
     "sync:slv-public-remediation-packet": "node scripts/sync-slv-public-remediation-packet.mjs --write",
     "audit:shared-assets": "node scripts/sync-shared-asset-versions.mjs --check",

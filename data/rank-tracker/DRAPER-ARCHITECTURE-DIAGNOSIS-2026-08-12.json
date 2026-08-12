@@ -1,0 +1,220 @@
+{
+  "schemaVersion": 1,
+  "diagnosisId": "frame-utah-draper-commercial-architecture-v1",
+  "market": "utah",
+  "city": "Draper",
+  "preparedAt": "2026-08-12T16:30:14Z",
+  "preparedFromCommit": "5c5302befb52e4886fff539a4bd9346bfca5d10e",
+  "status": "diagnosed-awaiting-owner-gated-integrity-cleanup-and-fresh-baseline",
+  "publicMutationPerformed": false,
+  "identityEvidence": "documented-slv-target-measurement-only",
+  "serviceAreaStatus": "pending-current-profile-service-area-verification",
+  "question": "Is the Draper storm route cannibalizing the four fixed commercial roofing queries, or is the main page failing to match broad commercial intent?",
+  "decision": {
+    "cannibalization": "not-evidenced",
+    "primaryDiagnosis": "commercial-intent-alignment-gap",
+    "confidence": "moderate",
+    "summary": "The exact Draper mobile panel finds no Frame URL in the top 30 for any of the four commercial queries, and the targeted Search Console query-to-page request returns no rows for those same four queries. The storm child has aggregate page visibility for storm-specific demand, but no measured evidence associates it with the fixed commercial queries. The main page is heavily linked and self-canonical, but its title and H1 emphasize premium reroofing rather than the broader roofing-contractor intent used by the fixed panel.",
+    "limits": [
+      "A Search Console targeted request with no returned row means unknown or withheld demand, not zero impressions and not proof that no URL is indexed.",
+      "The committed Search Console window is blended across devices and ends three days before collection; the DataForSEO panel is fixed mobile Android in Draper.",
+      "The storm page's aggregate Search Console visibility and the retained storm-query rows are separate observations; exact storm-query-to-URL attribution was not requested by this commercial panel.",
+      "Service-area inclusion for Draper on the current Salt Lake Valley profile remains unverified, so this diagnosis does not authorize GBP, Maps, hasMap, or sameAs changes."
+    ]
+  },
+  "evidence": {
+    "fixedPanel": {
+      "file": "data/rank-tracker/panels/draper/2026-08-12.json",
+      "sha256": "ed069233df5012f386418bbe66813994cf1a85141c55430d106e42cacd129103",
+      "observedAt": "2026-08-12T14:18:10.300Z",
+      "provider": "DataForSEO task queue",
+      "device": "mobile",
+      "os": "android",
+      "depth": 30,
+      "locationName": "Draper,Utah,United States",
+      "queries": [
+        "roofing contractor draper",
+        "roof repair draper",
+        "roof replacement draper",
+        "roofer draper"
+      ],
+      "organicRanks": [
+        null,
+        null,
+        null,
+        null
+      ],
+      "outsideTop": 30,
+      "exactCidMapMatches": 0,
+      "aiOverviewsPresent": 0,
+      "aiOverviewCitations": 0
+    },
+    "searchConsole": {
+      "file": "data/seo/snapshots/2026-08-12.json",
+      "sha256": "d26e17238e1e76ef203654cf1f9ce4d9c927bd4088560a55cb2b8f33ff282d14",
+      "window": {
+        "startDate": "2026-07-13",
+        "endDate": "2026-08-09"
+      },
+      "targetedCommercialQueriesRequested": 4,
+      "targetedCommercialRowsReturned": 0,
+      "draperMainPageRetained": false,
+      "stormChild": {
+        "page": "https://www.framerestorationutah.com/locations/draper/storm-damage",
+        "clicks": 0,
+        "impressions": 2944,
+        "position": 9.3
+      },
+      "retainedStormQueries": [
+        {
+          "query": "storm damage repair draper ut",
+          "clicks": 0,
+          "impressions": 1069,
+          "position": 4
+        },
+        {
+          "query": "storm and wind damage repair draper ut",
+          "clicks": 0,
+          "impressions": 563,
+          "position": 3.1
+        },
+        {
+          "query": "wind and storm damage repair draper ut",
+          "clicks": 0,
+          "impressions": 176,
+          "position": 2.4
+        }
+      ]
+    },
+    "routes": [
+      {
+        "file": "locations/draper.html",
+        "sha256": "8c8a5f7a9d9f0894640ef2578bc4b175422b24f31f0e990857dd0611b2672d16",
+        "role": "commercial-city-hub",
+        "title": "Premium Reroofing Draper UT | Frame Restoration Utah",
+        "h1": "Premium Reroofing in Draper",
+        "canonical": "https://www.framerestorationutah.com/locations/draper",
+        "inboundInternalLinks": 49,
+        "visibleTermCounts": {
+          "roofer": 0,
+          "roofing contractor": 0,
+          "roof repair": 3,
+          "roof replacement": 11,
+          "reroof": 7,
+          "storm damage": 4
+        }
+      },
+      {
+        "file": "locations/draper/storm-damage.html",
+        "sha256": "f3d1f25dcf3664928326309ad4674f013735611f7734fccff3ef70fd00f18fc6",
+        "role": "storm-specific-child",
+        "title": "Draper Storm Damage Roof Repair | Frame Restoration Utah",
+        "h1": "Storm Damage Roof Repair in Draper",
+        "canonical": "https://www.framerestorationutah.com/locations/draper/storm-damage",
+        "inboundInternalLinks": 2
+      },
+      {
+        "file": "blog/draper/roof-replacement-draper-utah.html",
+        "sha256": "53d0befd97ae25a22d4ceabe9f89a39d03349c83612f6baf77f1d71586bf469c",
+        "role": "informational-roof-replacement-guide",
+        "title": "Draper Roof Replacement | Frame Restoration Utah",
+        "canonical": "https://www.framerestorationutah.com/blog/draper/roof-replacement-draper-utah",
+        "inboundInternalLinks": 1,
+        "risk": "possible future overlap for roof-replacement intent, but no fixed-query row currently proves it"
+      },
+      {
+        "file": "blog/draper/insurance-claims-storm-damage.html",
+        "sha256": "4ab24c8c89a290101b1da1990a4eb379d8cb2e09ff0a0981af6d06699394c28a",
+        "role": "informational-storm-documentation-guide",
+        "title": "Draper Roof Damage Documentation | Frame Restoration",
+        "canonical": "https://www.framerestorationutah.com/blog/draper/insurance-claims-storm-damage/",
+        "inboundInternalLinks": 5
+      }
+    ],
+    "integrityGate": {
+      "packet": "data/authority/SLV-CITY-PUBLIC-REMEDIATION-PACKET-2026-08-12.json",
+      "packetSha256": "b1616942e2e46f33a847d75a9fc75a084585983c91f444ade1ebd84d11b69333",
+      "draperBlockingFindingClasses": 6,
+      "draperProvisionalWarnings": 1,
+      "cleanupStatus": "awaiting-explicit-owner-approval"
+    }
+  },
+  "hypotheses": [
+    {
+      "priority": 1,
+      "id": "commercial-title-mismatch",
+      "state": "supported",
+      "why": "The fixed SERP leaders use broad roofing-company or roofing-contractor intent. Draper's main title and H1 use the narrower premium-reroofing framing, while the target phrase roofing contractor is absent from visible main-page copy."
+    },
+    {
+      "priority": 2,
+      "id": "entity-and-service-area-distance",
+      "state": "unresolved-owner-evidence-gap",
+      "why": "The exact Salt Lake Valley CID does not appear in any of the four Draper local packs, and Draper's current profile service-area inclusion has not been verified. This can affect Maps and broader local prominence but does not authorize a profile mutation."
+    },
+    {
+      "priority": 3,
+      "id": "storm-child-cannibalization",
+      "state": "not-evidenced",
+      "why": "The storm child is self-canonical, narrowly storm-scoped, and has only two internal links versus 49 for the main page. The targeted commercial query-to-page request returned no Draper rows, so no fixed commercial query is measured against the storm child."
+    },
+    {
+      "priority": 4,
+      "id": "roof-replacement-blog-overlap",
+      "state": "watch-only",
+      "why": "The informational guide has an exact roof-replacement title but only one internal link. No targeted fixed-query row currently attributes roof replacement draper to it; preserve both routes and watch future multi-URL evidence."
+    }
+  ],
+  "nextExperiment": {
+    "id": "draper-commercial-title-alignment-v1",
+    "status": "draft-only-do-not-apply-before-prerequisites",
+    "page": "locations/draper.html",
+    "singleVariable": "html-title",
+    "currentValue": "Premium Reroofing Draper UT | Frame Restoration Utah",
+    "proposedValue": "Draper Roofing Contractor | Frame Restoration Utah",
+    "heldConstant": [
+      "H1",
+      "meta description",
+      "canonical",
+      "body copy",
+      "schema",
+      "internal links",
+      "storm child",
+      "Draper blog routes",
+      "GBP and all public third-party profiles"
+    ],
+    "prerequisites": [
+      "Receive explicit owner approval for and complete the five-page integrity cleanup defined by the pinned remediation packet.",
+      "Pass the cleanup's source, immutable-preview five-viewport, and production surface receipts.",
+      "Capture a fresh post-cleanup 24-query Google baseline and complete consumer-AI baseline; do not treat the invalid Bright Data credential as measured zero.",
+      "Wait for the integrity cleanup observation window or explicitly declare this title test as a separate uncontaminated experiment after the fresh baseline.",
+      "Receive explicit owner approval for this public title-only experiment.",
+      "Verify the page SHA and current title still match this diagnosis; regenerate if either changed."
+    ],
+    "measurement": {
+      "panel": "utah-draper-google-v1",
+      "cadence": "weekly",
+      "windowDays": 28,
+      "baselineOrganicRanks": [
+        null,
+        null,
+        null,
+        null
+      ],
+      "primaryDecisionRule": "Keep only if at least two of the four fixed commercial queries return exact organic ranks within the top 30 in each of the final two weekly panels, with no integrity regression.",
+      "guardrails": [
+        "No material regression in storm-child Search Console clicks, impressions, or average position compared with the declared pre-experiment window.",
+        "No new multi-URL fixed-query evidence involving the storm child or either Draper blog route.",
+        "No loss of canonical, schema, NAP, mobile UI, or public-claim gate coverage.",
+        "Consumer-AI named-citation rates are recorded per engine; missing provider data remains unmeasured, never zero."
+      ],
+      "revertRule": "Revert the isolated title commit if the primary decision rule is not met after 28 days, if a guardrail materially regresses, or if the experiment becomes contaminated by another Draper intent change."
+    }
+  },
+  "prohibited": [
+    "Publishing this draft experiment without the listed owner and release gates.",
+    "Redirecting, canonicalizing, noindexing, or deleting the storm child or either Draper blog route on current evidence.",
+    "Changing GBP, service areas, hasMap, sameAs, directories, reviews, outreach, indexing, ads, DNS, or public profiles from this diagnosis.",
+    "Treating missing Search Console rows, absent AI provider data, or an outside-top-30 rank as zero."
+  ]
+}
