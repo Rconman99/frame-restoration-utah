@@ -1,4 +1,4 @@
-# SEO Loop (Utah) — live crawl, GSC snapshots, regression-first diff
+# SEO Loop (Utah) — live crawl, GSC, fixed ranks, regression-first diff
 
 **Added 2026-08-07.** Ported from the sibling market's implementation. Method originally from the
 [seo-god skill](https://github.com/AKCodez/seo-god), implemented natively: no Docker, no container,
@@ -11,8 +11,8 @@ Canonical cross-market reference (method, honesty rules, porting checklist):
 
 The existing `audit-*` scripts are static scans of HTML on disk. None sees what production serves.
 This adds real status codes, redirect chains, noindex / thin-content / canonical drift on **rendered**
-output, orphan pages by live link graph, Search Console ingestion into dated committed snapshots,
-and a regression-first daily readout with a 48h deadman.
+output, orphan pages by live link graph, Search Console ingestion, the committed Salt Lake Valley
+DataForSEO matrix, and a regression-first daily readout with a 48h crawl deadman plus rank freshness.
 
 Run: `node scripts/seo-snapshot.mjs && node scripts/seo-diff.mjs`
 Tests: `node --test scripts/seo-diff.test.mjs scripts/seo-crawl.test.mjs`
@@ -28,7 +28,8 @@ Until `GSC_SERVICE_ACCOUNT_JSON` is set the loop runs crawl-only and GSC reads "
 
 ## Honesty rules (non-negotiable)
 
-- **`available: false` / `measured: false` / `position: null` mean NOT MEASURED — never zero.**
+- **`available: false` / `measured: false` mean NOT MEASURED — never zero.** A rank row with
+  `position: null`, `measured: true`, and `outsideTop: 30` means measured outside the top 30.
 - **A failed crawl writes no snapshot** — a fabricated `pages: 0, issues: []` would read as "every
   issue resolved" in tomorrow's diff.
 - **First snapshot reports absolutes only** — no delta against zero.
@@ -57,10 +58,24 @@ them**, so they earn little internal crawl equity. Neither the on-disk audits no
 would have surfaced that — it needs the live link graph. Fixing is a normal reviewed content change
 behind the compliance gate, not automation.
 
-## Optional next step
+## Fixed Salt Lake Valley ranks — integrated 2026-08-12
 
-`data/seo/keywords.json` as `{ "keywords": [...] }` (10–30 commercial-intent terms). Positions stay
-`null` — honest — until a rank source exists.
+The weekly DataForSEO workflow owns the six-city, 24-query mobile matrix in
+`data/rank-tracker/panels.json`. The daily loop reads each active panel's committed `latest.json`;
+it does not make another provider call and does not duplicate the keyword list in
+`data/seo/keywords.json`.
+
+Each readout now includes:
+
+- all six cities in fixed contractor / repair / replacement / roofer order;
+- exact organic ranks or the honest `>30` bound;
+- exact-CID Maps #1 coverage and Google AI Overview citation coverage;
+- aggregate progress toward organic #1 and Maps #1 across all 24 query rows;
+- a stale warning when the newest weekly panel is more than eight days old.
+
+The loader fails closed per panel. A missing, corrupt, incomplete, or mismatched report produces
+explicitly unmeasured rows plus a named source issue; it cannot silently reuse partial results as a
+complete weekly matrix.
 
 ## 2026-08-07 — ported from the shared loop method: page dimension + honest query coverage
 

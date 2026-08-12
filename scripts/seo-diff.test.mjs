@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { computeDiff, renderReadout, checkDeadman, expectedCtr, silentPages, queryCoverageCaveat } from "./seo-diff.mjs";
+import { computeDiff, renderReadout, checkDeadman, expectedCtr, silentPages, queryCoverageCaveat, rankPanelLines } from "./seo-diff.mjs";
 
 function snap(overrides = {}) {
   return {
@@ -37,6 +37,66 @@ test("a rank drop of >=3 with both positions measured is a regression", () => {
   const diff = computeDiff(today, prev);
   assert.equal(diff.regressions.rankDrops.drops.length, 1);
   assert.equal(diff.regressions.rankDrops.drops[0].to, 9);
+});
+
+test("an exact rank falling outside measured depth is an honest bounded regression", () => {
+  const today = snap({ ranks: [{ keyword: "roof repair salt lake city", position: null, measured: true, outsideTop: 30, url: "" }] });
+  const prev = snap({ date: "2026-08-05", ranks: [{ keyword: "roof repair salt lake city", position: 25, measured: true, outsideTop: null, url: "/locations/salt-lake-city" }] });
+  const drops = computeDiff(today, prev).regressions.rankDrops.drops;
+  assert.equal(drops.length, 1);
+  assert.equal(drops[0].from, 25);
+  assert.equal(drops[0].to, ">30");
+});
+
+test("two measured >depth observations never become an invented exact drop", () => {
+  const today = snap({ ranks: [{ keyword: "roofer draper", position: null, measured: true, outsideTop: 30, url: "" }] });
+  const prev = snap({ date: "2026-08-05", ranks: [{ keyword: "roofer draper", position: null, measured: true, outsideTop: 30, url: "" }] });
+  const rankState = computeDiff(today, prev).regressions.rankDrops;
+  assert.equal(rankState.measured, true);
+  assert.equal(rankState.drops.length, 0);
+});
+
+test("a missing current panel never reports zero rank drops from yesterday's data", () => {
+  const today = snap({ ranks: [], rank_measurement: { available: false, reason: "incomplete_panel", issues: ["panel-1: latest_report_unreadable"] } });
+  const prev = snap({ date: "2026-08-05", ranks: [{ keyword: "roofer sandy", position: 11, measured: true, url: "/locations/sandy" }] });
+  const diff = computeDiff(today, prev);
+  assert.equal(diff.regressions.rankDrops.measured, false);
+  assert.equal(diff.regressions.rankDrops.reason, "incomplete_panel");
+  const output = renderReadout(diff);
+  assert.match(output, /Rank movement: not measured — current rank panel unavailable \(incomplete_panel\)/);
+  assert.doesNotMatch(output, /Rank drops: none/);
+  assert.match(output, /latest_report_unreadable/);
+});
+
+test("fixed panel readout groups cities and reports #1 coverage without converting >depth to a rank", () => {
+  const lines = rankPanelLines(snap({
+    date: "2026-08-12",
+    rank_measurement: {
+      queriesExpected: 4,
+      queriesMeasured: 4,
+      newestObservedAt: "2026-08-12T05:40:51.327Z",
+      issues: [],
+    },
+    ranks: [
+      { city: "Millcreek", keyword: "contractor", position: 4, measured: true, mapPackRank: null, aiOverviewPresent: false, aiOverviewCited: false },
+      { city: "Millcreek", keyword: "repair", position: 1, measured: true, mapPackRank: 1, aiOverviewPresent: true, aiOverviewCited: true },
+      { city: "Draper", keyword: "contractor", position: null, measured: true, outsideTop: 30, mapPackRank: null, aiOverviewPresent: false, aiOverviewCited: false },
+      { city: "Draper", keyword: "repair", position: null, measured: true, outsideTop: 30, mapPackRank: null, aiOverviewPresent: false, aiOverviewCited: false },
+    ],
+  }));
+  const output = lines.join("\n");
+  assert.match(output, /Millcreek: organic `4 \/ 1`/);
+  assert.match(output, /Draper: organic `>30 \/ >30`/);
+  assert.match(output, /organic #1 `1\/4`; exact-CID maps #1 `1\/4`/);
+});
+
+test("fixed panel readout exposes a stale weekly measurement", () => {
+  const output = rankPanelLines(snap({
+    date: "2026-08-21",
+    rank_measurement: { queriesExpected: 1, queriesMeasured: 1, newestObservedAt: "2026-08-12T05:40:51.327Z", issues: [] },
+    ranks: [{ city: "Millcreek", keyword: "contractor", position: 4, measured: true, mapPackRank: null, aiOverviewPresent: false, aiOverviewCited: false }],
+  })).join("\n");
+  assert.match(output, /STALE 9d/);
 });
 
 test("new error-severity issue URLs are flagged; unchanged ones are not", () => {

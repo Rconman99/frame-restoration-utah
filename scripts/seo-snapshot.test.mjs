@@ -1,7 +1,10 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { generateKeyPairSync } from "node:crypto";
-import { buildSnapshot } from "./seo-snapshot.mjs";
+import fs from "node:fs";
+import os from "node:os";
+import path from "node:path";
+import { buildSnapshot, readTrackedRanks } from "./seo-snapshot.mjs";
 import { fetchGscSections } from "./lib/gsc.mjs";
 
 const { privateKey } = generateKeyPairSync("rsa", {
@@ -72,4 +75,77 @@ test("a GSC field with value 0 is persisted, not treated as absent", async () =>
   });
   assert.equal(snapshot.gsc.pages_truncated, false); // false, not undefined
   assert.ok(Number.isFinite(snapshot.gsc.queries_stored_impressions));
+});
+
+test("committed DataForSEO panels preserve exact ranks and measured >depth rows", () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), "frame-ranks-"));
+  try {
+    fs.mkdirSync(path.join(dir, "data", "rank-tracker", "p1"), { recursive: true });
+    fs.writeFileSync(path.join(dir, "data", "rank-tracker", "panels.json"), JSON.stringify({
+      registryId: "test-registry",
+      panels: [{ id: "panel-1", configPath: "data/rank-tracker/p1/config.json", status: "active" }],
+    }));
+    fs.writeFileSync(path.join(dir, "data", "rank-tracker", "p1", "config.json"), JSON.stringify({
+      panelId: "panel-1",
+      city: "Millcreek",
+      depth: 30,
+      keywords: [
+        { id: "k1", keyword: "roofing contractor millcreek" },
+        { id: "k2", keyword: "roofer millcreek" },
+      ],
+    }));
+    fs.writeFileSync(path.join(dir, "data", "rank-tracker", "p1", "latest.json"), JSON.stringify({
+      panelId: "panel-1",
+      observedAt: "2026-08-12T05:40:51.327Z",
+      results: [
+        { id: "k1", keyword: "roofing contractor millcreek", organicRank: 4, rankingUrl: "https://example.com/millcreek", mapPackRank: null, aiOverviewPresent: false, aiOverviewCited: false },
+        { id: "k2", keyword: "roofer millcreek", organicRank: null, rankingUrl: null, mapPackRank: 1, aiOverviewPresent: true, aiOverviewCited: true },
+      ],
+    }));
+
+    const state = readTrackedRanks({ rootDir: dir });
+    assert.equal(state.measurement.available, true);
+    assert.equal(state.measurement.queriesMeasured, 2);
+    assert.equal(state.ranks[0].position, 4);
+    assert.equal(state.ranks[1].position, null);
+    assert.equal(state.ranks[1].measured, true);
+    assert.equal(state.ranks[1].outsideTop, 30);
+    assert.equal(state.ranks[1].mapPackRank, 1);
+    assert.equal(state.ranks[1].aiOverviewCited, true);
+  } finally {
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test("an incomplete latest panel becomes explicitly unmeasured", () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), "frame-ranks-incomplete-"));
+  try {
+    fs.mkdirSync(path.join(dir, "data", "rank-tracker", "p1"), { recursive: true });
+    fs.writeFileSync(path.join(dir, "data", "rank-tracker", "panels.json"), JSON.stringify({
+      panels: [{ id: "panel-1", configPath: "data/rank-tracker/p1/config.json", status: "active" }],
+    }));
+    fs.writeFileSync(path.join(dir, "data", "rank-tracker", "p1", "config.json"), JSON.stringify({
+      panelId: "panel-1",
+      city: "Sandy",
+      depth: 30,
+      keywords: [
+        { id: "k1", keyword: "roofing contractor sandy" },
+        { id: "k2", keyword: "roofer sandy" },
+      ],
+    }));
+    fs.writeFileSync(path.join(dir, "data", "rank-tracker", "p1", "latest.json"), JSON.stringify({
+      panelId: "panel-1",
+      observedAt: "2026-08-12T05:40:51.327Z",
+      results: [{ id: "k1", keyword: "roofing contractor sandy", organicRank: 14 }],
+    }));
+
+    const state = readTrackedRanks({ rootDir: dir });
+    assert.equal(state.measurement.available, false);
+    assert.equal(state.measurement.queriesMeasured, 0);
+    assert.match(state.measurement.issues[0], /latest_report_incomplete/);
+    assert.equal(state.ranks.length, 2);
+    assert.ok(state.ranks.every((row) => row.measured === false && row.reason === "latest_report_incomplete"));
+  } finally {
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
 });

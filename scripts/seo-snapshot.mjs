@@ -2,8 +2,9 @@
 /**
  * Daily SEO snapshot for Frame Restoration Utah — writes
  * data/seo/snapshots/<YYYY-MM-DD>.json in the seo-god snapshot contract shape,
- * from two sources: a live crawl (scripts/seo-crawl.mjs) and Google Search
- * Console (scripts/lib/gsc.mjs, optional).
+ * from three sources: a live crawl (scripts/seo-crawl.mjs), Google Search
+ * Console (scripts/lib/gsc.mjs, optional), and the committed fixed-panel
+ * DataForSEO reports under data/rank-tracker/.
  *
  * Contract (ported from the seo-god skill's measure phase — key names are a
  * contract the diff reads; do not rename or drop):
@@ -20,8 +21,8 @@
  *     bill of health tomorrow's diff would read as "every issue resolved".
  *   - GSC failure or absence -> gsc.available:false with inert zeros and a
  *     `reason`. available:false means NOT MEASURED, never "zero clicks".
- *   - ranks positions are null until a real rank source exists — null means
- *     not measured, and the diff reports it in those words.
+ *   - rank rows distinguish unmeasured from measured-outside-depth. A null
+ *     position with measured:true and outsideTop:30 means >30, never unknown.
  *   - Same-day rerun is a read-modify-write: an ai_visibility block with
  *     measured:true is another process's measurement and is PRESERVED.
  *
@@ -41,6 +42,7 @@ import { fetchGscSections } from "./lib/gsc.mjs";
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const SNAP_DIR = path.join(root, "data", "seo", "snapshots");
 const KEYWORDS_FILE = path.join(root, "data", "seo", "keywords.json");
+const RANK_REGISTRY_FILE = path.join(root, "data", "rank-tracker", "panels.json");
 const DEFAULT_SITE = "https://www.framerestorationutah.com";
 
 /** Ops timezone (crons + PostHog are Denver). Date = the day the run fired there. */
@@ -59,15 +61,195 @@ function parseArgs(argv) {
   return args;
 }
 
-function readKeywords() {
-  if (!fs.existsSync(KEYWORDS_FILE)) return [];
+function readLegacyKeywords(keywordsFile = KEYWORDS_FILE) {
+  if (!fs.existsSync(keywordsFile)) return [];
   try {
-    const parsed = JSON.parse(fs.readFileSync(KEYWORDS_FILE, "utf8"));
+    const parsed = JSON.parse(fs.readFileSync(keywordsFile, "utf8"));
     return Array.isArray(parsed.keywords) ? parsed.keywords.filter((k) => typeof k === "string") : [];
   } catch (err) {
     console.error(`[seo-snapshot] data/seo/keywords.json unreadable (${err.message}) — tracking nothing this run`);
     return [];
   }
+}
+
+function readJson(file) {
+  return JSON.parse(fs.readFileSync(file, "utf8"));
+}
+
+function unmeasuredRows(config, panelId, reason) {
+  return (config.keywords || []).map(({ keyword }) => ({
+    keyword,
+    position: null,
+    url: "",
+    measured: false,
+    outsideTop: null,
+    panelId,
+    city: config.city,
+    source: "dataforseo-task-queue",
+    reason,
+  }));
+}
+
+/**
+ * Read the complete committed Salt Lake Valley panel without making a provider
+ * call. The weekly rank workflow owns these reports; the daily SEO loop only
+ * consumes them. Any missing/mismatched panel stays explicit and unmeasured.
+ */
+export function readTrackedRanks({ rootDir = root } = {}) {
+  const registryFile = path.join(rootDir, path.relative(root, RANK_REGISTRY_FILE));
+  const keywordsFile = path.join(rootDir, path.relative(root, KEYWORDS_FILE));
+
+  if (!fs.existsSync(registryFile)) {
+    const ranks = readLegacyKeywords(keywordsFile).map((keyword) => ({
+      keyword,
+      position: null,
+      url: "",
+      measured: false,
+      outsideTop: null,
+      source: "legacy-keyword-list",
+      reason: "rank_registry_missing",
+    }));
+    return {
+      ranks,
+      measurement: {
+        available: false,
+        source: ranks.length ? "legacy-keyword-list" : "not-configured",
+        panelsExpected: 0,
+        panelsMeasured: 0,
+        queriesExpected: ranks.length,
+        queriesMeasured: 0,
+        reason: ranks.length ? "rank_registry_missing" : "not_configured",
+        issues: [],
+      },
+    };
+  }
+
+  let registry;
+  try {
+    registry = readJson(registryFile);
+  } catch (err) {
+    return {
+      ranks: [],
+      measurement: {
+        available: false,
+        source: "dataforseo-task-queue",
+        panelsExpected: 0,
+        panelsMeasured: 0,
+        queriesExpected: 0,
+        queriesMeasured: 0,
+        reason: "rank_registry_unreadable",
+        issues: [`${path.relative(rootDir, registryFile)}: ${err.message}`],
+      },
+    };
+  }
+
+  const panels = Array.isArray(registry.panels) ? registry.panels.filter((panel) => panel.status === "active") : [];
+  const ranks = [];
+  const issues = [];
+  const observedAt = [];
+  let panelsMeasured = 0;
+  let queriesExpected = 0;
+  let queriesMeasured = 0;
+
+  if (panels.length === 0) issues.push("registry: no_active_panels");
+
+  for (const panel of panels) {
+    const configFile = path.resolve(rootDir, panel.configPath || "");
+    const configRel = path.relative(rootDir, configFile);
+    if (!panel.id || !panel.configPath || configRel.startsWith("..") || path.isAbsolute(configRel)) {
+      issues.push(`${panel.id || "unnamed-panel"}: invalid_config_path`);
+      continue;
+    }
+    let config;
+    try {
+      config = readJson(configFile);
+    } catch (err) {
+      issues.push(`${panel.id}: config unreadable (${err.message})`);
+      continue;
+    }
+
+    const keywords = Array.isArray(config.keywords) ? config.keywords : [];
+    queriesExpected += keywords.length;
+    const validDepth = Number.isInteger(config.depth) && config.depth > 0;
+    if (config.panelId !== panel.id || keywords.length === 0 || !validDepth) {
+      const reason = config.panelId !== panel.id ? "panel_id_mismatch" : keywords.length === 0 ? "no_keywords" : "invalid_depth";
+      issues.push(`${panel.id}: ${reason}`);
+      ranks.push(...unmeasuredRows(config, panel.id, reason));
+      continue;
+    }
+
+    const reportFile = path.join(path.dirname(configFile), "latest.json");
+    let report;
+    try {
+      report = readJson(reportFile);
+    } catch (err) {
+      const reason = "latest_report_unreadable";
+      issues.push(`${panel.id}: ${reason} (${err.message})`);
+      ranks.push(...unmeasuredRows(config, panel.id, reason));
+      continue;
+    }
+
+    if (report.panelId !== panel.id || !Array.isArray(report.results)) {
+      const reason = report.panelId !== panel.id ? "latest_panel_id_mismatch" : "latest_results_missing";
+      issues.push(`${panel.id}: ${reason}`);
+      ranks.push(...unmeasuredRows(config, panel.id, reason));
+      continue;
+    }
+
+    const byId = new Map(report.results.map((row) => [row.id, row]));
+    const validObservedAt = typeof report.observedAt === "string" && Number.isFinite(Date.parse(report.observedAt));
+    const complete = keywords.every(({ id, keyword }) => {
+      const row = byId.get(id);
+      const validOrganicRank = row?.organicRank === null
+        || (Number.isInteger(row?.organicRank) && row.organicRank >= 1 && row.organicRank <= config.depth);
+      const validRankingUrl = row?.rankingUrl === null || typeof row?.rankingUrl === "string";
+      return row && row.keyword === keyword && validOrganicRank && validRankingUrl;
+    });
+    if (!complete || byId.size !== keywords.length || !validObservedAt) {
+      const reason = "latest_report_incomplete";
+      issues.push(`${panel.id}: ${reason}`);
+      ranks.push(...unmeasuredRows(config, panel.id, reason));
+      continue;
+    }
+
+    panelsMeasured += 1;
+    queriesMeasured += keywords.length;
+    observedAt.push(report.observedAt);
+    for (const { id, keyword } of keywords) {
+      const row = byId.get(id);
+      ranks.push({
+        keyword,
+        position: row.organicRank,
+        url: row.rankingUrl || "",
+        measured: true,
+        outsideTop: row.organicRank === null ? config.depth : null,
+        panelId: panel.id,
+        city: config.city,
+        source: "dataforseo-task-queue",
+        observedAt: report.observedAt,
+        mapPackRank: row.mapPackRank,
+        aiOverviewPresent: row.aiOverviewPresent === true,
+        aiOverviewCited: row.aiOverviewCited === true,
+      });
+    }
+  }
+
+  return {
+    ranks,
+    measurement: {
+      available: panels.length > 0 && issues.length === 0 && panelsMeasured === panels.length,
+      source: "dataforseo-task-queue",
+      registryId: registry.registryId || null,
+      panelsExpected: panels.length,
+      panelsMeasured,
+      queriesExpected,
+      queriesMeasured,
+      oldestObservedAt: observedAt.length ? [...observedAt].sort()[0] : null,
+      newestObservedAt: observedAt.length ? [...observedAt].sort().at(-1) : null,
+      reason: issues.length ? (panels.length === 0 ? "no_active_panels" : "incomplete_panel") : null,
+      issues,
+    },
+  };
 }
 
 // crawlImpl / gscFetchImpl are seams for tests only; production always uses the
@@ -82,6 +264,7 @@ export async function buildSnapshot({
   env = process.env,
   crawlImpl = crawlSite,
   gscFetchImpl,
+  rankReadImpl = readTrackedRanks,
 } = {}) {
   const snapDate = date || todayInDenver();
 
@@ -110,8 +293,9 @@ export async function buildSnapshot({
     gsc = { available: false, clicks28d: 0, impressions28d: 0, top_queries: [], top_pages: [], reason: `api_error: ${err.message}` };
   }
 
-  // ---- Ranks: tracked keywords with no measured position -> null, honestly ----
-  const ranks = readKeywords().map((keyword) => ({ keyword, position: null, url: "" }));
+  // ---- Ranks: consume the complete committed weekly matrix, no provider call ----
+  const rankState = rankReadImpl();
+  const ranks = rankState.ranks;
 
   const snapshot = {
     date: snapDate,
@@ -126,6 +310,7 @@ export async function buildSnapshot({
       notes: crawl.notes,
     },
     ranks,
+    rank_measurement: rankState.measurement,
     gsc,
     ai_visibility: { measured: false, prompts_ok: 0, cited: 0, competitors: {} },
   };
@@ -169,7 +354,7 @@ async function main() {
   console.log(
     `[seo-snapshot] wrote ${path.relative(root, file)} — ${s.crawl.pages} pages, ${errors} error-severity URLs, ` +
       `GSC ${s.gsc.available ? `${s.gsc.clicks28d} clicks / ${s.gsc.impressions28d} impressions (28d)` : `not measured (${s.gsc.reason})`}, ` +
-      `${s.ranks.length} tracked keywords (positions not measured)`,
+      `${s.rank_measurement?.queriesMeasured || 0}/${s.rank_measurement?.queriesExpected || s.ranks.length} rank queries measured`,
   );
 }
 

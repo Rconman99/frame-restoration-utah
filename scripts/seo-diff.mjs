@@ -98,23 +98,50 @@ function newErrorIssues(today, previous) {
   return out;
 }
 
+function rankRowMeasured(row) {
+  return row?.measured === true || Number.isFinite(row?.position);
+}
+
+function rankLowerBound(row) {
+  if (Number.isFinite(row?.position)) return row.position;
+  if (row?.measured === true && Number.isInteger(row?.outsideTop)) return row.outsideTop + 1;
+  return null;
+}
+
 function rankDrops(today, previous) {
-  const measured = (today.ranks || []).some((r) => r.position !== null) || (previous.ranks || []).some((r) => r.position !== null);
-  if (!measured) return { measured: false, drops: [] };
+  const measured = (today.ranks || []).some(rankRowMeasured);
+  if (!measured) {
+    return {
+      measured: false,
+      drops: [],
+      reason: today.rank_measurement?.reason || "not_configured",
+    };
+  }
   const prevByKw = new Map((previous.ranks || []).map((r) => [r.keyword, r]));
   const drops = [];
-  let unmeasured = 0;
+  let uncompared = 0;
   for (const r of today.ranks || []) {
     const p = prevByKw.get(r.keyword);
-    if (r.position === null || !p || p.position === null) {
-      unmeasured += 1;
+    if (!rankRowMeasured(r) || !rankRowMeasured(p)) {
+      uncompared += 1;
       continue;
     }
-    if (r.position - p.position >= RANK_DROP_THRESHOLD) {
-      drops.push({ keyword: r.keyword, from: p.position, to: r.position, url: r.url });
+    const currentFloor = rankLowerBound(r);
+    const previousFloor = rankLowerBound(p);
+    // A previous >depth observation is not an exact rank, so it cannot prove a
+    // numeric decline. An exact previous rank becoming >depth can prove a
+    // minimum drop and is reported with the honest bound.
+    if (!Number.isFinite(p.position) || currentFloor === null || previousFloor === null) continue;
+    if (currentFloor - p.position >= RANK_DROP_THRESHOLD) {
+      drops.push({
+        keyword: r.keyword,
+        from: p.position,
+        to: Number.isFinite(r.position) ? r.position : `>${r.outsideTop}`,
+        url: r.url,
+      });
     }
   }
-  return { measured: true, drops, unmeasured };
+  return { measured: true, drops, uncompared, unmeasured: uncompared };
 }
 
 /** Week-over-week clicks from per-date rows (exact); falls back to clicks28d across snapshots. */
@@ -335,6 +362,57 @@ function gscLine(s) {
   return `GSC: ${s.gsc.clicks28d} clicks / ${s.gsc.impressions28d} impressions${w}${cov ? `\nQuery coverage: ${cov}.` : ""}`;
 }
 
+function renderRankPosition(row) {
+  if (Number.isFinite(row.position)) return String(row.position);
+  if (row.measured === true && Number.isInteger(row.outsideTop)) return `>${row.outsideTop}`;
+  return "not measured";
+}
+
+/** Fixed-panel summary kept separate from GSC's blended, delayed averages. */
+export function rankPanelLines(snapshot) {
+  const rows = snapshot.ranks || [];
+  const measurement = snapshot.rank_measurement;
+  const lines = ["### Fixed Salt Lake Valley mobile rank panel"];
+  if (rows.length === 0) {
+    lines.push(`- Tracked ranks: not measured (${measurement?.reason || "not configured"}).`);
+    for (const issue of measurement?.issues || []) lines.push(`- Rank source issue: ${issue}`);
+    return lines;
+  }
+
+  const measuredRows = rows.filter(rankRowMeasured);
+  const observed = measurement?.newestObservedAt || measuredRows.map((row) => row.observedAt).filter(Boolean).sort().at(-1) || null;
+  const expected = measurement?.queriesExpected ?? rows.length;
+  const measured = measurement?.queriesMeasured ?? measuredRows.length;
+  let freshness = "";
+  if (observed) {
+    const ageDays = (Date.parse(`${snapshot.date}T23:59:59Z`) - Date.parse(observed)) / 86400000;
+    if (Number.isFinite(ageDays) && ageDays > 8) freshness = ` — **STALE ${Math.floor(ageDays)}d; weekly rank workflow needs attention**`;
+  }
+  const sourceLabel = measurement?.source === "dataforseo-task-queue" ? "DataForSEO task-queue panel" : "Rank panel";
+  const completeness = measurement?.available === false ? " — **INCOMPLETE**" : "";
+  lines.push(`- ${sourceLabel}: ${measured}/${expected} queries measured${observed ? ` at ${observed}` : ""}${freshness}${completeness}.`);
+  for (const issue of measurement?.issues || []) lines.push(`- Rank source issue: ${issue}`);
+
+  const byCity = new Map();
+  for (const row of rows) {
+    const city = row.city || "Unassigned";
+    if (!byCity.has(city)) byCity.set(city, []);
+    byCity.get(city).push(row);
+  }
+  for (const [city, cityRows] of byCity) {
+    const organic = cityRows.map(renderRankPosition).join(" / ");
+    const mapOnes = cityRows.filter((row) => row.mapPackRank === 1).length;
+    const aioPresent = cityRows.filter((row) => row.aiOverviewPresent === true).length;
+    const aioCited = cityRows.filter((row) => row.aiOverviewCited === true).length;
+    lines.push(`- ${city}: organic \`${organic}\`; exact-CID maps #1 \`${mapOnes}/${cityRows.length}\`; AIO cited \`${aioCited}/${aioPresent} present\`.`);
+  }
+
+  const organicOnes = measuredRows.filter((row) => row.position === 1).length;
+  const mapOnes = measuredRows.filter((row) => row.mapPackRank === 1).length;
+  lines.push(`- Goal coverage: organic #1 \`${organicOnes}/${expected}\`; exact-CID maps #1 \`${mapOnes}/${expected}\`. Order is contractor / repair / replacement / roofer.`);
+  return lines;
+}
+
 export function renderReadout(diff, { deadman = null, now = new Date() } = {}) {
   const s = diff.today;
   const time = new Intl.DateTimeFormat("en-GB", { timeZone: "America/Denver", hour: "2-digit", minute: "2-digit" }).format(now);
@@ -362,8 +440,11 @@ export function renderReadout(diff, { deadman = null, now = new Date() } = {}) {
       const shown = i.urls.slice(0, 3).join(", ");
       lines.push(`- NEW ${i.type}: ${i.urls.length} URL${i.urls.length === 1 ? "" : "s"} — ${shown}${i.urls.length > 3 ? ", …" : ""}`);
     }
-    if (!rd.measured) lines.push("- Rank movement: not measured — no rank tracker configured");
-    else if (rd.drops.length === 0) lines.push(`- Rank drops: none (${rd.unmeasured} keyword${rd.unmeasured === 1 ? "" : "s"} unmeasured)`);
+    if (!rd.measured) {
+      const reason = rd.reason && rd.reason !== "not_configured" ? `current rank panel unavailable (${rd.reason})` : "no rank tracker configured";
+      lines.push(`- Rank movement: not measured — ${reason}`);
+    }
+    else if (rd.drops.length === 0) lines.push(`- Rank drops: none (${rd.uncompared} keyword${rd.uncompared === 1 ? "" : "s"} without a comparable prior rank)`);
     else for (const d of rd.drops) lines.push(`- Rank drop: "${d.keyword}" ${d.from} → ${d.to}`);
     if (!gscWoW.measured) lines.push("- GSC clicks week-over-week: not measured");
     else lines.push(`- GSC clicks WoW (${gscWoW.method}): ${gscWoW.prior} → ${gscWoW.recent}${gscWoW.dropped ? " — **DOWN ≥20%**" : " (no ≥20% drop)"}`);
@@ -407,6 +488,8 @@ export function renderReadout(diff, { deadman = null, now = new Date() } = {}) {
     }
   }
 
+  lines.push("", ...rankPanelLines(s));
+
   // Say what was withheld and why. A silently shortened list reads as "nothing
   // else qualified", which is a different and false claim.
   if (diff.candidatesSuppressed?.length > 0) {
@@ -433,7 +516,6 @@ export function renderReadout(diff, { deadman = null, now = new Date() } = {}) {
   } else {
     lines.push("", "AI visibility: not measured");
   }
-  if ((s.ranks || []).length === 0) lines.push("Tracked keywords: none — add data/seo/keywords.json to track a list");
   return `${lines.join("\n")}\n`;
 }
 
