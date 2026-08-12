@@ -420,6 +420,80 @@ export function rankPanelLines(snapshot) {
   return lines;
 }
 
+function citySlug(city) {
+  return String(city)
+    .normalize("NFKD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
+function urlPath(value) {
+  try {
+    return new URL(value).pathname.replace(/\/+$/, "") || "/";
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Join fixed-panel cities to GSC's retained query/page dimensions. Query sums
+ * are explicitly lower bounds because the snapshot stores a bounded union of
+ * top rows, never the complete long tail.
+ */
+export function slvGscLines(snapshot) {
+  const lines = ["### Salt Lake Valley GSC demand"];
+  if (!snapshot.gsc?.available) {
+    lines.push(`- Not measured (${snapshot.gsc?.reason || "GSC unavailable"}).`);
+    return lines;
+  }
+
+  const cities = [...new Set((snapshot.ranks || []).map((row) => row.city).filter(Boolean))];
+  if (cities.length === 0) {
+    lines.push("- Not measured — the fixed city registry is unavailable.");
+    return lines;
+  }
+
+  const pages = Array.isArray(snapshot.gsc.top_pages) ? snapshot.gsc.top_pages : [];
+  const queries = Array.isArray(snapshot.gsc.top_queries) ? snapshot.gsc.top_queries : [];
+  for (const city of cities) {
+    const slug = citySlug(city);
+    const mainPath = `/locations/${slug}`;
+    const mainPage = pages.find((row) => urlPath(row.page) === mainPath);
+    const strongestChild = pages
+      .filter((row) => urlPath(row.page)?.startsWith(`${mainPath}/`))
+      .sort((a, b) => b.impressions - a.impressions)[0];
+    const cityNeedle = city.toLowerCase();
+    const roofingQueries = queries
+      .filter((row) => String(row.query).toLowerCase().includes(cityNeedle))
+      .filter((row) => /\broof(?:er|ers|ing)?\b/i.test(row.query))
+      .sort((a, b) => b.impressions - a.impressions);
+    const retainedImpressions = roofingQueries.reduce((total, row) => total + row.impressions, 0);
+    const retainedClicks = roofingQueries.reduce((total, row) => total + row.clicks, 0);
+
+    const parts = [];
+    if (mainPage) parts.push(`main page ${mainPage.impressions} impr / ${mainPage.clicks} clicks / avg pos ${mainPage.position}`);
+    else parts.push("main page not retained in GSC top_pages");
+    if (strongestChild) {
+      parts.push(`strongest child ${urlPath(strongestChild.page)} at ${strongestChild.impressions} impr / ${strongestChild.clicks} clicks / avg pos ${strongestChild.position}`);
+    }
+    if (roofingQueries.length > 0) {
+      const top = roofingQueries[0];
+      parts.push(
+        `retained roofing-query floor ${retainedImpressions} impr / ${retainedClicks} clicks across ${roofingQueries.length} row${roofingQueries.length === 1 ? "" : "s"}; top “${top.query}” pos ${top.position}`,
+      );
+    } else {
+      parts.push("no city roofing query retained in the bounded query set (unknown, not zero)");
+    }
+    lines.push(`- ${city}: ${parts.join("; ")}.`);
+  }
+
+  const caveat = queryCoverageCaveat(snapshot.gsc);
+  if (caveat) lines.push(`- Coverage caveat: ${caveat}.`);
+  return lines;
+}
+
 export function renderReadout(diff, { deadman = null, now = new Date() } = {}) {
   const s = diff.today;
   const time = new Intl.DateTimeFormat("en-GB", { timeZone: "America/Denver", hour: "2-digit", minute: "2-digit" }).format(now);
@@ -495,7 +569,7 @@ export function renderReadout(diff, { deadman = null, now = new Date() } = {}) {
     }
   }
 
-  lines.push("", ...rankPanelLines(s));
+  lines.push("", ...rankPanelLines(s), "", ...slvGscLines(s));
 
   // Say what was withheld and why. A silently shortened list reads as "nothing
   // else qualified", which is a different and false claim.

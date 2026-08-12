@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { computeDiff, renderReadout, checkDeadman, expectedCtr, silentPages, queryCoverageCaveat, rankPanelLines } from "./seo-diff.mjs";
+import { computeDiff, renderReadout, checkDeadman, expectedCtr, silentPages, queryCoverageCaveat, rankPanelLines, slvGscLines } from "./seo-diff.mjs";
 
 function snap(overrides = {}) {
   return {
@@ -97,6 +97,47 @@ test("fixed panel readout exposes a stale weekly measurement", () => {
     ranks: [{ city: "Millcreek", keyword: "contractor", position: 4, measured: true, mapPackRank: null, aiOverviewPresent: false, aiOverviewCited: false }],
   })).join("\n");
   assert.match(output, /STALE 9d/);
+});
+
+test("SLV GSC demand joins exact city pages, strongest children, and retained roofing queries", () => {
+  const output = slvGscLines(snap({
+    ranks: [
+      { city: "Salt Lake City", keyword: "roof repair salt lake city", position: 25, measured: true },
+      { city: "Sandy", keyword: "roof repair sandy", position: 14, measured: true },
+    ],
+    gsc: {
+      available: true,
+      clicks28d: 1,
+      impressions28d: 10000,
+      truncated: true,
+      queries_seen: 100,
+      queries_stored: 4,
+      queries_stored_impressions: 2500,
+      top_pages: [
+        { page: "https://www.framerestorationutah.com/locations/sandy/", clicks: 0, impressions: 3521, position: 23.6 },
+        { page: "https://www.framerestorationutah.com/locations/sandy/storm-damage", clicks: 1, impressions: 900, position: 8.5 },
+      ],
+      top_queries: [
+        { query: "roof repair sandy ut", clicks: 0, impressions: 1041, position: 19.4 },
+        { query: "roofing sandy ut", clicks: 0, impressions: 908, position: 24.7 },
+        { query: "smoke damage restoration sandy ut", clicks: 0, impressions: 500, position: 30 },
+        { query: "best roofing companies in salt lake city", clicks: 0, impressions: 5, position: 47.2 },
+      ],
+    },
+  })).join("\n");
+  assert.match(output, /Salt Lake City: main page not retained/);
+  assert.match(output, /retained roofing-query floor 5 impr \/ 0 clicks across 1 row/);
+  assert.match(output, /Sandy: main page 3521 impr \/ 0 clicks \/ avg pos 23\.6/);
+  assert.match(output, /strongest child \/locations\/sandy\/storm-damage at 900 impr/);
+  assert.match(output, /retained roofing-query floor 1949 impr \/ 0 clicks across 2 rows/);
+  assert.doesNotMatch(output, /2449 impr/, "non-roof smoke-restoration demand must not be counted");
+  assert.match(output, /Coverage caveat: showing 4 of 100 queries \(25\.0% of impressions\)/);
+});
+
+test("SLV GSC demand says not measured instead of zero when GSC is unavailable", () => {
+  const output = slvGscLines(snap({ ranks: [{ city: "Millcreek" }] })).join("\n");
+  assert.match(output, /Not measured \(not_configured\)/);
+  assert.doesNotMatch(output, /0 impr/);
 });
 
 test("new error-severity issue URLs are flagged; unchanged ones are not", () => {
