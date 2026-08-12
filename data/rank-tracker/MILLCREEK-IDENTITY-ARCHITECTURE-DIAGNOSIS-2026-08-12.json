@@ -1,0 +1,247 @@
+{
+  "schemaVersion": 1,
+  "diagnosisId": "frame-utah-millcreek-identity-architecture-v1",
+  "market": "utah",
+  "city": "Millcreek",
+  "preparedAt": "2026-08-12T17:15:48Z",
+  "preparedFromCommit": "abb96cda25c47155f2484e96e432023eeeb47d55",
+  "status": "diagnosed-awaiting-owner-gated-integrity-and-identity-cleanup",
+  "publicMutationPerformed": false,
+  "identityEvidence": "verified-profile-saved-service-area",
+  "serviceAreaStatus": "saved-service-area-observed",
+  "question": "What is the safest next move for Millcreek when the intended city page already ranks in the top five and owns a Google AI Overview citation, but its public entity graph still points to the Heber profile?",
+  "decision": {
+    "currentCommercialCannibalization": "not-evidenced",
+    "primaryDiagnosis": "verified-salt-lake-valley-identity-drift-before-rank-optimization",
+    "confidence": "high",
+    "summary": "The August 12 fixed mobile panel selects the self-canonical Millcreek city page for all four commercial queries at positions 4, 4, 3, and 5. It also cites that page in the one Google AI Overview observed across the four queries. The exact Search Console request returns no rows for those four queries, so it cannot establish another ranking URL. The main page and its storm child both publish Heber CID 8458659884566588108 and Heber-oriented sameAs graphs even though the pinned owner-evidence contract requires the verified Salt Lake Valley CID 5689850818145735734 for Millcreek. Correct claim and identity integrity first, protect the existing organic and AIO footholds, then consider a separate title-only experiment only after a fresh post-cleanup baseline and observation window.",
+    "limits": [
+      "A targeted Search Console request with no returned row means unknown or withheld demand, not zero impressions and not proof that no URL is indexed.",
+      "Search Console is blended across devices and its window ends three days before the fixed mobile panel.",
+      "Aggregate storm-route visibility is separate from fixed commercial query-to-page attribution and must not be treated as cannibalization proof.",
+      "The fixed panel is one mobile Android location sample per query and must be repeated weekly before a ranking keep/revert decision.",
+      "The pinned remediation packet explicitly scopes the main Millcreek page, while the nested storm child carries the same Heber identity drift; the child requires explicit addition to the public cleanup scope before editing.",
+      "No current evidence authorizes a GBP, service-area, review, directory, outreach, or indexing mutation."
+    ]
+  },
+  "evidence": {
+    "fixedPanel": {
+      "file": "data/rank-tracker/panels/millcreek/2026-08-12.json",
+      "sha256": "0467c2d4b323706e5e6c90a97e0c1585385beaaa8401a4eece7753aa9476c1e8",
+      "observedAt": "2026-08-12T14:18:10.299Z",
+      "provider": "DataForSEO task queue",
+      "device": "mobile",
+      "os": "android",
+      "depth": 30,
+      "locationName": "Millcreek,Utah,United States",
+      "targetCid": "5689850818145735734",
+      "queries": [
+        "roofing contractor millcreek",
+        "roof repair millcreek",
+        "roof replacement millcreek",
+        "roofer millcreek"
+      ],
+      "organicRanks": [
+        4,
+        4,
+        3,
+        5
+      ],
+      "rankingUrl": "https://www.framerestorationutah.com/locations/millcreek",
+      "allQueriesSelectMainPage": true,
+      "exactCidMapMatches": 0,
+      "aiOverviewsPresent": 1,
+      "aiOverviewCitations": 1,
+      "citedQuery": "roof repair millcreek",
+      "citedUrl": "https://www.framerestorationutah.com/locations/millcreek"
+    },
+    "searchConsole": {
+      "file": "data/seo/snapshots/2026-08-12.json",
+      "sha256": "d26e17238e1e76ef203654cf1f9ce4d9c927bd4088560a55cb2b8f33ff282d14",
+      "window": {
+        "startDate": "2026-07-13",
+        "endDate": "2026-08-09"
+      },
+      "targetedCommercialQueriesRequested": 4,
+      "targetedCommercialRowsReturned": 0,
+      "aggregatePages": [
+        {
+          "page": "https://www.framerestorationutah.com/locations/millcreek/storm-damage",
+          "clicks": 0,
+          "impressions": 224,
+          "position": 11.2
+        },
+        {
+          "page": "https://www.framerestorationutah.com/locations/millcreek",
+          "clicks": 1,
+          "impressions": 218,
+          "position": 32
+        },
+        {
+          "page": "https://www.framerestorationutah.com/blog/millcreek/wind-damage-roof-repair-millcreek",
+          "clicks": 0,
+          "impressions": 66,
+          "position": 19
+        }
+      ]
+    },
+    "identity": {
+      "contract": "data/authority/SLV-CITY-PUBLIC-REMEDIATION-CONTRACT-2026-08-12.json",
+      "verifiedSaltLakeValleyCid": "5689850818145735734",
+      "heberCid": "8458659884566588108",
+      "requiredMainPage": "locations/millcreek.html",
+      "reviewedSaltLakeValleySameAs": [
+        "https://www.google.com/maps?cid=5689850818145735734",
+        "https://www.facebook.com/61572258054303",
+        "https://www.instagram.com/framerestorationutah",
+        "https://www.buildzoom.com/contractor/frame-restoration-utah-llc",
+        "https://reviews.birdeye.com/frame-restoration-utah-177732760787552",
+        "https://www.wikidata.org/wiki/Q140989115"
+      ],
+      "businessSource": {
+        "file": "data/route-factory/business.json",
+        "sha256": "2ca7338c9f4fe04fe36a08302399d15c2e289d27153b2298949ace8e1e5843e9",
+        "millcreekOverridePresent": false
+      },
+      "scopeGap": {
+        "file": "locations/millcreek/storm-damage.html",
+        "state": "same-heber-identity-drift-not-currently-in-pinned-five-page-packet",
+        "requiredDecision": "Explicitly add the nested storm child identity correction to the approved public cleanup scope before editing it."
+      }
+    },
+    "routes": [
+      {
+        "file": "locations/millcreek.html",
+        "sha256": "d3171172fcd5b796b12134fc91e1bd366952a3c83e13a160a3106262197b215d",
+        "role": "commercial-city-hub",
+        "title": "Premium Reroofing Millcreek UT | Frame Restoration Utah",
+        "h1": "Premium Reroofing in Millcreek",
+        "canonical": "https://www.framerestorationutah.com/locations/millcreek",
+        "inboundInternalLinks": 10,
+        "publishedHasMap": "https://www.google.com/maps?cid=8458659884566588108",
+        "identityState": "heber-drift-blocking",
+        "visibleTermCounts": {
+          "roofer": 0,
+          "roofing contractor": 1,
+          "roof repair": 2,
+          "roof replacement": 11,
+          "reroof": 6,
+          "storm damage": 3,
+          "wind damage": 2
+        }
+      },
+      {
+        "file": "locations/millcreek/storm-damage.html",
+        "sha256": "07499b70a44b42ef40837b2e7451c4661d513316acd491ceb13daffa0810eb0c",
+        "role": "storm-specific-child",
+        "title": "Millcreek Storm Damage Roof Repair | Frame Restoration Utah",
+        "h1": "Storm Damage Roof Repair in Millcreek",
+        "canonical": "https://www.framerestorationutah.com/locations/millcreek/storm-damage",
+        "inboundInternalLinks": 2,
+        "publishedHasMap": "https://www.google.com/maps?cid=8458659884566588108",
+        "identityState": "heber-drift-outside-current-packet-scope"
+      },
+      {
+        "file": "blog/millcreek/wind-damage-roof-repair-millcreek.html",
+        "sha256": "e1f78ced82544141eb4c13f69511bcd19305ba9d39bd360dddc770ec49aab30f",
+        "role": "informational-wind-damage-guide",
+        "title": "Millcreek Wind Damage Roof Repair | Frame Restoration Utah",
+        "h1": "Wind Damage Roof Repair in Millcreek, Utah: What to Do + What It Costs (2026)",
+        "canonical": "https://www.framerestorationutah.com/blog/millcreek/wind-damage-roof-repair-millcreek",
+        "inboundInternalLinks": 1,
+        "identityState": "no-primary-roofing-contractor-entity-node",
+        "risk": "protect storm-specific visibility; no targeted fixed-query row currently selects this guide"
+      }
+    ],
+    "integrityGate": {
+      "packet": "data/authority/SLV-CITY-PUBLIC-REMEDIATION-PACKET-2026-08-12.json",
+      "packetSha256": "b1616942e2e46f33a847d75a9fc75a084585983c91f444ade1ebd84d11b69333",
+      "mainPageBlockingFindingClasses": 10,
+      "mainPageProvisionalWarnings": 1,
+      "cleanupStatus": "awaiting-explicit-owner-approval"
+    }
+  },
+  "hypotheses": [
+    {
+      "priority": 1,
+      "id": "verified-entity-graph-drift",
+      "state": "confirmed",
+      "why": "The measurement target is Salt Lake Valley CID 5689850818145735734, while the Millcreek main and storm pages publish Heber CID 8458659884566588108 and Heber-oriented sameAs graphs. The owner-evidence contract explicitly requires the Salt Lake Valley identity for the main page."
+    },
+    {
+      "priority": 2,
+      "id": "maps-distance-prominence-and-relevance-gap",
+      "state": "measured-unresolved",
+      "why": "The exact Salt Lake Valley CID is absent from all four measured local results, including three queries with visible local packs. Competitor CIDs lead those packs. The site identity drift is correctable, but this diagnosis does not claim it is the only Maps cause."
+    },
+    {
+      "priority": 3,
+      "id": "commercial-title-mismatch",
+      "state": "plausible-later-test",
+      "why": "The intended page ranks 3-5 despite a premium-reroofing title, while leaders often use broader roofing-contractor or service-intent titles. Because Frame already owns top-five positions and an AIO citation, a title change should be isolated only after the mandatory cleanup is observed."
+    },
+    {
+      "priority": 4,
+      "id": "storm-child-cannibalization",
+      "state": "not-evidenced",
+      "why": "Every fixed commercial query selects the main page. Strong aggregate storm-page visibility does not establish commercial-query competition, and the exact GSC request returned no Millcreek rows."
+    }
+  ],
+  "nextControlledAction": {
+    "id": "millcreek-integrity-and-identity-cleanup-v1",
+    "status": "draft-only-do-not-apply-before-owner-and-release-gates",
+    "type": "required-public-integrity-correction-not-a-ranking-test",
+    "scope": [
+      "Apply the exact main-page claim cleanup and Salt Lake Valley identity correction in the pinned remediation packet.",
+      "Add the nested Millcreek storm child identity correction to the explicit owner-approved scope before changing that route.",
+      "Add a complete millcreek.html location override to data/route-factory/business.json using the reviewed Salt Lake Valley hasMap and sameAs set.",
+      "Do not change the title, H1, canonical, internal links, GBP, reviews, directories, outreach, or indexing in the same release."
+    ],
+    "prerequisites": [
+      "Receive explicit owner approval for the five-page integrity cleanup and the additional nested Millcreek storm-child identity correction.",
+      "Verify every pinned source hash still matches or regenerate the packet and diagnosis.",
+      "Apply the approved public scope in a clean exact-main worktree.",
+      "Pass claim, entity, integrity, public-SEO, source, immutable-preview five-viewport, and post-release production gates.",
+      "Capture a fresh six-city Google baseline and valid consumer-AI baseline after release; missing provider data remains unmeasured, never zero."
+    ],
+    "measurement": {
+      "cadence": "weekly",
+      "windowDays": 28,
+      "baselineOrganicRanks": [
+        4,
+        4,
+        3,
+        5
+      ],
+      "baselineMeanRank": 4,
+      "baselineExactCidMapsNumberOne": 0,
+      "baselineGoogleAioNamedCitationRate": "1/1 observed overview",
+      "decision": "The integrity and identity corrections are retained for factual consistency even if ranks fluctuate. Use the 28-day window to decide whether a separate title-only ranking experiment is justified, not whether to restore the wrong Heber identity.",
+      "guardrails": [
+        "The main Millcreek page remains the selected organic URL for all four fixed queries.",
+        "No fixed organic query falls below position 8 in either final weekly panel.",
+        "The existing roof-repair Google AI Overview citation is monitored; absence in a panel with no overview is not counted as a lost citation.",
+        "No material regression in storm-child Search Console clicks, impressions, or average position compared with the declared pre-cleanup window.",
+        "The exact reviewed Salt Lake Valley hasMap and sameAs set remains consistent across every explicitly approved Millcreek entity surface.",
+        "Consumer-AI named-citation rates are recorded per engine; invalid or missing credentials remain blocked/unmeasured."
+      ]
+    }
+  },
+  "laterExperiment": {
+    "id": "millcreek-commercial-title-alignment-v1",
+    "status": "candidate-only-after-cleanup-observation",
+    "page": "locations/millcreek.html",
+    "singleVariable": "html-title",
+    "currentValue": "Premium Reroofing Millcreek UT | Frame Restoration Utah",
+    "candidateValue": "Millcreek Roofing Contractor | Frame Restoration Utah",
+    "activationRule": "Draft a separate owner-gated experiment only if the final two post-cleanup weekly panels remain outside position 1 for at least three fixed queries and all cleanup guardrails remain green.",
+    "prohibitedNow": true
+  },
+  "prohibited": [
+    "Publishing either action without the listed owner and release gates.",
+    "Redirecting, canonicalizing, noindexing, or deleting the Millcreek city page, storm child, or wind guide on current evidence.",
+    "Bundling a title or broad intent rewrite into the mandatory integrity and identity correction.",
+    "Changing GBP, service areas, directories, reviews, outreach, indexing, ads, DNS, or public profiles from this diagnosis.",
+    "Treating missing Search Console rows, absent consumer-AI data, or a missing local pack as zero."
+  ]
+}
