@@ -1,0 +1,74 @@
+{
+  "schemaVersion": 1,
+  "evidenceId": "frame-utah-slv-diagnosis-bundle-release-v1",
+  "market": "utah-salt-lake-valley",
+  "status": "LANDED_MAIN_CI_AND_PRODUCTION_DEPLOYMENTS_VERIFIED",
+  "observedAt": "2026-08-12T22:57:10Z",
+  "repository": "Rconman99/frame-restoration-utah",
+  "pullRequest": {
+    "number": 247,
+    "url": "https://github.com/Rconman99/frame-restoration-utah/pull/247",
+    "headSha": "6a7b2f62fab1038de5886144fe6bbd58c8323b86",
+    "mergeSha": "f7d38a5a8516ea378c3fd6a91c0ff3ef8994af6a",
+    "mergedAt": "2026-08-12T21:26:02Z",
+    "checks": {
+      "total": 28,
+      "successful": 27,
+      "skippedMeasurement": 1,
+      "blocking": 21,
+      "blockingSuccessful": 21
+    }
+  },
+  "defaultBranch": {
+    "branch": "main",
+    "commit": "f7d38a5a8516ea378c3fd6a91c0ff3ef8994af6a",
+    "workflows": [
+      {
+        "name": "SLV city goal program",
+        "runId": 31642502622,
+        "url": "https://github.com/Rconman99/frame-restoration-utah/actions/runs/31642502622",
+        "conclusion": "success"
+      },
+      {
+        "name": "Compliance Gate",
+        "runId": 31642502624,
+        "url": "https://github.com/Rconman99/frame-restoration-utah/actions/runs/31642502624",
+        "conclusion": "success"
+      },
+      {
+        "name": "Salt Lake Valley city integrity debt",
+        "runId": 31642502626,
+        "url": "https://github.com/Rconman99/frame-restoration-utah/actions/runs/31642502626",
+        "conclusion": "success"
+      },
+      {
+        "name": "Salt Lake Valley exact-CID review baseline",
+        "runId": 31642628991,
+        "url": "https://github.com/Rconman99/frame-restoration-utah/actions/runs/31642628991",
+        "conclusion": "success"
+      }
+    ],
+    "deployments": [
+      {
+        "context": "Vercel – frame-restoration-utah",
+        "state": "success",
+        "targetUrl": "https://vercel.com/frame-restoration/frame-restoration-utah/HVbnpj8MzrotwP82M7VFh69dYeoL",
+        "updatedAt": "2026-08-12T21:26:38Z"
+      },
+      {
+        "context": "Vercel – frameroofingutah",
+        "state": "success",
+        "targetUrl": "https://vercel.com/frame-restoration/frameroofingutah/2Z9xGz8zA3qo2xYddgTpm1m6r8GV",
+        "updatedAt": "2026-08-12T21:26:22Z"
+      }
+    ]
+  },
+  "source": {
+    "method": "read-only-github-api-and-cli",
+    "credentialValuesStored": false,
+    "publicMutationPerformed": false
+  },
+  "decision": "The 18-city diagnosis bundle is landed and release-verified. Do not retain or recreate the expired duplicate-Vercel-rate-limit wait state; continue the evidence, owner-approval, and measurement gates that remain independently open.",
+  "publicMutationPerformed": false,
+  "gbpMutationPerformed": false
+}
