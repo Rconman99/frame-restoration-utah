@@ -11,6 +11,7 @@ const portfolio = read("data/rank-tracker/SLV-18-CITY-GOAL-PORTFOLIO-2026-08-12.
 const core = read(portfolio.sources.coreGoalProgram);
 const coreRegistry = read(portfolio.sources.coreGoogleRegistry);
 const expansionRegistry = read(portfolio.sources.expansionGoogleRegistry);
+const expansionIntegrity = read(portfolio.sources.expansionIntegrityAudit);
 
 assert.equal(portfolio.schemaVersion, 1);
 assert.equal(portfolio.status, "active-not-achieved");
@@ -79,6 +80,11 @@ assert.deepEqual(score, {
 });
 assert.equal(portfolio.cohorts.expansion.estimatedOneTimeBaselineCostUsd, 0.1152);
 assert.equal(portfolio.gates.expansionAdmission, "manual-baseline-plus-city-integrity-and-service-area-evidence-before-recurring-spend");
+assert.equal(expansionIntegrity.summary.checkedPages, 12);
+assert.equal(expansionIntegrity.summary.blockingFindingClasses, 73);
+assert.equal(expansionIntegrity.summary.provisionalWarningClasses, 12);
+assert.equal(expansionIntegrity.summary.pagesWithHeberKeystone, 12);
+assert.match(portfolio.gates.expansionIntegrity, /^73-blocking-finding-classes/);
 assert.ok(portfolio.prohibited.includes("treating an unmeasured expansion city as zero"));
 assert.ok(portfolio.prohibited.some((rule) => rule.includes("18-city portfolio complete")));
 

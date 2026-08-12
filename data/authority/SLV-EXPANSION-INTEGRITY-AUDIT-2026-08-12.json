@@ -1,0 +1,738 @@
+{
+  "schemaVersion": 1,
+  "auditId": "frame-utah-slv-expansion-integrity-v1",
+  "preparedAt": "2026-08-12T17:15:48Z",
+  "preparedFromCommit": "abb96cda25c47155f2484e96e432023eeeb47d55",
+  "publicMutationPerformed": false,
+  "status": "measurement-only-integrity-cleanup-required",
+  "scope": {
+    "registry": "data/rank-tracker/expansion-panels.json",
+    "cities": 12,
+    "pages": [
+      "locations/bluffdale.html",
+      "locations/herriman.html",
+      "locations/kearns.html",
+      "locations/magna.html",
+      "locations/midvale.html",
+      "locations/murray.html",
+      "locations/riverton.html",
+      "locations/south-jordan.html",
+      "locations/south-salt-lake.html",
+      "locations/taylorsville.html",
+      "locations/west-jordan.html",
+      "locations/west-valley-city.html"
+    ],
+    "serviceAreaEvidence": "pending-for-all-cities"
+  },
+  "summary": {
+    "checkedPages": 12,
+    "blockingFindingClasses": 73,
+    "blockingOccurrences": 320,
+    "provisionalWarningClasses": 12,
+    "provisionalOccurrences": 14,
+    "pagesWithSaltLakeValleyIdentity": 0,
+    "pagesWithHeberKeystone": 12
+  },
+  "rules": [
+    {
+      "id": "pricing-ranges",
+      "guidance": "Replace unsupported dollar figures with scope-dependent factors and a written-estimate invitation."
+    },
+    {
+      "id": "exact-response-or-availability",
+      "guidance": "Remove exact availability, response-window, or travel-time promises until an operating policy is registered."
+    },
+    {
+      "id": "universal-permit-handling",
+      "guidance": "Use municipality guidance and confirm responsibility in the written scope; do not promise universal handling."
+    },
+    {
+      "id": "unverified-insurance-credentials",
+      "guidance": "Keep the verified license only until current insurance evidence is registered."
+    },
+    {
+      "id": "universal-project-duration",
+      "guidance": "Replace a universal duration with scoped timing factors."
+    },
+    {
+      "id": "unsourced-roof-life-loss",
+      "guidance": "Describe observable damage without an unregistered years-of-life-loss number."
+    },
+    {
+      "id": "unverified-city-project-attribution",
+      "guidance": "Require a city-specific public review or private project record before attribution."
+    },
+    {
+      "id": "unverified-city-review-attribution",
+      "guidance": "Require the public review or private project record to establish the city."
+    }
+  ],
+  "identityRule": "A pending expansion city is not failed merely for retaining the current Heber keystone; it is blocked from Salt Lake Valley identity adoption until current service-area evidence and explicit public approval exist.",
+  "pages": [
+    {
+      "city": "Bluffdale",
+      "slug": "bluffdale",
+      "file": "locations/bluffdale.html",
+      "sha256": "1fe440cc5a7c9b8164cc4c961932361946f70bd05d7bc2ff96fab34fcdd43668",
+      "title": "Premium Reroofing Bluffdale UT | Frame Restoration Utah",
+      "h1": "Premium Reroofing in Bluffdale",
+      "canonical": "https://www.framerestorationutah.com/locations/bluffdale",
+      "serviceAreaStatus": "pending-current-profile-service-area-verification",
+      "identity": {
+        "state": "current-heber-keystone-pending-service-area-evidence",
+        "publishedHasMap": "https://www.google.com/maps?cid=8458659884566588108",
+        "publishedSameAsCount": 14,
+        "decision": "Measurement only. Do not change the entity graph until current profile service-area evidence and explicit public scope are registered."
+      },
+      "findings": [
+        {
+          "id": "pricing-ranges",
+          "count": 5,
+          "guidance": "Replace unsupported dollar figures with scope-dependent factors and a written-estimate invitation."
+        },
+        {
+          "id": "exact-response-or-availability",
+          "count": 6,
+          "guidance": "Remove exact availability, response-window, or travel-time promises until an operating policy is registered."
+        },
+        {
+          "id": "universal-permit-handling",
+          "count": 2,
+          "guidance": "Use municipality guidance and confirm responsibility in the written scope; do not promise universal handling."
+        },
+        {
+          "id": "unverified-insurance-credentials",
+          "count": 9,
+          "guidance": "Keep the verified license only until current insurance evidence is registered."
+        },
+        {
+          "id": "universal-project-duration",
+          "count": 2,
+          "guidance": "Replace a universal duration with scoped timing factors."
+        },
+        {
+          "id": "unsourced-roof-life-loss",
+          "count": 2,
+          "guidance": "Describe observable damage without an unregistered years-of-life-loss number."
+        },
+        {
+          "id": "unverified-city-review-attribution",
+          "count": 1,
+          "guidance": "Remove or neutralize the review until the public review or private project record establishes the city."
+        }
+      ],
+      "warnings": [
+        {
+          "id": "provisional-10-year-workmanship-warranty",
+          "count": 1,
+          "guidance": "Preserve but do not expand until the current warranty instrument is registered."
+        }
+      ]
+    },
+    {
+      "city": "Herriman",
+      "slug": "herriman",
+      "file": "locations/herriman.html",
+      "sha256": "36b010060e1b32be882756aa3598d79ecf0a4a36f55ef4317b8366cbaf64670f",
+      "title": "Premium Reroofing Herriman UT | Frame Restoration Utah",
+      "h1": "Premium Reroofing in Herriman",
+      "canonical": "https://www.framerestorationutah.com/locations/herriman",
+      "serviceAreaStatus": "pending-current-profile-service-area-verification",
+      "identity": {
+        "state": "current-heber-keystone-pending-service-area-evidence",
+        "publishedHasMap": "https://www.google.com/maps?cid=8458659884566588108",
+        "publishedSameAsCount": 14,
+        "decision": "Measurement only. Do not change the entity graph until current profile service-area evidence and explicit public scope are registered."
+      },
+      "findings": [
+        {
+          "id": "pricing-ranges",
+          "count": 5,
+          "guidance": "Replace unsupported dollar figures with scope-dependent factors and a written-estimate invitation."
+        },
+        {
+          "id": "exact-response-or-availability",
+          "count": 6,
+          "guidance": "Remove exact availability, response-window, or travel-time promises until an operating policy is registered."
+        },
+        {
+          "id": "universal-permit-handling",
+          "count": 2,
+          "guidance": "Use municipality guidance and confirm responsibility in the written scope; do not promise universal handling."
+        },
+        {
+          "id": "unverified-insurance-credentials",
+          "count": 8,
+          "guidance": "Keep the verified license only until current insurance evidence is registered."
+        },
+        {
+          "id": "universal-project-duration",
+          "count": 4,
+          "guidance": "Replace a universal duration with scoped timing factors."
+        },
+        {
+          "id": "unsourced-roof-life-loss",
+          "count": 2,
+          "guidance": "Describe observable damage without an unregistered years-of-life-loss number."
+        }
+      ],
+      "warnings": [
+        {
+          "id": "provisional-10-year-workmanship-warranty",
+          "count": 1,
+          "guidance": "Preserve but do not expand until the current warranty instrument is registered."
+        }
+      ]
+    },
+    {
+      "city": "Kearns",
+      "slug": "kearns",
+      "file": "locations/kearns.html",
+      "sha256": "a33434df2765fd63b8b948622ee2c92910385e88151c58f82e8396a0916d6905",
+      "title": "Premium Reroofing Kearns UT | Frame Restoration Utah",
+      "h1": "Premium Reroofing in Kearns",
+      "canonical": "https://www.framerestorationutah.com/locations/kearns",
+      "serviceAreaStatus": "pending-current-profile-service-area-verification",
+      "identity": {
+        "state": "current-heber-keystone-pending-service-area-evidence",
+        "publishedHasMap": "https://www.google.com/maps?cid=8458659884566588108",
+        "publishedSameAsCount": 14,
+        "decision": "Measurement only. Do not change the entity graph until current profile service-area evidence and explicit public scope are registered."
+      },
+      "findings": [
+        {
+          "id": "pricing-ranges",
+          "count": 5,
+          "guidance": "Replace unsupported dollar figures with scope-dependent factors and a written-estimate invitation."
+        },
+        {
+          "id": "exact-response-or-availability",
+          "count": 6,
+          "guidance": "Remove exact availability, response-window, or travel-time promises until an operating policy is registered."
+        },
+        {
+          "id": "universal-permit-handling",
+          "count": 4,
+          "guidance": "Use municipality guidance and confirm responsibility in the written scope; do not promise universal handling."
+        },
+        {
+          "id": "unverified-insurance-credentials",
+          "count": 12,
+          "guidance": "Keep the verified license only until current insurance evidence is registered."
+        },
+        {
+          "id": "universal-project-duration",
+          "count": 2,
+          "guidance": "Replace a universal duration with scoped timing factors."
+        },
+        {
+          "id": "unsourced-roof-life-loss",
+          "count": 2,
+          "guidance": "Describe observable damage without an unregistered years-of-life-loss number."
+        }
+      ],
+      "warnings": [
+        {
+          "id": "provisional-10-year-workmanship-warranty",
+          "count": 1,
+          "guidance": "Preserve but do not expand until the current warranty instrument is registered."
+        }
+      ]
+    },
+    {
+      "city": "Magna",
+      "slug": "magna",
+      "file": "locations/magna.html",
+      "sha256": "37debc6a80634ab438ad6d61f73f3369f91d4c09cfbb3673133b99832a8d3d47",
+      "title": "Premium Reroofing Magna UT | Frame Restoration Utah",
+      "h1": "Premium Reroofing in Magna",
+      "canonical": "https://www.framerestorationutah.com/locations/magna",
+      "serviceAreaStatus": "pending-current-profile-service-area-verification",
+      "identity": {
+        "state": "current-heber-keystone-pending-service-area-evidence",
+        "publishedHasMap": "https://www.google.com/maps?cid=8458659884566588108",
+        "publishedSameAsCount": 14,
+        "decision": "Measurement only. Do not change the entity graph until current profile service-area evidence and explicit public scope are registered."
+      },
+      "findings": [
+        {
+          "id": "pricing-ranges",
+          "count": 5,
+          "guidance": "Replace unsupported dollar figures with scope-dependent factors and a written-estimate invitation."
+        },
+        {
+          "id": "exact-response-or-availability",
+          "count": 6,
+          "guidance": "Remove exact availability, response-window, or travel-time promises until an operating policy is registered."
+        },
+        {
+          "id": "universal-permit-handling",
+          "count": 2,
+          "guidance": "Use municipality guidance and confirm responsibility in the written scope; do not promise universal handling."
+        },
+        {
+          "id": "unverified-insurance-credentials",
+          "count": 8,
+          "guidance": "Keep the verified license only until current insurance evidence is registered."
+        },
+        {
+          "id": "universal-project-duration",
+          "count": 2,
+          "guidance": "Replace a universal duration with scoped timing factors."
+        },
+        {
+          "id": "unsourced-roof-life-loss",
+          "count": 2,
+          "guidance": "Describe observable damage without an unregistered years-of-life-loss number."
+        }
+      ],
+      "warnings": [
+        {
+          "id": "provisional-10-year-workmanship-warranty",
+          "count": 1,
+          "guidance": "Preserve but do not expand until the current warranty instrument is registered."
+        }
+      ]
+    },
+    {
+      "city": "Midvale",
+      "slug": "midvale",
+      "file": "locations/midvale.html",
+      "sha256": "fd7099aa201107a8f10f37b7b23791a7dea6b636ccdfa9e1371408b4cfb3377c",
+      "title": "Premium Reroofing Midvale UT | Frame Restoration Utah",
+      "h1": "Premium Reroofing in Midvale",
+      "canonical": "https://www.framerestorationutah.com/locations/midvale",
+      "serviceAreaStatus": "pending-current-profile-service-area-verification",
+      "identity": {
+        "state": "current-heber-keystone-pending-service-area-evidence",
+        "publishedHasMap": "https://www.google.com/maps?cid=8458659884566588108",
+        "publishedSameAsCount": 14,
+        "decision": "Measurement only. Do not change the entity graph until current profile service-area evidence and explicit public scope are registered."
+      },
+      "findings": [
+        {
+          "id": "pricing-ranges",
+          "count": 5,
+          "guidance": "Replace unsupported dollar figures with scope-dependent factors and a written-estimate invitation."
+        },
+        {
+          "id": "exact-response-or-availability",
+          "count": 6,
+          "guidance": "Remove exact availability, response-window, or travel-time promises until an operating policy is registered."
+        },
+        {
+          "id": "universal-permit-handling",
+          "count": 2,
+          "guidance": "Use municipality guidance and confirm responsibility in the written scope; do not promise universal handling."
+        },
+        {
+          "id": "unverified-insurance-credentials",
+          "count": 8,
+          "guidance": "Keep the verified license only until current insurance evidence is registered."
+        },
+        {
+          "id": "universal-project-duration",
+          "count": 2,
+          "guidance": "Replace a universal duration with scoped timing factors."
+        }
+      ],
+      "warnings": [
+        {
+          "id": "provisional-10-year-workmanship-warranty",
+          "count": 1,
+          "guidance": "Preserve but do not expand until the current warranty instrument is registered."
+        }
+      ]
+    },
+    {
+      "city": "Murray",
+      "slug": "murray",
+      "file": "locations/murray.html",
+      "sha256": "3050e9d9dae8fcf4f98da2a7723f38e081110f24edbe93c2c72ac709f6fc45f4",
+      "title": "Premium Reroofing Murray UT | Frame Restoration Utah",
+      "h1": "Premium Reroofing in Murray",
+      "canonical": "https://www.framerestorationutah.com/locations/murray",
+      "serviceAreaStatus": "pending-current-profile-service-area-verification",
+      "identity": {
+        "state": "current-heber-keystone-pending-service-area-evidence",
+        "publishedHasMap": "https://www.google.com/maps?cid=8458659884566588108",
+        "publishedSameAsCount": 14,
+        "decision": "Measurement only. Do not change the entity graph until current profile service-area evidence and explicit public scope are registered."
+      },
+      "findings": [
+        {
+          "id": "pricing-ranges",
+          "count": 5,
+          "guidance": "Replace unsupported dollar figures with scope-dependent factors and a written-estimate invitation."
+        },
+        {
+          "id": "exact-response-or-availability",
+          "count": 4,
+          "guidance": "Remove exact availability, response-window, or travel-time promises until an operating policy is registered."
+        },
+        {
+          "id": "universal-permit-handling",
+          "count": 4,
+          "guidance": "Use municipality guidance and confirm responsibility in the written scope; do not promise universal handling."
+        },
+        {
+          "id": "unverified-insurance-credentials",
+          "count": 8,
+          "guidance": "Keep the verified license only until current insurance evidence is registered."
+        },
+        {
+          "id": "universal-project-duration",
+          "count": 2,
+          "guidance": "Replace a universal duration with scoped timing factors."
+        },
+        {
+          "id": "unsourced-roof-life-loss",
+          "count": 2,
+          "guidance": "Describe observable damage without an unregistered years-of-life-loss number."
+        }
+      ],
+      "warnings": [
+        {
+          "id": "provisional-10-year-workmanship-warranty",
+          "count": 1,
+          "guidance": "Preserve but do not expand until the current warranty instrument is registered."
+        }
+      ]
+    },
+    {
+      "city": "Riverton",
+      "slug": "riverton",
+      "file": "locations/riverton.html",
+      "sha256": "db3989d8a1ebfe33c61a75ada8feff50d31995b6c58c2f9ed405487633e42549",
+      "title": "Premium Reroofing Riverton UT | Frame Restoration Utah",
+      "h1": "Premium Reroofing in Riverton",
+      "canonical": "https://www.framerestorationutah.com/locations/riverton",
+      "serviceAreaStatus": "pending-current-profile-service-area-verification",
+      "identity": {
+        "state": "current-heber-keystone-pending-service-area-evidence",
+        "publishedHasMap": "https://www.google.com/maps?cid=8458659884566588108",
+        "publishedSameAsCount": 14,
+        "decision": "Measurement only. Do not change the entity graph until current profile service-area evidence and explicit public scope are registered."
+      },
+      "findings": [
+        {
+          "id": "pricing-ranges",
+          "count": 5,
+          "guidance": "Replace unsupported dollar figures with scope-dependent factors and a written-estimate invitation."
+        },
+        {
+          "id": "exact-response-or-availability",
+          "count": 6,
+          "guidance": "Remove exact availability, response-window, or travel-time promises until an operating policy is registered."
+        },
+        {
+          "id": "universal-permit-handling",
+          "count": 2,
+          "guidance": "Use municipality guidance and confirm responsibility in the written scope; do not promise universal handling."
+        },
+        {
+          "id": "unverified-insurance-credentials",
+          "count": 8,
+          "guidance": "Keep the verified license only until current insurance evidence is registered."
+        },
+        {
+          "id": "universal-project-duration",
+          "count": 2,
+          "guidance": "Replace a universal duration with scoped timing factors."
+        },
+        {
+          "id": "unsourced-roof-life-loss",
+          "count": 2,
+          "guidance": "Describe observable damage without an unregistered years-of-life-loss number."
+        }
+      ],
+      "warnings": [
+        {
+          "id": "provisional-10-year-workmanship-warranty",
+          "count": 1,
+          "guidance": "Preserve but do not expand until the current warranty instrument is registered."
+        }
+      ]
+    },
+    {
+      "city": "South Jordan",
+      "slug": "south-jordan",
+      "file": "locations/south-jordan.html",
+      "sha256": "1d03e4a6779ba8d2dc2601b9a3bf1d879a98adee4ca85d28c70c683be414370f",
+      "title": "Premium Reroofing South Jordan UT | Frame Restoration Utah",
+      "h1": "Premium Reroofing in South Jordan",
+      "canonical": "https://www.framerestorationutah.com/locations/south-jordan",
+      "serviceAreaStatus": "pending-current-profile-service-area-verification",
+      "identity": {
+        "state": "current-heber-keystone-pending-service-area-evidence",
+        "publishedHasMap": "https://www.google.com/maps?cid=8458659884566588108",
+        "publishedSameAsCount": 14,
+        "decision": "Measurement only. Do not change the entity graph until current profile service-area evidence and explicit public scope are registered."
+      },
+      "findings": [
+        {
+          "id": "pricing-ranges",
+          "count": 5,
+          "guidance": "Replace unsupported dollar figures with scope-dependent factors and a written-estimate invitation."
+        },
+        {
+          "id": "exact-response-or-availability",
+          "count": 6,
+          "guidance": "Remove exact availability, response-window, or travel-time promises until an operating policy is registered."
+        },
+        {
+          "id": "unverified-insurance-credentials",
+          "count": 9,
+          "guidance": "Keep the verified license only until current insurance evidence is registered."
+        },
+        {
+          "id": "universal-project-duration",
+          "count": 2,
+          "guidance": "Replace a universal duration with scoped timing factors."
+        },
+        {
+          "id": "unsourced-roof-life-loss",
+          "count": 2,
+          "guidance": "Describe observable damage without an unregistered years-of-life-loss number."
+        },
+        {
+          "id": "unverified-city-project-attribution",
+          "count": 4,
+          "guidance": "Use neutral asset text until a city-specific project record establishes the location."
+        },
+        {
+          "id": "unverified-city-review-attribution",
+          "count": 1,
+          "guidance": "Remove or neutralize the review until the public review or private project record establishes the city."
+        }
+      ],
+      "warnings": [
+        {
+          "id": "provisional-10-year-workmanship-warranty",
+          "count": 1,
+          "guidance": "Preserve but do not expand until the current warranty instrument is registered."
+        }
+      ]
+    },
+    {
+      "city": "South Salt Lake",
+      "slug": "south-salt-lake",
+      "file": "locations/south-salt-lake.html",
+      "sha256": "0fdb0d1bb5eac270f298be2474de58e4110ca8ba34f2247e84b66b22bf4ef22a",
+      "title": "Premium Reroofing South Salt Lake UT | Frame Restoration Utah",
+      "h1": "Premium Reroofing in South Salt Lake",
+      "canonical": "https://www.framerestorationutah.com/locations/south-salt-lake",
+      "serviceAreaStatus": "pending-current-profile-service-area-verification",
+      "identity": {
+        "state": "current-heber-keystone-pending-service-area-evidence",
+        "publishedHasMap": "https://www.google.com/maps?cid=8458659884566588108",
+        "publishedSameAsCount": 14,
+        "decision": "Measurement only. Do not change the entity graph until current profile service-area evidence and explicit public scope are registered."
+      },
+      "findings": [
+        {
+          "id": "pricing-ranges",
+          "count": 5,
+          "guidance": "Replace unsupported dollar figures with scope-dependent factors and a written-estimate invitation."
+        },
+        {
+          "id": "exact-response-or-availability",
+          "count": 6,
+          "guidance": "Remove exact availability, response-window, or travel-time promises until an operating policy is registered."
+        },
+        {
+          "id": "universal-permit-handling",
+          "count": 4,
+          "guidance": "Use municipality guidance and confirm responsibility in the written scope; do not promise universal handling."
+        },
+        {
+          "id": "unverified-insurance-credentials",
+          "count": 12,
+          "guidance": "Keep the verified license only until current insurance evidence is registered."
+        },
+        {
+          "id": "universal-project-duration",
+          "count": 2,
+          "guidance": "Replace a universal duration with scoped timing factors."
+        },
+        {
+          "id": "unsourced-roof-life-loss",
+          "count": 2,
+          "guidance": "Describe observable damage without an unregistered years-of-life-loss number."
+        }
+      ],
+      "warnings": [
+        {
+          "id": "provisional-10-year-workmanship-warranty",
+          "count": 1,
+          "guidance": "Preserve but do not expand until the current warranty instrument is registered."
+        }
+      ]
+    },
+    {
+      "city": "Taylorsville",
+      "slug": "taylorsville",
+      "file": "locations/taylorsville.html",
+      "sha256": "f8c64515c34c43609f66a3178c98cdb682149f6c0be2028130ea2e45706a841f",
+      "title": "Premium Reroofing Taylorsville UT | Frame Restoration Utah",
+      "h1": "Premium Reroofing in Taylorsville",
+      "canonical": "https://www.framerestorationutah.com/locations/taylorsville",
+      "serviceAreaStatus": "pending-current-profile-service-area-verification",
+      "identity": {
+        "state": "current-heber-keystone-pending-service-area-evidence",
+        "publishedHasMap": "https://www.google.com/maps?cid=8458659884566588108",
+        "publishedSameAsCount": 14,
+        "decision": "Measurement only. Do not change the entity graph until current profile service-area evidence and explicit public scope are registered."
+      },
+      "findings": [
+        {
+          "id": "pricing-ranges",
+          "count": 5,
+          "guidance": "Replace unsupported dollar figures with scope-dependent factors and a written-estimate invitation."
+        },
+        {
+          "id": "exact-response-or-availability",
+          "count": 6,
+          "guidance": "Remove exact availability, response-window, or travel-time promises until an operating policy is registered."
+        },
+        {
+          "id": "universal-permit-handling",
+          "count": 2,
+          "guidance": "Use municipality guidance and confirm responsibility in the written scope; do not promise universal handling."
+        },
+        {
+          "id": "unverified-insurance-credentials",
+          "count": 8,
+          "guidance": "Keep the verified license only until current insurance evidence is registered."
+        },
+        {
+          "id": "universal-project-duration",
+          "count": 2,
+          "guidance": "Replace a universal duration with scoped timing factors."
+        },
+        {
+          "id": "unsourced-roof-life-loss",
+          "count": 2,
+          "guidance": "Describe observable damage without an unregistered years-of-life-loss number."
+        }
+      ],
+      "warnings": [
+        {
+          "id": "provisional-10-year-workmanship-warranty",
+          "count": 1,
+          "guidance": "Preserve but do not expand until the current warranty instrument is registered."
+        }
+      ]
+    },
+    {
+      "city": "West Jordan",
+      "slug": "west-jordan",
+      "file": "locations/west-jordan.html",
+      "sha256": "d68f764d7adea69b6c4384bbd46a4d85710bfa1961ca55bd0645e6d936a1e750",
+      "title": "Premium Reroofing West Jordan UT | Frame Restoration Utah",
+      "h1": "Premium Reroofing in West Jordan",
+      "canonical": "https://www.framerestorationutah.com/locations/west-jordan",
+      "serviceAreaStatus": "pending-current-profile-service-area-verification",
+      "identity": {
+        "state": "current-heber-keystone-pending-service-area-evidence",
+        "publishedHasMap": "https://www.google.com/maps?cid=8458659884566588108",
+        "publishedSameAsCount": 14,
+        "decision": "Measurement only. Do not change the entity graph until current profile service-area evidence and explicit public scope are registered."
+      },
+      "findings": [
+        {
+          "id": "pricing-ranges",
+          "count": 5,
+          "guidance": "Replace unsupported dollar figures with scope-dependent factors and a written-estimate invitation."
+        },
+        {
+          "id": "exact-response-or-availability",
+          "count": 6,
+          "guidance": "Remove exact availability, response-window, or travel-time promises until an operating policy is registered."
+        },
+        {
+          "id": "universal-permit-handling",
+          "count": 2,
+          "guidance": "Use municipality guidance and confirm responsibility in the written scope; do not promise universal handling."
+        },
+        {
+          "id": "unverified-insurance-credentials",
+          "count": 8,
+          "guidance": "Keep the verified license only until current insurance evidence is registered."
+        },
+        {
+          "id": "universal-project-duration",
+          "count": 4,
+          "guidance": "Replace a universal duration with scoped timing factors."
+        },
+        {
+          "id": "unsourced-roof-life-loss",
+          "count": 2,
+          "guidance": "Describe observable damage without an unregistered years-of-life-loss number."
+        }
+      ],
+      "warnings": [
+        {
+          "id": "provisional-10-year-workmanship-warranty",
+          "count": 2,
+          "guidance": "Preserve but do not expand until the current warranty instrument is registered."
+        }
+      ]
+    },
+    {
+      "city": "West Valley City",
+      "slug": "west-valley-city",
+      "file": "locations/west-valley-city.html",
+      "sha256": "085c533f23c16fcb3ced6f7f326d1ae060c3f1f0c88dcf0a8eff9ec3607c496d",
+      "title": "Premium Reroofing West Valley City UT | Frame Restoration Utah",
+      "h1": "Premium Reroofing in West Valley City",
+      "canonical": "https://www.framerestorationutah.com/locations/west-valley-city",
+      "serviceAreaStatus": "pending-current-profile-service-area-verification",
+      "identity": {
+        "state": "current-heber-keystone-pending-service-area-evidence",
+        "publishedHasMap": "https://www.google.com/maps?cid=8458659884566588108",
+        "publishedSameAsCount": 14,
+        "decision": "Measurement only. Do not change the entity graph until current profile service-area evidence and explicit public scope are registered."
+      },
+      "findings": [
+        {
+          "id": "pricing-ranges",
+          "count": 5,
+          "guidance": "Replace unsupported dollar figures with scope-dependent factors and a written-estimate invitation."
+        },
+        {
+          "id": "exact-response-or-availability",
+          "count": 6,
+          "guidance": "Remove exact availability, response-window, or travel-time promises until an operating policy is registered."
+        },
+        {
+          "id": "universal-permit-handling",
+          "count": 2,
+          "guidance": "Use municipality guidance and confirm responsibility in the written scope; do not promise universal handling."
+        },
+        {
+          "id": "unverified-insurance-credentials",
+          "count": 8,
+          "guidance": "Keep the verified license only until current insurance evidence is registered."
+        },
+        {
+          "id": "universal-project-duration",
+          "count": 2,
+          "guidance": "Replace a universal duration with scoped timing factors."
+        },
+        {
+          "id": "unsourced-roof-life-loss",
+          "count": 2,
+          "guidance": "Describe observable damage without an unregistered years-of-life-loss number."
+        }
+      ],
+      "warnings": [
+        {
+          "id": "provisional-10-year-workmanship-warranty",
+          "count": 2,
+          "guidance": "Preserve but do not expand until the current warranty instrument is registered."
+        }
+      ]
+    }
+  ]
+}

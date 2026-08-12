@@ -29,6 +29,9 @@ jobs:
       - name: Validate the 12-city expansion contract without provider spend
         run: npm run audit:slv-expansion-panels
 
+      - name: Validate the pinned 12-city integrity and entity audit
+        run: npm run audit:slv-expansion-integrity
+
       - name: Dry-run the complete 48-query matrix without provider spend
         run: node scripts/dataforseo-rank-tracker.mjs --registry data/rank-tracker/expansion-panels.json --dry-run
 
