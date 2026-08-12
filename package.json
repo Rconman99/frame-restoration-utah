@@ -35,6 +35,7 @@
     "audit:cottonwood-heights-architecture": "node scripts/validate-cottonwood-heights-architecture-diagnosis.mjs",
     "audit:millcreek-identity-architecture": "node scripts/validate-millcreek-identity-architecture-diagnosis.mjs",
     "audit:slv-city-architecture": "npm run audit:draper-architecture && npm run audit:holladay-architecture && npm run audit:sandy-architecture && npm run audit:cottonwood-heights-architecture && npm run audit:millcreek-identity-architecture",
+    "audit:slv-expansion-panels": "node scripts/validate-slv-expansion-panels.mjs && node scripts/dataforseo-rank-tracker.mjs --registry data/rank-tracker/expansion-panels.json --dry-run",
     "sync:slv-city-goals": "node scripts/sync-slv-city-goal-program.mjs --write",
     "sync:slv-public-remediation-packet": "node scripts/sync-slv-public-remediation-packet.mjs --write",
     "audit:shared-assets": "node scripts/sync-shared-asset-versions.mjs --check",
