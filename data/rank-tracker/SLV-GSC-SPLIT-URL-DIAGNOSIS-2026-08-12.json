@@ -1,0 +1,140 @@
+{
+  "schemaVersion": 1,
+  "receiptId": "frame-utah-slv-gsc-split-url-diagnosis-v1",
+  "market": "utah-salt-lake-valley",
+  "preparedAt": "2026-08-12T21:33:07Z",
+  "status": "diagnosed-no-public-mutation",
+  "publicMutationPerformed": false,
+  "question": "Do the three multi-URL exact-query rows in the July 13 through August 9 Search Console window justify a redirect, canonical, noindex, deletion, or intent change?",
+  "decision": {
+    "currentCannibalizationProven": false,
+    "publicArchitectureChangeAuthorized": false,
+    "summary": "No. All measured fixed mobile rankings select the intended city pages. The only shared alternate city route was permanently redirected after the Search Console window ended. Herriman's intended page owns 55 of 56 roof-replacement impressions while the legacy route has one impression at position 61. Holladay still needs one fully post-redirect 28-day window because its contractor query was tied 11 to 11 with the legacy route before redirect; its separate roof-replacement blog is a minority two-impression row versus 19 for the intended hub.",
+    "rules": [
+      "A multi-URL Search Console row is a diagnosis trigger, not proof of current cannibalization.",
+      "An intended page that dominates a negligible pre-redirect alternate trace stays protected; do not create an architecture intervention from that trace.",
+      "A pre-redirect tie remains a monitor gate until a fully post-redirect 28-day window is available.",
+      "Missing or withheld Search Console rows remain unmeasured, never zero."
+    ]
+  },
+  "evidence": {
+    "searchConsoleSnapshot": {
+      "file": "data/seo/snapshots/2026-08-12.json",
+      "sha256": "a1b7d5aa2acc3a5b663da345ba6eb7242e411661807ae1296f50854702b1a7eb",
+      "window": {
+        "startDate": "2026-07-13",
+        "endDate": "2026-08-09"
+      },
+      "fixedQueriesRequested": 72,
+      "queriesWithRows": 25,
+      "multiUrlQueries": 3
+    },
+    "redirect": {
+      "file": "vercel.json",
+      "sha256": "9decfe30c03f5eb0014e3bc3ae9600781e00d7ab374b62e2e2b1c0a3a82b8ff7",
+      "source": "/salt-lake-city",
+      "destination": "/locations/salt-lake-city",
+      "permanent": true,
+      "mergedCommit": "179b443b6f4c0e453959422688684e1c1d16d0d7",
+      "mergedAt": "2026-08-10T05:22:50Z",
+      "windowEndedBeforeRedirect": true
+    },
+    "liveReadOnlyRoutes": {
+      "observedAt": "2026-08-12T21:32:21Z",
+      "legacySaltLakeCity": {
+        "url": "https://www.framerestorationutah.com/salt-lake-city",
+        "status": 308,
+        "location": "/locations/salt-lake-city"
+      },
+      "selfCanonicalPages": [
+        "https://www.framerestorationutah.com/locations/salt-lake-city",
+        "https://www.framerestorationutah.com/locations/holladay",
+        "https://www.framerestorationutah.com/blog/holladay/roof-replacement-holladay-utah",
+        "https://www.framerestorationutah.com/locations/herriman",
+        "https://www.framerestorationutah.com/"
+      ]
+    }
+  },
+  "cities": [
+    {
+      "city": "Holladay",
+      "disposition": "await-full-post-redirect-window",
+      "currentCannibalization": "not-proven",
+      "fixedPanel": {
+        "file": "data/rank-tracker/panels/holladay/2026-08-12.json",
+        "sha256": "68e170a9e9b9bc3c48b2b9f686a4b3b75ac027727aa5d1e1a711ad059185adc1",
+        "allMeasuredQueriesSelectIntendedPage": true,
+        "organicRanks": [17, 10, 4, 12]
+      },
+      "queryDiagnoses": [
+        {
+          "keyword": "roofing contractor holladay",
+          "classification": "pre-redirect-tie-requires-post-redirect-window",
+          "intendedImpressions": 11,
+          "alternateImpressions": 16,
+          "alternateBreakdown": {
+            "legacySaltLakeCityRoute": 11,
+            "canonicalHomepageViaGbpParameters": 5
+          }
+        },
+        {
+          "keyword": "roof replacement holladay",
+          "classification": "intended-page-dominant-minority-editorial-overlap",
+          "intendedImpressions": 19,
+          "alternateImpressions": 2,
+          "intendedImpressionShare": 0.9048,
+          "alternate": "framerestorationutah.com/blog/holladay/roof-replacement-holladay-utah"
+        }
+      ],
+      "requiredRecheck": {
+        "firstFullyPostRedirectWindow": {
+          "startDateOnOrAfter": "2026-08-11",
+          "endDateOnOrAfter": "2026-09-07"
+        },
+        "expectedAvailableNoEarlierThan": "2026-09-10",
+        "action": "Refresh the exact-query URL attribution. If the legacy route is absent and the intended page remains selected, close the consolidation watch. Diagnose any persistent alternate before considering a separately approved single-variable intent experiment."
+      },
+      "prohibitedNow": [
+        "Redirecting, deleting, canonicalizing, or noindexing the Holladay hub or its roof-replacement guide.",
+        "Changing the Holladay title, H1, copy, internal links, schema, or route from this receipt.",
+        "Treating the GBP-tagged homepage URL as a separate page."
+      ]
+    },
+    {
+      "city": "Herriman",
+      "disposition": "monitor-negligible-historical-trace",
+      "currentCannibalization": "not-evidenced",
+      "fixedPanel": {
+        "file": "data/rank-tracker/expansion/herriman/2026-08-12.json",
+        "sha256": "05fcb7297f55cb49cafdb3709380133e47d2527e4f932bb03b73921a4dc90a67",
+        "allMeasuredQueriesSelectIntendedPage": true,
+        "organicRanks": [22, 14, 12, 26]
+      },
+      "queryDiagnoses": [
+        {
+          "keyword": "roof replacement herriman",
+          "classification": "negligible-pre-redirect-trace-not-actionable",
+          "intendedImpressions": 55,
+          "alternateImpressions": 1,
+          "intendedImpressionShare": 0.9821,
+          "alternatePosition": 61,
+          "alternate": "framerestorationutah.com/salt-lake-city"
+        }
+      ],
+      "requiredRecheck": {
+        "cadence": "normal-daily-gsc-refresh",
+        "action": "Keep the intended Herriman page and existing redirect unchanged. Escalate only if a future complete window shows a persistent alternate with material impression share or the fixed panel stops selecting the intended page."
+      },
+      "prohibitedNow": [
+        "Creating a redirect, canonical, noindex, deletion, or content change for a one-impression position-61 historical trace.",
+        "Treating the trace as zero or as proof of current cannibalization."
+      ]
+    }
+  ],
+  "nextSafeActions": [
+    "Preserve every current route and canonical.",
+    "Keep Holladay's URL-consolidation lane in monitor state until the first fully post-redirect window is available.",
+    "Return Herriman to its service-area-evidence and targeted-ranking lane; its split-URL trace is not an architecture blocker.",
+    "Make no website, GBP, directory, review, indexing, outreach, advertising, or DNS mutation from this receipt."
+  ]
+}

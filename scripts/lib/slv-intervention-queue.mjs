@@ -11,11 +11,13 @@ export function measuredMeanRank(ranks = []) {
   return Number((measured.reduce((sum, rank) => sum + rank, 0) / measured.length).toFixed(2));
 }
 
-export function interventionLane({ city, organicNumberOne = [], aioOwned = [], gscState, cohort, serviceAreaStatus }) {
+export function interventionLane({ city, organicNumberOne = [], aioOwned = [], gscState, gscUrlDisposition = null, cohort, serviceAreaStatus }) {
   if (city === "Salt Lake City") return "observe-time-gated-slc-experiment";
   if (city === "Millcreek") return "owner-gated-verified-identity-and-integrity-cleanup";
   if (organicNumberOne.length || aioOwned.length) return "protect-foothold-before-cleanup-or-intent-change";
-  if (gscState === "url-competition-requires-diagnosis") return "diagnose-url-consolidation-before-intent-change";
+  if (gscState === "url-competition-requires-diagnosis" && gscUrlDisposition !== "monitor-negligible-historical-trace") {
+    return "diagnose-url-consolidation-before-intent-change";
+  }
   if (cohort.startsWith("core-")) return "owner-gated-core-integrity-then-single-variable-intent-test";
   if (serviceAreaStatus.startsWith("pending-")) return "service-area-proof-and-targeted-gsc-before-intent-change";
   return "targeted-gsc-before-single-variable-intent-test";

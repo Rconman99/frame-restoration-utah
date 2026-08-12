@@ -14,6 +14,15 @@ test("the lane selector protects experiments and footholds before generic optimi
   assert.equal(interventionLane({ city: "Millcreek" }), "owner-gated-verified-identity-and-integrity-cleanup");
   assert.equal(interventionLane({ city: "Magna", organicNumberOne: ["roof replacement magna"] }), "protect-foothold-before-cleanup-or-intent-change");
   assert.equal(interventionLane({ city: "Holladay", organicNumberOne: [], aioOwned: [], gscState: "url-competition-requires-diagnosis" }), "diagnose-url-consolidation-before-intent-change");
+  assert.equal(interventionLane({
+    city: "Herriman",
+    organicNumberOne: [],
+    aioOwned: [],
+    gscState: "url-competition-requires-diagnosis",
+    gscUrlDisposition: "monitor-negligible-historical-trace",
+    cohort: "expansion-manual-baseline-measured",
+    serviceAreaStatus: "pending-current-profile-service-area-verification",
+  }), "service-area-proof-and-targeted-gsc-before-intent-change");
 });
 
 test("pending service-area evidence blocks expansion intent changes even with an organic baseline", () => {

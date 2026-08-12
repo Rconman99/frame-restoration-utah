@@ -17,6 +17,7 @@ const sourceFiles = {
   portfolio: "data/rank-tracker/SLV-18-CITY-GOAL-PORTFOLIO-2026-08-12.json",
   weeklyDecisions: "data/rank-tracker/SLV-WEEKLY-DECISIONS-2026-08-12.json",
   gscAttribution: "data/rank-tracker/SLV-GSC-URL-ATTRIBUTION-LATEST.json",
+  gscSplitUrlDiagnosis: "data/rank-tracker/SLV-GSC-SPLIT-URL-DIAGNOSIS-2026-08-12.json",
   displacement: "data/rank-tracker/SLV-COMPETITOR-DISPLACEMENT-2026-08-12.json",
   entityHealth: "data/rank-tracker/SLV-ENTITY-HEALTH-2026-08-12.json",
   mapsReadiness: "data/rank-tracker/SLV-MAPS-READINESS-2026-08-12.json",
@@ -41,6 +42,7 @@ const sha256 = (file) => crypto.createHash("sha256").update(fs.readFileSync(path
 const portfolio = read(sourceFiles.portfolio);
 const weekly = read(sourceFiles.weeklyDecisions);
 const gsc = read(sourceFiles.gscAttribution);
+const gscSplitUrlDiagnosis = read(sourceFiles.gscSplitUrlDiagnosis);
 const displacement = read(sourceFiles.displacement);
 const entityHealth = read(sourceFiles.entityHealth);
 const mapsReadiness = read(sourceFiles.mapsReadiness);
@@ -54,6 +56,9 @@ const ownerProfileAuditRequest = read(sourceFiles.ownerProfileAuditRequest);
 const driveReceipt = read(sourceFiles.driveReceipt);
 const decisionsByCity = new Map(weekly.cities.map((city) => [city.city, city]));
 const gscByCity = new Map(gsc.cities.map((city) => [city.city, city]));
+const gscSplitUrlDiagnosisByCity = new Map(gscSplitUrlDiagnosis.cities.map((city) => [city.city, city]));
+const gscSplitUrlDiagnosisIsCurrent =
+  gsc.sources.gscSnapshot.sha256 === gscSplitUrlDiagnosis.evidence.searchConsoleSnapshot.sha256;
 const entityByCity = new Map(entityHealth.cities.map((city) => [city.city, city]));
 const mapsByCity = new Map(mapsReadiness.cities.map((city) => [city.city, city]));
 const expansionArchitectureByCity = new Map(expansionArchitecture.cities.map((city) => [city.city, city]));
@@ -73,7 +78,7 @@ const interventionOrder = [
 ];
 const interventionPriorityByCity = new Map(interventionOrder.map((city, index) => [city, index]));
 
-function selectedAction(goal, lane, diagnosis, protectedFootholds) {
+function selectedAction(goal, lane, diagnosis, protectedFootholds, gscUrlDiagnosis) {
   if (goal.city === "Salt Lake City") return {
     decision: "Monitor",
     action: "Keep the Salt Lake City page frozen and collect the scheduled fixed Google, targeted GSC, exact-CID review, and consumer-AI readings until the existing experiment's evaluation gate opens.",
@@ -102,6 +107,13 @@ function selectedAction(goal, lane, diagnosis, protectedFootholds) {
     ownerApprovalPhrase: coreApprovalPhrase,
     acceptanceCheck: `Current query-to-URL evidence no longer depends on the pre-redirect window; the position-4 roof-replacement foothold and all protected routes remain intact; a current receipt separately classifies Holladay for CID ${portfolio.cityCompletionContract.maps.exactCid}.`,
   };
+  if (gscUrlDiagnosis?.disposition === "monitor-negligible-historical-trace") return {
+    decision: "Request input",
+    action: `Treat ${goal.city}'s negligible pre-redirect alternate trace as non-actionable and keep its intended page, redirect, canonicals, and related routes unchanged. Obtain current Salt Lake Valley service-area evidence for the separate Maps lane and request only the bounded expansion integrity cleanup; continue normal exact-query GSC monitoring without opening a URL-consolidation intervention.`,
+    gate: "service-area-evidence-plus-explicit-cleanup-approval-with-url-consolidation-closed",
+    ownerApprovalPhrase: expansionApprovalPhrase,
+    acceptanceCheck: `A current receipt explicitly classifies ${goal.city} for CID ${portfolio.cityCompletionContract.maps.exactCid}, any approved cleanup passes the full release gate, and the intended page remains selected; a future alternate URL is escalated only if it has material persistent share or the fixed panel stops selecting the intended page.`,
+  };
   if (goal.cohort.startsWith("core-")) return {
     decision: "Request input",
     action: `Obtain current Salt Lake Valley service-area evidence for ${goal.city}'s separate Maps lane and request the exact core cleanup approval; after a green production receipt and fresh baseline, activate at most the already-pinned single-title experiment with every other intent surface held constant.`,
@@ -121,6 +133,9 @@ function selectedAction(goal, lane, diagnosis, protectedFootholds) {
 const candidates = portfolio.cityGoals.map((goal) => {
   const decision = decisionsByCity.get(goal.city);
   const gscCity = gscByCity.get(goal.city);
+  const gscUrlDiagnosis = gscSplitUrlDiagnosisIsCurrent
+    ? gscSplitUrlDiagnosisByCity.get(goal.city) || null
+    : null;
   const entity = entityByCity.get(goal.city);
   const maps = mapsByCity.get(goal.city);
   const queries = queriesByCity.get(goal.city) || [];
@@ -137,6 +152,7 @@ const candidates = portfolio.cityGoals.map((goal) => {
     organicNumberOne,
     aioOwned,
     gscState: gscCity.state,
+    gscUrlDisposition: gscUrlDiagnosis?.disposition || null,
     cohort: goal.cohort,
     serviceAreaStatus: goal.serviceAreaStatus,
   });
@@ -151,7 +167,7 @@ const candidates = portfolio.cityGoals.map((goal) => {
     lane,
   });
   assertScoreVector(vector);
-  const action = selectedAction(goal, lane, diagnosis, decision.protectedFootholds);
+  const action = selectedAction(goal, lane, diagnosis, decision.protectedFootholds, gscUrlDiagnosis);
   return {
     interventionPriority: interventionPriorityByCity.get(goal.city),
     city: goal.city,
@@ -179,10 +195,19 @@ const candidates = portfolio.cityGoals.map((goal) => {
       gscRequestedQueries: gscCity.coverage.requestedQueries,
       gscReturnedQueries: gscCity.coverage.returnedQueries,
       gscAlternateNormalizedUrls: gscCity.alternateNormalizedUrls,
+      gscUrlDiagnosis: gscUrlDiagnosis
+        ? {
+            disposition: gscUrlDiagnosis.disposition,
+            currentCannibalization: gscUrlDiagnosis.currentCannibalization,
+            requiredRecheck: gscUrlDiagnosis.requiredRecheck,
+            activeAttributionSnapshotSha256: gsc.sources.gscSnapshot.sha256,
+          }
+        : null,
       serviceAreaStatus: goal.serviceAreaStatus,
       identityProfile: entity.identityProfile,
       citySpecificEditorialAsset: entity.editorial.hasCitySpecificAsset,
-      architectureState: diagnosis?.decision?.currentCommercialCannibalization
+      architectureState: gscUrlDiagnosis?.currentCannibalization
+        || diagnosis?.decision?.currentCommercialCannibalization
         || diagnosis?.decision?.cannibalization
         || expansionCityArchitecture?.architecture?.currentCommercialCannibalization
         || "not-separately-diagnosed",
@@ -259,6 +284,7 @@ const queue = {
         "Every portfolio city appears exactly once with four fixed query evidence rows.",
         "Salt Lake City remains time-frozen; Millcreek uses the verified identity lane; Magna and Kearns use protected-foothold lanes.",
         "Every pending service-area city requires current evidence before exact-CID identity planning.",
+        "A negligible pre-redirect alternate trace cannot create an architecture intervention; a pre-redirect tie remains monitor-only until a fully post-redirect window exists.",
         "Every score component is an integer from 0 through 10.",
         "No candidate authorizes a public mutation, and every public candidate carries the exact governing approval phrase."
       ]
@@ -322,6 +348,11 @@ assert.deepEqual(candidates.map((candidate) => candidate.interventionPriority), 
 assert.equal(candidates.find((candidate) => candidate.city === "Salt Lake City").lane, "observe-time-gated-slc-experiment");
 assert.equal(candidates.find((candidate) => candidate.city === "Millcreek").lane, "owner-gated-verified-identity-and-integrity-cleanup");
 assert.ok(["Magna", "Kearns"].every((city) => candidates.find((candidate) => candidate.city === city).lane === "protect-foothold-before-cleanup-or-intent-change"));
+assert.deepEqual([...gscSplitUrlDiagnosisByCity.keys()].sort(), ["Herriman", "Holladay"]);
+assert.equal(gscSplitUrlDiagnosisIsCurrent, true, "split-URL diagnosis has expired; refresh it against the current attribution snapshot before suppressing a URL lane");
+assert.equal(candidates.find((candidate) => candidate.city === "Holladay").lane, "diagnose-url-consolidation-before-intent-change");
+assert.equal(candidates.find((candidate) => candidate.city === "Herriman").lane, "service-area-proof-and-targeted-gsc-before-intent-change");
+assert.match(candidates.find((candidate) => candidate.city === "Herriman").selectedAction, /negligible pre-redirect alternate trace as non-actionable/);
 assert.equal(queue.summary.citiesPendingServiceAreaEvidence, 16);
 assert.equal(expansionArchitectureByCity.size, 12);
 assert.equal(mapsByCity.size, 18);
