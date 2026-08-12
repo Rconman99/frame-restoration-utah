@@ -434,6 +434,7 @@ export function displacementLines(snapshot) {
   const hasEvidence = rows.some((row) =>
     (row.organicLeaders || []).length
     || (row.mapPackLeaders || []).length
+    || (row.paidMapPackLeaders || []).length
     || (row.aiOverviewSources || []).length,
   );
   if (!hasEvidence) return [];
@@ -443,10 +444,11 @@ export function displacementLines(snapshot) {
     const organic = (row.organicLeaders || []).map((leader) => leaderLabel(leader, "organic")).join("; ") || "not returned";
     const maps = (row.mapPackLeaders || []).map((leader) => leaderLabel(leader, "map")).join("; ")
       || (row.mapPackPresent ? "present, leaders not returned" : "no local pack");
+    const paidMaps = (row.paidMapPackLeaders || []).map((leader) => leaderLabel(leader, "map")).join("; ") || "none";
     const aio = (row.aiOverviewSources || []).map((source) =>
       `${source.domain || source.title || "unknown"}${source.isTarget ? " (Frame)" : ""}`,
     ).join("; ") || (row.aiOverviewPresent ? "present, sources not returned" : "no AI Overview");
-    lines.push(`- ${row.city} — “${row.keyword}”: organic ${organic}; maps ${maps}; AIO ${aio}.`);
+    lines.push(`- ${row.city} — “${row.keyword}”: organic ${organic}; organic maps ${maps}; paid local (excluded) ${paidMaps}; AIO ${aio}.`);
   }
   lines.push("- Use these as displacement evidence; do not copy competitor content or listings.");
   return lines;

@@ -64,14 +64,17 @@ export function extractRank(result, target) {
     rankingUrl: null,
     mapPackPresent: false,
     mapPackRank: null,
+    paidMapPackPresent: false,
     aiOverviewPresent: false,
     aiOverviewCited: false,
     organicLeaders: [],
     mapPackLeaders: [],
+    paidMapPackLeaders: [],
     aiOverviewSources: [],
     serpFeatures: [],
   };
   let mapPosition = 0;
+  let paidMapPosition = 0;
   const aiSourceKeys = new Set();
 
   for (const item of items) {
@@ -96,11 +99,31 @@ export function extractRank(result, target) {
     }
 
     if (item?.type === 'local_pack') {
-      reading.mapPackPresent = true;
       const members = Array.isArray(item.items) && item.items.length ? item.items : [item];
       for (const member of members) {
+        const isPaid = member?.is_paid === true || (member?.is_paid == null && item?.is_paid === true);
+        if (isPaid) {
+          reading.paidMapPackPresent = true;
+          paidMapPosition += 1;
+          if (paidMapPosition <= 3) {
+            reading.paidMapPackLeaders.push({
+              rank: paidMapPosition,
+              name: cleanText(member.title || member.name),
+              cid: member.cid ? String(member.cid) : null,
+              domain: itemDomain(member),
+              url: member.url || null,
+              isTarget: sameBusiness(member, target),
+            });
+          }
+          continue;
+        }
+
+        reading.mapPackPresent = true;
         mapPosition += 1;
-        const rank = member.rank_group ?? mapPosition;
+        // The goal is organic Maps rank. Provider rank_group can count a paid
+        // local placement ahead of the organic pack, so use the sequential
+        // non-paid position after filtering is_paid=true.
+        const rank = mapPosition;
         const isTarget = sameBusiness(member, target);
         if (reading.mapPackRank === null && isTarget) {
           reading.mapPackRank = rank;
@@ -146,6 +169,7 @@ export function extractRank(result, target) {
   reading.organicLeaders = reading.organicLeaders.slice(0, 3);
   reading.mapPackLeaders.sort((a, b) => a.rank - b.rank);
   reading.mapPackLeaders = reading.mapPackLeaders.slice(0, 3);
+  reading.paidMapPackLeaders.sort((a, b) => a.rank - b.rank);
   reading.serpFeatures = [...features].filter((type) => type !== 'organic').sort();
   return reading;
 }
@@ -268,6 +292,9 @@ export function markdownReport(report) {
     const maps = result.mapPackLeaders.length
       ? result.mapPackLeaders.map((leader) => `#${leader.rank} ${leader.name || leader.domain || 'unknown'}${leader.cid ? ` [CID ${leader.cid}]` : ''}${leader.isTarget ? ' (Frame)' : ''}`).join('; ')
       : (result.mapPackPresent ? 'present, leaders not returned' : 'no local pack');
+    const paidMaps = result.paidMapPackLeaders.length
+      ? result.paidMapPackLeaders.map((leader) => `#${leader.rank} ${leader.name || leader.domain || 'unknown'}${leader.cid ? ` [CID ${leader.cid}]` : ''}${leader.isTarget ? ' (Frame)' : ''}`).join('; ')
+      : 'none';
     const aio = result.aiOverviewSources.length
       ? result.aiOverviewSources.map((source) => `${source.domain || source.title || 'unknown'}${source.isTarget ? ' (Frame)' : ''}`).join('; ')
       : (result.aiOverviewPresent ? 'present, sources not returned' : 'no AI Overview');
@@ -275,6 +302,7 @@ export function markdownReport(report) {
       `### ${result.keyword}`,
       `- Organic top 3: ${organic}.`,
       `- Map-pack top 3: ${maps}.`,
+      `- Paid local placements (excluded from Maps rank): ${paidMaps}.`,
       `- AI Overview sources: ${aio}.`,
       '',
     ];

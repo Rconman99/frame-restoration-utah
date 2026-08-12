@@ -81,6 +81,11 @@ competitor pages or listings. They show which entity/page must be surpassed and
 which third-party sources already earn citations before a bounded experiment is
 chosen.
 
+DataForSEO marks paid local placements with `is_paid`. Those businesses are
+retained in a separate evidence list but excluded from `mapPackRank`, the
+organic map-pack top three, and Maps #1 goal coverage. A paid local ad can never
+satisfy or displace the exact-CID organic Maps goal.
+
 The loader fails closed per panel. A missing, corrupt, incomplete, or mismatched report produces
 explicitly unmeasured rows plus a named source issue; it cannot silently reuse partial results as a
 complete weekly matrix.

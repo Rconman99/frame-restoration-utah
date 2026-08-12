@@ -110,11 +110,13 @@ test("fixed panel readout renders measured organic, maps, and AIO displacement e
       aiOverviewPresent: true,
       organicLeaders: [{ rank: 1, domain: "leader.example", isTarget: false }],
       mapPackLeaders: [{ rank: 1, name: "Map Leader", cid: "123", isTarget: false }],
+      paidMapPackLeaders: [{ rank: 1, name: "Paid Leader", cid: "456", isTarget: false }],
       aiOverviewSources: [{ domain: "source.example", isTarget: false }],
     }],
   })).join("\n");
   assert.match(output, /organic #1 leader\.example/);
-  assert.match(output, /maps #1 Map Leader \[CID 123\]/);
+  assert.match(output, /organic maps #1 Map Leader \[CID 123\]/);
+  assert.match(output, /paid local \(excluded\) #1 Paid Leader \[CID 456\]/);
   assert.match(output, /AIO source\.example/);
   assert.match(output, /do not copy competitor content/);
 });

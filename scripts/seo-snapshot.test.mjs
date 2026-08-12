@@ -102,6 +102,7 @@ test("committed DataForSEO panels preserve exact ranks and measured >depth rows"
           id: "k1", keyword: "roofing contractor millcreek", organicRank: 4, rankingUrl: "https://example.com/millcreek", mapPackRank: null, aiOverviewPresent: false, aiOverviewCited: false,
           organicLeaders: [{ rank: 1, domain: "leader.example", url: "https://leader.example/millcreek", title: "Leader", isTarget: false }],
           mapPackLeaders: [{ rank: 1, name: "Map Leader", cid: "123", domain: null, url: null, isTarget: false }],
+          paidMapPackLeaders: [{ rank: 1, name: "Paid Leader", cid: "456", domain: null, url: null, isTarget: false }],
           aiOverviewSources: [],
         },
         {
@@ -122,6 +123,7 @@ test("committed DataForSEO panels preserve exact ranks and measured >depth rows"
     assert.equal(state.ranks[1].aiOverviewCited, true);
     assert.equal(state.ranks[0].organicLeaders[0].domain, "leader.example");
     assert.equal(state.ranks[0].mapPackLeaders[0].cid, "123");
+    assert.equal(state.ranks[0].paidMapPackLeaders[0].cid, "456");
     assert.equal(state.ranks[1].aiOverviewSources[0].isTarget, true);
   } finally {
     fs.rmSync(dir, { recursive: true, force: true });

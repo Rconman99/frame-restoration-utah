@@ -231,10 +231,12 @@ export function readTrackedRanks({ rootDir = root } = {}) {
         observedAt: report.observedAt,
         mapPackRank: row.mapPackRank,
         mapPackPresent: row.mapPackPresent === true,
+        paidMapPackPresent: row.paidMapPackPresent === true,
         aiOverviewPresent: row.aiOverviewPresent === true,
         aiOverviewCited: row.aiOverviewCited === true,
         organicLeaders: Array.isArray(row.organicLeaders) ? row.organicLeaders : [],
         mapPackLeaders: Array.isArray(row.mapPackLeaders) ? row.mapPackLeaders : [],
+        paidMapPackLeaders: Array.isArray(row.paidMapPackLeaders) ? row.paidMapPackLeaders : [],
         aiOverviewSources: Array.isArray(row.aiOverviewSources) ? row.aiOverviewSources : [],
       });
     }

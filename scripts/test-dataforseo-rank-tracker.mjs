@@ -55,6 +55,7 @@ const fixture = {
       cid: '111',
       title: 'Competitor Roofing',
       domain: 'competitor.example',
+      is_paid: true,
     },
     {
       type: 'local_pack',
@@ -82,7 +83,7 @@ const fixture = {
 const reading = extractRank(fixture, config.target);
 assert.equal(reading.organicRank, 7);
 assert.equal(reading.mapPackPresent, true);
-assert.equal(reading.mapPackRank, 2);
+assert.equal(reading.mapPackRank, 1);
 assert.equal(reading.aiOverviewPresent, true);
 assert.equal(reading.aiOverviewCited, true);
 assert.deepEqual(reading.organicLeaders, [{
@@ -93,8 +94,10 @@ assert.deepEqual(reading.organicLeaders, [{
   isTarget: false,
 }]);
 assert.deepEqual(reading.mapPackLeaders.map(({ rank, name, cid, isTarget }) => ({ rank, name, cid, isTarget })), [
+  { rank: 1, name: 'Frame Restoration Utah LLC.', cid: '5689850818145735734', isTarget: true },
+]);
+assert.deepEqual(reading.paidMapPackLeaders.map(({ rank, name, cid, isTarget }) => ({ rank, name, cid, isTarget })), [
   { rank: 1, name: 'Competitor Roofing', cid: '111', isTarget: false },
-  { rank: 2, name: 'Frame Restoration Utah LLC.', cid: '5689850818145735734', isTarget: true },
 ]);
 assert.deepEqual(reading.aiOverviewSources.map(({ domain, isTarget }) => ({ domain, isTarget })), [
   { domain: 'competitor.example', isTarget: false },
@@ -125,7 +128,8 @@ assert.equal(report.results[0].rankingUrl, 'https://www.framerestorationutah.com
 assert.match(markdownReport(report), /^# Salt Lake City Google rank tracker — 2026-08-11/m);
 assert.match(markdownReport(report), /## Displacement targets/);
 assert.match(markdownReport(report), /Organic top 3: #1 competitor\.example/);
-assert.match(markdownReport(report), /Map-pack top 3: #1 Competitor Roofing \[CID 111\]/);
+assert.match(markdownReport(report), /Map-pack top 3: #1 Frame Restoration Utah LLC\. \[CID 5689850818145735734\] \(Frame\)/);
+assert.match(markdownReport(report), /Paid local placements \(excluded from Maps rank\): #1 Competitor Roofing \[CID 111\]/);
 assert.match(markdownReport(report), /fixed top-30 mobile panel/);
 
 const nestedLocalPack = extractRank({
@@ -145,6 +149,14 @@ assert.deepEqual(nestedLocalPack.mapPackLeaders.map(({ rank, name }) => ({ rank,
   { rank: 2, name: 'Two Roofing' },
   { rank: 3, name: 'Three Roofing' },
 ]);
+
+const paidOnlyLocalPack = extractRank({ items: [{
+  type: 'local_pack', title: 'Paid Roofer', cid: '5689850818145735734', is_paid: true,
+}] }, config.target);
+assert.equal(paidOnlyLocalPack.mapPackPresent, false);
+assert.equal(paidOnlyLocalPack.mapPackRank, null, 'paid target placement must never satisfy the organic Maps goal');
+assert.equal(paidOnlyLocalPack.paidMapPackPresent, true);
+assert.equal(paidOnlyLocalPack.paidMapPackLeaders[0].isTarget, true);
 
 const urlOnlyTarget = extractRank({ items: [{
   type: 'organic', rank_group: 1, url: 'https://www.framerestorationutah.com/locations/salt-lake-city', title: 'Frame',
