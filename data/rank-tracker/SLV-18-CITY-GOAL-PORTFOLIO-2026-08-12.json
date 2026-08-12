@@ -1,0 +1,521 @@
+{
+  "schemaVersion": 1,
+  "portfolioId": "frame-utah-salt-lake-valley-18-city-number-one-v1",
+  "market": "utah-salt-lake-valley",
+  "preparedAt": "2026-08-12T17:15:48Z",
+  "preparedFromCommit": "abb96cda25c47155f2484e96e432023eeeb47d55",
+  "status": "active-not-achieved",
+  "publicMutationPerformed": false,
+  "ultimateGoal": "Make Frame Restoration Utah the sustained top Google SEO/AEO roofing entity across every existing Salt Lake County city route in the approved portfolio, using fixed mobile panels and evidence-safe city pages.",
+  "cityCompletionContract": {
+    "organic": {
+      "queries": [
+        "roofing contractor {city}",
+        "roof repair {city}",
+        "roof replacement {city}",
+        "roofer {city}"
+      ],
+      "targetRank": 1,
+      "requiredConsecutiveWeeklyPanels": 4,
+      "rule": "All four fixed organic queries must rank exactly #1 in each of four consecutive weekly mobile panels, with the intended city page selected."
+    },
+    "maps": {
+      "queries": [
+        "roofing contractor {city}",
+        "roof repair {city}",
+        "roof replacement {city}",
+        "roofer {city}"
+      ],
+      "targetRank": 1,
+      "exactCid": "5689850818145735734",
+      "requiredConsecutiveWeeklyPanels": 4,
+      "rule": "Only unpaid local-pack matches to the exact verified Salt Lake Valley CID count; all four must rank #1 in each of four consecutive weekly panels."
+    },
+    "googleAiOverview": {
+      "target": "Frame owned-domain citation whenever an AI Overview is present",
+      "requiredConsecutiveWeeklyPanels": 4,
+      "rule": "Score citation coverage only over observed AI Overviews; a query with no overview is not a citation failure."
+    },
+    "consumerAi": {
+      "engines": [
+        "chatgpt",
+        "perplexity",
+        "gemini"
+      ],
+      "fixedPromptsPerCity": 3,
+      "target": "Frame is both named and cited in every response",
+      "requiredConsecutiveWeeklyPanels": 4,
+      "rule": "Invalid credentials, provider errors, or missing runs remain unmeasured and cannot satisfy or fail the goal."
+    },
+    "integrity": {
+      "required": true,
+      "rule": "No doorway pages, fabricated proof, unsupported claims, NAP drift, wrong-CID entity graph, or unapproved public/GBP mutation."
+    },
+    "completion": "A city reaches sustained goal only when organic, exact-CID Maps, Google AIO, consumer-AI, integrity, canonical, and intended-URL contracts all pass for the same uncontaminated 28-day window."
+  },
+  "portfolioScore": {
+    "citiesInPortfolio": 18,
+    "citiesWithGoogleBaseline": 6,
+    "citiesPendingFirstGoogleBaseline": 12,
+    "fixedOrganicTargets": 72,
+    "fixedOrganicTargetsMeasured": 24,
+    "fixedOrganicNumberOne": 0,
+    "exactCidMapsTargets": 72,
+    "exactCidMapsTargetsMeasured": 24,
+    "exactCidMapsNumberOne": 0,
+    "googleAiOverviewCitations": 1,
+    "googleAiOverviewsPresent": 2,
+    "consumerAiCompleteCityPanels": 0,
+    "citiesAtSustainedGoal": 0
+  },
+  "sources": {
+    "coreGoalProgram": "data/rank-tracker/SLV-CITY-GOAL-PROGRAM-2026-08-12.json",
+    "coreGoogleRegistry": "data/rank-tracker/panels.json",
+    "expansionGoogleRegistry": "data/rank-tracker/expansion-panels.json",
+    "expansionWorkflow": ".github/workflows/slv-expansion-baseline.yml",
+    "publicRemediationPacket": "data/authority/SLV-CITY-PUBLIC-REMEDIATION-PACKET-2026-08-12.json",
+    "millcreekScopeAmendment": "data/authority/MILLCREEK-PUBLIC-IDENTITY-SCOPE-AMENDMENT-2026-08-12.json"
+  },
+  "cohorts": {
+    "core": {
+      "cityCount": 6,
+      "cadence": "weekly",
+      "state": "baseline-measured",
+      "cityGoalIds": [
+        "slv-salt-lake-city-number-one-v1",
+        "slv-millcreek-number-one-v1",
+        "slv-sandy-number-one-v1",
+        "slv-holladay-number-one-v1",
+        "slv-cottonwood-heights-number-one-v1",
+        "slv-draper-number-one-v1"
+      ]
+    },
+    "expansion": {
+      "cityCount": 12,
+      "cadence": "manual-baseline-before-weekly-admission",
+      "estimatedOneTimeBaselineCostUsd": 0.1152,
+      "state": "validated-config-not-yet-measured",
+      "admissionRule": "Run one complete manual baseline, validate all 48 results, classify integrity and route architecture, verify current service-area evidence separately, then explicitly approve any city for the recurring weekly registry.",
+      "cityGoalIds": [
+        "slv-bluffdale-number-one-v1",
+        "slv-herriman-number-one-v1",
+        "slv-kearns-number-one-v1",
+        "slv-magna-number-one-v1",
+        "slv-midvale-number-one-v1",
+        "slv-murray-number-one-v1",
+        "slv-riverton-number-one-v1",
+        "slv-south-jordan-number-one-v1",
+        "slv-south-salt-lake-number-one-v1",
+        "slv-taylorsville-number-one-v1",
+        "slv-west-jordan-number-one-v1",
+        "slv-west-valley-city-number-one-v1"
+      ]
+    }
+  },
+  "cityGoals": [
+    {
+      "priority": 0,
+      "goalId": "slv-salt-lake-city-number-one-v1",
+      "city": "Salt Lake City",
+      "slug": "salt-lake-city",
+      "page": "locations/salt-lake-city.html",
+      "panelId": "utah-salt-lake-city-google-v1",
+      "cohort": "core-measured",
+      "measurementStatus": "measured",
+      "identityEvidence": "verified-profile-identity-city",
+      "serviceAreaStatus": "verified-profile-identity-city",
+      "current": {
+        "observedAt": "2026-08-12T14:18:10.300Z",
+        "organicRanks": [
+          null,
+          25,
+          19,
+          null
+        ],
+        "exactCidMapsRanks": [
+          null,
+          null,
+          null,
+          null
+        ],
+        "googleAiOverview": {
+          "present": 1,
+          "ownedCitations": 0
+        },
+        "consumerAi": "blocked-invalid-provider-credential"
+      },
+      "phase": "observe-existing-experiment",
+      "nextPermittedAction": "Run the fixed weekly Google panel and, after credential replacement, the fixed consumer-AI panel; do not change the page before 2026-09-09T04:40:58Z."
+    },
+    {
+      "priority": 1,
+      "goalId": "slv-millcreek-number-one-v1",
+      "city": "Millcreek",
+      "slug": "millcreek",
+      "page": "locations/millcreek.html",
+      "panelId": "utah-millcreek-google-v1",
+      "cohort": "core-measured",
+      "measurementStatus": "measured",
+      "identityEvidence": "verified-profile-saved-service-area",
+      "serviceAreaStatus": "saved-service-area-observed",
+      "current": {
+        "observedAt": "2026-08-12T14:18:10.300Z",
+        "organicRanks": [
+          4,
+          4,
+          3,
+          5
+        ],
+        "exactCidMapsRanks": [
+          null,
+          null,
+          null,
+          null
+        ],
+        "googleAiOverview": {
+          "present": 1,
+          "ownedCitations": 1
+        },
+        "consumerAi": "blocked-invalid-provider-credential"
+      },
+      "phase": "first-after-public-integrity-cleanup",
+      "nextPermittedAction": "Preserve the first AIO foothold, replace the consumer-AI key, and prepare the claim/identity cleanup; publish only after explicit approval and the full release gate."
+    },
+    {
+      "priority": 2,
+      "goalId": "slv-sandy-number-one-v1",
+      "city": "Sandy",
+      "slug": "sandy",
+      "page": "locations/sandy.html",
+      "panelId": "utah-sandy-google-v1",
+      "cohort": "core-measured",
+      "measurementStatus": "measured",
+      "identityEvidence": "documented-slv-target-measurement-only",
+      "serviceAreaStatus": "pending-current-profile-service-area-verification",
+      "current": {
+        "observedAt": "2026-08-12T14:18:10.300Z",
+        "organicRanks": [
+          17,
+          13,
+          13,
+          11
+        ],
+        "exactCidMapsRanks": [
+          null,
+          null,
+          null,
+          null
+        ],
+        "googleAiOverview": {
+          "present": 0,
+          "ownedCitations": 0
+        },
+        "consumerAi": "configured-manual-measurement-only-blocked-invalid-provider-credential"
+      },
+      "phase": "integrity-and-service-area-evidence",
+      "nextPermittedAction": "Measure weekly and prepare evidence-safe claim replacements; do not assert a city GBP or publish without explicit approval."
+    },
+    {
+      "priority": 3,
+      "goalId": "slv-holladay-number-one-v1",
+      "city": "Holladay",
+      "slug": "holladay",
+      "page": "locations/holladay.html",
+      "panelId": "utah-holladay-google-v1",
+      "cohort": "core-measured",
+      "measurementStatus": "measured",
+      "identityEvidence": "documented-slv-target-measurement-only",
+      "serviceAreaStatus": "pending-current-profile-service-area-verification",
+      "current": {
+        "observedAt": "2026-08-12T14:18:10.300Z",
+        "organicRanks": [
+          17,
+          10,
+          4,
+          12
+        ],
+        "exactCidMapsRanks": [
+          null,
+          null,
+          null,
+          null
+        ],
+        "googleAiOverview": {
+          "present": 0,
+          "ownedCitations": 0
+        },
+        "consumerAi": "configured-manual-measurement-only-blocked-invalid-provider-credential"
+      },
+      "phase": "integrity-and-service-area-evidence",
+      "nextPermittedAction": "Protect the position-4 roof-replacement foothold while preparing removal of unverified city review/project attribution; publish only after explicit approval."
+    },
+    {
+      "priority": 4,
+      "goalId": "slv-cottonwood-heights-number-one-v1",
+      "city": "Cottonwood Heights",
+      "slug": "cottonwood-heights",
+      "page": "locations/cottonwood-heights.html",
+      "panelId": "utah-cottonwood-heights-google-v1",
+      "cohort": "core-measured",
+      "measurementStatus": "measured",
+      "identityEvidence": "documented-slv-target-measurement-only",
+      "serviceAreaStatus": "pending-current-profile-service-area-verification",
+      "current": {
+        "observedAt": "2026-08-12T14:18:10.300Z",
+        "organicRanks": [
+          15,
+          10,
+          15,
+          14
+        ],
+        "exactCidMapsRanks": [
+          null,
+          null,
+          null,
+          null
+        ],
+        "googleAiOverview": {
+          "present": 0,
+          "ownedCitations": 0
+        },
+        "consumerAi": "configured-manual-measurement-only-blocked-invalid-provider-credential"
+      },
+      "phase": "integrity-and-service-area-evidence",
+      "nextPermittedAction": "Measure weekly and prepare evidence-safe local context without treating the neighborhood image as completed-project proof."
+    },
+    {
+      "priority": 5,
+      "goalId": "slv-draper-number-one-v1",
+      "city": "Draper",
+      "slug": "draper",
+      "page": "locations/draper.html",
+      "panelId": "utah-draper-google-v1",
+      "cohort": "core-measured",
+      "measurementStatus": "measured",
+      "identityEvidence": "documented-slv-target-measurement-only",
+      "serviceAreaStatus": "pending-current-profile-service-area-verification",
+      "current": {
+        "observedAt": "2026-08-12T14:18:10.300Z",
+        "organicRanks": [
+          null,
+          null,
+          null,
+          null
+        ],
+        "exactCidMapsRanks": [
+          null,
+          null,
+          null,
+          null
+        ],
+        "googleAiOverview": {
+          "present": 0,
+          "ownedCitations": 0
+        },
+        "consumerAi": "configured-manual-measurement-only-blocked-invalid-provider-credential"
+      },
+      "phase": "architecture-diagnosis-and-integrity",
+      "nextPermittedAction": "Diagnose the main-page versus storm-route intent and internal-link architecture without editing public copy; preserve the storm route's existing search foothold."
+    },
+    {
+      "priority": 6,
+      "goalId": "slv-bluffdale-number-one-v1",
+      "city": "Bluffdale",
+      "slug": "bluffdale",
+      "page": "locations/bluffdale.html",
+      "panelId": "utah-bluffdale-google-v1",
+      "cohort": "expansion-baseline-pending",
+      "measurementStatus": "not-yet-measured",
+      "identityEvidence": "existing-salt-lake-county-route-measurement-only",
+      "serviceAreaStatus": "pending-current-profile-service-area-verification",
+      "current": null,
+      "phase": "manual-google-baseline-before-weekly-admission",
+      "nextPermittedAction": "Run the complete 12-city manual Google baseline atomically; do not infer zero ranks, alter public pages, or assert GBP service-area inclusion from registry membership."
+    },
+    {
+      "priority": 7,
+      "goalId": "slv-herriman-number-one-v1",
+      "city": "Herriman",
+      "slug": "herriman",
+      "page": "locations/herriman.html",
+      "panelId": "utah-herriman-google-v1",
+      "cohort": "expansion-baseline-pending",
+      "measurementStatus": "not-yet-measured",
+      "identityEvidence": "existing-salt-lake-county-route-measurement-only",
+      "serviceAreaStatus": "pending-current-profile-service-area-verification",
+      "current": null,
+      "phase": "manual-google-baseline-before-weekly-admission",
+      "nextPermittedAction": "Run the complete 12-city manual Google baseline atomically; do not infer zero ranks, alter public pages, or assert GBP service-area inclusion from registry membership."
+    },
+    {
+      "priority": 8,
+      "goalId": "slv-kearns-number-one-v1",
+      "city": "Kearns",
+      "slug": "kearns",
+      "page": "locations/kearns.html",
+      "panelId": "utah-kearns-google-v1",
+      "cohort": "expansion-baseline-pending",
+      "measurementStatus": "not-yet-measured",
+      "identityEvidence": "existing-salt-lake-county-route-measurement-only",
+      "serviceAreaStatus": "pending-current-profile-service-area-verification",
+      "current": null,
+      "phase": "manual-google-baseline-before-weekly-admission",
+      "nextPermittedAction": "Run the complete 12-city manual Google baseline atomically; do not infer zero ranks, alter public pages, or assert GBP service-area inclusion from registry membership."
+    },
+    {
+      "priority": 9,
+      "goalId": "slv-magna-number-one-v1",
+      "city": "Magna",
+      "slug": "magna",
+      "page": "locations/magna.html",
+      "panelId": "utah-magna-google-v1",
+      "cohort": "expansion-baseline-pending",
+      "measurementStatus": "not-yet-measured",
+      "identityEvidence": "existing-salt-lake-county-route-measurement-only",
+      "serviceAreaStatus": "pending-current-profile-service-area-verification",
+      "current": null,
+      "phase": "manual-google-baseline-before-weekly-admission",
+      "nextPermittedAction": "Run the complete 12-city manual Google baseline atomically; do not infer zero ranks, alter public pages, or assert GBP service-area inclusion from registry membership."
+    },
+    {
+      "priority": 10,
+      "goalId": "slv-midvale-number-one-v1",
+      "city": "Midvale",
+      "slug": "midvale",
+      "page": "locations/midvale.html",
+      "panelId": "utah-midvale-google-v1",
+      "cohort": "expansion-baseline-pending",
+      "measurementStatus": "not-yet-measured",
+      "identityEvidence": "existing-salt-lake-county-route-measurement-only",
+      "serviceAreaStatus": "pending-current-profile-service-area-verification",
+      "current": null,
+      "phase": "manual-google-baseline-before-weekly-admission",
+      "nextPermittedAction": "Run the complete 12-city manual Google baseline atomically; do not infer zero ranks, alter public pages, or assert GBP service-area inclusion from registry membership."
+    },
+    {
+      "priority": 11,
+      "goalId": "slv-murray-number-one-v1",
+      "city": "Murray",
+      "slug": "murray",
+      "page": "locations/murray.html",
+      "panelId": "utah-murray-google-v1",
+      "cohort": "expansion-baseline-pending",
+      "measurementStatus": "not-yet-measured",
+      "identityEvidence": "existing-salt-lake-county-route-measurement-only",
+      "serviceAreaStatus": "pending-current-profile-service-area-verification",
+      "current": null,
+      "phase": "manual-google-baseline-before-weekly-admission",
+      "nextPermittedAction": "Run the complete 12-city manual Google baseline atomically; do not infer zero ranks, alter public pages, or assert GBP service-area inclusion from registry membership."
+    },
+    {
+      "priority": 12,
+      "goalId": "slv-riverton-number-one-v1",
+      "city": "Riverton",
+      "slug": "riverton",
+      "page": "locations/riverton.html",
+      "panelId": "utah-riverton-google-v1",
+      "cohort": "expansion-baseline-pending",
+      "measurementStatus": "not-yet-measured",
+      "identityEvidence": "existing-salt-lake-county-route-measurement-only",
+      "serviceAreaStatus": "pending-current-profile-service-area-verification",
+      "current": null,
+      "phase": "manual-google-baseline-before-weekly-admission",
+      "nextPermittedAction": "Run the complete 12-city manual Google baseline atomically; do not infer zero ranks, alter public pages, or assert GBP service-area inclusion from registry membership."
+    },
+    {
+      "priority": 13,
+      "goalId": "slv-south-jordan-number-one-v1",
+      "city": "South Jordan",
+      "slug": "south-jordan",
+      "page": "locations/south-jordan.html",
+      "panelId": "utah-south-jordan-google-v1",
+      "cohort": "expansion-baseline-pending",
+      "measurementStatus": "not-yet-measured",
+      "identityEvidence": "existing-salt-lake-county-route-measurement-only",
+      "serviceAreaStatus": "pending-current-profile-service-area-verification",
+      "current": null,
+      "phase": "manual-google-baseline-before-weekly-admission",
+      "nextPermittedAction": "Run the complete 12-city manual Google baseline atomically; do not infer zero ranks, alter public pages, or assert GBP service-area inclusion from registry membership."
+    },
+    {
+      "priority": 14,
+      "goalId": "slv-south-salt-lake-number-one-v1",
+      "city": "South Salt Lake",
+      "slug": "south-salt-lake",
+      "page": "locations/south-salt-lake.html",
+      "panelId": "utah-south-salt-lake-google-v1",
+      "cohort": "expansion-baseline-pending",
+      "measurementStatus": "not-yet-measured",
+      "identityEvidence": "existing-salt-lake-county-route-measurement-only",
+      "serviceAreaStatus": "pending-current-profile-service-area-verification",
+      "current": null,
+      "phase": "manual-google-baseline-before-weekly-admission",
+      "nextPermittedAction": "Run the complete 12-city manual Google baseline atomically; do not infer zero ranks, alter public pages, or assert GBP service-area inclusion from registry membership."
+    },
+    {
+      "priority": 15,
+      "goalId": "slv-taylorsville-number-one-v1",
+      "city": "Taylorsville",
+      "slug": "taylorsville",
+      "page": "locations/taylorsville.html",
+      "panelId": "utah-taylorsville-google-v1",
+      "cohort": "expansion-baseline-pending",
+      "measurementStatus": "not-yet-measured",
+      "identityEvidence": "existing-salt-lake-county-route-measurement-only",
+      "serviceAreaStatus": "pending-current-profile-service-area-verification",
+      "current": null,
+      "phase": "manual-google-baseline-before-weekly-admission",
+      "nextPermittedAction": "Run the complete 12-city manual Google baseline atomically; do not infer zero ranks, alter public pages, or assert GBP service-area inclusion from registry membership."
+    },
+    {
+      "priority": 16,
+      "goalId": "slv-west-jordan-number-one-v1",
+      "city": "West Jordan",
+      "slug": "west-jordan",
+      "page": "locations/west-jordan.html",
+      "panelId": "utah-west-jordan-google-v1",
+      "cohort": "expansion-baseline-pending",
+      "measurementStatus": "not-yet-measured",
+      "identityEvidence": "existing-salt-lake-county-route-measurement-only",
+      "serviceAreaStatus": "pending-current-profile-service-area-verification",
+      "current": null,
+      "phase": "manual-google-baseline-before-weekly-admission",
+      "nextPermittedAction": "Run the complete 12-city manual Google baseline atomically; do not infer zero ranks, alter public pages, or assert GBP service-area inclusion from registry membership."
+    },
+    {
+      "priority": 17,
+      "goalId": "slv-west-valley-city-number-one-v1",
+      "city": "West Valley City",
+      "slug": "west-valley-city",
+      "page": "locations/west-valley-city.html",
+      "panelId": "utah-west-valley-city-google-v1",
+      "cohort": "expansion-baseline-pending",
+      "measurementStatus": "not-yet-measured",
+      "identityEvidence": "existing-salt-lake-county-route-measurement-only",
+      "serviceAreaStatus": "pending-current-profile-service-area-verification",
+      "current": null,
+      "phase": "manual-google-baseline-before-weekly-admission",
+      "nextPermittedAction": "Run the complete 12-city manual Google baseline atomically; do not infer zero ranks, alter public pages, or assert GBP service-area inclusion from registry membership."
+    }
+  ],
+  "gates": {
+    "publicCleanup": "explicit-owner-approval-required",
+    "consumerAiCredential": "owner-action-required-valid-Bright-Data-user-API-key",
+    "businessDriveEvidence": "owner-action-required-business-account-connector",
+    "duplicateVercelIntegration": "external-owner-team-rate-limited-and-unresolved",
+    "saltLakeCityExperiment": "hold-until-2026-09-09T04:40:58Z",
+    "expansionAdmission": "manual-baseline-plus-city-integrity-and-service-area-evidence-before-recurring-spend"
+  },
+  "prohibited": [
+    "doorway pages",
+    "fabricated reviews or project proof",
+    "NAP drift",
+    "unsupported claims",
+    "unapproved GBP, directory, indexing, outreach, or public-page mutations",
+    "declaring success from one observation or an incomplete panel",
+    "treating an unmeasured expansion city as zero",
+    "automatically admitting expansion cities to recurring weekly spend",
+    "applying the verified Salt Lake Valley entity graph to a city without registered evidence",
+    "declaring the 18-city portfolio complete while any city goal is missing or outside its sustained window"
+  ]
+}
