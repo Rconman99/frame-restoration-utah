@@ -70,7 +70,11 @@ for (const query of displacement.queries) {
 
 const coreApprovalPhrase = millcreekAmendment.releaseGate.requiredApprovalPhrase;
 const expansionApprovalPhrase = expansionCleanup.approval.requiredPhrase;
-const pendingServiceArea = new Set(serviceAreaRequest.citiesRequiringCurrentEvidence);
+const pendingServiceArea = new Set(
+  portfolio.cityGoals
+    .filter((goal) => goal.serviceAreaStatus.startsWith("pending-"))
+    .map((goal) => goal.city),
+);
 const interventionOrder = [
   "Salt Lake City", "Millcreek", "Magna", "Kearns", "Sandy", "Holladay", "Cottonwood Heights",
   "Murray", "Riverton", "South Jordan", "Taylorsville", "Bluffdale", "Midvale", "Herriman",
@@ -92,6 +96,13 @@ function selectedAction(goal, lane, diagnosis, protectedFootholds, gscUrlDiagnos
     gate: "explicit-owner-publication-approval-and-full-surface-release-gate",
     ownerApprovalPhrase: coreApprovalPhrase,
     acceptanceCheck: "Both Millcreek routes publish the reviewed Salt Lake Valley CID/sameAs set, strict integrity is green, all five rendered release gates pass, and a fresh baseline opens the 28-day observation window.",
+  };
+  if (lane === "not-saved-service-area-no-exact-cid-planning") return {
+    decision: "Request input",
+    action: `Keep ${goal.city} outside the exact-CID Maps lane because the current owner-view receipt marks it not saved. Preserve organic/AIO footholds and do not change the GBP service area unless the owner separately confirms the city is truthfully served and explicitly approves that profile mutation.`,
+    gate: "not-saved-on-current-exact-cid-service-area-receipt",
+    ownerApprovalPhrase: goal.cohort.startsWith("core-") ? coreApprovalPhrase : expansionApprovalPhrase,
+    acceptanceCheck: `${goal.city} remains excluded from exact-CID Maps claims and identity planning unless a later current receipt shows it saved; any public integrity cleanup remains separately owner-gated.`,
   };
   if (protectedFootholds.organicNumberOneQueries.length || protectedFootholds.googleAiOverviewCitedQueries.length) return {
     decision: "Request input",
@@ -316,7 +327,7 @@ const queue = {
     {
       id: serviceAreaRequest.requestId,
       state: serviceAreaRequest.delivery.state,
-      cities: serviceAreaRequest.citiesRequiringCurrentEvidence,
+      cities: [...pendingServiceArea],
       file: sourceFiles.serviceAreaRequest,
     },
     {
@@ -353,13 +364,16 @@ assert.equal(gscSplitUrlDiagnosisIsCurrent, true, "split-URL diagnosis has expir
 assert.equal(candidates.find((candidate) => candidate.city === "Holladay").lane, "diagnose-url-consolidation-before-intent-change");
 assert.equal(candidates.find((candidate) => candidate.city === "Herriman").lane, "service-area-proof-and-targeted-gsc-before-intent-change");
 assert.match(candidates.find((candidate) => candidate.city === "Herriman").selectedAction, /negligible pre-redirect alternate trace as non-actionable/);
-assert.equal(queue.summary.citiesPendingServiceAreaEvidence, 16);
+assert.equal(queue.summary.citiesPendingServiceAreaEvidence, pendingServiceArea.size);
 assert.equal(expansionArchitectureByCity.size, 12);
 assert.equal(mapsByCity.size, 18);
 assert.equal(queue.summary.protectedOrganicNumberOneQueries, portfolio.portfolioScore.fixedOrganicNumberOne);
 assert.equal(queue.summary.protectedGoogleAiOverviewCitations, portfolio.portfolioScore.googleAiOverviewCitations);
 assert.equal(queue.summary.citiesAtSustainedGoal, 0);
-assert.equal(mapsReadiness.summary.citiesReadyForMapsIntervention, 0);
+assert.equal(
+  mapsReadiness.summary.citiesReadyForMapsIntervention,
+  mapsReadiness.cities.filter((city) => city.lane.endsWith("weekly-exact-cid-displacement-measurement")).length,
+);
 assert.equal(driveReceipt.status, "BUSINESS_ACCOUNT_SEARCH_COMPLETE_CURRENT_GBP_PROOF_NOT_FOUND");
 assert.equal(driveReceipt.connector.requiredAccount, "ryan@framerestorations.com");
 assert.equal(driveReceipt.connector.observedAccount, "ryan@framerestorations.com");
@@ -375,6 +389,7 @@ assert.ok(candidates.every((candidate) => candidate.sources.panelEvidence.length
 assert.ok(candidates.every((candidate) => candidate.feedback.requiredComparablePanels === 4));
 assert.ok(candidates.every((candidate) => candidate.decision === "Monitor" || candidate.ownerApprovalPhrase));
 assert.ok(candidates.filter((candidate) => pendingServiceArea.has(candidate.city)).every((candidate) => candidate.evidenceFeatures.serviceAreaStatus.startsWith("pending-")));
+assert.ok(candidates.filter((candidate) => candidate.evidenceFeatures.serviceAreaStatus.startsWith("not-saved-")).every((candidate) => candidate.lane === "not-saved-service-area-no-exact-cid-planning"));
 assert.ok(candidates.every((candidate) => candidate.evidenceFeatures.intendedPageSelectedForEveryMeasuredRank));
 assert.equal(candidates.reduce((sum, candidate) => sum + candidate.evidenceFeatures.protectedRelatedRoutes.length, 0), expansionArchitecture.summary.relatedRoutesProtected);
 assert.ok(candidates.every((candidate) => Object.values(candidate.scoreVector).every((value) => Number.isInteger(value) && value >= 0 && value <= 10)));

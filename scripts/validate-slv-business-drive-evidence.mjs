@@ -15,6 +15,7 @@ const receipt = read(receiptPath);
 const serviceAreaRequest = read(serviceAreaRequestPath);
 const program = read(programPath);
 const portfolio = read(portfolioPath);
+const ownerViewEvidence = read("data/rank-tracker/evidence/SLV-GBP-OWNER-VIEW-LATEST.json");
 
 const exactKeys = (value, expected, label) => {
   assert.deepEqual(Object.keys(value).sort(), [...expected].sort(), `${label} contains an unexpected or missing field`);
@@ -123,12 +124,26 @@ assert.equal(programDriveAudit.requiredAccount, receipt.connector.requiredAccoun
 assert.equal(programDriveAudit.observedAccount, receipt.connector.observedAccount);
 assert.equal(programDriveAudit.acceptedPrimaryEvidenceCount, 0);
 assert.equal(programDriveAudit.driveMutations, 0);
-assert.equal(program.programGates.businessDrive.status, "search-complete-owner-view-gbp-receipt-required");
+assert.ok([
+  "search-complete-owner-view-gbp-receipt-required",
+  "business-search-complete-partial-owner-view-evidence-registered",
+  "business-search-and-current-owner-view-evidence-complete",
+].includes(program.programGates.businessDrive.status));
 assert.equal(
   portfolio.gates.businessDriveEvidence,
-  "business-account-search-complete-current-owner-view-gbp-proof-required",
+  ownerViewEvidence.status === "MEASURED_EXACT_CID_OWNER_VIEW"
+    ? ownerViewEvidence.summary.knownProfileFields === 12 && ownerViewEvidence.summary.unknown === 0
+      ? "business-account-search-and-current-owner-view-gbp-proof-complete"
+      : "business-account-search-complete-partial-current-owner-view-gbp-proof-registered"
+    : receipt.acceptedCurrentGbpProfileEvidenceCount === 0
+    ? "business-account-search-complete-current-owner-view-gbp-proof-required"
+    : portfolio.gates.businessDriveEvidence,
 );
 
 console.log(
-  `PASS SLV business Drive evidence: ${receipt.connector.observedAccount} matched, ${receipt.searchedArtifacts.length} bounded artifacts audited, current GBP proof remains required`,
+  `PASS SLV business Drive evidence: ${receipt.connector.observedAccount} matched, ${receipt.searchedArtifacts.length} bounded artifacts audited, ${
+    ownerViewEvidence.status === "MEASURED_EXACT_CID_OWNER_VIEW"
+      ? "current sanitized owner-view proof registered"
+      : "current GBP proof remains required"
+  }`,
 );

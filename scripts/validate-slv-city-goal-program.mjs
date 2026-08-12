@@ -4,6 +4,7 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import path from "node:path";
 import { spawnSync } from "node:child_process";
+import { validateOwnerEvidenceReceipt } from "./lib/slv-gbp-owner-evidence.mjs";
 
 const repoRoot = process.cwd();
 const programPath = path.join(
@@ -19,6 +20,14 @@ const integrityContract = JSON.parse(
 );
 const consumerAi = JSON.parse(fs.readFileSync(path.join(repoRoot, program.authoritativeSources.consumerAiLedger), "utf8"));
 const consumerAiByCity = new Map(consumerAi.cities.map((city) => [city.city, city]));
+const ownerEvidence = JSON.parse(fs.readFileSync(path.join(repoRoot, program.authoritativeSources.ownerViewGbpEvidence), "utf8"));
+validateOwnerEvidenceReceipt(ownerEvidence, {
+  expectedCities: [
+    ...program.cityTracks.map((track) => track.city),
+    "Bluffdale", "Herriman", "Kearns", "Magna", "Midvale", "Murray", "Riverton",
+    "South Jordan", "South Salt Lake", "Taylorsville", "West Jordan", "West Valley City",
+  ],
+});
 
 assert.equal(program.schemaVersion, 1);
 assert.equal(program.status, "active-not-achieved");
@@ -94,11 +103,11 @@ const pendingServiceAreaCities = new Set(
 );
 for (const track of program.cityTracks) {
   if (pendingServiceAreaCities.has(track.slug)) {
-    assert.equal(
-      track.serviceAreaStatus,
+    assert.ok([
       "pending-current-profile-service-area-verification",
-      `${track.city} must remain measurement-only until current profile evidence is registered`,
-    );
+      "saved-current-profile-service-area-observed",
+      "not-saved-current-profile-service-area",
+    ].includes(track.serviceAreaStatus), `${track.city} has an unsupported service-area evidence state`);
   }
 }
 assert.equal(
@@ -106,8 +115,10 @@ assert.equal(
   "verified-profile-identity-city",
 );
 assert.equal(
-  program.cityTracks.find((track) => track.slug === "millcreek")?.serviceAreaStatus,
-  "saved-service-area-observed",
+  ["saved-service-area-observed", "saved-current-profile-service-area-observed", "not-saved-current-profile-service-area"].includes(
+    program.cityTracks.find((track) => track.slug === "millcreek")?.serviceAreaStatus,
+  ),
+  true,
 );
 assert.deepEqual(program.currentScore, {
   organicNumberOneQueries,
@@ -130,10 +141,11 @@ assert.deepEqual(
   new Set(integrityContract.targetPages.map((file) => path.basename(file, ".html").split("-").map((word) => word[0].toUpperCase() + word.slice(1)).join(" "))),
 );
 assert.equal(integrityContract.releaseGate.requiresExplicitOwnerApproval, true);
-assert.equal(
-  program.programGates.businessDrive.status,
-  "search-complete-owner-view-gbp-receipt-required",
-);
+assert.equal(program.programGates.businessDrive.status, ownerEvidence.status === "MEASURED_EXACT_CID_OWNER_VIEW"
+  ? ownerEvidence.summary.knownProfileFields === 12 && ownerEvidence.summary.unknown === 0
+    ? "business-search-and-current-owner-view-evidence-complete"
+    : "business-search-complete-partial-owner-view-evidence-registered"
+  : "search-complete-owner-view-gbp-receipt-required");
 assert.equal(program.authoritativeSources.businessDriveAudit.searchPerformed, true);
 assert.equal(
   program.authoritativeSources.businessDriveAudit.requiredAccount,

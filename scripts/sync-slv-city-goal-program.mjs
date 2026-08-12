@@ -3,6 +3,11 @@
 import assert from "node:assert/strict";
 import fs from "node:fs";
 import path from "node:path";
+import {
+  baselineServiceAreaStatus,
+  serviceAreaStatusFromReceipt,
+  validateOwnerEvidenceReceipt,
+} from "./lib/slv-gbp-owner-evidence.mjs";
 
 const repoRoot = process.cwd();
 const programPath = path.join(
@@ -23,6 +28,18 @@ const consumerAiPath = "data/rank-tracker/SLV-CONSUMER-AI-LATEST.json";
 const consumerAi = JSON.parse(fs.readFileSync(path.join(repoRoot, consumerAiPath), "utf8"));
 const consumerAiByCity = new Map(consumerAi.cities.map((city) => [city.city, city]));
 const next = structuredClone(current);
+const ownerEvidencePath = next.authoritativeSources.ownerViewGbpEvidence;
+const ownerEvidence = JSON.parse(fs.readFileSync(path.join(repoRoot, ownerEvidencePath), "utf8"));
+const ownerEvidenceCities = [
+  ...next.cityTracks.map((track) => track.city),
+  "Bluffdale", "Herriman", "Kearns", "Magna", "Midvale", "Murray", "Riverton",
+  "South Jordan", "South Salt Lake", "Taylorsville", "West Jordan", "West Valley City",
+];
+validateOwnerEvidenceReceipt(ownerEvidence, { expectedCities: ownerEvidenceCities });
+const serviceAreaByCity = new Map(ownerEvidence.serviceAreas.map((row) => [row.city, row]));
+const ownerEvidenceComplete = ownerEvidence.status === "MEASURED_EXACT_CID_OWNER_VIEW"
+  && ownerEvidence.summary.knownProfileFields === 12
+  && ownerEvidence.summary.unknown === 0;
 
 let organicNumberOneQueries = 0;
 let organicQueriesMeasured = 0;
@@ -49,6 +66,10 @@ for (const track of next.cityTracks) {
     ownedCitations: report.summary.aiOverviewCitations,
   };
   track.consumerAi = consumerAiByCity.get(track.city)?.state || track.consumerAi;
+  track.serviceAreaStatus = serviceAreaStatusFromReceipt(
+    baselineServiceAreaStatus(track),
+    serviceAreaByCity.get(track.city),
+  );
 
   organicNumberOneQueries += report.results.filter((result) => result.organicRank === 1).length;
   organicQueriesMeasured += report.results.length;
@@ -81,6 +102,19 @@ if (consumerAi.summary.citiesWithCompleteReading > 0) {
     nextAction: "Continue the fixed weekly panels; missing or failed city panels remain unmeasured and cannot satisfy or fail the goal.",
   };
 }
+next.programGates.businessDrive = ownerEvidenceComplete ? {
+  status: "business-search-and-current-owner-view-evidence-complete",
+  reason: "The business Drive search and sanitized exact-CID owner-view profile/service-area receipt are complete.",
+  nextAction: "Use the sanitized receipt to classify evidence lanes; every GBP or public-page change remains separately scoped and owner-approved.",
+} : ownerEvidence.status === "MEASURED_EXACT_CID_OWNER_VIEW" ? {
+  status: "business-search-complete-partial-owner-view-evidence-registered",
+  reason: "A current sanitized exact-CID owner-view receipt is registered, but one or more profile fields or city service-area states remain unknown.",
+  nextAction: "Complete only the remaining unknown owner-view fields and city states without editing GBP or storing private source material.",
+} : {
+  status: "search-complete-owner-view-gbp-receipt-required",
+  reason: "The registered gdrive-business route was verified as ryan@framerestorations.com and the bounded business-account search completed, but no current exact-CID owner-view GBP or saved service-area receipt was found.",
+  nextAction: "Provide a current dated owner-view screenshot set or export for CID 5689850818145735734. The business Drive connection does not need to be reconnected.",
+};
 
 const nextText = `${JSON.stringify(next, null, 2)}\n`;
 if (write) {

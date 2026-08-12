@@ -6,6 +6,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { aggregateMapsLeaders, assertMapsReadinessCity, mapsReadinessLane } from "./lib/slv-maps-readiness.mjs";
+import { MEASURED_STATUS, validateOwnerEvidenceReceipt } from "./lib/slv-gbp-owner-evidence.mjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const write = process.argv.includes("--write");
@@ -19,6 +20,7 @@ const sourceFiles = {
   entityHealth: "data/rank-tracker/SLV-ENTITY-HEALTH-2026-08-12.json",
   serviceAreaRequest: "data/authority/SLV-SERVICE-AREA-EVIDENCE-REQUEST-2026-08-12.json",
   ownerProfileAuditRequest: "data/authority/SLV-GBP-OWNER-AUDIT-REQUEST-2026-08-12.json",
+  ownerViewEvidence: "data/rank-tracker/evidence/SLV-GBP-OWNER-VIEW-LATEST.json",
 };
 const read = (file) => JSON.parse(fs.readFileSync(path.join(root, file), "utf8"));
 const sha256 = (file) => crypto.createHash("sha256").update(fs.readFileSync(path.join(root, file))).digest("hex");
@@ -27,7 +29,13 @@ const displacement = read(sourceFiles.displacement);
 const entityHealth = read(sourceFiles.entityHealth);
 const serviceAreaRequest = read(sourceFiles.serviceAreaRequest);
 const ownerProfileAuditRequest = read(sourceFiles.ownerProfileAuditRequest);
-const ownerProfileCompletenessState = ownerProfileAuditRequest.evidenceState;
+const ownerViewEvidence = read(sourceFiles.ownerViewEvidence);
+validateOwnerEvidenceReceipt(ownerViewEvidence, { expectedCities: portfolio.cityGoals.map((goal) => goal.city) });
+const ownerProfileCompletenessState = ownerViewEvidence.status === MEASURED_STATUS
+  ? ownerViewEvidence.summary.knownProfileFields === 12
+    ? "measured-exact-cid-owner-view"
+    : "partial-exact-cid-owner-view"
+  : ownerProfileAuditRequest.evidenceState;
 const entityByCity = new Map(entityHealth.cities.map((city) => [city.city, city]));
 const queriesByCity = new Map();
 for (const query of displacement.queries) {
@@ -38,6 +46,9 @@ for (const query of displacement.queries) {
 const nextAction = ({ city, lane }) => {
   if (lane === "service-area-proof-before-exact-cid-planning") {
     return `Obtain current owner-view service-area evidence for ${city} and the read-only exact-CID profile audit; do not attach the Salt Lake CID to the city page or edit GBP unless a later reviewed scope is explicitly approved.`;
+  }
+  if (lane === "not-saved-service-area-no-exact-cid-planning") {
+    return `${city} is not in the current saved service-area receipt. Do not attach the exact CID or optimize this city for that Maps profile; any service-area change requires a separate truthful owner decision and explicit GBP mutation approval.`;
   }
   if (lane === "owner-gated-page-identity-correction") {
     return "Collect the exact-CID review and owner-profile baselines, then request the pinned Millcreek page-identity correction separately; preserve the owned AIO citation and do not edit GBP from this ledger.";
@@ -75,7 +86,7 @@ const cities = portfolio.cityGoals.map((goal) => {
       relevance: {
         serviceAreaEvidence: goal.serviceAreaStatus,
         pageIdentity: entity.identityProfile,
-        exactCidOwnerProfileFields: "unmeasured-owner-view-audit-required",
+        exactCidOwnerProfileFields: ownerProfileCompletenessState,
         rule: "Use accurate, complete, real-world business information; a city keyword or website route is not profile evidence."
       },
       distance: {
@@ -174,8 +185,9 @@ const ledger = {
     mapsPacksAbsent: cities.reduce((sum, city) => sum + city.maps.packsAbsent, 0),
     exactCidReturned: cities.reduce((sum, city) => sum + city.maps.exactCidReturned, 0),
     exactCidNumberOne: cities.reduce((sum, city) => sum + city.maps.exactCidNumberOne, 0),
-    profileVerifiedCities: cities.filter((city) => !city.googleRankingAxes.relevance.serviceAreaEvidence.startsWith("pending-")).length,
+    profileVerifiedCities: cities.filter((city) => !city.googleRankingAxes.relevance.serviceAreaEvidence.startsWith("pending-") && !city.googleRankingAxes.relevance.serviceAreaEvidence.startsWith("not-saved-")).length,
     citiesPendingServiceAreaEvidence: cities.filter((city) => city.googleRankingAxes.relevance.serviceAreaEvidence.startsWith("pending-")).length,
+    citiesNotSavedOnCurrentServiceAreaReceipt: cities.filter((city) => city.googleRankingAxes.relevance.serviceAreaEvidence.startsWith("not-saved-")).length,
     pagesUsingExactCidIdentity: cities.filter((city) => city.googleRankingAxes.relevance.pageIdentity === "salt-lake-valley-exact-cid").length,
     exactCidReviewState: entityHealth.reviews.saltLakeValley.state,
     ownerProfileCompletenessState,
@@ -203,16 +215,21 @@ assert.equal(ledger.summary.queries, 72);
 assert.equal(ledger.summary.mapsPacksPresent, displacement.score.mapsPacksPresent);
 assert.equal(ledger.summary.mapsPacksAbsent, displacement.score.mapsPacksAbsent);
 assert.equal(ledger.summary.exactCidNumberOne, displacement.score.exactCidMapsNumberOne);
-assert.equal(ledger.summary.profileVerifiedCities, 2);
-assert.equal(ledger.summary.citiesPendingServiceAreaEvidence, 16);
+assert.equal(ledger.summary.profileVerifiedCities + ledger.summary.citiesPendingServiceAreaEvidence + ledger.summary.citiesNotSavedOnCurrentServiceAreaReceipt, 18);
 assert.equal(ledger.summary.pagesUsingExactCidIdentity, 1);
-assert.equal(ledger.summary.citiesReadyForMapsIntervention, 0);
+assert.equal(
+  ledger.summary.citiesReadyForMapsIntervention,
+  cities.filter((city) => city.lane.endsWith("weekly-exact-cid-displacement-measurement")).length,
+);
 assert.equal(ownerProfileAuditRequest.delivery.externalSendAuthorized, false);
-assert.ok(["unmeasured-owner-view-audit-required", "measured-exact-cid-owner-view"].includes(ownerProfileCompletenessState));
+assert.ok(["unmeasured-owner-view-audit-required", "partial-exact-cid-owner-view", "measured-exact-cid-owner-view"].includes(ownerProfileCompletenessState));
 assert.equal(serviceAreaRequest.delivery.externalSendAuthorized, false);
 assert.ok(cities.every((city) => city.queries.length === 4));
 assert.ok(cities.every((city) => city.publicMutationAuthorized === false));
-assert.ok(cities.filter((city) => city.lane === "service-area-proof-before-exact-cid-planning").length === 16);
+assert.equal(
+  cities.filter((city) => city.lane === "service-area-proof-before-exact-cid-planning").length,
+  ledger.summary.citiesPendingServiceAreaEvidence,
+);
 
 const nextText = `${JSON.stringify(ledger, null, 2)}\n`;
 const fullOutputPath = path.join(root, outputPath);

@@ -52,7 +52,7 @@
   "sources": {
     "portfolio": {
       "file": "data/rank-tracker/SLV-18-CITY-GOAL-PORTFOLIO-2026-08-12.json",
-      "sha256": "9e50c3174f5a10f1100f69b674c9c0a7e735829366a4209595463c4b85d9508b"
+      "sha256": "17afa4bb44a16f17827c1f4523d8c288c483ec2c4b352aa5da19615aef6d391f"
     },
     "displacement": {
       "file": "data/rank-tracker/SLV-COMPETITOR-DISPLACEMENT-2026-08-12.json",
@@ -60,15 +60,19 @@
     },
     "entityHealth": {
       "file": "data/rank-tracker/SLV-ENTITY-HEALTH-2026-08-12.json",
-      "sha256": "534420a103d2b61ecc4e48fd50cd8c6c78366033a6777392ace76d6e997d8697"
+      "sha256": "bc787d153c9ae2e4199c7f25a4c7fc6593e4bd85ac1b09327e91b99dd465c3a7"
     },
     "serviceAreaRequest": {
       "file": "data/authority/SLV-SERVICE-AREA-EVIDENCE-REQUEST-2026-08-12.json",
-      "sha256": "2888e2c4482f328c0f7e8054e0c32180f7bf5063f1c3a65937c9de9dea650f31"
+      "sha256": "d1eda224e2904c5bfb26e905d86666dc297aac42549bf3070a0776de9976f6cf"
     },
     "ownerProfileAuditRequest": {
       "file": "data/authority/SLV-GBP-OWNER-AUDIT-REQUEST-2026-08-12.json",
-      "sha256": "88e701fc0438260e4249a4b38ebb6e872dd454c2389a21311e67210b1ca0777d"
+      "sha256": "27db67e0de4077f43f88cecc288cc86824b94ce5ccf6e878401b755f8fe63fa8"
+    },
+    "ownerViewEvidence": {
+      "file": "data/rank-tracker/evidence/SLV-GBP-OWNER-VIEW-LATEST.json",
+      "sha256": "2053be6282edf2bfa5820dbd1d2718c291b23e623fcbf520e32ceed27dd879b5"
     }
   },
   "summary": {
@@ -80,6 +84,7 @@
     "exactCidNumberOne": 0,
     "profileVerifiedCities": 2,
     "citiesPendingServiceAreaEvidence": 16,
+    "citiesNotSavedOnCurrentServiceAreaReceipt": 0,
     "pagesUsingExactCidIdentity": 1,
     "exactCidReviewState": "measured-exact-cid",
     "ownerProfileCompletenessState": "unmeasured-owner-view-audit-required",

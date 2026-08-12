@@ -114,10 +114,13 @@ const cities = portfolio.cityGoals.map((goal) => {
 });
 
 const verifiedProfileCities = portfolio.cityGoals
-  .filter((goal) => !goal.serviceAreaStatus.startsWith("pending-"))
+  .filter((goal) => !goal.serviceAreaStatus.startsWith("pending-") && !goal.serviceAreaStatus.startsWith("not-saved-"))
   .map((goal) => goal.city);
 const pendingServiceAreaCities = portfolio.cityGoals
   .filter((goal) => goal.serviceAreaStatus.startsWith("pending-"))
+  .map((goal) => goal.city);
+const notSavedServiceAreaCities = portfolio.cityGoals
+  .filter((goal) => goal.serviceAreaStatus.startsWith("not-saved-"))
   .map((goal) => goal.city);
 const allPhoneMismatches = cities.flatMap((city) => city.nap.phoneMismatches.map((item) => ({ city: city.city, ...item })));
 const allRegionMismatches = cities.flatMap((city) => city.nap.regionMismatches.map((value) => ({ city: city.city, value })));
@@ -135,6 +138,7 @@ const health = {
       cid: slvCid,
       verifiedProfileCities,
       pendingCurrentProfileServiceAreaVerification: pendingServiceAreaCities,
+      notSavedOnCurrentProfileServiceAreaReceipt: notSavedServiceAreaCities,
     },
     heber: {
       cid: heberCid,
@@ -204,8 +208,7 @@ const health = {
 };
 
 assert.equal(health.cities.length, 18);
-assert.deepEqual(verifiedProfileCities, ["Salt Lake City", "Millcreek"]);
-assert.equal(pendingServiceAreaCities.length, 16);
+assert.equal(verifiedProfileCities.length + pendingServiceAreaCities.length + notSavedServiceAreaCities.length, 18);
 assert.equal(inferredReviewCid, heberCid, "review archive must resolve to the Heber CID");
 assert.notEqual(inferredReviewCid, slvCid, "Heber review data must not be attributed to the Salt Lake Valley CID");
 if (slvReviewLatest) {

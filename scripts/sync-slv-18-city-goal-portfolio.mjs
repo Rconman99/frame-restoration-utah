@@ -3,6 +3,11 @@
 import assert from "node:assert/strict";
 import fs from "node:fs";
 import path from "node:path";
+import {
+  baselineServiceAreaStatus,
+  serviceAreaStatusFromReceipt,
+  validateOwnerEvidenceReceipt,
+} from "./lib/slv-gbp-owner-evidence.mjs";
 
 const root = process.cwd();
 const portfolioFile = path.join(root, "data/rank-tracker/SLV-18-CITY-GOAL-PORTFOLIO-2026-08-12.json");
@@ -21,6 +26,9 @@ const consumerAiByCity = new Map(consumerAi.cities.map((city) => [city.city, cit
 const coreById = new Map(core.cityTracks.map((track) => [track.panelId, track]));
 const corePanelById = new Map(coreRegistry.panels.map((panel) => [panel.id, panel]));
 const expansionById = new Map(expansion.panels.map((panel) => [panel.id, panel]));
+const ownerEvidence = JSON.parse(fs.readFileSync(path.join(root, next.sources.ownerViewGbpEvidence), "utf8"));
+validateOwnerEvidenceReceipt(ownerEvidence, { expectedCities: next.cityGoals.map((goal) => goal.city) });
+const serviceAreaByCity = new Map(ownerEvidence.serviceAreas.map((row) => [row.city, row]));
 
 let expansionObservedAt = "";
 
@@ -47,6 +55,10 @@ for (const goal of next.cityGoals.filter((candidate) => candidate.priority < 6))
     },
     consumerAi: consumerAiByCity.get(goal.city)?.state || track.consumerAi,
   };
+  goal.serviceAreaStatus = serviceAreaStatusFromReceipt(
+    baselineServiceAreaStatus(goal),
+    serviceAreaByCity.get(goal.city),
+  );
 }
 
 for (const goal of next.cityGoals.filter((candidate) => candidate.priority >= 6)) {
@@ -72,6 +84,10 @@ for (const goal of next.cityGoals.filter((candidate) => candidate.priority >= 6)
     },
     consumerAi: consumerAiByCity.get(goal.city)?.state || "configured-manual-unmeasured-invalid-provider-credential",
   };
+  goal.serviceAreaStatus = serviceAreaStatusFromReceipt(
+    baselineServiceAreaStatus(goal),
+    serviceAreaByCity.get(goal.city),
+  );
   goal.phase = "integrity-and-service-area-evidence-before-weekly-admission";
   goal.nextPermittedAction = "Preserve measured organic and AIO footholds, complete evidence-safe integrity diagnosis, and verify current profile service-area evidence; do not edit public pages or assert a city GBP without explicit approval.";
 
@@ -89,6 +105,11 @@ const aioPresent = next.cityGoals.reduce((sum, goal) => sum + goal.current.googl
 const aioCited = next.cityGoals.reduce((sum, goal) => sum + goal.current.googleAiOverview.ownedCitations, 0);
 next.sources.expansionPanelObservedAt = expansionObservedAt;
 next.sources.consumerAiLedger = consumerAiPath;
+next.gates.businessDriveEvidence = ownerEvidence.status === "MEASURED_EXACT_CID_OWNER_VIEW"
+  ? ownerEvidence.summary.knownProfileFields === 12 && ownerEvidence.summary.unknown === 0
+    ? "business-account-search-and-current-owner-view-gbp-proof-complete"
+    : "business-account-search-complete-partial-current-owner-view-gbp-proof-registered"
+  : "business-account-search-complete-current-owner-view-gbp-proof-required";
 next.cohorts.expansion.state = "first-manual-baseline-measured-not-yet-admitted-to-weekly-spend";
 next.portfolioScore = {
   citiesInPortfolio: next.cityGoals.length,

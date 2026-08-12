@@ -14,12 +14,13 @@ export function measuredMeanRank(ranks = []) {
 export function interventionLane({ city, organicNumberOne = [], aioOwned = [], gscState, gscUrlDisposition = null, cohort, serviceAreaStatus }) {
   if (city === "Salt Lake City") return "observe-time-gated-slc-experiment";
   if (city === "Millcreek") return "owner-gated-verified-identity-and-integrity-cleanup";
+  if (serviceAreaStatus?.startsWith("not-saved-")) return "not-saved-service-area-no-exact-cid-planning";
   if (organicNumberOne.length || aioOwned.length) return "protect-foothold-before-cleanup-or-intent-change";
   if (gscState === "url-competition-requires-diagnosis" && gscUrlDisposition !== "monitor-negligible-historical-trace") {
     return "diagnose-url-consolidation-before-intent-change";
   }
   if (cohort.startsWith("core-")) return "owner-gated-core-integrity-then-single-variable-intent-test";
-  if (serviceAreaStatus.startsWith("pending-")) return "service-area-proof-and-targeted-gsc-before-intent-change";
+  if (serviceAreaStatus?.startsWith("pending-")) return "service-area-proof-and-targeted-gsc-before-intent-change";
   return "targeted-gsc-before-single-variable-intent-test";
 }
 
