@@ -6,6 +6,9 @@ on:
       - '.github/workflows/slv-city-goal-program.yml'
       - 'data/rank-tracker/SLV-CITY-GOAL-PROGRAM-2026-08-12.json'
       - 'data/rank-tracker/DRAPER-ARCHITECTURE-DIAGNOSIS-2026-08-12.json'
+      - 'data/rank-tracker/HOLLADAY-ARCHITECTURE-DIAGNOSIS-2026-08-12.json'
+      - 'data/rank-tracker/panels/holladay/2026-08-12.json'
+      - 'data/seo/snapshots/2026-08-12.json'
       - 'data/rank-tracker/panels.json'
       - 'data/rank-tracker/config.json'
       - 'data/rank-tracker/latest.json'
@@ -18,11 +21,14 @@ on:
       - 'locations/holladay.html'
       - 'locations/cottonwood-heights.html'
       - 'locations/draper.html'
+      - '**/*.html'
+      - 'vercel.json'
       - 'scripts/audit-slv-city-integrity.mjs'
       - 'scripts/sync-slv-public-remediation-packet.mjs'
       - 'scripts/sync-slv-city-goal-program.mjs'
       - 'scripts/validate-slv-city-goal-program.mjs'
       - 'scripts/validate-draper-architecture-diagnosis.mjs'
+      - 'scripts/validate-holladay-architecture-diagnosis.mjs'
       - 'package.json'
   push:
     branches:
@@ -31,6 +37,9 @@ on:
       - '.github/workflows/slv-city-goal-program.yml'
       - 'data/rank-tracker/SLV-CITY-GOAL-PROGRAM-2026-08-12.json'
       - 'data/rank-tracker/DRAPER-ARCHITECTURE-DIAGNOSIS-2026-08-12.json'
+      - 'data/rank-tracker/HOLLADAY-ARCHITECTURE-DIAGNOSIS-2026-08-12.json'
+      - 'data/rank-tracker/panels/holladay/2026-08-12.json'
+      - 'data/seo/snapshots/2026-08-12.json'
       - 'data/rank-tracker/panels.json'
       - 'data/rank-tracker/config.json'
       - 'data/rank-tracker/latest.json'
@@ -43,11 +52,14 @@ on:
       - 'locations/holladay.html'
       - 'locations/cottonwood-heights.html'
       - 'locations/draper.html'
+      - '**/*.html'
+      - 'vercel.json'
       - 'scripts/audit-slv-city-integrity.mjs'
       - 'scripts/sync-slv-public-remediation-packet.mjs'
       - 'scripts/sync-slv-city-goal-program.mjs'
       - 'scripts/validate-slv-city-goal-program.mjs'
       - 'scripts/validate-draper-architecture-diagnosis.mjs'
+      - 'scripts/validate-holladay-architecture-diagnosis.mjs'
       - 'package.json'
 
 permissions:
@@ -74,3 +86,6 @@ jobs:
 
       - name: Validate the Draper architecture diagnosis and held experiment
         run: npm run audit:draper-architecture
+
+      - name: Validate the Holladay architecture diagnosis and held experiment
+        run: npm run audit:holladay-architecture
