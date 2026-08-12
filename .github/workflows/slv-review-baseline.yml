@@ -1,0 +1,70 @@
+name: Salt Lake Valley exact-CID review baseline
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: slv-exact-cid-review-baseline
+  cancel-in-progress: false
+
+jobs:
+  measure:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+
+      - name: Set up Python
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: "3.12"
+
+      - name: Set up Node.js
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: "24"
+
+      - name: Test fail-closed listing targeting without provider calls
+        run: npm run test:review-targeting
+
+      - name: Measure the exact Salt Lake Valley CID without changing the site
+        env:
+          DATAFORSEO_LOGIN: ${{ secrets.DATAFORSEO_LOGIN }}
+          DATAFORSEO_PASSWORD: ${{ secrets.DATAFORSEO_PASSWORD }}
+          GOOGLE_CID: "5689850818145735734"
+          REVIEWS_PROVIDER: dataforseo
+        run: |
+          TODAY=$(date -u +%F)
+          OUTPUT="data/rank-tracker/reviews/salt-lake-city/${TODAY}.json"
+          python3 scripts/update-google-reviews.py --measurement-only --measurement-output "$OUTPUT"
+          cp "$OUTPUT" data/rank-tracker/reviews/salt-lake-city/latest.json
+
+      - name: Refresh and verify the entity-health contracts
+        run: |
+          npm run sync:slv-entity-health
+          npm run sync:slv-execution-registry
+          npm run audit:slv-entity-health
+          npm run audit:slv-execution-registry
+
+      - name: Add the non-sensitive measurement summary
+        run: |
+          jq -r '"### Salt Lake Valley exact-CID review baseline\n\n- Observed: \(.observedAt)\n- Rating: \(.aggregate.rating)\n- Review count: \(.aggregate.reviewCount)\n- Latest sampled review: \(.reviewSample.latestReviewDate // "not returned")\n- Site or GBP mutation: no"' data/rank-tracker/reviews/salt-lake-city/latest.json >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Commit only the measurement and derived registries
+        run: |
+          git config user.name "Frame Entity Health Tracker"
+          git config user.email "entity-health@users.noreply.github.com"
+          git add data/rank-tracker/reviews/salt-lake-city/ \
+            data/rank-tracker/SLV-ENTITY-HEALTH-2026-08-12.json \
+            data/rank-tracker/SLV-EXECUTION-REGISTRY-2026-08-12.json
+          if git diff --cached --quiet; then
+            echo "No exact-CID review measurement change to commit."
+            exit 0
+          fi
+          TODAY=$(date -u +%F)
+          git commit -m "chore(seo): SLC exact-CID review baseline ${TODAY} [cloud]"
+          git push

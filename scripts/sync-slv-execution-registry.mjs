@@ -199,9 +199,13 @@ const registry = {
     {
       id: "salt-lake-valley-review-baseline",
       class: "system-fixable-after-bundle-lands",
-      state: "exact-cid-unmeasured-cross-profile-fallback-now-fail-closed",
+      state: entityHealth.reviews.saltLakeValley.state === "unmeasured"
+        ? "exact-cid-unmeasured-cross-profile-fallback-now-fail-closed"
+        : "exact-cid-baseline-measured",
       targetCid: entityHealth.reviews.saltLakeValley.cid,
-      decision: "Use the existing valid GitHub DataForSEO credentials after this safeguard lands; never count the Heber 34-review export as Salt Lake Valley evidence.",
+      decision: entityHealth.reviews.saltLakeValley.state === "unmeasured"
+        ? "Use the existing valid GitHub DataForSEO credentials after this safeguard lands; never count the Heber 34-review export as Salt Lake Valley evidence."
+        : "Keep the exact-CID Salt Lake Valley review baseline separate from the Heber review sync and use it only as entity-health evidence.",
     },
     {
       id: "city-editorial-evidence-gaps",
@@ -264,7 +268,7 @@ assert.equal(registry.cities.length, 18);
 assert.equal(registry.score.fixedOrganicNumberOne, 2);
 assert.equal(registry.score.exactCidMapsNumberOne, 0);
 assert.equal(registry.score.citiesAtSustainedGoal, 0);
-assert.equal(entityHealth.reviews.saltLakeValley.state, "unmeasured");
+assert.ok(["unmeasured", "measured-exact-cid"].includes(entityHealth.reviews.saltLakeValley.state));
 assert.equal(entityHealth.reviews.heber.aggregateReviewCount, 34);
 assert.equal(entityHealth.editorial.evidenceFirstGaps.length, 5);
 assert.deepEqual(registry.cities.filter((city) => city.measurement.organicNumberOne.length).map((city) => city.city), ["Magna", "Kearns"]);

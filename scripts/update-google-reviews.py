@@ -30,6 +30,10 @@ Exit codes:
   0 = files updated (changed count or rating)
   2 = no change (live count matches file count — don't commit)
   1 = error (API, parsing, env)
+
+Measurement-only mode (no site files, audit log, or GBP are changed):
+  python3 scripts/update-google-reviews.py --measurement-only \
+    --measurement-output data/rank-tracker/reviews/salt-lake-city/DATE.json
 """
 
 import base64
@@ -140,6 +144,70 @@ def _source_identity() -> dict:
     explicit = str(os.environ.get("SERPAPI_DATA_ID") or "").strip()
     data_id = explicit or (DEFAULT_DATA_ID if cid == DEFAULT_CID else None)
     return {"google_cid": cid, "data_id": data_id}
+
+
+def _build_measurement_payload(place: dict, reviews: list[dict], observed_at: str | None = None) -> dict:
+    """Build a text-free exact-listing review receipt for rank/entity tracking."""
+    dates = sorted(str(review.get("date") or "")[:10] for review in reviews if review.get("date"))
+    rating_distribution: dict[str, int] = {}
+    for review in reviews:
+        rating = int(review.get("rating") or 0)
+        if 1 <= rating <= 5:
+            key = str(rating)
+            rating_distribution[key] = rating_distribution.get(key, 0) + 1
+    return {
+        "schemaVersion": 1,
+        "measurementId": "frame-utah-salt-lake-valley-google-review-baseline-v1",
+        "market": "utah-salt-lake-valley",
+        "observedAt": observed_at or datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ"),
+        "publicMutationPerformed": False,
+        "provider": (os.environ.get("REVIEWS_PROVIDER") or "auto").strip().lower(),
+        "target": {
+            "googleCid": _target_cid(),
+            "exactCidPinned": True,
+            "placeName": place.get("name") or "",
+            "placeId": place.get("place_id") or "",
+        },
+        "aggregate": {
+            "rating": float(place["rating"]),
+            "reviewCount": int(place["count"]),
+        },
+        "reviewSample": {
+            "rowsReturned": len(reviews),
+            "rowsWithText": sum(1 for review in reviews if review.get("text")),
+            "latestReviewDate": dates[-1] if dates else None,
+            "ratingDistribution": rating_distribution,
+            "reviewTextStored": False,
+            "reviewerIdentityStored": False,
+        },
+    }
+
+
+def _measurement_output_path() -> Path:
+    """Resolve a required, repository-contained measurement output path."""
+    try:
+        index = sys.argv.index("--measurement-output")
+        raw = sys.argv[index + 1]
+    except (ValueError, IndexError):
+        raise SystemExit("ERROR: --measurement-only requires --measurement-output PATH")
+    candidate = (ROOT / raw).resolve() if not Path(raw).is_absolute() else Path(raw).resolve()
+    allowed = (ROOT / "data" / "rank-tracker" / "reviews").resolve()
+    if candidate != allowed and allowed not in candidate.parents:
+        raise SystemExit(f"ERROR: measurement output must be under {allowed}")
+    return candidate
+
+
+def write_measurement_snapshot(place: dict, reviews: list[dict]) -> Path:
+    """Write only a text-free measurement artifact under the rank tracker."""
+    if int(place.get("count") or 0) > 0 and not reviews:
+        raise SystemExit("ERROR: provider returned a positive review count but no review rows")
+    output = _measurement_output_path()
+    output.parent.mkdir(parents=True, exist_ok=True)
+    output.write_text(
+        json.dumps(_build_measurement_payload(place, reviews), indent=2, ensure_ascii=False) + "\n",
+        encoding="utf-8",
+    )
+    return output
 
 # Below this many SerpAPI searches remaining, route to DataForSEO instead.
 # Rationale: the SerpAPI plan is PREPAID and use-it-or-lose-it, so spending it
@@ -722,6 +790,13 @@ def write_audit(data: dict) -> None:
 def main() -> int:
     dry_run = "--dry-run" in sys.argv
     place = fetch_place()
+
+    if "--measurement-only" in sys.argv:
+        reviews = fetch_all_reviews()
+        output = write_measurement_snapshot(place, reviews)
+        print(f"Measured exact CID {_target_cid()} to {output.relative_to(ROOT)}; no site files changed.")
+        return 0
+
     file_count = current_file_count()
 
     print(f"SerpAPI: {place['name']} — {place['count']} reviews, {place['rating']} stars")

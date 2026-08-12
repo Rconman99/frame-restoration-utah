@@ -77,4 +77,24 @@ with target_env(GOOGLE_CID=slv_cid, SERPAPI_DATA_ID=matching_data_id):
         "data_id": matching_data_id,
     }
 
+    measurement = reviews._build_measurement_payload(
+        {"name": "Frame Restoration Utah", "count": 3, "rating": 4.7, "place_id": "test-place"},
+        [
+            {"author": "not stored", "rating": 5, "date": "2026-08-10", "text": "not stored"},
+            {"author": "not stored", "rating": 4, "date": "2026-08-11", "text": ""},
+            {"author": "not stored", "rating": 5, "date": "2026-08-12", "text": "not stored"},
+        ],
+        observed_at="2026-08-12T19:30:00Z",
+    )
+    assert measurement["target"]["googleCid"] == slv_cid
+    assert measurement["aggregate"] == {"rating": 4.7, "reviewCount": 3}
+    assert measurement["reviewSample"] == {
+        "rowsReturned": 3,
+        "rowsWithText": 2,
+        "latestReviewDate": "2026-08-12",
+        "ratingDistribution": {"5": 2, "4": 1},
+        "reviewTextStored": False,
+        "reviewerIdentityStored": False,
+    }
+
 print("update-google-reviews targeting: all assertions passed")

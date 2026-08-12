@@ -18,6 +18,8 @@ const sourceFiles = {
   reviewFeed: "reviews.json",
   reviewArchive: "data/reviews-full.json",
 };
+const slvReviewLatestPath = "data/rank-tracker/reviews/salt-lake-city/latest.json";
+if (fs.existsSync(path.join(root, slvReviewLatestPath))) sourceFiles.slvReviewLatest = slvReviewLatestPath;
 const readJson = (file) => JSON.parse(fs.readFileSync(path.join(root, file), "utf8"));
 const readText = (file) => fs.readFileSync(path.join(root, file), "utf8");
 const sha256 = (file) => crypto.createHash("sha256").update(fs.readFileSync(path.join(root, file))).digest("hex");
@@ -50,6 +52,7 @@ const portfolio = readJson(sourceFiles.portfolio);
 const business = readJson(sourceFiles.business);
 const reviewFeed = readJson(sourceFiles.reviewFeed);
 const reviewArchive = readJson(sourceFiles.reviewArchive);
+const slvReviewLatest = sourceFiles.slvReviewLatest ? readJson(sourceFiles.slvReviewLatest) : null;
 const slvCid = portfolio.cityCompletionContract.maps.exactCid;
 const heberCid = business.gbp.cid;
 const inferredReviewCid = cidFromDataId(reviewArchive.data_id);
@@ -155,7 +158,16 @@ const health = {
       lastReviewDate: reviewArchive.reviews.map((review) => review.date).sort().at(-1),
       feedUpdatedAt: reviewFeed.updated_at,
     },
-    saltLakeValley: {
+    saltLakeValley: slvReviewLatest ? {
+      cid: slvCid,
+      state: "measured-exact-cid",
+      observedAt: slvReviewLatest.observedAt,
+      aggregateRating: slvReviewLatest.aggregate.rating,
+      aggregateReviewCount: slvReviewLatest.aggregate.reviewCount,
+      latestReviewDate: slvReviewLatest.reviewSample.latestReviewDate,
+      source: slvReviewLatestPath,
+      rule: "Count only the exact Salt Lake Valley CID receipt; never mix in the Heber export.",
+    } : {
       cid: slvCid,
       state: "unmeasured",
       rule: "Never count the Heber export as Salt Lake Valley review evidence. Measure only an exact-CID provider response or an explicitly matching SerpAPI data_id.",
@@ -196,6 +208,13 @@ assert.deepEqual(verifiedProfileCities, ["Salt Lake City", "Millcreek"]);
 assert.equal(pendingServiceAreaCities.length, 16);
 assert.equal(inferredReviewCid, heberCid, "review archive must resolve to the Heber CID");
 assert.notEqual(inferredReviewCid, slvCid, "Heber review data must not be attributed to the Salt Lake Valley CID");
+if (slvReviewLatest) {
+  assert.equal(slvReviewLatest.target.googleCid, slvCid, "SLC review receipt must target the exact Salt Lake Valley CID");
+  assert.equal(slvReviewLatest.target.exactCidPinned, true);
+  assert.equal(slvReviewLatest.publicMutationPerformed, false);
+  assert.equal(slvReviewLatest.reviewSample.reviewTextStored, false);
+  assert.equal(slvReviewLatest.reviewSample.reviewerIdentityStored, false);
+}
 assert.equal(reviewArchive.reviews.length, reviewArchive.aggregate.review_count);
 assert.equal(health.nap.phoneMismatchCount, 0);
 assert.equal(health.nap.regionMismatchCount, 0);
