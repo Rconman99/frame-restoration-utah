@@ -48,6 +48,7 @@
     "sync:slv-competitor-displacement": "node scripts/sync-slv-competitor-displacement.mjs --write",
     "audit:slv-execution-registry": "node scripts/sync-slv-execution-registry.mjs --check",
     "sync:slv-execution-registry": "node scripts/sync-slv-execution-registry.mjs --write",
+    "audit:slv-leader-features": "node scripts/validate-slv-leader-features.mjs",
     "sync:slv-city-goals": "node scripts/sync-slv-city-goal-program.mjs --write",
     "sync:slv-public-remediation-packet": "node scripts/sync-slv-public-remediation-packet.mjs --write",
     "audit:shared-assets": "node scripts/sync-shared-asset-versions.mjs --check",

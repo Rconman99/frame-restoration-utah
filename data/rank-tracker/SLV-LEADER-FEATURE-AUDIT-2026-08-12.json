@@ -1,0 +1,182 @@
+{
+  "schemaVersion": 1,
+  "auditId": "frame-utah-slv-first-actionable-leader-features-v1",
+  "market": "utah-salt-lake-valley",
+  "observedAt": "2026-08-12T18:45:00.000Z",
+  "status": "read-only-diagnosis-no-public-authorization",
+  "publicMutationPerformed": false,
+  "method": {
+    "selection": "For Millcreek, Magna, and Kearns, compare Frame's intended city page with the measured organic #1 URL for the fixed 'roofing contractor {city}' mobile query.",
+    "fetch": "Unauthenticated HTTP GET with redirects followed; all six pages returned HTTP 200.",
+    "extraction": "Rendered source HTML heuristic: title, H1, meta description, canonical, H2 count, image count, unique same-origin path count, JSON-LD types, and lower-cased visible-text phrase counts after script/style/tag removal.",
+    "limits": [
+      "These observations are correlational and do not establish ranking causality.",
+      "Raw HTML counts can include navigation, footer, accessibility, and repeated component text; they are comparison signals, not keyword-density targets.",
+      "More words, images, links, FAQs, or schema types are not automatically better and do not authorize copying a competitor.",
+      "External pages can change after the observed timestamp; the recorded SHA-256 is an observation receipt, not a permanent identity.",
+      "No forms, accounts, logins, reviews, GBP surfaces, community posts, or public mutations were used."
+    ]
+  },
+  "source": {
+    "displacementLedger": "data/rank-tracker/SLV-COMPETITOR-DISPLACEMENT-2026-08-12.json",
+    "millcreekDiagnosis": "data/rank-tracker/MILLCREEK-IDENTITY-ARCHITECTURE-DIAGNOSIS-2026-08-12.json",
+    "expansionPriority": "data/rank-tracker/SLV-EXPANSION-PRIORITY-2026-08-12.json"
+  },
+  "comparisons": [
+    {
+      "city": "Millcreek",
+      "query": "roofing contractor millcreek",
+      "targetRank": 4,
+      "decision": "corroborates-existing-title-only-candidate-after-cleanup-observation",
+      "frame": {
+        "url": "https://www.framerestorationutah.com/locations/millcreek",
+        "sourceFile": "locations/millcreek.html",
+        "sha256": "d3171172fcd5b796b12134fc91e1bd366952a3c83e13a160a3106262197b215d",
+        "title": "Premium Reroofing Millcreek UT | Frame Restoration Utah",
+        "h1": "Premium Reroofing in Millcreek",
+        "metaDescription": "Millcreek, UT roofing contractor. Roof replacements, storm damage & free inspections along the east bench. Licensed & insured. Call 435-292-8802.",
+        "canonical": "https://www.framerestorationutah.com/locations/millcreek",
+        "visibleWords": 1569,
+        "phraseCounts": { "roofing contractor": 1, "roof repair": 2, "roof replacement": 11, "roofer": 0 },
+        "h2Count": 12,
+        "imageCount": 2,
+        "uniqueInternalPaths": 19,
+        "cityFamilyPaths": ["/locations/millcreek/storm-damage"],
+        "schemaTypes": ["RoofingContractor", "Review", "FAQPage", "Article", "Service", "WebPage", "BreadcrumbList"]
+      },
+      "leader": {
+        "url": "https://rooftek.com/location-home/northern-utah/millcreek-ut/",
+        "domain": "rooftek.com",
+        "sha256": "77c32070c9d0a2c39f642b0b38ff3c8f0f081c864b933e4f9ccceebd47c8ea56",
+        "title": "Roofing Contractor Millcreek, UT | Roofer Near Me",
+        "h1": "",
+        "metaDescription": "Reliable roofing contractor in Millcreek, UT, offering expert roof repairs, replacements, and inspections. Contact us today for quality roofing solutions!",
+        "canonical": "https://rooftek.com/location-home/northern-utah/millcreek-ut/",
+        "visibleWords": 2164,
+        "phraseCounts": { "roofing contractor": 4, "roof repair": 2, "roof replacement": 7, "roofer": 3 },
+        "h2Count": 13,
+        "imageCount": 20,
+        "uniqueInternalPaths": 53,
+        "cityFamilyPaths": [
+          "/location-home/northern-utah/millcreek-ut/roof-replacement",
+          "/location-home/northern-utah/millcreek-ut/roof-installation",
+          "/location-home/northern-utah/millcreek-ut/roof-repair"
+        ],
+        "schemaTypes": []
+      },
+      "interpretation": [
+        "The measured leader uses exact broad commercial phrasing in the title while Frame uses the narrower 'Premium Reroofing' phrase.",
+        "Frame already has a stronger structured-data surface and an owned AIO citation; preserve those strengths while removing unsupported Review/claim markup through the approved cleanup.",
+        "Dedicated competitor service URLs are an architecture observation, not evidence that Frame should create three new city-service pages; the current fixed panel selects Frame's main city page for all four commercial queries.",
+        "The existing Millcreek diagnosis remains authoritative: clean claims and identity first, observe, then activate at most the already-defined title-only experiment if its rule is met."
+      ]
+    },
+    {
+      "city": "Magna",
+      "query": "roofing contractor magna",
+      "targetRank": 7,
+      "decision": "protect-roof-replacement-number-one-and-aio-no-title-test-yet",
+      "frame": {
+        "url": "https://www.framerestorationutah.com/locations/magna",
+        "sourceFile": "locations/magna.html",
+        "sha256": "37debc6a80634ab438ad6d61f73f3369f91d4c09cfbb3673133b99832a8d3d47",
+        "title": "Premium Reroofing Magna UT | Frame Restoration Utah",
+        "h1": "Premium Reroofing in Magna",
+        "metaDescription": "Magna, UT roofing contractor. Roof replacements, storm damage repair & free inspections in west Salt Lake County. Call 435-292-8802.",
+        "canonical": "https://www.framerestorationutah.com/locations/magna",
+        "visibleWords": 1672,
+        "phraseCounts": { "roofing contractor": 0, "roof repair": 2, "roof replacement": 12, "roofer": 0 },
+        "h2Count": 11,
+        "imageCount": 2,
+        "uniqueInternalPaths": 18,
+        "cityFamilyPaths": [],
+        "schemaTypes": ["RoofingContractor", "FAQPage", "Article", "Service", "WebPage", "BreadcrumbList"]
+      },
+      "leader": {
+        "url": "https://spmroofing.com/roofing-company-in-magna-ut",
+        "domain": "spmroofing.com",
+        "sha256": "c45fac712f4893a0af2617b5de4d34af01b24be21dd1be7b35380166514d01ed",
+        "title": "Roofing Company in Magna, UT | SPM Roofing LLC",
+        "h1": "Roofing Company in Magna, UT",
+        "metaDescription": "SPM Roofing LLC is a family-owned, bilingual roofing contractor in Magna, UT offering solutions for residential and commercial roofs.",
+        "canonical": "https://spmroofing.com/roofing-company-in-magna-ut",
+        "visibleWords": 795,
+        "phraseCounts": { "roofing contractor": 1, "roof repair": 2, "roof replacement": 0, "roofer": 0 },
+        "h2Count": 5,
+        "imageCount": 7,
+        "uniqueInternalPaths": 27,
+        "cityFamilyPaths": ["/roofing-company-in-magna-ut"],
+        "schemaTypes": ["LocalBusiness", "Service", "OfferCatalog"]
+      },
+      "interpretation": [
+        "The leader's title and H1 match broad company intent, but Frame already ranks #1 for roof replacement magna and owns the only observed Magna AIO citation.",
+        "Frame is not thin relative to this leader and already exposes standard business/service schema; adding bulk content or schema is not supported as the next move.",
+        "Apply only an approved integrity cleanup, hold intent surfaces constant, and measure whether the current #1/AIO footholds persist before drafting any title hypothesis."
+      ]
+    },
+    {
+      "city": "Kearns",
+      "query": "roofing contractor kearns",
+      "targetRank": 14,
+      "decision": "protect-roof-replacement-number-one-no-title-test-yet",
+      "frame": {
+        "url": "https://www.framerestorationutah.com/locations/kearns",
+        "sourceFile": "locations/kearns.html",
+        "sha256": "a33434df2765fd63b8b948622ee2c92910385e88151c58f82e8396a0916d6905",
+        "title": "Premium Reroofing Kearns UT | Frame Restoration Utah",
+        "h1": "Premium Reroofing in Kearns",
+        "metaDescription": "Kearns, UT roofing contractor. Storm damage, roof replacements & free inspections in Salt Lake County. Licensed & insured. Call 435-292-8802.",
+        "canonical": "https://www.framerestorationutah.com/locations/kearns",
+        "visibleWords": 1655,
+        "phraseCounts": { "roofing contractor": 0, "roof repair": 2, "roof replacement": 14, "roofer": 0 },
+        "h2Count": 11,
+        "imageCount": 2,
+        "uniqueInternalPaths": 19,
+        "cityFamilyPaths": [],
+        "schemaTypes": ["RoofingContractor", "FAQPage", "Article", "Service", "WebPage", "BreadcrumbList"]
+      },
+      "leader": {
+        "url": "https://www.shingleproroofing.com/areas-we-serve/kearns-ut-roofing/",
+        "domain": "shingleproroofing.com",
+        "sha256": "cdd9a8f41e8f68ee8456f0a118fc1e81cd7ba88ba060dfae41727539ff9361d7",
+        "title": "Roofing in Kearns, Utah -",
+        "h1": "Roofing in Kearns, Utah",
+        "metaDescription": "Roofing in Kearns, Utah If you are in need of a roofing company in or near Kearns, and you have entered “roofing company near me” in your search engine,",
+        "canonical": "https://www.shingleproroofing.com/areas-we-serve/kearns-ut-roofing/",
+        "visibleWords": 1332,
+        "phraseCounts": { "roofing contractor": 3, "roof repair": 1, "roof replacement": 5, "roofer": 2 },
+        "h2Count": 3,
+        "imageCount": 3,
+        "uniqueInternalPaths": 35,
+        "cityFamilyPaths": ["/areas-we-serve/kearns-ut-roofing"],
+        "schemaTypes": ["WebPage", "WebSite", "Organization", "BreadcrumbList"]
+      },
+      "interpretation": [
+        "The leader uses broader roofing/company wording, while Frame is heavily aligned to replacement intent and currently ranks #1 for roof replacement kearns.",
+        "Frame already has richer standard business/service/FAQ schema; schema breadth alone does not explain the contractor-query gap.",
+        "Apply only an approved integrity cleanup, preserve the measured #1, and collect post-cleanup weekly/GSC evidence before considering an intent change."
+      ]
+    }
+  ],
+  "crossCityDecision": {
+    "supported": [
+      "Treat exact city plus broad roofing-company/contractor title language as a later single-variable hypothesis where no protected #1/AIO foothold would be put at unnecessary risk.",
+      "Preserve Frame's current standard structured-data surface while removing unsupported review and claim markup.",
+      "Use the intended main city page for the fixed commercial panel unless exact GSC and fixed SERP evidence establishes current cannibalization."
+    ],
+    "notSupported": [
+      "Bulk city-service page generation based on one competitor's route structure.",
+      "Adding content, images, FAQs, links, or schema only to match competitor counts.",
+      "Copying competitor wording, claims, offers, credentials, reviews, or local proof.",
+      "Changing Magna or Kearns titles before their current #1 organic footholds are protected through cleanup observation.",
+      "Any GBP, review, directory, community, outreach, service-area, indexing, or other public-account mutation."
+    ],
+    "nextControlledSequence": [
+      "Receive and record exact owner approval for the governing integrity cleanup packet.",
+      "Apply only the approved integrity variable and pass source, immutable-preview, and production gates.",
+      "Capture a fresh Google/GSC/consumer-AI baseline and observe weekly.",
+      "For Millcreek only, use the existing candidate activation rule before drafting the title-only public experiment.",
+      "For Magna and Kearns, preserve the #1 roof-replacement queries and AIO state; draft no title test until the observation ledger supports it."
+    ]
+  }
+}
