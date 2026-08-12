@@ -28,6 +28,11 @@ function fakeGscFetch() {
   };
 }
 
+const rankReadImpl = () => ({
+  ranks: [{ keyword: "roof repair draper", city: "Draper", measured: true, position: null, outsideTop: 30 }],
+  measurement: { available: true, queriesExpected: 1, queriesMeasured: 1 },
+});
+
 /**
  * The snapshot writer used to copy GSC fields across one by one, so adding a
  * field to fetchGscSections and forgetting this list dropped it silently —
@@ -53,6 +58,7 @@ test("every field fetchGscSections returns survives into the snapshot", async ()
       by_status: { 200: 1 }, issues: [], notes: [],
     }),
     gscFetchImpl: fetchImpl,
+    rankReadImpl,
   });
 
   const missing = Object.keys(sections).filter((k) => !(k in snapshot.gsc));
@@ -72,6 +78,7 @@ test("a GSC field with value 0 is persisted, not treated as absent", async () =>
       by_status: { 200: 1 }, issues: [], notes: [],
     }),
     gscFetchImpl: fetchImpl,
+    rankReadImpl,
   });
   assert.equal(snapshot.gsc.pages_truncated, false); // false, not undefined
   assert.ok(Number.isFinite(snapshot.gsc.queries_stored_impressions));

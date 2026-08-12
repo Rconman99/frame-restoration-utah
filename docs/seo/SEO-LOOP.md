@@ -74,6 +74,15 @@ Each readout now includes:
 - aggregate progress toward organic #1 and Maps #1 across all 24 query rows;
 - a stale warning when the newest weekly panel is more than eight days old.
 
+The GSC client also issues a targeted, exact-regex query+page request for every
+keyword in that fixed panel. The broad Search Analytics response is
+clicks-sorted and bounded, so it can omit a zero-click commercial query even
+when a city child page has substantial aggregate impressions. The targeted
+rows are stored in `gsc.tracked_query_pages` (all returned URLs retained) and
+the readout reports main-page, child-page, other-page, and multi-URL counts.
+An empty targeted response is written as “no rows returned / unknown demand,”
+never as zero impressions or proof that a page does not rank.
+
 The weekly rank artifacts also retain the organic top three, local-pack top
 three (including public CID attribution), and AI Overview source domains for
 every fixed query. These are displacement evidence, not an instruction to copy

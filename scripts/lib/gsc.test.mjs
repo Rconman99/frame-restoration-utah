@@ -1,7 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { generateKeyPairSync } from "node:crypto";
-import { fetchGscSections } from "./gsc.mjs";
+import { fetchGscSections, trackedQueryFilter } from "./gsc.mjs";
 
 // A real RSA key, so the JWT signing path executes for real. A dummy string key
 // makes every test in this file skip, which passes CI while verifying nothing.
@@ -40,6 +40,36 @@ test("the page dimension is actually requested", async () => {
   const dims = calls.map((c) => c.dimensions.join("+"));
   assert.ok(dims.includes("page"), `expected a page-dimension pull, got: ${dims.join(", ")}`);
   assert.equal(sections.top_pages.length, 1);
+});
+
+test("tracked panel queries get a targeted exact query+page pull", async () => {
+  const queryPage = [
+    { keys: ["roof repair draper", "https://x/locations/draper"], clicks: 0, impressions: 17, position: 36.2 },
+    { keys: ["roof repair draper", "https://x/locations/draper/storm-damage"], clicks: 0, impressions: 3, position: 42.1 },
+  ];
+  const { fetchImpl, calls } = fakeGsc({ queryPage });
+  const sections = await fetchGscSections({
+    env,
+    fetchImpl,
+    now: new Date("2026-08-07T12:00:00Z"),
+    trackedQueries: ["roof repair draper", "roof replacement draper"],
+  });
+
+  const targeted = calls.find((call) => call.dimensionFilterGroups);
+  assert.ok(targeted, "expected a filtered query+page request");
+  assert.deepEqual(targeted.dimensions, ["query", "page"]);
+  assert.equal(targeted.dimensionFilterGroups[0].filters[0].operator, "includingRegex");
+  assert.match(targeted.dimensionFilterGroups[0].filters[0].expression, /roof repair draper/);
+  assert.deepEqual(sections.tracked_query_pages.requested, ["roof repair draper", "roof replacement draper"]);
+  assert.equal(sections.tracked_query_pages.rows.length, 2, "preserve multiple URLs for cannibalization diagnosis");
+  assert.equal(sections.tracked_query_pages.rows[0].impressions, 17);
+});
+
+test("tracked query regex escapes syntax and rejects an oversized filter", () => {
+  const filter = trackedQueryFilter(["roofer draper (ut)", "roofer draper (ut)"]);
+  assert.deepEqual(filter.requested, ["roofer draper (ut)"]);
+  assert.match(filter.dimensionFilterGroups[0].filters[0].expression, /\\\(ut\\\)/);
+  assert.throws(() => trackedQueryFilter(["x".repeat(4097)]), /4096-byte/);
 });
 
 test("top_pages sorts by impressions BEFORE the 200 cap", async () => {
