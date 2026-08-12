@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { computeDiff, renderReadout, checkDeadman, expectedCtr, silentPages, queryCoverageCaveat, rankPanelLines, slvGscLines } from "./seo-diff.mjs";
+import { computeDiff, renderReadout, checkDeadman, expectedCtr, silentPages, queryCoverageCaveat, rankPanelLines, displacementLines, slvGscLines } from "./seo-diff.mjs";
 
 function snap(overrides = {}) {
   return {
@@ -97,6 +97,32 @@ test("fixed panel readout exposes a stale weekly measurement", () => {
     ranks: [{ city: "Millcreek", keyword: "contractor", position: 4, measured: true, mapPackRank: null, aiOverviewPresent: false, aiOverviewCited: false }],
   })).join("\n");
   assert.match(output, /STALE 9d/);
+});
+
+test("fixed panel readout renders measured organic, maps, and AIO displacement evidence", () => {
+  const output = displacementLines(snap({
+    ranks: [{
+      city: "Millcreek",
+      keyword: "roofing contractor millcreek",
+      position: 4,
+      measured: true,
+      mapPackPresent: true,
+      aiOverviewPresent: true,
+      organicLeaders: [{ rank: 1, domain: "leader.example", isTarget: false }],
+      mapPackLeaders: [{ rank: 1, name: "Map Leader", cid: "123", isTarget: false }],
+      aiOverviewSources: [{ domain: "source.example", isTarget: false }],
+    }],
+  })).join("\n");
+  assert.match(output, /organic #1 leader\.example/);
+  assert.match(output, /maps #1 Map Leader \[CID 123\]/);
+  assert.match(output, /AIO source\.example/);
+  assert.match(output, /do not copy competitor content/);
+});
+
+test("older rank artifacts omit the displacement section instead of inventing unknown leaders", () => {
+  assert.deepEqual(displacementLines(snap({
+    ranks: [{ city: "Millcreek", keyword: "roofer millcreek", position: 5, measured: true }],
+  })), []);
 });
 
 test("SLV GSC demand joins exact city pages, strongest children, and retained roofing queries", () => {

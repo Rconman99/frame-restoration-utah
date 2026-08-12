@@ -44,17 +44,31 @@ const fixture = {
   items: [
     {
       type: 'ai_overview',
-      references: [{ url: 'https://www.framerestorationutah.com/locations/salt-lake-city' }],
+      references: [
+        { url: 'https://competitor.example/slc', title: 'Competitor guide' },
+        { url: 'https://www.framerestorationutah.com/locations/salt-lake-city', title: 'Frame SLC' },
+      ],
     },
     {
       type: 'local_pack',
       rank_group: 1,
       cid: '111',
+      title: 'Competitor Roofing',
+      domain: 'competitor.example',
     },
     {
       type: 'local_pack',
       rank_group: 2,
       cid: '5689850818145735734',
+      title: 'Frame Restoration Utah LLC.',
+      domain: 'framerestorationutah.com',
+    },
+    {
+      type: 'organic',
+      rank_group: 1,
+      domain: 'competitor.example',
+      url: 'https://competitor.example/slc',
+      title: 'Competitor roofing page',
     },
     {
       type: 'organic',
@@ -71,6 +85,21 @@ assert.equal(reading.mapPackPresent, true);
 assert.equal(reading.mapPackRank, 2);
 assert.equal(reading.aiOverviewPresent, true);
 assert.equal(reading.aiOverviewCited, true);
+assert.deepEqual(reading.organicLeaders, [{
+  rank: 1,
+  domain: 'competitor.example',
+  url: 'https://competitor.example/slc',
+  title: 'Competitor roofing page',
+  isTarget: false,
+}]);
+assert.deepEqual(reading.mapPackLeaders.map(({ rank, name, cid, isTarget }) => ({ rank, name, cid, isTarget })), [
+  { rank: 1, name: 'Competitor Roofing', cid: '111', isTarget: false },
+  { rank: 2, name: 'Frame Restoration Utah LLC.', cid: '5689850818145735734', isTarget: true },
+]);
+assert.deepEqual(reading.aiOverviewSources.map(({ domain, isTarget }) => ({ domain, isTarget })), [
+  { domain: 'competitor.example', isTarget: false },
+  { domain: 'framerestorationutah.com', isTarget: true },
+]);
 assert.deepEqual(reading.serpFeatures, ['ai_overview', 'local_pack']);
 
 assert.equal(extractRank(null, config.target).organicRank, null);
@@ -94,7 +123,34 @@ assert.equal(report.summary.mapPackMatched, 1);
 assert.equal(report.summary.aiOverviewCitations, 1);
 assert.equal(report.results[0].rankingUrl, 'https://www.framerestorationutah.com/locations/salt-lake-city');
 assert.match(markdownReport(report), /^# Salt Lake City Google rank tracker — 2026-08-11/m);
+assert.match(markdownReport(report), /## Displacement targets/);
+assert.match(markdownReport(report), /Organic top 3: #1 competitor\.example/);
+assert.match(markdownReport(report), /Map-pack top 3: #1 Competitor Roofing \[CID 111\]/);
 assert.match(markdownReport(report), /fixed top-30 mobile panel/);
+
+const nestedLocalPack = extractRank({
+  items: [{
+    type: 'local_pack',
+    items: [
+      { title: 'One Roofing', cid: 'one' },
+      { title: 'Two Roofing', cid: '5689850818145735734' },
+      { title: 'Three Roofing', cid: 'three' },
+      { title: 'Four Roofing', cid: 'four' },
+    ],
+  }],
+}, config.target);
+assert.equal(nestedLocalPack.mapPackRank, 2);
+assert.deepEqual(nestedLocalPack.mapPackLeaders.map(({ rank, name }) => ({ rank, name })), [
+  { rank: 1, name: 'One Roofing' },
+  { rank: 2, name: 'Two Roofing' },
+  { rank: 3, name: 'Three Roofing' },
+]);
+
+const urlOnlyTarget = extractRank({ items: [{
+  type: 'organic', rank_group: 1, url: 'https://www.framerestorationutah.com/locations/salt-lake-city', title: 'Frame',
+}] }, config.target);
+assert.equal(urlOnlyTarget.organicRank, 1);
+assert.equal(urlOnlyTarget.organicLeaders[0].isTarget, true);
 
 assert.throws(
   () => validateConfig({ ...config, keywords: [{ id: 'same', keyword: 'one' }, { id: 'same', keyword: 'two' }] }),

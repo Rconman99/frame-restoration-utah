@@ -230,8 +230,12 @@ export function readTrackedRanks({ rootDir = root } = {}) {
         source: "dataforseo-task-queue",
         observedAt: report.observedAt,
         mapPackRank: row.mapPackRank,
+        mapPackPresent: row.mapPackPresent === true,
         aiOverviewPresent: row.aiOverviewPresent === true,
         aiOverviewCited: row.aiOverviewCited === true,
+        organicLeaders: Array.isArray(row.organicLeaders) ? row.organicLeaders : [],
+        mapPackLeaders: Array.isArray(row.mapPackLeaders) ? row.mapPackLeaders : [],
+        aiOverviewSources: Array.isArray(row.aiOverviewSources) ? row.aiOverviewSources : [],
       });
     }
   }
