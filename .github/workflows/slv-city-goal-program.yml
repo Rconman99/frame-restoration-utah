@@ -7,7 +7,13 @@ on:
       - 'data/rank-tracker/SLV-CITY-GOAL-PROGRAM-2026-08-12.json'
       - 'data/rank-tracker/DRAPER-ARCHITECTURE-DIAGNOSIS-2026-08-12.json'
       - 'data/rank-tracker/HOLLADAY-ARCHITECTURE-DIAGNOSIS-2026-08-12.json'
+      - 'data/rank-tracker/SANDY-ARCHITECTURE-DIAGNOSIS-2026-08-12.json'
+      - 'data/rank-tracker/COTTONWOOD-HEIGHTS-ARCHITECTURE-DIAGNOSIS-2026-08-12.json'
+      - 'data/rank-tracker/MILLCREEK-IDENTITY-ARCHITECTURE-DIAGNOSIS-2026-08-12.json'
       - 'data/rank-tracker/panels/holladay/2026-08-12.json'
+      - 'data/rank-tracker/panels/sandy/2026-08-12.json'
+      - 'data/rank-tracker/panels/cottonwood-heights/2026-08-12.json'
+      - 'data/rank-tracker/panels/millcreek/2026-08-12.json'
       - 'data/seo/snapshots/2026-08-12.json'
       - 'data/rank-tracker/panels.json'
       - 'data/rank-tracker/config.json'
@@ -16,6 +22,7 @@ on:
       - 'data/rank-tracker/panels/**/latest.json'
       - 'data/authority/SLV-CITY-PUBLIC-REMEDIATION-CONTRACT-2026-08-12.json'
       - 'data/authority/SLV-CITY-PUBLIC-REMEDIATION-PACKET-2026-08-12.json'
+      - 'data/authority/MILLCREEK-PUBLIC-IDENTITY-SCOPE-AMENDMENT-2026-08-12.json'
       - 'locations/millcreek.html'
       - 'locations/sandy.html'
       - 'locations/holladay.html'
@@ -23,6 +30,14 @@ on:
       - 'locations/draper.html'
       - 'locations/holladay/storm-damage.html'
       - 'blog/holladay/roof-replacement-holladay-utah.html'
+      - 'locations/sandy/storm-damage.html'
+      - 'blog/sandy/roof-leak-repair-sandy-84070.html'
+      - 'blog/sandy/spring-hail-damage-roof.html'
+      - 'locations/cottonwood-heights/storm-damage.html'
+      - 'blog/cottonwood-heights/roof-replacement-cottonwood-heights-utah.html'
+      - 'blog/cottonwood-heights/wind-damage-roof-repair-cottonwood-heights.html'
+      - 'locations/millcreek/storm-damage.html'
+      - 'blog/millcreek/wind-damage-roof-repair-millcreek.html'
       - 'locations/salt-lake-city.html'
       - 'index.html'
       - 'vercel.json'
@@ -32,6 +47,9 @@ on:
       - 'scripts/validate-slv-city-goal-program.mjs'
       - 'scripts/validate-draper-architecture-diagnosis.mjs'
       - 'scripts/validate-holladay-architecture-diagnosis.mjs'
+      - 'scripts/validate-sandy-architecture-diagnosis.mjs'
+      - 'scripts/validate-cottonwood-heights-architecture-diagnosis.mjs'
+      - 'scripts/validate-millcreek-identity-architecture-diagnosis.mjs'
       - 'package.json'
   push:
     branches:
@@ -41,7 +59,13 @@ on:
       - 'data/rank-tracker/SLV-CITY-GOAL-PROGRAM-2026-08-12.json'
       - 'data/rank-tracker/DRAPER-ARCHITECTURE-DIAGNOSIS-2026-08-12.json'
       - 'data/rank-tracker/HOLLADAY-ARCHITECTURE-DIAGNOSIS-2026-08-12.json'
+      - 'data/rank-tracker/SANDY-ARCHITECTURE-DIAGNOSIS-2026-08-12.json'
+      - 'data/rank-tracker/COTTONWOOD-HEIGHTS-ARCHITECTURE-DIAGNOSIS-2026-08-12.json'
+      - 'data/rank-tracker/MILLCREEK-IDENTITY-ARCHITECTURE-DIAGNOSIS-2026-08-12.json'
       - 'data/rank-tracker/panels/holladay/2026-08-12.json'
+      - 'data/rank-tracker/panels/sandy/2026-08-12.json'
+      - 'data/rank-tracker/panels/cottonwood-heights/2026-08-12.json'
+      - 'data/rank-tracker/panels/millcreek/2026-08-12.json'
       - 'data/seo/snapshots/2026-08-12.json'
       - 'data/rank-tracker/panels.json'
       - 'data/rank-tracker/config.json'
@@ -50,6 +74,7 @@ on:
       - 'data/rank-tracker/panels/**/latest.json'
       - 'data/authority/SLV-CITY-PUBLIC-REMEDIATION-CONTRACT-2026-08-12.json'
       - 'data/authority/SLV-CITY-PUBLIC-REMEDIATION-PACKET-2026-08-12.json'
+      - 'data/authority/MILLCREEK-PUBLIC-IDENTITY-SCOPE-AMENDMENT-2026-08-12.json'
       - 'locations/millcreek.html'
       - 'locations/sandy.html'
       - 'locations/holladay.html'
@@ -57,6 +82,14 @@ on:
       - 'locations/draper.html'
       - 'locations/holladay/storm-damage.html'
       - 'blog/holladay/roof-replacement-holladay-utah.html'
+      - 'locations/sandy/storm-damage.html'
+      - 'blog/sandy/roof-leak-repair-sandy-84070.html'
+      - 'blog/sandy/spring-hail-damage-roof.html'
+      - 'locations/cottonwood-heights/storm-damage.html'
+      - 'blog/cottonwood-heights/roof-replacement-cottonwood-heights-utah.html'
+      - 'blog/cottonwood-heights/wind-damage-roof-repair-cottonwood-heights.html'
+      - 'locations/millcreek/storm-damage.html'
+      - 'blog/millcreek/wind-damage-roof-repair-millcreek.html'
       - 'locations/salt-lake-city.html'
       - 'index.html'
       - 'vercel.json'
@@ -66,6 +99,9 @@ on:
       - 'scripts/validate-slv-city-goal-program.mjs'
       - 'scripts/validate-draper-architecture-diagnosis.mjs'
       - 'scripts/validate-holladay-architecture-diagnosis.mjs'
+      - 'scripts/validate-sandy-architecture-diagnosis.mjs'
+      - 'scripts/validate-cottonwood-heights-architecture-diagnosis.mjs'
+      - 'scripts/validate-millcreek-identity-architecture-diagnosis.mjs'
       - 'package.json'
 
 permissions:
@@ -90,8 +126,5 @@ jobs:
       - name: Validate the owner-gated five-page remediation packet
         run: npm run audit:slv-public-remediation-packet
 
-      - name: Validate the Draper architecture diagnosis and held experiment
-        run: npm run audit:draper-architecture
-
-      - name: Validate the Holladay architecture diagnosis and held experiment
-        run: npm run audit:holladay-architecture
+      - name: Validate all five city architecture diagnoses and held actions
+        run: npm run audit:slv-city-architecture
