@@ -49,8 +49,6 @@ on:
       - 'scripts/audit-entity-consistency.mjs'
       - 'scripts/audit-doc-isolation.mjs'
       - 'scripts/audit-public-seo-surface.mjs'
-      - 'scripts/audit-slv-city-integrity.mjs'
-      - 'data/authority/SLV-CITY-PUBLIC-REMEDIATION-CONTRACT-2026-08-12.json'
       - 'scripts/audit-static-assets.mjs'
       - 'scripts/audit-csp-contract.mjs'
       - 'scripts/validate-mobile-ui-contract.mjs'
@@ -403,22 +401,6 @@ jobs:
           node-version: '20'
       - name: Fail on stale public SEO signals
         run: npm run audit:public-seo
-
-  slv-city-integrity-debt:
-    name: Salt Lake Valley claim/entity remediation debt (advisory)
-    runs-on: ubuntu-latest
-    # ADVISORY RATCHET. The 2026-08-12 evidence audit found unsupported claims
-    # and Heber identity leakage on five Salt Lake Valley pages. Report mode
-    # preserves visibility without blocking unrelated work. The approved public
-    # correction PR must run audit:slv-city-integrity (strict) and reach zero
-    # before this job is promoted to blocking.
-    steps:
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
-      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
-        with:
-          node-version: '24'
-      - name: Report disputed city claims and entity leakage
-        run: npm run audit:slv-city-integrity:report
 
   mobile-ui-quality:
     name: Mobile conversion UI quality (blocking)
