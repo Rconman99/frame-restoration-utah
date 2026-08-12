@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "registryId": "frame-utah-slv-18-city-execution-v1",
   "market": "utah-salt-lake-valley",
-  "preparedAt": "2026-08-12T20:48:46.000Z",
+  "preparedAt": "2026-08-12T22:57:10Z",
   "status": "active-goal-execution-gated",
   "publicMutationPerformed": false,
   "score": {
@@ -88,6 +88,10 @@
     "ownerViewGbpEvidence": {
       "file": "data/rank-tracker/evidence/SLV-GBP-OWNER-VIEW-LATEST.json",
       "sha256": "2053be6282edf2bfa5820dbd1d2718c291b23e623fcbf520e32ceed27dd879b5"
+    },
+    "diagnosisBundleRelease": {
+      "file": "data/rank-tracker/evidence/SLV-DIAGNOSIS-BUNDLE-RELEASE-2026-08-12.json",
+      "sha256": "d55a051fc92e2d346303d5e829b80e0b3e1ca0bb0ecabcf73c1d7ea5caef66ef"
     }
   },
   "externalEvidence": {
@@ -118,10 +122,13 @@
   "systemActions": [
     {
       "id": "land-diagnosis-bundle",
-      "class": "system-fixable-after-clean-ci",
-      "state": "waiting-on-duplicate-vercel-rate-limit",
-      "nextCheckAfter": "2026-08-13T17:02:21Z",
-      "decision": "Do not push or merge another branch while the stale frameroofingutah Vercel integration is producing a blocking failure; recheck after its stated 24-hour retry window."
+      "class": "system-complete-release-verified",
+      "state": "landed-main-ci-and-production-deployments-verified",
+      "source": "data/rank-tracker/evidence/SLV-DIAGNOSIS-BUNDLE-RELEASE-2026-08-12.json",
+      "pullRequest": 247,
+      "mergeSha": "f7d38a5a8516ea378c3fd6a91c0ff3ef8994af6a",
+      "verifiedAt": "2026-08-12T22:57:10Z",
+      "decision": "The 18-city diagnosis bundle is landed and release-verified. Keep its independent evidence, owner-approval, measurement, and public-mutation gates in force; do not recreate the expired Vercel wait state."
     },
     {
       "id": "targeted-gsc-72-query-read",

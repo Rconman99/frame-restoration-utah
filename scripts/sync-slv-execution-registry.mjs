@@ -30,6 +30,7 @@ const sourceFiles = {
   ownerProfileAuditRequest: "data/authority/SLV-GBP-OWNER-AUDIT-REQUEST-2026-08-12.json",
   businessDriveReceipt: "data/rank-tracker/evidence/SLV-BUSINESS-DRIVE-CONNECTOR-2026-08-12.json",
   ownerViewGbpEvidence: "data/rank-tracker/evidence/SLV-GBP-OWNER-VIEW-LATEST.json",
+  diagnosisBundleRelease: "data/rank-tracker/evidence/SLV-DIAGNOSIS-BUNDLE-RELEASE-2026-08-12.json",
 };
 const externalEvidence = {
   businessDriveReceipt: sourceFiles.businessDriveReceipt,
@@ -53,6 +54,12 @@ const interventions = read(sourceFiles.interventions);
 const mapsReadiness = read(sourceFiles.mapsReadiness);
 const ownerProfileAuditRequest = read(sourceFiles.ownerProfileAuditRequest);
 const ownerViewGbpEvidence = read(sourceFiles.ownerViewGbpEvidence);
+const diagnosisBundleRelease = read(sourceFiles.diagnosisBundleRelease);
+assert.equal(diagnosisBundleRelease.status, "LANDED_MAIN_CI_AND_PRODUCTION_DEPLOYMENTS_VERIFIED");
+assert.equal(diagnosisBundleRelease.pullRequest.number, 247);
+assert.equal(diagnosisBundleRelease.defaultBranch.commit, diagnosisBundleRelease.pullRequest.mergeSha);
+assert.ok(diagnosisBundleRelease.defaultBranch.workflows.every(({ conclusion }) => conclusion === "success"));
+assert.ok(diagnosisBundleRelease.defaultBranch.deployments.every(({ state }) => state === "success"));
 const ownerProfileEvidenceComplete = ownerViewGbpEvidence.status === "MEASURED_EXACT_CID_OWNER_VIEW"
   && ownerViewGbpEvidence.summary.knownProfileFields === 12;
 const goals = new Map(portfolio.cityGoals.map((goal) => [goal.city, goal]));
@@ -209,7 +216,7 @@ const registry = {
   schemaVersion: 1,
   registryId: "frame-utah-slv-18-city-execution-v1",
   market: "utah-salt-lake-valley",
-  preparedAt: "2026-08-12T20:48:46.000Z",
+  preparedAt: diagnosisBundleRelease.observedAt,
   status: "active-goal-execution-gated",
   publicMutationPerformed: false,
   score: {
@@ -242,10 +249,13 @@ const registry = {
   systemActions: [
     {
       id: "land-diagnosis-bundle",
-      class: "system-fixable-after-clean-ci",
-      state: "waiting-on-duplicate-vercel-rate-limit",
-      nextCheckAfter: "2026-08-13T17:02:21Z",
-      decision: "Do not push or merge another branch while the stale frameroofingutah Vercel integration is producing a blocking failure; recheck after its stated 24-hour retry window.",
+      class: "system-complete-release-verified",
+      state: "landed-main-ci-and-production-deployments-verified",
+      source: sourceFiles.diagnosisBundleRelease,
+      pullRequest: diagnosisBundleRelease.pullRequest.number,
+      mergeSha: diagnosisBundleRelease.pullRequest.mergeSha,
+      verifiedAt: diagnosisBundleRelease.observedAt,
+      decision: "The 18-city diagnosis bundle is landed and release-verified. Keep its independent evidence, owner-approval, measurement, and public-mutation gates in force; do not recreate the expired Vercel wait state.",
     },
     {
       id: "targeted-gsc-72-query-read",
@@ -397,6 +407,9 @@ assert.equal(
 assert.equal(registry.cities.reduce((sum, city) => sum + city.gscAttribution.requestedQueries, 0), gscAttribution.summary.requestedQueries);
 assert.equal(registry.connectionNeeded.length, consumerAi.summary.citiesWithCompleteReading > 0 ? 0 : 1);
 assert.equal(registry.ownerApprovalsNeeded.length, 3);
+assert.equal(registry.systemActions[0].state, "landed-main-ci-and-production-deployments-verified");
+assert.equal(registry.systemActions[0].source, sourceFiles.diagnosisBundleRelease);
+assert.equal(registry.systemActions[0].mergeSha, diagnosisBundleRelease.pullRequest.mergeSha);
 assert.ok(registry.cities.every((city) => city.completionContract.includes("four consecutive weekly panels")));
 assert.ok(registry.cities.every((city) => city.universalDependencies.length === 3));
 assert.ok(registry.cities.every((city) => city.intervention.feedback.requiredComparablePanels === 4));
