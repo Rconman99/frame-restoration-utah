@@ -10,6 +10,8 @@ On 2026-08-12, a second read-only search through the Codex Google Drive connecto
 
 At `2026-08-12T15:54:34Z`, a third audit attempted to use the approved Claude bridge specifically to reach the Frame business Drive. Its identity preflight again resolved the active connector to `ryanconwell99@gmail.com`, not `ryan@framerestorations.com`, so it failed closed before running any business-content query. It accepted zero evidence, disclosed zero sensitive fields, and made zero Drive, sharing, message, or publishing mutations. Secretless receipt hashes: JSON `5715c0de5daccb85570f982cf5a12202459184f8af2ab26335d7242146eb3cbb`; Markdown `d32407477c61434f88ed65a9aa6b4543d9de0d14d2079266bd443b0ce60dc3b0`. This strengthens the access-gap finding but does not establish that the business Drive lacks the requested evidence.
 
+At `2026-08-12T22:07:30Z`, a fourth read-only audit used the registered `gdrive-business` route and verified its Google Drive About user as `ryan@framerestorations.com`. A bounded title-and-marker scan reviewed `ONLINE ACCOUNTS`, `WEBSITE UPDATES`, and `Frame Restoration Utah LLC. & Contractor Independence - Website Optimization Request`. `ONLINE ACCOUNTS` is credential-bearing and was handled only as a marker scan; no credential values were printed or retained. The Utah request supports the existence of an owner-authored Utah/Salt Lake City entity scope, but none of the three artifacts proves the current exact-CID GBP field set or saved service areas. The account-access gap is therefore resolved, while the current owner-view GBP evidence gap remains. No Drive or public mutation occurred.
+
 ## Evidence ledger
 
 | Claim class | Status | Sanitized evidence | Public-use decision |
@@ -27,4 +29,4 @@ No new evidence was established for unsourced hail-frequency, roof-life-loss, or
 
 ## Next verification
 
-Repeat the read-only search under `ryan@framerestorations.com`. If the business-account search returns a current warranty instrument, COI/ACORD evidence, operating policy, or city-specific project proof, record only the minimum public fact in the claim registry and keep the private source out of Git. Until then, the integrity gate remains red and no city-page experiment may amplify the disputed copy.
+The business-account search is complete. Obtain a current dated owner-view GBP screenshot set or export for CID `5689850818145735734` to establish the saved service areas and profile fields. For warranty, COI/ACORD, operating-policy, or city-project claims, record only a minimum public fact if a current primary instrument later appears and keep the private source out of Git. Until then, the integrity gate remains red and no city-page experiment may amplify disputed copy.

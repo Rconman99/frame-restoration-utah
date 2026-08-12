@@ -23,7 +23,7 @@
   "sources": {
     "portfolio": {
       "file": "data/rank-tracker/SLV-18-CITY-GOAL-PORTFOLIO-2026-08-12.json",
-      "sha256": "5782534f715e91f7683aeb6ef258ab88b5b39e0bcc44fd702bf2e65e655264c3"
+      "sha256": "9e50c3174f5a10f1100f69b674c9c0a7e735829366a4209595463c4b85d9508b"
     },
     "corePriority": {
       "file": "data/rank-tracker/SLV-PRIORITY-2026-08-12.json",
@@ -51,19 +51,19 @@
     },
     "expansionArchitecture": {
       "file": "data/rank-tracker/SLV-EXPANSION-ARCHITECTURE-2026-08-12.json",
-      "sha256": "5a95b1df2a230bc3d9fc1a0350a951603db631574df3660136c0f49b60f654eb"
+      "sha256": "59830ea4a746ba5f29c03b255f70dfb991beddbd873a260d184e11e263b549ca"
     },
     "entityHealth": {
       "file": "data/rank-tracker/SLV-ENTITY-HEALTH-2026-08-12.json",
-      "sha256": "62a0a7ebd9f454d48642db33bda350fea7a7a4f81fba20294d75757d4e8f13d5"
+      "sha256": "534420a103d2b61ecc4e48fd50cd8c6c78366033a6777392ace76d6e997d8697"
     },
     "weeklyDecisions": {
       "file": "data/rank-tracker/SLV-WEEKLY-DECISIONS-2026-08-12.json",
-      "sha256": "7fdd84a94fe2718408b8bb387b4d0b6a63cb5996bd19c154635db5d77918fb77"
+      "sha256": "474b78a71a6300fe589bd1d1423b535189678c9dd54857cc1ac6f9efbed2360f"
     },
     "gscAttribution": {
       "file": "data/rank-tracker/SLV-GSC-URL-ATTRIBUTION-LATEST.json",
-      "sha256": "d464bab364c91ab2ec6433cece96cadc6ac5fc775477dddfce39ff9028f36cb9"
+      "sha256": "e23e4bfd48f8d4c70a05f42a1af1dc82da07bdad7a53edaa1afb40b331383004"
     },
     "consumerAi": {
       "file": "data/rank-tracker/SLV-CONSUMER-AI-LATEST.json",
@@ -71,11 +71,11 @@
     },
     "interventions": {
       "file": "data/rank-tracker/SLV-INTERVENTION-QUEUE-2026-08-12.json",
-      "sha256": "2f5b434ed2096a91b55fb6abd2de37398bbc6ff0abcdba85a97fc85fe1d4677d"
+      "sha256": "5be6c66ad4a015138de7e2206de05a71f2e7fea6b150d03265d3ac6bafdf3b05"
     },
     "mapsReadiness": {
       "file": "data/rank-tracker/SLV-MAPS-READINESS-2026-08-12.json",
-      "sha256": "287628288671c657e9bab87743f21023596816fe17c144c337336951e6734a2b"
+      "sha256": "acda0f0f558bd005c19e45fb98e1a50d4e6ee1b7799d324512e8d8d6ea0a23a6"
     },
     "ownerProfileAuditRequest": {
       "file": "data/authority/SLV-GBP-OWNER-AUDIT-REQUEST-2026-08-12.json",
@@ -83,12 +83,11 @@
     },
     "businessDriveReceipt": {
       "file": "data/rank-tracker/evidence/SLV-BUSINESS-DRIVE-CONNECTOR-2026-08-12.json",
-      "sha256": "431dce98c54cfe390c111412df7b653b5940f70becf896064f3298cef5cc5260"
+      "sha256": "26cb015a02734fb6dae20df679c3048f03943b049091d6a631b5c31d7f09c3fa"
     }
   },
   "externalEvidence": {
-    "businessDriveReceipt": "data/rank-tracker/evidence/SLV-BUSINESS-DRIVE-CONNECTOR-2026-08-12.json",
-    "externalBusinessDriveReceiptSha256": "c1ef99c795d7932d4497ab30395ab753720b1f7c88326e1d588da604cdb03951"
+    "businessDriveReceipt": "data/rank-tracker/evidence/SLV-BUSINESS-DRIVE-CONNECTOR-2026-08-12.json"
   },
   "consumerAiConfiguration": {
     "repository": "Rconman99/geo-aeo-tracker",
@@ -187,16 +186,6 @@
     }
   ],
   "connectionNeeded": [
-    {
-      "id": "business-drive-connector",
-      "state": "blocked-with-proof",
-      "requiredAccount": "ryan@framerestorations.com",
-      "observedAccount": "ryanconwell99@gmail.com",
-      "receipt": "data/rank-tracker/evidence/SLV-BUSINESS-DRIVE-CONNECTOR-2026-08-12.json",
-      "receiptSha256": "431dce98c54cfe390c111412df7b653b5940f70becf896064f3298cef5cc5260",
-      "externalSourceReceiptSha256": "c1ef99c795d7932d4497ab30395ab753720b1f7c88326e1d588da604cdb03951",
-      "action": "Reconnect the claude.ai Google Drive connector to ryan@framerestorations.com, then rerun the read-only evidence audit."
-    },
     {
       "id": "consumer-ai-provider-key",
       "state": "blocked-invalid-existing-secret",
@@ -346,7 +335,7 @@
       },
       "universalDependencies": [
         "valid Bright Data user API key for ChatGPT/Perplexity/Gemini panels",
-        "business Drive connector authenticated as ryan@framerestorations.com for evidence search",
+        "current owner-view GBP and saved service-area evidence for the exact CID",
         "clean Vercel blocking status before merge"
       ],
       "completionContract": "All four organic queries and the exact CID rank #1 across four consecutive weekly panels; every observed AIO cites Frame; all three consumer-AI engines name and cite Frame; integrity remains green in the same 28-day window."
@@ -443,7 +432,7 @@
       },
       "universalDependencies": [
         "valid Bright Data user API key for ChatGPT/Perplexity/Gemini panels",
-        "business Drive connector authenticated as ryan@framerestorations.com for evidence search",
+        "current owner-view GBP and saved service-area evidence for the exact CID",
         "clean Vercel blocking status before merge"
       ],
       "completionContract": "All four organic queries and the exact CID rank #1 across four consecutive weekly panels; every observed AIO cites Frame; all three consumer-AI engines name and cite Frame; integrity remains green in the same 28-day window."
@@ -542,7 +531,7 @@
       },
       "universalDependencies": [
         "valid Bright Data user API key for ChatGPT/Perplexity/Gemini panels",
-        "business Drive connector authenticated as ryan@framerestorations.com for evidence search",
+        "current owner-view GBP and saved service-area evidence for the exact CID",
         "clean Vercel blocking status before merge"
       ],
       "completionContract": "All four organic queries and the exact CID rank #1 across four consecutive weekly panels; every observed AIO cites Frame; all three consumer-AI engines name and cite Frame; integrity remains green in the same 28-day window."
@@ -640,7 +629,7 @@
       },
       "universalDependencies": [
         "valid Bright Data user API key for ChatGPT/Perplexity/Gemini panels",
-        "business Drive connector authenticated as ryan@framerestorations.com for evidence search",
+        "current owner-view GBP and saved service-area evidence for the exact CID",
         "clean Vercel blocking status before merge"
       ],
       "completionContract": "All four organic queries and the exact CID rank #1 across four consecutive weekly panels; every observed AIO cites Frame; all three consumer-AI engines name and cite Frame; integrity remains green in the same 28-day window."
@@ -736,7 +725,7 @@
       },
       "universalDependencies": [
         "valid Bright Data user API key for ChatGPT/Perplexity/Gemini panels",
-        "business Drive connector authenticated as ryan@framerestorations.com for evidence search",
+        "current owner-view GBP and saved service-area evidence for the exact CID",
         "clean Vercel blocking status before merge"
       ],
       "completionContract": "All four organic queries and the exact CID rank #1 across four consecutive weekly panels; every observed AIO cites Frame; all three consumer-AI engines name and cite Frame; integrity remains green in the same 28-day window."
@@ -836,7 +825,7 @@
       },
       "universalDependencies": [
         "valid Bright Data user API key for ChatGPT/Perplexity/Gemini panels",
-        "business Drive connector authenticated as ryan@framerestorations.com for evidence search",
+        "current owner-view GBP and saved service-area evidence for the exact CID",
         "clean Vercel blocking status before merge"
       ],
       "completionContract": "All four organic queries and the exact CID rank #1 across four consecutive weekly panels; every observed AIO cites Frame; all three consumer-AI engines name and cite Frame; integrity remains green in the same 28-day window."
@@ -932,7 +921,7 @@
       },
       "universalDependencies": [
         "valid Bright Data user API key for ChatGPT/Perplexity/Gemini panels",
-        "business Drive connector authenticated as ryan@framerestorations.com for evidence search",
+        "current owner-view GBP and saved service-area evidence for the exact CID",
         "clean Vercel blocking status before merge"
       ],
       "completionContract": "All four organic queries and the exact CID rank #1 across four consecutive weekly panels; every observed AIO cites Frame; all three consumer-AI engines name and cite Frame; integrity remains green in the same 28-day window."
@@ -1028,7 +1017,7 @@
       },
       "universalDependencies": [
         "valid Bright Data user API key for ChatGPT/Perplexity/Gemini panels",
-        "business Drive connector authenticated as ryan@framerestorations.com for evidence search",
+        "current owner-view GBP and saved service-area evidence for the exact CID",
         "clean Vercel blocking status before merge"
       ],
       "completionContract": "All four organic queries and the exact CID rank #1 across four consecutive weekly panels; every observed AIO cites Frame; all three consumer-AI engines name and cite Frame; integrity remains green in the same 28-day window."
@@ -1124,7 +1113,7 @@
       },
       "universalDependencies": [
         "valid Bright Data user API key for ChatGPT/Perplexity/Gemini panels",
-        "business Drive connector authenticated as ryan@framerestorations.com for evidence search",
+        "current owner-view GBP and saved service-area evidence for the exact CID",
         "clean Vercel blocking status before merge"
       ],
       "completionContract": "All four organic queries and the exact CID rank #1 across four consecutive weekly panels; every observed AIO cites Frame; all three consumer-AI engines name and cite Frame; integrity remains green in the same 28-day window."
@@ -1220,7 +1209,7 @@
       },
       "universalDependencies": [
         "valid Bright Data user API key for ChatGPT/Perplexity/Gemini panels",
-        "business Drive connector authenticated as ryan@framerestorations.com for evidence search",
+        "current owner-view GBP and saved service-area evidence for the exact CID",
         "clean Vercel blocking status before merge"
       ],
       "completionContract": "All four organic queries and the exact CID rank #1 across four consecutive weekly panels; every observed AIO cites Frame; all three consumer-AI engines name and cite Frame; integrity remains green in the same 28-day window."
@@ -1315,7 +1304,7 @@
       },
       "universalDependencies": [
         "valid Bright Data user API key for ChatGPT/Perplexity/Gemini panels",
-        "business Drive connector authenticated as ryan@framerestorations.com for evidence search",
+        "current owner-view GBP and saved service-area evidence for the exact CID",
         "clean Vercel blocking status before merge"
       ],
       "completionContract": "All four organic queries and the exact CID rank #1 across four consecutive weekly panels; every observed AIO cites Frame; all three consumer-AI engines name and cite Frame; integrity remains green in the same 28-day window."
@@ -1411,7 +1400,7 @@
       },
       "universalDependencies": [
         "valid Bright Data user API key for ChatGPT/Perplexity/Gemini panels",
-        "business Drive connector authenticated as ryan@framerestorations.com for evidence search",
+        "current owner-view GBP and saved service-area evidence for the exact CID",
         "clean Vercel blocking status before merge"
       ],
       "completionContract": "All four organic queries and the exact CID rank #1 across four consecutive weekly panels; every observed AIO cites Frame; all three consumer-AI engines name and cite Frame; integrity remains green in the same 28-day window."
@@ -1507,7 +1496,7 @@
       },
       "universalDependencies": [
         "valid Bright Data user API key for ChatGPT/Perplexity/Gemini panels",
-        "business Drive connector authenticated as ryan@framerestorations.com for evidence search",
+        "current owner-view GBP and saved service-area evidence for the exact CID",
         "clean Vercel blocking status before merge"
       ],
       "completionContract": "All four organic queries and the exact CID rank #1 across four consecutive weekly panels; every observed AIO cites Frame; all three consumer-AI engines name and cite Frame; integrity remains green in the same 28-day window."
@@ -1605,7 +1594,7 @@
       },
       "universalDependencies": [
         "valid Bright Data user API key for ChatGPT/Perplexity/Gemini panels",
-        "business Drive connector authenticated as ryan@framerestorations.com for evidence search",
+        "current owner-view GBP and saved service-area evidence for the exact CID",
         "clean Vercel blocking status before merge"
       ],
       "completionContract": "All four organic queries and the exact CID rank #1 across four consecutive weekly panels; every observed AIO cites Frame; all three consumer-AI engines name and cite Frame; integrity remains green in the same 28-day window."
@@ -1701,7 +1690,7 @@
       },
       "universalDependencies": [
         "valid Bright Data user API key for ChatGPT/Perplexity/Gemini panels",
-        "business Drive connector authenticated as ryan@framerestorations.com for evidence search",
+        "current owner-view GBP and saved service-area evidence for the exact CID",
         "clean Vercel blocking status before merge"
       ],
       "completionContract": "All four organic queries and the exact CID rank #1 across four consecutive weekly panels; every observed AIO cites Frame; all three consumer-AI engines name and cite Frame; integrity remains green in the same 28-day window."
@@ -1797,7 +1786,7 @@
       },
       "universalDependencies": [
         "valid Bright Data user API key for ChatGPT/Perplexity/Gemini panels",
-        "business Drive connector authenticated as ryan@framerestorations.com for evidence search",
+        "current owner-view GBP and saved service-area evidence for the exact CID",
         "clean Vercel blocking status before merge"
       ],
       "completionContract": "All four organic queries and the exact CID rank #1 across four consecutive weekly panels; every observed AIO cites Frame; all three consumer-AI engines name and cite Frame; integrity remains green in the same 28-day window."
@@ -1891,7 +1880,7 @@
       },
       "universalDependencies": [
         "valid Bright Data user API key for ChatGPT/Perplexity/Gemini panels",
-        "business Drive connector authenticated as ryan@framerestorations.com for evidence search",
+        "current owner-view GBP and saved service-area evidence for the exact CID",
         "clean Vercel blocking status before merge"
       ],
       "completionContract": "All four organic queries and the exact CID rank #1 across four consecutive weekly panels; every observed AIO cites Frame; all three consumer-AI engines name and cite Frame; integrity remains green in the same 28-day window."
@@ -1986,7 +1975,7 @@
       },
       "universalDependencies": [
         "valid Bright Data user API key for ChatGPT/Perplexity/Gemini panels",
-        "business Drive connector authenticated as ryan@framerestorations.com for evidence search",
+        "current owner-view GBP and saved service-area evidence for the exact CID",
         "clean Vercel blocking status before merge"
       ],
       "completionContract": "All four organic queries and the exact CID rank #1 across four consecutive weekly panels; every observed AIO cites Frame; all three consumer-AI engines name and cite Frame; integrity remains green in the same 28-day window."

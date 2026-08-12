@@ -326,7 +326,7 @@ const queue = {
       action: ownerProfileAuditRequest.delivery.ownerAsk,
     },
     {
-      id: "business-drive-connector-account",
+      id: "business-drive-current-gbp-evidence",
       state: driveReceipt.status,
       requiredAccount: driveReceipt.connector.requiredAccount,
       observedAccount: driveReceipt.connector.observedAccount,
@@ -360,8 +360,17 @@ assert.equal(queue.summary.protectedOrganicNumberOneQueries, portfolio.portfolio
 assert.equal(queue.summary.protectedGoogleAiOverviewCitations, portfolio.portfolioScore.googleAiOverviewCitations);
 assert.equal(queue.summary.citiesAtSustainedGoal, 0);
 assert.equal(mapsReadiness.summary.citiesReadyForMapsIntervention, 0);
-assert.equal(serviceAreaRequest.drivePreflight.externalReceiptSha256, driveReceipt.source.externalReceiptSha256);
-assert.equal(driveReceipt.evidenceSearchPerformed, false);
+assert.equal(driveReceipt.status, "BUSINESS_ACCOUNT_SEARCH_COMPLETE_CURRENT_GBP_PROOF_NOT_FOUND");
+assert.equal(driveReceipt.connector.requiredAccount, "ryan@framerestorations.com");
+assert.equal(driveReceipt.connector.observedAccount, "ryan@framerestorations.com");
+assert.equal(driveReceipt.connector.match, true);
+assert.equal(driveReceipt.evidenceSearchPerformed, true);
+assert.equal(driveReceipt.acceptedCurrentGbpProfileEvidenceCount, 0);
+assert.equal(driveReceipt.acceptedCurrentServiceAreaEvidenceCount, 0);
+assert.equal(driveReceipt.credentialFieldsStored, 0);
+assert.equal(driveReceipt.driveMutationPerformed, false);
+assert.equal(serviceAreaRequest.drivePreflight.searchPerformed, true);
+assert.equal(serviceAreaRequest.drivePreflight.acceptedCurrentServiceAreaEvidenceCount, 0);
 assert.ok(candidates.every((candidate) => candidate.sources.panelEvidence.length === 4));
 assert.ok(candidates.every((candidate) => candidate.feedback.requiredComparablePanels === 4));
 assert.ok(candidates.every((candidate) => candidate.decision === "Monitor" || candidate.ownerApprovalPhrase));
