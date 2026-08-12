@@ -8,7 +8,9 @@ name: SEO loop (Utah)
 #   1. scripts/seo-snapshot.mjs — live-crawls www.framerestorationutah.com (real
 #      status codes, redirect chains, noindex, thin content) + pulls Google
 #      Search Console when the GSC_SERVICE_ACCOUNT_JSON secret exists, consumes
-#      the committed weekly DataForSEO matrix, and writes
+#      the committed six-city weekly DataForSEO matrix plus the twelve-city
+#      manual expansion baseline (read-only here; this workflow never buys
+#      additional SERPs), and writes
 #      data/seo/snapshots/<date>.json. A failed crawl writes NO
 #      snapshot and fails the job — a fabricated "0 issues" snapshot would
 #      read as a clean bill of health in tomorrow's diff.

@@ -44,6 +44,7 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const SNAP_DIR = path.join(root, "data", "seo", "snapshots");
 const KEYWORDS_FILE = path.join(root, "data", "seo", "keywords.json");
 const RANK_REGISTRY_FILE = path.join(root, "data", "rank-tracker", "panels.json");
+const EXPANSION_RANK_REGISTRY_FILE = path.join(root, "data", "rank-tracker", "expansion-panels.json");
 const DEFAULT_SITE = "https://www.framerestorationutah.com";
 
 /** Ops timezone (crons + PostHog are Denver). Date = the day the run fired there. */
@@ -96,8 +97,7 @@ function unmeasuredRows(config, panelId, reason) {
  * call. The weekly rank workflow owns these reports; the daily SEO loop only
  * consumes them. Any missing/mismatched panel stays explicit and unmeasured.
  */
-export function readTrackedRanks({ rootDir = root } = {}) {
-  const registryFile = path.join(rootDir, path.relative(root, RANK_REGISTRY_FILE));
+function readRankRegistry({ rootDir, registryFile }) {
   const keywordsFile = path.join(rootDir, path.relative(root, KEYWORDS_FILE));
 
   if (!fs.existsSync(registryFile)) {
@@ -262,6 +262,40 @@ export function readTrackedRanks({ rootDir = root } = {}) {
   };
 }
 
+export function readTrackedRanks({ rootDir = root, includeExpansion = false } = {}) {
+  const registryFile = path.join(rootDir, path.relative(root, RANK_REGISTRY_FILE));
+  const core = readRankRegistry({ rootDir, registryFile });
+  if (!includeExpansion) return core;
+
+  const expansionRegistryFile = path.join(rootDir, path.relative(root, EXPANSION_RANK_REGISTRY_FILE));
+  const expansion = readRankRegistry({ rootDir, registryFile: expansionRegistryFile });
+  const issues = [...core.measurement.issues, ...expansion.measurement.issues];
+  const oldest = [core.measurement.oldestObservedAt, expansion.measurement.oldestObservedAt].filter(Boolean).sort()[0] || null;
+  const newest = [core.measurement.newestObservedAt, expansion.measurement.newestObservedAt].filter(Boolean).sort().at(-1) || null;
+  const expectedKnown = core.measurement.queriesExpectedKnown !== false && expansion.measurement.queriesExpectedKnown !== false;
+  return {
+    ranks: [...core.ranks, ...expansion.ranks],
+    measurement: {
+      available: core.measurement.available && expansion.measurement.available,
+      source: "dataforseo-task-queue",
+      registryId: `${core.measurement.registryId}+${expansion.measurement.registryId}`,
+      panelsExpected: core.measurement.panelsExpected + expansion.measurement.panelsExpected,
+      panelsMeasured: core.measurement.panelsMeasured + expansion.measurement.panelsMeasured,
+      queriesExpected: expectedKnown ? core.measurement.queriesExpected + expansion.measurement.queriesExpected : null,
+      queriesExpectedKnown: expectedKnown,
+      queriesMeasured: core.measurement.queriesMeasured + expansion.measurement.queriesMeasured,
+      oldestObservedAt: oldest,
+      newestObservedAt: newest,
+      reason: issues.length ? "incomplete_panel" : null,
+      issues,
+      cadence: {
+        core: "weekly",
+        expansion: "manual-baseline-not-yet-admitted-to-weekly-spend",
+      },
+    },
+  };
+}
+
 // crawlImpl / gscFetchImpl are seams for tests only; production always uses the
 // real crawler and the real fetch. Without them the crawl-to-snapshot path can
 // only be exercised against live network, which is why the field-drop bug this
@@ -274,7 +308,7 @@ export async function buildSnapshot({
   env = process.env,
   crawlImpl = crawlSite,
   gscFetchImpl,
-  rankReadImpl = readTrackedRanks,
+  rankReadImpl = () => readTrackedRanks({ includeExpansion: true }),
 } = {}) {
   const snapDate = date || todayInDenver();
 
