@@ -19,7 +19,10 @@
       tagline:            "SEO & Lead Attribution Tracker",
       client:             { name: "Frame Restoration Utah", domain: "www.framerestorationutah.com" },
       supabaseUrl:        "https://hdcflshhomzildwqlmwh.supabase.co",
-      supabaseAnonKey:    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhkY2Zsc2hob216aWxkd3FsbXdoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDI3NjI3NjQsImV4cCI6MjA1ODMzODc2NH0.kWSlGEtBgPFOx5eq8MYGz3VDqhAdqQTdGVlQqdRuzXk",
+      // supabaseAnonKey removed 2026-08-12 — it was a rotated, dead key, and
+      // the only thing using it (the browser-side admin panel hitting
+      // /rest/v1/report_access) now goes through the lead-crm edge function
+      // under the service role. Nothing on this page needs an anon key.
       campaignKey:        "frame-roofing-2026",
       defaultDays:        30,
       ranges:             [7,30,60,90],
@@ -44,10 +47,19 @@
     <h1>Frame Restoration Utah</h1>
     <p class="sub">SEO & Lead Attribution Tracker</p>
     <form id="loginForm" onsubmit="return window.__dashboard.doLogin(event)">
-      <input type="password" id="pinInput" placeholder="Enter PIN" autocomplete="off" autofocus>
+      <input type="password" id="pinInput" placeholder="Enter PIN" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" autofocus>
       <button type="submit" class="login-btn">Unlock Report</button>
     </form>
     <div class="login-err" id="loginErr"></div>
+    <div id="resetWrap" style="margin-top:14px;text-align:center">
+      <a href="#" id="resetToggle" onclick="return window.__dashboard.showReset()" style="color:var(--muted);font-size:.85rem;text-decoration:underline">Forgot your PIN?</a>
+      <div id="resetForm" style="display:none;margin-top:10px">
+        <input type="text" id="resetName" placeholder="Your full name" autocomplete="off" style="width:100%;margin-bottom:8px">
+        <button type="button" class="login-btn" onclick="window.__dashboard.doReset()">Text me a new PIN</button>
+        <div style="color:var(--muted);font-size:.75rem;margin-top:8px">Sends a new PIN to the mobile number on your account.</div>
+      </div>
+      <div id="resetMsg" style="font-size:.85rem;margin-top:10px"></div>
+    </div>
   </div>
 </div>
 
@@ -91,15 +103,17 @@
     <button class="close-btn" onclick="window.__dashboard.closeAdmin()">&times;</button>
     <h2>Manage Report Access</h2>
     <table id="accessTable">
-      <thead><tr><th>Name</th><th>PIN</th><th>Role</th><th>Status</th><th></th></tr></thead>
+      <thead><tr><th>Name</th><th>PIN</th><th>Role</th><th>Phone</th><th>Last in</th><th>Status</th><th></th></tr></thead>
       <tbody id="accessBody"></tbody>
     </table>
     <h3 style="font-size:.95rem;color:var(--muted);margin:16px 0 8px">Add New User</h3>
     <div class="add-row">
       <input type="text" id="newName" placeholder="Name">
-      <input type="text" id="newPin" placeholder="PIN code">
+      <input type="text" id="newPin" placeholder="PIN (blank = generate)">
+      <input type="text" id="newPhone" placeholder="Mobile (for PIN resets)">
       <button onclick="window.__dashboard.addUser()">Add</button>
     </div>
+    <p style="font-size:.78rem;color:var(--muted);margin:8px 0 0">A mobile number is required for self-serve PIN resets — reset codes only ever go to the number on file here.</p>
     <div id="adminMsg" style="color:var(--green);font-size:.85rem;margin-top:10px;min-height:20px"></div>
   </div>
 </div>

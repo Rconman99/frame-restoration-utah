@@ -32,7 +32,12 @@
   var CFG = window.DASHBOARD_CONFIG || {};
   var API = CFG.supabaseUrl;
   var FAPI = API + '/functions/v1/weekly-report';
-  var SKEY = CFG.supabaseAnonKey;
+  // User management no longer uses the browser anon key against
+  // /rest/v1/report_access (2026-08-12). That key was rotated and anon SELECT
+  // on report_access is RLS-denied, so the admin panel had been silently dead —
+  // and pointing a browser key at a table of plaintext PINs was a bad idea
+  // regardless. It now goes through lead-crm under the service role.
+  var CRMAPI = API + '/functions/v1/lead-crm';
   var KEY = CFG.campaignKey;
 
   var curD = CFG.defaultDays || 30;
@@ -179,58 +184,134 @@
     return '<span style="color:' + color + ';font-weight:600">' + sign + g + '%</span>';
   }
 
+  // ─── Self-serve PIN reset ────────────────────────────────────────────
+  // Pre-auth by necessity. The backend only ever texts the new code to the
+  // phone already on the account and answers identically for hits and misses,
+  // so this form cannot be used to enumerate users or redirect a code.
+
+  function showReset() {
+    document.getElementById('resetForm').style.display = 'block';
+    document.getElementById('resetToggle').style.display = 'none';
+    document.getElementById('resetName').focus();
+    return false;
+  }
+
+  function resetMsg(t, ok) {
+    var el = document.getElementById('resetMsg');
+    el.textContent = t;
+    el.style.color = ok ? 'var(--green)' : 'var(--red)';
+  }
+
+  async function doReset() {
+    var n = document.getElementById('resetName').value.trim();
+    if (!n) { resetMsg('Enter your name', false); return; }
+    resetMsg('Sending…', true);
+    try {
+      var r = await fetch(CRMAPI + '?action=pin_reset&key=' + KEY, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: n })
+      });
+      var d = await r.json();
+      if (r.status === 429) { resetMsg('Too many reset requests. Try again in a few minutes.', false); return; }
+      resetMsg(d.message || 'Check your phone.', true);
+    } catch (e) {
+      resetMsg('Connection error. Try again.', false);
+    }
+  }
+
   // ─── Admin panel ─────────────────────────────────────────────────────
 
   async function openAdmin() { document.getElementById('adminModal').classList.add('show'); await loadUsers(); }
   function closeAdmin() { document.getElementById('adminModal').classList.remove('show'); }
 
-  async function loadUsers() {
-    var r = await fetch(API + '/rest/v1/report_access?select=id,name,pin,role,active,last_accessed&order=created_at', {
-      headers: { 'apikey': SKEY, 'Authorization': 'Bearer ' + SKEY }
-    });
-    var users = await r.json();
-    var tb = document.getElementById('accessBody');
-    tb.innerHTML = '';
-    users.forEach(function (u) {
-      var la = u.last_accessed ? new Date(u.last_accessed).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : 'Never';
-      var tr = document.createElement('tr');
-      tr.innerHTML = '<td>' + u.name + '</td><td style="font-family:monospace;color:var(--muted)">' + u.pin + '</td><td>' + u.role + '</td><td>' + (u.active ? '<span class="status-on">Active</span>' : '<span class="status-off">Disabled</span>') + '</td><td><button class="toggle-btn ' + (u.active ? 'on' : 'off') + '" onclick="window.__dashboard.toggleUser(\'' + u.id + '\',' + !u.active + ')">' + (u.active ? 'Disable' : 'Enable') + '</button></td>';
-      tb.appendChild(tr);
+  function esc(s) {
+    return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
     });
   }
 
-  async function toggleUser(id, active) {
-    await fetch(API + '/rest/v1/report_access?id=eq.' + id, {
-      method: 'PATCH',
-      headers: { 'apikey': SKEY, 'Authorization': 'Bearer ' + SKEY, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
-      body: JSON.stringify({ active: active })
+  function adminMsg(t, ok) {
+    var el = document.getElementById('adminMsg');
+    el.textContent = t;
+    el.style.color = ok ? 'var(--green)' : 'var(--red)';
+  }
+
+  function crmUrl(action) {
+    return CRMAPI + '?action=' + action + '&key=' + KEY + '&pin=' + encodeURIComponent(PIN);
+  }
+
+  async function crmPost(action, body) {
+    var r = await fetch(crmUrl(action), {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
     });
-    loadUsers();
+    var d = {};
+    try { d = await r.json(); } catch (e) { /* non-JSON error body */ }
+    return { ok: r.ok, data: d };
+  }
+
+  async function loadUsers() {
+    var tb = document.getElementById('accessBody');
+    try {
+      var r = await fetch(crmUrl('users_list'));
+      var d = await r.json();
+      if (!r.ok) { adminMsg(d.message || 'Could not load users', false); return; }
+      tb.innerHTML = '';
+      (d.users || []).forEach(function (u) {
+        var la = u.last_accessed
+          ? new Date(u.last_accessed).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+          : '<span style="color:var(--red)">Never</span>';
+        var phone = u.phone ? esc(u.phone) : '<span style="color:var(--red)">none</span>';
+        var tr = document.createElement('tr');
+        tr.innerHTML = '<td>' + esc(u.name) + '</td>'
+          + '<td style="font-family:monospace;color:var(--muted)">' + esc(u.pin) + '</td>'
+          + '<td>' + esc(u.role) + '</td>'
+          + '<td style="color:var(--muted);font-size:.82rem">' + phone + '</td>'
+          + '<td style="font-size:.82rem">' + la + '</td>'
+          + '<td>' + (u.active ? '<span class="status-on">Active</span>' : '<span class="status-off">Disabled</span>') + '</td>'
+          + '<td style="white-space:nowrap"><button class="toggle-btn ' + (u.active ? 'on' : 'off') + '" onclick="window.__dashboard.toggleUser(\'' + esc(u.id) + '\',' + !u.active + ')">' + (u.active ? 'Disable' : 'Enable') + '</button> '
+          + '<button class="toggle-btn off" onclick="window.__dashboard.rotatePin(\'' + esc(u.id) + '\',\'' + esc(u.name) + '\')">New PIN</button></td>';
+        tb.appendChild(tr);
+      });
+    } catch (e) {
+      adminMsg('Connection error loading users', false);
+    }
+  }
+
+  async function toggleUser(id, active) {
+    var res = await crmPost('users_update', { id: id, active: active });
+    if (res.ok) { adminMsg('', true); loadUsers(); }
+    else { adminMsg(res.data.message || 'Could not update user', false); }
+  }
+
+  async function rotatePin(id, name) {
+    if (!confirm('Generate a new PIN for ' + name + '? Their old one stops working immediately.')) return;
+    var res = await crmPost('users_update', { id: id, rotate_pin: true });
+    if (res.ok) {
+      adminMsg(name + ' — new PIN: ' + ((res.data.updated && res.data.updated.pin) || ''), true);
+      loadUsers();
+    } else {
+      adminMsg(res.data.message || 'Could not rotate PIN', false);
+    }
   }
 
   async function addUser() {
     var n = document.getElementById('newName').value.trim();
     var p = document.getElementById('newPin').value.trim();
-    if (!n || !p) {
-      document.getElementById('adminMsg').textContent = 'Name and PIN required';
-      document.getElementById('adminMsg').style.color = 'var(--red)';
-      return;
-    }
-    var r = await fetch(API + '/rest/v1/report_access', {
-      method: 'POST',
-      headers: { 'apikey': SKEY, 'Authorization': 'Bearer ' + SKEY, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
-      body: JSON.stringify({ name: n, pin: p, role: 'viewer', campaign_key: KEY })
-    });
-    if (r.ok) {
+    var phoneEl = document.getElementById('newPhone');
+    var ph = phoneEl ? phoneEl.value.trim() : '';
+    if (!n) { adminMsg('Name required', false); return; }
+    var res = await crmPost('users_create', { name: n, pin: p, phone: ph, role: 'viewer' });
+    if (res.ok) {
       document.getElementById('newName').value = '';
       document.getElementById('newPin').value = '';
-      document.getElementById('adminMsg').textContent = n + ' added!';
-      document.getElementById('adminMsg').style.color = 'var(--green)';
+      if (phoneEl) phoneEl.value = '';
+      adminMsg(n + ' added — PIN: ' + ((res.data.created && res.data.created.pin) || ''), true);
       loadUsers();
     } else {
-      var e = await r.json();
-      document.getElementById('adminMsg').textContent = e.message || 'Error adding user';
-      document.getElementById('adminMsg').style.color = 'var(--red)';
+      adminMsg(res.data.message || 'Error adding user', false);
     }
   }
 
@@ -699,6 +780,9 @@
     closeAdmin: closeAdmin,
     addUser: addUser,
     toggleUser: toggleUser,
+    rotatePin: rotatePin,
+    showReset: showReset,
+    doReset: doReset,
     refresh: function () { go(curD); }
   };
 })();

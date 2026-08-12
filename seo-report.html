@@ -63,9 +63,18 @@ footer{text-align:center;padding:32px;color:var(--muted);font-size:.8rem;border-
 <h1>Frame Roofing Utah</h1>
 <p class="sub">SEO & Lead Attribution Tracker</p>
 <form id="loginForm" onsubmit="return doLogin(event)">
-<input type="password" id="pinInput" placeholder="Enter PIN" autocomplete="off" autofocus>
+<input type="password" id="pinInput" placeholder="Enter PIN" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" autofocus>
 <button type="submit" class="login-btn">Unlock Report</button>
 </form>
+<div id="resetWrap" style="margin-top:14px;text-align:center">
+<a href="#" id="resetToggle" onclick="return showReset()" style="color:var(--muted);font-size:.85rem;text-decoration:underline">Forgot your PIN?</a>
+<div id="resetForm" style="display:none;margin-top:10px">
+<input type="text" id="resetName" placeholder="Your full name" autocomplete="off" style="width:100%;margin-bottom:8px">
+<button type="button" class="login-btn" onclick="doReset()">Text me a new PIN</button>
+<div style="color:var(--muted);font-size:.75rem;margin-top:8px">Sends a new PIN to the mobile number on your account.</div>
+</div>
+<div id="resetMsg" style="font-size:.85rem;margin-top:10px"></div>
+</div>
 <div class="login-err" id="loginErr"></div>
 </div>
 </div>
@@ -87,19 +96,26 @@ footer{text-align:center;padding:32px;color:var(--muted);font-size:.8rem;border-
 <div class="modal">
 <button class="close-btn" onclick="closeAdmin()">&times;</button>
 <h2>Manage Report Access</h2>
-<table id="accessTable"><thead><tr><th>Name</th><th>PIN</th><th>Role</th><th>Status</th><th></th></tr></thead><tbody id="accessBody"></tbody></table>
+<table id="accessTable"><thead><tr><th>Name</th><th>PIN</th><th>Role</th><th>Phone</th><th>Last in</th><th>Status</th><th></th></tr></thead><tbody id="accessBody"></tbody></table>
 <h3 style="font-size:.95rem;color:var(--muted);margin:16px 0 8px">Add New User</h3>
 <div class="add-row">
 <input type="text" id="newName" placeholder="Name">
-<input type="text" id="newPin" placeholder="PIN code">
+<input type="text" id="newPin" placeholder="PIN (blank = generate)">
+<input type="text" id="newPhone" placeholder="Mobile (for PIN resets)">
 <button onclick="addUser()">Add</button>
 </div>
+<p style="font-size:.78rem;color:var(--muted);margin:8px 0 0">A mobile number is required for self-serve PIN resets — reset codes only ever go to the number on file here.</p>
 <div id="adminMsg" style="color:var(--green);font-size:.85rem;margin-top:10px;min-height:20px"></div>
 </div>
 </div>
 
 <script>
-var API="https://hdcflshhomzildwqlmwh.supabase.co",FAPI=API+"/functions/v1/weekly-report",SKEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhkY2Zsc2hob216aWxkd3FsbXdoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDI3NjI3NjQsImV4cCI6MjA1ODMzODc2NH0.kWSlGEtBgPFOx5eq8MYGz3VDqhAdqQTdGVlQqdRuzXk",KEY="frame-roofing-2026",curD=30,pC=null,bC=null,PIN="",CUR_USER=null;
+// SKEY (browser-side anon key hitting /rest/v1/report_access) was removed
+// 2026-08-12. It had been rotated out from under this page, and the baseline
+// RLS hardening revoked anon SELECT on report_access anyway — so the admin
+// panel had been silently dead. User management now goes through the lead-crm
+// edge function, which runs service-role behind an admin-role check.
+var API="https://hdcflshhomzildwqlmwh.supabase.co",FAPI=API+"/functions/v1/weekly-report",CRMAPI=API+"/functions/v1/lead-crm",KEY="frame-roofing-2026",curD=30,pC=null,bC=null,PIN="",CUR_USER=null;
 
 function doLogin(e){e.preventDefault();var p=document.getElementById('pinInput').value.trim();if(!p){document.getElementById('loginErr').textContent='Please enter a PIN';return false;}
 document.getElementById('loginErr').textContent='';PIN=p;
@@ -118,19 +134,51 @@ async function go(days){var el=document.getElementById('ct');el.innerHTML='<div 
 try{var r=await fetch(FAPI+'?key='+KEY+'&pin='+encodeURIComponent(PIN)+'&days='+days);if(r.status===403){doLogout();return;}var D=await r.json();if(D.error)throw new Error(D.error);
 if(D.user)CUR_USER=D.user;document.getElementById('rDate').textContent=new Date(D.generated_at).toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});render(D);}catch(e){el.innerHTML='<div class="ld" style="color:var(--red)">Error: '+e.message+'</div>';}}
 
+/* Self-serve PIN reset — see leads.html for the rationale. Routed through
+   lead-crm (not weekly-report) because that is where the reset action lives;
+   both pages share the same report_access rows. */
+function showReset(){document.getElementById('resetForm').style.display='block';document.getElementById('resetToggle').style.display='none';document.getElementById('resetName').focus();return false;}
+function resetMsg(t,ok){var el=document.getElementById('resetMsg');el.textContent=t;el.style.color=ok?'var(--green)':'var(--red)';}
+async function doReset(){var n=document.getElementById('resetName').value.trim();
+if(!n){resetMsg('Enter your name',false);return;}
+resetMsg('Sending…',true);
+try{var r=await fetch(CRMAPI+'?action=pin_reset&key='+KEY,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name:n})});
+var d=await r.json();
+if(r.status===429){resetMsg('Too many reset requests. Try again in a few minutes.',false);return;}
+resetMsg(d.message||'Check your phone.',true);}
+catch(e){resetMsg('Connection error. Try again.',false);}}
+
 /* Admin Panel */
 async function openAdmin(){document.getElementById('adminModal').classList.add('show');await loadUsers();}
 function closeAdmin(){document.getElementById('adminModal').classList.remove('show');}
-async function loadUsers(){var r=await fetch(API+'/rest/v1/report_access?select=id,name,pin,role,active,last_accessed&order=created_at',{headers:{'apikey':SKEY,'Authorization':'Bearer '+SKEY}});var users=await r.json();var tb=document.getElementById('accessBody');tb.innerHTML='';
-users.forEach(function(u){var la=u.last_accessed?new Date(u.last_accessed).toLocaleDateString('en-US',{month:'short',day:'numeric'}):'Never';
-var tr=document.createElement('tr');tr.innerHTML='<td>'+u.name+'</td><td style="font-family:monospace;color:var(--muted)">'+u.pin+'</td><td>'+u.role+'</td><td>'+(u.active?'<span class="status-on">Active</span>':'<span class="status-off">Disabled</span>')+'</td><td><button class="toggle-btn '+(u.active?'on':'off')+'" onclick="toggleUser(\''+u.id+'\','+!u.active+')">'+(u.active?'Disable':'Enable')+'</button></td>';
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+function adminMsg(t,ok){var el=document.getElementById('adminMsg');el.textContent=t;el.style.color=ok?'var(--green)':'var(--red)';}
+function crmUrl(action){return CRMAPI+'?action='+action+'&key='+KEY+'&pin='+encodeURIComponent(PIN);}
+
+async function loadUsers(){var tb=document.getElementById('accessBody');
+try{var r=await fetch(crmUrl('users_list'));var d=await r.json();
+if(!r.ok){adminMsg(d.message||'Could not load users',false);return;}
+tb.innerHTML='';
+(d.users||[]).forEach(function(u){var la=u.last_accessed?new Date(u.last_accessed).toLocaleDateString('en-US',{month:'short',day:'numeric'}):'<span style="color:var(--red)">Never</span>';
+var tr=document.createElement('tr');tr.innerHTML='<td>'+esc(u.name)+'</td><td style="font-family:monospace;color:var(--muted)">'+esc(u.pin)+'</td><td>'+esc(u.role)+'</td><td style="color:var(--muted);font-size:.82rem">'+(u.phone?esc(u.phone):'<span style="color:var(--red)">none</span>')+'</td><td style="font-size:.82rem">'+la+'</td><td>'+(u.active?'<span class="status-on">Active</span>':'<span class="status-off">Disabled</span>')+'</td><td style="white-space:nowrap"><button class="toggle-btn '+(u.active?'on':'off')+'" onclick="toggleUser(\''+esc(u.id)+'\','+!u.active+')">'+(u.active?'Disable':'Enable')+'</button> <button class="toggle-btn off" onclick="rotatePin(\''+esc(u.id)+'\',\''+esc(u.name)+'\')">New PIN</button></td>';
 tb.appendChild(tr);});}
+catch(e){adminMsg('Connection error loading users',false);}}
 
-async function toggleUser(id,active){await fetch(API+'/rest/v1/report_access?id=eq.'+id,{method:'PATCH',headers:{'apikey':SKEY,'Authorization':'Bearer '+SKEY,'Content-Type':'application/json','Prefer':'return=minimal'},body:JSON.stringify({active:active})});loadUsers();}
+async function crmPost(action,body){var r=await fetch(crmUrl(action),{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});var d={};try{d=await r.json();}catch(e){}return {ok:r.ok,data:d};}
 
-async function addUser(){var n=document.getElementById('newName').value.trim(),p=document.getElementById('newPin').value.trim();if(!n||!p){document.getElementById('adminMsg').textContent='Name and PIN required';document.getElementById('adminMsg').style.color='var(--red)';return;}
-var r=await fetch(API+'/rest/v1/report_access',{method:'POST',headers:{'apikey':SKEY,'Authorization':'Bearer '+SKEY,'Content-Type':'application/json','Prefer':'return=minimal'},body:JSON.stringify({name:n,pin:p,role:'viewer'})});
-if(r.ok){document.getElementById('newName').value='';document.getElementById('newPin').value='';document.getElementById('adminMsg').textContent=n+' added!';document.getElementById('adminMsg').style.color='var(--green)';loadUsers();}else{var e=await r.json();document.getElementById('adminMsg').textContent=e.message||'Error adding user';document.getElementById('adminMsg').style.color='var(--red)';}}
+async function toggleUser(id,active){var res=await crmPost('users_update',{id:id,active:active});
+if(res.ok){adminMsg('',true);loadUsers();}else{adminMsg(res.data.message||'Could not update user',false);}}
+
+async function rotatePin(id,name){if(!confirm('Generate a new PIN for '+name+'? Their old one stops working immediately.'))return;
+var res=await crmPost('users_update',{id:id,rotate_pin:true});
+if(res.ok){adminMsg(name+' — new PIN: '+(res.data.updated&&res.data.updated.pin||''),true);loadUsers();}else{adminMsg(res.data.message||'Could not rotate PIN',false);}}
+
+async function addUser(){var n=document.getElementById('newName').value.trim(),p=document.getElementById('newPin').value.trim(),ph=document.getElementById('newPhone').value.trim();
+if(!n){adminMsg('Name required',false);return;}
+var res=await crmPost('users_create',{name:n,pin:p,phone:ph,role:'viewer'});
+if(res.ok){document.getElementById('newName').value='';document.getElementById('newPin').value='';document.getElementById('newPhone').value='';
+adminMsg(n+' added — PIN: '+(res.data.created&&res.data.created.pin||''),true);loadUsers();}
+else{adminMsg(res.data.message||'Error adding user',false);}}
 
 function ins(t,tx,a){return '<div class="ib"><h3>'+t+'</h3><p>'+tx+'</p><p class="a">&rarr; '+a+'</p></div>';}
 

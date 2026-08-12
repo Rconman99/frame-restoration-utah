@@ -161,10 +161,19 @@ footer{text-align:center;padding:24px;color:var(--muted);font-size:.78rem;border
     <h1>Frame Restoration — Leads</h1>
     <div class="sub">Internal CRM · PIN required</div>
     <form onsubmit="return doLogin(event)">
-      <input type="password" id="pinInput" placeholder="Enter PIN" autocomplete="off" autofocus>
+      <input type="password" id="pinInput" placeholder="Enter PIN" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" autofocus>
       <button class="login-btn" type="submit">Sign In</button>
     </form>
     <div class="login-err" id="loginErr"></div>
+    <div id="resetWrap" style="margin-top:14px;text-align:center">
+      <a href="#" id="resetToggle" onclick="return showReset()" style="color:var(--muted,#8b93a7);font-size:.85rem;text-decoration:underline">Forgot your PIN?</a>
+      <div id="resetForm" style="display:none;margin-top:10px">
+        <input type="text" id="resetName" placeholder="Your full name" autocomplete="off" style="width:100%;margin-bottom:8px">
+        <button class="login-btn" type="button" onclick="doReset()">Text me a new PIN</button>
+        <div style="color:var(--muted,#8b93a7);font-size:.75rem;margin-top:8px">Sends a new PIN to the mobile number on your account. Ask Ryan if you're not sure which one that is.</div>
+      </div>
+      <div id="resetMsg" style="font-size:.85rem;margin-top:10px"></div>
+    </div>
   </div>
 </div>
 
@@ -377,6 +386,25 @@ footer{text-align:center;padding:24px;color:var(--muted);font-size:.78rem;border
 <script>
 var API="https://hdcflshhomzildwqlmwh.supabase.co/functions/v1/lead-crm";
 var KEY="frame-roofing-2026";
+
+// Self-serve PIN reset. Added 2026-08-12 after Landon sat locked out of this
+// page for four months (last_accessed was NULL from 2026-04-11) with no way to
+// recover a PIN he'd never been given. The backend only ever texts the new code
+// to the number already stored on the account, and answers identically whether
+// or not the name matches — so this box can't be used to enumerate users.
+function showReset(){document.getElementById('resetForm').style.display='block';document.getElementById('resetToggle').style.display='none';document.getElementById('resetName').focus();return false;}
+function resetMsg(t,ok){var el=document.getElementById('resetMsg');el.textContent=t;el.style.color=ok?'var(--green,#4ade80)':'var(--red,#f87171)';}
+async function doReset(){
+  var n=document.getElementById('resetName').value.trim();
+  if(!n){resetMsg('Enter your name',false);return;}
+  resetMsg('Sending…',true);
+  try{
+    var r=await fetch(API+'?action=pin_reset&key='+KEY,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name:n})});
+    var d=await r.json();
+    if(r.status===429){resetMsg('Too many reset requests. Try again in a few minutes.',false);return;}
+    resetMsg(d.message||'Check your phone.',true);
+  }catch(e){resetMsg('Connection error. Try again.',false);}
+}
 var PIN="";
 var CUR_USER=null;
 var leads=[];

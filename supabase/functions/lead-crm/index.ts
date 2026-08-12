@@ -25,6 +25,13 @@ const SUPABASE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
 // the PIN (+ per-IP throttle below) is the real auth. Env-driven so it can be
 // rotated without a redeploy; unset = function disabled (fail closed).
 const API_KEY = Deno.env.get("LEAD_CRM_API_KEY") ?? "";
+// A2P sender of record (canonical NAP line). The Messaging Service pool holds
+// more than one number, so every send pins From explicitly — same rule as
+// handle-lead. Without this a reset code could go out from a tracking DID.
+const MAIN_LINE = "+14352928802";
+// Per-account cooldown between self-serve PIN resets. Stops a known name from
+// being used to spam someone's phone; per-IP throttling is separate.
+const RESET_COOLDOWN_MS = 10 * 60 * 1000;
 
 const ALLOWED_STATUS = new Set([
   "new",
@@ -147,6 +154,114 @@ function cleanActionKey(value: unknown): string | null {
   return /^[a-z0-9][a-z0-9._:/-]{1,239}$/i.test(key) ? key : null;
 }
 
+// ─── PIN helpers ─────────────────────────────────────────────────────────────
+
+// PINs are always compared and stored lowercase. On 2026-08-11 the owner was
+// locked out of his own admin PIN by typing a capital first letter, because the
+// lookup was a case-sensitive .eq() against a plaintext column. Normalizing on
+// both write and read removes the footgun permanently.
+function normalizePin(value: unknown): string {
+  return String(value ?? "").trim().toLowerCase();
+}
+
+// Ambiguous glyphs removed (no 0/o, 1/l/i) — these get read aloud, typed from a
+// text message, and squinted at on a phone screen.
+const PIN_ALPHABET = "abcdefghjkmnpqrstuvwxyz23456789";
+
+function generatePin(): string {
+  const bytes = new Uint8Array(9);
+  crypto.getRandomValues(bytes);
+  let out = "frame-";
+  for (const b of bytes) out += PIN_ALPHABET[b % PIN_ALPHABET.length];
+  return out;
+}
+
+/** E.164-ish normalizer for the admin-set reset destination. */
+function normalizePhoneE164(value: unknown): string | null {
+  const digits = String(value ?? "").replace(/\D/g, "");
+  if (digits.length === 10) return `+1${digits}`;
+  if (digits.length === 11 && digits.startsWith("1")) return `+${digits}`;
+  if (digits.length >= 11 && digits.length <= 15) return `+${digits}`;
+  return null;
+}
+
+async function loadTwilioConfig(
+  supabase: any,
+): Promise<Record<string, string>> {
+  const { data } = await supabase
+    .from("app_config")
+    .select("key, value")
+    .in("key", [
+      "TWILIO_ACCOUNT_SID",
+      "TWILIO_AUTH_TOKEN",
+      "TWILIO_PHONE_NUMBER",
+      "TWILIO_MESSAGING_SERVICE_SID",
+    ]);
+  const cfg: Record<string, string> = {};
+  for (const row of data || []) {
+    if (row?.key && row?.value) cfg[row.key] = row.value;
+  }
+  // Env wins over app_config so secrets can be rotated without a DB write.
+  for (
+    const k of [
+      "TWILIO_ACCOUNT_SID",
+      "TWILIO_AUTH_TOKEN",
+      "TWILIO_PHONE_NUMBER",
+      "TWILIO_MESSAGING_SERVICE_SID",
+    ]
+  ) {
+    const v = Deno.env.get(k);
+    if (v) cfg[k] = v;
+  }
+  return cfg;
+}
+
+async function sendTwilioSMS(
+  config: Record<string, string>,
+  to: string,
+  body: string,
+): Promise<boolean> {
+  const {
+    TWILIO_ACCOUNT_SID: sid,
+    TWILIO_AUTH_TOKEN: token,
+    TWILIO_MESSAGING_SERVICE_SID: msgService,
+    TWILIO_PHONE_NUMBER: from,
+  } = config;
+  if (!sid || !token || (!msgService && !from)) {
+    console.error("[lead-crm] Twilio not configured — reset SMS not sent");
+    return false;
+  }
+  const params = new URLSearchParams();
+  params.set("To", to);
+  params.set("Body", body);
+  params.set("From", from || MAIN_LINE);
+  if (msgService) params.set("MessagingServiceSid", msgService);
+
+  try {
+    const resp = await fetch(
+      `https://api.twilio.com/2010-04-01/Accounts/${sid}/Messages.json`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+          "Authorization": "Basic " + btoa(sid + ":" + token),
+        },
+        body: params.toString(),
+      },
+    );
+    const result = await resp.json();
+    if (result.sid) {
+      console.log("[lead-crm] reset SMS queued:", result.sid);
+      return true;
+    }
+    console.error("[lead-crm] Twilio error:", result.message || result);
+    return false;
+  } catch (err) {
+    console.error("[lead-crm] Twilio send threw:", err);
+    return false;
+  }
+}
+
 Deno.serve(async (req: Request) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
@@ -162,19 +277,115 @@ Deno.serve(async (req: Request) => {
   const key = url.searchParams.get("key");
   if (key !== API_KEY) return jsonResp({ error: "unauthorized" }, 401);
 
-  const pin = url.searchParams.get("pin");
+  const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+  const ip = (req.headers.get("x-forwarded-for") || "").split(",")[0].trim() ||
+    "unknown";
+  const now = Date.now();
+
+  // ─── PIN RESET (pre-auth) ──────────────────────────────────────────────────
+  // Necessarily reachable without a PIN — the whole point is that the caller
+  // doesn't have one. Guardrails, in order:
+  //   1. The new code is sent ONLY to the phone already on the row. The
+  //      requester supplies a name and nothing else, so this can never be used
+  //      to mail someone else's PIN to an attacker's handset.
+  //   2. Per-IP throttle on a separate "reset:<ip>" key so reset spam can't
+  //      exhaust (or be masked by) the login throttle.
+  //   3. Per-account cooldown so a known name can't be used to bomb a phone.
+  //   4. The response is byte-identical whether or not the account exists, is
+  //      active, or has a phone on file — no account enumeration.
+  if (url.searchParams.get("action") === "pin_reset") {
+    const genericOk = jsonResp({
+      ok: true,
+      message:
+        "If that name matches an active account with a phone on file, a new PIN has been texted to it.",
+    });
+    if (req.method !== "POST") {
+      return jsonResp({
+        error: "method_not_allowed",
+        message: "Use POST for action=pin_reset",
+      }, 405);
+    }
+
+    const resetIpKey = `reset:${ip}`;
+    const { data: resetAttempt } = await supabase
+      .from("auth_attempts")
+      .select("ip, fail_count, window_start")
+      .eq("ip", resetIpKey)
+      .maybeSingle();
+    if (!throttleAllows(resetAttempt, now)) {
+      return jsonResp({
+        error: "too_many_attempts",
+        message: "Too many reset requests. Try again later.",
+      }, 429);
+    }
+    // Count every attempt, not just misses — a reset costs an SMS either way.
+    await supabase
+      .from("auth_attempts")
+      .upsert(failedAttemptRow(resetIpKey, resetAttempt, now), {
+        onConflict: "ip",
+      });
+
+    let resetBody: any;
+    try {
+      resetBody = await req.json();
+    } catch {
+      return jsonResp({ error: "bad_json" }, 400);
+    }
+    const wanted = cleanText(resetBody?.name, 120);
+    if (!wanted) return genericOk;
+
+    const { data: candidates } = await supabase
+      .from("report_access")
+      .select("id, name, phone, active, last_reset_at")
+      .ilike("name", wanted.replace(/[%_]/g, "\\$&"));
+    const target = (candidates || []).find((r: any) =>
+      r.active && r.phone && String(r.name).toLowerCase() === wanted.toLowerCase()
+    );
+    if (!target) {
+      console.log("[lead-crm] pin_reset: no eligible account for a request");
+      return genericOk;
+    }
+
+    const lastReset = target.last_reset_at
+      ? Date.parse(target.last_reset_at)
+      : 0;
+    if (Number.isFinite(lastReset) && now - lastReset < RESET_COOLDOWN_MS) {
+      console.log("[lead-crm] pin_reset: account in cooldown");
+      return genericOk;
+    }
+
+    const newPin = generatePin();
+    const { error: rotateErr } = await supabase
+      .from("report_access")
+      .update({ pin: newPin, last_reset_at: new Date(now).toISOString() })
+      .eq("id", target.id);
+    if (rotateErr) {
+      console.error("[lead-crm] pin_reset rotate failed:", rotateErr.message);
+      return jsonResp({ error: "db_error" }, 500);
+    }
+
+    const sent = await sendTwilioSMS(
+      await loadTwilioConfig(supabase),
+      target.phone,
+      `Frame Restoration Utah — your dashboard PIN was reset.\n\nNew PIN: ${newPin}\n\nEnter it at framerestorationutah.com/leads. All lowercase. If you didn't request this, tell Ryan.`,
+    );
+    if (!sent) {
+      console.error(
+        "[lead-crm] pin_reset: PIN rotated but SMS failed — account id",
+        target.id,
+      );
+    }
+    return genericOk;
+  }
+
+  const pin = normalizePin(url.searchParams.get("pin"));
   if (!pin) {
     return jsonResp({ error: "invalid_pin", message: "PIN required." }, 403);
   }
 
-  const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
-
   // Per-IP PIN throttle (≤10 fails / 15 min — _shared/auth-throttle.ts, frozen
   // by auth-throttle.test.ts). PINs are plaintext in a query string; before
   // this, brute force was unthrottled.
-  const ip = (req.headers.get("x-forwarded-for") || "").split(",")[0].trim() ||
-    "unknown";
-  const now = Date.now();
   const { data: attemptRow } = await supabase
     .from("auth_attempts")
     .select("ip, fail_count, window_start")
@@ -222,6 +433,133 @@ Deno.serve(async (req: Request) => {
 
   const user = { name: accessRow.name, role: accessRow.role };
   const action = url.searchParams.get("action") || "list";
+
+  // ─── USER MANAGEMENT (admin only) ──────────────────────────────────────────
+  // Previously the seo-report + /dashboard admin panels hit /rest/v1/report_access
+  // straight from the browser with the anon key. That broke twice over: the key
+  // was rotated out from under them, and the baseline RLS hardening revoked anon
+  // SELECT on the table anyway. Worse, it meant a table holding every PIN in
+  // plaintext was one permissive policy away from being world-readable. Routing
+  // through here puts it behind the service role and an explicit admin check.
+  if (action.startsWith("users_")) {
+    if (user.role !== "admin") {
+      return jsonResp({
+        error: "forbidden",
+        message: "Admin role required.",
+      }, 403);
+    }
+
+    if (action === "users_list") {
+      const { data, error } = await supabase
+        .from("report_access")
+        .select("id, name, pin, role, active, phone, last_accessed, last_reset_at")
+        .order("name");
+      if (error) {
+        return jsonResp({ error: "db_error", message: error.message }, 500);
+      }
+      return jsonResp({ user, users: data || [] });
+    }
+
+    if (req.method !== "POST") {
+      return jsonResp({
+        error: "method_not_allowed",
+        message: `Use POST for action=${action}`,
+      }, 405);
+    }
+    let uBody: any;
+    try {
+      uBody = await req.json();
+    } catch {
+      return jsonResp({ error: "bad_json" }, 400);
+    }
+
+    if (action === "users_create") {
+      const name = cleanText(uBody.name, 120);
+      if (!name) {
+        return jsonResp({ error: "bad_name", message: "name is required" }, 400);
+      }
+      const role = String(uBody.role || "viewer").toLowerCase() === "admin"
+        ? "admin"
+        : "viewer";
+      // A blank PIN means "generate one" — that is the path we want admins on,
+      // because hand-picked PINs are how 'landon' ended up guarding every
+      // customer's name, phone, and address.
+      const pinIn = normalizePin(uBody.pin);
+      const newPin = pinIn || generatePin();
+      const phone = uBody.phone ? normalizePhoneE164(uBody.phone) : null;
+      if (uBody.phone && !phone) {
+        return jsonResp({
+          error: "bad_phone",
+          message: "phone must be a valid number",
+        }, 400);
+      }
+
+      const { data: clash } = await supabase
+        .from("report_access")
+        .select("id")
+        .eq("pin", newPin)
+        .maybeSingle();
+      if (clash) {
+        return jsonResp({
+          error: "pin_taken",
+          message: "That PIN is already in use. Pick another or leave it blank.",
+        }, 409);
+      }
+
+      const { data, error } = await supabase
+        .from("report_access")
+        .insert({ name, pin: newPin, role, active: true, phone })
+        .select("id, name, pin, role, active, phone")
+        .single();
+      if (error) {
+        return jsonResp({ error: "db_error", message: error.message }, 500);
+      }
+      return jsonResp({ user, created: data });
+    }
+
+    if (action === "users_update") {
+      const id = cleanText(uBody.id, 64);
+      if (!id) {
+        return jsonResp({ error: "bad_id", message: "id is required" }, 400);
+      }
+      const patch: Record<string, unknown> = {};
+      if ("active" in uBody) patch.active = !!uBody.active;
+      if ("role" in uBody) {
+        patch.role = String(uBody.role).toLowerCase() === "admin"
+          ? "admin"
+          : "viewer";
+      }
+      if ("phone" in uBody) {
+        const p = uBody.phone ? normalizePhoneE164(uBody.phone) : null;
+        if (uBody.phone && !p) {
+          return jsonResp({
+            error: "bad_phone",
+            message: "phone must be a valid number",
+          }, 400);
+        }
+        patch.phone = p;
+      }
+      // rotate_pin is deliberately separate from an admin typing a PIN in.
+      if (uBody.rotate_pin) patch.pin = generatePin();
+      else if ("pin" in uBody && uBody.pin) patch.pin = normalizePin(uBody.pin);
+
+      if (!Object.keys(patch).length) {
+        return jsonResp({ error: "no_fields" }, 400);
+      }
+      const { data, error } = await supabase
+        .from("report_access")
+        .update(patch)
+        .eq("id", id)
+        .select("id, name, pin, role, active, phone, last_accessed")
+        .single();
+      if (error) {
+        return jsonResp({ error: "db_error", message: error.message }, 500);
+      }
+      return jsonResp({ user, updated: data });
+    }
+
+    return jsonResp({ error: "unknown_action", action }, 400);
+  }
 
   // ─── LIST ──────────────────────────────────────────────────────────────────
   if (action === "list") {
