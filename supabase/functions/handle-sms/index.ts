@@ -23,6 +23,10 @@ import {
   parseCallCommand,
   parseToCommand,
 } from "../_shared/classify-inbound.ts";
+import {
+  isBlockCommandAttempt,
+  parseBlockCommand,
+} from "../_shared/missed-call-alert.ts";
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
@@ -137,10 +141,29 @@ async function claimWebhook(
   return failOpen;
 }
 
+async function releaseWebhookClaim(eventKey: string): Promise<void> {
+  if (!eventKey) return;
+  const { error } = await supabase.from("processed_webhooks")
+    .delete()
+    .eq("event_key", eventKey);
+  if (error) {
+    console.error("[handle-sms] releaseWebhookClaim error:", error);
+  }
+}
+
 const emptyTwiml = () =>
   new Response(`<?xml version="1.0" encoding="UTF-8"?><Response></Response>`, {
     headers: { "Content-Type": "text/xml" },
   });
+
+/** Single-message TwiML reply. escapeXml is hoisted below. */
+const twimlMessage = (message: string) =>
+  new Response(
+    `<?xml version="1.0" encoding="UTF-8"?><Response><Message>${
+      escapeXml(message)
+    }</Message></Response>`,
+    { headers: { "Content-Type": "text/xml" } },
+  );
 
 function escapeXml(str: string): string {
   return (str || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(
@@ -189,6 +212,67 @@ Deno.serve(async (req: Request) => {
     if (isFromLandon) {
       const { sid: twilioSid, auth: twilioAuth, msgServiceSid } = creds;
       const twilioNumber = to;
+
+      // ── BLOCK #### — suppress alerts for the identified missed caller ──
+      // Landon curates the vendor list himself straight from the alert text.
+      // This only stops the ALERT; the number still rings through. Refusing
+      // their calls is blocked_callers, a deliberately separate decision.
+      const blockCommand = parseBlockCommand(body);
+      if (!blockCommand && isBlockCommandAttempt(body)) {
+        return twimlMessage(
+          "Use the caller-specific command shown in the alert, for example BLOCK 0123.",
+        );
+      }
+      if (blockCommand) {
+        const { data: recentAlerts, error: alertLookupError } = await supabase
+          .from("call_logs")
+          .select("from_number, missed_alert_sent_at")
+          .not("from_number", "is", null)
+          .not("missed_alert_sent_at", "is", null)
+          .order("missed_alert_sent_at", { ascending: false })
+          .limit(50);
+        if (alertLookupError) {
+          console.error("[handle-sms] BLOCK lookup failed:", alertLookupError.message);
+          return twimlMessage("Couldn't look up that missed-call alert — try again.");
+        }
+        const matchingTargets = Array.from(new Set((recentAlerts ?? [])
+          .map((row: { from_number?: string | null }) =>
+            normalizePhone(row.from_number || "")
+          )
+          .filter((phone: string) => lastFour(phone) === blockCommand.lastFour)));
+        if (matchingTargets.length === 0) {
+          return twimlMessage(
+            `No recent missed-call alert matches BLOCK ${blockCommand.lastFour}.`,
+          );
+        }
+        if (matchingTargets.length > 1) {
+          return twimlMessage(
+            `More than one recent missed caller ends in ${blockCommand.lastFour}; no alerts were blocked.`,
+          );
+        }
+        const target = matchingTargets[0];
+        if (!messageSid) {
+          return twimlMessage("Couldn't validate that BLOCK command — try again.");
+        }
+        const blockEventKey = `sms:block:${messageSid}`;
+        if (!(await claimWebhook(blockEventKey, false))) {
+          return emptyTwiml();
+        }
+        const { error: blockErr } = await supabase
+          .from("alert_suppressed_callers")
+          .upsert(
+            { phone: target, reason: "Blocked by operator SMS", source: "operator_sms" },
+            { onConflict: "phone" },
+          );
+        if (blockErr) {
+          console.error("[handle-sms] BLOCK failed:", blockErr.message);
+          await releaseWebhookClaim(blockEventKey);
+          return twimlMessage("Couldn't block that number — try again.");
+        }
+        return twimlMessage(
+          `Blocked ${target}. No more missed-call alerts from them. They can still get through if they call.`,
+        );
+      }
 
       const callTarget = parseCallCommand(body);
       if (callTarget) {
