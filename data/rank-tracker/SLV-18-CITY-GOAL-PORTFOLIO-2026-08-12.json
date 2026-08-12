@@ -127,11 +127,17 @@
       "identityEvidence": "verified-profile-identity-city",
       "serviceAreaStatus": "verified-profile-identity-city",
       "current": {
-        "observedAt": "2026-08-12T14:18:10.300Z",
+        "observedAt": "2026-08-12T14:18:10.297Z",
         "organicRanks": [
           null,
           25,
           19,
+          null
+        ],
+        "selectedOrganicUrls": [
+          null,
+          "https://www.framerestorationutah.com/locations/salt-lake-city",
+          "https://www.framerestorationutah.com/locations/salt-lake-city",
           null
         ],
         "exactCidMapsRanks": [
@@ -147,7 +153,8 @@
         "consumerAi": "blocked-invalid-provider-credential"
       },
       "phase": "observe-existing-experiment",
-      "nextPermittedAction": "Run the fixed weekly Google panel and, after credential replacement, the fixed consumer-AI panel; do not change the page before 2026-09-09T04:40:58Z."
+      "nextPermittedAction": "Run the fixed weekly Google panel and, after credential replacement, the fixed consumer-AI panel; do not change the page before 2026-09-09T04:40:58Z.",
+      "rankSource": "data/rank-tracker/latest.json"
     },
     {
       "priority": 1,
@@ -161,12 +168,18 @@
       "identityEvidence": "verified-profile-saved-service-area",
       "serviceAreaStatus": "saved-service-area-observed",
       "current": {
-        "observedAt": "2026-08-12T14:18:10.300Z",
+        "observedAt": "2026-08-12T14:18:10.299Z",
         "organicRanks": [
           4,
           4,
           3,
           5
+        ],
+        "selectedOrganicUrls": [
+          "https://www.framerestorationutah.com/locations/millcreek",
+          "https://www.framerestorationutah.com/locations/millcreek",
+          "https://www.framerestorationutah.com/locations/millcreek",
+          "https://www.framerestorationutah.com/locations/millcreek"
         ],
         "exactCidMapsRanks": [
           null,
@@ -181,7 +194,8 @@
         "consumerAi": "blocked-invalid-provider-credential"
       },
       "phase": "first-after-public-integrity-cleanup",
-      "nextPermittedAction": "Preserve the first AIO foothold, replace the consumer-AI key, and prepare the claim/identity cleanup; publish only after explicit approval and the full release gate."
+      "nextPermittedAction": "Preserve the first AIO foothold, replace the consumer-AI key, and prepare the claim/identity cleanup; publish only after explicit approval and the full release gate.",
+      "rankSource": "data/rank-tracker/panels/millcreek/latest.json"
     },
     {
       "priority": 2,
@@ -202,6 +216,12 @@
           13,
           11
         ],
+        "selectedOrganicUrls": [
+          "https://www.framerestorationutah.com/locations/sandy",
+          "https://www.framerestorationutah.com/locations/sandy",
+          "https://www.framerestorationutah.com/locations/sandy",
+          "https://www.framerestorationutah.com/locations/sandy"
+        ],
         "exactCidMapsRanks": [
           null,
           null,
@@ -215,7 +235,8 @@
         "consumerAi": "configured-manual-measurement-only-blocked-invalid-provider-credential"
       },
       "phase": "integrity-and-service-area-evidence",
-      "nextPermittedAction": "Measure weekly and prepare evidence-safe claim replacements; do not assert a city GBP or publish without explicit approval."
+      "nextPermittedAction": "Measure weekly and prepare evidence-safe claim replacements; do not assert a city GBP or publish without explicit approval.",
+      "rankSource": "data/rank-tracker/panels/sandy/latest.json"
     },
     {
       "priority": 3,
@@ -229,12 +250,18 @@
       "identityEvidence": "documented-slv-target-measurement-only",
       "serviceAreaStatus": "pending-current-profile-service-area-verification",
       "current": {
-        "observedAt": "2026-08-12T14:18:10.300Z",
+        "observedAt": "2026-08-12T14:18:10.299Z",
         "organicRanks": [
           17,
           10,
           4,
           12
+        ],
+        "selectedOrganicUrls": [
+          "https://www.framerestorationutah.com/locations/holladay",
+          "https://www.framerestorationutah.com/locations/holladay",
+          "https://www.framerestorationutah.com/locations/holladay",
+          "https://www.framerestorationutah.com/locations/holladay"
         ],
         "exactCidMapsRanks": [
           null,
@@ -249,7 +276,8 @@
         "consumerAi": "configured-manual-measurement-only-blocked-invalid-provider-credential"
       },
       "phase": "integrity-and-service-area-evidence",
-      "nextPermittedAction": "Protect the position-4 roof-replacement foothold while preparing removal of unverified city review/project attribution; publish only after explicit approval."
+      "nextPermittedAction": "Protect the position-4 roof-replacement foothold while preparing removal of unverified city review/project attribution; publish only after explicit approval.",
+      "rankSource": "data/rank-tracker/panels/holladay/latest.json"
     },
     {
       "priority": 4,
@@ -263,12 +291,18 @@
       "identityEvidence": "documented-slv-target-measurement-only",
       "serviceAreaStatus": "pending-current-profile-service-area-verification",
       "current": {
-        "observedAt": "2026-08-12T14:18:10.300Z",
+        "observedAt": "2026-08-12T14:18:10.299Z",
         "organicRanks": [
           15,
           10,
           15,
           14
+        ],
+        "selectedOrganicUrls": [
+          "https://www.framerestorationutah.com/locations/cottonwood-heights",
+          "https://www.framerestorationutah.com/locations/cottonwood-heights",
+          "https://www.framerestorationutah.com/locations/cottonwood-heights",
+          "https://www.framerestorationutah.com/locations/cottonwood-heights"
         ],
         "exactCidMapsRanks": [
           null,
@@ -283,7 +317,8 @@
         "consumerAi": "configured-manual-measurement-only-blocked-invalid-provider-credential"
       },
       "phase": "integrity-and-service-area-evidence",
-      "nextPermittedAction": "Measure weekly and prepare evidence-safe local context without treating the neighborhood image as completed-project proof."
+      "nextPermittedAction": "Measure weekly and prepare evidence-safe local context without treating the neighborhood image as completed-project proof.",
+      "rankSource": "data/rank-tracker/panels/cottonwood-heights/latest.json"
     },
     {
       "priority": 5,
@@ -304,6 +339,12 @@
           null,
           null
         ],
+        "selectedOrganicUrls": [
+          null,
+          null,
+          null,
+          null
+        ],
         "exactCidMapsRanks": [
           null,
           null,
@@ -317,7 +358,8 @@
         "consumerAi": "configured-manual-measurement-only-blocked-invalid-provider-credential"
       },
       "phase": "architecture-diagnosis-and-integrity",
-      "nextPermittedAction": "Diagnose the main-page versus storm-route intent and internal-link architecture without editing public copy; preserve the storm route's existing search foothold."
+      "nextPermittedAction": "Diagnose the main-page versus storm-route intent and internal-link architecture without editing public copy; preserve the storm route's existing search foothold.",
+      "rankSource": "data/rank-tracker/panels/draper/latest.json"
     },
     {
       "priority": 6,

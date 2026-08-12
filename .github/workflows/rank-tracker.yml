@@ -44,6 +44,20 @@ jobs:
       - name: Validate the refreshed six-city goal contract
         run: npm run audit:slv-city-goals
 
+      - name: Refresh the combined portfolio and evidence-safe decisions
+        run: |
+          npm run sync:slv-18-city-goals
+          npm run sync:slv-entity-health
+          npm run sync:slv-weekly-decisions
+          npm run sync:slv-execution-registry
+
+      - name: Validate the combined portfolio and weekly decisions
+        run: |
+          npm run audit:slv-18-city-goals
+          npm run audit:slv-entity-health
+          npm run audit:slv-weekly-decisions
+          npm run audit:slv-execution-registry
+
       - name: Add measurement summary
         if: always()
         run: |
@@ -51,6 +65,7 @@ jobs:
             cat "$report" >> "$GITHUB_STEP_SUMMARY"
             echo >> "$GITHUB_STEP_SUMMARY"
           done < <(find data/rank-tracker -name latest.md -type f | sort)
+          jq -r '"### Salt Lake Valley weekly decisions\n\n- Integrity corrections kept: \(.summary.integrityKeep)\n- Ranking lanes held for evidence: \(.summary.rankingHold)\n- Ranking keeps: \(.summary.rankingKeep)\n- Ranking reverts: \(.summary.rankingRevert)\n- Protected organic #1 queries: \(.summary.protectedOrganicNumberOneQueries)\n- Sustained cities: \(.summary.citiesAtSustainedGoal)"' data/rank-tracker/SLV-WEEKLY-DECISIONS-2026-08-12.json >> "$GITHUB_STEP_SUMMARY"
 
       - name: Commit the complete dated panel
         run: |

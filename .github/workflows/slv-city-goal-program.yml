@@ -4,6 +4,9 @@ on:
   pull_request:
     paths:
       - '.github/workflows/slv-city-goal-program.yml'
+      - '.github/workflows/rank-tracker.yml'
+      - '.github/workflows/slv-expansion-baseline.yml'
+      - '.github/workflows/slv-review-baseline.yml'
       - 'data/rank-tracker/SLV-CITY-GOAL-PROGRAM-2026-08-12.json'
       - 'data/rank-tracker/DRAPER-ARCHITECTURE-DIAGNOSIS-2026-08-12.json'
       - 'data/rank-tracker/HOLLADAY-ARCHITECTURE-DIAGNOSIS-2026-08-12.json'
@@ -12,12 +15,16 @@ on:
       - 'data/rank-tracker/MILLCREEK-IDENTITY-ARCHITECTURE-DIAGNOSIS-2026-08-12.json'
       - 'data/rank-tracker/SLV-18-CITY-GOAL-PORTFOLIO-2026-08-12.json'
       - 'data/rank-tracker/SLV-EXPANSION-PRIORITY-2026-08-12.json'
+      - 'data/rank-tracker/SLV-ENTITY-HEALTH-2026-08-12.json'
+      - 'data/rank-tracker/SLV-WEEKLY-DECISIONS-2026-08-12.json'
+      - 'data/rank-tracker/SLV-EXECUTION-REGISTRY-2026-08-12.json'
       - 'data/rank-tracker/expansion-panels.json'
       - 'data/rank-tracker/panels/holladay/2026-08-12.json'
       - 'data/rank-tracker/panels/sandy/2026-08-12.json'
       - 'data/rank-tracker/panels/cottonwood-heights/2026-08-12.json'
       - 'data/rank-tracker/panels/millcreek/2026-08-12.json'
       - 'data/seo/snapshots/2026-08-12.json'
+      - 'data/seo-experiments/utah-slc-entity-trust-correction-2026-08-12.json'
       - 'data/rank-tracker/panels.json'
       - 'data/rank-tracker/config.json'
       - 'data/rank-tracker/latest.json'
@@ -55,14 +62,21 @@ on:
       - 'scripts/validate-cottonwood-heights-architecture-diagnosis.mjs'
       - 'scripts/validate-millcreek-identity-architecture-diagnosis.mjs'
       - 'scripts/validate-slv-18-city-goal-portfolio.mjs'
+      - 'scripts/sync-slv-18-city-goal-portfolio.mjs'
       - 'scripts/audit-slv-expansion-integrity.mjs'
       - 'scripts/validate-slv-expansion-priority.mjs'
+      - 'scripts/sync-slv-entity-health.mjs'
+      - 'scripts/sync-slv-weekly-decisions.mjs'
+      - 'scripts/sync-slv-execution-registry.mjs'
       - 'package.json'
   push:
     branches:
       - main
     paths:
       - '.github/workflows/slv-city-goal-program.yml'
+      - '.github/workflows/rank-tracker.yml'
+      - '.github/workflows/slv-expansion-baseline.yml'
+      - '.github/workflows/slv-review-baseline.yml'
       - 'data/rank-tracker/SLV-CITY-GOAL-PROGRAM-2026-08-12.json'
       - 'data/rank-tracker/DRAPER-ARCHITECTURE-DIAGNOSIS-2026-08-12.json'
       - 'data/rank-tracker/HOLLADAY-ARCHITECTURE-DIAGNOSIS-2026-08-12.json'
@@ -71,12 +85,16 @@ on:
       - 'data/rank-tracker/MILLCREEK-IDENTITY-ARCHITECTURE-DIAGNOSIS-2026-08-12.json'
       - 'data/rank-tracker/SLV-18-CITY-GOAL-PORTFOLIO-2026-08-12.json'
       - 'data/rank-tracker/SLV-EXPANSION-PRIORITY-2026-08-12.json'
+      - 'data/rank-tracker/SLV-ENTITY-HEALTH-2026-08-12.json'
+      - 'data/rank-tracker/SLV-WEEKLY-DECISIONS-2026-08-12.json'
+      - 'data/rank-tracker/SLV-EXECUTION-REGISTRY-2026-08-12.json'
       - 'data/rank-tracker/expansion-panels.json'
       - 'data/rank-tracker/panels/holladay/2026-08-12.json'
       - 'data/rank-tracker/panels/sandy/2026-08-12.json'
       - 'data/rank-tracker/panels/cottonwood-heights/2026-08-12.json'
       - 'data/rank-tracker/panels/millcreek/2026-08-12.json'
       - 'data/seo/snapshots/2026-08-12.json'
+      - 'data/seo-experiments/utah-slc-entity-trust-correction-2026-08-12.json'
       - 'data/rank-tracker/panels.json'
       - 'data/rank-tracker/config.json'
       - 'data/rank-tracker/latest.json'
@@ -114,8 +132,12 @@ on:
       - 'scripts/validate-cottonwood-heights-architecture-diagnosis.mjs'
       - 'scripts/validate-millcreek-identity-architecture-diagnosis.mjs'
       - 'scripts/validate-slv-18-city-goal-portfolio.mjs'
+      - 'scripts/sync-slv-18-city-goal-portfolio.mjs'
       - 'scripts/audit-slv-expansion-integrity.mjs'
       - 'scripts/validate-slv-expansion-priority.mjs'
+      - 'scripts/sync-slv-entity-health.mjs'
+      - 'scripts/sync-slv-weekly-decisions.mjs'
+      - 'scripts/sync-slv-execution-registry.mjs'
       - 'package.json'
 
 permissions:
@@ -151,3 +173,9 @@ jobs:
 
       - name: Validate the measured 12-city expansion priority ledger
         run: npm run audit:slv-expansion-priority
+
+      - name: Validate entity health, weekly decisions, and execution registry
+        run: |
+          npm run audit:slv-entity-health
+          npm run audit:slv-weekly-decisions
+          npm run audit:slv-execution-registry

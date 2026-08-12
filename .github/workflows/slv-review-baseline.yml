@@ -48,6 +48,7 @@ jobs:
           npm run sync:slv-entity-health
           npm run sync:slv-execution-registry
           npm run audit:slv-entity-health
+          npm run audit:slv-weekly-decisions
           npm run audit:slv-execution-registry
 
       - name: Add the non-sensitive measurement summary

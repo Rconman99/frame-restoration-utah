@@ -178,11 +178,17 @@ const cityDecisions = portfolio.cityGoals.map((goal) => {
   };
 });
 
+const asOf = allObservedAt.sort().at(-1);
+const nextCorePanel = new Date(asOf);
+const daysUntilNextMonday = (8 - nextCorePanel.getUTCDay()) % 7 || 7;
+nextCorePanel.setUTCDate(nextCorePanel.getUTCDate() + daysUntilNextMonday);
+const nextCorePanelDate = nextCorePanel.toISOString().slice(0, 10);
+
 const artifact = {
   schemaVersion: 1,
   decisionId: "frame-utah-slv-weekly-keep-revert-v1",
   market: "utah-salt-lake-valley",
-  asOf: allObservedAt.sort().at(-1),
+  asOf,
   status: "active-insufficient-four-week-history",
   publicMutationPerformed: false,
   policy: {
@@ -208,8 +214,8 @@ const artifact = {
     protectedGoogleAiOverviewCitations: cityDecisions.reduce((sum, city) => sum + city.protectedFootholds.googleAiOverviewCitedQueries.length, 0),
     citiesAtSustainedGoal: 0,
   },
-  nextDecisionDate: "2026-08-17",
-  nextAction: "Run the scheduled six-city core Google panel on 2026-08-17. Do not admit the 12 expansion cities to recurring paid measurement without explicit spend approval, and do not call a ranking keep/revert before comparable evidence exists.",
+  nextDecisionDate: nextCorePanelDate,
+  nextAction: `Run the scheduled six-city core Google panel on ${nextCorePanelDate}. Do not admit the 12 expansion cities to recurring paid measurement without explicit spend approval, and do not call a ranking keep/revert before comparable evidence exists.`,
   cities: cityDecisions,
 };
 
@@ -219,15 +225,13 @@ assert.equal(artifact.summary.integrityPendingApproval, 17);
 assert.equal(artifact.summary.rankingKeep, 0);
 assert.equal(artifact.summary.rankingRevert, 0);
 assert.equal(artifact.summary.rankingHold, 18);
-assert.equal(artifact.summary.protectedOrganicNumberOneQueries, 2);
-assert.equal(artifact.summary.protectedGoogleAiOverviewCitations, 2);
-assert.deepEqual(
-  artifact.cities.filter((city) => city.protectedFootholds.organicNumberOneQueries.length).map((city) => city.city).sort(),
-  ["Kearns", "Magna"],
-);
-assert.equal(artifact.cities.find((city) => city.city === "Salt Lake City").decisions.ranking.postDeploymentGooglePanels, 1);
-assert.equal(artifact.cities.find((city) => city.city === "Salt Lake City").rawDatedGoogleReports, 2);
-assert.equal(artifact.cities.find((city) => city.city === "Salt Lake City").comparableWeeklyGooglePanels, 1);
+assert.equal(artifact.summary.protectedOrganicNumberOneQueries, portfolio.portfolioScore.fixedOrganicNumberOne);
+assert.equal(artifact.summary.protectedGoogleAiOverviewCitations, portfolio.portfolioScore.googleAiOverviewCitations);
+const saltLakeCityDecision = artifact.cities.find((city) => city.city === "Salt Lake City");
+assert.ok(saltLakeCityDecision.rawDatedGoogleReports >= saltLakeCityDecision.comparableWeeklyGooglePanels);
+assert.ok(saltLakeCityDecision.comparableWeeklyGooglePanels >= 1);
+assert.ok(saltLakeCityDecision.decisions.ranking.postDeploymentGooglePanels >= 1);
+assert.ok(saltLakeCityDecision.decisions.ranking.postDeploymentGooglePanels <= saltLakeCityDecision.comparableWeeklyGooglePanels);
 assert.ok(artifact.cities.every((city) => city.sustainedProgress.cityAtSustainedGoal === false));
 
 const nextText = `${JSON.stringify(artifact, null, 2)}\n`;

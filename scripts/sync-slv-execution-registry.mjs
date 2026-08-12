@@ -274,9 +274,9 @@ const registry = {
 };
 
 assert.equal(registry.cities.length, 18);
-assert.equal(registry.score.fixedOrganicNumberOne, 2);
-assert.equal(registry.score.exactCidMapsNumberOne, 0);
-assert.equal(registry.score.citiesAtSustainedGoal, 0);
+assert.equal(registry.score.fixedOrganicNumberOne, registry.cities.reduce((sum, city) => sum + city.measurement.organicNumberOne.length, 0));
+assert.equal(registry.score.exactCidMapsNumberOne, registry.cities.reduce((sum, city) => sum + city.measurement.exactCidMapsNumberOne, 0));
+assert.equal(registry.score.citiesAtSustainedGoal, weeklyDecisions.summary.citiesAtSustainedGoal);
 assert.ok(["unmeasured", "measured-exact-cid"].includes(entityHealth.reviews.saltLakeValley.state));
 assert.equal(entityHealth.reviews.heber.aggregateReviewCount, 34);
 assert.equal(entityHealth.editorial.evidenceFirstGaps.length, 5);
@@ -284,7 +284,7 @@ assert.equal(weeklyDecisions.summary.integrityKeep, 1);
 assert.equal(weeklyDecisions.summary.rankingHold, 18);
 assert.equal(weeklyDecisions.summary.rankingKeep, 0);
 assert.equal(weeklyDecisions.summary.rankingRevert, 0);
-assert.deepEqual(registry.cities.filter((city) => city.measurement.organicNumberOne.length).map((city) => city.city), ["Magna", "Kearns"]);
+assert.equal(weeklyDecisions.summary.protectedOrganicNumberOneQueries, registry.score.fixedOrganicNumberOne);
 assert.equal(registry.connectionNeeded.length, 2);
 assert.equal(registry.ownerApprovalsNeeded.length, 3);
 assert.ok(registry.cities.every((city) => city.completionContract.includes("four consecutive weekly panels")));
@@ -298,5 +298,5 @@ if (write) {
 } else if (check) {
   assert.ok(fs.existsSync(fullOutputPath), `missing ${outputPath}`);
   assert.equal(fs.readFileSync(fullOutputPath, "utf8"), nextText, "SLV execution registry is stale; run npm run sync:slv-execution-registry");
-  console.log(`PASS SLV execution registry: ${registry.cities.length} cities, 2/72 organic #1, 0/72 exact-CID Maps #1, 0 sustained completions`);
+  console.log(`PASS SLV execution registry: ${registry.cities.length} cities, ${registry.score.fixedOrganicNumberOne}/72 organic #1, ${registry.score.exactCidMapsNumberOne}/72 exact-CID Maps #1, ${registry.score.citiesAtSustainedGoal} sustained completions`);
 }

@@ -50,6 +50,15 @@ jobs:
       - name: Validate the refreshed 18-city goal portfolio
         run: npm run audit:slv-18-city-goals
 
+      - name: Refresh and validate evidence-safe weekly decisions
+        run: |
+          npm run sync:slv-entity-health
+          npm run sync:slv-weekly-decisions
+          npm run sync:slv-execution-registry
+          npm run audit:slv-entity-health
+          npm run audit:slv-weekly-decisions
+          npm run audit:slv-execution-registry
+
       - name: Add measurement summary
         if: always()
         run: |
@@ -57,12 +66,17 @@ jobs:
             cat "$report" >> "$GITHUB_STEP_SUMMARY"
             echo >> "$GITHUB_STEP_SUMMARY"
           done < <(find data/rank-tracker/expansion -name latest.md -type f | sort)
+          jq -r '"### Salt Lake Valley weekly decisions\n\n- Ranking lanes held for evidence: \(.summary.rankingHold)\n- Protected organic #1 queries: \(.summary.protectedOrganicNumberOneQueries)\n- Sustained cities: \(.summary.citiesAtSustainedGoal)"' data/rank-tracker/SLV-WEEKLY-DECISIONS-2026-08-12.json >> "$GITHUB_STEP_SUMMARY"
 
       - name: Commit the complete dated expansion baseline
         run: |
           git config user.name "Frame Rank Tracker"
           git config user.email "rank-tracker@users.noreply.github.com"
-          git add data/rank-tracker/expansion/ data/rank-tracker/SLV-18-CITY-GOAL-PORTFOLIO-2026-08-12.json
+          git add data/rank-tracker/expansion/ \
+            data/rank-tracker/SLV-18-CITY-GOAL-PORTFOLIO-2026-08-12.json \
+            data/rank-tracker/SLV-ENTITY-HEALTH-2026-08-12.json \
+            data/rank-tracker/SLV-WEEKLY-DECISIONS-2026-08-12.json \
+            data/rank-tracker/SLV-EXECUTION-REGISTRY-2026-08-12.json
           if git diff --cached --quiet; then
             echo "No expansion rank-tracker change to commit."
             exit 0
