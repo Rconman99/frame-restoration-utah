@@ -1,0 +1,598 @@
+{
+  "schemaVersion": 1,
+  "healthId": "frame-utah-slv-18-city-entity-health-v1",
+  "market": "utah-salt-lake-valley",
+  "preparedAt": "2026-08-12T19:12:11Z",
+  "status": "baseline-pinned-public-fixes-gated",
+  "publicMutationPerformed": false,
+  "sources": {
+    "portfolio": {
+      "file": "data/rank-tracker/SLV-18-CITY-GOAL-PORTFOLIO-2026-08-12.json",
+      "sha256": "43e387e853993b636e43a293460f20f2ae880decd2e88512a6882ef79433f8f6"
+    },
+    "business": {
+      "file": "data/route-factory/business.json",
+      "sha256": "2ca7338c9f4fe04fe36a08302399d15c2e289d27153b2298949ace8e1e5843e9"
+    },
+    "reviewFeed": {
+      "file": "reviews.json",
+      "sha256": "ae4b12fc8e5c91d505c4be3a717add70bd0bb4d8c8966834af26168151b1492b"
+    },
+    "reviewArchive": {
+      "file": "data/reviews-full.json",
+      "sha256": "0e9963222c8643f35f61b68f7604d26f6e69b127f48dd85bd34bacedc0510513"
+    }
+  },
+  "identity": {
+    "saltLakeValley": {
+      "cid": "5689850818145735734",
+      "verifiedProfileCities": [
+        "Salt Lake City",
+        "Millcreek"
+      ],
+      "pendingCurrentProfileServiceAreaVerification": [
+        "Sandy",
+        "Holladay",
+        "Cottonwood Heights",
+        "Draper",
+        "Bluffdale",
+        "Herriman",
+        "Kearns",
+        "Magna",
+        "Midvale",
+        "Murray",
+        "Riverton",
+        "South Jordan",
+        "South Salt Lake",
+        "Taylorsville",
+        "West Jordan",
+        "West Valley City"
+      ]
+    },
+    "heber": {
+      "cid": "8458659884566588108",
+      "dataId": "0x874df59069be3e09:0x756332595f702acc",
+      "sameAsCount": 14,
+      "appleMapsPresentInKeystone": true
+    },
+    "pageProfileCounts": {
+      "salt-lake-valley-exact-cid": 1,
+      "heber-keystone-cid": 17
+    },
+    "observation": "The Salt Lake City page uses the exact Salt Lake Valley CID. Seventeen other city pages still use the Heber keystone entity; Millcreek's verified service-area status makes its identity correction a pinned public-cleanup item, not an automatic change."
+  },
+  "reviews": {
+    "heber": {
+      "state": "measured-attributed-to-heber-only",
+      "storedDataId": "0x874df59069be3e09:0x756332595f702acc",
+      "storedGoogleCid": null,
+      "inferredGoogleCid": "8458659884566588108",
+      "aggregateRating": 5,
+      "aggregateReviewCount": 34,
+      "archivedReviewRows": 34,
+      "feedReviewRows": 5,
+      "lastReviewDate": "2026-07-07",
+      "feedUpdatedAt": "2026-08-07T17:25:39Z"
+    },
+    "saltLakeValley": {
+      "cid": "5689850818145735734",
+      "state": "unmeasured",
+      "rule": "Never count the Heber export as Salt Lake Valley review evidence. Measure only an exact-CID provider response or an explicitly matching SerpAPI data_id."
+    },
+    "automationSafety": {
+      "test": "npm run test:review-targeting",
+      "behavior": "Alternate GOOGLE_CID runs fail closed rather than falling back to the default Heber SerpAPI data_id."
+    }
+  },
+  "nap": {
+    "scope": "18 portfolio city pages",
+    "canonicalPublicPhone": "+14352928802",
+    "pagesChecked": 18,
+    "phoneMismatchCount": 0,
+    "regionMismatchCount": 0,
+    "phoneMismatches": [],
+    "regionMismatches": []
+  },
+  "editorial": {
+    "pagesWithAtLeastOneInternalBlogLink": 18,
+    "citiesWithCitySpecificAssets": 13,
+    "citySpecificAssetCities": [
+      "Salt Lake City",
+      "Millcreek",
+      "Sandy",
+      "Holladay",
+      "Cottonwood Heights",
+      "Draper",
+      "Bluffdale",
+      "Herriman",
+      "Murray",
+      "Riverton",
+      "South Jordan",
+      "West Jordan",
+      "West Valley City"
+    ],
+    "citiesWithoutCitySpecificAssets": 5,
+    "evidenceFirstGaps": [
+      "Kearns",
+      "Magna",
+      "Midvale",
+      "South Salt Lake",
+      "Taylorsville"
+    ],
+    "rule": "Do not auto-generate thin city posts. Close a gap only with real local evidence and the public release/doorway-page gates."
+  },
+  "decisions": [
+    "Protect Magna and Kearns organic #1 footholds while cleanup remains gated.",
+    "Measure the Salt Lake Valley CID review baseline after this fail-closed targeting safeguard lands and valid provider credentials are available.",
+    "Treat Kearns, Magna, Midvale, South Salt Lake, and Taylorsville as evidence-first editorial gaps; no unsupported local content.",
+    "Do not treat Apple Maps as missing: it is present in the canonical Heber entity keystone."
+  ],
+  "cities": [
+    {
+      "city": "Salt Lake City",
+      "slug": "salt-lake-city",
+      "page": "locations/salt-lake-city.html",
+      "pageSha256": "9c247843f17ee6e2e12b118bf8c8a5b05bd291fb4d029afba59daae755f952c8",
+      "serviceAreaStatus": "verified-profile-identity-city",
+      "identityProfile": "salt-lake-valley-exact-cid",
+      "hasMap": "https://www.google.com/maps?cid=5689850818145735734",
+      "sameAsCount": 6,
+      "nap": {
+        "telLinkCount": 8,
+        "schemaTelephoneCount": 1,
+        "phoneMismatches": [],
+        "schemaAddressRegions": [],
+        "regionMismatches": []
+      },
+      "editorial": {
+        "internalBlogLinkCount": 8,
+        "hasCitySpecificAsset": true,
+        "citySpecificAssets": [
+          "blog/salt-lake-city/historic-home-reroofing.html",
+          "blog/salt-lake-city/older-home-roof-replacement.html",
+          "blog/salt-lake-city/reroofing-established-neighborhoods.html",
+          "blog/salt-lake-city/roofing-materials-climate-guide.html",
+          "blog/salt-lake-city/storm-damage-roofing-salt-lake-city.html"
+        ]
+      }
+    },
+    {
+      "city": "Millcreek",
+      "slug": "millcreek",
+      "page": "locations/millcreek.html",
+      "pageSha256": "d3171172fcd5b796b12134fc91e1bd366952a3c83e13a160a3106262197b215d",
+      "serviceAreaStatus": "saved-service-area-observed",
+      "identityProfile": "heber-keystone-cid",
+      "hasMap": "https://www.google.com/maps?cid=8458659884566588108",
+      "sameAsCount": 14,
+      "nap": {
+        "telLinkCount": 7,
+        "schemaTelephoneCount": 1,
+        "phoneMismatches": [],
+        "schemaAddressRegions": [
+          "UT"
+        ],
+        "regionMismatches": []
+      },
+      "editorial": {
+        "internalBlogLinkCount": 3,
+        "hasCitySpecificAsset": true,
+        "citySpecificAssets": [
+          "blog/millcreek/wind-damage-roof-repair-millcreek.html"
+        ]
+      }
+    },
+    {
+      "city": "Sandy",
+      "slug": "sandy",
+      "page": "locations/sandy.html",
+      "pageSha256": "6990e62cc9fbaff508cef8d1c14a9d1775d29e111bd77f6eb870cb6256c53093",
+      "serviceAreaStatus": "pending-current-profile-service-area-verification",
+      "identityProfile": "heber-keystone-cid",
+      "hasMap": "https://www.google.com/maps?cid=8458659884566588108",
+      "sameAsCount": 14,
+      "nap": {
+        "telLinkCount": 7,
+        "schemaTelephoneCount": 1,
+        "phoneMismatches": [],
+        "schemaAddressRegions": [
+          "UT"
+        ],
+        "regionMismatches": []
+      },
+      "editorial": {
+        "internalBlogLinkCount": 2,
+        "hasCitySpecificAsset": true,
+        "citySpecificAssets": [
+          "blog/sandy/roof-leak-repair-sandy-84070.html",
+          "blog/sandy/spring-hail-damage-roof.html"
+        ]
+      }
+    },
+    {
+      "city": "Holladay",
+      "slug": "holladay",
+      "page": "locations/holladay.html",
+      "pageSha256": "791bd58c2a8c1bb9c42d65b4687863fae05126b9eaea0f053eca76a0ca0de0e0",
+      "serviceAreaStatus": "pending-current-profile-service-area-verification",
+      "identityProfile": "heber-keystone-cid",
+      "hasMap": "https://www.google.com/maps?cid=8458659884566588108",
+      "sameAsCount": 14,
+      "nap": {
+        "telLinkCount": 7,
+        "schemaTelephoneCount": 1,
+        "phoneMismatches": [],
+        "schemaAddressRegions": [
+          "UT"
+        ],
+        "regionMismatches": []
+      },
+      "editorial": {
+        "internalBlogLinkCount": 4,
+        "hasCitySpecificAsset": true,
+        "citySpecificAssets": [
+          "blog/holladay/roof-replacement-holladay-utah.html",
+          "blog/holladay/storm-damage-roofing-holladay.html"
+        ]
+      }
+    },
+    {
+      "city": "Cottonwood Heights",
+      "slug": "cottonwood-heights",
+      "page": "locations/cottonwood-heights.html",
+      "pageSha256": "b8ccc4c320414d217a76d582da2bba9c2599ca47c7861c50490b626bc2b8e8b1",
+      "serviceAreaStatus": "pending-current-profile-service-area-verification",
+      "identityProfile": "heber-keystone-cid",
+      "hasMap": "https://www.google.com/maps?cid=8458659884566588108",
+      "sameAsCount": 14,
+      "nap": {
+        "telLinkCount": 7,
+        "schemaTelephoneCount": 1,
+        "phoneMismatches": [],
+        "schemaAddressRegions": [
+          "UT"
+        ],
+        "regionMismatches": []
+      },
+      "editorial": {
+        "internalBlogLinkCount": 4,
+        "hasCitySpecificAsset": true,
+        "citySpecificAssets": [
+          "blog/cottonwood-heights/roof-replacement-cottonwood-heights-utah.html",
+          "blog/cottonwood-heights/wind-damage-roof-repair-cottonwood-heights.html"
+        ]
+      }
+    },
+    {
+      "city": "Draper",
+      "slug": "draper",
+      "page": "locations/draper.html",
+      "pageSha256": "8c8a5f7a9d9f0894640ef2578bc4b175422b24f31f0e990857dd0611b2672d16",
+      "serviceAreaStatus": "pending-current-profile-service-area-verification",
+      "identityProfile": "heber-keystone-cid",
+      "hasMap": "https://www.google.com/maps?cid=8458659884566588108",
+      "sameAsCount": 14,
+      "nap": {
+        "telLinkCount": 7,
+        "schemaTelephoneCount": 1,
+        "phoneMismatches": [],
+        "schemaAddressRegions": [
+          "UT"
+        ],
+        "regionMismatches": []
+      },
+      "editorial": {
+        "internalBlogLinkCount": 1,
+        "hasCitySpecificAsset": true,
+        "citySpecificAssets": [
+          "blog/draper/insurance-claims-storm-damage.html",
+          "blog/draper/roof-replacement-draper-utah.html"
+        ]
+      }
+    },
+    {
+      "city": "Bluffdale",
+      "slug": "bluffdale",
+      "page": "locations/bluffdale.html",
+      "pageSha256": "1fe440cc5a7c9b8164cc4c961932361946f70bd05d7bc2ff96fab34fcdd43668",
+      "serviceAreaStatus": "pending-current-profile-service-area-verification",
+      "identityProfile": "heber-keystone-cid",
+      "hasMap": "https://www.google.com/maps?cid=8458659884566588108",
+      "sameAsCount": 14,
+      "nap": {
+        "telLinkCount": 6,
+        "schemaTelephoneCount": 1,
+        "phoneMismatches": [],
+        "schemaAddressRegions": [
+          "UT"
+        ],
+        "regionMismatches": []
+      },
+      "editorial": {
+        "internalBlogLinkCount": 3,
+        "hasCitySpecificAsset": true,
+        "citySpecificAssets": [
+          "blog/bluffdale/storm-damage-roof-repair-bluffdale.html"
+        ]
+      }
+    },
+    {
+      "city": "Herriman",
+      "slug": "herriman",
+      "page": "locations/herriman.html",
+      "pageSha256": "36b010060e1b32be882756aa3598d79ecf0a4a36f55ef4317b8366cbaf64670f",
+      "serviceAreaStatus": "pending-current-profile-service-area-verification",
+      "identityProfile": "heber-keystone-cid",
+      "hasMap": "https://www.google.com/maps?cid=8458659884566588108",
+      "sameAsCount": 14,
+      "nap": {
+        "telLinkCount": 6,
+        "schemaTelephoneCount": 1,
+        "phoneMismatches": [],
+        "schemaAddressRegions": [
+          "UT"
+        ],
+        "regionMismatches": []
+      },
+      "editorial": {
+        "internalBlogLinkCount": 1,
+        "hasCitySpecificAsset": true,
+        "citySpecificAssets": [
+          "blog/herriman/hail-damage-new-homes.html"
+        ]
+      }
+    },
+    {
+      "city": "Kearns",
+      "slug": "kearns",
+      "page": "locations/kearns.html",
+      "pageSha256": "a33434df2765fd63b8b948622ee2c92910385e88151c58f82e8396a0916d6905",
+      "serviceAreaStatus": "pending-current-profile-service-area-verification",
+      "identityProfile": "heber-keystone-cid",
+      "hasMap": "https://www.google.com/maps?cid=8458659884566588108",
+      "sameAsCount": 14,
+      "nap": {
+        "telLinkCount": 6,
+        "schemaTelephoneCount": 1,
+        "phoneMismatches": [],
+        "schemaAddressRegions": [
+          "UT"
+        ],
+        "regionMismatches": []
+      },
+      "editorial": {
+        "internalBlogLinkCount": 3,
+        "hasCitySpecificAsset": false,
+        "citySpecificAssets": []
+      }
+    },
+    {
+      "city": "Magna",
+      "slug": "magna",
+      "page": "locations/magna.html",
+      "pageSha256": "37debc6a80634ab438ad6d61f73f3369f91d4c09cfbb3673133b99832a8d3d47",
+      "serviceAreaStatus": "pending-current-profile-service-area-verification",
+      "identityProfile": "heber-keystone-cid",
+      "hasMap": "https://www.google.com/maps?cid=8458659884566588108",
+      "sameAsCount": 14,
+      "nap": {
+        "telLinkCount": 6,
+        "schemaTelephoneCount": 1,
+        "phoneMismatches": [],
+        "schemaAddressRegions": [
+          "UT"
+        ],
+        "regionMismatches": []
+      },
+      "editorial": {
+        "internalBlogLinkCount": 3,
+        "hasCitySpecificAsset": false,
+        "citySpecificAssets": []
+      }
+    },
+    {
+      "city": "Midvale",
+      "slug": "midvale",
+      "page": "locations/midvale.html",
+      "pageSha256": "fd7099aa201107a8f10f37b7b23791a7dea6b636ccdfa9e1371408b4cfb3377c",
+      "serviceAreaStatus": "pending-current-profile-service-area-verification",
+      "identityProfile": "heber-keystone-cid",
+      "hasMap": "https://www.google.com/maps?cid=8458659884566588108",
+      "sameAsCount": 14,
+      "nap": {
+        "telLinkCount": 6,
+        "schemaTelephoneCount": 1,
+        "phoneMismatches": [],
+        "schemaAddressRegions": [
+          "UT"
+        ],
+        "regionMismatches": []
+      },
+      "editorial": {
+        "internalBlogLinkCount": 3,
+        "hasCitySpecificAsset": false,
+        "citySpecificAssets": []
+      }
+    },
+    {
+      "city": "Murray",
+      "slug": "murray",
+      "page": "locations/murray.html",
+      "pageSha256": "3050e9d9dae8fcf4f98da2a7723f38e081110f24edbe93c2c72ac709f6fc45f4",
+      "serviceAreaStatus": "pending-current-profile-service-area-verification",
+      "identityProfile": "heber-keystone-cid",
+      "hasMap": "https://www.google.com/maps?cid=8458659884566588108",
+      "sameAsCount": 14,
+      "nap": {
+        "telLinkCount": 6,
+        "schemaTelephoneCount": 1,
+        "phoneMismatches": [],
+        "schemaAddressRegions": [
+          "UT"
+        ],
+        "regionMismatches": []
+      },
+      "editorial": {
+        "internalBlogLinkCount": 2,
+        "hasCitySpecificAsset": true,
+        "citySpecificAssets": [
+          "blog/murray/signs-you-need-new-roof.html",
+          "blog/murray/storm-damage-roofing-murray-utah.html"
+        ]
+      }
+    },
+    {
+      "city": "Riverton",
+      "slug": "riverton",
+      "page": "locations/riverton.html",
+      "pageSha256": "db3989d8a1ebfe33c61a75ada8feff50d31995b6c58c2f9ed405487633e42549",
+      "serviceAreaStatus": "pending-current-profile-service-area-verification",
+      "identityProfile": "heber-keystone-cid",
+      "hasMap": "https://www.google.com/maps?cid=8458659884566588108",
+      "sameAsCount": 14,
+      "nap": {
+        "telLinkCount": 6,
+        "schemaTelephoneCount": 1,
+        "phoneMismatches": [],
+        "schemaAddressRegions": [
+          "UT"
+        ],
+        "regionMismatches": []
+      },
+      "editorial": {
+        "internalBlogLinkCount": 3,
+        "hasCitySpecificAsset": true,
+        "citySpecificAssets": [
+          "blog/riverton/hail-damage-roof-inspection.html"
+        ]
+      }
+    },
+    {
+      "city": "South Jordan",
+      "slug": "south-jordan",
+      "page": "locations/south-jordan.html",
+      "pageSha256": "1d03e4a6779ba8d2dc2601b9a3bf1d879a98adee4ca85d28c70c683be414370f",
+      "serviceAreaStatus": "pending-current-profile-service-area-verification",
+      "identityProfile": "heber-keystone-cid",
+      "hasMap": "https://www.google.com/maps?cid=8458659884566588108",
+      "sameAsCount": 14,
+      "nap": {
+        "telLinkCount": 6,
+        "schemaTelephoneCount": 1,
+        "phoneMismatches": [],
+        "schemaAddressRegions": [
+          "UT"
+        ],
+        "regionMismatches": []
+      },
+      "editorial": {
+        "internalBlogLinkCount": 4,
+        "hasCitySpecificAsset": true,
+        "citySpecificAssets": [
+          "blog/south-jordan/roof-replacement-south-jordan-utah.html",
+          "blog/south-jordan/storm-damage-roof-repair-south-jordan-utah.html"
+        ]
+      }
+    },
+    {
+      "city": "South Salt Lake",
+      "slug": "south-salt-lake",
+      "page": "locations/south-salt-lake.html",
+      "pageSha256": "0fdb0d1bb5eac270f298be2474de58e4110ca8ba34f2247e84b66b22bf4ef22a",
+      "serviceAreaStatus": "pending-current-profile-service-area-verification",
+      "identityProfile": "heber-keystone-cid",
+      "hasMap": "https://www.google.com/maps?cid=8458659884566588108",
+      "sameAsCount": 14,
+      "nap": {
+        "telLinkCount": 6,
+        "schemaTelephoneCount": 1,
+        "phoneMismatches": [],
+        "schemaAddressRegions": [
+          "UT"
+        ],
+        "regionMismatches": []
+      },
+      "editorial": {
+        "internalBlogLinkCount": 3,
+        "hasCitySpecificAsset": false,
+        "citySpecificAssets": []
+      }
+    },
+    {
+      "city": "Taylorsville",
+      "slug": "taylorsville",
+      "page": "locations/taylorsville.html",
+      "pageSha256": "f8c64515c34c43609f66a3178c98cdb682149f6c0be2028130ea2e45706a841f",
+      "serviceAreaStatus": "pending-current-profile-service-area-verification",
+      "identityProfile": "heber-keystone-cid",
+      "hasMap": "https://www.google.com/maps?cid=8458659884566588108",
+      "sameAsCount": 14,
+      "nap": {
+        "telLinkCount": 6,
+        "schemaTelephoneCount": 1,
+        "phoneMismatches": [],
+        "schemaAddressRegions": [
+          "UT"
+        ],
+        "regionMismatches": []
+      },
+      "editorial": {
+        "internalBlogLinkCount": 3,
+        "hasCitySpecificAsset": false,
+        "citySpecificAssets": []
+      }
+    },
+    {
+      "city": "West Jordan",
+      "slug": "west-jordan",
+      "page": "locations/west-jordan.html",
+      "pageSha256": "d68f764d7adea69b6c4384bbd46a4d85710bfa1961ca55bd0645e6d936a1e750",
+      "serviceAreaStatus": "pending-current-profile-service-area-verification",
+      "identityProfile": "heber-keystone-cid",
+      "hasMap": "https://www.google.com/maps?cid=8458659884566588108",
+      "sameAsCount": 14,
+      "nap": {
+        "telLinkCount": 6,
+        "schemaTelephoneCount": 1,
+        "phoneMismatches": [],
+        "schemaAddressRegions": [
+          "UT"
+        ],
+        "regionMismatches": []
+      },
+      "editorial": {
+        "internalBlogLinkCount": 1,
+        "hasCitySpecificAsset": true,
+        "citySpecificAssets": [
+          "blog/west-jordan/roof-leak-after-rainstorm.html"
+        ]
+      }
+    },
+    {
+      "city": "West Valley City",
+      "slug": "west-valley-city",
+      "page": "locations/west-valley-city.html",
+      "pageSha256": "085c533f23c16fcb3ced6f7f326d1ae060c3f1f0c88dcf0a8eff9ec3607c496d",
+      "serviceAreaStatus": "pending-current-profile-service-area-verification",
+      "identityProfile": "heber-keystone-cid",
+      "hasMap": "https://www.google.com/maps?cid=8458659884566588108",
+      "sameAsCount": 14,
+      "nap": {
+        "telLinkCount": 6,
+        "schemaTelephoneCount": 1,
+        "phoneMismatches": [],
+        "schemaAddressRegions": [
+          "UT"
+        ],
+        "regionMismatches": []
+      },
+      "editorial": {
+        "internalBlogLinkCount": 1,
+        "hasCitySpecificAsset": true,
+        "citySpecificAssets": [
+          "blog/west-valley-city/roof-replacement-cost.html"
+        ]
+      }
+    }
+  ]
+}

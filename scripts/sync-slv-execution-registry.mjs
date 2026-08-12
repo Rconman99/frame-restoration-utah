@@ -21,6 +21,7 @@ const sourceFiles = {
   millcreekAmendment: "data/authority/MILLCREEK-PUBLIC-IDENTITY-SCOPE-AMENDMENT-2026-08-12.json",
   expansionCleanupPacket: "data/authority/SLV-EXPANSION-PUBLIC-REMEDIATION-PACKET-2026-08-12.json",
   expansionArchitecture: "data/rank-tracker/SLV-EXPANSION-ARCHITECTURE-2026-08-12.json",
+  entityHealth: "data/rank-tracker/SLV-ENTITY-HEALTH-2026-08-12.json",
 };
 const externalEvidence = {
   businessDriveReceipt: "/Users/agenticmac/territory-command/data/command-center/utah-seo/drive-evidence/drive-evidence-audit-20260812T175850Z.json",
@@ -37,6 +38,7 @@ const displacement = read(sourceFiles.displacement);
 const coreCleanup = read(sourceFiles.coreCleanupPacket);
 const millcreekAmendment = read(sourceFiles.millcreekAmendment);
 const expansionCleanup = read(sourceFiles.expansionCleanupPacket);
+const entityHealth = read(sourceFiles.entityHealth);
 const goals = new Map(portfolio.cityGoals.map((goal) => [goal.city, goal]));
 const expansionRows = new Map(expansionPriority.cities.map((city) => [city.city, city]));
 const queryRows = new Map();
@@ -194,6 +196,20 @@ const registry = {
       estimatedCompleteWeeklyCostUsd: 0.1152,
       decision: "The first 12-city baseline is complete; recurring weekly provider spend remains unapproved.",
     },
+    {
+      id: "salt-lake-valley-review-baseline",
+      class: "system-fixable-after-bundle-lands",
+      state: "exact-cid-unmeasured-cross-profile-fallback-now-fail-closed",
+      targetCid: entityHealth.reviews.saltLakeValley.cid,
+      decision: "Use the existing valid GitHub DataForSEO credentials after this safeguard lands; never count the Heber 34-review export as Salt Lake Valley evidence.",
+    },
+    {
+      id: "city-editorial-evidence-gaps",
+      class: "evidence-dependent-public-work",
+      state: "five-gaps-pinned-no-thin-content",
+      cities: entityHealth.editorial.evidenceFirstGaps,
+      decision: "Add city-specific editorial support only when real local evidence exists and the public release and doorway-page gates pass; protect Magna and Kearns ranking footholds.",
+    },
   ],
   connectionNeeded: [
     {
@@ -248,6 +264,9 @@ assert.equal(registry.cities.length, 18);
 assert.equal(registry.score.fixedOrganicNumberOne, 2);
 assert.equal(registry.score.exactCidMapsNumberOne, 0);
 assert.equal(registry.score.citiesAtSustainedGoal, 0);
+assert.equal(entityHealth.reviews.saltLakeValley.state, "unmeasured");
+assert.equal(entityHealth.reviews.heber.aggregateReviewCount, 34);
+assert.equal(entityHealth.editorial.evidenceFirstGaps.length, 5);
 assert.deepEqual(registry.cities.filter((city) => city.measurement.organicNumberOne.length).map((city) => city.city), ["Magna", "Kearns"]);
 assert.equal(registry.connectionNeeded.length, 2);
 assert.equal(registry.ownerApprovalsNeeded.length, 3);

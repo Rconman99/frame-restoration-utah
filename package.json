@@ -48,6 +48,8 @@
     "sync:slv-competitor-displacement": "node scripts/sync-slv-competitor-displacement.mjs --write",
     "audit:slv-execution-registry": "node scripts/sync-slv-execution-registry.mjs --check",
     "sync:slv-execution-registry": "node scripts/sync-slv-execution-registry.mjs --write",
+    "audit:slv-entity-health": "node scripts/sync-slv-entity-health.mjs --check",
+    "sync:slv-entity-health": "node scripts/sync-slv-entity-health.mjs --write",
     "test:review-targeting": "python3 scripts/test-update-google-reviews-targeting.py",
     "audit:slv-leader-features": "node scripts/validate-slv-leader-features.mjs",
     "audit:slv-expansion-architecture": "node scripts/sync-slv-expansion-architecture.mjs --check",

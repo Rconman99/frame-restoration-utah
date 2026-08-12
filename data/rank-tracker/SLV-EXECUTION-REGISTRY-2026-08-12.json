@@ -52,6 +52,10 @@
     "expansionArchitecture": {
       "file": "data/rank-tracker/SLV-EXPANSION-ARCHITECTURE-2026-08-12.json",
       "sha256": "357ed0a20e6138e77850fad1df88f7a7f840eff43607f7769f36a05197dcbe3c"
+    },
+    "entityHealth": {
+      "file": "data/rank-tracker/SLV-ENTITY-HEALTH-2026-08-12.json",
+      "sha256": "523da59da054f3508e2192c6771bf50d4b59e0c10588cece13201e7e3a9d3e4c"
     }
   },
   "externalEvidence": {
@@ -103,6 +107,26 @@
       "state": "manual-baseline-complete-not-admitted",
       "estimatedCompleteWeeklyCostUsd": 0.1152,
       "decision": "The first 12-city baseline is complete; recurring weekly provider spend remains unapproved."
+    },
+    {
+      "id": "salt-lake-valley-review-baseline",
+      "class": "system-fixable-after-bundle-lands",
+      "state": "exact-cid-unmeasured-cross-profile-fallback-now-fail-closed",
+      "targetCid": "5689850818145735734",
+      "decision": "Use the existing valid GitHub DataForSEO credentials after this safeguard lands; never count the Heber 34-review export as Salt Lake Valley evidence."
+    },
+    {
+      "id": "city-editorial-evidence-gaps",
+      "class": "evidence-dependent-public-work",
+      "state": "five-gaps-pinned-no-thin-content",
+      "cities": [
+        "Kearns",
+        "Magna",
+        "Midvale",
+        "South Salt Lake",
+        "Taylorsville"
+      ],
+      "decision": "Add city-specific editorial support only when real local evidence exists and the public release and doorway-page gates pass; protect Magna and Kearns ranking footholds."
     }
   ],
   "connectionNeeded": [
