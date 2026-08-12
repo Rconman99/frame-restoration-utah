@@ -52,6 +52,8 @@
     "sync:slv-entity-health": "node scripts/sync-slv-entity-health.mjs --write",
     "audit:slv-weekly-decisions": "node scripts/sync-slv-weekly-decisions.mjs --check",
     "sync:slv-weekly-decisions": "node scripts/sync-slv-weekly-decisions.mjs --write",
+    "audit:slv-gsc-attribution": "node --test scripts/lib/slv-gsc-attribution.test.mjs && node scripts/sync-slv-gsc-attribution.mjs --check",
+    "sync:slv-gsc-attribution": "node scripts/sync-slv-gsc-attribution.mjs --write",
     "test:review-targeting": "python3 scripts/test-update-google-reviews-targeting.py",
     "audit:slv-leader-features": "node scripts/validate-slv-leader-features.mjs",
     "audit:slv-expansion-architecture": "node scripts/sync-slv-expansion-architecture.mjs --check",

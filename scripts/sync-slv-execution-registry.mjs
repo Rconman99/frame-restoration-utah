@@ -23,10 +23,12 @@ const sourceFiles = {
   expansionArchitecture: "data/rank-tracker/SLV-EXPANSION-ARCHITECTURE-2026-08-12.json",
   entityHealth: "data/rank-tracker/SLV-ENTITY-HEALTH-2026-08-12.json",
   weeklyDecisions: "data/rank-tracker/SLV-WEEKLY-DECISIONS-2026-08-12.json",
+  gscAttribution: "data/rank-tracker/SLV-GSC-URL-ATTRIBUTION-LATEST.json",
+  businessDriveReceipt: "data/rank-tracker/evidence/SLV-BUSINESS-DRIVE-CONNECTOR-2026-08-12.json",
 };
 const externalEvidence = {
-  businessDriveReceipt: "/Users/agenticmac/territory-command/data/command-center/utah-seo/drive-evidence/drive-evidence-audit-20260812T175850Z.json",
-  businessDriveReceiptSha256: "d1509d396e1d62776ea28387c7730ff22defec883932de0c0f97ec5f59d43e9b",
+  businessDriveReceipt: sourceFiles.businessDriveReceipt,
+  externalBusinessDriveReceiptSha256: "d1509d396e1d62776ea28387c7730ff22defec883932de0c0f97ec5f59d43e9b",
 };
 const read = (file) => JSON.parse(fs.readFileSync(path.join(root, file), "utf8"));
 const sha256 = (file) => crypto.createHash("sha256").update(fs.readFileSync(file)).digest("hex");
@@ -41,7 +43,9 @@ const millcreekAmendment = read(sourceFiles.millcreekAmendment);
 const expansionCleanup = read(sourceFiles.expansionCleanupPacket);
 const entityHealth = read(sourceFiles.entityHealth);
 const weeklyDecisions = read(sourceFiles.weeklyDecisions);
+const gscAttribution = read(sourceFiles.gscAttribution);
 const goals = new Map(portfolio.cityGoals.map((goal) => [goal.city, goal]));
+const gscByCity = new Map(gscAttribution.cities.map((city) => [city.city, city]));
 const expansionRows = new Map(expansionPriority.cities.map((city) => [city.city, city]));
 const queryRows = new Map();
 for (const query of displacement.queries) {
@@ -49,11 +53,11 @@ for (const query of displacement.queries) {
   queryRows.get(query.city).push(query);
 }
 
-assert.equal(sha256(externalEvidence.businessDriveReceipt), externalEvidence.businessDriveReceiptSha256);
-const driveReceipt = JSON.parse(fs.readFileSync(externalEvidence.businessDriveReceipt, "utf8"));
+const driveReceipt = read(externalEvidence.businessDriveReceipt);
 assert.equal(driveReceipt.status, "FAILED_CLOSED_CONNECTOR_ACCOUNT_MISMATCH");
-assert.equal(driveReceipt.connector.required_account, "ryan@framerestorations.com");
+assert.equal(driveReceipt.connector.requiredAccount, "ryan@framerestorations.com");
 assert.equal(driveReceipt.connector.match, false);
+assert.equal(driveReceipt.source.externalReceiptSha256, externalEvidence.externalBusinessDriveReceiptSha256);
 
 const cityOrder = [
   "Salt Lake City", "Millcreek", "Magna", "Kearns", "Sandy", "Holladay", "Cottonwood Heights", "Murray", "Riverton", "South Jordan", "Taylorsville", "Bluffdale", "Midvale", "Herriman", "West Valley City", "Draper", "South Salt Lake", "West Jordan",
@@ -115,6 +119,8 @@ function actionFor(city) {
 const cities = cityOrder.map((city, index) => {
   const goal = goals.get(city);
   assert.ok(goal, `missing goal: ${city}`);
+  const gsc = gscByCity.get(city);
+  assert.ok(gsc, `missing GSC attribution: ${city}`);
   const queries = queryRows.get(city) || [];
   assert.equal(queries.length, 4, `fixed query count mismatch: ${city}`);
   const organicNumberOne = queries.filter((query) => query.target.organicRank === 1).map((query) => query.keyword);
@@ -134,6 +140,16 @@ const cities = cityOrder.map((city, index) => {
       exactCidMapsNumberOne: queries.filter((query) => query.target.exactCidMapRank === 1).length,
       googleAiOverviewOwnedQueries: aioOwned,
       consumerAi: goal.current.consumerAi,
+    },
+    gscAttribution: {
+      snapshotDate: gscAttribution.asOfSnapshotDate,
+      window: gscAttribution.evidenceWindow,
+      state: gsc.state,
+      requestedQueries: gsc.coverage.requestedQueries,
+      returnedQueries: gsc.coverage.returnedQueries,
+      exactRows: gsc.coverage.exactRows,
+      alternateNormalizedUrls: gsc.alternateNormalizedUrls,
+      nextEvidenceAction: gsc.nextEvidenceAction,
     },
     ...action,
     universalDependencies: [
@@ -182,8 +198,13 @@ const registry = {
     {
       id: "targeted-gsc-72-query-read",
       class: "system-fixable-after-bundle-lands",
-      state: "workflow-ready-local-secret-absent",
-      decision: "The main-only SEO workflow has the GSC secret and will target all 72 queries after this code lands; local absence is not a zero result.",
+      state: gscAttribution.summary.requestedQueries === 72 ? "complete-targeted-request-live" : "workflow-ready-partial-baseline",
+      source: sourceFiles.gscAttribution,
+      workflowTargetQueries: gscAttribution.measurementContract.workflowTargetQueries,
+      requestedQueries: gscAttribution.summary.requestedQueries,
+      decision: gscAttribution.summary.requestedQueries === 72
+        ? "Use the complete 72-query GSC attribution ledger to choose city-specific URL diagnoses; no missing row is zero and no multi-URL row alone proves current cannibalization."
+        : "The main-only SEO workflow will target and classify all 72 queries after this code lands; the existing partial baseline remains unmeasured for unrequested queries, not zero.",
     },
     {
       id: "weekly-core-google-panel",
@@ -228,10 +249,11 @@ const registry = {
     {
       id: "business-drive-connector",
       state: "blocked-with-proof",
-      requiredAccount: driveReceipt.connector.required_account,
-      observedAccount: driveReceipt.connector.observed_account,
+      requiredAccount: driveReceipt.connector.requiredAccount,
+      observedAccount: driveReceipt.connector.observedAccount,
       receipt: externalEvidence.businessDriveReceipt,
-      receiptSha256: externalEvidence.businessDriveReceiptSha256,
+      receiptSha256: localHash(externalEvidence.businessDriveReceipt),
+      externalSourceReceiptSha256: externalEvidence.externalBusinessDriveReceiptSha256,
       action: "Reconnect the claude.ai Google Drive connector to ryan@framerestorations.com, then rerun the read-only evidence audit.",
     },
     {
@@ -285,6 +307,11 @@ assert.equal(weeklyDecisions.summary.rankingHold, 18);
 assert.equal(weeklyDecisions.summary.rankingKeep, 0);
 assert.equal(weeklyDecisions.summary.rankingRevert, 0);
 assert.equal(weeklyDecisions.summary.protectedOrganicNumberOneQueries, registry.score.fixedOrganicNumberOne);
+assert.equal(gscAttribution.summary.cities, 18);
+assert.equal(gscAttribution.summary.fixedQueries, 72);
+assert.equal(gscAttribution.measurementContract.workflowTargetQueries, 72);
+assert.equal(gscByCity.size, 18);
+assert.equal(registry.cities.reduce((sum, city) => sum + city.gscAttribution.requestedQueries, 0), gscAttribution.summary.requestedQueries);
 assert.equal(registry.connectionNeeded.length, 2);
 assert.equal(registry.ownerApprovalsNeeded.length, 3);
 assert.ok(registry.cities.every((city) => city.completionContract.includes("four consecutive weekly panels")));

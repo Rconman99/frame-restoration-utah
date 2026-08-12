@@ -51,7 +51,7 @@
     },
     "expansionArchitecture": {
       "file": "data/rank-tracker/SLV-EXPANSION-ARCHITECTURE-2026-08-12.json",
-      "sha256": "357ed0a20e6138e77850fad1df88f7a7f840eff43607f7769f36a05197dcbe3c"
+      "sha256": "1403a98f644ade1e2e3227ac352e0c55ff3edc9ce4c916c08699fb1df2262b12"
     },
     "entityHealth": {
       "file": "data/rank-tracker/SLV-ENTITY-HEALTH-2026-08-12.json",
@@ -60,11 +60,19 @@
     "weeklyDecisions": {
       "file": "data/rank-tracker/SLV-WEEKLY-DECISIONS-2026-08-12.json",
       "sha256": "2b232fe5d9159710fb600ce04281e0f4e83ca8dea56e907f0c4fb4a0f5dd39e8"
+    },
+    "gscAttribution": {
+      "file": "data/rank-tracker/SLV-GSC-URL-ATTRIBUTION-LATEST.json",
+      "sha256": "19341318461d776c41eafaa8f5a449d6a18a9ba91eab6071ccbaf0f2031541e3"
+    },
+    "businessDriveReceipt": {
+      "file": "data/rank-tracker/evidence/SLV-BUSINESS-DRIVE-CONNECTOR-2026-08-12.json",
+      "sha256": "a69dcc916343c59c940720a8565070f58865d677c8c4260352591b38e3003799"
     }
   },
   "externalEvidence": {
-    "businessDriveReceipt": "/Users/agenticmac/territory-command/data/command-center/utah-seo/drive-evidence/drive-evidence-audit-20260812T175850Z.json",
-    "businessDriveReceiptSha256": "d1509d396e1d62776ea28387c7730ff22defec883932de0c0f97ec5f59d43e9b"
+    "businessDriveReceipt": "data/rank-tracker/evidence/SLV-BUSINESS-DRIVE-CONNECTOR-2026-08-12.json",
+    "externalBusinessDriveReceiptSha256": "d1509d396e1d62776ea28387c7730ff22defec883932de0c0f97ec5f59d43e9b"
   },
   "consumerAiConfiguration": {
     "repository": "Rconman99/geo-aeo-tracker",
@@ -96,8 +104,11 @@
     {
       "id": "targeted-gsc-72-query-read",
       "class": "system-fixable-after-bundle-lands",
-      "state": "workflow-ready-local-secret-absent",
-      "decision": "The main-only SEO workflow has the GSC secret and will target all 72 queries after this code lands; local absence is not a zero result."
+      "state": "workflow-ready-partial-baseline",
+      "source": "data/rank-tracker/SLV-GSC-URL-ATTRIBUTION-LATEST.json",
+      "workflowTargetQueries": 72,
+      "requestedQueries": 24,
+      "decision": "The main-only SEO workflow will target and classify all 72 queries after this code lands; the existing partial baseline remains unmeasured for unrequested queries, not zero."
     },
     {
       "id": "weekly-core-google-panel",
@@ -146,8 +157,9 @@
       "state": "blocked-with-proof",
       "requiredAccount": "ryan@framerestorations.com",
       "observedAccount": "ryanconwell99@gmail.com",
-      "receipt": "/Users/agenticmac/territory-command/data/command-center/utah-seo/drive-evidence/drive-evidence-audit-20260812T175850Z.json",
-      "receiptSha256": "d1509d396e1d62776ea28387c7730ff22defec883932de0c0f97ec5f59d43e9b",
+      "receipt": "data/rank-tracker/evidence/SLV-BUSINESS-DRIVE-CONNECTOR-2026-08-12.json",
+      "receiptSha256": "a69dcc916343c59c940720a8565070f58865d677c8c4260352591b38e3003799",
+      "externalSourceReceiptSha256": "d1509d396e1d62776ea28387c7730ff22defec883932de0c0f97ec5f59d43e9b",
       "action": "Reconnect the claude.ai Google Drive connector to ryan@framerestorations.com, then rerun the read-only evidence audit."
     },
     {
@@ -214,6 +226,19 @@
         "googleAiOverviewOwnedQueries": [],
         "consumerAi": "blocked-invalid-provider-credential"
       },
+      "gscAttribution": {
+        "snapshotDate": "2026-08-12",
+        "window": {
+          "startDate": "2026-07-13",
+          "endDate": "2026-08-09"
+        },
+        "state": "complete-request-with-unreturned-rows",
+        "requestedQueries": 4,
+        "returnedQueries": 2,
+        "exactRows": 2,
+        "alternateNormalizedUrls": [],
+        "nextEvidenceAction": "Keep the Salt Lake City page frozen under its active experiment until the 2026-09-09 evaluation gate; continue weekly fixed panels and targeted GSC reads."
+      },
       "lane": "observe-time-gated-experiment",
       "action": "Keep the page frozen, run the weekly fixed Google panel, and evaluate the existing trust correction no earlier than 2026-09-09T04:40:58Z.",
       "actionClass": "system-fixable-when-scheduled",
@@ -247,6 +272,19 @@
           "roof repair millcreek"
         ],
         "consumerAi": "blocked-invalid-provider-credential"
+      },
+      "gscAttribution": {
+        "snapshotDate": "2026-08-12",
+        "window": {
+          "startDate": "2026-07-13",
+          "endDate": "2026-08-09"
+        },
+        "state": "complete-request-with-unreturned-rows",
+        "requestedQueries": 4,
+        "returnedQueries": 0,
+        "exactRows": 0,
+        "alternateNormalizedUrls": [],
+        "nextEvidenceAction": "Protect the measured #1/AIO foothold. Do not change title, H1, canonical, route, or internal-link intent until exact owner approval and a declared isolated experiment exist."
       },
       "lane": "cleanup-first-protect-aio",
       "action": "After exact owner approval, apply the five-page core cleanup plus the pinned Millcreek storm-child identity correction as one isolated variable; protect the owned roof-repair AIO citation and all current titles/H1s.",
@@ -284,6 +322,19 @@
         ],
         "consumerAi": "configured-manual-measurement-only-blocked-invalid-provider-credential"
       },
+      "gscAttribution": {
+        "snapshotDate": "2026-08-12",
+        "window": {
+          "startDate": "2026-07-13",
+          "endDate": "2026-08-09"
+        },
+        "state": "targeted-gsc-not-complete",
+        "requestedQueries": 0,
+        "returnedQueries": 0,
+        "exactRows": 0,
+        "alternateNormalizedUrls": [],
+        "nextEvidenceAction": "Protect the measured #1/AIO foothold. Do not change title, H1, canonical, route, or internal-link intent until exact owner approval and a declared isolated experiment exist."
+      },
       "lane": "protect-number-one-cleanup-first",
       "action": "After separate exact owner approval, apply only the expansion integrity cleanup for Magna; preserve its roof-replacement #1 query and owned Google AIO citation, then observe before any ranking experiment.",
       "actionClass": "system-fixable-after-owner-approval",
@@ -318,6 +369,19 @@
         "googleAiOverviewOwnedQueries": [],
         "consumerAi": "configured-manual-measurement-only-blocked-invalid-provider-credential"
       },
+      "gscAttribution": {
+        "snapshotDate": "2026-08-12",
+        "window": {
+          "startDate": "2026-07-13",
+          "endDate": "2026-08-09"
+        },
+        "state": "targeted-gsc-not-complete",
+        "requestedQueries": 0,
+        "returnedQueries": 0,
+        "exactRows": 0,
+        "alternateNormalizedUrls": [],
+        "nextEvidenceAction": "Protect the measured #1/AIO foothold. Do not change title, H1, canonical, route, or internal-link intent until exact owner approval and a declared isolated experiment exist."
+      },
       "lane": "protect-number-one-cleanup-first",
       "action": "After separate exact owner approval, apply only the expansion integrity cleanup for Kearns; preserve its roof-replacement #1 query, then observe before any ranking experiment.",
       "actionClass": "system-fixable-after-owner-approval",
@@ -349,6 +413,19 @@
         "exactCidMapsNumberOne": 0,
         "googleAiOverviewOwnedQueries": [],
         "consumerAi": "configured-manual-measurement-only-blocked-invalid-provider-credential"
+      },
+      "gscAttribution": {
+        "snapshotDate": "2026-08-12",
+        "window": {
+          "startDate": "2026-07-13",
+          "endDate": "2026-08-09"
+        },
+        "state": "intended-url-only-for-all-returned-rows",
+        "requestedQueries": 4,
+        "returnedQueries": 4,
+        "exactRows": 4,
+        "alternateNormalizedUrls": [],
+        "nextEvidenceAction": "Preserve the intended city hub and all related routes; use the next complete targeted GSC read before selecting an architecture or intent experiment."
       },
       "lane": "cleanup-then-single-variable-experiment",
       "action": "After exact owner approval, complete the bounded core integrity cleanup for Sandy; capture a fresh baseline before one declared ranking variable.",
@@ -382,6 +459,23 @@
         "googleAiOverviewOwnedQueries": [],
         "consumerAi": "configured-manual-measurement-only-blocked-invalid-provider-credential"
       },
+      "gscAttribution": {
+        "snapshotDate": "2026-08-12",
+        "window": {
+          "startDate": "2026-07-13",
+          "endDate": "2026-08-09"
+        },
+        "state": "url-competition-requires-diagnosis",
+        "requestedQueries": 4,
+        "returnedQueries": 3,
+        "exactRows": 6,
+        "alternateNormalizedUrls": [
+          "framerestorationutah.com/",
+          "framerestorationutah.com/blog/holladay/roof-replacement-holladay-utah",
+          "framerestorationutah.com/salt-lake-city"
+        ],
+        "nextEvidenceAction": "Inspect the alternate URLs against redirect dates, canonicals, current live routing, and query intent. Treat this blended 28-day evidence as a diagnosis trigger, not proof of current cannibalization or permission to redirect."
+      },
       "lane": "cleanup-then-single-variable-experiment",
       "action": "After exact owner approval, complete the bounded core integrity cleanup for Holladay; capture a fresh baseline before one declared ranking variable.",
       "actionClass": "system-fixable-after-owner-approval",
@@ -413,6 +507,19 @@
         "exactCidMapsNumberOne": 0,
         "googleAiOverviewOwnedQueries": [],
         "consumerAi": "configured-manual-measurement-only-blocked-invalid-provider-credential"
+      },
+      "gscAttribution": {
+        "snapshotDate": "2026-08-12",
+        "window": {
+          "startDate": "2026-07-13",
+          "endDate": "2026-08-09"
+        },
+        "state": "complete-request-with-unreturned-rows",
+        "requestedQueries": 4,
+        "returnedQueries": 0,
+        "exactRows": 0,
+        "alternateNormalizedUrls": [],
+        "nextEvidenceAction": "Preserve the intended city hub and all related routes; use the next complete targeted GSC read before selecting an architecture or intent experiment."
       },
       "lane": "cleanup-then-single-variable-experiment",
       "action": "After exact owner approval, complete the bounded core integrity cleanup for Cottonwood Heights; capture a fresh baseline before one declared ranking variable.",
@@ -446,6 +553,19 @@
         "googleAiOverviewOwnedQueries": [],
         "consumerAi": "configured-manual-measurement-only-blocked-invalid-provider-credential"
       },
+      "gscAttribution": {
+        "snapshotDate": "2026-08-12",
+        "window": {
+          "startDate": "2026-07-13",
+          "endDate": "2026-08-09"
+        },
+        "state": "targeted-gsc-not-complete",
+        "requestedQueries": 0,
+        "returnedQueries": 0,
+        "exactRows": 0,
+        "alternateNormalizedUrls": [],
+        "nextEvidenceAction": "Preserve the intended city hub and all related routes; use the next complete targeted GSC read before selecting an architecture or intent experiment."
+      },
       "lane": "closest-organic-improvement-after-integrity",
       "action": "After separate exact owner approval, apply only the bounded expansion integrity cleanup for Murray; obtain targeted GSC URL evidence before any title, H1, canonical, link, or route experiment.",
       "actionClass": "system-fixable-after-owner-approval",
@@ -477,6 +597,19 @@
         "exactCidMapsNumberOne": 0,
         "googleAiOverviewOwnedQueries": [],
         "consumerAi": "configured-manual-measurement-only-blocked-invalid-provider-credential"
+      },
+      "gscAttribution": {
+        "snapshotDate": "2026-08-12",
+        "window": {
+          "startDate": "2026-07-13",
+          "endDate": "2026-08-09"
+        },
+        "state": "targeted-gsc-not-complete",
+        "requestedQueries": 0,
+        "returnedQueries": 0,
+        "exactRows": 0,
+        "alternateNormalizedUrls": [],
+        "nextEvidenceAction": "Preserve the intended city hub and all related routes; use the next complete targeted GSC read before selecting an architecture or intent experiment."
       },
       "lane": "closest-organic-improvement-after-integrity",
       "action": "After separate exact owner approval, apply only the bounded expansion integrity cleanup for Riverton; obtain targeted GSC URL evidence before any title, H1, canonical, link, or route experiment.",
@@ -510,6 +643,19 @@
         "googleAiOverviewOwnedQueries": [],
         "consumerAi": "configured-manual-measurement-only-blocked-invalid-provider-credential"
       },
+      "gscAttribution": {
+        "snapshotDate": "2026-08-12",
+        "window": {
+          "startDate": "2026-07-13",
+          "endDate": "2026-08-09"
+        },
+        "state": "targeted-gsc-not-complete",
+        "requestedQueries": 0,
+        "returnedQueries": 0,
+        "exactRows": 0,
+        "alternateNormalizedUrls": [],
+        "nextEvidenceAction": "Preserve the intended city hub and all related routes; use the next complete targeted GSC read before selecting an architecture or intent experiment."
+      },
       "lane": "closest-organic-improvement-after-integrity",
       "action": "After separate exact owner approval, apply only the bounded expansion integrity cleanup for South Jordan; obtain targeted GSC URL evidence before any title, H1, canonical, link, or route experiment.",
       "actionClass": "system-fixable-after-owner-approval",
@@ -541,6 +687,19 @@
         "exactCidMapsNumberOne": 0,
         "googleAiOverviewOwnedQueries": [],
         "consumerAi": "configured-manual-measurement-only-blocked-invalid-provider-credential"
+      },
+      "gscAttribution": {
+        "snapshotDate": "2026-08-12",
+        "window": {
+          "startDate": "2026-07-13",
+          "endDate": "2026-08-09"
+        },
+        "state": "targeted-gsc-not-complete",
+        "requestedQueries": 0,
+        "returnedQueries": 0,
+        "exactRows": 0,
+        "alternateNormalizedUrls": [],
+        "nextEvidenceAction": "Preserve the intended city hub and all related routes; use the next complete targeted GSC read before selecting an architecture or intent experiment."
       },
       "lane": "closest-organic-improvement-after-integrity",
       "action": "After separate exact owner approval, apply only the bounded expansion integrity cleanup for Taylorsville; obtain targeted GSC URL evidence before any title, H1, canonical, link, or route experiment.",
@@ -574,6 +733,19 @@
         "googleAiOverviewOwnedQueries": [],
         "consumerAi": "configured-manual-measurement-only-blocked-invalid-provider-credential"
       },
+      "gscAttribution": {
+        "snapshotDate": "2026-08-12",
+        "window": {
+          "startDate": "2026-07-13",
+          "endDate": "2026-08-09"
+        },
+        "state": "targeted-gsc-not-complete",
+        "requestedQueries": 0,
+        "returnedQueries": 0,
+        "exactRows": 0,
+        "alternateNormalizedUrls": [],
+        "nextEvidenceAction": "Preserve the intended city hub and all related routes; use the next complete targeted GSC read before selecting an architecture or intent experiment."
+      },
       "lane": "broader-commercial-relevance-after-integrity",
       "action": "After separate exact owner approval, apply only the bounded expansion integrity cleanup for Bluffdale; obtain targeted GSC URL evidence before any title, H1, canonical, link, or route experiment.",
       "actionClass": "system-fixable-after-owner-approval",
@@ -605,6 +777,19 @@
         "exactCidMapsNumberOne": 0,
         "googleAiOverviewOwnedQueries": [],
         "consumerAi": "configured-manual-measurement-only-blocked-invalid-provider-credential"
+      },
+      "gscAttribution": {
+        "snapshotDate": "2026-08-12",
+        "window": {
+          "startDate": "2026-07-13",
+          "endDate": "2026-08-09"
+        },
+        "state": "targeted-gsc-not-complete",
+        "requestedQueries": 0,
+        "returnedQueries": 0,
+        "exactRows": 0,
+        "alternateNormalizedUrls": [],
+        "nextEvidenceAction": "Preserve the intended city hub and all related routes; use the next complete targeted GSC read before selecting an architecture or intent experiment."
       },
       "lane": "broader-commercial-relevance-after-integrity",
       "action": "After separate exact owner approval, apply only the bounded expansion integrity cleanup for Midvale; obtain targeted GSC URL evidence before any title, H1, canonical, link, or route experiment.",
@@ -638,6 +823,19 @@
         "googleAiOverviewOwnedQueries": [],
         "consumerAi": "configured-manual-measurement-only-blocked-invalid-provider-credential"
       },
+      "gscAttribution": {
+        "snapshotDate": "2026-08-12",
+        "window": {
+          "startDate": "2026-07-13",
+          "endDate": "2026-08-09"
+        },
+        "state": "targeted-gsc-not-complete",
+        "requestedQueries": 0,
+        "returnedQueries": 0,
+        "exactRows": 0,
+        "alternateNormalizedUrls": [],
+        "nextEvidenceAction": "Preserve the intended city hub and all related routes; use the next complete targeted GSC read before selecting an architecture or intent experiment."
+      },
       "lane": "broader-commercial-relevance-after-integrity",
       "action": "After separate exact owner approval, apply only the bounded expansion integrity cleanup for Herriman; obtain targeted GSC URL evidence before any title, H1, canonical, link, or route experiment.",
       "actionClass": "system-fixable-after-owner-approval",
@@ -669,6 +867,19 @@
         "exactCidMapsNumberOne": 0,
         "googleAiOverviewOwnedQueries": [],
         "consumerAi": "configured-manual-measurement-only-blocked-invalid-provider-credential"
+      },
+      "gscAttribution": {
+        "snapshotDate": "2026-08-12",
+        "window": {
+          "startDate": "2026-07-13",
+          "endDate": "2026-08-09"
+        },
+        "state": "targeted-gsc-not-complete",
+        "requestedQueries": 0,
+        "returnedQueries": 0,
+        "exactRows": 0,
+        "alternateNormalizedUrls": [],
+        "nextEvidenceAction": "Preserve the intended city hub and all related routes; use the next complete targeted GSC read before selecting an architecture or intent experiment."
       },
       "lane": "broader-commercial-relevance-after-integrity",
       "action": "After separate exact owner approval, apply only the bounded expansion integrity cleanup for West Valley City; obtain targeted GSC URL evidence before any title, H1, canonical, link, or route experiment.",
@@ -702,6 +913,19 @@
         "googleAiOverviewOwnedQueries": [],
         "consumerAi": "configured-manual-measurement-only-blocked-invalid-provider-credential"
       },
+      "gscAttribution": {
+        "snapshotDate": "2026-08-12",
+        "window": {
+          "startDate": "2026-07-13",
+          "endDate": "2026-08-09"
+        },
+        "state": "complete-request-with-unreturned-rows",
+        "requestedQueries": 4,
+        "returnedQueries": 0,
+        "exactRows": 0,
+        "alternateNormalizedUrls": [],
+        "nextEvidenceAction": "Preserve the intended city hub and all related routes; use the next complete targeted GSC read before selecting an architecture or intent experiment."
+      },
       "lane": "cleanup-then-architecture-diagnosis",
       "action": "After exact owner approval, complete the bounded core integrity cleanup for Draper; then protect related routes and use targeted GSC URL evidence before changing intent surfaces.",
       "actionClass": "system-fixable-after-owner-approval",
@@ -734,6 +958,19 @@
         "googleAiOverviewOwnedQueries": [],
         "consumerAi": "configured-manual-measurement-only-blocked-invalid-provider-credential"
       },
+      "gscAttribution": {
+        "snapshotDate": "2026-08-12",
+        "window": {
+          "startDate": "2026-07-13",
+          "endDate": "2026-08-09"
+        },
+        "state": "targeted-gsc-not-complete",
+        "requestedQueries": 0,
+        "returnedQueries": 0,
+        "exactRows": 0,
+        "alternateNormalizedUrls": [],
+        "nextEvidenceAction": "Preserve the intended city hub and all related routes; use the next complete targeted GSC read before selecting an architecture or intent experiment."
+      },
       "lane": "cleanup-then-architecture-diagnosis",
       "action": "After separate exact owner approval, apply only the bounded expansion integrity cleanup for South Salt Lake; obtain targeted GSC URL evidence before any title, H1, canonical, link, or route experiment.",
       "actionClass": "system-fixable-after-owner-approval",
@@ -765,6 +1002,19 @@
         "exactCidMapsNumberOne": 0,
         "googleAiOverviewOwnedQueries": [],
         "consumerAi": "configured-manual-measurement-only-blocked-invalid-provider-credential"
+      },
+      "gscAttribution": {
+        "snapshotDate": "2026-08-12",
+        "window": {
+          "startDate": "2026-07-13",
+          "endDate": "2026-08-09"
+        },
+        "state": "targeted-gsc-not-complete",
+        "requestedQueries": 0,
+        "returnedQueries": 0,
+        "exactRows": 0,
+        "alternateNormalizedUrls": [],
+        "nextEvidenceAction": "Preserve the intended city hub and all related routes; use the next complete targeted GSC read before selecting an architecture or intent experiment."
       },
       "lane": "cleanup-then-architecture-diagnosis",
       "action": "After separate exact owner approval, apply only the bounded expansion integrity cleanup for West Jordan; obtain targeted GSC URL evidence before any title, H1, canonical, link, or route experiment.",

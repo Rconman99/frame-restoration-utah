@@ -7,6 +7,7 @@ on:
       - '.github/workflows/rank-tracker.yml'
       - '.github/workflows/slv-expansion-baseline.yml'
       - '.github/workflows/slv-review-baseline.yml'
+      - '.github/workflows/seo-loop.yml'
       - 'data/rank-tracker/SLV-CITY-GOAL-PROGRAM-2026-08-12.json'
       - 'data/rank-tracker/DRAPER-ARCHITECTURE-DIAGNOSIS-2026-08-12.json'
       - 'data/rank-tracker/HOLLADAY-ARCHITECTURE-DIAGNOSIS-2026-08-12.json'
@@ -18,6 +19,9 @@ on:
       - 'data/rank-tracker/SLV-ENTITY-HEALTH-2026-08-12.json'
       - 'data/rank-tracker/SLV-WEEKLY-DECISIONS-2026-08-12.json'
       - 'data/rank-tracker/SLV-EXECUTION-REGISTRY-2026-08-12.json'
+      - 'data/rank-tracker/SLV-GSC-URL-ATTRIBUTION-LATEST.json'
+      - 'data/rank-tracker/SLV-EXPANSION-ARCHITECTURE-2026-08-12.json'
+      - 'data/rank-tracker/evidence/SLV-BUSINESS-DRIVE-CONNECTOR-2026-08-12.json'
       - 'data/rank-tracker/expansion-panels.json'
       - 'data/rank-tracker/panels/holladay/2026-08-12.json'
       - 'data/rank-tracker/panels/sandy/2026-08-12.json'
@@ -68,6 +72,10 @@ on:
       - 'scripts/sync-slv-entity-health.mjs'
       - 'scripts/sync-slv-weekly-decisions.mjs'
       - 'scripts/sync-slv-execution-registry.mjs'
+      - 'scripts/sync-slv-gsc-attribution.mjs'
+      - 'scripts/sync-slv-expansion-architecture.mjs'
+      - 'scripts/lib/slv-gsc-attribution.mjs'
+      - 'scripts/lib/slv-gsc-attribution.test.mjs'
       - 'package.json'
   push:
     branches:
@@ -77,6 +85,7 @@ on:
       - '.github/workflows/rank-tracker.yml'
       - '.github/workflows/slv-expansion-baseline.yml'
       - '.github/workflows/slv-review-baseline.yml'
+      - '.github/workflows/seo-loop.yml'
       - 'data/rank-tracker/SLV-CITY-GOAL-PROGRAM-2026-08-12.json'
       - 'data/rank-tracker/DRAPER-ARCHITECTURE-DIAGNOSIS-2026-08-12.json'
       - 'data/rank-tracker/HOLLADAY-ARCHITECTURE-DIAGNOSIS-2026-08-12.json'
@@ -88,6 +97,9 @@ on:
       - 'data/rank-tracker/SLV-ENTITY-HEALTH-2026-08-12.json'
       - 'data/rank-tracker/SLV-WEEKLY-DECISIONS-2026-08-12.json'
       - 'data/rank-tracker/SLV-EXECUTION-REGISTRY-2026-08-12.json'
+      - 'data/rank-tracker/SLV-GSC-URL-ATTRIBUTION-LATEST.json'
+      - 'data/rank-tracker/SLV-EXPANSION-ARCHITECTURE-2026-08-12.json'
+      - 'data/rank-tracker/evidence/SLV-BUSINESS-DRIVE-CONNECTOR-2026-08-12.json'
       - 'data/rank-tracker/expansion-panels.json'
       - 'data/rank-tracker/panels/holladay/2026-08-12.json'
       - 'data/rank-tracker/panels/sandy/2026-08-12.json'
@@ -138,6 +150,10 @@ on:
       - 'scripts/sync-slv-entity-health.mjs'
       - 'scripts/sync-slv-weekly-decisions.mjs'
       - 'scripts/sync-slv-execution-registry.mjs'
+      - 'scripts/sync-slv-gsc-attribution.mjs'
+      - 'scripts/sync-slv-expansion-architecture.mjs'
+      - 'scripts/lib/slv-gsc-attribution.mjs'
+      - 'scripts/lib/slv-gsc-attribution.test.mjs'
       - 'package.json'
 
 permissions:
@@ -178,4 +194,6 @@ jobs:
         run: |
           npm run audit:slv-entity-health
           npm run audit:slv-weekly-decisions
+          npm run audit:slv-gsc-attribution
+          npm run audit:slv-expansion-architecture
           npm run audit:slv-execution-registry

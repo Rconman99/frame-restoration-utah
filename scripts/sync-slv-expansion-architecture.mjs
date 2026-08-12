@@ -16,7 +16,7 @@ const sourcePaths = {
   registry: "data/rank-tracker/expansion-panels.json",
   priority: "data/rank-tracker/SLV-EXPANSION-PRIORITY-2026-08-12.json",
   integrity: "data/authority/SLV-EXPANSION-INTEGRITY-AUDIT-2026-08-12.json",
-  gscSnapshot: "data/seo/snapshots/2026-08-12.json",
+  gscAttribution: "data/rank-tracker/SLV-GSC-URL-ATTRIBUTION-LATEST.json",
   displacement: "data/rank-tracker/SLV-COMPETITOR-DISPLACEMENT-2026-08-12.json",
 };
 const read = (file) => JSON.parse(fs.readFileSync(path.join(root, file), "utf8"));
@@ -25,7 +25,8 @@ const stripTags = (value) => String(value).replace(/<[^>]+>/g, " ").replace(/\s+
 const registry = read(sourcePaths.registry);
 const priority = read(sourcePaths.priority);
 const integrity = read(sourcePaths.integrity);
-const snapshot = read(sourcePaths.gscSnapshot);
+const gscAttribution = read(sourcePaths.gscAttribution);
+const snapshot = read(gscAttribution.sources.gscSnapshot.file);
 const displacement = read(sourcePaths.displacement);
 
 function walkHtml(dir, output = []) {
@@ -90,6 +91,7 @@ for (const query of displacement.queries.filter((row) => row.cohort === "expansi
 const gscRequested = new Set((snapshot.gsc.tracked_query_pages?.requested || []).map((query) => String(query).toLowerCase()));
 const gscRows = snapshot.gsc.tracked_query_pages?.rows || [];
 const gscTopPages = new Map((snapshot.gsc.top_pages || []).map((row) => [row.page.replace(/\/$/, ""), row]));
+const attributionByCity = new Map(gscAttribution.cities.map((city) => [city.city, city]));
 
 const cities = priority.cities.map((prioritized) => {
   const panelRef = panelById.get(prioritized.panelId);
@@ -98,7 +100,9 @@ const cities = priority.cities.map((prioritized) => {
   const reportPath = panelRef.configPath.replace(/config\.json$/, "latest.json");
   const report = read(reportPath);
   const integrityPage = integrityByCity.get(prioritized.city);
+  const cityAttribution = attributionByCity.get(prioritized.city);
   assert.ok(integrityPage, `missing integrity page: ${prioritized.city}`);
+  assert.ok(cityAttribution, `missing GSC attribution: ${prioritized.city}`);
   const queryEvidence = displacementByCity.get(prioritized.city) || [];
   assert.equal(queryEvidence.length, 4, `missing displacement rows: ${prioritized.city}`);
   const mainFile = `locations/${prioritized.slug}.html`;
@@ -130,9 +134,11 @@ const cities = priority.cities.map((prioritized) => {
   assert.ok(measuredOrganic.every((row) => row.rankingUrl === mainCanonical), `fixed SERP selected another URL: ${prioritized.city}`);
   const outsideDepth = report.results.filter((row) => row.organicRank === null).map((row) => row.keyword);
   const currentCannibalization = measuredOrganic.length === 4
-    ? "not-evidenced-all-four-fixed-serps-select-main"
+    ? cityAttribution.state === "url-competition-requires-diagnosis"
+      ? "not-proven-blended-gsc-multi-url-evidence-requires-timing-and-routing-diagnosis"
+      : "not-evidenced-all-four-fixed-serps-select-main"
     : "not-evidenced-bounded-panel-selects-main-when-ranked-and-exact-gsc-unmeasured";
-  let nextControlledAction = "Hold public changes; obtain exact targeted GSC URL attribution, then compare the intended hub with protected related routes before a single-variable experiment.";
+  let nextControlledAction = cityAttribution.nextEvidenceAction;
   if (prioritized.lane === "protect-existing-number-one-and-aio-footholds") {
     nextControlledAction = "Apply only the separately approved integrity cleanup with title, H1, canonical, links, and related routes held constant; protect the existing #1 query and any owned AIO citation through weekly observation.";
   } else if (prioritized.lane === "architecture-first-before-intent-experiment") {
@@ -157,11 +163,13 @@ const cities = priority.cities.map((prioritized) => {
       aiOverviewCitations: report.summary.aiOverviewCitations,
     },
     targetedGsc: {
-      snapshot: sourcePaths.gscSnapshot,
+      snapshot: gscAttribution.sources.gscSnapshot.file,
       window: snapshot.gsc.window,
       fixedQueriesRequested: requested.length,
       exactQueryPageRowsReturned: exactRows.length,
-      status: requested.length === fixedQueries.length ? "requested" : "not-requested-in-pinned-snapshot",
+      status: requested.length === fixedQueries.length ? "requested" : "not-requested-in-latest-measured-snapshot",
+      attributionState: cityAttribution.state,
+      alternateNormalizedUrls: cityAttribution.alternateNormalizedUrls,
       interpretation: "Unrequested or unreturned exact rows are unmeasured, not zero and not evidence of cannibalization.",
     },
     integrity: {
@@ -173,10 +181,12 @@ const cities = priority.cities.map((prioritized) => {
     },
     architecture: {
       currentCommercialCannibalization: currentCannibalization,
-      confidence: measuredOrganic.length === 4 ? "moderate" : "low-until-targeted-gsc",
+      confidence: requested.length === 4 && measuredOrganic.length === 4 ? "moderate-exact-query-request-complete" : "low-until-targeted-gsc",
       routeCount: routes.length,
       routes,
-      decision: "Preserve every route and canonical. The fixed panel selects the intended main page whenever Frame ranks; exact expansion GSC query-to-URL evidence is not yet available.",
+      decision: requested.length === 4
+        ? "Preserve every route and canonical. The fixed panel selects the intended main page whenever Frame ranks; the exact GSC request is complete, but unreturned rows remain unknown and alternate URLs require timing/routing diagnosis."
+        : "Preserve every route and canonical. The fixed panel selects the intended main page whenever Frame ranks; exact expansion GSC query-to-URL coverage is incomplete.",
     },
     nextControlledAction,
     prohibited: [
@@ -193,7 +203,9 @@ const artifact = {
   auditId: "frame-utah-slv-expansion-architecture-v1",
   market: "utah-salt-lake-valley",
   preparedAt: "2026-08-12T19:00:00.000Z",
-  status: "diagnosed-no-public-authorization-targeted-gsc-pending",
+  status: gscAttribution.summary.requestedQueries === 72
+    ? "diagnosed-no-public-authorization-targeted-gsc-complete"
+    : "diagnosed-no-public-authorization-targeted-gsc-pending",
   publicMutationPerformed: false,
   sources: Object.fromEntries(Object.entries(sourcePaths).map(([key, file]) => [key, { file, sha256: sha256(file) }])),
   summary: {
@@ -208,9 +220,11 @@ const artifact = {
   },
   globalDecision: [
     "All 48 expansion queries have a fixed mobile baseline; the intended main city page is selected for every measured Frame organic result.",
-    "The pinned GSC snapshot predates 72-query targeting and requested none of the 48 expansion queries, so current expansion query-to-URL attribution remains unmeasured.",
+    gscAttribution.summary.requestedQueries === 72
+      ? "The latest measured GSC snapshot requested all 72 fixed queries; unreturned rows remain withheld or absent row evidence, not zero demand."
+      : `The latest measured GSC snapshot requested ${gscAttribution.summary.requestedQueries}/72 fixed queries; unrequested expansion query-to-URL attribution remains unmeasured.`,
     "Preserve all 12 city hubs and all 11 related city-service/editorial routes; no current evidence supports redirects, canonical changes, noindex, deletion, or bulk service-page generation.",
-    "Run the 72-query GSC workflow after this branch safely lands, then update these diagnoses before any ranking-intent experiment.",
+    "Keep refreshing exact-query attribution in the daily SEO loop; diagnose any normalized alternate URL against routing and timing before a ranking-intent experiment.",
     "Integrity cleanup is a separate owner-approved variable and must precede any title/H1/architecture experiment."
   ],
   cities,
@@ -220,11 +234,10 @@ assert.equal(artifact.summary.cities, 12);
 assert.equal(artifact.summary.fixedQueries, 48);
 assert.equal(artifact.summary.routesPinned, 23);
 assert.equal(artifact.summary.relatedRoutesProtected, 11);
-assert.equal(artifact.summary.targetedGscQueriesRequested, 0);
-assert.equal(artifact.summary.targetedGscRowsReturned, 0);
 assert.equal(artifact.summary.citiesWithCurrentCannibalizationEvidenced, 0);
 assert.ok(artifact.cities.every((city) => city.panel.intendedMainSelectedForEveryMeasuredRank));
-assert.ok(artifact.cities.every((city) => city.targetedGsc.status === "not-requested-in-pinned-snapshot"));
+assert.equal(artifact.summary.targetedGscQueriesRequested, artifact.cities.reduce((sum, city) => sum + city.targetedGsc.fixedQueriesRequested, 0));
+assert.equal(artifact.summary.targetedGscRowsReturned, artifact.cities.reduce((sum, city) => sum + city.targetedGsc.exactQueryPageRowsReturned, 0));
 assert.ok(artifact.cities.every((city) => city.architecture.routes[0].role === "commercial-city-hub"));
 assert.ok(artifact.cities.every((city) => city.prohibited.some((rule) => rule.includes("No GBP"))));
 
@@ -236,5 +249,5 @@ if (write) {
 } else if (check) {
   assert.ok(fs.existsSync(fullOutputPath), `missing ${outputPath}`);
   assert.equal(fs.readFileSync(fullOutputPath, "utf8"), nextText, "SLV expansion architecture is stale; run npm run sync:slv-expansion-architecture");
-  console.log(`PASS SLV expansion architecture: ${artifact.summary.cities} cities, ${artifact.summary.routesPinned} routes pinned, exact GSC unmeasured, no public authorization`);
+  console.log(`PASS SLV expansion architecture: ${artifact.summary.cities} cities, ${artifact.summary.routesPinned} routes pinned, ${artifact.summary.targetedGscQueriesRequested}/48 exact queries requested, no public authorization`);
 }
