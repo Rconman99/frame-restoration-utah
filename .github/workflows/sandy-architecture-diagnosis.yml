@@ -1,0 +1,48 @@
+name: Sandy architecture diagnosis
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/sandy-architecture-diagnosis.yml'
+      - 'data/rank-tracker/SANDY-ARCHITECTURE-DIAGNOSIS-2026-08-12.json'
+      - 'data/rank-tracker/panels/sandy/2026-08-12.json'
+      - 'data/seo/snapshots/2026-08-12.json'
+      - 'data/authority/SLV-CITY-PUBLIC-REMEDIATION-PACKET-2026-08-12.json'
+      - 'locations/sandy.html'
+      - 'locations/sandy/storm-damage.html'
+      - 'blog/sandy/roof-leak-repair-sandy-84070.html'
+      - 'blog/sandy/spring-hail-damage-roof.html'
+      - 'scripts/validate-sandy-architecture-diagnosis.mjs'
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/sandy-architecture-diagnosis.yml'
+      - 'data/rank-tracker/SANDY-ARCHITECTURE-DIAGNOSIS-2026-08-12.json'
+      - 'data/rank-tracker/panels/sandy/2026-08-12.json'
+      - 'data/seo/snapshots/2026-08-12.json'
+      - 'data/authority/SLV-CITY-PUBLIC-REMEDIATION-PACKET-2026-08-12.json'
+      - 'locations/sandy.html'
+      - 'locations/sandy/storm-damage.html'
+      - 'blog/sandy/roof-leak-repair-sandy-84070.html'
+      - 'blog/sandy/spring-hail-damage-roof.html'
+      - 'scripts/validate-sandy-architecture-diagnosis.mjs'
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+
+      - name: Set up Node.js
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '24'
+
+      - name: Validate Sandy evidence and keep the public experiment gated
+        run: node scripts/validate-sandy-architecture-diagnosis.mjs
