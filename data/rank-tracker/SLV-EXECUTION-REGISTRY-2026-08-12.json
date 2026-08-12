@@ -1,0 +1,724 @@
+{
+  "schemaVersion": 1,
+  "registryId": "frame-utah-slv-18-city-execution-v1",
+  "market": "utah-salt-lake-valley",
+  "preparedAt": "2026-08-12T18:32:00.000Z",
+  "status": "active-goal-execution-gated",
+  "publicMutationPerformed": false,
+  "score": {
+    "citiesInPortfolio": 18,
+    "citiesWithGoogleBaseline": 18,
+    "citiesPendingFirstGoogleBaseline": 0,
+    "fixedOrganicTargets": 72,
+    "fixedOrganicTargetsMeasured": 72,
+    "fixedOrganicNumberOne": 2,
+    "exactCidMapsTargets": 72,
+    "exactCidMapsTargetsMeasured": 72,
+    "exactCidMapsNumberOne": 0,
+    "googleAiOverviewCitations": 2,
+    "googleAiOverviewsPresent": 4,
+    "consumerAiCompleteCityPanels": 0,
+    "citiesAtSustainedGoal": 0
+  },
+  "sources": {
+    "portfolio": {
+      "file": "data/rank-tracker/SLV-18-CITY-GOAL-PORTFOLIO-2026-08-12.json",
+      "sha256": "43e387e853993b636e43a293460f20f2ae880decd2e88512a6882ef79433f8f6"
+    },
+    "corePriority": {
+      "file": "data/rank-tracker/SLV-PRIORITY-2026-08-12.json",
+      "sha256": "c2711c76ec60ba1668c75660bb4ead6524811e6818485220e68ad2de8d647bff"
+    },
+    "expansionPriority": {
+      "file": "data/rank-tracker/SLV-EXPANSION-PRIORITY-2026-08-12.json",
+      "sha256": "6351f421eaf34d7de8a36544218b609f5bffd09f45a43ba99344a3a422e43542"
+    },
+    "displacement": {
+      "file": "data/rank-tracker/SLV-COMPETITOR-DISPLACEMENT-2026-08-12.json",
+      "sha256": "aed18abd061963d5dd0280dc7575060640daa9f89e98bd77a91dca80a449ef7a"
+    },
+    "coreCleanupPacket": {
+      "file": "data/authority/SLV-CITY-PUBLIC-REMEDIATION-PACKET-2026-08-12.json",
+      "sha256": "b1616942e2e46f33a847d75a9fc75a084585983c91f444ade1ebd84d11b69333"
+    },
+    "millcreekAmendment": {
+      "file": "data/authority/MILLCREEK-PUBLIC-IDENTITY-SCOPE-AMENDMENT-2026-08-12.json",
+      "sha256": "68a5057dea22bfadc84dc888459adeffc9912ff625f8254b28c9059099f6e17d"
+    },
+    "expansionCleanupPacket": {
+      "file": "data/authority/SLV-EXPANSION-PUBLIC-REMEDIATION-PACKET-2026-08-12.json",
+      "sha256": "44b72b3e8ea4d2605e8cd4562fbd4f7ff3233ce07dee46a2ef3a3a8ff8e187c6"
+    }
+  },
+  "externalEvidence": {
+    "businessDriveReceipt": "/Users/agenticmac/territory-command/data/command-center/utah-seo/drive-evidence/drive-evidence-audit-20260812T175850Z.json",
+    "businessDriveReceiptSha256": "d1509d396e1d62776ea28387c7730ff22defec883932de0c0f97ec5f59d43e9b"
+  },
+  "systemActions": [
+    {
+      "id": "land-diagnosis-bundle",
+      "class": "system-fixable-after-clean-ci",
+      "state": "waiting-on-duplicate-vercel-rate-limit",
+      "nextCheckAfter": "2026-08-13T17:02:21Z",
+      "decision": "Do not push or merge another branch while the stale frameroofingutah Vercel integration is producing a blocking failure; recheck after its stated 24-hour retry window."
+    },
+    {
+      "id": "targeted-gsc-72-query-read",
+      "class": "system-fixable-after-bundle-lands",
+      "state": "workflow-ready-local-secret-absent",
+      "decision": "The main-only SEO workflow has the GSC secret and will target all 72 queries after this code lands; local absence is not a zero result."
+    },
+    {
+      "id": "weekly-core-google-panel",
+      "class": "system-fixable-scheduled",
+      "state": "active-six-city-weekly",
+      "decision": "Keep the six core-city fixed panel weekly; do not silently add twelve recurring paid panels without explicit admission."
+    },
+    {
+      "id": "weekly-expansion-google-panel",
+      "class": "owner-spend-approval-needed",
+      "state": "manual-baseline-complete-not-admitted",
+      "estimatedCompleteWeeklyCostUsd": 0.1152,
+      "decision": "The first 12-city baseline is complete; recurring weekly provider spend remains unapproved."
+    }
+  ],
+  "connectionNeeded": [
+    {
+      "id": "business-drive-connector",
+      "state": "blocked-with-proof",
+      "requiredAccount": "ryan@framerestorations.com",
+      "observedAccount": "ryanconwell99@gmail.com",
+      "receipt": "/Users/agenticmac/territory-command/data/command-center/utah-seo/drive-evidence/drive-evidence-audit-20260812T175850Z.json",
+      "receiptSha256": "d1509d396e1d62776ea28387c7730ff22defec883932de0c0f97ec5f59d43e9b",
+      "action": "Reconnect the claude.ai Google Drive connector to ryan@framerestorations.com, then rerun the read-only evidence audit."
+    },
+    {
+      "id": "consumer-ai-provider-key",
+      "state": "blocked-invalid-existing-secret",
+      "secretName": "BRIGHT_DATA_KEY",
+      "lastObservedSecretUpdatedAt": "2026-08-12T15:02:01Z",
+      "failedRun": "https://github.com/Rconman99/geo-aeo-tracker/actions/runs/31610098484",
+      "action": "Replace the existing GitHub secret with a valid Bright Data user API key from the Bright Data user settings page; rerun only after the secret timestamp changes."
+    }
+  ],
+  "ownerApprovalsNeeded": [
+    {
+      "id": "core-five-page-and-millcreek-child-cleanup",
+      "exactPhrase": "I explicitly approve editing and publishing the five-page integrity cleanup defined in PR #242 and the Millcreek storm-child identity correction defined in the pinned Millcreek scope amendment.",
+      "scope": [
+        "frame-utah-slv-five-page-public-integrity-cleanup-v1",
+        "frame-utah-millcreek-nested-identity-scope-v1"
+      ],
+      "publicMutationPerformed": false
+    },
+    {
+      "id": "expansion-twelve-page-cleanup",
+      "exactPhrase": "I explicitly approve editing and publishing the 12-page Salt Lake Valley expansion integrity cleanup defined in packet frame-utah-slv-twelve-page-expansion-public-integrity-cleanup-v1, with expansion identities, titles, H1s, canonicals, and protected related routes unchanged.",
+      "scope": [
+        "frame-utah-slv-twelve-page-expansion-public-integrity-cleanup-v1"
+      ],
+      "publicMutationPerformed": false
+    },
+    {
+      "id": "expansion-weekly-spend",
+      "exactPhrase": null,
+      "scope": [
+        "Admit the complete 12-city/48-query expansion panel to weekly DataForSEO task-queue runs at an estimated $0.1152 per complete run."
+      ],
+      "publicMutationPerformed": false
+    }
+  ],
+  "prohibited": [
+    "No public page edit before the exact governing owner approval is recorded.",
+    "No GBP, review, directory, service-area, indexing, outreach, DNS, ads, owner-message, or other public-account mutation from this registry.",
+    "No competitor cloning, fake community participation, fabricated proof, or unsupported local claims.",
+    "No rank claim converts a measured >30 row to an exact position or an absent local pack to a zero rank.",
+    "No city is complete until the full same-window 28-day contract passes; a single query #1 is a protected foothold, not city completion."
+  ],
+  "cities": [
+    {
+      "executionPriority": 0,
+      "city": "Salt Lake City",
+      "slug": "salt-lake-city",
+      "cohort": "core-measured",
+      "page": "locations/salt-lake-city.html",
+      "panelId": "utah-salt-lake-city-google-v1",
+      "measurement": {
+        "observedAt": "2026-08-12T14:18:10.300Z",
+        "organicRanks": [
+          null,
+          25,
+          19,
+          null
+        ],
+        "organicNumberOne": [],
+        "exactCidMapsNumberOne": 0,
+        "googleAiOverviewOwnedQueries": [],
+        "consumerAi": "blocked-invalid-provider-credential"
+      },
+      "lane": "observe-time-gated-experiment",
+      "action": "Keep the page frozen, run the weekly fixed Google panel, and evaluate the existing trust correction no earlier than 2026-09-09T04:40:58Z.",
+      "actionClass": "system-fixable-when-scheduled",
+      "gate": "time-gated-until-2026-09-09T04:40:58Z",
+      "publicApprovalPacket": null,
+      "universalDependencies": [
+        "valid Bright Data user API key for ChatGPT/Perplexity/Gemini panels",
+        "business Drive connector authenticated as ryan@framerestorations.com for evidence search",
+        "clean Vercel blocking status before merge"
+      ],
+      "completionContract": "All four organic queries and the exact CID rank #1 across four consecutive weekly panels; every observed AIO cites Frame; all three consumer-AI engines name and cite Frame; integrity remains green in the same 28-day window."
+    },
+    {
+      "executionPriority": 1,
+      "city": "Millcreek",
+      "slug": "millcreek",
+      "cohort": "core-measured",
+      "page": "locations/millcreek.html",
+      "panelId": "utah-millcreek-google-v1",
+      "measurement": {
+        "observedAt": "2026-08-12T14:18:10.300Z",
+        "organicRanks": [
+          4,
+          4,
+          3,
+          5
+        ],
+        "organicNumberOne": [],
+        "exactCidMapsNumberOne": 0,
+        "googleAiOverviewOwnedQueries": [
+          "roof repair millcreek"
+        ],
+        "consumerAi": "blocked-invalid-provider-credential"
+      },
+      "lane": "cleanup-first-protect-aio",
+      "action": "After exact owner approval, apply the five-page core cleanup plus the pinned Millcreek storm-child identity correction as one isolated variable; protect the owned roof-repair AIO citation and all current titles/H1s.",
+      "actionClass": "system-fixable-after-owner-approval",
+      "gate": "explicit-owner-publication-approval",
+      "publicApprovalPacket": "data/authority/SLV-CITY-PUBLIC-REMEDIATION-PACKET-2026-08-12.json",
+      "universalDependencies": [
+        "valid Bright Data user API key for ChatGPT/Perplexity/Gemini panels",
+        "business Drive connector authenticated as ryan@framerestorations.com for evidence search",
+        "clean Vercel blocking status before merge"
+      ],
+      "completionContract": "All four organic queries and the exact CID rank #1 across four consecutive weekly panels; every observed AIO cites Frame; all three consumer-AI engines name and cite Frame; integrity remains green in the same 28-day window."
+    },
+    {
+      "executionPriority": 2,
+      "city": "Magna",
+      "slug": "magna",
+      "cohort": "expansion-manual-baseline-measured",
+      "page": "locations/magna.html",
+      "panelId": "utah-magna-google-v1",
+      "measurement": {
+        "observedAt": "2026-08-12T17:40:30.501Z",
+        "organicRanks": [
+          7,
+          2,
+          1,
+          3
+        ],
+        "organicNumberOne": [
+          "roof replacement magna"
+        ],
+        "exactCidMapsNumberOne": 0,
+        "googleAiOverviewOwnedQueries": [
+          "roof replacement magna"
+        ],
+        "consumerAi": "configured-manual-measurement-only-blocked-invalid-provider-credential"
+      },
+      "lane": "protect-number-one-cleanup-first",
+      "action": "After separate exact owner approval, apply only the expansion integrity cleanup for Magna; preserve its roof-replacement #1 query and owned Google AIO citation, then observe before any ranking experiment.",
+      "actionClass": "system-fixable-after-owner-approval",
+      "gate": "explicit-owner-publication-approval",
+      "publicApprovalPacket": "data/authority/SLV-EXPANSION-PUBLIC-REMEDIATION-PACKET-2026-08-12.json",
+      "universalDependencies": [
+        "valid Bright Data user API key for ChatGPT/Perplexity/Gemini panels",
+        "business Drive connector authenticated as ryan@framerestorations.com for evidence search",
+        "clean Vercel blocking status before merge"
+      ],
+      "completionContract": "All four organic queries and the exact CID rank #1 across four consecutive weekly panels; every observed AIO cites Frame; all three consumer-AI engines name and cite Frame; integrity remains green in the same 28-day window."
+    },
+    {
+      "executionPriority": 3,
+      "city": "Kearns",
+      "slug": "kearns",
+      "cohort": "expansion-manual-baseline-measured",
+      "page": "locations/kearns.html",
+      "panelId": "utah-kearns-google-v1",
+      "measurement": {
+        "observedAt": "2026-08-12T17:40:30.500Z",
+        "organicRanks": [
+          14,
+          8,
+          1,
+          10
+        ],
+        "organicNumberOne": [
+          "roof replacement kearns"
+        ],
+        "exactCidMapsNumberOne": 0,
+        "googleAiOverviewOwnedQueries": [],
+        "consumerAi": "configured-manual-measurement-only-blocked-invalid-provider-credential"
+      },
+      "lane": "protect-number-one-cleanup-first",
+      "action": "After separate exact owner approval, apply only the expansion integrity cleanup for Kearns; preserve its roof-replacement #1 query, then observe before any ranking experiment.",
+      "actionClass": "system-fixable-after-owner-approval",
+      "gate": "explicit-owner-publication-approval",
+      "publicApprovalPacket": "data/authority/SLV-EXPANSION-PUBLIC-REMEDIATION-PACKET-2026-08-12.json",
+      "universalDependencies": [
+        "valid Bright Data user API key for ChatGPT/Perplexity/Gemini panels",
+        "business Drive connector authenticated as ryan@framerestorations.com for evidence search",
+        "clean Vercel blocking status before merge"
+      ],
+      "completionContract": "All four organic queries and the exact CID rank #1 across four consecutive weekly panels; every observed AIO cites Frame; all three consumer-AI engines name and cite Frame; integrity remains green in the same 28-day window."
+    },
+    {
+      "executionPriority": 4,
+      "city": "Sandy",
+      "slug": "sandy",
+      "cohort": "core-measured",
+      "page": "locations/sandy.html",
+      "panelId": "utah-sandy-google-v1",
+      "measurement": {
+        "observedAt": "2026-08-12T14:18:10.300Z",
+        "organicRanks": [
+          17,
+          13,
+          13,
+          11
+        ],
+        "organicNumberOne": [],
+        "exactCidMapsNumberOne": 0,
+        "googleAiOverviewOwnedQueries": [],
+        "consumerAi": "configured-manual-measurement-only-blocked-invalid-provider-credential"
+      },
+      "lane": "cleanup-then-single-variable-experiment",
+      "action": "After exact owner approval, complete the bounded core integrity cleanup for Sandy; capture a fresh baseline before one declared ranking variable.",
+      "actionClass": "system-fixable-after-owner-approval",
+      "gate": "explicit-owner-publication-approval",
+      "publicApprovalPacket": "data/authority/SLV-CITY-PUBLIC-REMEDIATION-PACKET-2026-08-12.json",
+      "universalDependencies": [
+        "valid Bright Data user API key for ChatGPT/Perplexity/Gemini panels",
+        "business Drive connector authenticated as ryan@framerestorations.com for evidence search",
+        "clean Vercel blocking status before merge"
+      ],
+      "completionContract": "All four organic queries and the exact CID rank #1 across four consecutive weekly panels; every observed AIO cites Frame; all three consumer-AI engines name and cite Frame; integrity remains green in the same 28-day window."
+    },
+    {
+      "executionPriority": 5,
+      "city": "Holladay",
+      "slug": "holladay",
+      "cohort": "core-measured",
+      "page": "locations/holladay.html",
+      "panelId": "utah-holladay-google-v1",
+      "measurement": {
+        "observedAt": "2026-08-12T14:18:10.300Z",
+        "organicRanks": [
+          17,
+          10,
+          4,
+          12
+        ],
+        "organicNumberOne": [],
+        "exactCidMapsNumberOne": 0,
+        "googleAiOverviewOwnedQueries": [],
+        "consumerAi": "configured-manual-measurement-only-blocked-invalid-provider-credential"
+      },
+      "lane": "cleanup-then-single-variable-experiment",
+      "action": "After exact owner approval, complete the bounded core integrity cleanup for Holladay; capture a fresh baseline before one declared ranking variable.",
+      "actionClass": "system-fixable-after-owner-approval",
+      "gate": "explicit-owner-publication-approval",
+      "publicApprovalPacket": "data/authority/SLV-CITY-PUBLIC-REMEDIATION-PACKET-2026-08-12.json",
+      "universalDependencies": [
+        "valid Bright Data user API key for ChatGPT/Perplexity/Gemini panels",
+        "business Drive connector authenticated as ryan@framerestorations.com for evidence search",
+        "clean Vercel blocking status before merge"
+      ],
+      "completionContract": "All four organic queries and the exact CID rank #1 across four consecutive weekly panels; every observed AIO cites Frame; all three consumer-AI engines name and cite Frame; integrity remains green in the same 28-day window."
+    },
+    {
+      "executionPriority": 6,
+      "city": "Cottonwood Heights",
+      "slug": "cottonwood-heights",
+      "cohort": "core-measured",
+      "page": "locations/cottonwood-heights.html",
+      "panelId": "utah-cottonwood-heights-google-v1",
+      "measurement": {
+        "observedAt": "2026-08-12T14:18:10.300Z",
+        "organicRanks": [
+          15,
+          10,
+          15,
+          14
+        ],
+        "organicNumberOne": [],
+        "exactCidMapsNumberOne": 0,
+        "googleAiOverviewOwnedQueries": [],
+        "consumerAi": "configured-manual-measurement-only-blocked-invalid-provider-credential"
+      },
+      "lane": "cleanup-then-single-variable-experiment",
+      "action": "After exact owner approval, complete the bounded core integrity cleanup for Cottonwood Heights; capture a fresh baseline before one declared ranking variable.",
+      "actionClass": "system-fixable-after-owner-approval",
+      "gate": "explicit-owner-publication-approval",
+      "publicApprovalPacket": "data/authority/SLV-CITY-PUBLIC-REMEDIATION-PACKET-2026-08-12.json",
+      "universalDependencies": [
+        "valid Bright Data user API key for ChatGPT/Perplexity/Gemini panels",
+        "business Drive connector authenticated as ryan@framerestorations.com for evidence search",
+        "clean Vercel blocking status before merge"
+      ],
+      "completionContract": "All four organic queries and the exact CID rank #1 across four consecutive weekly panels; every observed AIO cites Frame; all three consumer-AI engines name and cite Frame; integrity remains green in the same 28-day window."
+    },
+    {
+      "executionPriority": 7,
+      "city": "Murray",
+      "slug": "murray",
+      "cohort": "expansion-manual-baseline-measured",
+      "page": "locations/murray.html",
+      "panelId": "utah-murray-google-v1",
+      "measurement": {
+        "observedAt": "2026-08-12T17:40:30.501Z",
+        "organicRanks": [
+          12,
+          7,
+          4,
+          8
+        ],
+        "organicNumberOne": [],
+        "exactCidMapsNumberOne": 0,
+        "googleAiOverviewOwnedQueries": [],
+        "consumerAi": "configured-manual-measurement-only-blocked-invalid-provider-credential"
+      },
+      "lane": "closest-organic-improvement-after-integrity",
+      "action": "After separate exact owner approval, apply only the bounded expansion integrity cleanup for Murray; obtain targeted GSC URL evidence before any title, H1, canonical, link, or route experiment.",
+      "actionClass": "system-fixable-after-owner-approval",
+      "gate": "explicit-owner-publication-approval-and-targeted-gsc",
+      "publicApprovalPacket": "data/authority/SLV-EXPANSION-PUBLIC-REMEDIATION-PACKET-2026-08-12.json",
+      "universalDependencies": [
+        "valid Bright Data user API key for ChatGPT/Perplexity/Gemini panels",
+        "business Drive connector authenticated as ryan@framerestorations.com for evidence search",
+        "clean Vercel blocking status before merge"
+      ],
+      "completionContract": "All four organic queries and the exact CID rank #1 across four consecutive weekly panels; every observed AIO cites Frame; all three consumer-AI engines name and cite Frame; integrity remains green in the same 28-day window."
+    },
+    {
+      "executionPriority": 8,
+      "city": "Riverton",
+      "slug": "riverton",
+      "cohort": "expansion-manual-baseline-measured",
+      "page": "locations/riverton.html",
+      "panelId": "utah-riverton-google-v1",
+      "measurement": {
+        "observedAt": "2026-08-12T17:40:30.501Z",
+        "organicRanks": [
+          null,
+          4,
+          7,
+          10
+        ],
+        "organicNumberOne": [],
+        "exactCidMapsNumberOne": 0,
+        "googleAiOverviewOwnedQueries": [],
+        "consumerAi": "configured-manual-measurement-only-blocked-invalid-provider-credential"
+      },
+      "lane": "closest-organic-improvement-after-integrity",
+      "action": "After separate exact owner approval, apply only the bounded expansion integrity cleanup for Riverton; obtain targeted GSC URL evidence before any title, H1, canonical, link, or route experiment.",
+      "actionClass": "system-fixable-after-owner-approval",
+      "gate": "explicit-owner-publication-approval-and-targeted-gsc",
+      "publicApprovalPacket": "data/authority/SLV-EXPANSION-PUBLIC-REMEDIATION-PACKET-2026-08-12.json",
+      "universalDependencies": [
+        "valid Bright Data user API key for ChatGPT/Perplexity/Gemini panels",
+        "business Drive connector authenticated as ryan@framerestorations.com for evidence search",
+        "clean Vercel blocking status before merge"
+      ],
+      "completionContract": "All four organic queries and the exact CID rank #1 across four consecutive weekly panels; every observed AIO cites Frame; all three consumer-AI engines name and cite Frame; integrity remains green in the same 28-day window."
+    },
+    {
+      "executionPriority": 9,
+      "city": "South Jordan",
+      "slug": "south-jordan",
+      "cohort": "expansion-manual-baseline-measured",
+      "page": "locations/south-jordan.html",
+      "panelId": "utah-south-jordan-google-v1",
+      "measurement": {
+        "observedAt": "2026-08-12T17:40:30.502Z",
+        "organicRanks": [
+          16,
+          8,
+          4,
+          12
+        ],
+        "organicNumberOne": [],
+        "exactCidMapsNumberOne": 0,
+        "googleAiOverviewOwnedQueries": [],
+        "consumerAi": "configured-manual-measurement-only-blocked-invalid-provider-credential"
+      },
+      "lane": "closest-organic-improvement-after-integrity",
+      "action": "After separate exact owner approval, apply only the bounded expansion integrity cleanup for South Jordan; obtain targeted GSC URL evidence before any title, H1, canonical, link, or route experiment.",
+      "actionClass": "system-fixable-after-owner-approval",
+      "gate": "explicit-owner-publication-approval-and-targeted-gsc",
+      "publicApprovalPacket": "data/authority/SLV-EXPANSION-PUBLIC-REMEDIATION-PACKET-2026-08-12.json",
+      "universalDependencies": [
+        "valid Bright Data user API key for ChatGPT/Perplexity/Gemini panels",
+        "business Drive connector authenticated as ryan@framerestorations.com for evidence search",
+        "clean Vercel blocking status before merge"
+      ],
+      "completionContract": "All four organic queries and the exact CID rank #1 across four consecutive weekly panels; every observed AIO cites Frame; all three consumer-AI engines name and cite Frame; integrity remains green in the same 28-day window."
+    },
+    {
+      "executionPriority": 10,
+      "city": "Taylorsville",
+      "slug": "taylorsville",
+      "cohort": "expansion-manual-baseline-measured",
+      "page": "locations/taylorsville.html",
+      "panelId": "utah-taylorsville-google-v1",
+      "measurement": {
+        "observedAt": "2026-08-12T17:40:30.503Z",
+        "organicRanks": [
+          15,
+          7,
+          10,
+          18
+        ],
+        "organicNumberOne": [],
+        "exactCidMapsNumberOne": 0,
+        "googleAiOverviewOwnedQueries": [],
+        "consumerAi": "configured-manual-measurement-only-blocked-invalid-provider-credential"
+      },
+      "lane": "closest-organic-improvement-after-integrity",
+      "action": "After separate exact owner approval, apply only the bounded expansion integrity cleanup for Taylorsville; obtain targeted GSC URL evidence before any title, H1, canonical, link, or route experiment.",
+      "actionClass": "system-fixable-after-owner-approval",
+      "gate": "explicit-owner-publication-approval-and-targeted-gsc",
+      "publicApprovalPacket": "data/authority/SLV-EXPANSION-PUBLIC-REMEDIATION-PACKET-2026-08-12.json",
+      "universalDependencies": [
+        "valid Bright Data user API key for ChatGPT/Perplexity/Gemini panels",
+        "business Drive connector authenticated as ryan@framerestorations.com for evidence search",
+        "clean Vercel blocking status before merge"
+      ],
+      "completionContract": "All four organic queries and the exact CID rank #1 across four consecutive weekly panels; every observed AIO cites Frame; all three consumer-AI engines name and cite Frame; integrity remains green in the same 28-day window."
+    },
+    {
+      "executionPriority": 11,
+      "city": "Bluffdale",
+      "slug": "bluffdale",
+      "cohort": "expansion-manual-baseline-measured",
+      "page": "locations/bluffdale.html",
+      "panelId": "utah-bluffdale-google-v1",
+      "measurement": {
+        "observedAt": "2026-08-12T17:40:30.498Z",
+        "organicRanks": [
+          18,
+          11,
+          9,
+          17
+        ],
+        "organicNumberOne": [],
+        "exactCidMapsNumberOne": 0,
+        "googleAiOverviewOwnedQueries": [],
+        "consumerAi": "configured-manual-measurement-only-blocked-invalid-provider-credential"
+      },
+      "lane": "broader-commercial-relevance-after-integrity",
+      "action": "After separate exact owner approval, apply only the bounded expansion integrity cleanup for Bluffdale; obtain targeted GSC URL evidence before any title, H1, canonical, link, or route experiment.",
+      "actionClass": "system-fixable-after-owner-approval",
+      "gate": "explicit-owner-publication-approval-and-targeted-gsc",
+      "publicApprovalPacket": "data/authority/SLV-EXPANSION-PUBLIC-REMEDIATION-PACKET-2026-08-12.json",
+      "universalDependencies": [
+        "valid Bright Data user API key for ChatGPT/Perplexity/Gemini panels",
+        "business Drive connector authenticated as ryan@framerestorations.com for evidence search",
+        "clean Vercel blocking status before merge"
+      ],
+      "completionContract": "All four organic queries and the exact CID rank #1 across four consecutive weekly panels; every observed AIO cites Frame; all three consumer-AI engines name and cite Frame; integrity remains green in the same 28-day window."
+    },
+    {
+      "executionPriority": 12,
+      "city": "Midvale",
+      "slug": "midvale",
+      "cohort": "expansion-manual-baseline-measured",
+      "page": "locations/midvale.html",
+      "panelId": "utah-midvale-google-v1",
+      "measurement": {
+        "observedAt": "2026-08-12T17:40:30.501Z",
+        "organicRanks": [
+          18,
+          15,
+          10,
+          16
+        ],
+        "organicNumberOne": [],
+        "exactCidMapsNumberOne": 0,
+        "googleAiOverviewOwnedQueries": [],
+        "consumerAi": "configured-manual-measurement-only-blocked-invalid-provider-credential"
+      },
+      "lane": "broader-commercial-relevance-after-integrity",
+      "action": "After separate exact owner approval, apply only the bounded expansion integrity cleanup for Midvale; obtain targeted GSC URL evidence before any title, H1, canonical, link, or route experiment.",
+      "actionClass": "system-fixable-after-owner-approval",
+      "gate": "explicit-owner-publication-approval-and-targeted-gsc",
+      "publicApprovalPacket": "data/authority/SLV-EXPANSION-PUBLIC-REMEDIATION-PACKET-2026-08-12.json",
+      "universalDependencies": [
+        "valid Bright Data user API key for ChatGPT/Perplexity/Gemini panels",
+        "business Drive connector authenticated as ryan@framerestorations.com for evidence search",
+        "clean Vercel blocking status before merge"
+      ],
+      "completionContract": "All four organic queries and the exact CID rank #1 across four consecutive weekly panels; every observed AIO cites Frame; all three consumer-AI engines name and cite Frame; integrity remains green in the same 28-day window."
+    },
+    {
+      "executionPriority": 13,
+      "city": "Herriman",
+      "slug": "herriman",
+      "cohort": "expansion-manual-baseline-measured",
+      "page": "locations/herriman.html",
+      "panelId": "utah-herriman-google-v1",
+      "measurement": {
+        "observedAt": "2026-08-12T17:40:30.500Z",
+        "organicRanks": [
+          22,
+          14,
+          12,
+          26
+        ],
+        "organicNumberOne": [],
+        "exactCidMapsNumberOne": 0,
+        "googleAiOverviewOwnedQueries": [],
+        "consumerAi": "configured-manual-measurement-only-blocked-invalid-provider-credential"
+      },
+      "lane": "broader-commercial-relevance-after-integrity",
+      "action": "After separate exact owner approval, apply only the bounded expansion integrity cleanup for Herriman; obtain targeted GSC URL evidence before any title, H1, canonical, link, or route experiment.",
+      "actionClass": "system-fixable-after-owner-approval",
+      "gate": "explicit-owner-publication-approval-and-targeted-gsc",
+      "publicApprovalPacket": "data/authority/SLV-EXPANSION-PUBLIC-REMEDIATION-PACKET-2026-08-12.json",
+      "universalDependencies": [
+        "valid Bright Data user API key for ChatGPT/Perplexity/Gemini panels",
+        "business Drive connector authenticated as ryan@framerestorations.com for evidence search",
+        "clean Vercel blocking status before merge"
+      ],
+      "completionContract": "All four organic queries and the exact CID rank #1 across four consecutive weekly panels; every observed AIO cites Frame; all three consumer-AI engines name and cite Frame; integrity remains green in the same 28-day window."
+    },
+    {
+      "executionPriority": 14,
+      "city": "West Valley City",
+      "slug": "west-valley-city",
+      "cohort": "expansion-manual-baseline-measured",
+      "page": "locations/west-valley-city.html",
+      "panelId": "utah-west-valley-city-google-v1",
+      "measurement": {
+        "observedAt": "2026-08-12T17:40:30.503Z",
+        "organicRanks": [
+          21,
+          16,
+          11,
+          16
+        ],
+        "organicNumberOne": [],
+        "exactCidMapsNumberOne": 0,
+        "googleAiOverviewOwnedQueries": [],
+        "consumerAi": "configured-manual-measurement-only-blocked-invalid-provider-credential"
+      },
+      "lane": "broader-commercial-relevance-after-integrity",
+      "action": "After separate exact owner approval, apply only the bounded expansion integrity cleanup for West Valley City; obtain targeted GSC URL evidence before any title, H1, canonical, link, or route experiment.",
+      "actionClass": "system-fixable-after-owner-approval",
+      "gate": "explicit-owner-publication-approval-and-targeted-gsc",
+      "publicApprovalPacket": "data/authority/SLV-EXPANSION-PUBLIC-REMEDIATION-PACKET-2026-08-12.json",
+      "universalDependencies": [
+        "valid Bright Data user API key for ChatGPT/Perplexity/Gemini panels",
+        "business Drive connector authenticated as ryan@framerestorations.com for evidence search",
+        "clean Vercel blocking status before merge"
+      ],
+      "completionContract": "All four organic queries and the exact CID rank #1 across four consecutive weekly panels; every observed AIO cites Frame; all three consumer-AI engines name and cite Frame; integrity remains green in the same 28-day window."
+    },
+    {
+      "executionPriority": 15,
+      "city": "Draper",
+      "slug": "draper",
+      "cohort": "core-measured",
+      "page": "locations/draper.html",
+      "panelId": "utah-draper-google-v1",
+      "measurement": {
+        "observedAt": "2026-08-12T14:18:10.300Z",
+        "organicRanks": [
+          null,
+          null,
+          null,
+          null
+        ],
+        "organicNumberOne": [],
+        "exactCidMapsNumberOne": 0,
+        "googleAiOverviewOwnedQueries": [],
+        "consumerAi": "configured-manual-measurement-only-blocked-invalid-provider-credential"
+      },
+      "lane": "cleanup-then-architecture-diagnosis",
+      "action": "After exact owner approval, complete the bounded core integrity cleanup for Draper; then protect related routes and use targeted GSC URL evidence before changing intent surfaces.",
+      "actionClass": "system-fixable-after-owner-approval",
+      "gate": "explicit-owner-publication-approval",
+      "publicApprovalPacket": "data/authority/SLV-CITY-PUBLIC-REMEDIATION-PACKET-2026-08-12.json",
+      "universalDependencies": [
+        "valid Bright Data user API key for ChatGPT/Perplexity/Gemini panels",
+        "business Drive connector authenticated as ryan@framerestorations.com for evidence search",
+        "clean Vercel blocking status before merge"
+      ],
+      "completionContract": "All four organic queries and the exact CID rank #1 across four consecutive weekly panels; every observed AIO cites Frame; all three consumer-AI engines name and cite Frame; integrity remains green in the same 28-day window."
+    },
+    {
+      "executionPriority": 16,
+      "city": "South Salt Lake",
+      "slug": "south-salt-lake",
+      "cohort": "expansion-manual-baseline-measured",
+      "page": "locations/south-salt-lake.html",
+      "panelId": "utah-south-salt-lake-google-v1",
+      "measurement": {
+        "observedAt": "2026-08-12T17:40:30.502Z",
+        "organicRanks": [
+          null,
+          14,
+          12,
+          null
+        ],
+        "organicNumberOne": [],
+        "exactCidMapsNumberOne": 0,
+        "googleAiOverviewOwnedQueries": [],
+        "consumerAi": "configured-manual-measurement-only-blocked-invalid-provider-credential"
+      },
+      "lane": "cleanup-then-architecture-diagnosis",
+      "action": "After separate exact owner approval, apply only the bounded expansion integrity cleanup for South Salt Lake; obtain targeted GSC URL evidence before any title, H1, canonical, link, or route experiment.",
+      "actionClass": "system-fixable-after-owner-approval",
+      "gate": "explicit-owner-publication-approval-and-targeted-gsc",
+      "publicApprovalPacket": "data/authority/SLV-EXPANSION-PUBLIC-REMEDIATION-PACKET-2026-08-12.json",
+      "universalDependencies": [
+        "valid Bright Data user API key for ChatGPT/Perplexity/Gemini panels",
+        "business Drive connector authenticated as ryan@framerestorations.com for evidence search",
+        "clean Vercel blocking status before merge"
+      ],
+      "completionContract": "All four organic queries and the exact CID rank #1 across four consecutive weekly panels; every observed AIO cites Frame; all three consumer-AI engines name and cite Frame; integrity remains green in the same 28-day window."
+    },
+    {
+      "executionPriority": 17,
+      "city": "West Jordan",
+      "slug": "west-jordan",
+      "cohort": "expansion-manual-baseline-measured",
+      "page": "locations/west-jordan.html",
+      "panelId": "utah-west-jordan-google-v1",
+      "measurement": {
+        "observedAt": "2026-08-12T17:40:30.503Z",
+        "organicRanks": [
+          null,
+          19,
+          14,
+          null
+        ],
+        "organicNumberOne": [],
+        "exactCidMapsNumberOne": 0,
+        "googleAiOverviewOwnedQueries": [],
+        "consumerAi": "configured-manual-measurement-only-blocked-invalid-provider-credential"
+      },
+      "lane": "cleanup-then-architecture-diagnosis",
+      "action": "After separate exact owner approval, apply only the bounded expansion integrity cleanup for West Jordan; obtain targeted GSC URL evidence before any title, H1, canonical, link, or route experiment.",
+      "actionClass": "system-fixable-after-owner-approval",
+      "gate": "explicit-owner-publication-approval-and-targeted-gsc",
+      "publicApprovalPacket": "data/authority/SLV-EXPANSION-PUBLIC-REMEDIATION-PACKET-2026-08-12.json",
+      "universalDependencies": [
+        "valid Bright Data user API key for ChatGPT/Perplexity/Gemini panels",
+        "business Drive connector authenticated as ryan@framerestorations.com for evidence search",
+        "clean Vercel blocking status before merge"
+      ],
+      "completionContract": "All four organic queries and the exact CID rank #1 across four consecutive weekly panels; every observed AIO cites Frame; all three consumer-AI engines name and cite Frame; integrity remains green in the same 28-day window."
+    }
+  ]
+}
