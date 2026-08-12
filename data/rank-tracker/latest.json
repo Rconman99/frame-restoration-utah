@@ -2,8 +2,9 @@
   "schemaVersion": 1,
   "kind": "frame-slc-google-rank-baseline",
   "panelId": "utah-salt-lake-city-google-v1",
-  "observedAt": "2026-08-12T00:55:47.468Z",
+  "observedAt": "2026-08-12T05:18:22.795Z",
   "date": "2026-08-12",
+  "city": "Salt Lake City",
   "market": "utah",
   "service": "roofing-contractor-salt-lake-city",
   "provider": {
@@ -17,15 +18,15 @@
   },
   "target": {
     "domain": "framerestorationutah.com",
-    "businessName": "Frame Restoration Utah LLC",
+    "businessName": "Frame Restoration Utah LLC.",
     "gbpCid": "5689850818145735734",
     "phone": "435-292-8802"
   },
   "summary": {
     "queries": 4,
-    "organicRanked": 1,
+    "organicRanked": 2,
     "mapPackMatched": 0,
-    "aiOverviewsPresent": 1,
+    "aiOverviewsPresent": 2,
     "aiOverviewCitations": 0
   },
   "results": [
@@ -47,14 +48,13 @@
     {
       "id": "slc-roof-repair",
       "keyword": "roof repair salt lake city",
-      "organicRank": null,
-      "rankingUrl": null,
+      "organicRank": 24,
+      "rankingUrl": "https://www.framerestorationutah.com/locations/salt-lake-city",
       "mapPackPresent": true,
       "mapPackRank": null,
       "aiOverviewPresent": false,
       "aiOverviewCited": false,
       "serpFeatures": [
-        "discussions_and_forums",
         "local_pack",
         "people_also_ask",
         "people_also_search"
@@ -63,18 +63,17 @@
     {
       "id": "slc-roof-replacement",
       "keyword": "roof replacement salt lake city",
-      "organicRank": 23,
+      "organicRank": 19,
       "rankingUrl": "https://www.framerestorationutah.com/locations/salt-lake-city",
       "mapPackPresent": true,
       "mapPackRank": null,
-      "aiOverviewPresent": false,
+      "aiOverviewPresent": true,
       "aiOverviewCited": false,
       "serpFeatures": [
-        "discussions_and_forums",
+        "ai_overview",
         "local_pack",
         "people_also_ask",
-        "people_also_search",
-        "related_searches"
+        "people_also_search"
       ]
     },
     {

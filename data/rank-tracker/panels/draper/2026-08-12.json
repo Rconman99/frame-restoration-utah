@@ -1,19 +1,19 @@
 {
   "schemaVersion": 1,
-  "kind": "frame-slc-google-rank-baseline",
-  "panelId": "utah-salt-lake-city-google-v1",
-  "observedAt": "2026-08-12T05:18:22.795Z",
+  "kind": "frame-slv-city-google-rank-baseline",
+  "panelId": "utah-draper-google-v1",
+  "observedAt": "2026-08-12T05:33:54.992Z",
   "date": "2026-08-12",
-  "city": "Salt Lake City",
+  "city": "Draper",
   "market": "utah",
-  "service": "roofing-contractor-salt-lake-city",
+  "service": "roofing-contractor-draper",
   "provider": {
     "name": "DataForSEO",
     "mode": "task-queue",
     "device": "mobile",
     "os": "android",
     "depth": 30,
-    "locationName": "Salt Lake City,Utah,United States",
+    "locationName": "Draper,Utah,United States",
     "estimatedPanelCostUsd": 0.0096
   },
   "target": {
@@ -24,32 +24,17 @@
   },
   "summary": {
     "queries": 4,
-    "organicRanked": 2,
+    "organicRanked": 0,
     "mapPackMatched": 0,
-    "aiOverviewsPresent": 2,
+    "aiOverviewsPresent": 0,
     "aiOverviewCitations": 0
   },
   "results": [
     {
-      "id": "slc-roofing-contractor",
-      "keyword": "roofing contractor salt lake city",
+      "id": "draper-roofing-contractor",
+      "keyword": "roofing contractor draper",
       "organicRank": null,
       "rankingUrl": null,
-      "mapPackPresent": false,
-      "mapPackRank": null,
-      "aiOverviewPresent": true,
-      "aiOverviewCited": false,
-      "serpFeatures": [
-        "ai_overview",
-        "people_also_ask",
-        "people_also_search"
-      ]
-    },
-    {
-      "id": "slc-roof-repair",
-      "keyword": "roof repair salt lake city",
-      "organicRank": 24,
-      "rankingUrl": "https://www.framerestorationutah.com/locations/salt-lake-city",
       "mapPackPresent": true,
       "mapPackRank": null,
       "aiOverviewPresent": false,
@@ -61,24 +46,41 @@
       ]
     },
     {
-      "id": "slc-roof-replacement",
-      "keyword": "roof replacement salt lake city",
-      "organicRank": 19,
-      "rankingUrl": "https://www.framerestorationutah.com/locations/salt-lake-city",
+      "id": "draper-roof-repair",
+      "keyword": "roof repair draper",
+      "organicRank": null,
+      "rankingUrl": null,
       "mapPackPresent": true,
       "mapPackRank": null,
-      "aiOverviewPresent": true,
+      "aiOverviewPresent": false,
       "aiOverviewCited": false,
       "serpFeatures": [
-        "ai_overview",
         "local_pack",
         "people_also_ask",
-        "people_also_search"
+        "people_also_search",
+        "related_searches"
       ]
     },
     {
-      "id": "slc-roofer",
-      "keyword": "roofer salt lake city",
+      "id": "draper-roof-replacement",
+      "keyword": "roof replacement draper",
+      "organicRank": null,
+      "rankingUrl": null,
+      "mapPackPresent": true,
+      "mapPackRank": null,
+      "aiOverviewPresent": false,
+      "aiOverviewCited": false,
+      "serpFeatures": [
+        "local_pack",
+        "people_also_ask",
+        "people_also_search",
+        "popular_products",
+        "related_searches"
+      ]
+    },
+    {
+      "id": "draper-roofer",
+      "keyword": "roofer draper",
       "organicRank": null,
       "rankingUrl": null,
       "mapPackPresent": true,
