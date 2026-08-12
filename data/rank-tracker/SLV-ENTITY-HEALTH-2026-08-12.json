@@ -21,6 +21,10 @@
     "reviewArchive": {
       "file": "data/reviews-full.json",
       "sha256": "0e9963222c8643f35f61b68f7604d26f6e69b127f48dd85bd34bacedc0510513"
+    },
+    "slvReviewLatest": {
+      "file": "data/rank-tracker/reviews/salt-lake-city/latest.json",
+      "sha256": "8826ff2ddf3775372d955151d75bf3f0284bc18ee99a6a74f603753f2cbebd65"
     }
   },
   "identity": {
@@ -76,8 +80,13 @@
     },
     "saltLakeValley": {
       "cid": "5689850818145735734",
-      "state": "unmeasured",
-      "rule": "Never count the Heber export as Salt Lake Valley review evidence. Measure only an exact-CID provider response or an explicitly matching SerpAPI data_id."
+      "state": "measured-exact-cid",
+      "observedAt": "2026-08-12T21:28:07Z",
+      "aggregateRating": 5,
+      "aggregateReviewCount": 4,
+      "latestReviewDate": "2026-08-12",
+      "source": "data/rank-tracker/reviews/salt-lake-city/latest.json",
+      "rule": "Count only the exact Salt Lake Valley CID receipt; never mix in the Heber export."
     },
     "automationSafety": {
       "test": "npm run test:review-targeting",

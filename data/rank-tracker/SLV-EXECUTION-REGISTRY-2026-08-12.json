@@ -55,7 +55,7 @@
     },
     "entityHealth": {
       "file": "data/rank-tracker/SLV-ENTITY-HEALTH-2026-08-12.json",
-      "sha256": "780e654065caa082745073d6d12f2249153cacc9e45614162f649fabff2f5f04"
+      "sha256": "62a0a7ebd9f454d48642db33bda350fea7a7a4f81fba20294d75757d4e8f13d5"
     },
     "weeklyDecisions": {
       "file": "data/rank-tracker/SLV-WEEKLY-DECISIONS-2026-08-12.json",
@@ -71,11 +71,11 @@
     },
     "interventions": {
       "file": "data/rank-tracker/SLV-INTERVENTION-QUEUE-2026-08-12.json",
-      "sha256": "689199630124aa7fea495222778b9de4adba570a5348244f51b8e1ccffa87c54"
+      "sha256": "cff079822e71fa1f1d584df9ff194f0520651fe1f68a848c61dd320efc94798a"
     },
     "mapsReadiness": {
       "file": "data/rank-tracker/SLV-MAPS-READINESS-2026-08-12.json",
-      "sha256": "4ffa3c72d26abbc232e465a4adf34d067459df047eb6e8b80a48117e7b3ea88c"
+      "sha256": "287628288671c657e9bab87743f21023596816fe17c144c337336951e6734a2b"
     },
     "ownerProfileAuditRequest": {
       "file": "data/authority/SLV-GBP-OWNER-AUDIT-REQUEST-2026-08-12.json",
@@ -145,9 +145,9 @@
     {
       "id": "salt-lake-valley-review-baseline",
       "class": "system-fixable-after-bundle-lands",
-      "state": "exact-cid-unmeasured-cross-profile-fallback-now-fail-closed",
+      "state": "exact-cid-baseline-measured",
       "targetCid": "5689850818145735734",
-      "decision": "Use the existing valid GitHub DataForSEO credentials after this safeguard lands; never count the Heber 34-review export as Salt Lake Valley evidence."
+      "decision": "Keep the exact-CID Salt Lake Valley review baseline separate from the Heber review sync and use it only as entity-health evidence."
     },
     {
       "id": "city-editorial-evidence-gaps",

@@ -60,7 +60,7 @@
     },
     "entityHealth": {
       "file": "data/rank-tracker/SLV-ENTITY-HEALTH-2026-08-12.json",
-      "sha256": "780e654065caa082745073d6d12f2249153cacc9e45614162f649fabff2f5f04"
+      "sha256": "62a0a7ebd9f454d48642db33bda350fea7a7a4f81fba20294d75757d4e8f13d5"
     },
     "serviceAreaRequest": {
       "file": "data/authority/SLV-SERVICE-AREA-EVIDENCE-REQUEST-2026-08-12.json",
@@ -81,7 +81,7 @@
     "profileVerifiedCities": 2,
     "citiesPendingServiceAreaEvidence": 16,
     "pagesUsingExactCidIdentity": 1,
-    "exactCidReviewState": "unmeasured",
+    "exactCidReviewState": "measured-exact-cid",
     "ownerProfileCompletenessState": "unmeasured-owner-view-audit-required",
     "citiesReadyForMapsIntervention": 0,
     "laneCounts": {
@@ -124,7 +124,7 @@
           "rule": "Retain the fixed city/device panel and report what Google returns; do not create fake locations or duplicate profiles to manipulate distance."
         },
         "prominence": {
-          "exactCidReviews": "unmeasured",
+          "exactCidReviews": "measured-exact-cid",
           "organicNumberOneQueries": [],
           "ownedGoogleAiOverviewCitations": [],
           "rule": "Measure genuine review strength and earned web authority separately; no incentives, gating, fabricated reviews, or paid ranking links."
@@ -222,7 +222,7 @@
       "nextAction": "Keep the Salt Lake City page frozen, measure the exact-CID review baseline, collect the owner-view profile audit, and compare the next fixed weekly panel before proposing a relevance or prominence change.",
       "gates": {
         "ownerEvidence": "frame-utah-slv-exact-cid-owner-profile-audit-v1",
-        "exactCidReviewBaseline": "unmeasured",
+        "exactCidReviewBaseline": "measured-exact-cid",
         "pageOrProfileMutation": "separate-reviewed-scope-and-explicit-owner-approval-required"
       }
     },
@@ -246,7 +246,7 @@
           "rule": "Retain the fixed city/device panel and report what Google returns; do not create fake locations or duplicate profiles to manipulate distance."
         },
         "prominence": {
-          "exactCidReviews": "unmeasured",
+          "exactCidReviews": "measured-exact-cid",
           "organicNumberOneQueries": [],
           "ownedGoogleAiOverviewCitations": [
             "roof repair millcreek"
@@ -347,7 +347,7 @@
       "nextAction": "Collect the exact-CID review and owner-profile baselines, then request the pinned Millcreek page-identity correction separately; preserve the owned AIO citation and do not edit GBP from this ledger.",
       "gates": {
         "ownerEvidence": "frame-utah-slv-exact-cid-owner-profile-audit-v1",
-        "exactCidReviewBaseline": "unmeasured",
+        "exactCidReviewBaseline": "measured-exact-cid",
         "pageOrProfileMutation": "separate-reviewed-scope-and-explicit-owner-approval-required"
       }
     },
@@ -371,7 +371,7 @@
           "rule": "Retain the fixed city/device panel and report what Google returns; do not create fake locations or duplicate profiles to manipulate distance."
         },
         "prominence": {
-          "exactCidReviews": "unmeasured",
+          "exactCidReviews": "measured-exact-cid",
           "organicNumberOneQueries": [],
           "ownedGoogleAiOverviewCitations": [],
           "rule": "Measure genuine review strength and earned web authority separately; no incentives, gating, fabricated reviews, or paid ranking links."
@@ -478,7 +478,7 @@
       "nextAction": "Obtain current owner-view service-area evidence for Sandy and the read-only exact-CID profile audit; do not attach the Salt Lake CID to the city page or edit GBP unless a later reviewed scope is explicitly approved.",
       "gates": {
         "ownerEvidence": "frame-utah-slv-current-service-area-evidence-v1",
-        "exactCidReviewBaseline": "unmeasured",
+        "exactCidReviewBaseline": "measured-exact-cid",
         "pageOrProfileMutation": "separate-reviewed-scope-and-explicit-owner-approval-required"
       }
     },
@@ -502,7 +502,7 @@
           "rule": "Retain the fixed city/device panel and report what Google returns; do not create fake locations or duplicate profiles to manipulate distance."
         },
         "prominence": {
-          "exactCidReviews": "unmeasured",
+          "exactCidReviews": "measured-exact-cid",
           "organicNumberOneQueries": [],
           "ownedGoogleAiOverviewCitations": [],
           "rule": "Measure genuine review strength and earned web authority separately; no incentives, gating, fabricated reviews, or paid ranking links."
@@ -609,7 +609,7 @@
       "nextAction": "Obtain current owner-view service-area evidence for Holladay and the read-only exact-CID profile audit; do not attach the Salt Lake CID to the city page or edit GBP unless a later reviewed scope is explicitly approved.",
       "gates": {
         "ownerEvidence": "frame-utah-slv-current-service-area-evidence-v1",
-        "exactCidReviewBaseline": "unmeasured",
+        "exactCidReviewBaseline": "measured-exact-cid",
         "pageOrProfileMutation": "separate-reviewed-scope-and-explicit-owner-approval-required"
       }
     },
@@ -633,7 +633,7 @@
           "rule": "Retain the fixed city/device panel and report what Google returns; do not create fake locations or duplicate profiles to manipulate distance."
         },
         "prominence": {
-          "exactCidReviews": "unmeasured",
+          "exactCidReviews": "measured-exact-cid",
           "organicNumberOneQueries": [],
           "ownedGoogleAiOverviewCitations": [],
           "rule": "Measure genuine review strength and earned web authority separately; no incentives, gating, fabricated reviews, or paid ranking links."
@@ -739,7 +739,7 @@
       "nextAction": "Obtain current owner-view service-area evidence for Cottonwood Heights and the read-only exact-CID profile audit; do not attach the Salt Lake CID to the city page or edit GBP unless a later reviewed scope is explicitly approved.",
       "gates": {
         "ownerEvidence": "frame-utah-slv-current-service-area-evidence-v1",
-        "exactCidReviewBaseline": "unmeasured",
+        "exactCidReviewBaseline": "measured-exact-cid",
         "pageOrProfileMutation": "separate-reviewed-scope-and-explicit-owner-approval-required"
       }
     },
@@ -763,7 +763,7 @@
           "rule": "Retain the fixed city/device panel and report what Google returns; do not create fake locations or duplicate profiles to manipulate distance."
         },
         "prominence": {
-          "exactCidReviews": "unmeasured",
+          "exactCidReviews": "measured-exact-cid",
           "organicNumberOneQueries": [],
           "ownedGoogleAiOverviewCitations": [],
           "rule": "Measure genuine review strength and earned web authority separately; no incentives, gating, fabricated reviews, or paid ranking links."
@@ -868,7 +868,7 @@
       "nextAction": "Obtain current owner-view service-area evidence for Draper and the read-only exact-CID profile audit; do not attach the Salt Lake CID to the city page or edit GBP unless a later reviewed scope is explicitly approved.",
       "gates": {
         "ownerEvidence": "frame-utah-slv-current-service-area-evidence-v1",
-        "exactCidReviewBaseline": "unmeasured",
+        "exactCidReviewBaseline": "measured-exact-cid",
         "pageOrProfileMutation": "separate-reviewed-scope-and-explicit-owner-approval-required"
       }
     },
@@ -892,7 +892,7 @@
           "rule": "Retain the fixed city/device panel and report what Google returns; do not create fake locations or duplicate profiles to manipulate distance."
         },
         "prominence": {
-          "exactCidReviews": "unmeasured",
+          "exactCidReviews": "measured-exact-cid",
           "organicNumberOneQueries": [],
           "ownedGoogleAiOverviewCitations": [],
           "rule": "Measure genuine review strength and earned web authority separately; no incentives, gating, fabricated reviews, or paid ranking links."
@@ -997,7 +997,7 @@
       "nextAction": "Obtain current owner-view service-area evidence for Bluffdale and the read-only exact-CID profile audit; do not attach the Salt Lake CID to the city page or edit GBP unless a later reviewed scope is explicitly approved.",
       "gates": {
         "ownerEvidence": "frame-utah-slv-current-service-area-evidence-v1",
-        "exactCidReviewBaseline": "unmeasured",
+        "exactCidReviewBaseline": "measured-exact-cid",
         "pageOrProfileMutation": "separate-reviewed-scope-and-explicit-owner-approval-required"
       }
     },
@@ -1021,7 +1021,7 @@
           "rule": "Retain the fixed city/device panel and report what Google returns; do not create fake locations or duplicate profiles to manipulate distance."
         },
         "prominence": {
-          "exactCidReviews": "unmeasured",
+          "exactCidReviews": "measured-exact-cid",
           "organicNumberOneQueries": [],
           "ownedGoogleAiOverviewCitations": [],
           "rule": "Measure genuine review strength and earned web authority separately; no incentives, gating, fabricated reviews, or paid ranking links."
@@ -1127,7 +1127,7 @@
       "nextAction": "Obtain current owner-view service-area evidence for Herriman and the read-only exact-CID profile audit; do not attach the Salt Lake CID to the city page or edit GBP unless a later reviewed scope is explicitly approved.",
       "gates": {
         "ownerEvidence": "frame-utah-slv-current-service-area-evidence-v1",
-        "exactCidReviewBaseline": "unmeasured",
+        "exactCidReviewBaseline": "measured-exact-cid",
         "pageOrProfileMutation": "separate-reviewed-scope-and-explicit-owner-approval-required"
       }
     },
@@ -1151,7 +1151,7 @@
           "rule": "Retain the fixed city/device panel and report what Google returns; do not create fake locations or duplicate profiles to manipulate distance."
         },
         "prominence": {
-          "exactCidReviews": "unmeasured",
+          "exactCidReviews": "measured-exact-cid",
           "organicNumberOneQueries": [
             "roof replacement kearns"
           ],
@@ -1258,7 +1258,7 @@
       "nextAction": "Obtain current owner-view service-area evidence for Kearns and the read-only exact-CID profile audit; do not attach the Salt Lake CID to the city page or edit GBP unless a later reviewed scope is explicitly approved.",
       "gates": {
         "ownerEvidence": "frame-utah-slv-current-service-area-evidence-v1",
-        "exactCidReviewBaseline": "unmeasured",
+        "exactCidReviewBaseline": "measured-exact-cid",
         "pageOrProfileMutation": "separate-reviewed-scope-and-explicit-owner-approval-required"
       }
     },
@@ -1282,7 +1282,7 @@
           "rule": "Retain the fixed city/device panel and report what Google returns; do not create fake locations or duplicate profiles to manipulate distance."
         },
         "prominence": {
-          "exactCidReviews": "unmeasured",
+          "exactCidReviews": "measured-exact-cid",
           "organicNumberOneQueries": [
             "roof replacement magna"
           ],
@@ -1387,7 +1387,7 @@
       "nextAction": "Obtain current owner-view service-area evidence for Magna and the read-only exact-CID profile audit; do not attach the Salt Lake CID to the city page or edit GBP unless a later reviewed scope is explicitly approved.",
       "gates": {
         "ownerEvidence": "frame-utah-slv-current-service-area-evidence-v1",
-        "exactCidReviewBaseline": "unmeasured",
+        "exactCidReviewBaseline": "measured-exact-cid",
         "pageOrProfileMutation": "separate-reviewed-scope-and-explicit-owner-approval-required"
       }
     },
@@ -1411,7 +1411,7 @@
           "rule": "Retain the fixed city/device panel and report what Google returns; do not create fake locations or duplicate profiles to manipulate distance."
         },
         "prominence": {
-          "exactCidReviews": "unmeasured",
+          "exactCidReviews": "measured-exact-cid",
           "organicNumberOneQueries": [],
           "ownedGoogleAiOverviewCitations": [],
           "rule": "Measure genuine review strength and earned web authority separately; no incentives, gating, fabricated reviews, or paid ranking links."
@@ -1517,7 +1517,7 @@
       "nextAction": "Obtain current owner-view service-area evidence for Midvale and the read-only exact-CID profile audit; do not attach the Salt Lake CID to the city page or edit GBP unless a later reviewed scope is explicitly approved.",
       "gates": {
         "ownerEvidence": "frame-utah-slv-current-service-area-evidence-v1",
-        "exactCidReviewBaseline": "unmeasured",
+        "exactCidReviewBaseline": "measured-exact-cid",
         "pageOrProfileMutation": "separate-reviewed-scope-and-explicit-owner-approval-required"
       }
     },
@@ -1541,7 +1541,7 @@
           "rule": "Retain the fixed city/device panel and report what Google returns; do not create fake locations or duplicate profiles to manipulate distance."
         },
         "prominence": {
-          "exactCidReviews": "unmeasured",
+          "exactCidReviews": "measured-exact-cid",
           "organicNumberOneQueries": [],
           "ownedGoogleAiOverviewCitations": [],
           "rule": "Measure genuine review strength and earned web authority separately; no incentives, gating, fabricated reviews, or paid ranking links."
@@ -1645,7 +1645,7 @@
       "nextAction": "Obtain current owner-view service-area evidence for Murray and the read-only exact-CID profile audit; do not attach the Salt Lake CID to the city page or edit GBP unless a later reviewed scope is explicitly approved.",
       "gates": {
         "ownerEvidence": "frame-utah-slv-current-service-area-evidence-v1",
-        "exactCidReviewBaseline": "unmeasured",
+        "exactCidReviewBaseline": "measured-exact-cid",
         "pageOrProfileMutation": "separate-reviewed-scope-and-explicit-owner-approval-required"
       }
     },
@@ -1669,7 +1669,7 @@
           "rule": "Retain the fixed city/device panel and report what Google returns; do not create fake locations or duplicate profiles to manipulate distance."
         },
         "prominence": {
-          "exactCidReviews": "unmeasured",
+          "exactCidReviews": "measured-exact-cid",
           "organicNumberOneQueries": [],
           "ownedGoogleAiOverviewCitations": [],
           "rule": "Measure genuine review strength and earned web authority separately; no incentives, gating, fabricated reviews, or paid ranking links."
@@ -1775,7 +1775,7 @@
       "nextAction": "Obtain current owner-view service-area evidence for Riverton and the read-only exact-CID profile audit; do not attach the Salt Lake CID to the city page or edit GBP unless a later reviewed scope is explicitly approved.",
       "gates": {
         "ownerEvidence": "frame-utah-slv-current-service-area-evidence-v1",
-        "exactCidReviewBaseline": "unmeasured",
+        "exactCidReviewBaseline": "measured-exact-cid",
         "pageOrProfileMutation": "separate-reviewed-scope-and-explicit-owner-approval-required"
       }
     },
@@ -1799,7 +1799,7 @@
           "rule": "Retain the fixed city/device panel and report what Google returns; do not create fake locations or duplicate profiles to manipulate distance."
         },
         "prominence": {
-          "exactCidReviews": "unmeasured",
+          "exactCidReviews": "measured-exact-cid",
           "organicNumberOneQueries": [],
           "ownedGoogleAiOverviewCitations": [],
           "rule": "Measure genuine review strength and earned web authority separately; no incentives, gating, fabricated reviews, or paid ranking links."
@@ -1902,7 +1902,7 @@
       "nextAction": "Obtain current owner-view service-area evidence for South Jordan and the read-only exact-CID profile audit; do not attach the Salt Lake CID to the city page or edit GBP unless a later reviewed scope is explicitly approved.",
       "gates": {
         "ownerEvidence": "frame-utah-slv-current-service-area-evidence-v1",
-        "exactCidReviewBaseline": "unmeasured",
+        "exactCidReviewBaseline": "measured-exact-cid",
         "pageOrProfileMutation": "separate-reviewed-scope-and-explicit-owner-approval-required"
       }
     },
@@ -1926,7 +1926,7 @@
           "rule": "Retain the fixed city/device panel and report what Google returns; do not create fake locations or duplicate profiles to manipulate distance."
         },
         "prominence": {
-          "exactCidReviews": "unmeasured",
+          "exactCidReviews": "measured-exact-cid",
           "organicNumberOneQueries": [],
           "ownedGoogleAiOverviewCitations": [],
           "rule": "Measure genuine review strength and earned web authority separately; no incentives, gating, fabricated reviews, or paid ranking links."
@@ -2026,7 +2026,7 @@
       "nextAction": "Obtain current owner-view service-area evidence for South Salt Lake and the read-only exact-CID profile audit; do not attach the Salt Lake CID to the city page or edit GBP unless a later reviewed scope is explicitly approved.",
       "gates": {
         "ownerEvidence": "frame-utah-slv-current-service-area-evidence-v1",
-        "exactCidReviewBaseline": "unmeasured",
+        "exactCidReviewBaseline": "measured-exact-cid",
         "pageOrProfileMutation": "separate-reviewed-scope-and-explicit-owner-approval-required"
       }
     },
@@ -2050,7 +2050,7 @@
           "rule": "Retain the fixed city/device panel and report what Google returns; do not create fake locations or duplicate profiles to manipulate distance."
         },
         "prominence": {
-          "exactCidReviews": "unmeasured",
+          "exactCidReviews": "measured-exact-cid",
           "organicNumberOneQueries": [],
           "ownedGoogleAiOverviewCitations": [],
           "rule": "Measure genuine review strength and earned web authority separately; no incentives, gating, fabricated reviews, or paid ranking links."
@@ -2155,7 +2155,7 @@
       "nextAction": "Obtain current owner-view service-area evidence for Taylorsville and the read-only exact-CID profile audit; do not attach the Salt Lake CID to the city page or edit GBP unless a later reviewed scope is explicitly approved.",
       "gates": {
         "ownerEvidence": "frame-utah-slv-current-service-area-evidence-v1",
-        "exactCidReviewBaseline": "unmeasured",
+        "exactCidReviewBaseline": "measured-exact-cid",
         "pageOrProfileMutation": "separate-reviewed-scope-and-explicit-owner-approval-required"
       }
     },
@@ -2179,7 +2179,7 @@
           "rule": "Retain the fixed city/device panel and report what Google returns; do not create fake locations or duplicate profiles to manipulate distance."
         },
         "prominence": {
-          "exactCidReviews": "unmeasured",
+          "exactCidReviews": "measured-exact-cid",
           "organicNumberOneQueries": [],
           "ownedGoogleAiOverviewCitations": [],
           "rule": "Measure genuine review strength and earned web authority separately; no incentives, gating, fabricated reviews, or paid ranking links."
@@ -2283,7 +2283,7 @@
       "nextAction": "Obtain current owner-view service-area evidence for West Jordan and the read-only exact-CID profile audit; do not attach the Salt Lake CID to the city page or edit GBP unless a later reviewed scope is explicitly approved.",
       "gates": {
         "ownerEvidence": "frame-utah-slv-current-service-area-evidence-v1",
-        "exactCidReviewBaseline": "unmeasured",
+        "exactCidReviewBaseline": "measured-exact-cid",
         "pageOrProfileMutation": "separate-reviewed-scope-and-explicit-owner-approval-required"
       }
     },
@@ -2307,7 +2307,7 @@
           "rule": "Retain the fixed city/device panel and report what Google returns; do not create fake locations or duplicate profiles to manipulate distance."
         },
         "prominence": {
-          "exactCidReviews": "unmeasured",
+          "exactCidReviews": "measured-exact-cid",
           "organicNumberOneQueries": [],
           "ownedGoogleAiOverviewCitations": [],
           "rule": "Measure genuine review strength and earned web authority separately; no incentives, gating, fabricated reviews, or paid ranking links."
@@ -2413,7 +2413,7 @@
       "nextAction": "Obtain current owner-view service-area evidence for West Valley City and the read-only exact-CID profile audit; do not attach the Salt Lake CID to the city page or edit GBP unless a later reviewed scope is explicitly approved.",
       "gates": {
         "ownerEvidence": "frame-utah-slv-current-service-area-evidence-v1",
-        "exactCidReviewBaseline": "unmeasured",
+        "exactCidReviewBaseline": "measured-exact-cid",
         "pageOrProfileMutation": "separate-reviewed-scope-and-explicit-owner-approval-required"
       }
     }
