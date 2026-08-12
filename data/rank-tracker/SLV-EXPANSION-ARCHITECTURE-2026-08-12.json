@@ -3,7 +3,7 @@
   "auditId": "frame-utah-slv-expansion-architecture-v1",
   "market": "utah-salt-lake-valley",
   "preparedAt": "2026-08-12T19:00:00.000Z",
-  "status": "diagnosed-no-public-authorization-targeted-gsc-pending",
+  "status": "diagnosed-no-public-authorization-targeted-gsc-complete",
   "publicMutationPerformed": false,
   "sources": {
     "registry": {
@@ -20,7 +20,7 @@
     },
     "gscAttribution": {
       "file": "data/rank-tracker/SLV-GSC-URL-ATTRIBUTION-LATEST.json",
-      "sha256": "2cb15e4921ebd6b4bee98435b824dbfad1ddf7ecc6d9839284552019e3467f04"
+      "sha256": "d464bab364c91ab2ec6433cece96cadc6ac5fc775477dddfce39ff9028f36cb9"
     },
     "displacement": {
       "file": "data/rank-tracker/SLV-COMPETITOR-DISPLACEMENT-2026-08-12.json",
@@ -32,14 +32,14 @@
     "fixedQueries": 48,
     "routesPinned": 23,
     "relatedRoutesProtected": 11,
-    "targetedGscQueriesRequested": 0,
-    "targetedGscRowsReturned": 0,
+    "targetedGscQueriesRequested": 48,
+    "targetedGscRowsReturned": 17,
     "citiesWithCurrentCannibalizationEvidenced": 0,
     "publicMutations": 0
   },
   "globalDecision": [
     "All 48 expansion queries have a fixed mobile baseline; the intended main city page is selected for every measured Frame organic result.",
-    "The latest measured GSC snapshot requested 24/72 fixed queries; unrequested expansion query-to-URL attribution remains unmeasured.",
+    "The latest measured GSC snapshot requested all 72 fixed queries; unreturned rows remain withheld or absent row evidence, not zero demand.",
     "Preserve all 12 city hubs and all 11 related city-service/editorial routes; no current evidence supports redirects, canonical changes, noindex, deletion, or bulk service-page generation.",
     "Keep refreshing exact-query attribution in the daily SEO loop; diagnose any normalized alternate URL against routing and timing before a ranking-intent experiment.",
     "Integrity cleanup is a separate owner-approved variable and must precede any title/H1/architecture experiment."
@@ -79,10 +79,10 @@
           "startDate": "2026-07-13",
           "endDate": "2026-08-09"
         },
-        "fixedQueriesRequested": 0,
+        "fixedQueriesRequested": 4,
         "exactQueryPageRowsReturned": 0,
-        "status": "not-requested-in-latest-measured-snapshot",
-        "attributionState": "targeted-gsc-not-complete",
+        "status": "requested",
+        "attributionState": "complete-request-with-unreturned-rows",
         "alternateNormalizedUrls": [],
         "interpretation": "Unrequested or unreturned exact rows are unmeasured, not zero and not evidence of cannibalization."
       },
@@ -95,7 +95,7 @@
       },
       "architecture": {
         "currentCommercialCannibalization": "not-evidenced-all-four-fixed-serps-select-main",
-        "confidence": "low-until-targeted-gsc",
+        "confidence": "moderate-exact-query-request-complete",
         "routeCount": 1,
         "routes": [
           {
@@ -118,7 +118,7 @@
             "decision": "Preserve as the intended commercial city hub selected by every fixed query with a measured organic rank."
           }
         ],
-        "decision": "Preserve every route and canonical. The fixed panel selects the intended main page whenever Frame ranks; exact expansion GSC query-to-URL coverage is incomplete."
+        "decision": "Preserve every route and canonical. The fixed panel selects the intended main page whenever Frame ranks; the exact GSC request is complete, but unreturned rows remain unknown and alternate URLs require timing/routing diagnosis."
       },
       "nextControlledAction": "Apply only the separately approved integrity cleanup with title, H1, canonical, links, and related routes held constant; protect the existing #1 query and any owned AIO citation through weekly observation.",
       "prohibited": [
@@ -162,10 +162,10 @@
           "startDate": "2026-07-13",
           "endDate": "2026-08-09"
         },
-        "fixedQueriesRequested": 0,
-        "exactQueryPageRowsReturned": 0,
-        "status": "not-requested-in-latest-measured-snapshot",
-        "attributionState": "targeted-gsc-not-complete",
+        "fixedQueriesRequested": 4,
+        "exactQueryPageRowsReturned": 1,
+        "status": "requested",
+        "attributionState": "complete-request-with-unreturned-rows",
         "alternateNormalizedUrls": [],
         "interpretation": "Unrequested or unreturned exact rows are unmeasured, not zero and not evidence of cannibalization."
       },
@@ -178,7 +178,7 @@
       },
       "architecture": {
         "currentCommercialCannibalization": "not-evidenced-all-four-fixed-serps-select-main",
-        "confidence": "low-until-targeted-gsc",
+        "confidence": "moderate-exact-query-request-complete",
         "routeCount": 1,
         "routes": [
           {
@@ -201,7 +201,7 @@
             "decision": "Preserve as the intended commercial city hub selected by every fixed query with a measured organic rank."
           }
         ],
-        "decision": "Preserve every route and canonical. The fixed panel selects the intended main page whenever Frame ranks; exact expansion GSC query-to-URL coverage is incomplete."
+        "decision": "Preserve every route and canonical. The fixed panel selects the intended main page whenever Frame ranks; the exact GSC request is complete, but unreturned rows remain unknown and alternate URLs require timing/routing diagnosis."
       },
       "nextControlledAction": "Apply only the separately approved integrity cleanup with title, H1, canonical, links, and related routes held constant; protect the existing #1 query and any owned AIO citation through weekly observation.",
       "prohibited": [
@@ -245,10 +245,10 @@
           "startDate": "2026-07-13",
           "endDate": "2026-08-09"
         },
-        "fixedQueriesRequested": 0,
-        "exactQueryPageRowsReturned": 0,
-        "status": "not-requested-in-latest-measured-snapshot",
-        "attributionState": "targeted-gsc-not-complete",
+        "fixedQueriesRequested": 4,
+        "exactQueryPageRowsReturned": 3,
+        "status": "requested",
+        "attributionState": "complete-request-with-unreturned-rows",
         "alternateNormalizedUrls": [],
         "interpretation": "Unrequested or unreturned exact rows are unmeasured, not zero and not evidence of cannibalization."
       },
@@ -261,7 +261,7 @@
       },
       "architecture": {
         "currentCommercialCannibalization": "not-evidenced-all-four-fixed-serps-select-main",
-        "confidence": "low-until-targeted-gsc",
+        "confidence": "moderate-exact-query-request-complete",
         "routeCount": 4,
         "routes": [
           {
@@ -333,7 +333,7 @@
             "decision": "Protect this route until exact query-to-URL evidence supports a bounded architecture change."
           }
         ],
-        "decision": "Preserve every route and canonical. The fixed panel selects the intended main page whenever Frame ranks; exact expansion GSC query-to-URL coverage is incomplete."
+        "decision": "Preserve every route and canonical. The fixed panel selects the intended main page whenever Frame ranks; the exact GSC request is complete, but unreturned rows remain unknown and alternate URLs require timing/routing diagnosis."
       },
       "nextControlledAction": "Preserve the intended city hub and all related routes; use the next complete targeted GSC read before selecting an architecture or intent experiment.",
       "prohibited": [
@@ -379,10 +379,10 @@
           "startDate": "2026-07-13",
           "endDate": "2026-08-09"
         },
-        "fixedQueriesRequested": 0,
-        "exactQueryPageRowsReturned": 0,
-        "status": "not-requested-in-latest-measured-snapshot",
-        "attributionState": "targeted-gsc-not-complete",
+        "fixedQueriesRequested": 4,
+        "exactQueryPageRowsReturned": 2,
+        "status": "requested",
+        "attributionState": "complete-request-with-unreturned-rows",
         "alternateNormalizedUrls": [],
         "interpretation": "Unrequested or unreturned exact rows are unmeasured, not zero and not evidence of cannibalization."
       },
@@ -437,7 +437,7 @@
             "decision": "Protect this route until exact query-to-URL evidence supports a bounded architecture change."
           }
         ],
-        "decision": "Preserve every route and canonical. The fixed panel selects the intended main page whenever Frame ranks; exact expansion GSC query-to-URL coverage is incomplete."
+        "decision": "Preserve every route and canonical. The fixed panel selects the intended main page whenever Frame ranks; the exact GSC request is complete, but unreturned rows remain unknown and alternate URLs require timing/routing diagnosis."
       },
       "nextControlledAction": "Preserve the intended city hub and all related routes; use the next complete targeted GSC read before selecting an architecture or intent experiment.",
       "prohibited": [
@@ -481,10 +481,10 @@
           "startDate": "2026-07-13",
           "endDate": "2026-08-09"
         },
-        "fixedQueriesRequested": 0,
-        "exactQueryPageRowsReturned": 0,
-        "status": "not-requested-in-latest-measured-snapshot",
-        "attributionState": "targeted-gsc-not-complete",
+        "fixedQueriesRequested": 4,
+        "exactQueryPageRowsReturned": 3,
+        "status": "requested",
+        "attributionState": "complete-request-with-unreturned-rows",
         "alternateNormalizedUrls": [],
         "interpretation": "Unrequested or unreturned exact rows are unmeasured, not zero and not evidence of cannibalization."
       },
@@ -497,7 +497,7 @@
       },
       "architecture": {
         "currentCommercialCannibalization": "not-evidenced-all-four-fixed-serps-select-main",
-        "confidence": "low-until-targeted-gsc",
+        "confidence": "moderate-exact-query-request-complete",
         "routeCount": 3,
         "routes": [
           {
@@ -558,7 +558,7 @@
             "decision": "Protect this route until exact query-to-URL evidence supports a bounded architecture change."
           }
         ],
-        "decision": "Preserve every route and canonical. The fixed panel selects the intended main page whenever Frame ranks; exact expansion GSC query-to-URL coverage is incomplete."
+        "decision": "Preserve every route and canonical. The fixed panel selects the intended main page whenever Frame ranks; the exact GSC request is complete, but unreturned rows remain unknown and alternate URLs require timing/routing diagnosis."
       },
       "nextControlledAction": "Preserve the intended city hub and all related routes; use the next complete targeted GSC read before selecting an architecture or intent experiment.",
       "prohibited": [
@@ -602,10 +602,10 @@
           "startDate": "2026-07-13",
           "endDate": "2026-08-09"
         },
-        "fixedQueriesRequested": 0,
+        "fixedQueriesRequested": 4,
         "exactQueryPageRowsReturned": 0,
-        "status": "not-requested-in-latest-measured-snapshot",
-        "attributionState": "targeted-gsc-not-complete",
+        "status": "requested",
+        "attributionState": "complete-request-with-unreturned-rows",
         "alternateNormalizedUrls": [],
         "interpretation": "Unrequested or unreturned exact rows are unmeasured, not zero and not evidence of cannibalization."
       },
@@ -618,7 +618,7 @@
       },
       "architecture": {
         "currentCommercialCannibalization": "not-evidenced-all-four-fixed-serps-select-main",
-        "confidence": "low-until-targeted-gsc",
+        "confidence": "moderate-exact-query-request-complete",
         "routeCount": 1,
         "routes": [
           {
@@ -641,7 +641,7 @@
             "decision": "Preserve as the intended commercial city hub selected by every fixed query with a measured organic rank."
           }
         ],
-        "decision": "Preserve every route and canonical. The fixed panel selects the intended main page whenever Frame ranks; exact expansion GSC query-to-URL coverage is incomplete."
+        "decision": "Preserve every route and canonical. The fixed panel selects the intended main page whenever Frame ranks; the exact GSC request is complete, but unreturned rows remain unknown and alternate URLs require timing/routing diagnosis."
       },
       "nextControlledAction": "Preserve the intended city hub and all related routes; use the next complete targeted GSC read before selecting an architecture or intent experiment.",
       "prohibited": [
@@ -685,10 +685,10 @@
           "startDate": "2026-07-13",
           "endDate": "2026-08-09"
         },
-        "fixedQueriesRequested": 0,
+        "fixedQueriesRequested": 4,
         "exactQueryPageRowsReturned": 0,
-        "status": "not-requested-in-latest-measured-snapshot",
-        "attributionState": "targeted-gsc-not-complete",
+        "status": "requested",
+        "attributionState": "complete-request-with-unreturned-rows",
         "alternateNormalizedUrls": [],
         "interpretation": "Unrequested or unreturned exact rows are unmeasured, not zero and not evidence of cannibalization."
       },
@@ -701,7 +701,7 @@
       },
       "architecture": {
         "currentCommercialCannibalization": "not-evidenced-all-four-fixed-serps-select-main",
-        "confidence": "low-until-targeted-gsc",
+        "confidence": "moderate-exact-query-request-complete",
         "routeCount": 2,
         "routes": [
           {
@@ -743,7 +743,7 @@
             "decision": "Protect this route until exact query-to-URL evidence supports a bounded architecture change."
           }
         ],
-        "decision": "Preserve every route and canonical. The fixed panel selects the intended main page whenever Frame ranks; exact expansion GSC query-to-URL coverage is incomplete."
+        "decision": "Preserve every route and canonical. The fixed panel selects the intended main page whenever Frame ranks; the exact GSC request is complete, but unreturned rows remain unknown and alternate URLs require timing/routing diagnosis."
       },
       "nextControlledAction": "Preserve the intended city hub and all related routes; use the next complete targeted GSC read before selecting an architecture or intent experiment.",
       "prohibited": [
@@ -787,10 +787,10 @@
           "startDate": "2026-07-13",
           "endDate": "2026-08-09"
         },
-        "fixedQueriesRequested": 0,
+        "fixedQueriesRequested": 4,
         "exactQueryPageRowsReturned": 0,
-        "status": "not-requested-in-latest-measured-snapshot",
-        "attributionState": "targeted-gsc-not-complete",
+        "status": "requested",
+        "attributionState": "complete-request-with-unreturned-rows",
         "alternateNormalizedUrls": [],
         "interpretation": "Unrequested or unreturned exact rows are unmeasured, not zero and not evidence of cannibalization."
       },
@@ -803,7 +803,7 @@
       },
       "architecture": {
         "currentCommercialCannibalization": "not-evidenced-all-four-fixed-serps-select-main",
-        "confidence": "low-until-targeted-gsc",
+        "confidence": "moderate-exact-query-request-complete",
         "routeCount": 2,
         "routes": [
           {
@@ -845,7 +845,7 @@
             "decision": "Protect this route until exact query-to-URL evidence supports a bounded architecture change."
           }
         ],
-        "decision": "Preserve every route and canonical. The fixed panel selects the intended main page whenever Frame ranks; exact expansion GSC query-to-URL coverage is incomplete."
+        "decision": "Preserve every route and canonical. The fixed panel selects the intended main page whenever Frame ranks; the exact GSC request is complete, but unreturned rows remain unknown and alternate URLs require timing/routing diagnosis."
       },
       "nextControlledAction": "Preserve the intended city hub and all related routes; use the next complete targeted GSC read before selecting an architecture or intent experiment.",
       "prohibited": [
@@ -889,11 +889,13 @@
           "startDate": "2026-07-13",
           "endDate": "2026-08-09"
         },
-        "fixedQueriesRequested": 0,
-        "exactQueryPageRowsReturned": 0,
-        "status": "not-requested-in-latest-measured-snapshot",
-        "attributionState": "targeted-gsc-not-complete",
-        "alternateNormalizedUrls": [],
+        "fixedQueriesRequested": 4,
+        "exactQueryPageRowsReturned": 4,
+        "status": "requested",
+        "attributionState": "url-competition-requires-diagnosis",
+        "alternateNormalizedUrls": [
+          "framerestorationutah.com/salt-lake-city"
+        ],
         "interpretation": "Unrequested or unreturned exact rows are unmeasured, not zero and not evidence of cannibalization."
       },
       "integrity": {
@@ -904,8 +906,8 @@
         "status": "cleanup-awaiting-separate-explicit-owner-approval"
       },
       "architecture": {
-        "currentCommercialCannibalization": "not-evidenced-all-four-fixed-serps-select-main",
-        "confidence": "low-until-targeted-gsc",
+        "currentCommercialCannibalization": "not-proven-blended-gsc-multi-url-evidence-requires-timing-and-routing-diagnosis",
+        "confidence": "moderate-exact-query-request-complete",
         "routeCount": 2,
         "routes": [
           {
@@ -939,9 +941,9 @@
             "decision": "Protect this route until exact query-to-URL evidence supports a bounded architecture change."
           }
         ],
-        "decision": "Preserve every route and canonical. The fixed panel selects the intended main page whenever Frame ranks; exact expansion GSC query-to-URL coverage is incomplete."
+        "decision": "Preserve every route and canonical. The fixed panel selects the intended main page whenever Frame ranks; the exact GSC request is complete, but unreturned rows remain unknown and alternate URLs require timing/routing diagnosis."
       },
-      "nextControlledAction": "Preserve the intended city hub and all related routes; use the next complete targeted GSC read before selecting an architecture or intent experiment.",
+      "nextControlledAction": "Inspect the alternate URLs against redirect dates, canonicals, current live routing, and query intent. Treat this blended 28-day evidence as a diagnosis trigger, not proof of current cannibalization or permission to redirect.",
       "prohibited": [
         "No redirect, canonical, noindex, deletion, title, H1, or internal-link mutation from this diagnosis.",
         "No inference that a related route is cannibalizing the commercial hub without exact query-to-URL evidence.",
@@ -983,10 +985,10 @@
           "startDate": "2026-07-13",
           "endDate": "2026-08-09"
         },
-        "fixedQueriesRequested": 0,
-        "exactQueryPageRowsReturned": 0,
-        "status": "not-requested-in-latest-measured-snapshot",
-        "attributionState": "targeted-gsc-not-complete",
+        "fixedQueriesRequested": 4,
+        "exactQueryPageRowsReturned": 1,
+        "status": "requested",
+        "attributionState": "complete-request-with-unreturned-rows",
         "alternateNormalizedUrls": [],
         "interpretation": "Unrequested or unreturned exact rows are unmeasured, not zero and not evidence of cannibalization."
       },
@@ -999,7 +1001,7 @@
       },
       "architecture": {
         "currentCommercialCannibalization": "not-evidenced-all-four-fixed-serps-select-main",
-        "confidence": "low-until-targeted-gsc",
+        "confidence": "moderate-exact-query-request-complete",
         "routeCount": 2,
         "routes": [
           {
@@ -1033,7 +1035,7 @@
             "decision": "Protect this route until exact query-to-URL evidence supports a bounded architecture change."
           }
         ],
-        "decision": "Preserve every route and canonical. The fixed panel selects the intended main page whenever Frame ranks; exact expansion GSC query-to-URL coverage is incomplete."
+        "decision": "Preserve every route and canonical. The fixed panel selects the intended main page whenever Frame ranks; the exact GSC request is complete, but unreturned rows remain unknown and alternate URLs require timing/routing diagnosis."
       },
       "nextControlledAction": "Preserve the intended city hub and all related routes; use the next complete targeted GSC read before selecting an architecture or intent experiment.",
       "prohibited": [
@@ -1080,10 +1082,10 @@
           "startDate": "2026-07-13",
           "endDate": "2026-08-09"
         },
-        "fixedQueriesRequested": 0,
+        "fixedQueriesRequested": 4,
         "exactQueryPageRowsReturned": 0,
-        "status": "not-requested-in-latest-measured-snapshot",
-        "attributionState": "targeted-gsc-not-complete",
+        "status": "requested",
+        "attributionState": "complete-request-with-unreturned-rows",
         "alternateNormalizedUrls": [],
         "interpretation": "Unrequested or unreturned exact rows are unmeasured, not zero and not evidence of cannibalization."
       },
@@ -1119,7 +1121,7 @@
             "decision": "Preserve as the intended commercial city hub selected by every fixed query with a measured organic rank."
           }
         ],
-        "decision": "Preserve every route and canonical. The fixed panel selects the intended main page whenever Frame ranks; exact expansion GSC query-to-URL coverage is incomplete."
+        "decision": "Preserve every route and canonical. The fixed panel selects the intended main page whenever Frame ranks; the exact GSC request is complete, but unreturned rows remain unknown and alternate URLs require timing/routing diagnosis."
       },
       "nextControlledAction": "Obtain exact targeted GSC URL attribution and inspect internal-link intent before any title or route change; outside-depth rows do not prove cannibalization.",
       "prohibited": [
@@ -1166,10 +1168,10 @@
           "startDate": "2026-07-13",
           "endDate": "2026-08-09"
         },
-        "fixedQueriesRequested": 0,
-        "exactQueryPageRowsReturned": 0,
-        "status": "not-requested-in-latest-measured-snapshot",
-        "attributionState": "targeted-gsc-not-complete",
+        "fixedQueriesRequested": 4,
+        "exactQueryPageRowsReturned": 3,
+        "status": "requested",
+        "attributionState": "complete-request-with-unreturned-rows",
         "alternateNormalizedUrls": [],
         "interpretation": "Unrequested or unreturned exact rows are unmeasured, not zero and not evidence of cannibalization."
       },
@@ -1216,7 +1218,7 @@
             "decision": "Protect this route until exact query-to-URL evidence supports a bounded architecture change."
           }
         ],
-        "decision": "Preserve every route and canonical. The fixed panel selects the intended main page whenever Frame ranks; exact expansion GSC query-to-URL coverage is incomplete."
+        "decision": "Preserve every route and canonical. The fixed panel selects the intended main page whenever Frame ranks; the exact GSC request is complete, but unreturned rows remain unknown and alternate URLs require timing/routing diagnosis."
       },
       "nextControlledAction": "Obtain exact targeted GSC URL attribution and inspect internal-link intent before any title or route change; outside-depth rows do not prove cannibalization.",
       "prohibited": [

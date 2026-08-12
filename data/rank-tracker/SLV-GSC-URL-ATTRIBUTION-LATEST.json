@@ -5,7 +5,7 @@
   "asOfSnapshotDate": "2026-08-12",
   "latestSeoSnapshotDate": "2026-08-12",
   "measurementFreshness": "latest-snapshot-measured",
-  "status": "partial-targeted-request-evidence",
+  "status": "complete-targeted-request-evidence",
   "publicMutationPerformed": false,
   "evidenceWindow": {
     "startDate": "2026-07-13",
@@ -15,7 +15,7 @@
     "workflowTargetQueries": 72,
     "workflowFilterBytes": 1771,
     "workflowFilterLimitBytes": 4096,
-    "currentSnapshotRequestedQueries": 24,
+    "currentSnapshotRequestedQueries": 72,
     "rule": "The daily SEO snapshot builds this exact filter from the complete six-city core registry plus the twelve-city manual expansion registry; this read does not buy additional SERPs or admit expansion cities to recurring DataForSEO spend."
   },
   "sources": {
@@ -33,11 +33,11 @@
     },
     "gscSnapshot": {
       "file": "data/seo/snapshots/2026-08-12.json",
-      "sha256": "d26e17238e1e76ef203654cf1f9ce4d9c927bd4088560a55cb2b8f33ff282d14"
+      "sha256": "a1b7d5aa2acc3a5b663da345ba6eb7242e411661807ae1296f50854702b1a7eb"
     },
     "latestSeoSnapshot": {
       "file": "data/seo/snapshots/2026-08-12.json",
-      "sha256": "d26e17238e1e76ef203654cf1f9ce4d9c927bd4088560a55cb2b8f33ff282d14"
+      "sha256": "a1b7d5aa2acc3a5b663da345ba6eb7242e411661807ae1296f50854702b1a7eb"
     }
   },
   "policy": {
@@ -49,16 +49,16 @@
   "summary": {
     "cities": 18,
     "fixedQueries": 72,
-    "requestedQueries": 24,
-    "queriesWithRows": 9,
-    "exactRows": 12,
-    "intendedUrlOnlyQueries": 7,
-    "multiUrlIncludingIntendedQueries": 2,
+    "requestedQueries": 72,
+    "queriesWithRows": 25,
+    "exactRows": 29,
+    "intendedUrlOnlyQueries": 22,
+    "multiUrlIncludingIntendedQueries": 3,
     "alternateUrlOnlyQueries": 0,
-    "requestedNoRowQueries": 15,
-    "unrequestedQueries": 48,
-    "citiesWithUrlCompetitionEvidence": 1,
-    "citiesWithAllFourQueriesRequested": 6,
+    "requestedNoRowQueries": 47,
+    "unrequestedQueries": 0,
+    "citiesWithUrlCompetitionEvidence": 2,
+    "citiesWithAllFourQueriesRequested": 18,
     "publicMutations": 0
   },
   "actionQueue": [
@@ -74,6 +74,16 @@
     },
     {
       "priority": 1,
+      "city": "Herriman",
+      "state": "url-competition-requires-diagnosis",
+      "protectedFootholds": {
+        "organicNumberOneQueries": [],
+        "googleAiOverviewCitedQueries": []
+      },
+      "action": "Inspect the alternate URLs against redirect dates, canonicals, current live routing, and query intent. Treat this blended 28-day evidence as a diagnosis trigger, not proof of current cannibalization or permission to redirect."
+    },
+    {
+      "priority": 1,
       "city": "Holladay",
       "state": "url-competition-requires-diagnosis",
       "protectedFootholds": {
@@ -85,7 +95,7 @@
     {
       "priority": 2,
       "city": "Kearns",
-      "state": "targeted-gsc-not-complete",
+      "state": "complete-request-with-unreturned-rows",
       "protectedFootholds": {
         "organicNumberOneQueries": [
           "roof replacement kearns"
@@ -97,7 +107,7 @@
     {
       "priority": 2,
       "city": "Magna",
-      "state": "targeted-gsc-not-complete",
+      "state": "complete-request-with-unreturned-rows",
       "protectedFootholds": {
         "organicNumberOneQueries": [
           "roof replacement magna"
@@ -121,99 +131,9 @@
       "action": "Protect the measured #1/AIO foothold. Do not change title, H1, canonical, route, or internal-link intent until exact owner approval and a declared isolated experiment exist."
     },
     {
-      "priority": 3,
+      "priority": 4,
       "city": "Bluffdale",
-      "state": "targeted-gsc-not-complete",
-      "protectedFootholds": {
-        "organicNumberOneQueries": [],
-        "googleAiOverviewCitedQueries": []
-      },
-      "action": "Preserve the intended city hub and all related routes; use the next complete targeted GSC read before selecting an architecture or intent experiment."
-    },
-    {
-      "priority": 3,
-      "city": "Herriman",
-      "state": "targeted-gsc-not-complete",
-      "protectedFootholds": {
-        "organicNumberOneQueries": [],
-        "googleAiOverviewCitedQueries": []
-      },
-      "action": "Preserve the intended city hub and all related routes; use the next complete targeted GSC read before selecting an architecture or intent experiment."
-    },
-    {
-      "priority": 3,
-      "city": "Midvale",
-      "state": "targeted-gsc-not-complete",
-      "protectedFootholds": {
-        "organicNumberOneQueries": [],
-        "googleAiOverviewCitedQueries": []
-      },
-      "action": "Preserve the intended city hub and all related routes; use the next complete targeted GSC read before selecting an architecture or intent experiment."
-    },
-    {
-      "priority": 3,
-      "city": "Murray",
-      "state": "targeted-gsc-not-complete",
-      "protectedFootholds": {
-        "organicNumberOneQueries": [],
-        "googleAiOverviewCitedQueries": []
-      },
-      "action": "Preserve the intended city hub and all related routes; use the next complete targeted GSC read before selecting an architecture or intent experiment."
-    },
-    {
-      "priority": 3,
-      "city": "Riverton",
-      "state": "targeted-gsc-not-complete",
-      "protectedFootholds": {
-        "organicNumberOneQueries": [],
-        "googleAiOverviewCitedQueries": []
-      },
-      "action": "Preserve the intended city hub and all related routes; use the next complete targeted GSC read before selecting an architecture or intent experiment."
-    },
-    {
-      "priority": 3,
-      "city": "South Jordan",
-      "state": "targeted-gsc-not-complete",
-      "protectedFootholds": {
-        "organicNumberOneQueries": [],
-        "googleAiOverviewCitedQueries": []
-      },
-      "action": "Preserve the intended city hub and all related routes; use the next complete targeted GSC read before selecting an architecture or intent experiment."
-    },
-    {
-      "priority": 3,
-      "city": "South Salt Lake",
-      "state": "targeted-gsc-not-complete",
-      "protectedFootholds": {
-        "organicNumberOneQueries": [],
-        "googleAiOverviewCitedQueries": []
-      },
-      "action": "Preserve the intended city hub and all related routes; use the next complete targeted GSC read before selecting an architecture or intent experiment."
-    },
-    {
-      "priority": 3,
-      "city": "Taylorsville",
-      "state": "targeted-gsc-not-complete",
-      "protectedFootholds": {
-        "organicNumberOneQueries": [],
-        "googleAiOverviewCitedQueries": []
-      },
-      "action": "Preserve the intended city hub and all related routes; use the next complete targeted GSC read before selecting an architecture or intent experiment."
-    },
-    {
-      "priority": 3,
-      "city": "West Jordan",
-      "state": "targeted-gsc-not-complete",
-      "protectedFootholds": {
-        "organicNumberOneQueries": [],
-        "googleAiOverviewCitedQueries": []
-      },
-      "action": "Preserve the intended city hub and all related routes; use the next complete targeted GSC read before selecting an architecture or intent experiment."
-    },
-    {
-      "priority": 3,
-      "city": "West Valley City",
-      "state": "targeted-gsc-not-complete",
+      "state": "complete-request-with-unreturned-rows",
       "protectedFootholds": {
         "organicNumberOneQueries": [],
         "googleAiOverviewCitedQueries": []
@@ -233,6 +153,86 @@
     {
       "priority": 4,
       "city": "Draper",
+      "state": "complete-request-with-unreturned-rows",
+      "protectedFootholds": {
+        "organicNumberOneQueries": [],
+        "googleAiOverviewCitedQueries": []
+      },
+      "action": "Preserve the intended city hub and all related routes; use the next complete targeted GSC read before selecting an architecture or intent experiment."
+    },
+    {
+      "priority": 4,
+      "city": "Midvale",
+      "state": "complete-request-with-unreturned-rows",
+      "protectedFootholds": {
+        "organicNumberOneQueries": [],
+        "googleAiOverviewCitedQueries": []
+      },
+      "action": "Preserve the intended city hub and all related routes; use the next complete targeted GSC read before selecting an architecture or intent experiment."
+    },
+    {
+      "priority": 4,
+      "city": "Murray",
+      "state": "complete-request-with-unreturned-rows",
+      "protectedFootholds": {
+        "organicNumberOneQueries": [],
+        "googleAiOverviewCitedQueries": []
+      },
+      "action": "Preserve the intended city hub and all related routes; use the next complete targeted GSC read before selecting an architecture or intent experiment."
+    },
+    {
+      "priority": 4,
+      "city": "Riverton",
+      "state": "complete-request-with-unreturned-rows",
+      "protectedFootholds": {
+        "organicNumberOneQueries": [],
+        "googleAiOverviewCitedQueries": []
+      },
+      "action": "Preserve the intended city hub and all related routes; use the next complete targeted GSC read before selecting an architecture or intent experiment."
+    },
+    {
+      "priority": 4,
+      "city": "South Jordan",
+      "state": "complete-request-with-unreturned-rows",
+      "protectedFootholds": {
+        "organicNumberOneQueries": [],
+        "googleAiOverviewCitedQueries": []
+      },
+      "action": "Preserve the intended city hub and all related routes; use the next complete targeted GSC read before selecting an architecture or intent experiment."
+    },
+    {
+      "priority": 4,
+      "city": "South Salt Lake",
+      "state": "complete-request-with-unreturned-rows",
+      "protectedFootholds": {
+        "organicNumberOneQueries": [],
+        "googleAiOverviewCitedQueries": []
+      },
+      "action": "Preserve the intended city hub and all related routes; use the next complete targeted GSC read before selecting an architecture or intent experiment."
+    },
+    {
+      "priority": 4,
+      "city": "Taylorsville",
+      "state": "complete-request-with-unreturned-rows",
+      "protectedFootholds": {
+        "organicNumberOneQueries": [],
+        "googleAiOverviewCitedQueries": []
+      },
+      "action": "Preserve the intended city hub and all related routes; use the next complete targeted GSC read before selecting an architecture or intent experiment."
+    },
+    {
+      "priority": 4,
+      "city": "West Jordan",
+      "state": "complete-request-with-unreturned-rows",
+      "protectedFootholds": {
+        "organicNumberOneQueries": [],
+        "googleAiOverviewCitedQueries": []
+      },
+      "action": "Preserve the intended city hub and all related routes; use the next complete targeted GSC read before selecting an architecture or intent experiment."
+    },
+    {
+      "priority": 4,
+      "city": "West Valley City",
       "state": "complete-request-with-unreturned-rows",
       "protectedFootholds": {
         "organicNumberOneQueries": [],
@@ -839,10 +839,10 @@
       "page": "locations/bluffdale.html",
       "intendedCanonical": "https://www.framerestorationutah.com/locations/bluffdale",
       "intendedPageSha256": "1fe440cc5a7c9b8164cc4c961932361946f70bd05d7bc2ff96fab34fcdd43668",
-      "state": "targeted-gsc-not-complete",
+      "state": "complete-request-with-unreturned-rows",
       "coverage": {
         "fixedQueries": 4,
-        "requestedQueries": 0,
+        "requestedQueries": 4,
         "returnedQueries": 0,
         "exactRows": 0
       },
@@ -856,50 +856,50 @@
         {
           "queryId": "bluffdale-roofing-contractor",
           "keyword": "roofing contractor bluffdale",
-          "requested": false,
-          "state": "unmeasured-not-requested",
+          "requested": true,
+          "state": "requested-no-row-returned",
           "intendedCanonical": "https://www.framerestorationutah.com/locations/bluffdale",
           "intendedPageObserved": false,
           "highestImpressionUrl": null,
           "highestImpressionUrlIsIntended": null,
           "rows": [],
-          "interpretation": "The exact query was not requested in this GSC evidence snapshot; URL attribution is unmeasured, not zero."
+          "interpretation": "The exact query was requested but GSC returned no row; this is withheld or absent row evidence, not zero demand or proof that no Frame URL ranks."
         },
         {
           "queryId": "bluffdale-roof-repair",
           "keyword": "roof repair bluffdale",
-          "requested": false,
-          "state": "unmeasured-not-requested",
+          "requested": true,
+          "state": "requested-no-row-returned",
           "intendedCanonical": "https://www.framerestorationutah.com/locations/bluffdale",
           "intendedPageObserved": false,
           "highestImpressionUrl": null,
           "highestImpressionUrlIsIntended": null,
           "rows": [],
-          "interpretation": "The exact query was not requested in this GSC evidence snapshot; URL attribution is unmeasured, not zero."
+          "interpretation": "The exact query was requested but GSC returned no row; this is withheld or absent row evidence, not zero demand or proof that no Frame URL ranks."
         },
         {
           "queryId": "bluffdale-roof-replacement",
           "keyword": "roof replacement bluffdale",
-          "requested": false,
-          "state": "unmeasured-not-requested",
+          "requested": true,
+          "state": "requested-no-row-returned",
           "intendedCanonical": "https://www.framerestorationutah.com/locations/bluffdale",
           "intendedPageObserved": false,
           "highestImpressionUrl": null,
           "highestImpressionUrlIsIntended": null,
           "rows": [],
-          "interpretation": "The exact query was not requested in this GSC evidence snapshot; URL attribution is unmeasured, not zero."
+          "interpretation": "The exact query was requested but GSC returned no row; this is withheld or absent row evidence, not zero demand or proof that no Frame URL ranks."
         },
         {
           "queryId": "bluffdale-roofer",
           "keyword": "roofer bluffdale",
-          "requested": false,
-          "state": "unmeasured-not-requested",
+          "requested": true,
+          "state": "requested-no-row-returned",
           "intendedCanonical": "https://www.framerestorationutah.com/locations/bluffdale",
           "intendedPageObserved": false,
           "highestImpressionUrl": null,
           "highestImpressionUrlIsIntended": null,
           "rows": [],
-          "interpretation": "The exact query was not requested in this GSC evidence snapshot; URL attribution is unmeasured, not zero."
+          "interpretation": "The exact query was requested but GSC returned no row; this is withheld or absent row evidence, not zero demand or proof that no Frame URL ranks."
         }
       ]
     },
@@ -912,67 +912,112 @@
       "page": "locations/herriman.html",
       "intendedCanonical": "https://www.framerestorationutah.com/locations/herriman",
       "intendedPageSha256": "36b010060e1b32be882756aa3598d79ecf0a4a36f55ef4317b8366cbaf64670f",
-      "state": "targeted-gsc-not-complete",
+      "state": "url-competition-requires-diagnosis",
       "coverage": {
         "fixedQueries": 4,
-        "requestedQueries": 0,
-        "returnedQueries": 0,
-        "exactRows": 0
+        "requestedQueries": 4,
+        "returnedQueries": 3,
+        "exactRows": 4
       },
       "protectedFootholds": {
         "organicNumberOneQueries": [],
         "googleAiOverviewCitedQueries": []
       },
-      "alternateNormalizedUrls": [],
-      "nextEvidenceAction": "Preserve the intended city hub and all related routes; use the next complete targeted GSC read before selecting an architecture or intent experiment.",
+      "alternateNormalizedUrls": [
+        "framerestorationutah.com/salt-lake-city"
+      ],
+      "nextEvidenceAction": "Inspect the alternate URLs against redirect dates, canonicals, current live routing, and query intent. Treat this blended 28-day evidence as a diagnosis trigger, not proof of current cannibalization or permission to redirect.",
       "queries": [
         {
           "queryId": "herriman-roofing-contractor",
           "keyword": "roofing contractor herriman",
-          "requested": false,
-          "state": "unmeasured-not-requested",
+          "requested": true,
+          "state": "intended-url-only",
           "intendedCanonical": "https://www.framerestorationutah.com/locations/herriman",
-          "intendedPageObserved": false,
-          "highestImpressionUrl": null,
-          "highestImpressionUrlIsIntended": null,
-          "rows": [],
-          "interpretation": "The exact query was not requested in this GSC evidence snapshot; URL attribution is unmeasured, not zero."
+          "intendedPageObserved": true,
+          "highestImpressionUrl": "framerestorationutah.com/locations/herriman",
+          "highestImpressionUrlIsIntended": true,
+          "rows": [
+            {
+              "normalizedUrl": "framerestorationutah.com/locations/herriman",
+              "urlVariants": [
+                "https://www.framerestorationutah.com/locations/herriman"
+              ],
+              "clicks": 0,
+              "impressions": 2,
+              "position": 19.5,
+              "intended": true
+            }
+          ],
+          "interpretation": "Only the intended city hub appears in the exact query-to-page rows; preserve that route and canonical."
         },
         {
           "queryId": "herriman-roof-repair",
           "keyword": "roof repair herriman",
-          "requested": false,
-          "state": "unmeasured-not-requested",
+          "requested": true,
+          "state": "intended-url-only",
           "intendedCanonical": "https://www.framerestorationutah.com/locations/herriman",
-          "intendedPageObserved": false,
-          "highestImpressionUrl": null,
-          "highestImpressionUrlIsIntended": null,
-          "rows": [],
-          "interpretation": "The exact query was not requested in this GSC evidence snapshot; URL attribution is unmeasured, not zero."
+          "intendedPageObserved": true,
+          "highestImpressionUrl": "framerestorationutah.com/locations/herriman",
+          "highestImpressionUrlIsIntended": true,
+          "rows": [
+            {
+              "normalizedUrl": "framerestorationutah.com/locations/herriman",
+              "urlVariants": [
+                "https://www.framerestorationutah.com/locations/herriman"
+              ],
+              "clicks": 0,
+              "impressions": 42,
+              "position": 12.1,
+              "intended": true
+            }
+          ],
+          "interpretation": "Only the intended city hub appears in the exact query-to-page rows; preserve that route and canonical."
         },
         {
           "queryId": "herriman-roof-replacement",
           "keyword": "roof replacement herriman",
-          "requested": false,
-          "state": "unmeasured-not-requested",
+          "requested": true,
+          "state": "multi-url-including-intended",
           "intendedCanonical": "https://www.framerestorationutah.com/locations/herriman",
-          "intendedPageObserved": false,
-          "highestImpressionUrl": null,
-          "highestImpressionUrlIsIntended": null,
-          "rows": [],
-          "interpretation": "The exact query was not requested in this GSC evidence snapshot; URL attribution is unmeasured, not zero."
+          "intendedPageObserved": true,
+          "highestImpressionUrl": "framerestorationutah.com/locations/herriman",
+          "highestImpressionUrlIsIntended": true,
+          "rows": [
+            {
+              "normalizedUrl": "framerestorationutah.com/locations/herriman",
+              "urlVariants": [
+                "https://www.framerestorationutah.com/locations/herriman"
+              ],
+              "clicks": 0,
+              "impressions": 55,
+              "position": 7.9,
+              "intended": true
+            },
+            {
+              "normalizedUrl": "framerestorationutah.com/salt-lake-city",
+              "urlVariants": [
+                "https://www.framerestorationutah.com/salt-lake-city"
+              ],
+              "clicks": 0,
+              "impressions": 1,
+              "position": 61,
+              "intended": false
+            }
+          ],
+          "interpretation": "The intended hub and at least one other Frame URL appear in the 28-day window; diagnose timing, redirects, canonicals, and intent before any architecture change."
         },
         {
           "queryId": "herriman-roofer",
           "keyword": "roofer herriman",
-          "requested": false,
-          "state": "unmeasured-not-requested",
+          "requested": true,
+          "state": "requested-no-row-returned",
           "intendedCanonical": "https://www.framerestorationutah.com/locations/herriman",
           "intendedPageObserved": false,
           "highestImpressionUrl": null,
           "highestImpressionUrlIsIntended": null,
           "rows": [],
-          "interpretation": "The exact query was not requested in this GSC evidence snapshot; URL attribution is unmeasured, not zero."
+          "interpretation": "The exact query was requested but GSC returned no row; this is withheld or absent row evidence, not zero demand or proof that no Frame URL ranks."
         }
       ]
     },
@@ -985,12 +1030,12 @@
       "page": "locations/kearns.html",
       "intendedCanonical": "https://www.framerestorationutah.com/locations/kearns",
       "intendedPageSha256": "a33434df2765fd63b8b948622ee2c92910385e88151c58f82e8396a0916d6905",
-      "state": "targeted-gsc-not-complete",
+      "state": "complete-request-with-unreturned-rows",
       "coverage": {
         "fixedQueries": 4,
-        "requestedQueries": 0,
-        "returnedQueries": 0,
-        "exactRows": 0
+        "requestedQueries": 4,
+        "returnedQueries": 1,
+        "exactRows": 1
       },
       "protectedFootholds": {
         "organicNumberOneQueries": [
@@ -1004,50 +1049,61 @@
         {
           "queryId": "kearns-roofing-contractor",
           "keyword": "roofing contractor kearns",
-          "requested": false,
-          "state": "unmeasured-not-requested",
+          "requested": true,
+          "state": "requested-no-row-returned",
           "intendedCanonical": "https://www.framerestorationutah.com/locations/kearns",
           "intendedPageObserved": false,
           "highestImpressionUrl": null,
           "highestImpressionUrlIsIntended": null,
           "rows": [],
-          "interpretation": "The exact query was not requested in this GSC evidence snapshot; URL attribution is unmeasured, not zero."
+          "interpretation": "The exact query was requested but GSC returned no row; this is withheld or absent row evidence, not zero demand or proof that no Frame URL ranks."
         },
         {
           "queryId": "kearns-roof-repair",
           "keyword": "roof repair kearns",
-          "requested": false,
-          "state": "unmeasured-not-requested",
+          "requested": true,
+          "state": "requested-no-row-returned",
           "intendedCanonical": "https://www.framerestorationutah.com/locations/kearns",
           "intendedPageObserved": false,
           "highestImpressionUrl": null,
           "highestImpressionUrlIsIntended": null,
           "rows": [],
-          "interpretation": "The exact query was not requested in this GSC evidence snapshot; URL attribution is unmeasured, not zero."
+          "interpretation": "The exact query was requested but GSC returned no row; this is withheld or absent row evidence, not zero demand or proof that no Frame URL ranks."
         },
         {
           "queryId": "kearns-roof-replacement",
           "keyword": "roof replacement kearns",
-          "requested": false,
-          "state": "unmeasured-not-requested",
+          "requested": true,
+          "state": "requested-no-row-returned",
           "intendedCanonical": "https://www.framerestorationutah.com/locations/kearns",
           "intendedPageObserved": false,
           "highestImpressionUrl": null,
           "highestImpressionUrlIsIntended": null,
           "rows": [],
-          "interpretation": "The exact query was not requested in this GSC evidence snapshot; URL attribution is unmeasured, not zero."
+          "interpretation": "The exact query was requested but GSC returned no row; this is withheld or absent row evidence, not zero demand or proof that no Frame URL ranks."
         },
         {
           "queryId": "kearns-roofer",
           "keyword": "roofer kearns",
-          "requested": false,
-          "state": "unmeasured-not-requested",
+          "requested": true,
+          "state": "intended-url-only",
           "intendedCanonical": "https://www.framerestorationutah.com/locations/kearns",
-          "intendedPageObserved": false,
-          "highestImpressionUrl": null,
-          "highestImpressionUrlIsIntended": null,
-          "rows": [],
-          "interpretation": "The exact query was not requested in this GSC evidence snapshot; URL attribution is unmeasured, not zero."
+          "intendedPageObserved": true,
+          "highestImpressionUrl": "framerestorationutah.com/locations/kearns",
+          "highestImpressionUrlIsIntended": true,
+          "rows": [
+            {
+              "normalizedUrl": "framerestorationutah.com/locations/kearns",
+              "urlVariants": [
+                "https://www.framerestorationutah.com/locations/kearns"
+              ],
+              "clicks": 0,
+              "impressions": 1,
+              "position": 11,
+              "intended": true
+            }
+          ],
+          "interpretation": "Only the intended city hub appears in the exact query-to-page rows; preserve that route and canonical."
         }
       ]
     },
@@ -1060,10 +1116,10 @@
       "page": "locations/magna.html",
       "intendedCanonical": "https://www.framerestorationutah.com/locations/magna",
       "intendedPageSha256": "37debc6a80634ab438ad6d61f73f3369f91d4c09cfbb3673133b99832a8d3d47",
-      "state": "targeted-gsc-not-complete",
+      "state": "complete-request-with-unreturned-rows",
       "coverage": {
         "fixedQueries": 4,
-        "requestedQueries": 0,
+        "requestedQueries": 4,
         "returnedQueries": 0,
         "exactRows": 0
       },
@@ -1081,50 +1137,50 @@
         {
           "queryId": "magna-roofing-contractor",
           "keyword": "roofing contractor magna",
-          "requested": false,
-          "state": "unmeasured-not-requested",
+          "requested": true,
+          "state": "requested-no-row-returned",
           "intendedCanonical": "https://www.framerestorationutah.com/locations/magna",
           "intendedPageObserved": false,
           "highestImpressionUrl": null,
           "highestImpressionUrlIsIntended": null,
           "rows": [],
-          "interpretation": "The exact query was not requested in this GSC evidence snapshot; URL attribution is unmeasured, not zero."
+          "interpretation": "The exact query was requested but GSC returned no row; this is withheld or absent row evidence, not zero demand or proof that no Frame URL ranks."
         },
         {
           "queryId": "magna-roof-repair",
           "keyword": "roof repair magna",
-          "requested": false,
-          "state": "unmeasured-not-requested",
+          "requested": true,
+          "state": "requested-no-row-returned",
           "intendedCanonical": "https://www.framerestorationutah.com/locations/magna",
           "intendedPageObserved": false,
           "highestImpressionUrl": null,
           "highestImpressionUrlIsIntended": null,
           "rows": [],
-          "interpretation": "The exact query was not requested in this GSC evidence snapshot; URL attribution is unmeasured, not zero."
+          "interpretation": "The exact query was requested but GSC returned no row; this is withheld or absent row evidence, not zero demand or proof that no Frame URL ranks."
         },
         {
           "queryId": "magna-roof-replacement",
           "keyword": "roof replacement magna",
-          "requested": false,
-          "state": "unmeasured-not-requested",
+          "requested": true,
+          "state": "requested-no-row-returned",
           "intendedCanonical": "https://www.framerestorationutah.com/locations/magna",
           "intendedPageObserved": false,
           "highestImpressionUrl": null,
           "highestImpressionUrlIsIntended": null,
           "rows": [],
-          "interpretation": "The exact query was not requested in this GSC evidence snapshot; URL attribution is unmeasured, not zero."
+          "interpretation": "The exact query was requested but GSC returned no row; this is withheld or absent row evidence, not zero demand or proof that no Frame URL ranks."
         },
         {
           "queryId": "magna-roofer",
           "keyword": "roofer magna",
-          "requested": false,
-          "state": "unmeasured-not-requested",
+          "requested": true,
+          "state": "requested-no-row-returned",
           "intendedCanonical": "https://www.framerestorationutah.com/locations/magna",
           "intendedPageObserved": false,
           "highestImpressionUrl": null,
           "highestImpressionUrlIsIntended": null,
           "rows": [],
-          "interpretation": "The exact query was not requested in this GSC evidence snapshot; URL attribution is unmeasured, not zero."
+          "interpretation": "The exact query was requested but GSC returned no row; this is withheld or absent row evidence, not zero demand or proof that no Frame URL ranks."
         }
       ]
     },
@@ -1137,10 +1193,10 @@
       "page": "locations/midvale.html",
       "intendedCanonical": "https://www.framerestorationutah.com/locations/midvale",
       "intendedPageSha256": "fd7099aa201107a8f10f37b7b23791a7dea6b636ccdfa9e1371408b4cfb3377c",
-      "state": "targeted-gsc-not-complete",
+      "state": "complete-request-with-unreturned-rows",
       "coverage": {
         "fixedQueries": 4,
-        "requestedQueries": 0,
+        "requestedQueries": 4,
         "returnedQueries": 0,
         "exactRows": 0
       },
@@ -1154,50 +1210,50 @@
         {
           "queryId": "midvale-roofing-contractor",
           "keyword": "roofing contractor midvale",
-          "requested": false,
-          "state": "unmeasured-not-requested",
+          "requested": true,
+          "state": "requested-no-row-returned",
           "intendedCanonical": "https://www.framerestorationutah.com/locations/midvale",
           "intendedPageObserved": false,
           "highestImpressionUrl": null,
           "highestImpressionUrlIsIntended": null,
           "rows": [],
-          "interpretation": "The exact query was not requested in this GSC evidence snapshot; URL attribution is unmeasured, not zero."
+          "interpretation": "The exact query was requested but GSC returned no row; this is withheld or absent row evidence, not zero demand or proof that no Frame URL ranks."
         },
         {
           "queryId": "midvale-roof-repair",
           "keyword": "roof repair midvale",
-          "requested": false,
-          "state": "unmeasured-not-requested",
+          "requested": true,
+          "state": "requested-no-row-returned",
           "intendedCanonical": "https://www.framerestorationutah.com/locations/midvale",
           "intendedPageObserved": false,
           "highestImpressionUrl": null,
           "highestImpressionUrlIsIntended": null,
           "rows": [],
-          "interpretation": "The exact query was not requested in this GSC evidence snapshot; URL attribution is unmeasured, not zero."
+          "interpretation": "The exact query was requested but GSC returned no row; this is withheld or absent row evidence, not zero demand or proof that no Frame URL ranks."
         },
         {
           "queryId": "midvale-roof-replacement",
           "keyword": "roof replacement midvale",
-          "requested": false,
-          "state": "unmeasured-not-requested",
+          "requested": true,
+          "state": "requested-no-row-returned",
           "intendedCanonical": "https://www.framerestorationutah.com/locations/midvale",
           "intendedPageObserved": false,
           "highestImpressionUrl": null,
           "highestImpressionUrlIsIntended": null,
           "rows": [],
-          "interpretation": "The exact query was not requested in this GSC evidence snapshot; URL attribution is unmeasured, not zero."
+          "interpretation": "The exact query was requested but GSC returned no row; this is withheld or absent row evidence, not zero demand or proof that no Frame URL ranks."
         },
         {
           "queryId": "midvale-roofer",
           "keyword": "roofer midvale",
-          "requested": false,
-          "state": "unmeasured-not-requested",
+          "requested": true,
+          "state": "requested-no-row-returned",
           "intendedCanonical": "https://www.framerestorationutah.com/locations/midvale",
           "intendedPageObserved": false,
           "highestImpressionUrl": null,
           "highestImpressionUrlIsIntended": null,
           "rows": [],
-          "interpretation": "The exact query was not requested in this GSC evidence snapshot; URL attribution is unmeasured, not zero."
+          "interpretation": "The exact query was requested but GSC returned no row; this is withheld or absent row evidence, not zero demand or proof that no Frame URL ranks."
         }
       ]
     },
@@ -1210,12 +1266,12 @@
       "page": "locations/murray.html",
       "intendedCanonical": "https://www.framerestorationutah.com/locations/murray",
       "intendedPageSha256": "3050e9d9dae8fcf4f98da2a7723f38e081110f24edbe93c2c72ac709f6fc45f4",
-      "state": "targeted-gsc-not-complete",
+      "state": "complete-request-with-unreturned-rows",
       "coverage": {
         "fixedQueries": 4,
-        "requestedQueries": 0,
-        "returnedQueries": 0,
-        "exactRows": 0
+        "requestedQueries": 4,
+        "returnedQueries": 3,
+        "exactRows": 3
       },
       "protectedFootholds": {
         "organicNumberOneQueries": [],
@@ -1227,50 +1283,83 @@
         {
           "queryId": "murray-roofing-contractor",
           "keyword": "roofing contractor murray",
-          "requested": false,
-          "state": "unmeasured-not-requested",
+          "requested": true,
+          "state": "intended-url-only",
           "intendedCanonical": "https://www.framerestorationutah.com/locations/murray",
-          "intendedPageObserved": false,
-          "highestImpressionUrl": null,
-          "highestImpressionUrlIsIntended": null,
-          "rows": [],
-          "interpretation": "The exact query was not requested in this GSC evidence snapshot; URL attribution is unmeasured, not zero."
+          "intendedPageObserved": true,
+          "highestImpressionUrl": "framerestorationutah.com/locations/murray",
+          "highestImpressionUrlIsIntended": true,
+          "rows": [
+            {
+              "normalizedUrl": "framerestorationutah.com/locations/murray",
+              "urlVariants": [
+                "https://www.framerestorationutah.com/locations/murray"
+              ],
+              "clicks": 0,
+              "impressions": 12,
+              "position": 19.6,
+              "intended": true
+            }
+          ],
+          "interpretation": "Only the intended city hub appears in the exact query-to-page rows; preserve that route and canonical."
         },
         {
           "queryId": "murray-roof-repair",
           "keyword": "roof repair murray",
-          "requested": false,
-          "state": "unmeasured-not-requested",
+          "requested": true,
+          "state": "intended-url-only",
           "intendedCanonical": "https://www.framerestorationutah.com/locations/murray",
-          "intendedPageObserved": false,
-          "highestImpressionUrl": null,
-          "highestImpressionUrlIsIntended": null,
-          "rows": [],
-          "interpretation": "The exact query was not requested in this GSC evidence snapshot; URL attribution is unmeasured, not zero."
+          "intendedPageObserved": true,
+          "highestImpressionUrl": "framerestorationutah.com/locations/murray",
+          "highestImpressionUrlIsIntended": true,
+          "rows": [
+            {
+              "normalizedUrl": "framerestorationutah.com/locations/murray",
+              "urlVariants": [
+                "https://www.framerestorationutah.com/locations/murray"
+              ],
+              "clicks": 0,
+              "impressions": 14,
+              "position": 11.6,
+              "intended": true
+            }
+          ],
+          "interpretation": "Only the intended city hub appears in the exact query-to-page rows; preserve that route and canonical."
         },
         {
           "queryId": "murray-roof-replacement",
           "keyword": "roof replacement murray",
-          "requested": false,
-          "state": "unmeasured-not-requested",
+          "requested": true,
+          "state": "intended-url-only",
           "intendedCanonical": "https://www.framerestorationutah.com/locations/murray",
-          "intendedPageObserved": false,
-          "highestImpressionUrl": null,
-          "highestImpressionUrlIsIntended": null,
-          "rows": [],
-          "interpretation": "The exact query was not requested in this GSC evidence snapshot; URL attribution is unmeasured, not zero."
+          "intendedPageObserved": true,
+          "highestImpressionUrl": "framerestorationutah.com/locations/murray",
+          "highestImpressionUrlIsIntended": true,
+          "rows": [
+            {
+              "normalizedUrl": "framerestorationutah.com/locations/murray",
+              "urlVariants": [
+                "https://www.framerestorationutah.com/locations/murray"
+              ],
+              "clicks": 0,
+              "impressions": 15,
+              "position": 8,
+              "intended": true
+            }
+          ],
+          "interpretation": "Only the intended city hub appears in the exact query-to-page rows; preserve that route and canonical."
         },
         {
           "queryId": "murray-roofer",
           "keyword": "roofer murray",
-          "requested": false,
-          "state": "unmeasured-not-requested",
+          "requested": true,
+          "state": "requested-no-row-returned",
           "intendedCanonical": "https://www.framerestorationutah.com/locations/murray",
           "intendedPageObserved": false,
           "highestImpressionUrl": null,
           "highestImpressionUrlIsIntended": null,
           "rows": [],
-          "interpretation": "The exact query was not requested in this GSC evidence snapshot; URL attribution is unmeasured, not zero."
+          "interpretation": "The exact query was requested but GSC returned no row; this is withheld or absent row evidence, not zero demand or proof that no Frame URL ranks."
         }
       ]
     },
@@ -1283,12 +1372,12 @@
       "page": "locations/riverton.html",
       "intendedCanonical": "https://www.framerestorationutah.com/locations/riverton",
       "intendedPageSha256": "db3989d8a1ebfe33c61a75ada8feff50d31995b6c58c2f9ed405487633e42549",
-      "state": "targeted-gsc-not-complete",
+      "state": "complete-request-with-unreturned-rows",
       "coverage": {
         "fixedQueries": 4,
-        "requestedQueries": 0,
-        "returnedQueries": 0,
-        "exactRows": 0
+        "requestedQueries": 4,
+        "returnedQueries": 2,
+        "exactRows": 2
       },
       "protectedFootholds": {
         "organicNumberOneQueries": [],
@@ -1300,50 +1389,72 @@
         {
           "queryId": "riverton-roofing-contractor",
           "keyword": "roofing contractor riverton",
-          "requested": false,
-          "state": "unmeasured-not-requested",
+          "requested": true,
+          "state": "intended-url-only",
           "intendedCanonical": "https://www.framerestorationutah.com/locations/riverton",
-          "intendedPageObserved": false,
-          "highestImpressionUrl": null,
-          "highestImpressionUrlIsIntended": null,
-          "rows": [],
-          "interpretation": "The exact query was not requested in this GSC evidence snapshot; URL attribution is unmeasured, not zero."
+          "intendedPageObserved": true,
+          "highestImpressionUrl": "framerestorationutah.com/locations/riverton",
+          "highestImpressionUrlIsIntended": true,
+          "rows": [
+            {
+              "normalizedUrl": "framerestorationutah.com/locations/riverton",
+              "urlVariants": [
+                "https://www.framerestorationutah.com/locations/riverton"
+              ],
+              "clicks": 0,
+              "impressions": 9,
+              "position": 22.6,
+              "intended": true
+            }
+          ],
+          "interpretation": "Only the intended city hub appears in the exact query-to-page rows; preserve that route and canonical."
         },
         {
           "queryId": "riverton-roof-repair",
           "keyword": "roof repair riverton",
-          "requested": false,
-          "state": "unmeasured-not-requested",
+          "requested": true,
+          "state": "requested-no-row-returned",
           "intendedCanonical": "https://www.framerestorationutah.com/locations/riverton",
           "intendedPageObserved": false,
           "highestImpressionUrl": null,
           "highestImpressionUrlIsIntended": null,
           "rows": [],
-          "interpretation": "The exact query was not requested in this GSC evidence snapshot; URL attribution is unmeasured, not zero."
+          "interpretation": "The exact query was requested but GSC returned no row; this is withheld or absent row evidence, not zero demand or proof that no Frame URL ranks."
         },
         {
           "queryId": "riverton-roof-replacement",
           "keyword": "roof replacement riverton",
-          "requested": false,
-          "state": "unmeasured-not-requested",
+          "requested": true,
+          "state": "requested-no-row-returned",
           "intendedCanonical": "https://www.framerestorationutah.com/locations/riverton",
           "intendedPageObserved": false,
           "highestImpressionUrl": null,
           "highestImpressionUrlIsIntended": null,
           "rows": [],
-          "interpretation": "The exact query was not requested in this GSC evidence snapshot; URL attribution is unmeasured, not zero."
+          "interpretation": "The exact query was requested but GSC returned no row; this is withheld or absent row evidence, not zero demand or proof that no Frame URL ranks."
         },
         {
           "queryId": "riverton-roofer",
           "keyword": "roofer riverton",
-          "requested": false,
-          "state": "unmeasured-not-requested",
+          "requested": true,
+          "state": "intended-url-only",
           "intendedCanonical": "https://www.framerestorationutah.com/locations/riverton",
-          "intendedPageObserved": false,
-          "highestImpressionUrl": null,
-          "highestImpressionUrlIsIntended": null,
-          "rows": [],
-          "interpretation": "The exact query was not requested in this GSC evidence snapshot; URL attribution is unmeasured, not zero."
+          "intendedPageObserved": true,
+          "highestImpressionUrl": "framerestorationutah.com/locations/riverton",
+          "highestImpressionUrlIsIntended": true,
+          "rows": [
+            {
+              "normalizedUrl": "framerestorationutah.com/locations/riverton",
+              "urlVariants": [
+                "https://www.framerestorationutah.com/locations/riverton"
+              ],
+              "clicks": 0,
+              "impressions": 12,
+              "position": 12.6,
+              "intended": true
+            }
+          ],
+          "interpretation": "Only the intended city hub appears in the exact query-to-page rows; preserve that route and canonical."
         }
       ]
     },
@@ -1356,12 +1467,12 @@
       "page": "locations/south-jordan.html",
       "intendedCanonical": "https://www.framerestorationutah.com/locations/south-jordan",
       "intendedPageSha256": "1d03e4a6779ba8d2dc2601b9a3bf1d879a98adee4ca85d28c70c683be414370f",
-      "state": "targeted-gsc-not-complete",
+      "state": "complete-request-with-unreturned-rows",
       "coverage": {
         "fixedQueries": 4,
-        "requestedQueries": 0,
-        "returnedQueries": 0,
-        "exactRows": 0
+        "requestedQueries": 4,
+        "returnedQueries": 3,
+        "exactRows": 3
       },
       "protectedFootholds": {
         "organicNumberOneQueries": [],
@@ -1373,50 +1484,83 @@
         {
           "queryId": "south-jordan-roofing-contractor",
           "keyword": "roofing contractor south jordan",
-          "requested": false,
-          "state": "unmeasured-not-requested",
+          "requested": true,
+          "state": "intended-url-only",
           "intendedCanonical": "https://www.framerestorationutah.com/locations/south-jordan",
-          "intendedPageObserved": false,
-          "highestImpressionUrl": null,
-          "highestImpressionUrlIsIntended": null,
-          "rows": [],
-          "interpretation": "The exact query was not requested in this GSC evidence snapshot; URL attribution is unmeasured, not zero."
+          "intendedPageObserved": true,
+          "highestImpressionUrl": "framerestorationutah.com/locations/south-jordan",
+          "highestImpressionUrlIsIntended": true,
+          "rows": [
+            {
+              "normalizedUrl": "framerestorationutah.com/locations/south-jordan",
+              "urlVariants": [
+                "https://www.framerestorationutah.com/locations/south-jordan"
+              ],
+              "clicks": 0,
+              "impressions": 24,
+              "position": 16.2,
+              "intended": true
+            }
+          ],
+          "interpretation": "Only the intended city hub appears in the exact query-to-page rows; preserve that route and canonical."
         },
         {
           "queryId": "south-jordan-roof-repair",
           "keyword": "roof repair south jordan",
-          "requested": false,
-          "state": "unmeasured-not-requested",
+          "requested": true,
+          "state": "intended-url-only",
           "intendedCanonical": "https://www.framerestorationutah.com/locations/south-jordan",
-          "intendedPageObserved": false,
-          "highestImpressionUrl": null,
-          "highestImpressionUrlIsIntended": null,
-          "rows": [],
-          "interpretation": "The exact query was not requested in this GSC evidence snapshot; URL attribution is unmeasured, not zero."
+          "intendedPageObserved": true,
+          "highestImpressionUrl": "framerestorationutah.com/locations/south-jordan",
+          "highestImpressionUrlIsIntended": true,
+          "rows": [
+            {
+              "normalizedUrl": "framerestorationutah.com/locations/south-jordan",
+              "urlVariants": [
+                "https://www.framerestorationutah.com/locations/south-jordan"
+              ],
+              "clicks": 0,
+              "impressions": 25,
+              "position": 10.7,
+              "intended": true
+            }
+          ],
+          "interpretation": "Only the intended city hub appears in the exact query-to-page rows; preserve that route and canonical."
         },
         {
           "queryId": "south-jordan-roof-replacement",
           "keyword": "roof replacement south jordan",
-          "requested": false,
-          "state": "unmeasured-not-requested",
+          "requested": true,
+          "state": "intended-url-only",
           "intendedCanonical": "https://www.framerestorationutah.com/locations/south-jordan",
-          "intendedPageObserved": false,
-          "highestImpressionUrl": null,
-          "highestImpressionUrlIsIntended": null,
-          "rows": [],
-          "interpretation": "The exact query was not requested in this GSC evidence snapshot; URL attribution is unmeasured, not zero."
+          "intendedPageObserved": true,
+          "highestImpressionUrl": "framerestorationutah.com/locations/south-jordan",
+          "highestImpressionUrlIsIntended": true,
+          "rows": [
+            {
+              "normalizedUrl": "framerestorationutah.com/locations/south-jordan",
+              "urlVariants": [
+                "https://www.framerestorationutah.com/locations/south-jordan"
+              ],
+              "clicks": 0,
+              "impressions": 15,
+              "position": 8.9,
+              "intended": true
+            }
+          ],
+          "interpretation": "Only the intended city hub appears in the exact query-to-page rows; preserve that route and canonical."
         },
         {
           "queryId": "south-jordan-roofer",
           "keyword": "roofer south jordan",
-          "requested": false,
-          "state": "unmeasured-not-requested",
+          "requested": true,
+          "state": "requested-no-row-returned",
           "intendedCanonical": "https://www.framerestorationutah.com/locations/south-jordan",
           "intendedPageObserved": false,
           "highestImpressionUrl": null,
           "highestImpressionUrlIsIntended": null,
           "rows": [],
-          "interpretation": "The exact query was not requested in this GSC evidence snapshot; URL attribution is unmeasured, not zero."
+          "interpretation": "The exact query was requested but GSC returned no row; this is withheld or absent row evidence, not zero demand or proof that no Frame URL ranks."
         }
       ]
     },
@@ -1429,10 +1573,10 @@
       "page": "locations/south-salt-lake.html",
       "intendedCanonical": "https://www.framerestorationutah.com/locations/south-salt-lake",
       "intendedPageSha256": "0fdb0d1bb5eac270f298be2474de58e4110ca8ba34f2247e84b66b22bf4ef22a",
-      "state": "targeted-gsc-not-complete",
+      "state": "complete-request-with-unreturned-rows",
       "coverage": {
         "fixedQueries": 4,
-        "requestedQueries": 0,
+        "requestedQueries": 4,
         "returnedQueries": 0,
         "exactRows": 0
       },
@@ -1446,50 +1590,50 @@
         {
           "queryId": "south-salt-lake-roofing-contractor",
           "keyword": "roofing contractor south salt lake",
-          "requested": false,
-          "state": "unmeasured-not-requested",
+          "requested": true,
+          "state": "requested-no-row-returned",
           "intendedCanonical": "https://www.framerestorationutah.com/locations/south-salt-lake",
           "intendedPageObserved": false,
           "highestImpressionUrl": null,
           "highestImpressionUrlIsIntended": null,
           "rows": [],
-          "interpretation": "The exact query was not requested in this GSC evidence snapshot; URL attribution is unmeasured, not zero."
+          "interpretation": "The exact query was requested but GSC returned no row; this is withheld or absent row evidence, not zero demand or proof that no Frame URL ranks."
         },
         {
           "queryId": "south-salt-lake-roof-repair",
           "keyword": "roof repair south salt lake",
-          "requested": false,
-          "state": "unmeasured-not-requested",
+          "requested": true,
+          "state": "requested-no-row-returned",
           "intendedCanonical": "https://www.framerestorationutah.com/locations/south-salt-lake",
           "intendedPageObserved": false,
           "highestImpressionUrl": null,
           "highestImpressionUrlIsIntended": null,
           "rows": [],
-          "interpretation": "The exact query was not requested in this GSC evidence snapshot; URL attribution is unmeasured, not zero."
+          "interpretation": "The exact query was requested but GSC returned no row; this is withheld or absent row evidence, not zero demand or proof that no Frame URL ranks."
         },
         {
           "queryId": "south-salt-lake-roof-replacement",
           "keyword": "roof replacement south salt lake",
-          "requested": false,
-          "state": "unmeasured-not-requested",
+          "requested": true,
+          "state": "requested-no-row-returned",
           "intendedCanonical": "https://www.framerestorationutah.com/locations/south-salt-lake",
           "intendedPageObserved": false,
           "highestImpressionUrl": null,
           "highestImpressionUrlIsIntended": null,
           "rows": [],
-          "interpretation": "The exact query was not requested in this GSC evidence snapshot; URL attribution is unmeasured, not zero."
+          "interpretation": "The exact query was requested but GSC returned no row; this is withheld or absent row evidence, not zero demand or proof that no Frame URL ranks."
         },
         {
           "queryId": "south-salt-lake-roofer",
           "keyword": "roofer south salt lake",
-          "requested": false,
-          "state": "unmeasured-not-requested",
+          "requested": true,
+          "state": "requested-no-row-returned",
           "intendedCanonical": "https://www.framerestorationutah.com/locations/south-salt-lake",
           "intendedPageObserved": false,
           "highestImpressionUrl": null,
           "highestImpressionUrlIsIntended": null,
           "rows": [],
-          "interpretation": "The exact query was not requested in this GSC evidence snapshot; URL attribution is unmeasured, not zero."
+          "interpretation": "The exact query was requested but GSC returned no row; this is withheld or absent row evidence, not zero demand or proof that no Frame URL ranks."
         }
       ]
     },
@@ -1502,10 +1646,10 @@
       "page": "locations/taylorsville.html",
       "intendedCanonical": "https://www.framerestorationutah.com/locations/taylorsville",
       "intendedPageSha256": "f8c64515c34c43609f66a3178c98cdb682149f6c0be2028130ea2e45706a841f",
-      "state": "targeted-gsc-not-complete",
+      "state": "complete-request-with-unreturned-rows",
       "coverage": {
         "fixedQueries": 4,
-        "requestedQueries": 0,
+        "requestedQueries": 4,
         "returnedQueries": 0,
         "exactRows": 0
       },
@@ -1519,50 +1663,50 @@
         {
           "queryId": "taylorsville-roofing-contractor",
           "keyword": "roofing contractor taylorsville",
-          "requested": false,
-          "state": "unmeasured-not-requested",
+          "requested": true,
+          "state": "requested-no-row-returned",
           "intendedCanonical": "https://www.framerestorationutah.com/locations/taylorsville",
           "intendedPageObserved": false,
           "highestImpressionUrl": null,
           "highestImpressionUrlIsIntended": null,
           "rows": [],
-          "interpretation": "The exact query was not requested in this GSC evidence snapshot; URL attribution is unmeasured, not zero."
+          "interpretation": "The exact query was requested but GSC returned no row; this is withheld or absent row evidence, not zero demand or proof that no Frame URL ranks."
         },
         {
           "queryId": "taylorsville-roof-repair",
           "keyword": "roof repair taylorsville",
-          "requested": false,
-          "state": "unmeasured-not-requested",
+          "requested": true,
+          "state": "requested-no-row-returned",
           "intendedCanonical": "https://www.framerestorationutah.com/locations/taylorsville",
           "intendedPageObserved": false,
           "highestImpressionUrl": null,
           "highestImpressionUrlIsIntended": null,
           "rows": [],
-          "interpretation": "The exact query was not requested in this GSC evidence snapshot; URL attribution is unmeasured, not zero."
+          "interpretation": "The exact query was requested but GSC returned no row; this is withheld or absent row evidence, not zero demand or proof that no Frame URL ranks."
         },
         {
           "queryId": "taylorsville-roof-replacement",
           "keyword": "roof replacement taylorsville",
-          "requested": false,
-          "state": "unmeasured-not-requested",
+          "requested": true,
+          "state": "requested-no-row-returned",
           "intendedCanonical": "https://www.framerestorationutah.com/locations/taylorsville",
           "intendedPageObserved": false,
           "highestImpressionUrl": null,
           "highestImpressionUrlIsIntended": null,
           "rows": [],
-          "interpretation": "The exact query was not requested in this GSC evidence snapshot; URL attribution is unmeasured, not zero."
+          "interpretation": "The exact query was requested but GSC returned no row; this is withheld or absent row evidence, not zero demand or proof that no Frame URL ranks."
         },
         {
           "queryId": "taylorsville-roofer",
           "keyword": "roofer taylorsville",
-          "requested": false,
-          "state": "unmeasured-not-requested",
+          "requested": true,
+          "state": "requested-no-row-returned",
           "intendedCanonical": "https://www.framerestorationutah.com/locations/taylorsville",
           "intendedPageObserved": false,
           "highestImpressionUrl": null,
           "highestImpressionUrlIsIntended": null,
           "rows": [],
-          "interpretation": "The exact query was not requested in this GSC evidence snapshot; URL attribution is unmeasured, not zero."
+          "interpretation": "The exact query was requested but GSC returned no row; this is withheld or absent row evidence, not zero demand or proof that no Frame URL ranks."
         }
       ]
     },
@@ -1575,12 +1719,12 @@
       "page": "locations/west-jordan.html",
       "intendedCanonical": "https://www.framerestorationutah.com/locations/west-jordan",
       "intendedPageSha256": "d68f764d7adea69b6c4384bbd46a4d85710bfa1961ca55bd0645e6d936a1e750",
-      "state": "targeted-gsc-not-complete",
+      "state": "complete-request-with-unreturned-rows",
       "coverage": {
         "fixedQueries": 4,
-        "requestedQueries": 0,
-        "returnedQueries": 0,
-        "exactRows": 0
+        "requestedQueries": 4,
+        "returnedQueries": 3,
+        "exactRows": 3
       },
       "protectedFootholds": {
         "organicNumberOneQueries": [],
@@ -1592,50 +1736,83 @@
         {
           "queryId": "west-jordan-roofing-contractor",
           "keyword": "roofing contractor west jordan",
-          "requested": false,
-          "state": "unmeasured-not-requested",
+          "requested": true,
+          "state": "intended-url-only",
           "intendedCanonical": "https://www.framerestorationutah.com/locations/west-jordan",
-          "intendedPageObserved": false,
-          "highestImpressionUrl": null,
-          "highestImpressionUrlIsIntended": null,
-          "rows": [],
-          "interpretation": "The exact query was not requested in this GSC evidence snapshot; URL attribution is unmeasured, not zero."
+          "intendedPageObserved": true,
+          "highestImpressionUrl": "framerestorationutah.com/locations/west-jordan",
+          "highestImpressionUrlIsIntended": true,
+          "rows": [
+            {
+              "normalizedUrl": "framerestorationutah.com/locations/west-jordan",
+              "urlVariants": [
+                "https://www.framerestorationutah.com/locations/west-jordan"
+              ],
+              "clicks": 0,
+              "impressions": 9,
+              "position": 29.9,
+              "intended": true
+            }
+          ],
+          "interpretation": "Only the intended city hub appears in the exact query-to-page rows; preserve that route and canonical."
         },
         {
           "queryId": "west-jordan-roof-repair",
           "keyword": "roof repair west jordan",
-          "requested": false,
-          "state": "unmeasured-not-requested",
+          "requested": true,
+          "state": "intended-url-only",
           "intendedCanonical": "https://www.framerestorationutah.com/locations/west-jordan",
-          "intendedPageObserved": false,
-          "highestImpressionUrl": null,
-          "highestImpressionUrlIsIntended": null,
-          "rows": [],
-          "interpretation": "The exact query was not requested in this GSC evidence snapshot; URL attribution is unmeasured, not zero."
+          "intendedPageObserved": true,
+          "highestImpressionUrl": "framerestorationutah.com/locations/west-jordan",
+          "highestImpressionUrlIsIntended": true,
+          "rows": [
+            {
+              "normalizedUrl": "framerestorationutah.com/locations/west-jordan",
+              "urlVariants": [
+                "https://www.framerestorationutah.com/locations/west-jordan"
+              ],
+              "clicks": 0,
+              "impressions": 5,
+              "position": 18.6,
+              "intended": true
+            }
+          ],
+          "interpretation": "Only the intended city hub appears in the exact query-to-page rows; preserve that route and canonical."
         },
         {
           "queryId": "west-jordan-roof-replacement",
           "keyword": "roof replacement west jordan",
-          "requested": false,
-          "state": "unmeasured-not-requested",
+          "requested": true,
+          "state": "intended-url-only",
           "intendedCanonical": "https://www.framerestorationutah.com/locations/west-jordan",
-          "intendedPageObserved": false,
-          "highestImpressionUrl": null,
-          "highestImpressionUrlIsIntended": null,
-          "rows": [],
-          "interpretation": "The exact query was not requested in this GSC evidence snapshot; URL attribution is unmeasured, not zero."
+          "intendedPageObserved": true,
+          "highestImpressionUrl": "framerestorationutah.com/locations/west-jordan",
+          "highestImpressionUrlIsIntended": true,
+          "rows": [
+            {
+              "normalizedUrl": "framerestorationutah.com/locations/west-jordan",
+              "urlVariants": [
+                "https://www.framerestorationutah.com/locations/west-jordan"
+              ],
+              "clicks": 0,
+              "impressions": 4,
+              "position": 15,
+              "intended": true
+            }
+          ],
+          "interpretation": "Only the intended city hub appears in the exact query-to-page rows; preserve that route and canonical."
         },
         {
           "queryId": "west-jordan-roofer",
           "keyword": "roofer west jordan",
-          "requested": false,
-          "state": "unmeasured-not-requested",
+          "requested": true,
+          "state": "requested-no-row-returned",
           "intendedCanonical": "https://www.framerestorationutah.com/locations/west-jordan",
           "intendedPageObserved": false,
           "highestImpressionUrl": null,
           "highestImpressionUrlIsIntended": null,
           "rows": [],
-          "interpretation": "The exact query was not requested in this GSC evidence snapshot; URL attribution is unmeasured, not zero."
+          "interpretation": "The exact query was requested but GSC returned no row; this is withheld or absent row evidence, not zero demand or proof that no Frame URL ranks."
         }
       ]
     },
@@ -1648,12 +1825,12 @@
       "page": "locations/west-valley-city.html",
       "intendedCanonical": "https://www.framerestorationutah.com/locations/west-valley-city",
       "intendedPageSha256": "085c533f23c16fcb3ced6f7f326d1ae060c3f1f0c88dcf0a8eff9ec3607c496d",
-      "state": "targeted-gsc-not-complete",
+      "state": "complete-request-with-unreturned-rows",
       "coverage": {
         "fixedQueries": 4,
-        "requestedQueries": 0,
-        "returnedQueries": 0,
-        "exactRows": 0
+        "requestedQueries": 4,
+        "returnedQueries": 1,
+        "exactRows": 1
       },
       "protectedFootholds": {
         "organicNumberOneQueries": [],
@@ -1665,50 +1842,61 @@
         {
           "queryId": "west-valley-city-roofing-contractor",
           "keyword": "roofing contractor west valley city",
-          "requested": false,
-          "state": "unmeasured-not-requested",
+          "requested": true,
+          "state": "intended-url-only",
           "intendedCanonical": "https://www.framerestorationutah.com/locations/west-valley-city",
-          "intendedPageObserved": false,
-          "highestImpressionUrl": null,
-          "highestImpressionUrlIsIntended": null,
-          "rows": [],
-          "interpretation": "The exact query was not requested in this GSC evidence snapshot; URL attribution is unmeasured, not zero."
+          "intendedPageObserved": true,
+          "highestImpressionUrl": "framerestorationutah.com/locations/west-valley-city",
+          "highestImpressionUrlIsIntended": true,
+          "rows": [
+            {
+              "normalizedUrl": "framerestorationutah.com/locations/west-valley-city",
+              "urlVariants": [
+                "https://www.framerestorationutah.com/locations/west-valley-city"
+              ],
+              "clicks": 0,
+              "impressions": 2,
+              "position": 82.5,
+              "intended": true
+            }
+          ],
+          "interpretation": "Only the intended city hub appears in the exact query-to-page rows; preserve that route and canonical."
         },
         {
           "queryId": "west-valley-city-roof-repair",
           "keyword": "roof repair west valley city",
-          "requested": false,
-          "state": "unmeasured-not-requested",
+          "requested": true,
+          "state": "requested-no-row-returned",
           "intendedCanonical": "https://www.framerestorationutah.com/locations/west-valley-city",
           "intendedPageObserved": false,
           "highestImpressionUrl": null,
           "highestImpressionUrlIsIntended": null,
           "rows": [],
-          "interpretation": "The exact query was not requested in this GSC evidence snapshot; URL attribution is unmeasured, not zero."
+          "interpretation": "The exact query was requested but GSC returned no row; this is withheld or absent row evidence, not zero demand or proof that no Frame URL ranks."
         },
         {
           "queryId": "west-valley-city-roof-replacement",
           "keyword": "roof replacement west valley city",
-          "requested": false,
-          "state": "unmeasured-not-requested",
+          "requested": true,
+          "state": "requested-no-row-returned",
           "intendedCanonical": "https://www.framerestorationutah.com/locations/west-valley-city",
           "intendedPageObserved": false,
           "highestImpressionUrl": null,
           "highestImpressionUrlIsIntended": null,
           "rows": [],
-          "interpretation": "The exact query was not requested in this GSC evidence snapshot; URL attribution is unmeasured, not zero."
+          "interpretation": "The exact query was requested but GSC returned no row; this is withheld or absent row evidence, not zero demand or proof that no Frame URL ranks."
         },
         {
           "queryId": "west-valley-city-roofer",
           "keyword": "roofer west valley city",
-          "requested": false,
-          "state": "unmeasured-not-requested",
+          "requested": true,
+          "state": "requested-no-row-returned",
           "intendedCanonical": "https://www.framerestorationutah.com/locations/west-valley-city",
           "intendedPageObserved": false,
           "highestImpressionUrl": null,
           "highestImpressionUrlIsIntended": null,
           "rows": [],
-          "interpretation": "The exact query was not requested in this GSC evidence snapshot; URL attribution is unmeasured, not zero."
+          "interpretation": "The exact query was requested but GSC returned no row; this is withheld or absent row evidence, not zero demand or proof that no Frame URL ranks."
         }
       ]
     }
