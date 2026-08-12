@@ -1,0 +1,362 @@
+{
+  "schemaVersion": 1,
+  "packetId": "frame-utah-slv-five-page-public-integrity-cleanup-v1",
+  "market": "utah-salt-lake-valley",
+  "preparedAt": "2026-08-12T16:07:00.000Z",
+  "preparedFromCommit": "5b4ccc11b0cc0a41c0d598f01c8f7d9410a6da28",
+  "status": "draft-only-awaiting-explicit-owner-approval",
+  "publicMutationPerformed": false,
+  "contract": "data/authority/SLV-CITY-PUBLIC-REMEDIATION-CONTRACT-2026-08-12.json",
+  "sourceFiles": [
+    {
+      "file": "locations/millcreek.html",
+      "sha256": "d3171172fcd5b796b12134fc91e1bd366952a3c83e13a160a3106262197b215d"
+    },
+    {
+      "file": "locations/sandy.html",
+      "sha256": "6990e62cc9fbaff508cef8d1c14a9d1775d29e111bd77f6eb870cb6256c53093"
+    },
+    {
+      "file": "locations/holladay.html",
+      "sha256": "791bd58c2a8c1bb9c42d65b4687863fae05126b9eaea0f053eca76a0ca0de0e0"
+    },
+    {
+      "file": "locations/cottonwood-heights.html",
+      "sha256": "b8ccc4c320414d217a76d582da2bba9c2599ca47c7861c50490b626bc2b8e8b1"
+    },
+    {
+      "file": "locations/draper.html",
+      "sha256": "8c8a5f7a9d9f0894640ef2578bc4b175422b24f31f0e990857dd0611b2672d16"
+    },
+    {
+      "file": "data/route-factory/business.json",
+      "sha256": "2ca7338c9f4fe04fe36a08302399d15c2e289d27153b2298949ace8e1e5843e9"
+    }
+  ],
+  "scope": {
+    "pages": [
+      "locations/millcreek.html",
+      "locations/sandy.html",
+      "locations/holladay.html",
+      "locations/cottonwood-heights.html",
+      "locations/draper.html"
+    ],
+    "dataFiles": [
+      "data/route-factory/business.json"
+    ],
+    "allowed": [
+      "Remove or narrow only the disputed claim classes enumerated in this packet.",
+      "Preserve the provisional 10-year workmanship warranty without expanding it.",
+      "Correct Millcreek from the Heber identity to the verified Salt Lake Valley CID and exact reviewed sameAs set.",
+      "Keep titles and H1s unchanged during the integrity cleanup so ranking intent remains a separate measured variable.",
+      "Update visible FAQ copy and matching FAQPage JSON-LD together."
+    ],
+    "excluded": [
+      "Salt Lake City page changes before its current observation window is evaluated.",
+      "GBP, directory, review, indexing, outreach, DNS, advertising, or owner-message mutations.",
+      "New city-specific project, review, insurance, pricing, response-time, permit, duration, or weather claims.",
+      "Title or H1 ranking experiments before a fresh post-cleanup baseline."
+    ]
+  },
+  "currentAudit": {
+    "checkedPages": 5,
+    "blockingFindings": 40,
+    "provisionalWarnings": 5,
+    "findingsByPage": {
+      "locations/millcreek.html": [
+        {
+          "id": "pricing-ranges",
+          "count": 5,
+          "guidance": "Replace unsupported dollar figures with scope-dependent factors and a written-estimate invitation."
+        },
+        {
+          "id": "exact-response-or-availability",
+          "count": 7,
+          "guidance": "Remove exact availability, response-window, or travel-time promises until an operating policy is registered."
+        },
+        {
+          "id": "universal-permit-handling",
+          "count": 2,
+          "guidance": "Use municipality guidance and confirm responsibility in the written scope; do not promise universal handling."
+        },
+        {
+          "id": "unverified-insurance-credentials",
+          "count": 12,
+          "guidance": "Keep the verified license only until current insurance evidence is registered."
+        },
+        {
+          "id": "universal-project-duration",
+          "count": 2,
+          "guidance": "Replace a universal duration with the scoped timing factors in the remediation contract."
+        },
+        {
+          "id": "unsourced-roof-life-loss",
+          "count": 2,
+          "guidance": "Describe observable damage without an unregistered years-of-life-loss number."
+        },
+        {
+          "id": "unverified-city-project-attribution",
+          "count": 5,
+          "guidance": "Use neutral asset text until a city-specific project record establishes the location."
+        },
+        {
+          "id": "unverified-city-review-attribution",
+          "count": 2,
+          "guidance": "Remove the review from this city page until the public review or private project record establishes the city."
+        },
+        {
+          "id": "missing-verified-slv-cid",
+          "count": 1,
+          "guidance": "Use exact CID 5689850818145735734 for the verified Salt Lake Valley profile."
+        },
+        {
+          "id": "heber-cid-on-verified-slv-page",
+          "count": 1,
+          "guidance": "Remove Heber CID 8458659884566588108 from the verified Salt Lake Valley page."
+        }
+      ],
+      "locations/sandy.html": [
+        {
+          "id": "pricing-ranges",
+          "count": 5,
+          "guidance": "Replace unsupported dollar figures with scope-dependent factors and a written-estimate invitation."
+        },
+        {
+          "id": "exact-response-or-availability",
+          "count": 7,
+          "guidance": "Remove exact availability, response-window, or travel-time promises until an operating policy is registered."
+        },
+        {
+          "id": "universal-permit-handling",
+          "count": 4,
+          "guidance": "Use municipality guidance and confirm responsibility in the written scope; do not promise universal handling."
+        },
+        {
+          "id": "unverified-insurance-credentials",
+          "count": 8,
+          "guidance": "Keep the verified license only until current insurance evidence is registered."
+        },
+        {
+          "id": "universal-project-duration",
+          "count": 6,
+          "guidance": "Replace a universal duration with the scoped timing factors in the remediation contract."
+        },
+        {
+          "id": "unsourced-roof-life-loss",
+          "count": 2,
+          "guidance": "Describe observable damage without an unregistered years-of-life-loss number."
+        },
+        {
+          "id": "unverified-city-project-attribution",
+          "count": 5,
+          "guidance": "Use neutral asset text until a city-specific project record establishes the location."
+        },
+        {
+          "id": "unverified-city-review-attribution",
+          "count": 2,
+          "guidance": "Remove the review from this city page until the public review or private project record establishes the city."
+        }
+      ],
+      "locations/holladay.html": [
+        {
+          "id": "pricing-ranges",
+          "count": 5,
+          "guidance": "Replace unsupported dollar figures with scope-dependent factors and a written-estimate invitation."
+        },
+        {
+          "id": "exact-response-or-availability",
+          "count": 7,
+          "guidance": "Remove exact availability, response-window, or travel-time promises until an operating policy is registered."
+        },
+        {
+          "id": "universal-permit-handling",
+          "count": 2,
+          "guidance": "Use municipality guidance and confirm responsibility in the written scope; do not promise universal handling."
+        },
+        {
+          "id": "unverified-insurance-credentials",
+          "count": 8,
+          "guidance": "Keep the verified license only until current insurance evidence is registered."
+        },
+        {
+          "id": "universal-project-duration",
+          "count": 2,
+          "guidance": "Replace a universal duration with the scoped timing factors in the remediation contract."
+        },
+        {
+          "id": "unsourced-roof-life-loss",
+          "count": 2,
+          "guidance": "Describe observable damage without an unregistered years-of-life-loss number."
+        },
+        {
+          "id": "unverified-city-project-attribution",
+          "count": 5,
+          "guidance": "Use neutral asset text until a city-specific project record establishes the location."
+        },
+        {
+          "id": "unverified-city-review-attribution",
+          "count": 1,
+          "guidance": "Remove the review from this city page until the public review or private project record establishes the city."
+        }
+      ],
+      "locations/cottonwood-heights.html": [
+        {
+          "id": "pricing-ranges",
+          "count": 5,
+          "guidance": "Replace unsupported dollar figures with scope-dependent factors and a written-estimate invitation."
+        },
+        {
+          "id": "exact-response-or-availability",
+          "count": 7,
+          "guidance": "Remove exact availability, response-window, or travel-time promises until an operating policy is registered."
+        },
+        {
+          "id": "universal-permit-handling",
+          "count": 4,
+          "guidance": "Use municipality guidance and confirm responsibility in the written scope; do not promise universal handling."
+        },
+        {
+          "id": "unverified-insurance-credentials",
+          "count": 8,
+          "guidance": "Keep the verified license only until current insurance evidence is registered."
+        },
+        {
+          "id": "universal-project-duration",
+          "count": 2,
+          "guidance": "Replace a universal duration with the scoped timing factors in the remediation contract."
+        },
+        {
+          "id": "unsourced-roof-life-loss",
+          "count": 2,
+          "guidance": "Describe observable damage without an unregistered years-of-life-loss number."
+        },
+        {
+          "id": "unverified-city-project-attribution",
+          "count": 5,
+          "guidance": "Use neutral asset text until a city-specific project record establishes the location."
+        }
+      ],
+      "locations/draper.html": [
+        {
+          "id": "pricing-ranges",
+          "count": 5,
+          "guidance": "Replace unsupported dollar figures with scope-dependent factors and a written-estimate invitation."
+        },
+        {
+          "id": "exact-response-or-availability",
+          "count": 7,
+          "guidance": "Remove exact availability, response-window, or travel-time promises until an operating policy is registered."
+        },
+        {
+          "id": "universal-permit-handling",
+          "count": 6,
+          "guidance": "Use municipality guidance and confirm responsibility in the written scope; do not promise universal handling."
+        },
+        {
+          "id": "unverified-insurance-credentials",
+          "count": 8,
+          "guidance": "Keep the verified license only until current insurance evidence is registered."
+        },
+        {
+          "id": "universal-project-duration",
+          "count": 4,
+          "guidance": "Replace a universal duration with the scoped timing factors in the remediation contract."
+        },
+        {
+          "id": "unsourced-roof-life-loss",
+          "count": 2,
+          "guidance": "Describe observable damage without an unregistered years-of-life-loss number."
+        }
+      ]
+    },
+    "warningDetails": [
+      {
+        "file": "locations/millcreek.html",
+        "id": "provisional-10-year-workmanship-warranty",
+        "count": 2,
+        "guidance": "Preserve but do not expand; obtain the current warranty instrument and register the exact scope."
+      },
+      {
+        "file": "locations/sandy.html",
+        "id": "provisional-10-year-workmanship-warranty",
+        "count": 3,
+        "guidance": "Preserve but do not expand; obtain the current warranty instrument and register the exact scope."
+      },
+      {
+        "file": "locations/holladay.html",
+        "id": "provisional-10-year-workmanship-warranty",
+        "count": 2,
+        "guidance": "Preserve but do not expand; obtain the current warranty instrument and register the exact scope."
+      },
+      {
+        "file": "locations/cottonwood-heights.html",
+        "id": "provisional-10-year-workmanship-warranty",
+        "count": 2,
+        "guidance": "Preserve but do not expand; obtain the current warranty instrument and register the exact scope."
+      },
+      {
+        "file": "locations/draper.html",
+        "id": "provisional-10-year-workmanship-warranty",
+        "count": 3,
+        "guidance": "Preserve but do not expand; obtain the current warranty instrument and register the exact scope."
+      }
+    ]
+  },
+  "replacementRecipes": {
+    "pricing-ranges": "Explain that price depends on measured roof area, access, pitch, assembly, material, and discovered conditions; invite a written scope without publishing an unsupported range.",
+    "exact-response-or-availability": "Offer phone and scheduling options without promising 24/7 coverage, exact travel time, or a universal response window.",
+    "universal-permit-handling": "Direct the homeowner to the municipality for current requirements and state that permit responsibility must be confirmed in the written project scope.",
+    "unverified-insurance-credentials": "Retain the verified Utah DOPL license and BBB accreditation only. Do not publish general-liability or workers-compensation assertions until current evidence is registered.",
+    "universal-project-duration": "State that timing is confirmed after roof assembly, scope, access, weather, material availability, and permit requirements are known.",
+    "unsourced-roof-life-or-hail-frequency": "Describe observable conditions and link to primary weather or municipal sources; do not quantify citywide frequency or years of life lost without registered evidence.",
+    "unverified-city-project-or-review-attribution": "Use non-project neighborhood and jurisdiction context. A review or image may be attributed to a city only when the private project record or public review itself establishes that city."
+  },
+  "provisionalClaims": [
+    {
+      "id": "10-year-workmanship-warranty",
+      "status": "preserve-pending-business-account-verification",
+      "decision": "Do not expand the claim or add it to the verified registry. Preserve it during this correction unless the owner supplies a conflicting current instrument."
+    }
+  ],
+  "millcreekIdentityCorrection": {
+    "page": "locations/millcreek.html",
+    "removeCid": "8458659884566588108",
+    "useCid": "5689850818145735734",
+    "hasMap": "https://www.google.com/maps?cid=5689850818145735734",
+    "sameAs": [
+      "https://www.google.com/maps?cid=5689850818145735734",
+      "https://www.facebook.com/61572258054303",
+      "https://www.instagram.com/framerestorationutah",
+      "https://www.buildzoom.com/contractor/frame-restoration-utah-llc",
+      "https://reviews.birdeye.com/frame-restoration-utah-177732760787552",
+      "https://www.wikidata.org/wiki/Q140989115"
+    ],
+    "businessOverrideFile": "data/route-factory/business.json"
+  },
+  "releaseGate": {
+    "approvalRequiredBeforeEditingPublicPages": true,
+    "checks": [
+      "npm run audit:slv-city-integrity",
+      "npm run audit:claims",
+      "node scripts/audit-public-seo-surface.mjs",
+      "source build-gate receipt",
+      "five-viewport immutable-preview build-gate receipt",
+      "production build-gate receipt after authorized release"
+    ],
+    "sequence": [
+      "Verify every source-file SHA-256 still matches this packet; regenerate and re-review if any differs.",
+      "Apply only the approved scope in a clean exact-main worktree.",
+      "Require zero strict integrity failures while retaining only the five provisional warranty warnings.",
+      "Run claim, public-SEO, corpus, page-level AEO, NAP, pairing, and source gates.",
+      "Deploy an immutable preview and pass the five-viewport preview receipt with a freshness marker.",
+      "After authorized merge/release, pass a new production receipt against the canonical customer URL.",
+      "Capture a fresh six-city Google and consumer-AI baseline and open the 28-day keep/revert window."
+    ],
+    "measurementWindowDays": 28,
+    "decisionRule": "Keep only if integrity stays green and the fixed weekly organic, exact-CID Maps, Google AIO, ChatGPT, Perplexity, and Gemini readings improve or hold without a material regression."
+  },
+  "rollback": {
+    "unit": "the future isolated five-page integrity-cleanup commit",
+    "rule": "Revert the isolated cleanup if integrity, qualified traffic, leads, or a fixed city/query panel materially regresses after the declared window; never revert unrelated work."
+  }
+}

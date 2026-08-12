@@ -11,12 +11,14 @@ on:
       - 'data/rank-tracker/panels/**/config.json'
       - 'data/rank-tracker/panels/**/latest.json'
       - 'data/authority/SLV-CITY-PUBLIC-REMEDIATION-CONTRACT-2026-08-12.json'
+      - 'data/authority/SLV-CITY-PUBLIC-REMEDIATION-PACKET-2026-08-12.json'
       - 'locations/millcreek.html'
       - 'locations/sandy.html'
       - 'locations/holladay.html'
       - 'locations/cottonwood-heights.html'
       - 'locations/draper.html'
       - 'scripts/audit-slv-city-integrity.mjs'
+      - 'scripts/sync-slv-public-remediation-packet.mjs'
       - 'scripts/sync-slv-city-goal-program.mjs'
       - 'scripts/validate-slv-city-goal-program.mjs'
       - 'package.json'
@@ -32,12 +34,14 @@ on:
       - 'data/rank-tracker/panels/**/config.json'
       - 'data/rank-tracker/panels/**/latest.json'
       - 'data/authority/SLV-CITY-PUBLIC-REMEDIATION-CONTRACT-2026-08-12.json'
+      - 'data/authority/SLV-CITY-PUBLIC-REMEDIATION-PACKET-2026-08-12.json'
       - 'locations/millcreek.html'
       - 'locations/sandy.html'
       - 'locations/holladay.html'
       - 'locations/cottonwood-heights.html'
       - 'locations/draper.html'
       - 'scripts/audit-slv-city-integrity.mjs'
+      - 'scripts/sync-slv-public-remediation-packet.mjs'
       - 'scripts/sync-slv-city-goal-program.mjs'
       - 'scripts/validate-slv-city-goal-program.mjs'
       - 'package.json'
@@ -60,3 +64,6 @@ jobs:
 
       - name: Validate all six city goals against current evidence
         run: npm run audit:slv-city-goals
+
+      - name: Validate the owner-gated five-page remediation packet
+        run: npm run audit:slv-public-remediation-packet
