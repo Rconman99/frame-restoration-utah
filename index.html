@@ -429,6 +429,9 @@
     .form-note { font-size: 11px; color: #999; margin-top: 10px; line-height: 1.4; text-align: center; }
     @media (max-width: 900px) {
       html { scroll-padding-bottom: calc(118px + env(safe-area-inset-bottom, 0px)); }
+      a, button, input, select, textarea, video[controls], [tabindex]:not([tabindex="-1"]) {
+        scroll-margin-bottom: calc(118px + env(safe-area-inset-bottom, 0px));
+      }
       nav { height: 84px; }
       .nav-logo img { height: 68px; }
       .nav-links.open { top: calc(84px + env(safe-area-inset-top, 0px)); max-height: calc(100dvh - 84px - env(safe-area-inset-top, 0px)); }
@@ -445,7 +448,6 @@
       .hero-form input, .hero-form select { font-size: 16px; }
     }
     @media (max-width: 600px) {
-      a, button, input, select, textarea { scroll-margin-bottom: calc(118px + env(safe-area-inset-bottom, 0px)); }
       .hero-content { padding: 24px 5% calc(126px + env(safe-area-inset-bottom, 0px)); }
       .hero-layout { gap: 20px; }
       .hero-form-card { padding: 22px 18px; }
