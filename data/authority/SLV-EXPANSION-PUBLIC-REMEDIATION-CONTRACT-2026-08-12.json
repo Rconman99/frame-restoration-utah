@@ -1,0 +1,69 @@
+{
+  "schemaVersion": 1,
+  "contractId": "frame-utah-slv-twelve-page-expansion-public-integrity-cleanup-v1",
+  "market": "utah-salt-lake-valley",
+  "reviewedAt": "2026-08-12",
+  "publicMutationStatus": "draft-only-awaiting-separate-explicit-owner-approval",
+  "publicMutationPerformed": false,
+  "integrityAudit": "data/authority/SLV-EXPANSION-INTEGRITY-AUDIT-2026-08-12.json",
+  "priorityLedger": "data/rank-tracker/SLV-EXPANSION-PRIORITY-2026-08-12.json",
+  "targetPages": [
+    "locations/bluffdale.html",
+    "locations/herriman.html",
+    "locations/kearns.html",
+    "locations/magna.html",
+    "locations/midvale.html",
+    "locations/murray.html",
+    "locations/riverton.html",
+    "locations/south-jordan.html",
+    "locations/south-salt-lake.html",
+    "locations/taylorsville.html",
+    "locations/west-jordan.html",
+    "locations/west-valley-city.html"
+  ],
+  "allowed": [
+    "Remove or narrow only the disputed claim classes enumerated by the pinned expansion integrity audit.",
+    "Preserve the provisional 10-year workmanship warranty without expanding it.",
+    "Keep every current title, H1, canonical URL, and ranking-intent target unchanged during integrity cleanup.",
+    "Update visible copy and matching structured data together where the same disputed claim appears in both.",
+    "Preserve every related route named by the priority ledger and avoid redirect, canonical, title, or copy changes to those routes.",
+    "Preserve Magna's and Kearns's measured roof-replacement #1 footholds and Magna's owned Google AI Overview citation by treating cleanup as the only variable."
+  ],
+  "excluded": [
+    "Any change from the current Heber keystone to the Salt Lake Valley identity before current profile service-area evidence is registered and separately approved.",
+    "Any new city-specific project, review, insurance, pricing, response-time, permit, duration, weather, warranty, or service-area claim.",
+    "Any title, H1, canonical, navigation, internal-link, redirect, or route-architecture ranking experiment.",
+    "Salt Lake City or the five previously scoped core-city pages; those remain governed by their own approval packet and observation windows.",
+    "GBP, directory, review, indexing, outreach, DNS, advertising, owner-message, or other off-site/public-account mutation."
+  ],
+  "identity": {
+    "currentState": "current-heber-keystone-pending-service-area-evidence",
+    "serviceAreaEvidenceStatus": "pending-for-all-twelve-expansion-cities",
+    "decision": "Leave the entity graph unchanged in this cleanup. A future identity change requires registered current service-area evidence, exact reviewed sameAs data, and a new explicit public scope."
+  },
+  "provisionalClaims": [
+    {
+      "id": "10-year-workmanship-warranty",
+      "status": "preserve-pending-business-account-verification",
+      "decision": "Do not expand, relocate, or newly add this claim. Preserve existing occurrences during this bounded cleanup unless the owner supplies a conflicting current instrument."
+    }
+  ],
+  "approval": {
+    "requiresSeparateExplicitOwnerApproval": true,
+    "requiredPhrase": "I explicitly approve editing and publishing the 12-page Salt Lake Valley expansion integrity cleanup defined in packet frame-utah-slv-twelve-page-expansion-public-integrity-cleanup-v1, with expansion identities, titles, H1s, canonicals, and protected related routes unchanged.",
+    "doesNotAuthorize": "The five-page core cleanup, Millcreek storm-child correction, Salt Lake City changes, identity adoption, ranking experiments, GBP, reviews, directories, indexing, outreach, DNS, ads, or owner messages."
+  },
+  "releaseGate": {
+    "requiredChecks": [
+      "npm run audit:slv-expansion-integrity",
+      "npm run audit:claims",
+      "node scripts/audit-public-seo-surface.mjs",
+      "source build-gate receipt",
+      "five-viewport immutable-preview build-gate receipt with a freshness marker",
+      "production build-gate receipt after authorized release"
+    ],
+    "baselineRequiredBeforeEdit": true,
+    "measurementWindowDays": 28,
+    "decisionRule": "Keep only if integrity is green and the fixed weekly organic, exact-CID Maps, Google AIO, ChatGPT, Perplexity, and Gemini readings improve or hold without a material regression. Revert the isolated cleanup on a material regression."
+  }
+}
