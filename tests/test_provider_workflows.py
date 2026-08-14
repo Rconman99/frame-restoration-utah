@@ -52,6 +52,7 @@ class JsonResponse:
 
 cta = load_script("utah_cta_liveness", "scripts/check-cta-liveness.py")
 reviews = load_script("utah_google_reviews", "scripts/update-google-reviews.py")
+blog_publisher = load_script("utah_blog_publisher", "scripts/blog-publish.py")
 
 
 class ComplianceWorkflowDependencyTests(unittest.TestCase):
@@ -525,6 +526,50 @@ class GoogleReviewsMutationTests(unittest.TestCase):
 
 
 class WorkflowContractTests(unittest.TestCase):
+    def test_blog_quarantine_pushes_only_the_candidate_ref(self) -> None:
+        sha = "a" * 40
+        calls: list[tuple[str, ...]] = []
+
+        def fake_git(*args: str):
+            calls.append(args)
+            stdout = ""
+            if args[0] == "rev-parse":
+                stdout = f"{sha}\n"
+            elif args[0] == "ls-remote":
+                stdout = f"{sha}\trefs/heads/blog-candidate-test\n"
+            return mock.Mock(returncode=0, stdout=stdout, stderr="")
+
+        with tempfile.TemporaryDirectory(dir=REPO) as tmp:
+            tmp_path = Path(tmp)
+            manifest_path = tmp_path / "draft.json"
+            manifest = {"slug": "fenced-draft", "status": "drafted"}
+            manifest_path.write_text(json.dumps(manifest), encoding="utf-8")
+            state = blog_publisher.TreeState()
+            state.remember(manifest_path)
+
+            with (
+                mock.patch.object(blog_publisher, "git", side_effect=fake_git),
+                mock.patch.object(blog_publisher, "RUN_LOG", tmp_path / "run-log.jsonl"),
+                contextlib.redirect_stderr(io.StringIO()),
+                self.assertRaises(SystemExit) as raised,
+            ):
+                blog_publisher.fail_closed(
+                    state,
+                    manifest_path,
+                    manifest,
+                    "test fence",
+                    True,
+                    "blog-candidate-test",
+                )
+
+            self.assertEqual(raised.exception.code, blog_publisher.QUARANTINE_EXIT_CODE)
+            self.assertEqual(json.loads(manifest_path.read_text())["status"], "needs-review")
+            self.assertIn(
+                ("push", "origin", "HEAD:refs/heads/blog-candidate-test"),
+                calls,
+            )
+            self.assertNotIn(("push", "origin", "HEAD:main"), calls)
+
     def test_cta_workflow_runs_combined_check_with_both_provider_credentials(self) -> None:
         workflow = (REPO / ".github/workflows/cta-liveness.yml").read_text(encoding="utf-8")
         self.assertIn("SERPAPI_KEY: ${{ secrets.SERPAPI_KEY }}", workflow)
