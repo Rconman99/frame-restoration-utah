@@ -81,7 +81,18 @@ jobs:
         env:
           CANDIDATE_BRANCH: blog-autopost-candidate-${{ github.run_id }}-${{ github.run_attempt }}
         run: |
+          set +e
           python3 scripts/blog-publish.py --push --push-ref "$CANDIDATE_BRANCH"
+          PUBLISH_EXIT=$?
+          set -e
+          if [ "$PUBLISH_EXIT" -eq 3 ]; then
+            echo "::warning::Draft failed its publish fence and was safely staged as needs-review"
+            echo "candidate_outcome=quarantined" >> "$GITHUB_OUTPUT"
+          elif [ "$PUBLISH_EXIT" -ne 0 ]; then
+            exit "$PUBLISH_EXIT"
+          else
+            echo "candidate_outcome=publish" >> "$GITHUB_OUTPUT"
+          fi
           echo "candidate_sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
           echo "candidate_branch=$CANDIDATE_BRANCH" >> "$GITHUB_OUTPUT"
 
@@ -125,6 +136,17 @@ jobs:
           if [ "$REMOTE_MAIN" != "$CANDIDATE_SHA" ]; then
             echo "::error::promotion verification failed: origin/main is not the green candidate"
             exit 1
+          fi
+
+      - name: Report candidate outcome
+        if: steps.publish.outputs.candidate_sha != ''
+        env:
+          CANDIDATE_OUTCOME: ${{ steps.publish.outputs.candidate_outcome }}
+        run: |
+          if [ "$CANDIDATE_OUTCOME" = "quarantined" ]; then
+            echo "::warning::The needs-review quarantine was promoted; no blog page was published"
+          else
+            echo "The exact green blog candidate was promoted to main."
           fi
 
       - name: Dry-run (manual dispatch with dry_run=true)

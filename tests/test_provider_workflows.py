@@ -558,6 +558,17 @@ class WorkflowContractTests(unittest.TestCase):
         self.assertIn('gh run watch "$RUN_ID"', autopost)
         self.assertIn('git push origin "$CANDIDATE_SHA:refs/heads/main"', autopost)
         self.assertNotIn("python3 scripts/blog-publish.py --push\n", autopost)
+        self.assertIn('if [ "$PUBLISH_EXIT" -eq 3 ]', autopost)
+        self.assertIn("direct-to-main publishing is forbidden", publisher)
+        self.assertNotIn('git("push", "origin", "HEAD:main")', publisher)
+        promote_step = autopost.split("- name: Promote the exact green candidate to main", 1)[1].split(
+            "- name: Report candidate outcome", 1
+        )[0]
+        self.assertIn('git push origin "$CANDIDATE_SHA:refs/heads/main"', promote_step)
+        report_step = autopost.split("- name: Report candidate outcome", 1)[1].split(
+            "- name: Dry-run", 1
+        )[0]
+        self.assertNotIn("git push origin", report_step)
         self.assertLess(
             autopost.index('gh run watch "$RUN_ID"'),
             autopost.index('git push origin "$CANDIDATE_SHA:refs/heads/main"'),
@@ -580,6 +591,8 @@ class WorkflowContractTests(unittest.TestCase):
             "assert.equal(attribution.sources.gscSnapshot.sha256, snapshotSource.sha256",
             validator,
         )
+        sync = (REPO / "scripts/sync-slv-intervention-queue.mjs").read_text(encoding="utf-8")
+        self.assertIn("gscStateWithStaleSplitUrlFallback", sync)
 
 
 if __name__ == "__main__":

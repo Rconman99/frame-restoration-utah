@@ -4,6 +4,7 @@ import {
   SPLIT_URL_DIAGNOSIS_STALE_WARNING,
   assertScoreVector,
   bestMeasuredRank,
+  gscStateWithStaleSplitUrlFallback,
   interventionLane,
   measuredMeanRank,
   scoreVector,
@@ -27,6 +28,23 @@ test("a changed GSC snapshot emits a named warning and expires only the split-UR
   assert.deepEqual(stale.warning.scope, ["Holladay", "Herriman"]);
   assert.match(stale.warning.behavior, /Ignore the stale split-URL disposition/);
   assert.match(stale.warning.behavior, /diagnosis lane/);
+});
+
+test("stale split-URL scope stays in diagnosis across intended-only and unreturned active states", () => {
+  for (const activeState of ["intended-only", "targeted-gsc-not-complete"]) {
+    assert.equal(gscStateWithStaleSplitUrlFallback({
+      city: "Holladay",
+      activeState,
+      splitUrlDiagnosisCurrent: false,
+      staleScope: ["Holladay", "Herriman"],
+    }), "url-competition-requires-diagnosis");
+  }
+  assert.equal(gscStateWithStaleSplitUrlFallback({
+    city: "Sandy",
+    activeState: "intended-only",
+    splitUrlDiagnosisCurrent: false,
+    staleScope: ["Holladay", "Herriman"],
+  }), "intended-only");
 });
 
 test("rank helpers preserve missing evidence instead of converting it to a zero or exact rank", () => {

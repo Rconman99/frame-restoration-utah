@@ -20,6 +20,18 @@ export function splitUrlDiagnosisFreshness({ activeSnapshotSha256, diagnosisSnap
   };
 }
 
+export function gscStateWithStaleSplitUrlFallback({
+  city,
+  activeState,
+  splitUrlDiagnosisCurrent,
+  staleScope = [],
+}) {
+  if (!splitUrlDiagnosisCurrent && staleScope.includes(city)) {
+    return "url-competition-requires-diagnosis";
+  }
+  return activeState;
+}
+
 export function bestMeasuredRank(ranks = []) {
   const measured = ranks.filter((rank) => Number.isInteger(rank) && rank > 0);
   return measured.length ? Math.min(...measured) : null;

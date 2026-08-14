@@ -9,6 +9,7 @@ import {
   SPLIT_URL_DIAGNOSIS_STALE_WARNING,
   assertScoreVector,
   bestMeasuredRank,
+  gscStateWithStaleSplitUrlFallback,
   interventionLane,
   measuredMeanRank,
   scoreVector,
@@ -176,11 +177,17 @@ const candidates = portfolio.cityGoals.map((goal) => {
   const organicNumberOne = decision.protectedFootholds.organicNumberOneQueries;
   const aioOwned = decision.protectedFootholds.googleAiOverviewCitedQueries;
   const serviceAreaVerified = !goal.serviceAreaStatus.startsWith("pending-");
+  const effectiveGscState = gscStateWithStaleSplitUrlFallback({
+    city: goal.city,
+    activeState: gscCity.state,
+    splitUrlDiagnosisCurrent: gscSplitUrlDiagnosisIsCurrent,
+    staleScope: gscSplitUrlDiagnosisFreshness.warning?.scope || [],
+  });
   const lane = interventionLane({
     city: goal.city,
     organicNumberOne,
     aioOwned,
-    gscState: gscCity.state,
+    gscState: effectiveGscState,
     gscUrlDisposition: gscUrlDiagnosis?.disposition || null,
     cohort: goal.cohort,
     serviceAreaStatus: goal.serviceAreaStatus,
