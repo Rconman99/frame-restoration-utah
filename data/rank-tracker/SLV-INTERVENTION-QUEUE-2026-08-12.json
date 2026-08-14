@@ -5,7 +5,20 @@
   "preparedAt": "2026-08-12T20:48:46Z",
   "status": "active-evidence-ranked-public-actions-gated",
   "publicMutationPerformed": false,
-  "evidenceWarnings": [],
+  "evidenceWarnings": [
+    {
+      "code": "stale-slv-gsc-split-url-diagnosis",
+      "severity": "warning",
+      "scope": [
+        "Holladay",
+        "Herriman"
+      ],
+      "activeSnapshotSha256": "7da699f50a7ec816e5d8e15d5a417aa3c64ba92b56f296daaccfe23d658af836",
+      "diagnosisSnapshotSha256": "a1b7d5aa2acc3a5b663da345ba6eb7242e411661807ae1296f50854702b1a7eb",
+      "behavior": "Ignore the stale split-URL disposition and keep affected URL-competition cities in the diagnosis lane; do not suppress, redirect, canonicalize, noindex, delete, or rewrite a route from stale evidence.",
+      "requiredAction": "Refresh the bounded Holladay/Herriman split-URL diagnosis against the current GSC attribution snapshot."
+    }
+  ],
   "objective": "Reach and sustain #1 organic and exact-CID Maps ranks for all 72 fixed city queries, plus named-and-cited Google AIO, ChatGPT, Perplexity, and Gemini visibility, without unsupported or unapproved public mutations.",
   "recommendationPipeline": {
     "mode": "world-class-ranking",
@@ -75,7 +88,7 @@
     },
     "gscAttribution": {
       "file": "data/rank-tracker/SLV-GSC-URL-ATTRIBUTION-LATEST.json",
-      "sha256": "82881604b1218efcc1e9437790836949e5876ec6d7ab3590c3d09a958b6164b0"
+      "sha256": "5bd1167756074905ceb726f897637d1c4d52bf2d7c53f725cb94018c92ceee19"
     },
     "gscSplitUrlDiagnosis": {
       "file": "data/rank-tracker/SLV-GSC-SPLIT-URL-DIAGNOSIS-2026-08-12.json",
@@ -95,7 +108,7 @@
     },
     "expansionArchitecture": {
       "file": "data/rank-tracker/SLV-EXPANSION-ARCHITECTURE-2026-08-12.json",
-      "sha256": "ba79232cb3eebe3aa6594c04a69a10421ac905c7a9a3244004bea234f5b47665"
+      "sha256": "e9db1042f579bc8a2bc827f992ae1d7ff0e59ff95e1a9d9206475e80003aafd1"
     },
     "corePriority": {
       "file": "data/rank-tracker/SLV-PRIORITY-2026-08-12.json",
@@ -150,20 +163,20 @@
   },
   "summary": {
     "cities": 18,
-    "monitor": 2,
-    "requestInput": 16,
+    "monitor": 3,
+    "requestInput": 15,
     "protectedOrganicNumberOneQueries": 2,
     "protectedGoogleAiOverviewCitations": 2,
     "citiesPendingServiceAreaEvidence": 16,
     "citiesWithAllFourTargetedGscQueriesRequested": 18,
     "citiesAtSustainedGoal": 0,
     "laneCounts": {
-      "diagnose-url-consolidation-before-intent-change": 1,
+      "diagnose-url-consolidation-before-intent-change": 2,
       "observe-time-gated-slc-experiment": 1,
       "owner-gated-core-integrity-then-single-variable-intent-test": 3,
       "owner-gated-verified-identity-and-integrity-cleanup": 1,
       "protect-foothold-before-cleanup-or-intent-change": 2,
-      "service-area-proof-and-targeted-gsc-before-intent-change": 10
+      "service-area-proof-and-targeted-gsc-before-intent-change": 9
     }
   },
   "systemNextActions": [
@@ -362,7 +375,7 @@
         "intendedPageSelectedForEveryMeasuredRank": true,
         "gscState": "complete-request-with-unreturned-rows",
         "gscRequestedQueries": 4,
-        "gscReturnedQueries": 0,
+        "gscReturnedQueries": 1,
         "gscAlternateNormalizedUrls": [],
         "gscUrlDiagnosis": null,
         "serviceAreaStatus": "saved-service-area-observed",
@@ -787,23 +800,11 @@
           "framerestorationutah.com/blog/holladay/roof-replacement-holladay-utah",
           "framerestorationutah.com/salt-lake-city"
         ],
-        "gscUrlDiagnosis": {
-          "disposition": "await-full-post-redirect-window",
-          "currentCannibalization": "not-proven",
-          "requiredRecheck": {
-            "firstFullyPostRedirectWindow": {
-              "startDateOnOrAfter": "2026-08-11",
-              "endDateOnOrAfter": "2026-09-07"
-            },
-            "expectedAvailableNoEarlierThan": "2026-09-10",
-            "action": "Refresh the exact-query URL attribution. If the legacy route is absent and the intended page remains selected, close the consolidation watch. Diagnose any persistent alternate before considering a separately approved single-variable intent experiment."
-          },
-          "activeAttributionSnapshotSha256": "a1b7d5aa2acc3a5b663da345ba6eb7242e411661807ae1296f50854702b1a7eb"
-        },
+        "gscUrlDiagnosis": null,
         "serviceAreaStatus": "pending-current-profile-service-area-verification",
         "identityProfile": "heber-keystone-cid",
         "citySpecificEditorialAsset": true,
-        "architectureState": "not-proven",
+        "architectureState": "not-evidenced",
         "protectedRelatedRoutes": [],
         "consumerAiState": "configured-manual-unmeasured-invalid-provider-credential",
         "comparableWeeklyGooglePanels": 1,
@@ -1595,8 +1596,8 @@
       "cohort": "expansion-manual-baseline-measured",
       "page": "locations/herriman.html",
       "panelId": "utah-herriman-google-v1",
-      "lane": "service-area-proof-and-targeted-gsc-before-intent-change",
-      "decision": "Request input",
+      "lane": "diagnose-url-consolidation-before-intent-change",
+      "decision": "Monitor",
       "evidenceFeatures": {
         "observedAt": "2026-08-12T17:40:30.500Z",
         "organicRanks": [
@@ -1635,19 +1636,11 @@
         "gscAlternateNormalizedUrls": [
           "framerestorationutah.com/salt-lake-city"
         ],
-        "gscUrlDiagnosis": {
-          "disposition": "monitor-negligible-historical-trace",
-          "currentCannibalization": "not-evidenced",
-          "requiredRecheck": {
-            "cadence": "normal-daily-gsc-refresh",
-            "action": "Keep the intended Herriman page and existing redirect unchanged. Escalate only if a future complete window shows a persistent alternate with material impression share or the fixed panel stops selecting the intended page."
-          },
-          "activeAttributionSnapshotSha256": "a1b7d5aa2acc3a5b663da345ba6eb7242e411661807ae1296f50854702b1a7eb"
-        },
+        "gscUrlDiagnosis": null,
         "serviceAreaStatus": "pending-current-profile-service-area-verification",
         "identityProfile": "heber-keystone-cid",
         "citySpecificEditorialAsset": true,
-        "architectureState": "not-evidenced",
+        "architectureState": "not-proven-blended-gsc-multi-url-evidence-requires-timing-and-routing-diagnosis",
         "protectedRelatedRoutes": [
           "blog/herriman/hail-damage-new-homes.html"
         ],
@@ -1661,17 +1654,17 @@
         "leadValue": 5,
         "authorityValue": 5,
         "learningValue": 6,
-        "implementationCost": 5,
-        "complianceRisk": 8,
+        "implementationCost": 3,
+        "complianceRisk": 1,
         "customerBlockerRisk": 8,
         "maintenanceCost": 2,
         "sourceBiasRisk": 2,
         "recencyBiasRisk": 1
       },
-      "selectedAction": "Treat Herriman's negligible pre-redirect alternate trace as non-actionable and keep its intended page, redirect, canonicals, and related routes unchanged. Obtain current Salt Lake Valley service-area evidence for the separate Maps lane and request only the bounded expansion integrity cleanup; continue normal exact-query GSC monitoring without opening a URL-consolidation intervention.",
-      "gate": "service-area-evidence-plus-explicit-cleanup-approval-with-url-consolidation-closed",
-      "ownerApprovalPhrase": "I explicitly approve editing and publishing the 12-page Salt Lake Valley expansion integrity cleanup defined in packet frame-utah-slv-twelve-page-expansion-public-integrity-cleanup-v1, with expansion identities, titles, H1s, canonicals, and protected related routes unchanged.",
-      "acceptanceCheck": "A current receipt explicitly classifies Herriman for CID 5689850818145735734, any approved cleanup passes the full release gate, and the intended page remains selected; a future alternate URL is escalated only if it has material persistent share or the fixed panel stops selecting the intended page.",
+      "selectedAction": "Keep Herriman's intended page, redirects, canonicals, related routes, and visible intent unchanged while the named stale-slv-gsc-split-url-diagnosis warning is open; refresh the bounded split-URL diagnosis against the current GSC attribution snapshot before suppressing or opening a URL intervention.",
+      "gate": "current-split-url-diagnosis-required",
+      "ownerApprovalPhrase": null,
+      "acceptanceCheck": "A refreshed diagnosis names the current GSC snapshot hash and classifies Herriman's alternate URL evidence before any redirect, canonical, noindex, deletion, title, H1, copy, schema, or internal-link change is considered.",
       "feedback": {
         "cadence": "weekly",
         "requiredComparablePanels": 4,
