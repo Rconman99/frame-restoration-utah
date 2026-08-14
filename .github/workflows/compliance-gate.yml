@@ -30,6 +30,7 @@ name: Compliance Gate
 # adopts the same media-registry clearance workflow.
 
 on:
+  workflow_dispatch:
   pull_request:
     paths:
       - '**'

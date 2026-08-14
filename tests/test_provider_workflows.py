@@ -52,6 +52,7 @@ class JsonResponse:
 
 cta = load_script("utah_cta_liveness", "scripts/check-cta-liveness.py")
 reviews = load_script("utah_google_reviews", "scripts/update-google-reviews.py")
+blog_publisher = load_script("utah_blog_publisher", "scripts/blog-publish.py")
 
 
 class ComplianceWorkflowDependencyTests(unittest.TestCase):
@@ -525,6 +526,50 @@ class GoogleReviewsMutationTests(unittest.TestCase):
 
 
 class WorkflowContractTests(unittest.TestCase):
+    def test_blog_quarantine_pushes_only_the_candidate_ref(self) -> None:
+        sha = "a" * 40
+        calls: list[tuple[str, ...]] = []
+
+        def fake_git(*args: str):
+            calls.append(args)
+            stdout = ""
+            if args[0] == "rev-parse":
+                stdout = f"{sha}\n"
+            elif args[0] == "ls-remote":
+                stdout = f"{sha}\trefs/heads/blog-candidate-test\n"
+            return mock.Mock(returncode=0, stdout=stdout, stderr="")
+
+        with tempfile.TemporaryDirectory(dir=REPO) as tmp:
+            tmp_path = Path(tmp)
+            manifest_path = tmp_path / "draft.json"
+            manifest = {"slug": "fenced-draft", "status": "drafted"}
+            manifest_path.write_text(json.dumps(manifest), encoding="utf-8")
+            state = blog_publisher.TreeState()
+            state.remember(manifest_path)
+
+            with (
+                mock.patch.object(blog_publisher, "git", side_effect=fake_git),
+                mock.patch.object(blog_publisher, "RUN_LOG", tmp_path / "run-log.jsonl"),
+                contextlib.redirect_stderr(io.StringIO()),
+                self.assertRaises(SystemExit) as raised,
+            ):
+                blog_publisher.fail_closed(
+                    state,
+                    manifest_path,
+                    manifest,
+                    "test fence",
+                    True,
+                    "blog-candidate-test",
+                )
+
+            self.assertEqual(raised.exception.code, blog_publisher.QUARANTINE_EXIT_CODE)
+            self.assertEqual(json.loads(manifest_path.read_text())["status"], "needs-review")
+            self.assertIn(
+                ("push", "origin", "HEAD:refs/heads/blog-candidate-test"),
+                calls,
+            )
+            self.assertNotIn(("push", "origin", "HEAD:main"), calls)
+
     def test_cta_workflow_runs_combined_check_with_both_provider_credentials(self) -> None:
         workflow = (REPO / ".github/workflows/cta-liveness.yml").read_text(encoding="utf-8")
         self.assertIn("SERPAPI_KEY: ${{ secrets.SERPAPI_KEY }}", workflow)
@@ -548,12 +593,51 @@ class WorkflowContractTests(unittest.TestCase):
     def test_blog_workflows_fail_closed_on_publish_or_push_failure(self) -> None:
         autopost = (REPO / ".github/workflows/blog-autopost.yml").read_text(encoding="utf-8")
         traction = (REPO / ".github/workflows/blog-traction.yml").read_text(encoding="utf-8")
-        self.assertIn("run: python3 scripts/blog-publish.py --push", autopost)
+        compliance = (REPO / ".github/workflows/compliance-gate.yml").read_text(encoding="utf-8")
+        publisher = (REPO / "scripts/blog-publish.py").read_text(encoding="utf-8")
+        self.assertIn('python3 scripts/blog-publish.py --push --push-ref "$CANDIDATE_BRANCH"', autopost)
         self.assertNotIn("blog-publish.py --push ||", autopost)
+        self.assertIn("actions: write", autopost)
+        self.assertIn("gh workflow run compliance-gate.yml", autopost)
+        self.assertIn("select(.headSha ==", autopost)
+        self.assertIn('gh run watch "$RUN_ID"', autopost)
+        self.assertIn('git push origin "$CANDIDATE_SHA:refs/heads/main"', autopost)
+        self.assertNotIn("python3 scripts/blog-publish.py --push\n", autopost)
+        self.assertIn('if [ "$PUBLISH_EXIT" -eq 3 ]', autopost)
+        self.assertIn("direct-to-main publishing is forbidden", publisher)
+        self.assertNotIn('git("push", "origin", "HEAD:main")', publisher)
+        promote_step = autopost.split("- name: Promote the exact green candidate to main", 1)[1].split(
+            "- name: Report candidate outcome", 1
+        )[0]
+        self.assertIn('git push origin "$CANDIDATE_SHA:refs/heads/main"', promote_step)
+        report_step = autopost.split("- name: Report candidate outcome", 1)[1].split(
+            "- name: Dry-run", 1
+        )[0]
+        self.assertNotIn("git push origin", report_step)
+        self.assertLess(
+            autopost.index('gh run watch "$RUN_ID"'),
+            autopost.index('git push origin "$CANDIDATE_SHA:refs/heads/main"'),
+        )
+        self.assertIn("workflow_dispatch:", compliance)
+        self.assertIn('(\"public-seo-and-mobile\", [\"npm\", \"run\", \"audit:public-seo\"])', publisher)
+        self.assertIn('(\"links\", [\"node\", \"scripts/audit-links.mjs\", \"--strict\"])', publisher)
         self.assertIn("github.event.workflow_run.conclusion == 'success'", traction)
         self.assertIn('echo "push failed after retries"; exit 1', traction)
         self.assertNotIn("continue-on-error", autopost)
         self.assertNotIn("continue-on-error", traction)
+
+    def test_split_url_validator_warns_instead_of_killing_refresh(self) -> None:
+        validator = (REPO / "scripts/validate-slv-gsc-split-url-diagnosis.mjs").read_text(
+            encoding="utf-8"
+        )
+        self.assertIn("splitUrlDiagnosisFreshness", validator)
+        self.assertIn("SPLIT_URL_DIAGNOSIS_STALE_WARNING", validator)
+        self.assertNotIn(
+            "assert.equal(attribution.sources.gscSnapshot.sha256, snapshotSource.sha256",
+            validator,
+        )
+        sync = (REPO / "scripts/sync-slv-intervention-queue.mjs").read_text(encoding="utf-8")
+        self.assertIn("gscStateWithStaleSplitUrlFallback", sync)
 
 
 if __name__ == "__main__":

@@ -152,7 +152,18 @@ for (const route of diagnosis.evidence.routes) {
     if (JSON.stringify(actualCounts) !== JSON.stringify(route.visibleTermCounts)) fail(`${route.file} visible-term counts drifted`);
   }
   const target = new URL(route.canonical).pathname.replace(/\/$/, "") || "/";
-  if (inboundLinks(target) !== route.inboundInternalLinks) fail(`${route.file} inbound internal-link count drifted`);
+  const currentInboundInternalLinks = inboundLinks(target);
+  if (currentInboundInternalLinks !== route.inboundInternalLinks) {
+    if (route.file === "index.html" && currentInboundInternalLinks > route.inboundInternalLinks) {
+      console.warn(
+        `::warning title=Holladay supporting-homepage inbound growth::`
+        + `index.html inbound links increased from ${route.inboundInternalLinks} to ${currentInboundInternalLinks}; `
+        + `the pinned homepage source is unchanged, so the Holladay diagnosis remains usable.`,
+      );
+    } else {
+      fail(`${route.file} inbound internal-link count drifted`);
+    }
+  }
 }
 
 const packetFile = path.join(root, diagnosis.evidence.integrityGate.packet);

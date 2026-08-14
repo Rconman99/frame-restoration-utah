@@ -5,7 +5,16 @@ import crypto from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { assertScoreVector, bestMeasuredRank, interventionLane, measuredMeanRank, scoreVector } from "./lib/slv-intervention-queue.mjs";
+import {
+  SPLIT_URL_DIAGNOSIS_STALE_WARNING,
+  assertScoreVector,
+  bestMeasuredRank,
+  gscStateWithStaleSplitUrlFallback,
+  interventionLane,
+  measuredMeanRank,
+  scoreVector,
+  splitUrlDiagnosisFreshness,
+} from "./lib/slv-intervention-queue.mjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const write = process.argv.includes("--write");
@@ -57,8 +66,11 @@ const driveReceipt = read(sourceFiles.driveReceipt);
 const decisionsByCity = new Map(weekly.cities.map((city) => [city.city, city]));
 const gscByCity = new Map(gsc.cities.map((city) => [city.city, city]));
 const gscSplitUrlDiagnosisByCity = new Map(gscSplitUrlDiagnosis.cities.map((city) => [city.city, city]));
-const gscSplitUrlDiagnosisIsCurrent =
-  gsc.sources.gscSnapshot.sha256 === gscSplitUrlDiagnosis.evidence.searchConsoleSnapshot.sha256;
+const gscSplitUrlDiagnosisFreshness = splitUrlDiagnosisFreshness({
+  activeSnapshotSha256: gsc.sources.gscSnapshot.sha256,
+  diagnosisSnapshotSha256: gscSplitUrlDiagnosis.evidence.searchConsoleSnapshot.sha256,
+});
+const gscSplitUrlDiagnosisIsCurrent = gscSplitUrlDiagnosisFreshness.current;
 const entityByCity = new Map(entityHealth.cities.map((city) => [city.city, city]));
 const mapsByCity = new Map(mapsReadiness.cities.map((city) => [city.city, city]));
 const expansionArchitectureByCity = new Map(expansionArchitecture.cities.map((city) => [city.city, city]));
@@ -118,6 +130,13 @@ function selectedAction(goal, lane, diagnosis, protectedFootholds, gscUrlDiagnos
     ownerApprovalPhrase: coreApprovalPhrase,
     acceptanceCheck: `Current query-to-URL evidence no longer depends on the pre-redirect window; the position-4 roof-replacement foothold and all protected routes remain intact; a current receipt separately classifies Holladay for CID ${portfolio.cityCompletionContract.maps.exactCid}.`,
   };
+  if (lane === "diagnose-url-consolidation-before-intent-change") return {
+    decision: "Monitor",
+    action: `Keep ${goal.city}'s intended page, redirects, canonicals, related routes, and visible intent unchanged while the named ${SPLIT_URL_DIAGNOSIS_STALE_WARNING} warning is open; refresh the bounded split-URL diagnosis against the current GSC attribution snapshot before suppressing or opening a URL intervention.`,
+    gate: "current-split-url-diagnosis-required",
+    ownerApprovalPhrase: null,
+    acceptanceCheck: `A refreshed diagnosis names the current GSC snapshot hash and classifies ${goal.city}'s alternate URL evidence before any redirect, canonical, noindex, deletion, title, H1, copy, schema, or internal-link change is considered.`,
+  };
   if (gscUrlDiagnosis?.disposition === "monitor-negligible-historical-trace") return {
     decision: "Request input",
     action: `Treat ${goal.city}'s negligible pre-redirect alternate trace as non-actionable and keep its intended page, redirect, canonicals, and related routes unchanged. Obtain current Salt Lake Valley service-area evidence for the separate Maps lane and request only the bounded expansion integrity cleanup; continue normal exact-query GSC monitoring without opening a URL-consolidation intervention.`,
@@ -158,11 +177,17 @@ const candidates = portfolio.cityGoals.map((goal) => {
   const organicNumberOne = decision.protectedFootholds.organicNumberOneQueries;
   const aioOwned = decision.protectedFootholds.googleAiOverviewCitedQueries;
   const serviceAreaVerified = !goal.serviceAreaStatus.startsWith("pending-");
+  const effectiveGscState = gscStateWithStaleSplitUrlFallback({
+    city: goal.city,
+    activeState: gscCity.state,
+    splitUrlDiagnosisCurrent: gscSplitUrlDiagnosisIsCurrent,
+    staleScope: gscSplitUrlDiagnosisFreshness.warning?.scope || [],
+  });
   const lane = interventionLane({
     city: goal.city,
     organicNumberOne,
     aioOwned,
-    gscState: gscCity.state,
+    gscState: effectiveGscState,
     gscUrlDisposition: gscUrlDiagnosis?.disposition || null,
     cohort: goal.cohort,
     serviceAreaStatus: goal.serviceAreaStatus,
@@ -257,6 +282,9 @@ const queue = {
   preparedAt: "2026-08-12T20:48:46Z",
   status: "active-evidence-ranked-public-actions-gated",
   publicMutationPerformed: false,
+  evidenceWarnings: gscSplitUrlDiagnosisFreshness.warning
+    ? [gscSplitUrlDiagnosisFreshness.warning]
+    : [],
   objective: "Reach and sustain #1 organic and exact-CID Maps ranks for all 72 fixed city queries, plus named-and-cited Google AIO, ChatGPT, Perplexity, and Gemini visibility, without unsupported or unapproved public mutations.",
   recommendationPipeline: {
     mode: "world-class-ranking",
@@ -360,10 +388,18 @@ assert.equal(candidates.find((candidate) => candidate.city === "Salt Lake City")
 assert.equal(candidates.find((candidate) => candidate.city === "Millcreek").lane, "owner-gated-verified-identity-and-integrity-cleanup");
 assert.ok(["Magna", "Kearns"].every((city) => candidates.find((candidate) => candidate.city === city).lane === "protect-foothold-before-cleanup-or-intent-change"));
 assert.deepEqual([...gscSplitUrlDiagnosisByCity.keys()].sort(), ["Herriman", "Holladay"]);
-assert.equal(gscSplitUrlDiagnosisIsCurrent, true, "split-URL diagnosis has expired; refresh it against the current attribution snapshot before suppressing a URL lane");
 assert.equal(candidates.find((candidate) => candidate.city === "Holladay").lane, "diagnose-url-consolidation-before-intent-change");
-assert.equal(candidates.find((candidate) => candidate.city === "Herriman").lane, "service-area-proof-and-targeted-gsc-before-intent-change");
-assert.match(candidates.find((candidate) => candidate.city === "Herriman").selectedAction, /negligible pre-redirect alternate trace as non-actionable/);
+if (gscSplitUrlDiagnosisIsCurrent) {
+  assert.equal(queue.evidenceWarnings.length, 0);
+  assert.equal(candidates.find((candidate) => candidate.city === "Herriman").lane, "service-area-proof-and-targeted-gsc-before-intent-change");
+  assert.match(candidates.find((candidate) => candidate.city === "Herriman").selectedAction, /negligible pre-redirect alternate trace as non-actionable/);
+} else {
+  assert.equal(queue.evidenceWarnings.length, 1);
+  assert.equal(queue.evidenceWarnings[0].code, SPLIT_URL_DIAGNOSIS_STALE_WARNING);
+  assert.equal(candidates.find((candidate) => candidate.city === "Herriman").lane, "diagnose-url-consolidation-before-intent-change");
+  assert.equal(candidates.find((candidate) => candidate.city === "Herriman").decision, "Monitor");
+  assert.match(candidates.find((candidate) => candidate.city === "Herriman").selectedAction, /stale-slv-gsc-split-url-diagnosis/);
+}
 assert.equal(queue.summary.citiesPendingServiceAreaEvidence, pendingServiceArea.size);
 assert.equal(expansionArchitectureByCity.size, 12);
 assert.equal(mapsByCity.size, 18);
@@ -396,6 +432,12 @@ assert.ok(candidates.every((candidate) => Object.values(candidate.scoreVector).e
 
 const nextText = `${JSON.stringify(queue, null, 2)}\n`;
 const fullOutputPath = path.join(root, outputPath);
+if (gscSplitUrlDiagnosisFreshness.warning) {
+  console.warn(
+    `::warning title=Stale SLV split-URL diagnosis::${gscSplitUrlDiagnosisFreshness.warning.requiredAction} `
+    + `Safe behavior: affected URL dispositions are ignored and the SEO measurement loop continues.`,
+  );
+}
 if (write) {
   fs.writeFileSync(fullOutputPath, nextText);
   console.log(`SYNC SLV intervention queue: ${queue.summary.cities} cities, ${queue.summary.monitor} monitor, ${queue.summary.requestInput} request-input, ${queue.summary.citiesPendingServiceAreaEvidence} service-area proof gaps`);

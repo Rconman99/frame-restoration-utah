@@ -6,16 +6,16 @@ Sits downstream of blog-cron.sh (the draft stage). Takes the oldest `drafted`
 manifest from data/blog-pending/, polishes the title for CTR, renders it via
 generate-blog-post.py, hard-fences the rendered HTML for YMYL/§31A-26-201
 advocacy vocabulary, integrates the post into sitemap.xml + blog/index.html,
-runs the blocking audit gates, and (only with --push) commits + pushes +
-verifies the remote actually advanced.
+runs the blocking audit gates, and (only with --push) commits + pushes to the
+selected branch + verifies that exact remote ref advanced.
 
 Usage:
   # Dry-publish (DEFAULT — renders, integrates, gates, then restores the
   # working tree so the shared checkout stays clean):
   python3 scripts/blog-publish.py [--manifest data/blog-pending/<slug>.json]
 
-  # Real publish (blogbot worktree only — commits, pushes, verifies remote):
-  python3 scripts/blog-publish.py --push
+  # CI-staged publish (promote to main only after exact-SHA CI):
+  python3 scripts/blog-publish.py --push --push-ref blog-autopost-candidate-123
 
 Hard rules (encoded — do not change without reading CLAUDE.md):
   - Brand is Frame Restoration Utah. Never Texas / Frame Restoration TX.
@@ -50,6 +50,7 @@ RUN_LOG = Path.home() / ".cache" / "frame-restoration-utah-blog-publish.jsonl"
 SITE = "https://www.framerestorationutah.com"
 FALLBACK_IMAGE = "/images/projects/heber-valley-drone-poster.webp"
 COMMIT_AUTHOR = "Blog Bot <blog-bot@framerestorationutah.com>"
+QUARANTINE_EXIT_CODE = 3
 
 # ── Compliance hard-fence (beyond the CI gates — unreviewed auto-publish) ──
 # Utah §31A-26-201 unlicensed-adjusting vocabulary + advocacy phrasing the
@@ -82,13 +83,22 @@ INSURANCE_BIGRAM = "insurance claim"
 INSURANCE_MAX = 3
 INSURANCE_MAX_STORM = 4
 
-# Blocking gates for this stage. compliance-words runs WITHOUT --strict —
-# site-wide saturation is a known advisory, not a per-post blocker.
+# Blocking public-release gates for this stage. These mirror the public-content
+# jobs in Compliance Gate closely enough that an autonomous publish cannot
+# bypass the corpus contract before its commit exists. The workflow still
+# dispatches the full GitHub Compliance Gate against the exact published SHA.
+# compliance-words runs WITHOUT --strict — site-wide saturation is a known
+# advisory, not a per-post blocker.
 GATES = [
-    "audit-jsonld.mjs",
-    "audit-links.mjs",
-    "audit-compliance-words.mjs",
-    "audit-doc-isolation.mjs",
+    ("jsonld", ["node", "scripts/audit-jsonld.mjs"]),
+    ("faq-parity", ["npm", "run", "audit:faq-parity"]),
+    ("links", ["node", "scripts/audit-links.mjs", "--strict"]),
+    ("compliance-words", ["node", "scripts/audit-compliance-words.mjs"]),
+    ("cta-integrity", ["node", "scripts/audit-cta-integrity.mjs", "--strict"]),
+    ("review-integrity", ["node", "scripts/audit-review-integrity.mjs", "--strict"]),
+    ("entity-consistency", ["node", "scripts/audit-entity-consistency.mjs", "--strict"]),
+    ("doc-isolation", ["node", "scripts/audit-doc-isolation.mjs", "--strict"]),
+    ("public-seo-and-mobile", ["npm", "run", "audit:public-seo"]),
 ]
 
 
@@ -102,7 +112,7 @@ def log_run(manifest: str, slug: str, action: str, reason: str) -> None:
         "ts": datetime.now(timezone.utc).isoformat(),
         "manifest": manifest,
         "slug": slug,
-        "action": action,  # published | skipped | failed
+        "action": action,  # staged | quarantined | published | skipped | failed
         "reason": reason,
     }
     with RUN_LOG.open("a") as fh:
@@ -359,10 +369,10 @@ def insert_index_card(manifest: dict, post_path: str, image: str) -> bool:
 def run_gates(manual_review: bool = False) -> tuple[bool, str]:
     # compliance-words is a compliance JUDGMENT; on the human-reviewed path it
     # is advisory (reported, not blocking). The rest are structural and stay hard.
-    advisory = {"audit-compliance-words.mjs"} if manual_review else set()
-    for gate in GATES:
+    advisory = {"compliance-words"} if manual_review else set()
+    for gate, command in GATES:
         log(f"-> Gate: {gate}" + ("  (advisory)" if gate in advisory else ""))
-        proc = run(["node", str(ROOT / "scripts" / gate)])
+        proc = run(command)
         if proc.returncode != 0:
             if gate in advisory:
                 log(f"   ⚠ {gate} reported issues (ADVISORY — not blocking)")
@@ -375,16 +385,24 @@ def run_gates(manual_review: bool = False) -> tuple[bool, str]:
 
 # ── Failure path ────────────────────────────────────────────────────
 def fail_closed(state: TreeState, manifest_path: Path, manifest: dict,
-                reason: str, push: bool) -> None:
+                reason: str, push: bool, push_ref: str | None) -> None:
     """Revert every file this run touched; flag the manifest needs-review."""
     log(f"x FAIL-CLOSED: {reason.splitlines()[0]}")
     restored = state.restore_all()
     for line in restored:
         log(f"   {line}")
     short_reason = reason.splitlines()[0]
+    quarantine_persisted = False
     if push:
+        if not push_ref:
+            log("! Refusing to persist quarantine without a candidate branch.")
+            log_run(str(manifest_path.relative_to(ROOT)), manifest.get("slug", "?"),
+                    "failed", "missing quarantine candidate branch")
+            sys.exit(1)
         # Persist the needs-review flag so the queue drains instead of
-        # retrying the same manifest forever after the worktree resets.
+        # retrying the same manifest forever after the worktree resets. It is
+        # staged on the same candidate branch and reaches main only after the
+        # workflow's exact-SHA Compliance Gate succeeds.
         manifest["status"] = "needs-review"
         manifest.setdefault("edit_log", []).append(
             f"{date.today().isoformat()} blog-publish auto-publish blocked: {short_reason}"
@@ -398,21 +416,34 @@ def fail_closed(state: TreeState, manifest_path: Path, manifest: dict,
                      "-m", f"chore(blog): flag {manifest['slug']} needs-review (auto-publish fence)",
                      "--", rel)
         if commit.returncode == 0:
-            pushed = git("push", "origin", "HEAD:main")
+            pushed = git("push", "origin", f"HEAD:refs/heads/{push_ref}")
             if pushed.returncode != 0:
                 log("! Could not push needs-review flag (left as local commit): "
                     + pushed.stderr.strip()[:300])
+            else:
+                local_sha = git("rev-parse", "HEAD").stdout.strip()
+                remote = git("ls-remote", "origin", f"refs/heads/{push_ref}").stdout.split()
+                remote_sha = remote[0] if remote else ""
+                quarantine_persisted = remote_sha == local_sha
+                if quarantine_persisted:
+                    log(f"✓ Quarantine staged: origin/{push_ref} == {local_sha[:10]}")
+                else:
+                    log("! Quarantine push verification mismatch; refusing success.")
         else:
             log("! Could not commit needs-review flag: " + commit.stderr.strip()[:300])
     else:
         log(f"   (no --push: manifest restored; WOULD set status=needs-review: {short_reason})")
-    log_run(str(manifest_path.relative_to(ROOT)), manifest.get("slug", "?"), "failed", short_reason)
-    sys.exit(1)
+    action = "quarantined" if quarantine_persisted else "failed"
+    log_run(str(manifest_path.relative_to(ROOT)), manifest.get("slug", "?"), action, short_reason)
+    sys.exit(QUARANTINE_EXIT_CODE if quarantine_persisted else 1)
 
 
 # ── Publish (git) ───────────────────────────────────────────────────
 def git_publish(manifest_path: Path, manifest: dict, rendered: Path,
-                published_url: str, manual_review: bool = False) -> None:
+                published_url: str, manual_review: bool = False,
+                push_ref: str | None = None) -> None:
+    if not push_ref:
+        raise ValueError("git_publish requires a non-production candidate branch")
     slug = manifest["slug"]
     city = city_label(manifest.get("city_slug", "utah"))
     manifest_was_tracked = is_tracked(manifest_path)
@@ -451,10 +482,10 @@ def git_publish(manifest_path: Path, manifest: dict, rendered: Path,
         sys.exit(1)
     log(f"✓ Committed: {message}")
 
-    pushed = git("push", "origin", "HEAD:main")
+    pushed = git("push", "origin", f"HEAD:refs/heads/{push_ref}")
     if pushed.returncode != 0:
         log("\n" + "!" * 70)
-        log("!! GIT PUSH FAILED — commit is LOCAL ONLY, post is NOT live !!")
+        log(f"!! GIT PUSH FAILED — commit is LOCAL ONLY; {push_ref} did not advance !!")
         log(pushed.stderr.strip())
         log("!" * 70)
         log_run(str(manifest_path.relative_to(ROOT)), slug, "failed", "git push failed")
@@ -462,18 +493,18 @@ def git_publish(manifest_path: Path, manifest: dict, rendered: Path,
 
     # This repo's push has lied before — verify the remote actually moved.
     local_sha = git("rev-parse", "HEAD").stdout.strip()
-    remote = git("ls-remote", "origin", "main").stdout.split()
+    remote = git("ls-remote", "origin", f"refs/heads/{push_ref}").stdout.split()
     remote_sha = remote[0] if remote else ""
     if remote_sha != local_sha:
         log("\n" + "!" * 70)
-        log("!! PUSH VERIFY MISMATCH — remote main != local HEAD !!")
+        log(f"!! PUSH VERIFY MISMATCH — remote {push_ref} != local HEAD !!")
         log(f"!! local  {local_sha}")
         log(f"!! remote {remote_sha or '(unreadable)'}")
         log("!! Commit left local. Investigate before re-running. !!")
         log("!" * 70)
         log_run(str(manifest_path.relative_to(ROOT)), slug, "failed", "push verify mismatch")
         sys.exit(1)
-    log(f"✓ Push verified: origin/main == {local_sha[:10]}")
+    log(f"✓ Push verified: origin/{push_ref} == {local_sha[:10]}")
 
 
 # ── Main ────────────────────────────────────────────────────────────
@@ -485,6 +516,10 @@ def main() -> None:
     parser.add_argument("--push", action="store_true",
                         help="Actually commit + push. Without this flag the run is a "
                         "dry-publish: render + integrate + gates, then restore the tree.")
+    parser.add_argument("--push-ref",
+                        help="Non-main remote candidate branch to receive the gated commit. "
+                        "Required with --push; only the cloud workflow promotes its exact "
+                        "green SHA to main.")
     parser.add_argument("--manual-review", action="store_true",
                         help="Human-reviewed publish. A person has read + fixed the draft, "
                         "so the COMPLIANCE judgment (advocacy-phrase fence, insurance-claim "
@@ -492,6 +527,16 @@ def main() -> None:
                         "not block. Structural gates (jsonld/links/doc-isolation) stay hard. "
                         "Also accepts status=needs-review, not just status=drafted.")
     args = parser.parse_args()
+    if args.push and not args.push_ref:
+        parser.error("--push requires a non-main --push-ref candidate branch")
+    if not args.push and args.push_ref:
+        parser.error("--push-ref requires --push")
+    if args.push_ref:
+        checked_ref = git("check-ref-format", "--branch", args.push_ref)
+        if checked_ref.returncode != 0 or checked_ref.stdout.strip() != args.push_ref:
+            parser.error(f"invalid --push-ref branch name: {args.push_ref!r}")
+        if args.push_ref == "main":
+            parser.error("direct-to-main publishing is forbidden; use a candidate branch")
 
     # 1. Pick manifest
     if args.manifest:
@@ -557,10 +602,10 @@ def main() -> None:
     if proc.returncode != 0:
         fail_closed(state, manifest_path, manifest,
                     f"render failed (exit {proc.returncode}): "
-                    f"{(proc.stderr or proc.stdout).strip()[:400]}", args.push)
+                    f"{(proc.stderr or proc.stdout).strip()[:400]}", args.push, args.push_ref)
     if not rendered.exists():
         fail_closed(state, manifest_path, manifest,
-                    f"render reported success but {rendered} is missing", args.push)
+                    f"render reported success but {rendered} is missing", args.push, args.push_ref)
     log(f"✓ Rendered {rendered.relative_to(ROOT)}")
 
     # 5. Compliance fence on the rendered HTML
@@ -573,7 +618,7 @@ def main() -> None:
                 log(f"    - {r}")
         else:
             fail_closed(state, manifest_path, manifest,
-                        "compliance fence: " + "; ".join(reasons), args.push)
+                        "compliance fence: " + "; ".join(reasons), args.push, args.push_ref)
     else:
         log("✓ Compliance fence clean")
 
@@ -587,7 +632,7 @@ def main() -> None:
                 log(f"    - {r}")
         else:
             fail_closed(state, manifest_path, manifest,
-                        "quality floor: " + "; ".join(floor_reasons), args.push)
+                        "quality floor: " + "; ".join(floor_reasons), args.push, args.push_ref)
     else:
         log("✓ Quality floor clean")
 
@@ -600,23 +645,23 @@ def main() -> None:
         sitemap_added = insert_sitemap_url(post_url)
         card_added = insert_index_card(manifest, post_path, image)
     except RuntimeError as exc:
-        fail_closed(state, manifest_path, manifest, f"integration failed: {exc}", args.push)
+        fail_closed(state, manifest_path, manifest, f"integration failed: {exc}", args.push, args.push_ref)
     log(f"✓ Sitemap: {'inserted' if sitemap_added else 'already present (skipped)'}")
     log(f"✓ Blog index card: {'inserted' if card_added else 'already present (skipped)'}")
 
     # 7. Gates (fail closed; compliance-words advisory in manual-review)
     ok, gate_reason = run_gates(manual_review=args.manual_review)
     if not ok:
-        fail_closed(state, manifest_path, manifest, f"gate failed: {gate_reason}", args.push)
+        fail_closed(state, manifest_path, manifest, f"gate failed: {gate_reason}", args.push, args.push_ref)
 
     changed = [str(p.relative_to(ROOT)) for p in (rendered, SITEMAP, BLOG_INDEX)]
 
     # 8. Publish or restore
     if args.push:
         git_publish(manifest_path, manifest, rendered, post_url,
-                    manual_review=args.manual_review)
-        log(f"\n✓ PUBLISHED {post_url}")
-        log_run(rel_manifest, slug, "published", post_url)
+                    manual_review=args.manual_review, push_ref=args.push_ref)
+        log(f"\n✓ STAGED FOR EXACT-SHA CI {post_url}")
+        log_run(rel_manifest, slug, "staged", f"{post_url} via {args.push_ref}")
     else:
         log("\n── DRY-PUBLISH SUMMARY (no --push) " + "─" * 30)
         log(f"  Would publish: {post_url}")
