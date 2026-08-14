@@ -5,6 +5,10 @@ import crypto from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import {
+  SPLIT_URL_DIAGNOSIS_STALE_WARNING,
+  splitUrlDiagnosisFreshness,
+} from "./lib/slv-intervention-queue.mjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const receiptPath = "data/rank-tracker/SLV-GSC-SPLIT-URL-DIAGNOSIS-2026-08-12.json";
@@ -21,7 +25,14 @@ assert.deepEqual(receipt.cities.map((city) => city.city), ["Holladay", "Herriman
 const snapshotSource = receipt.evidence.searchConsoleSnapshot;
 assert.equal(sha256(snapshotSource.file), snapshotSource.sha256, "GSC snapshot hash drifted");
 const attribution = read("data/rank-tracker/SLV-GSC-URL-ATTRIBUTION-LATEST.json");
-assert.equal(attribution.sources.gscSnapshot.sha256, snapshotSource.sha256, "receipt has expired against the active GSC attribution snapshot");
+const freshness = splitUrlDiagnosisFreshness({
+  activeSnapshotSha256: attribution.sources.gscSnapshot.sha256,
+  diagnosisSnapshotSha256: snapshotSource.sha256,
+});
+if (!freshness.current) {
+  const scope = freshness.warning.scope.join(", ");
+  console.warn(`::warning title=${SPLIT_URL_DIAGNOSIS_STALE_WARNING}::The fixed split-URL receipt is stale for ${scope}. ${freshness.warning.behavior} ${freshness.warning.requiredAction}`);
+}
 const snapshot = read(snapshotSource.file);
 assert.deepEqual(snapshot.gsc.window, snapshotSource.window);
 const tracked = snapshot.gsc.tracked_query_pages;

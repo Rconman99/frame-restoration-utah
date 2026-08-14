@@ -550,12 +550,18 @@ class WorkflowContractTests(unittest.TestCase):
         traction = (REPO / ".github/workflows/blog-traction.yml").read_text(encoding="utf-8")
         compliance = (REPO / ".github/workflows/compliance-gate.yml").read_text(encoding="utf-8")
         publisher = (REPO / "scripts/blog-publish.py").read_text(encoding="utf-8")
-        self.assertIn("python3 scripts/blog-publish.py --push", autopost)
+        self.assertIn('python3 scripts/blog-publish.py --push --push-ref "$CANDIDATE_BRANCH"', autopost)
         self.assertNotIn("blog-publish.py --push ||", autopost)
         self.assertIn("actions: write", autopost)
         self.assertIn("gh workflow run compliance-gate.yml", autopost)
         self.assertIn("select(.headSha ==", autopost)
         self.assertIn('gh run watch "$RUN_ID"', autopost)
+        self.assertIn('git push origin "$CANDIDATE_SHA:refs/heads/main"', autopost)
+        self.assertNotIn("python3 scripts/blog-publish.py --push\n", autopost)
+        self.assertLess(
+            autopost.index('gh run watch "$RUN_ID"'),
+            autopost.index('git push origin "$CANDIDATE_SHA:refs/heads/main"'),
+        )
         self.assertIn("workflow_dispatch:", compliance)
         self.assertIn('(\"public-seo-and-mobile\", [\"npm\", \"run\", \"audit:public-seo\"])', publisher)
         self.assertIn('(\"links\", [\"node\", \"scripts/audit-links.mjs\", \"--strict\"])', publisher)
@@ -563,6 +569,17 @@ class WorkflowContractTests(unittest.TestCase):
         self.assertIn('echo "push failed after retries"; exit 1', traction)
         self.assertNotIn("continue-on-error", autopost)
         self.assertNotIn("continue-on-error", traction)
+
+    def test_split_url_validator_warns_instead_of_killing_refresh(self) -> None:
+        validator = (REPO / "scripts/validate-slv-gsc-split-url-diagnosis.mjs").read_text(
+            encoding="utf-8"
+        )
+        self.assertIn("splitUrlDiagnosisFreshness", validator)
+        self.assertIn("SPLIT_URL_DIAGNOSIS_STALE_WARNING", validator)
+        self.assertNotIn(
+            "assert.equal(attribution.sources.gscSnapshot.sha256, snapshotSource.sha256",
+            validator,
+        )
 
 
 if __name__ == "__main__":

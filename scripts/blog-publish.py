@@ -6,8 +6,8 @@ Sits downstream of blog-cron.sh (the draft stage). Takes the oldest `drafted`
 manifest from data/blog-pending/, polishes the title for CTR, renders it via
 generate-blog-post.py, hard-fences the rendered HTML for YMYL/§31A-26-201
 advocacy vocabulary, integrates the post into sitemap.xml + blog/index.html,
-runs the blocking audit gates, and (only with --push) commits + pushes +
-verifies the remote actually advanced.
+runs the blocking audit gates, and (only with --push) commits + pushes to the
+selected branch + verifies that exact remote ref advanced.
 
 Usage:
   # Dry-publish (DEFAULT — renders, integrates, gates, then restores the
@@ -16,6 +16,9 @@ Usage:
 
   # Real publish (blogbot worktree only — commits, pushes, verifies remote):
   python3 scripts/blog-publish.py --push
+
+  # CI-staged publish (GitHub workflow — promote to main only after exact-SHA CI):
+  python3 scripts/blog-publish.py --push --push-ref blog-autopost-candidate-123
 
 Hard rules (encoded — do not change without reading CLAUDE.md):
   - Brand is Frame Restoration Utah. Never Texas / Frame Restoration TX.
@@ -111,7 +114,7 @@ def log_run(manifest: str, slug: str, action: str, reason: str) -> None:
         "ts": datetime.now(timezone.utc).isoformat(),
         "manifest": manifest,
         "slug": slug,
-        "action": action,  # published | skipped | failed
+        "action": action,  # staged | published | skipped | failed
         "reason": reason,
     }
     with RUN_LOG.open("a") as fh:
@@ -421,7 +424,8 @@ def fail_closed(state: TreeState, manifest_path: Path, manifest: dict,
 
 # ── Publish (git) ───────────────────────────────────────────────────
 def git_publish(manifest_path: Path, manifest: dict, rendered: Path,
-                published_url: str, manual_review: bool = False) -> None:
+                published_url: str, manual_review: bool = False,
+                push_ref: str = "main") -> None:
     slug = manifest["slug"]
     city = city_label(manifest.get("city_slug", "utah"))
     manifest_was_tracked = is_tracked(manifest_path)
@@ -460,10 +464,10 @@ def git_publish(manifest_path: Path, manifest: dict, rendered: Path,
         sys.exit(1)
     log(f"✓ Committed: {message}")
 
-    pushed = git("push", "origin", "HEAD:main")
+    pushed = git("push", "origin", f"HEAD:refs/heads/{push_ref}")
     if pushed.returncode != 0:
         log("\n" + "!" * 70)
-        log("!! GIT PUSH FAILED — commit is LOCAL ONLY, post is NOT live !!")
+        log(f"!! GIT PUSH FAILED — commit is LOCAL ONLY; {push_ref} did not advance !!")
         log(pushed.stderr.strip())
         log("!" * 70)
         log_run(str(manifest_path.relative_to(ROOT)), slug, "failed", "git push failed")
@@ -471,18 +475,18 @@ def git_publish(manifest_path: Path, manifest: dict, rendered: Path,
 
     # This repo's push has lied before — verify the remote actually moved.
     local_sha = git("rev-parse", "HEAD").stdout.strip()
-    remote = git("ls-remote", "origin", "main").stdout.split()
+    remote = git("ls-remote", "origin", f"refs/heads/{push_ref}").stdout.split()
     remote_sha = remote[0] if remote else ""
     if remote_sha != local_sha:
         log("\n" + "!" * 70)
-        log("!! PUSH VERIFY MISMATCH — remote main != local HEAD !!")
+        log(f"!! PUSH VERIFY MISMATCH — remote {push_ref} != local HEAD !!")
         log(f"!! local  {local_sha}")
         log(f"!! remote {remote_sha or '(unreadable)'}")
         log("!! Commit left local. Investigate before re-running. !!")
         log("!" * 70)
         log_run(str(manifest_path.relative_to(ROOT)), slug, "failed", "push verify mismatch")
         sys.exit(1)
-    log(f"✓ Push verified: origin/main == {local_sha[:10]}")
+    log(f"✓ Push verified: origin/{push_ref} == {local_sha[:10]}")
 
 
 # ── Main ────────────────────────────────────────────────────────────
@@ -494,6 +498,10 @@ def main() -> None:
     parser.add_argument("--push", action="store_true",
                         help="Actually commit + push. Without this flag the run is a "
                         "dry-publish: render + integrate + gates, then restore the tree.")
+    parser.add_argument("--push-ref", default="main",
+                        help="Remote branch to receive the gated commit (default: main). "
+                        "The cloud workflow uses a unique candidate branch and promotes "
+                        "its exact SHA only after Compliance Gate passes.")
     parser.add_argument("--manual-review", action="store_true",
                         help="Human-reviewed publish. A person has read + fixed the draft, "
                         "so the COMPLIANCE judgment (advocacy-phrase fence, insurance-claim "
@@ -501,6 +509,11 @@ def main() -> None:
                         "not block. Structural gates (jsonld/links/doc-isolation) stay hard. "
                         "Also accepts status=needs-review, not just status=drafted.")
     args = parser.parse_args()
+    checked_ref = git("check-ref-format", "--branch", args.push_ref)
+    if checked_ref.returncode != 0 or checked_ref.stdout.strip() != args.push_ref:
+        parser.error(f"invalid --push-ref branch name: {args.push_ref!r}")
+    if not args.push and args.push_ref != "main":
+        parser.error("--push-ref requires --push")
 
     # 1. Pick manifest
     if args.manifest:
@@ -623,9 +636,11 @@ def main() -> None:
     # 8. Publish or restore
     if args.push:
         git_publish(manifest_path, manifest, rendered, post_url,
-                    manual_review=args.manual_review)
-        log(f"\n✓ PUBLISHED {post_url}")
-        log_run(rel_manifest, slug, "published", post_url)
+                    manual_review=args.manual_review, push_ref=args.push_ref)
+        action = "published" if args.push_ref == "main" else "staged"
+        label = "PUBLISHED" if action == "published" else "STAGED FOR EXACT-SHA CI"
+        log(f"\n✓ {label} {post_url}")
+        log_run(rel_manifest, slug, action, f"{post_url} via {args.push_ref}")
     else:
         log("\n── DRY-PUBLISH SUMMARY (no --push) " + "─" * 30)
         log(f"  Would publish: {post_url}")
