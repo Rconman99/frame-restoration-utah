@@ -20,6 +20,15 @@
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { verifyTwilioRequest } from "../_shared/twilio-verify.ts";
+import {
+  missedCallAlertText,
+  normalizeAlertPhone,
+  shouldAlertMissedCall,
+} from "../_shared/missed-call-alert.ts";
+
+declare const EdgeRuntime: {
+  waitUntil(promise: Promise<unknown>): void;
+};
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL") ?? "";
 const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
@@ -207,18 +216,94 @@ async function getTwilioCreds() {
   return { sid: config.TWILIO_ACCOUNT_SID, auth: config.TWILIO_AUTH_TOKEN, phone: config.TWILIO_PHONE_NUMBER };
 }
 
+// ── Missed-call alert to the owner ───────────────────────────────────────────
+// Closes the gap that made every missed call invisible: Landon's handset shows
+// the forwarding number ("Frame Website"), not the caller, and nothing texted
+// him. The lead_notifications outbox is email-only and wired to handle-lead.
+// This is a direct SMS on the /completed callback instead of a retrofit of that
+// outbox: different channel, different recipient, and the webhook claim below
+// already gives us once-only semantics.
+
+/** Numbers Landon has BLOCKed. Fails OPEN — see shouldAlertMissedCall. */
+async function loadSuppressedCallers(): Promise<Set<string>> {
+  const { data, error } = await supabase
+    .from("alert_suppressed_callers")
+    .select("phone");
+  if (error) {
+    console.error("[handle-call] suppression lookup failed, alerting anyway:", error.message);
+    return new Set();
+  }
+  return new Set((data ?? []).map((r: any) => normalizeAlertPhone(r.phone)));
+}
+
+function internalAlertLines(): Set<string> {
+  const configured = (Deno.env.get("INTERNAL_RELAY_NUMBERS") || "")
+    .split(",")
+    .map(normalizeAlertPhone)
+    .filter(Boolean);
+  return new Set(
+    [LANDON_PHONE, ...Object.keys(NUMBER_SOURCES), ...configured]
+      .map(normalizeAlertPhone)
+      .filter(Boolean),
+  );
+}
+
+async function sendOwnerSMS(body: string): Promise<string | null> {
+  const creds = await getTwilioCreds();
+  if (!creds.sid || !creds.auth) {
+    console.error("[handle-call] Twilio creds missing — missed-call alert not sent");
+    return null;
+  }
+  const params = new URLSearchParams();
+  params.set("To", LANDON_PHONE);
+  params.set("Body", body);
+  // Pin From to the A2P sender of record. The Messaging Service pool holds more
+  // than one number and assigns a sender per NEW recipient, so without this an
+  // alert could arrive from a tracking DID.
+  params.set("From", creds.phone || "+14352928802");
+  try {
+    const resp = await fetch(
+      `https://api.twilio.com/2010-04-01/Accounts/${creds.sid}/Messages.json`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+          "Authorization": "Basic " + btoa(creds.sid + ":" + creds.auth),
+        },
+        body: params.toString(),
+      },
+    );
+    const result = await resp.json();
+    if (result.sid) return String(result.sid);
+    console.error("[handle-call] missed-call SMS failed:", result.message || result);
+    return null;
+  } catch (err) {
+    console.error("[handle-call] missed-call SMS threw:", err);
+    return null;
+  }
+}
+
+/** How many times this number has called, for the "Call #3" line. */
+async function callCountFor(fromNumber: string): Promise<number> {
+  const { count, error } = await supabase
+    .from("call_logs")
+    .select("id", { count: "exact", head: true })
+    .eq("from_number", fromNumber);
+  return error || typeof count !== "number" ? 0 : count;
+}
+
 // Process-once claim for Twilio retries (CODEX). Inserts the event key into
 // processed_webhooks; the PK makes it atomic. Returns false if already claimed
 // (a retry) so the caller can skip the one-time side effects. fail-open default —
 // a DB blip shouldn't drop call handling. (call_logs has no unique call_sid, so
 // this claim, not an upsert, is what makes the insert retry-safe.)
-async function claimWebhook(eventKey: string): Promise<boolean> {
+async function claimWebhook(eventKey: string, failOpen = true): Promise<boolean> {
   if (!eventKey) return true;
   const { error } = await supabase.from("processed_webhooks").insert({ event_key: eventKey });
   if (!error) return true;
   if ((error as { code?: string }).code === "23505") return false; // already processed
-  console.error("[handle-call] claimWebhook error:", error);
-  return true;
+  console.error("[handle-call] claimWebhook error:", error, "failOpen=", failOpen);
+  return failOpen;
 }
 
 async function sendPostHogEvent(event: string, properties: Record<string, unknown>) {
@@ -416,6 +501,60 @@ Deno.serve(async (req: Request) => {
     if (path === "completed") {
       const dial = (data.DialCallStatus || "").toLowerCase();
       if (dial && dial !== "completed" && dial !== "answered") {
+        // Return voicemail immediately; the runtime keeps the alert task alive.
+        // The fail-closed claim prevents a Twilio retry from double-texting.
+        const caller = normalizeAlertPhone(data.From || "");
+        const alertEventKey = callSid ? `missedalert:${callSid}` : "";
+        EdgeRuntime.waitUntil((async () => {
+          const decision = shouldAlertMissedCall(
+            dial,
+            caller,
+            await loadSuppressedCallers(),
+            internalAlertLines(),
+          );
+          if (!decision.alert || !alertEventKey) {
+            console.log(
+              `[handle-call] no missed-call alert: ${
+                decision.alert ? "missing_call_sid" : decision.reason
+              }`,
+            );
+            return;
+          }
+          if (!(await claimWebhook(alertEventKey, false))) {
+            console.log("[handle-call] no missed-call alert: claim_failed");
+            return;
+          }
+          const localTime = new Date().toLocaleTimeString("en-US", {
+            timeZone: "America/Denver",
+            hour: "numeric",
+            minute: "2-digit",
+          });
+          const messageSid = await sendOwnerSMS(missedCallAlertText({
+            fromNumber: caller,
+            city: data.FromCity
+              ? `${data.FromCity}${data.FromState ? ", " + data.FromState : ""}`
+              : null,
+            callCount: await callCountFor(caller),
+            localTime,
+          }));
+          if (messageSid) {
+            const { error: receiptError } = await supabase.from("call_logs")
+              .update({
+                missed_alert_sent_at: new Date().toISOString(),
+                missed_alert_message_sid: messageSid,
+              })
+              .eq("call_sid", callSid);
+            if (receiptError) {
+              console.error(
+                "[handle-call] missed-call receipt update failed:",
+                receiptError.message,
+              );
+            }
+          }
+          console.log(
+            `[handle-call] missed-call alert ${messageSid ? "accepted" : "FAILED"} for ${caller}`,
+          );
+        })());
         return xml(`<Response>
   <Say>Sorry, no one is available right now. Please leave a message after the beep.</Say>
   ${RECORD}

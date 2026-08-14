@@ -87,7 +87,7 @@ const CLIENT_TEST_SPAWN_SURFACE_SHA256 =
 const OWNER_TEST_SPAWN_SURFACE_SHA256 =
   "506d45a03413389a4ab1d07aeedfc9b4b1908420a156e0714b614d5dc233080a";
 const SCANNER_NORMALIZED_SOURCE_SHA256 =
-  "802b6b1c18ab7dcc765b7fbd8feb566d4c3919ef4959365cdd6f8ea09b8f34a2";
+  "10c6368284d748f220901b94fb6154782ae63dc0fc9c98737004c0d5c5d71aea";
 const SIGNED_RECEIPT_PARSER_SHA256 =
   "1e854738f0555804f52266a1833cd279ef83482b4946a63c226781be045114df";
 const ISSUER_SIGNER_SHA256 =
@@ -96,9 +96,9 @@ const FINAL_DEPLOY_STEP_SHA256 =
   "51684632cec58637dac60f1d85dbeb442e31bd4f7a9ee6551c2c370015acdcf0";
 const REVIEWED_CRITICAL_SOURCE_SHA256 = Object.freeze({
   ".github/workflows/compliance-gate.yml":
-    "9b526ed8c7423d0b9d5e178d17f9a4cd6029fd32116e8212134e042ad9b73d1d",
+    "282b463bff1d5fc6591c00c376ec508c42272697f81134bcea2d96e15ca9abf1",
   ".github/workflows/deploy-edge-function.yml":
-    "f03a7b4713ba291b1b0a490183bffad68edd71cfa4f922ce560355eadea542a7",
+    "b8a20f6b6684a0586e5fb88543ecf848f90f61acad1264d9d6bba125bd983475",
   "scripts/issue-client-ip-deploy-receipt.mjs":
     "73d295e7d088347fceef4f8fb0aea5d50e596ef276e2766789598ff257a31894",
   "scripts/render-client-ip-probe.mjs":
