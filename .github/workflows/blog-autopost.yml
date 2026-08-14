@@ -28,6 +28,7 @@ on:
 
 permissions:
   contents: write
+  actions: write
 
 concurrency:
   group: blog-autopost-utah
@@ -74,8 +75,33 @@ jobs:
           python3 scripts/blog-draft-openrouter.py --brief /tmp/brief.json --status drafted
 
       - name: Publish (HARD compliance fence + gates -> live)
+        id: publish
         if: steps.target.outputs.count != '0' && github.event.inputs.dry_run != 'true'
-        run: python3 scripts/blog-publish.py --push
+        run: |
+          python3 scripts/blog-publish.py --push
+          echo "published_sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+
+      - name: Run full Compliance Gate for the exact published SHA
+        if: steps.publish.outputs.published_sha != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PUBLISHED_SHA: ${{ steps.publish.outputs.published_sha }}
+        run: |
+          gh workflow run compliance-gate.yml --repo "$GITHUB_REPOSITORY" --ref main
+          RUN_ID=""
+          for attempt in $(seq 1 30); do
+            RUN_ID=$(gh run list --repo "$GITHUB_REPOSITORY" --workflow compliance-gate.yml \
+              --event workflow_dispatch --branch main --limit 20 \
+              --json databaseId,headSha \
+              --jq ".[] | select(.headSha == \"$PUBLISHED_SHA\") | .databaseId" | head -n 1)
+            if [ -n "$RUN_ID" ]; then break; fi
+            sleep 2
+          done
+          if [ -z "$RUN_ID" ]; then
+            echo "::error::Compliance Gate did not start for published SHA $PUBLISHED_SHA"
+            exit 1
+          fi
+          gh run watch "$RUN_ID" --repo "$GITHUB_REPOSITORY" --exit-status
 
       - name: Dry-run (manual dispatch with dry_run=true)
         if: steps.target.outputs.count != '0' && github.event.inputs.dry_run == 'true'

@@ -730,6 +730,7 @@ def render_html(manifest: dict, image_url: Optional[str], image_local_path: Opti
   <meta name="twitter:image" content="{og_image}" />
   <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large" />
   <meta name="theme-color" content="#0B4060" />
+  <meta name="frame-release" content="utah-blog-publishing-rescue-20260814a" />
   <link rel="icon" href="/favicon.ico" sizes="32x32" />
   <script type="application/ld+json">
   {{
@@ -830,7 +831,7 @@ def render_html(manifest: dict, image_url: Optional[str], image_local_path: Opti
     <li><a href="{SCHEDULE_URL}" target="_blank" rel="noopener" class="nav-cta">Free Inspection</a></li>
   </ul>
   <a href="tel:{PHONE_TEL}" class="nav-call-mobile" data-cta="header-call" aria-label="Call {BUSINESS_NAME} at {PHONE_CALL}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 10.8 19.79 19.79 0 01.03 2.18 2 2 0 012 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 14.92z"/></svg></a>
-  <button class="mobile-btn" id="menuBtn" aria-label="Toggle navigation"><span></span><span></span><span></span></button>
+  <button class="mobile-btn" id="menuBtn" aria-label="Toggle navigation" aria-expanded="false"><span></span><span></span><span></span></button>
 </nav>
 
 <main>
@@ -869,6 +870,14 @@ def render_html(manifest: dict, image_url: Optional[str], image_local_path: Opti
   <p>Call or text: <a href="tel:{PHONE_TEL}" style="color:var(--gold)">{PHONE_CALL}</a></p>
   <p style="margin-top:8px"><a href="/" style="color:rgba(255,255,255,0.7)">Home</a> &bull; <a href="/blog" style="color:rgba(255,255,255,0.7)">Blog</a> &bull; <a href="/privacy" style="color:rgba(255,255,255,0.7)">Privacy</a> &bull; <a href="/terms" style="color:rgba(255,255,255,0.7)">Terms</a> &bull; <a href="/review" style="color:var(--gold)">★ Leave a Review</a></p>
 </footer>
+<div class="sticky-call" role="region" aria-label="Contact {BUSINESS_NAME}">
+  <span class="sticky-call-microcopy">Free roof inspection</span>
+  <div class="sticky-call-actions">
+    <a class="sticky-call-btn sticky-call-phone" href="tel:{PHONE_TEL}" data-cta="mobile-call" aria-label="Call {BUSINESS_NAME} at {PHONE_CALL}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 10.8 19.79 19.79 0 01.03 2.18 2 2 0 012 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 14.92z"/></svg> Call Now</a>
+    <a class="sticky-call-btn sticky-call-text" href="sms:{PHONE_TEL}" data-cta="mobile-sms" aria-label="Text {BUSINESS_NAME} at {PHONE_CALL}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"/></svg> Text Us</a>
+  </div>
+</div>
+<script>const btn=document.getElementById('menuBtn'),links=document.getElementById('navLinks');if(btn&&links)btn.addEventListener('click',()=>{{links.classList.toggle('open');btn.setAttribute('aria-expanded',links.classList.contains('open'))}});</script>
 </body>
 </html>
 """

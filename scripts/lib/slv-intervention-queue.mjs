@@ -1,5 +1,25 @@
 import assert from "node:assert/strict";
 
+export const SPLIT_URL_DIAGNOSIS_STALE_WARNING = "stale-slv-gsc-split-url-diagnosis";
+
+export function splitUrlDiagnosisFreshness({ activeSnapshotSha256, diagnosisSnapshotSha256 }) {
+  const current = typeof activeSnapshotSha256 === "string"
+    && activeSnapshotSha256.length > 0
+    && activeSnapshotSha256 === diagnosisSnapshotSha256;
+  return {
+    current,
+    warning: current ? null : {
+      code: SPLIT_URL_DIAGNOSIS_STALE_WARNING,
+      severity: "warning",
+      scope: ["Holladay", "Herriman"],
+      activeSnapshotSha256: activeSnapshotSha256 || null,
+      diagnosisSnapshotSha256: diagnosisSnapshotSha256 || null,
+      behavior: "Ignore the stale split-URL disposition and keep affected URL-competition cities in the diagnosis lane; do not suppress, redirect, canonicalize, noindex, delete, or rewrite a route from stale evidence.",
+      requiredAction: "Refresh the bounded Holladay/Herriman split-URL diagnosis against the current GSC attribution snapshot.",
+    },
+  };
+}
+
 export function bestMeasuredRank(ranks = []) {
   const measured = ranks.filter((rank) => Number.isInteger(rank) && rank > 0);
   return measured.length ? Math.min(...measured) : null;

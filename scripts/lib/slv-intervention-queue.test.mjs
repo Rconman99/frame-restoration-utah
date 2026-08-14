@@ -1,6 +1,33 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { assertScoreVector, bestMeasuredRank, interventionLane, measuredMeanRank, scoreVector } from "./slv-intervention-queue.mjs";
+import {
+  SPLIT_URL_DIAGNOSIS_STALE_WARNING,
+  assertScoreVector,
+  bestMeasuredRank,
+  interventionLane,
+  measuredMeanRank,
+  scoreVector,
+  splitUrlDiagnosisFreshness,
+} from "./slv-intervention-queue.mjs";
+
+test("a changed GSC snapshot emits a named warning and expires only the split-URL suppression", () => {
+  const fresh = splitUrlDiagnosisFreshness({
+    activeSnapshotSha256: "same",
+    diagnosisSnapshotSha256: "same",
+  });
+  assert.equal(fresh.current, true);
+  assert.equal(fresh.warning, null);
+
+  const stale = splitUrlDiagnosisFreshness({
+    activeSnapshotSha256: "new-gsc-snapshot",
+    diagnosisSnapshotSha256: "diagnosed-snapshot",
+  });
+  assert.equal(stale.current, false);
+  assert.equal(stale.warning.code, SPLIT_URL_DIAGNOSIS_STALE_WARNING);
+  assert.deepEqual(stale.warning.scope, ["Holladay", "Herriman"]);
+  assert.match(stale.warning.behavior, /Ignore the stale split-URL disposition/);
+  assert.match(stale.warning.behavior, /diagnosis lane/);
+});
 
 test("rank helpers preserve missing evidence instead of converting it to a zero or exact rank", () => {
   assert.equal(bestMeasuredRank([null, 25, 19, null]), 19);

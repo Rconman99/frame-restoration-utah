@@ -1,0 +1,801 @@
+{
+  "schema_version": "1.0",
+  "contract": "frame-utah-blog-publishing-rescue-source",
+  "contract_sha256": "b3741be186cc25e92be97625b0614986090cbc98c2d370d7f476f74baa7b33be",
+  "contract_snapshot": {
+    "schema_version": "1.0",
+    "name": "frame-utah-blog-publishing-rescue-source",
+    "expected_serving_origin": "http://127.0.0.1:4176",
+    "expected_canonical_origin": "https://www.framerestorationutah.com",
+    "canonical_policy": "match",
+    "freshness_markers": [
+      "utah-blog-publishing-rescue-20260814a"
+    ],
+    "max_redirects": 0,
+    "min_touch_target_css_px": 44,
+    "max_fixed_viewport_ratio": 0.15,
+    "max_landscape_fixed_viewport_ratio": 0.24,
+    "max_console_errors": 0,
+    "max_page_errors": 0,
+    "max_focus_steps": 80,
+    "stability_wait_ms": 500,
+    "readiness_selector": "main",
+    "locale": "en-US",
+    "timezone": "America/Denver",
+    "viewports": [
+      {
+        "name": "small-320",
+        "width": 320,
+        "height": 568
+      },
+      {
+        "name": "android-360",
+        "width": 360,
+        "height": 800
+      },
+      {
+        "name": "iphone-393",
+        "width": 393,
+        "height": 852
+      },
+      {
+        "name": "large-430",
+        "width": 430,
+        "height": 932
+      },
+      {
+        "name": "landscape-740",
+        "width": 740,
+        "height": 360
+      }
+    ],
+    "routes": [
+      {
+        "path": "/blog/utah/asphalt-shingles-vs-metal-roof-utah.html",
+        "expected_canonical_path": "/blog/utah/asphalt-shingles-vs-metal-roof-utah"
+      }
+    ],
+    "critical_targets": [
+      {
+        "selector": "#menuBtn",
+        "max_viewport_width": 900
+      },
+      {
+        "selector": ".nav-call-mobile",
+        "expected_href_pattern": "^tel:\\+14352928802$",
+        "max_viewport_width": 900
+      },
+      {
+        "selector": ".sticky-call-phone",
+        "expected_href_pattern": "^tel:\\+14352928802$",
+        "max_viewport_width": 900
+      },
+      {
+        "selector": ".sticky-call-text",
+        "expected_href_pattern": "^sms:\\+14352928802$",
+        "max_viewport_width": 900
+      }
+    ],
+    "fixed_elements": [
+      {
+        "selector": "nav",
+        "max_viewport_ratio": 0.15,
+        "max_landscape_viewport_ratio": 0.24
+      },
+      {
+        "selector": ".sticky-call",
+        "max_viewport_ratio": 0.15,
+        "max_landscape_viewport_ratio": 0.24
+      }
+    ],
+    "forbidden_visible_selectors": [
+      ".fr-modal-overlay.open"
+    ],
+    "required_response_headers": {},
+    "allowed_console_error_patterns": []
+  },
+  "stage": "source",
+  "base_url": "http://127.0.0.1:4176",
+  "observed_at": "2026-08-14T18:02:48.036528Z",
+  "verdict": "pass",
+  "summary": {
+    "checks": 90,
+    "failures": 0,
+    "routes": 1,
+    "viewports": 5
+  },
+  "runs": [
+    {
+      "route": "/blog/utah/asphalt-shingles-vs-metal-roof-utah.html",
+      "viewport": {
+        "name": "small-320",
+        "width": 320,
+        "height": 568
+      },
+      "url": "http://127.0.0.1:4176/blog/utah/asphalt-shingles-vs-metal-roof-utah.html",
+      "checks": [
+        {
+          "name": "http-200",
+          "pass": true,
+          "detail": "status=200"
+        },
+        {
+          "name": "redirect-budget",
+          "pass": true,
+          "detail": "redirects=0 cap=0"
+        },
+        {
+          "name": "serving-origin",
+          "pass": true,
+          "detail": "final=http://127.0.0.1:4176 expected=http://127.0.0.1:4176"
+        },
+        {
+          "name": "viewport-meta",
+          "pass": true,
+          "detail": "content='width=device-width, initial-scale=1.0'"
+        },
+        {
+          "name": "canonical",
+          "pass": true,
+          "detail": "count=1 actual='https://www.framerestorationutah.com/blog/utah/asphalt-shingles-vs-metal-roof-utah' expected='https://www.framerestorationutah.com/blog/utah/asphalt-shingles-vs-metal-roof-utah'"
+        },
+        {
+          "name": "freshness:utah-blog-publishing-rescue-20260814a",
+          "pass": true,
+          "detail": "marker present"
+        },
+        {
+          "name": "horizontal-reflow",
+          "pass": true,
+          "detail": "scrollWidth=320 innerWidth=320"
+        },
+        {
+          "name": "critical-target:#menuBtn",
+          "pass": true,
+          "detail": "present, sized, hittable, and href-valid"
+        },
+        {
+          "name": "critical-target:.nav-call-mobile",
+          "pass": true,
+          "detail": "present, sized, hittable, and href-valid"
+        },
+        {
+          "name": "critical-target:.sticky-call-phone",
+          "pass": true,
+          "detail": "present, sized, hittable, and href-valid"
+        },
+        {
+          "name": "critical-target:.sticky-call-text",
+          "pass": true,
+          "detail": "present, sized, hittable, and href-valid"
+        },
+        {
+          "name": "fixed-element:nav",
+          "pass": true,
+          "detail": "present and within orientation budget"
+        },
+        {
+          "name": "fixed-element:.sticky-call",
+          "pass": true,
+          "detail": "present and within orientation budget"
+        },
+        {
+          "name": "forbidden-visible:.fr-modal-overlay.open",
+          "pass": true,
+          "detail": "visible=0"
+        },
+        {
+          "name": "focus-not-obscured",
+          "pass": true,
+          "detail": "sampled keyboard focus is exposed"
+        },
+        {
+          "name": "forbidden-visible-post-focus:.fr-modal-overlay.open",
+          "pass": true,
+          "detail": "visible=0"
+        },
+        {
+          "name": "console-errors",
+          "pass": true,
+          "detail": "count=0 cap=0 errors=[] guard_suppressed=1"
+        },
+        {
+          "name": "page-errors",
+          "pass": true,
+          "detail": "count=0 cap=0 errors=[]"
+        }
+      ],
+      "failures": [],
+      "http": {
+        "status": 200,
+        "final_url": "http://127.0.0.1:4176/blog/utah/asphalt-shingles-vs-metal-roof-utah.html",
+        "redirects": 0,
+        "headers": {
+          "content-length": "33902",
+          "content-type": "text/html",
+          "date": "Fri, 14 Aug 2026 18:02:48 GMT",
+          "last-modified": "Fri, 14 Aug 2026 17:59:06 GMT",
+          "server": "SimpleHTTP/0.6 Python/3.14.6"
+        }
+      },
+      "screenshot": {
+        "path": "/Users/agenticmac/projects/_wt-utah-publishing-seo-rescue-20260814/qa/screenshots/blog-publishing-rescue-source-20260814/blog-utah-asphalt-shingles-vs-metal-roof-utah.html--56ea929007f3--small-320.png",
+        "sha256": "1a812699e965b199fb19b5ad8b1172d94d0bee64539071848b393189bf727c4e",
+        "captured_scroll_y": 0
+      },
+      "network_guard": {
+        "mode": "read_only",
+        "auth_bootstrap_used": false,
+        "protection_bypass_used": false,
+        "preview_toolbar_suppression_requested": false,
+        "service_workers_blocked": true,
+        "websockets_blocked": true,
+        "stability_wait_ms": 500,
+        "readiness_selector": "main",
+        "blocked_count": 1,
+        "blocked": [
+          {
+            "reason": "known_analytics_provider",
+            "method": "GET",
+            "host": "us-assets.i.posthog.com"
+          }
+        ],
+        "console_errors_suppressed": 1
+      }
+    },
+    {
+      "route": "/blog/utah/asphalt-shingles-vs-metal-roof-utah.html",
+      "viewport": {
+        "name": "android-360",
+        "width": 360,
+        "height": 800
+      },
+      "url": "http://127.0.0.1:4176/blog/utah/asphalt-shingles-vs-metal-roof-utah.html",
+      "checks": [
+        {
+          "name": "http-200",
+          "pass": true,
+          "detail": "status=200"
+        },
+        {
+          "name": "redirect-budget",
+          "pass": true,
+          "detail": "redirects=0 cap=0"
+        },
+        {
+          "name": "serving-origin",
+          "pass": true,
+          "detail": "final=http://127.0.0.1:4176 expected=http://127.0.0.1:4176"
+        },
+        {
+          "name": "viewport-meta",
+          "pass": true,
+          "detail": "content='width=device-width, initial-scale=1.0'"
+        },
+        {
+          "name": "canonical",
+          "pass": true,
+          "detail": "count=1 actual='https://www.framerestorationutah.com/blog/utah/asphalt-shingles-vs-metal-roof-utah' expected='https://www.framerestorationutah.com/blog/utah/asphalt-shingles-vs-metal-roof-utah'"
+        },
+        {
+          "name": "freshness:utah-blog-publishing-rescue-20260814a",
+          "pass": true,
+          "detail": "marker present"
+        },
+        {
+          "name": "horizontal-reflow",
+          "pass": true,
+          "detail": "scrollWidth=360 innerWidth=360"
+        },
+        {
+          "name": "critical-target:#menuBtn",
+          "pass": true,
+          "detail": "present, sized, hittable, and href-valid"
+        },
+        {
+          "name": "critical-target:.nav-call-mobile",
+          "pass": true,
+          "detail": "present, sized, hittable, and href-valid"
+        },
+        {
+          "name": "critical-target:.sticky-call-phone",
+          "pass": true,
+          "detail": "present, sized, hittable, and href-valid"
+        },
+        {
+          "name": "critical-target:.sticky-call-text",
+          "pass": true,
+          "detail": "present, sized, hittable, and href-valid"
+        },
+        {
+          "name": "fixed-element:nav",
+          "pass": true,
+          "detail": "present and within orientation budget"
+        },
+        {
+          "name": "fixed-element:.sticky-call",
+          "pass": true,
+          "detail": "present and within orientation budget"
+        },
+        {
+          "name": "forbidden-visible:.fr-modal-overlay.open",
+          "pass": true,
+          "detail": "visible=0"
+        },
+        {
+          "name": "focus-not-obscured",
+          "pass": true,
+          "detail": "sampled keyboard focus is exposed"
+        },
+        {
+          "name": "forbidden-visible-post-focus:.fr-modal-overlay.open",
+          "pass": true,
+          "detail": "visible=0"
+        },
+        {
+          "name": "console-errors",
+          "pass": true,
+          "detail": "count=0 cap=0 errors=[] guard_suppressed=1"
+        },
+        {
+          "name": "page-errors",
+          "pass": true,
+          "detail": "count=0 cap=0 errors=[]"
+        }
+      ],
+      "failures": [],
+      "http": {
+        "status": 200,
+        "final_url": "http://127.0.0.1:4176/blog/utah/asphalt-shingles-vs-metal-roof-utah.html",
+        "redirects": 0,
+        "headers": {
+          "content-length": "33902",
+          "content-type": "text/html",
+          "date": "Fri, 14 Aug 2026 18:02:50 GMT",
+          "last-modified": "Fri, 14 Aug 2026 17:59:06 GMT",
+          "server": "SimpleHTTP/0.6 Python/3.14.6"
+        }
+      },
+      "screenshot": {
+        "path": "/Users/agenticmac/projects/_wt-utah-publishing-seo-rescue-20260814/qa/screenshots/blog-publishing-rescue-source-20260814/blog-utah-asphalt-shingles-vs-metal-roof-utah.html--56ea929007f3--android-360.png",
+        "sha256": "af408043264397f97470cc334136a44084fe1a05335636e50941b992c0bd078b",
+        "captured_scroll_y": 0
+      },
+      "network_guard": {
+        "mode": "read_only",
+        "auth_bootstrap_used": false,
+        "protection_bypass_used": false,
+        "preview_toolbar_suppression_requested": false,
+        "service_workers_blocked": true,
+        "websockets_blocked": true,
+        "stability_wait_ms": 500,
+        "readiness_selector": "main",
+        "blocked_count": 1,
+        "blocked": [
+          {
+            "reason": "known_analytics_provider",
+            "method": "GET",
+            "host": "us-assets.i.posthog.com"
+          }
+        ],
+        "console_errors_suppressed": 1
+      }
+    },
+    {
+      "route": "/blog/utah/asphalt-shingles-vs-metal-roof-utah.html",
+      "viewport": {
+        "name": "iphone-393",
+        "width": 393,
+        "height": 852
+      },
+      "url": "http://127.0.0.1:4176/blog/utah/asphalt-shingles-vs-metal-roof-utah.html",
+      "checks": [
+        {
+          "name": "http-200",
+          "pass": true,
+          "detail": "status=200"
+        },
+        {
+          "name": "redirect-budget",
+          "pass": true,
+          "detail": "redirects=0 cap=0"
+        },
+        {
+          "name": "serving-origin",
+          "pass": true,
+          "detail": "final=http://127.0.0.1:4176 expected=http://127.0.0.1:4176"
+        },
+        {
+          "name": "viewport-meta",
+          "pass": true,
+          "detail": "content='width=device-width, initial-scale=1.0'"
+        },
+        {
+          "name": "canonical",
+          "pass": true,
+          "detail": "count=1 actual='https://www.framerestorationutah.com/blog/utah/asphalt-shingles-vs-metal-roof-utah' expected='https://www.framerestorationutah.com/blog/utah/asphalt-shingles-vs-metal-roof-utah'"
+        },
+        {
+          "name": "freshness:utah-blog-publishing-rescue-20260814a",
+          "pass": true,
+          "detail": "marker present"
+        },
+        {
+          "name": "horizontal-reflow",
+          "pass": true,
+          "detail": "scrollWidth=393 innerWidth=393"
+        },
+        {
+          "name": "critical-target:#menuBtn",
+          "pass": true,
+          "detail": "present, sized, hittable, and href-valid"
+        },
+        {
+          "name": "critical-target:.nav-call-mobile",
+          "pass": true,
+          "detail": "present, sized, hittable, and href-valid"
+        },
+        {
+          "name": "critical-target:.sticky-call-phone",
+          "pass": true,
+          "detail": "present, sized, hittable, and href-valid"
+        },
+        {
+          "name": "critical-target:.sticky-call-text",
+          "pass": true,
+          "detail": "present, sized, hittable, and href-valid"
+        },
+        {
+          "name": "fixed-element:nav",
+          "pass": true,
+          "detail": "present and within orientation budget"
+        },
+        {
+          "name": "fixed-element:.sticky-call",
+          "pass": true,
+          "detail": "present and within orientation budget"
+        },
+        {
+          "name": "forbidden-visible:.fr-modal-overlay.open",
+          "pass": true,
+          "detail": "visible=0"
+        },
+        {
+          "name": "focus-not-obscured",
+          "pass": true,
+          "detail": "sampled keyboard focus is exposed"
+        },
+        {
+          "name": "forbidden-visible-post-focus:.fr-modal-overlay.open",
+          "pass": true,
+          "detail": "visible=0"
+        },
+        {
+          "name": "console-errors",
+          "pass": true,
+          "detail": "count=0 cap=0 errors=[] guard_suppressed=1"
+        },
+        {
+          "name": "page-errors",
+          "pass": true,
+          "detail": "count=0 cap=0 errors=[]"
+        }
+      ],
+      "failures": [],
+      "http": {
+        "status": 200,
+        "final_url": "http://127.0.0.1:4176/blog/utah/asphalt-shingles-vs-metal-roof-utah.html",
+        "redirects": 0,
+        "headers": {
+          "content-length": "33902",
+          "content-type": "text/html",
+          "date": "Fri, 14 Aug 2026 18:02:52 GMT",
+          "last-modified": "Fri, 14 Aug 2026 17:59:06 GMT",
+          "server": "SimpleHTTP/0.6 Python/3.14.6"
+        }
+      },
+      "screenshot": {
+        "path": "/Users/agenticmac/projects/_wt-utah-publishing-seo-rescue-20260814/qa/screenshots/blog-publishing-rescue-source-20260814/blog-utah-asphalt-shingles-vs-metal-roof-utah.html--56ea929007f3--iphone-393.png",
+        "sha256": "740a392b7d10fb2c25541b5a4ba7c05a5baa52d5116dad9b98841d3515d9b94b",
+        "captured_scroll_y": 0
+      },
+      "network_guard": {
+        "mode": "read_only",
+        "auth_bootstrap_used": false,
+        "protection_bypass_used": false,
+        "preview_toolbar_suppression_requested": false,
+        "service_workers_blocked": true,
+        "websockets_blocked": true,
+        "stability_wait_ms": 500,
+        "readiness_selector": "main",
+        "blocked_count": 1,
+        "blocked": [
+          {
+            "reason": "known_analytics_provider",
+            "method": "GET",
+            "host": "us-assets.i.posthog.com"
+          }
+        ],
+        "console_errors_suppressed": 1
+      }
+    },
+    {
+      "route": "/blog/utah/asphalt-shingles-vs-metal-roof-utah.html",
+      "viewport": {
+        "name": "large-430",
+        "width": 430,
+        "height": 932
+      },
+      "url": "http://127.0.0.1:4176/blog/utah/asphalt-shingles-vs-metal-roof-utah.html",
+      "checks": [
+        {
+          "name": "http-200",
+          "pass": true,
+          "detail": "status=200"
+        },
+        {
+          "name": "redirect-budget",
+          "pass": true,
+          "detail": "redirects=0 cap=0"
+        },
+        {
+          "name": "serving-origin",
+          "pass": true,
+          "detail": "final=http://127.0.0.1:4176 expected=http://127.0.0.1:4176"
+        },
+        {
+          "name": "viewport-meta",
+          "pass": true,
+          "detail": "content='width=device-width, initial-scale=1.0'"
+        },
+        {
+          "name": "canonical",
+          "pass": true,
+          "detail": "count=1 actual='https://www.framerestorationutah.com/blog/utah/asphalt-shingles-vs-metal-roof-utah' expected='https://www.framerestorationutah.com/blog/utah/asphalt-shingles-vs-metal-roof-utah'"
+        },
+        {
+          "name": "freshness:utah-blog-publishing-rescue-20260814a",
+          "pass": true,
+          "detail": "marker present"
+        },
+        {
+          "name": "horizontal-reflow",
+          "pass": true,
+          "detail": "scrollWidth=430 innerWidth=430"
+        },
+        {
+          "name": "critical-target:#menuBtn",
+          "pass": true,
+          "detail": "present, sized, hittable, and href-valid"
+        },
+        {
+          "name": "critical-target:.nav-call-mobile",
+          "pass": true,
+          "detail": "present, sized, hittable, and href-valid"
+        },
+        {
+          "name": "critical-target:.sticky-call-phone",
+          "pass": true,
+          "detail": "present, sized, hittable, and href-valid"
+        },
+        {
+          "name": "critical-target:.sticky-call-text",
+          "pass": true,
+          "detail": "present, sized, hittable, and href-valid"
+        },
+        {
+          "name": "fixed-element:nav",
+          "pass": true,
+          "detail": "present and within orientation budget"
+        },
+        {
+          "name": "fixed-element:.sticky-call",
+          "pass": true,
+          "detail": "present and within orientation budget"
+        },
+        {
+          "name": "forbidden-visible:.fr-modal-overlay.open",
+          "pass": true,
+          "detail": "visible=0"
+        },
+        {
+          "name": "focus-not-obscured",
+          "pass": true,
+          "detail": "sampled keyboard focus is exposed"
+        },
+        {
+          "name": "forbidden-visible-post-focus:.fr-modal-overlay.open",
+          "pass": true,
+          "detail": "visible=0"
+        },
+        {
+          "name": "console-errors",
+          "pass": true,
+          "detail": "count=0 cap=0 errors=[] guard_suppressed=1"
+        },
+        {
+          "name": "page-errors",
+          "pass": true,
+          "detail": "count=0 cap=0 errors=[]"
+        }
+      ],
+      "failures": [],
+      "http": {
+        "status": 200,
+        "final_url": "http://127.0.0.1:4176/blog/utah/asphalt-shingles-vs-metal-roof-utah.html",
+        "redirects": 0,
+        "headers": {
+          "content-length": "33902",
+          "content-type": "text/html",
+          "date": "Fri, 14 Aug 2026 18:02:54 GMT",
+          "last-modified": "Fri, 14 Aug 2026 17:59:06 GMT",
+          "server": "SimpleHTTP/0.6 Python/3.14.6"
+        }
+      },
+      "screenshot": {
+        "path": "/Users/agenticmac/projects/_wt-utah-publishing-seo-rescue-20260814/qa/screenshots/blog-publishing-rescue-source-20260814/blog-utah-asphalt-shingles-vs-metal-roof-utah.html--56ea929007f3--large-430.png",
+        "sha256": "b45668c65648635938cb9eb2e2a8dd70859d45601fca638ccb9d1ef606c88eb1",
+        "captured_scroll_y": 0
+      },
+      "network_guard": {
+        "mode": "read_only",
+        "auth_bootstrap_used": false,
+        "protection_bypass_used": false,
+        "preview_toolbar_suppression_requested": false,
+        "service_workers_blocked": true,
+        "websockets_blocked": true,
+        "stability_wait_ms": 500,
+        "readiness_selector": "main",
+        "blocked_count": 1,
+        "blocked": [
+          {
+            "reason": "known_analytics_provider",
+            "method": "GET",
+            "host": "us-assets.i.posthog.com"
+          }
+        ],
+        "console_errors_suppressed": 1
+      }
+    },
+    {
+      "route": "/blog/utah/asphalt-shingles-vs-metal-roof-utah.html",
+      "viewport": {
+        "name": "landscape-740",
+        "width": 740,
+        "height": 360
+      },
+      "url": "http://127.0.0.1:4176/blog/utah/asphalt-shingles-vs-metal-roof-utah.html",
+      "checks": [
+        {
+          "name": "http-200",
+          "pass": true,
+          "detail": "status=200"
+        },
+        {
+          "name": "redirect-budget",
+          "pass": true,
+          "detail": "redirects=0 cap=0"
+        },
+        {
+          "name": "serving-origin",
+          "pass": true,
+          "detail": "final=http://127.0.0.1:4176 expected=http://127.0.0.1:4176"
+        },
+        {
+          "name": "viewport-meta",
+          "pass": true,
+          "detail": "content='width=device-width, initial-scale=1.0'"
+        },
+        {
+          "name": "canonical",
+          "pass": true,
+          "detail": "count=1 actual='https://www.framerestorationutah.com/blog/utah/asphalt-shingles-vs-metal-roof-utah' expected='https://www.framerestorationutah.com/blog/utah/asphalt-shingles-vs-metal-roof-utah'"
+        },
+        {
+          "name": "freshness:utah-blog-publishing-rescue-20260814a",
+          "pass": true,
+          "detail": "marker present"
+        },
+        {
+          "name": "horizontal-reflow",
+          "pass": true,
+          "detail": "scrollWidth=740 innerWidth=740"
+        },
+        {
+          "name": "critical-target:#menuBtn",
+          "pass": true,
+          "detail": "present, sized, hittable, and href-valid"
+        },
+        {
+          "name": "critical-target:.nav-call-mobile",
+          "pass": true,
+          "detail": "present, sized, hittable, and href-valid"
+        },
+        {
+          "name": "critical-target:.sticky-call-phone",
+          "pass": true,
+          "detail": "present, sized, hittable, and href-valid"
+        },
+        {
+          "name": "critical-target:.sticky-call-text",
+          "pass": true,
+          "detail": "present, sized, hittable, and href-valid"
+        },
+        {
+          "name": "fixed-element:nav",
+          "pass": true,
+          "detail": "present and within orientation budget"
+        },
+        {
+          "name": "fixed-element:.sticky-call",
+          "pass": true,
+          "detail": "present and within orientation budget"
+        },
+        {
+          "name": "forbidden-visible:.fr-modal-overlay.open",
+          "pass": true,
+          "detail": "visible=0"
+        },
+        {
+          "name": "focus-not-obscured",
+          "pass": true,
+          "detail": "sampled keyboard focus is exposed"
+        },
+        {
+          "name": "forbidden-visible-post-focus:.fr-modal-overlay.open",
+          "pass": true,
+          "detail": "visible=0"
+        },
+        {
+          "name": "console-errors",
+          "pass": true,
+          "detail": "count=0 cap=0 errors=[] guard_suppressed=1"
+        },
+        {
+          "name": "page-errors",
+          "pass": true,
+          "detail": "count=0 cap=0 errors=[]"
+        }
+      ],
+      "failures": [],
+      "http": {
+        "status": 200,
+        "final_url": "http://127.0.0.1:4176/blog/utah/asphalt-shingles-vs-metal-roof-utah.html",
+        "redirects": 0,
+        "headers": {
+          "content-length": "33902",
+          "content-type": "text/html",
+          "date": "Fri, 14 Aug 2026 18:02:57 GMT",
+          "last-modified": "Fri, 14 Aug 2026 17:59:06 GMT",
+          "server": "SimpleHTTP/0.6 Python/3.14.6"
+        }
+      },
+      "screenshot": {
+        "path": "/Users/agenticmac/projects/_wt-utah-publishing-seo-rescue-20260814/qa/screenshots/blog-publishing-rescue-source-20260814/blog-utah-asphalt-shingles-vs-metal-roof-utah.html--56ea929007f3--landscape-740.png",
+        "sha256": "c8dbf2b34ac52d14548b2da3d3fd5bc06b20dc151a643c216bd2730d43349789",
+        "captured_scroll_y": 0
+      },
+      "network_guard": {
+        "mode": "read_only",
+        "auth_bootstrap_used": false,
+        "protection_bypass_used": false,
+        "preview_toolbar_suppression_requested": false,
+        "service_workers_blocked": true,
+        "websockets_blocked": true,
+        "stability_wait_ms": 500,
+        "readiness_selector": "main",
+        "blocked_count": 1,
+        "blocked": [
+          {
+            "reason": "known_analytics_provider",
+            "method": "GET",
+            "host": "us-assets.i.posthog.com"
+          }
+        ],
+        "console_errors_suppressed": 1
+      }
+    }
+  ],
+  "duration_seconds": 11.226,
+  "receipt_path": "/Users/agenticmac/projects/_wt-utah-publishing-seo-rescue-20260814/qa/receipts/blog-publishing-rescue-source-20260814.json"
+}

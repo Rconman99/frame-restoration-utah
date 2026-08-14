@@ -82,13 +82,22 @@ INSURANCE_BIGRAM = "insurance claim"
 INSURANCE_MAX = 3
 INSURANCE_MAX_STORM = 4
 
-# Blocking gates for this stage. compliance-words runs WITHOUT --strict —
-# site-wide saturation is a known advisory, not a per-post blocker.
+# Blocking public-release gates for this stage. These mirror the public-content
+# jobs in Compliance Gate closely enough that an autonomous publish cannot
+# bypass the corpus contract before its commit exists. The workflow still
+# dispatches the full GitHub Compliance Gate against the exact published SHA.
+# compliance-words runs WITHOUT --strict — site-wide saturation is a known
+# advisory, not a per-post blocker.
 GATES = [
-    "audit-jsonld.mjs",
-    "audit-links.mjs",
-    "audit-compliance-words.mjs",
-    "audit-doc-isolation.mjs",
+    ("jsonld", ["node", "scripts/audit-jsonld.mjs"]),
+    ("faq-parity", ["npm", "run", "audit:faq-parity"]),
+    ("links", ["node", "scripts/audit-links.mjs", "--strict"]),
+    ("compliance-words", ["node", "scripts/audit-compliance-words.mjs"]),
+    ("cta-integrity", ["node", "scripts/audit-cta-integrity.mjs", "--strict"]),
+    ("review-integrity", ["node", "scripts/audit-review-integrity.mjs", "--strict"]),
+    ("entity-consistency", ["node", "scripts/audit-entity-consistency.mjs", "--strict"]),
+    ("doc-isolation", ["node", "scripts/audit-doc-isolation.mjs", "--strict"]),
+    ("public-seo-and-mobile", ["npm", "run", "audit:public-seo"]),
 ]
 
 
@@ -359,10 +368,10 @@ def insert_index_card(manifest: dict, post_path: str, image: str) -> bool:
 def run_gates(manual_review: bool = False) -> tuple[bool, str]:
     # compliance-words is a compliance JUDGMENT; on the human-reviewed path it
     # is advisory (reported, not blocking). The rest are structural and stay hard.
-    advisory = {"audit-compliance-words.mjs"} if manual_review else set()
-    for gate in GATES:
+    advisory = {"compliance-words"} if manual_review else set()
+    for gate, command in GATES:
         log(f"-> Gate: {gate}" + ("  (advisory)" if gate in advisory else ""))
-        proc = run(["node", str(ROOT / "scripts" / gate)])
+        proc = run(command)
         if proc.returncode != 0:
             if gate in advisory:
                 log(f"   ⚠ {gate} reported issues (ADVISORY — not blocking)")
