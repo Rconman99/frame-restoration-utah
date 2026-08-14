@@ -127,6 +127,17 @@ Deno.test("missed-call migration runner is exact, isolated, and resumable", () =
     migrationRunner,
     'test "$(git -C "$REPO_ROOT" rev-parse origin/main)" = "$RELEASE_SHA"',
   );
+  assertStringIncludes(
+    migrationRunner,
+    "target_recorded=\"$(jq -r '.[0].target_recorded'",
+  );
+  assertEquals(
+    migrationRunner.includes(
+      "target_recorded=\"$(jq -er '.[0].target_recorded'",
+    ),
+    false,
+  );
+  assertStringIncludes(migrationRunner, "browser_crud_revoked");
 });
 
 Deno.test("missed-call rollout preserves deploy order and outbound approval", () => {
