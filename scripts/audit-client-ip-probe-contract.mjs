@@ -87,7 +87,7 @@ const CLIENT_TEST_SPAWN_SURFACE_SHA256 =
 const OWNER_TEST_SPAWN_SURFACE_SHA256 =
   "506d45a03413389a4ab1d07aeedfc9b4b1908420a156e0714b614d5dc233080a";
 const SCANNER_NORMALIZED_SOURCE_SHA256 =
-  "10c6368284d748f220901b94fb6154782ae63dc0fc9c98737004c0d5c5d71aea";
+  "5ce1f0ba8eebcb1fb48728a6000405716de4bddcb024f7c9aff7d516a5bc6028";
 const SIGNED_RECEIPT_PARSER_SHA256 =
   "1e854738f0555804f52266a1833cd279ef83482b4946a63c226781be045114df";
 const ISSUER_SIGNER_SHA256 =
@@ -96,7 +96,7 @@ const FINAL_DEPLOY_STEP_SHA256 =
   "51684632cec58637dac60f1d85dbeb442e31bd4f7a9ee6551c2c370015acdcf0";
 const REVIEWED_CRITICAL_SOURCE_SHA256 = Object.freeze({
   ".github/workflows/compliance-gate.yml":
-    "282b463bff1d5fc6591c00c376ec508c42272697f81134bcea2d96e15ca9abf1",
+    "c4961d47256c392a3e8bfae4d2b37b9b28379daab7cfe87104c0087dd5883cff",
   ".github/workflows/deploy-edge-function.yml":
     "b8a20f6b6684a0586e5fb88543ecf848f90f61acad1264d9d6bba125bd983475",
   "scripts/issue-client-ip-deploy-receipt.mjs":
