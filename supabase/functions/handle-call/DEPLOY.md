@@ -11,10 +11,18 @@ test call or text.
 3. Obtain the official macOS arm64 Supabase CLI 2.113.0 binary and verify its
    SHA-256 is
    `ad4957e507ffc178fa27dd9256eb666f34bade172058b66e97f230413564494a`.
-4. Inject `SUPABASE_ACCESS_TOKEN` from approved secret storage without printing
-   it. Bind `RELEASE_SHA` and `UTAH_MIGRATION_EXCLUSIVE_WRITER_ACK` to the same
-   full current-main SHA and set `SUPABASE_BIN` to the verified binary. First
-   set `UTAH_MIGRATION_EXECUTION_MODE=preflight` and run:
+4. Select one explicit authentication mode. For CI or another controlled
+   process, set `UTAH_SUPABASE_AUTH_MODE=injected-token` and inject
+   `SUPABASE_ACCESS_TOKEN` from approved secret storage without printing it. On
+   the controlled release Mac, `UTAH_SUPABASE_AUTH_MODE=keychain-profile` is
+   permitted only when the pinned CLI proves it used the `supabase` macOS
+   Keychain profile, the official `supabase.co` API, and the exact Utah project;
+   `SUPABASE_ACCESS_TOKEN` must be absent in this mode. The runner fails closed
+   if the profile falls back to an environment variable or token file.
+
+   Bind `RELEASE_SHA` and `UTAH_MIGRATION_EXCLUSIVE_WRITER_ACK` to the same full
+   current-main SHA and set `SUPABASE_BIN` to the verified binary. First set
+   `UTAH_MIGRATION_EXECUTION_MODE=preflight` and run:
 
    ```bash
    scripts/run-missed-call-migration.sh
