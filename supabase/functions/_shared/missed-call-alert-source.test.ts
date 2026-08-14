@@ -8,6 +8,8 @@ const migration = await read(
 );
 const workflow = await read(".github/workflows/compliance-gate.yml");
 const deployWorkflow = await read(".github/workflows/deploy-edge-function.yml");
+const migrationRunner = await read("scripts/run-missed-call-migration.sh");
+const deployGuide = await read("supabase/functions/handle-call/DEPLOY.md");
 
 Deno.test("alert sends require a stable call SID and a fail-closed claim", () => {
   assertStringIncludes(
@@ -92,4 +94,45 @@ Deno.test("production function deployment fails closed until the live schema is 
     deployWorkflow,
     '[[ "$FUNCTION_NAME" != "handle-call" && "$FUNCTION_NAME" != "handle-sms" ]]',
   );
+});
+
+Deno.test("missed-call migration runner is exact, isolated, and resumable", () => {
+  for (
+    const contract of [
+      "RELEASE_SHA",
+      "UTAH_MIGRATION_EXCLUSIVE_WRITER_ACK",
+      "UTAH_MIGRATION_EXECUTION_MODE",
+      "SUPABASE_NO_KEYRING=1",
+      "20260812010000_missed_call_alerts.sql",
+      "19bde86daae30de86bbeb84c27aa899925b54f00d34b3a48e6ec44750e0cb261",
+      "ad4957e507ffc178fa27dd9256eb666f34bade172058b66e97f230413564494a",
+      "remote_applied_history_guard.sql",
+      "exactly 33 regular SQL files",
+      "catalog.final-preflight.json",
+      "catalog.postflight.json",
+      "suppression_rows_preserved",
+    ]
+  ) {
+    assertStringIncludes(migrationRunner, contract);
+  }
+  assertEquals(migrationRunner.includes("migration repair"), false);
+  assertEquals(migrationRunner.includes("db push"), false);
+  assertEquals(migrationRunner.includes("database/query"), false);
+  assertEquals(migrationRunner.includes("psql"), false);
+  assertStringIncludes(
+    migrationRunner,
+    "migration up --linked --include-all --yes",
+  );
+  assertStringIncludes(
+    migrationRunner,
+    'test "$(git -C "$REPO_ROOT" rev-parse origin/main)" = "$RELEASE_SHA"',
+  );
+});
+
+Deno.test("missed-call rollout preserves deploy order and outbound approval", () => {
+  assertStringIncludes(deployGuide, "handle-sms` first");
+  assertStringIncludes(deployGuide, "then deploy `handle-call`");
+  assertStringIncludes(deployGuide, "without separate explicit approval");
+  assertStringIncludes(deployGuide, "delivery-proven");
+  assertStringIncludes(deployGuide, "scripts/run-missed-call-migration.sh");
 });
