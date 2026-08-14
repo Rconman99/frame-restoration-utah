@@ -61,6 +61,7 @@ REPO_ROOT="$(git rev-parse --show-toplevel)"
 RELEASE_SHA="${RELEASE_SHA:-}"
 SUPABASE_BIN="${SUPABASE_BIN:-}"
 EXECUTION_MODE="${UTAH_MIGRATION_EXECUTION_MODE:-}"
+AUTH_MODE="${UTAH_SUPABASE_AUTH_MODE:-}"
 
 test "${#RELEASE_SHA}" -eq 40 || fail 'RELEASE_SHA must be a full 40-character commit'
 case "$RELEASE_SHA" in
@@ -68,13 +69,15 @@ case "$RELEASE_SHA" in
 esac
 test -n "$SUPABASE_BIN" && test -x "$SUPABASE_BIN" || \
   fail 'SUPABASE_BIN must name the reviewed executable Supabase CLI'
-test -n "${SUPABASE_ACCESS_TOKEN:-}" || \
-  fail 'inject SUPABASE_ACCESS_TOKEN from approved secret storage'
 test "${UTAH_MIGRATION_EXCLUSIVE_WRITER_ACK:-}" = "$RELEASE_SHA" || \
   fail 'secure the exclusive Utah migration-writer window and bind its acknowledgement to RELEASE_SHA'
 case "$EXECUTION_MODE" in
   preflight|apply) ;;
   *) fail 'UTAH_MIGRATION_EXECUTION_MODE must be preflight or apply' ;;
+esac
+case "$AUTH_MODE" in
+  injected-token|keychain-profile) ;;
+  *) fail 'UTAH_SUPABASE_AUTH_MODE must be injected-token or keychain-profile' ;;
 esac
 
 git -C "$REPO_ROOT" fetch --quiet origin main
@@ -92,11 +95,50 @@ test "$(basename "$SUPABASE_BIN")" != 'supabase-go' || \
 test "$(shasum -a 256 "$SUPABASE_BIN" | awk '{print $1}')" = "$CLI_SHA256" || \
   fail 'Supabase CLI binary digest differs from the reviewed official release'
 
-export SUPABASE_NO_KEYRING=1
 RECEIPT_DIR="$(mktemp -d "${TMPDIR:-/tmp}/utah-missed-call-migration-receipt.XXXXXX")"
 RUNNER_DIR="$RECEIPT_DIR/runner"
 mkdir -p "$RUNNER_DIR"
 chmod 700 "$RECEIPT_DIR" "$RUNNER_DIR"
+
+case "$AUTH_MODE" in
+  injected-token)
+    test -n "${SUPABASE_ACCESS_TOKEN:-}" || \
+      fail 'inject SUPABASE_ACCESS_TOKEN from approved secret storage'
+    export SUPABASE_NO_KEYRING=1
+    printf 'auth_mode=injected-token\n' > "$RECEIPT_DIR/auth-profile.txt"
+    ;;
+  keychain-profile)
+    test -z "${SUPABASE_ACCESS_TOKEN:-}" || \
+      fail 'SUPABASE_ACCESS_TOKEN must be absent in keychain-profile mode'
+    unset SUPABASE_NO_KEYRING
+    command -v security >/dev/null || fail 'macOS security tool is unavailable'
+    security find-generic-password -s 'Supabase CLI' -a supabase >/dev/null || \
+      fail 'the reviewed Supabase CLI Keychain profile is unavailable'
+    projects_json="$(
+      "$SUPABASE_BIN" --debug --agent no --output-format json projects list \
+        2> "$RECEIPT_DIR/auth-debug.txt"
+    )"
+    jq -e --arg project "$PROJECT_REF" '
+      type == "object"
+      and (.projects | type == "array")
+      and ([.projects[] | select(.id == $project)] | length) == 1
+    ' <<< "$projects_json" >/dev/null || \
+      fail 'the Keychain profile cannot resolve the exact Utah project'
+    grep -Fxq 'Using access token for profile: supabase' "$RECEIPT_DIR/auth-debug.txt" || \
+      fail 'the CLI did not authenticate through the reviewed profile'
+    grep -Fxq 'Using profile: supabase (supabase.co)' "$RECEIPT_DIR/auth-debug.txt" || \
+      fail 'the CLI selected an unexpected Supabase profile or API host'
+    if grep -Eq 'Using access token from (env var|file)' "$RECEIPT_DIR/auth-debug.txt"; then
+      fail 'the CLI bypassed the reviewed Keychain profile'
+    fi
+    jq -cn --arg project "$PROJECT_REF" \
+      '{auth_mode:"keychain-profile",project_ref:$project}' \
+      > "$RECEIPT_DIR/auth-profile.json"
+    unset projects_json
+    ;;
+esac
+chmod 600 "$RECEIPT_DIR"/auth-* 2>/dev/null || \
+  fail 'authentication receipts could not be protected'
 
 "$SUPABASE_BIN" init --workdir "$RUNNER_DIR" >/dev/null
 git -C "$REPO_ROOT" archive --format=tar "$RELEASE_SHA" -- \

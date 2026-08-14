@@ -102,6 +102,7 @@ Deno.test("missed-call migration runner is exact, isolated, and resumable", () =
       "RELEASE_SHA",
       "UTAH_MIGRATION_EXCLUSIVE_WRITER_ACK",
       "UTAH_MIGRATION_EXECUTION_MODE",
+      "UTAH_SUPABASE_AUTH_MODE",
       "SUPABASE_NO_KEYRING=1",
       "20260812010000_missed_call_alerts.sql",
       "19bde86daae30de86bbeb84c27aa899925b54f00d34b3a48e6ec44750e0cb261",
@@ -138,6 +139,19 @@ Deno.test("missed-call migration runner is exact, isolated, and resumable", () =
     false,
   );
   assertStringIncludes(migrationRunner, "browser_crud_revoked");
+  assertStringIncludes(migrationRunner, "injected-token|keychain-profile");
+  assertStringIncludes(
+    migrationRunner,
+    "Using access token for profile: supabase",
+  );
+  assertStringIncludes(
+    migrationRunner,
+    "Using profile: supabase (supabase.co)",
+  );
+  assertStringIncludes(
+    migrationRunner,
+    "the CLI bypassed the reviewed Keychain profile",
+  );
 });
 
 Deno.test("missed-call rollout preserves deploy order and outbound approval", () => {
