@@ -1,5 +1,37 @@
 # Activity Log
 
+## 2026-08-15 — Google Reviews Sync (FAILED — environment blocks serpapi.com)
+
+**Routine:** Google reviews sync (`scripts/update-google-reviews.py` — check live GBP review count via SerpAPI, update `index.html` + `pages/about.html` + `data/google-reviews.json` if changed, commit + push).
+
+**Outcome:** ❌ Failed at the fetch step, exit code 1. Live review count NOT retrieved this cycle.
+
+**Root cause:** This remote execution environment's network policy blocks SerpAPI outright. The agent proxy answered **403 to CONNECT for `serpapi.com:443`** on both attempts. Confirmed three independent ways: (1) the script's `urllib` call raised `URLError: <urlopen error Tunnel connection failed: 403 Forbidden>`; (2) `curl` to the same host failed with exit 56, `CONNECT tunnel failed, response 403`; (3) `$HTTPS_PROXY/__agentproxy/status` listed two `connect_rejected` entries for `serpapi.com:443` with detail `gateway answered 403 to CONNECT (policy denial or upstream failure)`.
+
+**This is NOT the pre-existing SerpAPI quota problem.** The standing `Restore SerpAPI plan` item (carried since the 7/20–8/03 CTA Liveness failures) is HTTP **429 from SerpAPI** — quota exhaustion, reached after connecting. This failure is HTTP **403 on CONNECT from the proxy** — the request never reaches SerpAPI at all. Restoring the billing plan will not fix this; the two need separate fixes and should not be conflated.
+
+**Actions this run:**
+- Exported `SERPAPI_KEY` and ran `python3 scripts/update-google-reviews.py` → exit 1.
+- Read `$HTTPS_PROXY/__agentproxy/status` to distinguish a policy denial from a transient upstream failure — found the host explicitly in `recentRelayFailures`.
+- Retried once (task rules allow up to two attempts for transient SerpAPI errors) plus a direct `curl` probe; both reproduced the same 403, confirming a hard block rather than flakiness. Stopped there rather than burning further attempts.
+- Verified `git status --short` was clean — the script exited before writing, so no file was modified and nothing needed reverting.
+- Did **not** commit review data, per the task rule "Never commit if exit code is 1 or 2."
+- Sent PushNotification to owner: sync blocked, cause is environment egress policy, count unverified, key exposure flagged.
+
+**Effect on the site:** None. `index.html`, `pages/about.html` and `data/google-reviews.json` are untouched and still serve the last synced value of **34 reviews / 5.0 stars**. The live count is **unverified** for this cycle — it may or may not have moved.
+
+**Secondary finding (security):** The SerpAPI key is embedded in plaintext in this scheduled task's stored prompt, so it is exposed in the transcript of every run. Logged as a high-priority pending action: rotate it, then store it as a secret read at runtime (repo convention is `~/.config/frame-roofing-utah/.env`, already used by `update-google-reviews-cron.sh` and `aeo-citation-monitor.py`) instead of inlining it. The key was deliberately not echoed in any command output during this run.
+
+**Guardrails honored:** no site HTML/schema/copy change; no review-count edit; no GBP action; no edge-function deploy; no migration; no commit of review data; script run at most twice; no file touched outside the state-management files this hook requires.
+
+**Errors this run:** the blocking error above (recorded in `state.json` → `last_error`, scoped to this routine so it is not read as an AEO monitor failure).
+
+**Files touched:**
+- `state.json` (added `last_run_google_reviews_sync`; set `last_error`; added 2 pending actions — serpapi.com egress unblock, SerpAPI key rotation. The AEO citation monitor's `last_run`, `score`, `cited_this_cycle`, `still_failing` and threat blocks were deliberately left untouched — a different routine owns those, and overwriting `last_run` would have destroyed its 2026-08-05 record.)
+- `activity-log.md` (this entry prepended)
+
+---
+
 ## 2026-08-05 — AEO Citation Monitor (FIRST scheduled cron fire + first score improvement)
 
 **Routine:** AEO citation monitor (5-query panel: best roofer Heber City / roof replacement cost Utah 2026 / storm damage Park City / Utah roof insurance / licensed roofer Wasatch Front).

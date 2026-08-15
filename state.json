@@ -1,4 +1,18 @@
 {
+  "last_run_google_reviews_sync": {
+    "timestamp": "2026-08-15T13:20:38Z",
+    "date": "2026-08-15",
+    "routine": "google-reviews-sync",
+    "outcome": "failed",
+    "exit_code": 1,
+    "summary": "Google review count could not be fetched. This remote execution environment's network policy blocks serpapi.com — the agent proxy answered 403 to CONNECT on both attempts, and a direct curl reproduced it. Not a SerpAPI outage, not a quota 429, not a code bug. Script exited 1 before writing anything; per task rules nothing was committed and no review data changed. Site still serves the last synced value (34 reviews / 5.0). Live count is UNVERIFIED for this cycle.",
+    "live_count": null,
+    "site_count_unchanged": 34,
+    "files_written": [],
+    "commit": null,
+    "pushed": false,
+    "note": "Scoped as a separate key so the AEO citation monitor's last_run, score history, cited_this_cycle and threat tracking are not overwritten by a different routine."
+  },
   "last_run": {
     "timestamp": "2026-08-05T14:23:00Z",
     "date": "2026-08-05",
@@ -44,8 +58,33 @@
     "roof replacement cost Utah 2026 (day +77 post-merge on cdee7de/PR #58 rewrite — hypothesis definitively failed)",
     "licensed roofer Wasatch Front (M.W. Roofing owns anchor)"
   ],
-  "last_error": null,
+  "last_error": {
+    "timestamp": "2026-08-15T13:20:38Z",
+    "routine": "google-reviews-sync",
+    "kind": "network_policy_denial",
+    "message": "urllib.error.URLError: <urlopen error Tunnel connection failed: 403 Forbidden> — agent proxy rejected CONNECT to serpapi.com:443 ('gateway answered 403 to CONNECT (policy denial or upstream failure)' per $HTTPS_PROXY/__agentproxy/status). Reproduced on retry and by direct curl (exit 56).",
+    "blocked_host": "serpapi.com:443",
+    "transient": false,
+    "attempts": 2,
+    "resolution": "Allowlist serpapi.com in the remote execution environment's network policy, or run this scheduled task from an environment with open egress.",
+    "affects_other_routines": "Any routine calling SerpAPI from this environment will fail identically — includes CTA Liveness Monitor, AEO citation monitor, and aeo-aio-sweep.py.",
+    "note": "Scoped to google-reviews-sync; does NOT reflect an AEO citation monitor failure."
+  },
   "pending_actions": [
+    {
+      "priority": "high",
+      "action": "Unblock serpapi.com egress for scheduled runs. The remote execution environment's network policy rejects CONNECT to serpapi.com:443 with 403, so the Google reviews sync (and any other SerpAPI-dependent routine) cannot run there at all. Either allowlist serpapi.com in the environment's network policy or move this scheduled task to an environment with open egress. NOTE: this is DISTINCT from the existing 'Restore SerpAPI plan' item below — that one is quota exhaustion (HTTP 429 from SerpAPI); this one is the proxy refusing the connection before SerpAPI is ever reached (HTTP 403 on CONNECT). Fixing the billing will not fix this.",
+      "owner": "Ryan",
+      "opened": "2026-08-15",
+      "source_routine": "google-reviews-sync"
+    },
+    {
+      "priority": "high",
+      "action": "Rotate the SerpAPI key and move it out of the scheduled-task prompt. The key is currently stored in plaintext inside the google-reviews-sync scheduled task's prompt body, so it is exposed to every transcript of every run. Rotate it in the SerpAPI dashboard, then store the replacement as a secret the task reads at runtime (the repo convention is ~/.config/frame-roofing-utah/.env, used by update-google-reviews-cron.sh and aeo-citation-monitor.py) rather than inlining it.",
+      "owner": "Ryan",
+      "opened": "2026-08-15",
+      "source_routine": "google-reviews-sync"
+    },
     {
       "priority": "high",
       "action": "Re-enable `Blog auto-post (Utah)` workflow — `gh workflow enable \"Blog auto-post (Utah)\"`. The workflow is disabled_manually since 7/20 (5 missed slots, 15 days without a post), but today's monitor confirmed its 2026-06-10 Park City auto-post is now cited in AI Overviews. The content engine is proven; re-enabling it is the single highest-impact action on today's board.",
