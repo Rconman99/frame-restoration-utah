@@ -9,6 +9,7 @@ import {
   buildTasks,
   estimatedPanelCost,
   extractRank,
+  isRetryableTaskError,
   markdownReport,
   validateConfig,
   validateRegistry,
@@ -209,5 +210,21 @@ assert.equal(expansionConfigs.reduce((sum, panelConfig) => sum + panelConfig.key
 assert.equal(buildTaskMatrix(expansionConfigs).length, 48);
 assert.ok(Math.abs(expansionConfigs.reduce((sum, panelConfig) => sum + estimatedPanelCost(panelConfig), 0) - 0.2304) < Number.EPSILON);
 assert.equal(new Set(expansionConfigs.map((panelConfig) => panelConfig.city)).size, 12);
+
+// A single provider-side hiccup must be re-postable rather than discarding the
+// whole paid matrix. Observed in production 2026-08-17: "40101 Internal SE
+// Server Error" on 1 of 24 tasks killed the other 23.
+assert.equal(isRetryableTaskError('Internal SE Server Error.'), true);
+assert.equal(isRetryableTaskError('Internal Error'), true);
+assert.equal(isRetryableTaskError('Task Timeout'), true);
+assert.equal(isRetryableTaskError('Service Temporarily Unavailable'), true);
+
+// Permanent/verdict errors must still fail closed -- retrying these would burn
+// spend and could mask a genuinely broken query.
+assert.equal(isRetryableTaskError('Invalid Field: location_name'), false);
+assert.equal(isRetryableTaskError('Not Enough Money on Account'), false);
+assert.equal(isRetryableTaskError('You are not authorized to access this resource.'), false);
+assert.equal(isRetryableTaskError(''), false);
+assert.equal(isRetryableTaskError(null), false);
 
 console.log('dataforseo rank tracker: all assertions passed');
