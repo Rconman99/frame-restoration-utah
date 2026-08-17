@@ -21,7 +21,7 @@
   "sources": {
     "portfolio": {
       "file": "data/rank-tracker/SLV-18-CITY-GOAL-PORTFOLIO-2026-08-12.json",
-      "sha256": "17afa4bb44a16f17827c1f4523d8c288c483ec2c4b352aa5da19615aef6d391f"
+      "sha256": "6551c4f256ce6fe293f8279777605642ec8ac05f5c5a201205508a83f105c88a"
     },
     "coreRegistry": {
       "file": "data/rank-tracker/panels.json",
@@ -119,18 +119,6 @@
       "action": "Protect the measured #1/AIO foothold. Do not change title, H1, canonical, route, or internal-link intent until exact owner approval and a declared isolated experiment exist."
     },
     {
-      "priority": 2,
-      "city": "Millcreek",
-      "state": "complete-request-with-unreturned-rows",
-      "protectedFootholds": {
-        "organicNumberOneQueries": [],
-        "googleAiOverviewCitedQueries": [
-          "roof repair millcreek"
-        ]
-      },
-      "action": "Protect the measured #1/AIO foothold. Do not change title, H1, canonical, route, or internal-link intent until exact owner approval and a declared isolated experiment exist."
-    },
-    {
       "priority": 4,
       "city": "Bluffdale",
       "state": "complete-request-with-unreturned-rows",
@@ -163,6 +151,16 @@
     {
       "priority": 4,
       "city": "Midvale",
+      "state": "complete-request-with-unreturned-rows",
+      "protectedFootholds": {
+        "organicNumberOneQueries": [],
+        "googleAiOverviewCitedQueries": []
+      },
+      "action": "Preserve the intended city hub and all related routes; use the next complete targeted GSC read before selecting an architecture or intent experiment."
+    },
+    {
+      "priority": 4,
+      "city": "Millcreek",
       "state": "complete-request-with-unreturned-rows",
       "protectedFootholds": {
         "organicNumberOneQueries": [],
@@ -370,12 +368,10 @@
       },
       "protectedFootholds": {
         "organicNumberOneQueries": [],
-        "googleAiOverviewCitedQueries": [
-          "roof repair millcreek"
-        ]
+        "googleAiOverviewCitedQueries": []
       },
       "alternateNormalizedUrls": [],
-      "nextEvidenceAction": "Protect the measured #1/AIO foothold. Do not change title, H1, canonical, route, or internal-link intent until exact owner approval and a declared isolated experiment exist.",
+      "nextEvidenceAction": "Preserve the intended city hub and all related routes; use the next complete targeted GSC read before selecting an architecture or intent experiment.",
       "queries": [
         {
           "queryId": "millcreek-roofing-contractor",

@@ -52,15 +52,15 @@
   "sources": {
     "portfolio": {
       "file": "data/rank-tracker/SLV-18-CITY-GOAL-PORTFOLIO-2026-08-12.json",
-      "sha256": "17afa4bb44a16f17827c1f4523d8c288c483ec2c4b352aa5da19615aef6d391f"
+      "sha256": "6551c4f256ce6fe293f8279777605642ec8ac05f5c5a201205508a83f105c88a"
     },
     "displacement": {
       "file": "data/rank-tracker/SLV-COMPETITOR-DISPLACEMENT-2026-08-12.json",
-      "sha256": "aed18abd061963d5dd0280dc7575060640daa9f89e98bd77a91dca80a449ef7a"
+      "sha256": "845b4dbf45e59fec93650b3e8f2b8e2144287c0f09201bb3414fa5f94dd70f74"
     },
     "entityHealth": {
       "file": "data/rank-tracker/SLV-ENTITY-HEALTH-2026-08-12.json",
-      "sha256": "bc787d153c9ae2e4199c7f25a4c7fc6593e4bd85ac1b09327e91b99dd465c3a7"
+      "sha256": "7195c1eb457b1cd0fce9f530c54a3376f812f05406883be4b4e76c9535aa3295"
     },
     "serviceAreaRequest": {
       "file": "data/authority/SLV-SERVICE-AREA-EVIDENCE-REQUEST-2026-08-12.json",
@@ -152,7 +152,7 @@
             "cid": "16329927680093228178",
             "domain": "google.com",
             "appearances": 3,
-            "numberOneQueries": 3,
+            "numberOneQueries": 2,
             "bestRank": 1,
             "keywords": [
               "roof repair salt lake city",
@@ -161,15 +161,14 @@
             ]
           },
           {
-            "name": "Shingle Pro Roofing",
-            "cid": "9926634112120129216",
+            "name": "We Do Roofing Salt Lake City",
+            "cid": "14346566316923503344",
             "domain": "google.com",
-            "appearances": 2,
-            "numberOneQueries": 0,
-            "bestRank": 2,
+            "appearances": 1,
+            "numberOneQueries": 1,
+            "bestRank": 1,
             "keywords": [
-              "roof repair salt lake city",
-              "roofer salt lake city"
+              "roof repair salt lake city"
             ]
           },
           {
@@ -199,8 +198,8 @@
           "packState": "exact-cid-not-returned-in-pack",
           "exactCidRank": null,
           "numberOneEntity": {
-            "name": "The Roof Doctor",
-            "cid": "16329927680093228178"
+            "name": "We Do Roofing Salt Lake City",
+            "cid": "14346566316923503344"
           }
         },
         {
@@ -253,9 +252,7 @@
         "prominence": {
           "exactCidReviews": "measured-exact-cid",
           "organicNumberOneQueries": [],
-          "ownedGoogleAiOverviewCitations": [
-            "roof repair millcreek"
-          ],
+          "ownedGoogleAiOverviewCitations": [],
           "rule": "Measure genuine review strength and earned web authority separately; no incentives, gating, fabricated reviews, or paid ranking links."
         }
       },
@@ -272,29 +269,28 @@
         ],
         "dominantDisplacers": [
           {
-            "name": "Millcreek Roof Repair",
-            "cid": "15265859284064313678",
+            "name": "Whitaker Roofing Services",
+            "cid": "11316815627233980109",
             "domain": "google.com",
             "appearances": 3,
-            "numberOneQueries": 2,
+            "numberOneQueries": 3,
             "bestRank": 1,
             "keywords": [
-              "roofing contractor millcreek",
+              "roof repair millcreek",
               "roof replacement millcreek",
               "roofer millcreek"
             ]
           },
           {
-            "name": "Whitaker Roofing Services",
-            "cid": "11316815627233980109",
+            "name": "Vault Roofing LLC",
+            "cid": "9387084358687172308",
             "domain": "google.com",
-            "appearances": 3,
-            "numberOneQueries": 1,
-            "bestRank": 1,
+            "appearances": 2,
+            "numberOneQueries": 0,
+            "bestRank": 3,
             "keywords": [
-              "roofing contractor millcreek",
-              "roof replacement millcreek",
-              "roofer millcreek"
+              "roof repair millcreek",
+              "roof replacement millcreek"
             ]
           },
           {
@@ -303,7 +299,7 @@
             "domain": "google.com",
             "appearances": 1,
             "numberOneQueries": 0,
-            "bestRank": 3,
+            "bestRank": 2,
             "keywords": [
               "roofer millcreek"
             ]
@@ -314,19 +310,19 @@
         {
           "queryId": "millcreek-roofing-contractor",
           "keyword": "roofing contractor millcreek",
-          "packState": "exact-cid-not-returned-in-pack",
+          "packState": "local-pack-not-present",
           "exactCidRank": null,
-          "numberOneEntity": {
-            "name": "Millcreek Roof Repair",
-            "cid": "15265859284064313678"
-          }
+          "numberOneEntity": null
         },
         {
           "queryId": "millcreek-roof-repair",
           "keyword": "roof repair millcreek",
-          "packState": "local-pack-not-present",
+          "packState": "exact-cid-not-returned-in-pack",
           "exactCidRank": null,
-          "numberOneEntity": null
+          "numberOneEntity": {
+            "name": "Whitaker Roofing Services",
+            "cid": "11316815627233980109"
+          }
         },
         {
           "queryId": "millcreek-roof-replacement",
@@ -344,8 +340,8 @@
           "packState": "exact-cid-not-returned-in-pack",
           "exactCidRank": null,
           "numberOneEntity": {
-            "name": "Millcreek Roof Repair",
-            "cid": "15265859284064313678"
+            "name": "Whitaker Roofing Services",
+            "cid": "11316815627233980109"
           }
         }
       ],
@@ -423,17 +419,15 @@
             ]
           },
           {
-            "name": "Red Star Roofing",
-            "cid": "16317468138973610641",
+            "name": "Forge Roofing",
+            "cid": "5464243620653197056",
             "domain": "google.com",
-            "appearances": 4,
+            "appearances": 2,
             "numberOneQueries": 0,
-            "bestRank": 3,
+            "bestRank": 2,
             "keywords": [
               "roofing contractor sandy",
-              "roof repair sandy",
-              "roof replacement sandy",
-              "roofer sandy"
+              "roof repair sandy"
             ]
           }
         ]
@@ -526,11 +520,11 @@
         ],
         "dominantDisplacers": [
           {
-            "name": "True North Roofing",
-            "cid": "5387650211366766810",
+            "name": "Holladay Roofing",
+            "cid": "4608145956816988456",
             "domain": "google.com",
             "appearances": 4,
-            "numberOneQueries": 4,
+            "numberOneQueries": 2,
             "bestRank": 1,
             "keywords": [
               "roofing contractor holladay",
@@ -540,12 +534,12 @@
             ]
           },
           {
-            "name": "Holladay Roofing",
-            "cid": "4608145956816988456",
+            "name": "True North Roofing",
+            "cid": "5387650211366766810",
             "domain": "google.com",
             "appearances": 4,
-            "numberOneQueries": 0,
-            "bestRank": 2,
+            "numberOneQueries": 2,
+            "bestRank": 1,
             "keywords": [
               "roofing contractor holladay",
               "roof repair holladay",
@@ -576,8 +570,8 @@
           "packState": "exact-cid-not-returned-in-pack",
           "exactCidRank": null,
           "numberOneEntity": {
-            "name": "True North Roofing",
-            "cid": "5387650211366766810"
+            "name": "Holladay Roofing",
+            "cid": "4608145956816988456"
           }
         },
         {
@@ -606,8 +600,8 @@
           "packState": "exact-cid-not-returned-in-pack",
           "exactCidRank": null,
           "numberOneEntity": {
-            "name": "True North Roofing",
-            "cid": "5387650211366766810"
+            "name": "Holladay Roofing",
+            "cid": "4608145956816988456"
           }
         }
       ],
@@ -820,10 +814,10 @@
             "domain": "google.com",
             "appearances": 2,
             "numberOneQueries": 0,
-            "bestRank": 3,
+            "bestRank": 2,
             "keywords": [
-              "roof replacement draper",
-              "roofer draper"
+              "roof repair draper",
+              "roof replacement draper"
             ]
           }
         ]

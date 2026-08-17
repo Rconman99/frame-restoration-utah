@@ -19,48 +19,48 @@
         "city": "Salt Lake City",
         "panelId": "utah-salt-lake-city-google-v1",
         "file": "data/rank-tracker/latest.json",
-        "sha256": "c950426c484a8e0eed6920e5c5a3b584acca30b981159f70d4074a2ee7c6b18e",
-        "observedAt": "2026-08-12T14:18:10.297Z"
+        "sha256": "70a5d563752c07a3db2edec2ebfacaf18e9e557f1e7c35edab790ffc7c43a479",
+        "observedAt": "2026-08-17T20:32:28.755Z"
       },
       {
         "cohort": "core-weekly",
         "city": "Cottonwood Heights",
         "panelId": "utah-cottonwood-heights-google-v1",
         "file": "data/rank-tracker/panels/cottonwood-heights/latest.json",
-        "sha256": "e75e0589715192849f630a2a9c4b6f39de76f7b1fe063b59d227f829801e6bc1",
-        "observedAt": "2026-08-12T14:18:10.299Z"
+        "sha256": "c5aa260c5368ba5487af1e5781670422703afb402b3ce02dd95c9458eec690d5",
+        "observedAt": "2026-08-17T20:32:28.757Z"
       },
       {
         "cohort": "core-weekly",
         "city": "Holladay",
         "panelId": "utah-holladay-google-v1",
         "file": "data/rank-tracker/panels/holladay/latest.json",
-        "sha256": "68e170a9e9b9bc3c48b2b9f686a4b3b75ac027727aa5d1e1a711ad059185adc1",
-        "observedAt": "2026-08-12T14:18:10.299Z"
+        "sha256": "9d1fca0b1a8a06930e00d01a0f2e61dfd05e968b874dd91ea4f4286cd1e7fc19",
+        "observedAt": "2026-08-17T20:32:28.757Z"
       },
       {
         "cohort": "core-weekly",
         "city": "Millcreek",
         "panelId": "utah-millcreek-google-v1",
         "file": "data/rank-tracker/panels/millcreek/latest.json",
-        "sha256": "0467c2d4b323706e5e6c90a97e0c1585385beaaa8401a4eece7753aa9476c1e8",
-        "observedAt": "2026-08-12T14:18:10.299Z"
+        "sha256": "e67104d9faa1f4e0f1e6677dd7ab36de2c28ffea83675a062302a060ed93d6cb",
+        "observedAt": "2026-08-17T20:32:28.757Z"
       },
       {
         "cohort": "core-weekly",
         "city": "Sandy",
         "panelId": "utah-sandy-google-v1",
         "file": "data/rank-tracker/panels/sandy/latest.json",
-        "sha256": "0ae0e40fa8950f95086ec6c46efbf4942962683c882499435df0ce98b18778a5",
-        "observedAt": "2026-08-12T14:18:10.300Z"
+        "sha256": "64c477a6a0eddcbd706ff2b7d33647f7865e6628e844e7c33f2866f179ac5572",
+        "observedAt": "2026-08-17T20:32:28.757Z"
       },
       {
         "cohort": "core-weekly",
         "city": "Draper",
         "panelId": "utah-draper-google-v1",
         "file": "data/rank-tracker/panels/draper/latest.json",
-        "sha256": "ed069233df5012f386418bbe66813994cf1a85141c55430d106e42cacd129103",
-        "observedAt": "2026-08-12T14:18:10.300Z"
+        "sha256": "ea4d3b70bea1eea54289acc7a4cd32ace93a6b33931e32b9e8c127b11a8f71a5",
+        "observedAt": "2026-08-17T20:32:28.758Z"
       },
       {
         "cohort": "expansion-manual-baseline",
@@ -163,45 +163,51 @@
   "score": {
     "organicNumberOne": 2,
     "organicDisplacedOrOutsideDepth": 70,
-    "organicOutsideMeasuredDepth": 11,
+    "organicOutsideMeasuredDepth": 12,
     "mapsPacksPresent": 69,
     "mapsPacksAbsent": 3,
     "exactCidMapsNumberOne": 0,
     "exactCidNotNumberOne": 72,
     "googleAiOverviewsPresent": 4,
-    "googleAiOverviewCitations": 2,
-    "googleAiOverviewsWithoutFrameCitation": 2
+    "googleAiOverviewCitations": 1,
+    "googleAiOverviewsWithoutFrameCitation": 3
   },
   "recurringDisplacers": {
     "organicNumberOneDomains": [
       {
         "domain": "shingleproroofing.com",
-        "sampleUrl": "https://www.shingleproroofing.com/areas-we-serve/holladay-ut-roofing/",
-        "sampleTitle": "Roofing in Holladay, Utah -",
+        "sampleUrl": "https://www.shingleproroofing.com/areas-we-serve/roofing-in-cottonwood-heights-utah/",
+        "sampleTitle": "Roofing in Cottonwood Heights, Utah -",
         "numberOneQueries": 9
       },
       {
         "domain": "xperienceroofing.com",
         "sampleUrl": "https://xperienceroofing.com/locations/holladay-ut",
         "sampleTitle": "Roofing in Holladay, UT | Roof Replacement & Repair",
-        "numberOneQueries": 8
-      },
-      {
-        "domain": "gaf.com",
-        "sampleUrl": "https://www.gaf.com/en-us/roofing-contractors/residential/usa/ut/salt-lake-city",
-        "sampleTitle": "Best Roofers in Salt Lake City, UT | GAF Roofing Contractors",
-        "numberOneQueries": 7
+        "numberOneQueries": 9
       },
       {
         "domain": "m.yelp.com",
-        "sampleUrl": "https://m.yelp.com/search?find_desc=Roof+Repair&find_loc=Cottonwood+Heights%2C+UT",
-        "sampleTitle": "Best Roof Repair near Cottonwood Heights, UT",
-        "numberOneQueries": 7
+        "sampleUrl": "https://m.yelp.com/search?cflt=roofing&find_loc=Salt+Lake+City%2C+UT",
+        "sampleTitle": "THE BEST 10 Roofing in SALT LAKE CITY, UT - (2026 GUIDE)",
+        "numberOneQueries": 8
       },
       {
         "domain": "roofingutah.com",
-        "sampleUrl": "https://roofingutah.com/cottonwood-heights/",
-        "sampleTitle": "Roofing for Cottonwood Heights",
+        "sampleUrl": "https://roofingutah.com/",
+        "sampleTitle": "Roofing Utah - Roofing Contractor in Salt Lake City & Ogden, UT",
+        "numberOneQueries": 6
+      },
+      {
+        "domain": "gaf.com",
+        "sampleUrl": "https://www.gaf.com/en-us/roofing-contractors/residential/usa/ut/midvale",
+        "sampleTitle": "Best Roofers in Midvale, UT | GAF Roofing Contractors",
+        "numberOneQueries": 5
+      },
+      {
+        "domain": "rooftek.com",
+        "sampleUrl": "https://rooftek.com/location-home/northern-utah/millcreek-ut/",
+        "sampleTitle": "Roofing Contractor Millcreek, UT | Roofer Near Me",
         "numberOneQueries": 5
       },
       {
@@ -214,12 +220,6 @@
         "domain": "rivertonroofingcontractors.com",
         "sampleUrl": "https://www.rivertonroofingcontractors.com/",
         "sampleTitle": "Riverton Roofing Contractors | Trusted Roofers in Riverton | Riverton ...",
-        "numberOneQueries": 4
-      },
-      {
-        "domain": "rooftek.com",
-        "sampleUrl": "https://rooftek.com/location-home/northern-utah/millcreek-ut/",
-        "sampleTitle": "Roofing Contractor Millcreek, UT | Roofer Near Me",
         "numberOneQueries": 4
       },
       {
@@ -241,21 +241,9 @@
         "numberOneQueries": 3
       },
       {
-        "domain": "reddit.com",
-        "sampleUrl": "https://www.reddit.com/r/SaltLakeCity/comments/14ejppp/roofer_recommendation/",
-        "sampleTitle": "Roofer recommendation. : r/SaltLakeCity",
-        "numberOneQueries": 2
-      },
-      {
         "domain": "skyridgeco.com",
         "sampleUrl": "https://skyridgeco.com/cities/draper",
         "sampleTitle": "Draper Roofing Contractor & Services",
-        "numberOneQueries": 2
-      },
-      {
-        "domain": "yelp.com",
-        "sampleUrl": "https://www.yelp.com/search?cflt=roofing&find_loc=Millcreek%2C+UT",
-        "sampleTitle": "THE BEST 10 ROOFING IN MILLCREEK, UT",
         "numberOneQueries": 2
       },
       {
@@ -271,21 +259,27 @@
         "numberOneQueries": 1
       },
       {
+        "domain": "bartlettroofs.com",
+        "sampleUrl": "https://bartlettroofs.com/service-areas/holladay-ut/",
+        "sampleTitle": "Premier Roofers in Holladay, UT",
+        "numberOneQueries": 1
+      },
+      {
         "domain": "facebook.com",
         "sampleUrl": "https://www.facebook.com/theroofingcontractorllc/",
         "sampleTitle": "The Roofing Contractor | Bluffdale UT",
         "numberOneQueries": 1
       },
       {
-        "domain": "mightydogroofing.com",
-        "sampleUrl": "https://www.mightydogroofing.com/sandy-utah/",
-        "sampleTitle": "Roofing contractor | Sandy, Utah",
-        "numberOneQueries": 1
-      },
-      {
         "domain": "reroofit.com",
         "sampleUrl": "https://reroofit.com/service-areas/roofing-holladay-ut",
         "sampleTitle": "Roofing Contractor Holladay, Utah",
+        "numberOneQueries": 1
+      },
+      {
+        "domain": "rooval-roofing.com",
+        "sampleUrl": "https://rooval-roofing.com/roofing-sandy-utah/",
+        "sampleTitle": "Sandy UT Roof Repair & Roofing | 5.0★ Rated",
         "numberOneQueries": 1
       },
       {
@@ -299,32 +293,44 @@
         "sampleUrl": "https://whitakerroofing.com/",
         "sampleTitle": "Whitaker Roofing — Utah's Trust-First Roofer | 4.9",
         "numberOneQueries": 1
+      },
+      {
+        "domain": "yelp.com",
+        "sampleUrl": "https://www.yelp.com/search?cflt=roofing&find_loc=Draper%2C+UT+84020",
+        "sampleTitle": "THE BEST 10 ROOFING NEAR DRAPER, UT 84020",
+        "numberOneQueries": 1
       }
     ],
     "organicTopThreeDomains": [
       {
         "domain": "m.yelp.com",
         "sampleUrl": "https://m.yelp.com/search?cflt=roofing&find_loc=Salt+Lake+City%2C+UT",
-        "sampleTitle": "THE BEST 10 ROOFING IN SALT LAKE CITY, UT",
-        "topThreeAppearances": 23
+        "sampleTitle": "THE BEST 10 Roofing in SALT LAKE CITY, UT - (2026 GUIDE)",
+        "topThreeAppearances": 19
       },
       {
         "domain": "shingleproroofing.com",
-        "sampleUrl": "https://www.shingleproroofing.com/",
-        "sampleTitle": "Shingle Pro Roofing: Roof Installation in Salt Lake City, UT",
-        "topThreeAppearances": 18
-      },
-      {
-        "domain": "gaf.com",
-        "sampleUrl": "https://www.gaf.com/en-us/roofing-contractors/residential/usa/ut/salt-lake-city",
-        "sampleTitle": "Best Roofers in Salt Lake City, UT | GAF Roofing Contractors",
+        "sampleUrl": "https://www.shingleproroofing.com/areas-we-serve/roofing-in-cottonwood-heights-utah/",
+        "sampleTitle": "Roofing in Cottonwood Heights, Utah -",
         "topThreeAppearances": 17
       },
       {
         "domain": "reroofit.com",
         "sampleUrl": "https://reroofit.com/service-areas/roofing-holladay-ut",
         "sampleTitle": "Roofing Contractor Holladay, Utah",
-        "topThreeAppearances": 14
+        "topThreeAppearances": 16
+      },
+      {
+        "domain": "gaf.com",
+        "sampleUrl": "https://www.gaf.com/en-us/roofing-contractors/residential/usa/ut/salt-lake-city",
+        "sampleTitle": "Best Roofers in Salt Lake City, UT | GAF Roofing Contractors",
+        "topThreeAppearances": 15
+      },
+      {
+        "domain": "roofingutah.com",
+        "sampleUrl": "https://roofingutah.com/",
+        "sampleTitle": "Roofing Utah - Roofing Contractor in Salt Lake City & Ogden, UT",
+        "topThreeAppearances": 13
       },
       {
         "domain": "xperienceroofing.com",
@@ -339,16 +345,16 @@
         "topThreeAppearances": 13
       },
       {
-        "domain": "roofingutah.com",
-        "sampleUrl": "https://roofingutah.com/",
-        "sampleTitle": "Roofing Utah - Roofing Contractor in Salt Lake City & Ogden, UT",
+        "domain": "thumbtack.com",
+        "sampleUrl": "https://www.thumbtack.com/ut/holladay/roofing",
+        "sampleTitle": "The 10 Best Roofing Contractors in Holladay, UT (with Free Estimates)",
         "topThreeAppearances": 12
       },
       {
         "domain": "bartlettroofs.com",
         "sampleUrl": "https://bartlettroofs.com/service-areas/holladay-ut/",
         "sampleTitle": "Premier Roofers in Holladay, UT",
-        "topThreeAppearances": 9
+        "topThreeAppearances": 8
       },
       {
         "domain": "rooftek.com",
@@ -357,21 +363,21 @@
         "topThreeAppearances": 8
       },
       {
-        "domain": "thumbtack.com",
-        "sampleUrl": "https://www.thumbtack.com/ut/holladay/roofing",
-        "sampleTitle": "The 10 Best Roofing Contractors in Holladay, UT (with Free Estimates)",
-        "topThreeAppearances": 8
-      },
-      {
-        "domain": "skyridgeco.com",
-        "sampleUrl": "https://skyridgeco.com/cities/millcreek",
-        "sampleTitle": "Millcreek Roofing Contractor & Services",
-        "topThreeAppearances": 6
-      },
-      {
         "domain": "rooval-roofing.com",
         "sampleUrl": "https://rooval-roofing.com/roofing-sandy-utah/",
         "sampleTitle": "Sandy UT Roof Repair & Roofing | 5.0★ Rated",
+        "topThreeAppearances": 6
+      },
+      {
+        "domain": "skyridgeco.com",
+        "sampleUrl": "https://skyridgeco.com/cities/sandy",
+        "sampleTitle": "Sandy Roofing Contractor & Services",
+        "topThreeAppearances": 6
+      },
+      {
+        "domain": "legacyroofingutah.com",
+        "sampleUrl": "https://www.legacyroofingutah.com/service-areas/cottonwood-heights",
+        "sampleTitle": "Roofing Contractor Cottonwood Heights UT | GAF-Certified",
         "topThreeAppearances": 5
       },
       {
@@ -387,12 +393,6 @@
         "topThreeAppearances": 4
       },
       {
-        "domain": "legacyroofingutah.com",
-        "sampleUrl": "https://www.legacyroofingutah.com/service-areas/cottonwood-heights",
-        "sampleTitle": "Roofing Contractor Cottonwood Heights UT | GAF-Certified",
-        "topThreeAppearances": 4
-      },
-      {
         "domain": "rivertonroofingcontractors.com",
         "sampleUrl": "https://www.rivertonroofingcontractors.com/",
         "sampleTitle": "Riverton Roofing Contractors | Trusted Roofers in Riverton | Riverton ...",
@@ -402,12 +402,6 @@
         "domain": "roofingherriman.com",
         "sampleUrl": "https://roofingherriman.com/",
         "sampleTitle": "Roofing Herriman, UT | Roof Repair & Replacement",
-        "topThreeAppearances": 4
-      },
-      {
-        "domain": "shelley-construction.com",
-        "sampleUrl": "https://shelley-construction.com/service-area/cottonwood-heights",
-        "sampleTitle": "Cottonwood Heights Roofer | Roof Repair & Replacement",
         "topThreeAppearances": 4
       },
       {
@@ -421,6 +415,12 @@
         "sampleUrl": "https://www.threebrothersllc.com/kearns-ut",
         "sampleTitle": "Kearns, UT - Roofing, Siding & Window Services - Three Brothers",
         "topThreeAppearances": 4
+      },
+      {
+        "domain": "diamondcertified.org",
+        "sampleUrl": "https://www.diamondcertified.org/roofing/ut/salt-lake-county/",
+        "sampleTitle": "Top Rated Roofing Contractors for Salt Lake County, UT",
+        "topThreeAppearances": 3
       },
       {
         "domain": "facebook.com",
@@ -441,27 +441,21 @@
         "topThreeAppearances": 3
       },
       {
-        "domain": "mightydogroofing.com",
-        "sampleUrl": "https://www.mightydogroofing.com/sandy-utah/",
-        "sampleTitle": "Roofing contractor | Sandy, Utah",
+        "domain": "shawroofing.com",
+        "sampleUrl": "https://www.shawroofing.com/",
+        "sampleTitle": "WELCOME TO SHAW ROOFING",
         "topThreeAppearances": 3
       },
       {
-        "domain": "whitakerroofing.com",
-        "sampleUrl": "https://whitakerroofing.com/locations/salt-lake-county/cottonwood-heights",
-        "sampleTitle": "Roofing Services in Cottonwood Heights, UT",
+        "domain": "shelley-construction.com",
+        "sampleUrl": "https://shelley-construction.com/service-area/cottonwood-heights",
+        "sampleTitle": "Cottonwood Heights Roofer | Roof Repair & Replacement",
         "topThreeAppearances": 3
       },
       {
         "domain": "angi.com",
         "sampleUrl": "https://www.angi.com/companylist/us/ut/south-jordan/roofing.htm",
         "sampleTitle": "Top 10 Best Roofers in South Jordan, UT",
-        "topThreeAppearances": 2
-      },
-      {
-        "domain": "diamondcertified.org",
-        "sampleUrl": "https://www.diamondcertified.org/roofing/ut/salt-lake-county/",
-        "sampleTitle": "Top Rated Roofing Contractors for Salt Lake County, UT",
         "topThreeAppearances": 2
       },
       {
@@ -477,9 +471,21 @@
         "topThreeAppearances": 2
       },
       {
+        "domain": "roofdoctorutah.com",
+        "sampleUrl": "https://roofdoctorutah.com/",
+        "sampleTitle": "Roof Doctor: Professional Roofing Services in Salt Lake",
+        "topThreeAppearances": 2
+      },
+      {
         "domain": "roofingkearns.com",
         "sampleUrl": "https://roofingkearns.com/",
         "sampleTitle": "Roofing Contractor in Kearns, UT: Top Line Roofing Kearns",
+        "topThreeAppearances": 2
+      },
+      {
+        "domain": "whitakerroofing.com",
+        "sampleUrl": "https://whitakerroofing.com/",
+        "sampleTitle": "Whitaker Roofing — Utah's Trust-First Roofer | 4.9",
         "topThreeAppearances": 2
       },
       {
@@ -495,52 +501,46 @@
         "topThreeAppearances": 1
       },
       {
-        "domain": "ezroofingnow.com",
-        "sampleUrl": "https://ezroofingnow.com/utah-city/roofing-sandy-ut/",
-        "sampleTitle": "Sandy, Utah Roofing Services by EZ Roofing Utah",
+        "domain": "dynamiteutah.com",
+        "sampleUrl": "https://www.dynamiteutah.com/residential-roof-replacement/sandy-ut",
+        "sampleTitle": "Sandy Utah Roof Replacement / Professional Installation ...",
         "topThreeAppearances": 1
       },
       {
-        "domain": "myelevatedroof.com",
-        "sampleUrl": "https://myelevatedroof.com/roofers-cottonwood-heights-ut/",
-        "sampleTitle": "Roofers in Cottonwood Heights, UT",
+        "domain": "mightydogroofing.com",
+        "sampleUrl": "https://www.mightydogroofing.com/sandy-utah/",
+        "sampleTitle": "Roofing contractor | Sandy, Utah",
         "topThreeAppearances": 1
       },
       {
-        "domain": "roofdoctorutah.com",
-        "sampleUrl": "https://roofdoctorutah.com/",
-        "sampleTitle": "Professional Roofing Services in Salt Lake | Roof Doctor",
+        "domain": "northcreekroofing.com",
+        "sampleUrl": "https://northcreekroofing.com/areas-served/mill-creek/",
+        "sampleTitle": "Trusted Roofer | Mill Creek, WA",
         "topThreeAppearances": 1
       },
       {
-        "domain": "roofingdraper.com",
-        "sampleUrl": "https://roofingdraper.com/",
-        "sampleTitle": "Roofing Draper, UT | Roof Repair & Replacement",
+        "domain": "rocksolidutah.com",
+        "sampleUrl": "https://www.rocksolidutah.com/sap/local-roofing-company/holladay-ut",
+        "sampleTitle": "Local Roofing Company | Holladay, UT - Rock Solid Roofing",
         "topThreeAppearances": 1
       },
       {
-        "domain": "saltlakecityroofs.com",
-        "sampleUrl": "https://saltlakecityroofs.com/",
-        "sampleTitle": "Roofing Contractors | Roof-It, Inc. | Salt Lake City, Utah",
-        "topThreeAppearances": 1
-      },
-      {
-        "domain": "shawroofing.com",
-        "sampleUrl": "https://www.shawroofing.com/",
-        "sampleTitle": "WELCOME TO SHAW ROOFING",
+        "domain": "serviceagent.ai",
+        "sampleUrl": "https://serviceagent.ai/directory/utah/cottonwood-heights/roofing/utah-roofing-pros/",
+        "sampleTitle": "Utah Roofing Pros - Roofing in Cottonwood Heights, UT",
         "topThreeAppearances": 1
       }
     ],
     "mapsNumberOneEntities": [
       {
-        "name": "The Roof Doctor",
-        "cid": "16329927680093228178",
-        "domain": "google.com",
-        "numberOnePacks": 8
-      },
-      {
         "name": "Classic Roofing and Exteriors",
         "cid": "10315170581426755444",
+        "domain": "google.com",
+        "numberOnePacks": 7
+      },
+      {
+        "name": "The Roof Doctor",
+        "cid": "16329927680093228178",
         "domain": "google.com",
         "numberOnePacks": 7
       },
@@ -551,14 +551,14 @@
         "numberOnePacks": 4
       },
       {
-        "name": "True North Roofing",
-        "cid": "5387650211366766810",
+        "name": "Utah Roofing Pros",
+        "cid": "4118570990011609504",
         "domain": "google.com",
         "numberOnePacks": 4
       },
       {
-        "name": "Utah Roofing Pros",
-        "cid": "4118570990011609504",
+        "name": "Whitaker Roofing Services",
+        "cid": "11316815627233980109",
         "domain": "google.com",
         "numberOnePacks": 4
       },
@@ -605,8 +605,8 @@
         "numberOnePacks": 3
       },
       {
-        "name": "Millcreek Roof Repair",
-        "cid": "15265859284064313678",
+        "name": "Holladay Roofing",
+        "cid": "4608145956816988456",
         "domain": "google.com",
         "numberOnePacks": 2
       },
@@ -623,8 +623,8 @@
         "numberOnePacks": 2
       },
       {
-        "name": "Whitaker Roofing Services",
-        "cid": "11316815627233980109",
+        "name": "True North Roofing",
+        "cid": "5387650211366766810",
         "domain": "google.com",
         "numberOnePacks": 2
       },
@@ -705,6 +705,12 @@
         "cid": "7139442759297582051",
         "domain": "google.com",
         "numberOnePacks": 1
+      },
+      {
+        "name": "We Do Roofing Salt Lake City",
+        "cid": "14346566316923503344",
+        "domain": "google.com",
+        "numberOnePacks": 1
       }
     ],
     "mapsTopThreeEntities": [
@@ -715,14 +721,14 @@
         "topThreeAppearances": 14
       },
       {
-        "name": "ReRoofIt",
-        "cid": "3305979678440818523",
-        "domain": "google.com",
-        "topThreeAppearances": 11
-      },
-      {
         "name": "Classic Roofing and Exteriors",
         "cid": "10315170581426755444",
+        "domain": "google.com",
+        "topThreeAppearances": 10
+      },
+      {
+        "name": "ReRoofIt",
+        "cid": "3305979678440818523",
         "domain": "google.com",
         "topThreeAppearances": 10
       },
@@ -805,12 +811,6 @@
         "topThreeAppearances": 4
       },
       {
-        "name": "Millcreek Roof Repair",
-        "cid": "15265859284064313678",
-        "domain": "google.com",
-        "topThreeAppearances": 4
-      },
-      {
         "name": "Milne Brothers Roofing",
         "cid": "7936184157434939732",
         "domain": "google.com",
@@ -825,12 +825,6 @@
       {
         "name": "Pride Roofing & Contracting, LLC",
         "cid": "15206834657984643450",
-        "domain": "google.com",
-        "topThreeAppearances": 4
-      },
-      {
-        "name": "Red Star Roofing",
-        "cid": "16317468138973610641",
         "domain": "google.com",
         "topThreeAppearances": 4
       },
@@ -855,6 +849,12 @@
       {
         "name": "RoofKap",
         "cid": "12684491778996500074",
+        "domain": "google.com",
+        "topThreeAppearances": 4
+      },
+      {
+        "name": "Sky Bridge Roofing",
+        "cid": "5327886489350788974",
         "domain": "google.com",
         "topThreeAppearances": 4
       },
@@ -907,12 +907,6 @@
         "topThreeAppearances": 3
       },
       {
-        "name": "Sky Bridge Roofing",
-        "cid": "5327886489350788974",
-        "domain": "google.com",
-        "topThreeAppearances": 3
-      },
-      {
         "name": "Top Line Roofing Kearns",
         "cid": "7139442759297582051",
         "domain": "google.com",
@@ -939,6 +933,12 @@
       {
         "name": "Clark's Quality Roofing",
         "cid": "15345415507349662932",
+        "domain": "google.com",
+        "topThreeAppearances": 2
+      },
+      {
+        "name": "Forge Roofing",
+        "cid": "5464243620653197056",
         "domain": "google.com",
         "topThreeAppearances": 2
       },
@@ -973,14 +973,20 @@
         "topThreeAppearances": 2
       },
       {
-        "name": "Shingle Pro Roofing",
-        "cid": "9926634112120129216",
+        "name": "Red Star Roofing",
+        "cid": "16317468138973610641",
         "domain": "google.com",
         "topThreeAppearances": 2
       },
       {
         "name": "Top Grade Roofing LLC",
         "cid": "7660946676731507776",
+        "domain": "google.com",
+        "topThreeAppearances": 2
+      },
+      {
+        "name": "Vault Roofing LLC",
+        "cid": "9387084358687172308",
         "domain": "google.com",
         "topThreeAppearances": 2
       },
@@ -1027,6 +1033,24 @@
         "topThreeAppearances": 1
       },
       {
+        "name": "Legacy Roofing",
+        "cid": "676887641215503941",
+        "domain": "google.com",
+        "topThreeAppearances": 1
+      },
+      {
+        "name": "Millcreek Roof Repair",
+        "cid": "15265859284064313678",
+        "domain": "google.com",
+        "topThreeAppearances": 1
+      },
+      {
+        "name": "Patriot Roofing & Construction",
+        "cid": "103033090419837437",
+        "domain": "google.com",
+        "topThreeAppearances": 1
+      },
+      {
         "name": "Preferred Roofing and Exteriors",
         "cid": "14893430152698511908",
         "domain": "google.com",
@@ -1045,14 +1069,20 @@
         "topThreeAppearances": 1
       },
       {
+        "name": "Shingle Pro Roofing",
+        "cid": "9926634112120129216",
+        "domain": "google.com",
+        "topThreeAppearances": 1
+      },
+      {
         "name": "South Jordan's Best Roofing",
         "cid": "8599164046063971268",
         "domain": "google.com",
         "topThreeAppearances": 1
       },
       {
-        "name": "Vault Roofing LLC",
-        "cid": "9387084358687172308",
+        "name": "We Do Roofing Salt Lake City",
+        "cid": "14346566316923503344",
         "domain": "google.com",
         "topThreeAppearances": 1
       },
@@ -1066,20 +1096,20 @@
     "googleAiOverviewRivalSourceDomains": [
       {
         "domain": "google.com",
-        "sampleUrl": "https://www.google.com/searchviewer/10?svid=CAwSGxIZCgNwdnESEkNnc3ZaeTh4ZEc1bmNYTTJOZxgK",
-        "sampleTitle": "Shingle Pro Roofing",
-        "sourceAppearances": 8
+        "sampleUrl": "https://www.google.com/searchviewer/10?svid=CAwSHRIbCgNwdnESFENnMHZaeTh4TVhOck16TnpkbmhmGAo",
+        "sampleTitle": "Vault Roofing LLC",
+        "sourceAppearances": 16
       },
       {
         "domain": "serviceagent.ai",
-        "sampleUrl": "https://serviceagent.ai/directory/utah/roofing/",
-        "sampleTitle": "Roofing in Utah: 20 Top Pros Ranked (2026) - ServiceAgent",
+        "sampleUrl": "https://serviceagent.ai/directory/utah/salt-lake-city/roofing/",
+        "sampleTitle": "Roofing in Salt Lake City, Utah: 13 Top Pros Ranked (2026)",
         "sourceAppearances": 4
       },
       {
-        "domain": "rooftek.com",
-        "sampleUrl": "https://rooftek.com/location-home/northern-utah/millcreek-ut/roof-repair/",
-        "sampleTitle": "Roof Repair Millcreek, UT | Free Estimates - RoofTek",
+        "domain": "gaf.com",
+        "sampleUrl": "https://www.gaf.com/en-us/roofing-contractors/residential/usa/ut/salt-lake-city",
+        "sampleTitle": "Best Roofers in Salt Lake City, UT | GAF Roofing Contractors",
         "sourceAppearances": 2
       },
       {
@@ -1095,39 +1125,9 @@
         "sourceAppearances": 1
       },
       {
-        "domain": "christensenexteriors.com",
-        "sampleUrl": "https://christensenexteriors.com/millcreek-ut/",
-        "sampleTitle": "Window Integration Millcreek UT",
-        "sourceAppearances": 1
-      },
-      {
-        "domain": "gaf.com",
-        "sampleUrl": "https://www.gaf.com/en-us/plan-design/roofing-insurance-claims",
-        "sampleTitle": "Guide to Roof Damage Insurance Claims",
-        "sourceAppearances": 1
-      },
-      {
-        "domain": "gobighorn.com",
-        "sampleUrl": "https://gobighorn.com/millcreek-ut/",
-        "sampleTitle": "Roof Replacement Experts Serving Millcreek, UT",
-        "sourceAppearances": 1
-      },
-      {
         "domain": "goldenroofingaz.com",
         "sampleUrl": "https://goldenroofingaz.com/service-areas/marana-az/",
         "sampleTitle": "Exceptional Roofing Contractor For Marana, AZ Homeowners",
-        "sourceAppearances": 1
-      },
-      {
-        "domain": "heatonroof.com",
-        "sampleUrl": "https://heatonroof.com/",
-        "sampleTitle": "Best Roofing Company in Salt Lake City, Utah",
-        "sourceAppearances": 1
-      },
-      {
-        "domain": "integrityhomeexteriors.com",
-        "sampleUrl": "https://integrityhomeexteriors.com/services/roofing/residential/roof-repair",
-        "sampleTitle": "Roof Repair | Fast Leak & Shingle Fixes",
         "sourceAppearances": 1
       },
       {
@@ -1143,21 +1143,33 @@
         "sourceAppearances": 1
       },
       {
-        "domain": "proshingle.com",
-        "sampleUrl": "https://www.proshingle.com/olive-branch-ms/",
-        "sampleTitle": "Roofing Services | Olive Branch, MS",
-        "sourceAppearances": 1
-      },
-      {
         "domain": "reddit.com",
         "sampleUrl": "https://www.reddit.com/r/SaltLakeCity/comments/1o38k09/best_roofing_contractors_in_the_salt_lake_valley/",
         "sampleTitle": "Best Roofing Contractors in the Salt Lake Valley? : r/SaltLakeCity - Reddit",
         "sourceAppearances": 1
       },
       {
-        "domain": "roofdoctorutah.com",
-        "sampleUrl": "https://roofdoctorutah.com/",
-        "sampleTitle": "The Roof Doctor Utah",
+        "domain": "reroofit.com",
+        "sampleUrl": "https://reroofit.com/service-areas/roofing-millcreek-ut",
+        "sampleTitle": "Roofing Contractor Millcreek, Utah - ReRoofIt",
+        "sourceAppearances": 1
+      },
+      {
+        "domain": "rooftek.com",
+        "sampleUrl": "https://rooftek.com/location-home/northern-utah/millcreek-ut/",
+        "sampleTitle": "Roofing Contractor Millcreek, UT | Roofer Near Me - RoofTek",
+        "sourceAppearances": 1
+      },
+      {
+        "domain": "saltlakecityroofs.com",
+        "sampleUrl": "https://saltlakecityroofs.com/",
+        "sampleTitle": "Roofing Contractors | Roof-It, Inc. | Salt Lake City, Utah",
+        "sourceAppearances": 1
+      },
+      {
+        "domain": "shingleproroofing.com",
+        "sampleUrl": "https://www.shingleproroofing.com/",
+        "sampleTitle": "Shingle Pro Roofing: Roof Installation in Salt Lake City, UT",
         "sourceAppearances": 1
       },
       {
@@ -1167,33 +1179,15 @@
         "sourceAppearances": 1
       },
       {
-        "domain": "skyridgeco.com",
-        "sampleUrl": "https://skyridgeco.com/cities/millcreek",
-        "sampleTitle": "Millcreek Roofing Contractor & Services - Sky Ridge Roofing",
-        "sourceAppearances": 1
-      },
-      {
         "domain": "spmroofing.com",
         "sampleUrl": "https://spmroofing.com/roofing-company-in-magna-ut",
         "sampleTitle": "Roofing Company in Magna, UT - SPM Roofing LLC",
         "sourceAppearances": 1
       },
       {
-        "domain": "todayshomeowner.com",
-        "sampleUrl": "https://todayshomeowner.com/near-me/utah/millcreek/roofing/",
-        "sampleTitle": "10 Best Roofers in Millcreek, UT - Today's Homeowner",
-        "sourceAppearances": 1
-      },
-      {
         "domain": "usasuperior.com",
         "sampleUrl": "https://usasuperior.com/cost-for-metal-roof/",
         "sampleTitle": "A Complete Guide to the Cost for Metal Roof in 2026",
-        "sourceAppearances": 1
-      },
-      {
-        "domain": "whitakerroofing.com",
-        "sampleUrl": "https://whitakerroofing.com/",
-        "sampleTitle": "Whitaker Roofing — Utah's Trust-First Roofer | 4.9",
         "sourceAppearances": 1
       },
       {
@@ -1246,31 +1240,31 @@
           "state": "target-outside-measured-depth",
           "top": {
             "rank": 1,
-            "domain": "gaf.com",
-            "url": "https://www.gaf.com/en-us/roofing-contractors/residential/usa/ut/salt-lake-city",
-            "title": "Best Roofers in Salt Lake City, UT | GAF Roofing Contractors",
+            "domain": "roofingutah.com",
+            "url": "https://roofingutah.com/",
+            "title": "Roofing Utah - Roofing Contractor in Salt Lake City & Ogden, UT",
             "isTarget": false
           },
           "leaders": [
             {
               "rank": 1,
+              "domain": "roofingutah.com",
+              "url": "https://roofingutah.com/",
+              "title": "Roofing Utah - Roofing Contractor in Salt Lake City & Ogden, UT",
+              "isTarget": false
+            },
+            {
+              "rank": 2,
               "domain": "gaf.com",
               "url": "https://www.gaf.com/en-us/roofing-contractors/residential/usa/ut/salt-lake-city",
               "title": "Best Roofers in Salt Lake City, UT | GAF Roofing Contractors",
               "isTarget": false
             },
             {
-              "rank": 2,
-              "domain": "m.yelp.com",
-              "url": "https://m.yelp.com/search?cflt=roofing&find_loc=Salt+Lake+City%2C+UT",
-              "title": "THE BEST 10 ROOFING IN SALT LAKE CITY, UT",
-              "isTarget": false
-            },
-            {
               "rank": 3,
-              "domain": "roofingutah.com",
-              "url": "https://roofingutah.com/",
-              "title": "Roofing Utah - Roofing Contractor in Salt Lake City & Ogden, UT",
+              "domain": "shawroofing.com",
+              "url": "https://www.shawroofing.com/",
+              "title": "WELCOME TO SHAW ROOFING",
               "isTarget": false
             }
           ]
@@ -1285,21 +1279,9 @@
           "state": "present-without-frame-citation",
           "rivalSources": [
             {
-              "domain": "reddit.com",
-              "url": "https://www.reddit.com/r/SaltLakeCity/comments/1o38k09/best_roofing_contractors_in_the_salt_lake_valley/",
-              "title": "Best Roofing Contractors in the Salt Lake Valley? : r/SaltLakeCity - Reddit",
-              "isTarget": false
-            },
-            {
-              "domain": "roofdoctorutah.com",
-              "url": "https://roofdoctorutah.com/",
-              "title": "The Roof Doctor Utah",
-              "isTarget": false
-            },
-            {
-              "domain": "heatonroof.com",
-              "url": "https://heatonroof.com/",
-              "title": "Best Roofing Company in Salt Lake City, Utah",
+              "domain": "gaf.com",
+              "url": "https://www.gaf.com/en-us/roofing-contractors/residential/usa/ut/salt-lake-city",
+              "title": "Best Roofers in Salt Lake City, UT | GAF Roofing Contractors",
               "isTarget": false
             },
             {
@@ -1309,15 +1291,21 @@
               "isTarget": false
             },
             {
-              "domain": "serviceagent.ai",
-              "url": "https://serviceagent.ai/directory/utah/roofing/",
-              "title": "Roofing in Utah: 20 Top Pros Ranked (2026) - ServiceAgent",
+              "domain": "shingleproroofing.com",
+              "url": "https://www.shingleproroofing.com/",
+              "title": "Shingle Pro Roofing: Roof Installation in Salt Lake City, UT",
               "isTarget": false
             },
             {
-              "domain": "whitakerroofing.com",
-              "url": "https://whitakerroofing.com/",
-              "title": "Whitaker Roofing — Utah's Trust-First Roofer | 4.9",
+              "domain": "saltlakecityroofs.com",
+              "url": "https://saltlakecityroofs.com/",
+              "title": "Roofing Contractors | Roof-It, Inc. | Salt Lake City, Utah",
+              "isTarget": false
+            },
+            {
+              "domain": "serviceagent.ai",
+              "url": "https://serviceagent.ai/directory/utah/salt-lake-city/roofing/",
+              "title": "Roofing in Salt Lake City, Utah: 13 Top Pros Ranked (2026)",
               "isTarget": false
             },
             {
@@ -1328,20 +1316,26 @@
             },
             {
               "domain": "google.com",
-              "url": "https://www.google.com/searchviewer/10?svid=CAwSGxIZCgNwdnESEkNnc3ZaeTh4ZEc1bmNYTTJOZxgK",
-              "title": "Shingle Pro Roofing",
-              "isTarget": false
-            },
-            {
-              "domain": "google.com",
-              "url": "https://www.google.com/searchviewer/10?svid=CAwSHBIaCgNwdnESE0Nnd3ZaeTh4TVdkZlkyZGplWGMYCg",
-              "title": "Vertex Roofing",
+              "url": "https://www.google.com/searchviewer/10?svid=CAwSHRIbCgNwdnESFENnMHZaeTh4TVhOck16TnpkbmhmGAo",
+              "title": "Vault Roofing LLC",
               "isTarget": false
             },
             {
               "domain": "google.com",
               "url": "https://www.google.com/searchviewer/10?svid=CAwSHBIaCgNwdnESE0Nnd3ZaeTh4TW14ck9WOTNlak0YCg",
               "title": "The Roof Doctor",
+              "isTarget": false
+            },
+            {
+              "domain": "google.com",
+              "url": "https://www.google.com/searchviewer/10?svid=CAwSGxIZCgNwdnESEkNnc3ZaeTh4ZEc1bmNYTTJOZxgK",
+              "title": "Shingle Pro Roofing",
+              "isTarget": false
+            },
+            {
+              "domain": "google.com",
+              "url": "https://www.google.com/searchviewer/10?svid=CAwSHRIbCgNwdnESFENnMHZaeTh4TVhGdE1HSmthREJpGAo",
+              "title": "EZ Roofing Utah",
               "isTarget": false
             }
           ]
@@ -1355,7 +1349,7 @@
       "queryId": "slc-roof-repair",
       "keyword": "roof repair salt lake city",
       "target": {
-        "organicRank": 25,
+        "organicRank": 21,
         "rankingUrl": "https://www.framerestorationutah.com/locations/salt-lake-city",
         "exactCidMapRank": null,
         "aiOverviewCited": false
@@ -1382,14 +1376,14 @@
               "rank": 2,
               "domain": "m.yelp.com",
               "url": "https://m.yelp.com/search?cflt=roofing&find_loc=Salt+Lake+City%2C+UT",
-              "title": "THE BEST 10 ROOFING IN SALT LAKE CITY, UT",
+              "title": "THE BEST 10 Roofing in SALT LAKE CITY, UT - (2026 GUIDE)",
               "isTarget": false
             },
             {
               "rank": 3,
-              "domain": "saltlakecityroofs.com",
-              "url": "https://saltlakecityroofs.com/",
-              "title": "Roofing Contractors | Roof-It, Inc. | Salt Lake City, Utah",
+              "domain": "roofdoctorutah.com",
+              "url": "https://roofdoctorutah.com/",
+              "title": "Roof Doctor: Professional Roofing Services in Salt Lake",
               "isTarget": false
             }
           ]
@@ -1399,35 +1393,35 @@
           "packPresent": true,
           "top": {
             "rank": 1,
-            "name": "The Roof Doctor",
-            "cid": "16329927680093228178",
+            "name": "We Do Roofing Salt Lake City",
+            "cid": "14346566316923503344",
             "domain": "google.com",
-            "url": "https://www.google.com/searchviewer/10?sca_esv=0ab4c29f2e17ee32&hl=en&gl=US&output=search&svid=CAwSHBIaCgNwdnESE0Nnd3ZaeTh4TW14ck9WOTNlak0YCg",
+            "url": "https://www.google.com/searchviewer/10?sca_esv=18f1ac768794601a&hl=en&gl=US&output=search&svid=CAwSHRIbCgNwdnESFENnMHZaeTh4TVdaelgzWmpabXBpGAo",
             "isTarget": false
           },
           "leaders": [
             {
               "rank": 1,
-              "name": "The Roof Doctor",
-              "cid": "16329927680093228178",
+              "name": "We Do Roofing Salt Lake City",
+              "cid": "14346566316923503344",
               "domain": "google.com",
-              "url": "https://www.google.com/searchviewer/10?sca_esv=0ab4c29f2e17ee32&hl=en&gl=US&output=search&svid=CAwSHBIaCgNwdnESE0Nnd3ZaeTh4TW14ck9WOTNlak0YCg",
+              "url": "https://www.google.com/searchviewer/10?sca_esv=18f1ac768794601a&hl=en&gl=US&output=search&svid=CAwSHRIbCgNwdnESFENnMHZaeTh4TVdaelgzWmpabXBpGAo",
               "isTarget": false
             },
             {
               "rank": 2,
-              "name": "Whitaker Roofing Services",
-              "cid": "11316815627233980109",
+              "name": "The Roof Doctor",
+              "cid": "16329927680093228178",
               "domain": "google.com",
-              "url": "https://www.google.com/searchviewer/10?sca_esv=0ab4c29f2e17ee32&hl=en&gl=US&output=search&svid=CAwSGxIZCgNwdnESEkNnc3ZaeTh4ZEdSM1ptUnJlQRgK",
+              "url": "https://www.google.com/searchviewer/10?sca_esv=18f1ac768794601a&hl=en&gl=US&output=search&svid=CAwSHBIaCgNwdnESE0Nnd3ZaeTh4TW14ck9WOTNlak0YCg",
               "isTarget": false
             },
             {
               "rank": 3,
-              "name": "Shingle Pro Roofing",
-              "cid": "9926634112120129216",
+              "name": "Whitaker Roofing Services",
+              "cid": "11316815627233980109",
               "domain": "google.com",
-              "url": "https://www.google.com/searchviewer/10?sca_esv=0ab4c29f2e17ee32&hl=en&gl=US&output=search&svid=CAwSGxIZCgNwdnESEkNnc3ZaeTh4ZEc1bmNYTTJOZxgK",
+              "url": "https://www.google.com/searchviewer/10?sca_esv=18f1ac768794601a&hl=en&gl=US&output=search&svid=CAwSGxIZCgNwdnESEkNnc3ZaeTh4ZEdSM1ptUnJlQRgK",
               "isTarget": false
             }
           ]
@@ -1445,41 +1439,41 @@
       "queryId": "slc-roof-replacement",
       "keyword": "roof replacement salt lake city",
       "target": {
-        "organicRank": 19,
-        "rankingUrl": "https://www.framerestorationutah.com/locations/salt-lake-city",
+        "organicRank": null,
+        "rankingUrl": null,
         "exactCidMapRank": null,
         "aiOverviewCited": false
       },
       "surfaces": {
         "organic": {
-          "state": "target-displaced",
+          "state": "target-outside-measured-depth",
           "top": {
             "rank": 1,
-            "domain": "reddit.com",
-            "url": "https://www.reddit.com/r/SaltLakeCity/comments/14ejppp/roofer_recommendation/",
-            "title": "Roofer recommendation. : r/SaltLakeCity",
+            "domain": "m.yelp.com",
+            "url": "https://m.yelp.com/search?cflt=roofing&find_loc=Salt+Lake+City%2C+UT",
+            "title": "THE BEST 10 Roofing in SALT LAKE CITY, UT - (2026 GUIDE)",
             "isTarget": false
           },
           "leaders": [
             {
               "rank": 1,
-              "domain": "reddit.com",
-              "url": "https://www.reddit.com/r/SaltLakeCity/comments/14ejppp/roofer_recommendation/",
-              "title": "Roofer recommendation. : r/SaltLakeCity",
+              "domain": "m.yelp.com",
+              "url": "https://m.yelp.com/search?cflt=roofing&find_loc=Salt+Lake+City%2C+UT",
+              "title": "THE BEST 10 Roofing in SALT LAKE CITY, UT - (2026 GUIDE)",
               "isTarget": false
             },
             {
               "rank": 2,
-              "domain": "shingleproroofing.com",
-              "url": "https://www.shingleproroofing.com/",
-              "title": "Shingle Pro Roofing: Roof Installation in Salt Lake City, UT",
+              "domain": "gaf.com",
+              "url": "https://www.gaf.com/en-us/roofing-contractors/residential/usa/ut/salt-lake-city",
+              "title": "Best Roofers in Salt Lake City, UT | GAF Roofing Contractors",
               "isTarget": false
             },
             {
               "rank": 3,
-              "domain": "m.yelp.com",
-              "url": "https://m.yelp.com/search?cflt=roofing&find_loc=Salt+Lake+City%2C+UT",
-              "title": "THE BEST 10 ROOFING IN SALT LAKE CITY, UT",
+              "domain": "reddit.com",
+              "url": "https://www.reddit.com/r/SaltLakeCity/comments/14ejppp/roofer_recommendation/",
+              "title": "Roofer recommendation. : r/SaltLakeCity",
               "isTarget": false
             }
           ]
@@ -1492,7 +1486,7 @@
             "name": "The Roof Doctor",
             "cid": "16329927680093228178",
             "domain": "google.com",
-            "url": "https://www.google.com/searchviewer/10?sca_esv=0ab4c29f2e17ee32&hl=en&gl=US&output=search&svid=CAwSHBIaCgNwdnESE0Nnd3ZaeTh4TW14ck9WOTNlak0YCg",
+            "url": "https://www.google.com/searchviewer/10?sca_esv=18f1ac768794601a&hl=en&gl=US&output=search&svid=CAwSHBIaCgNwdnESE0Nnd3ZaeTh4TW14ck9WOTNlak0YCg",
             "isTarget": false
           },
           "leaders": [
@@ -1501,7 +1495,7 @@
               "name": "The Roof Doctor",
               "cid": "16329927680093228178",
               "domain": "google.com",
-              "url": "https://www.google.com/searchviewer/10?sca_esv=0ab4c29f2e17ee32&hl=en&gl=US&output=search&svid=CAwSHBIaCgNwdnESE0Nnd3ZaeTh4TW14ck9WOTNlak0YCg",
+              "url": "https://www.google.com/searchviewer/10?sca_esv=18f1ac768794601a&hl=en&gl=US&output=search&svid=CAwSHBIaCgNwdnESE0Nnd3ZaeTh4TW14ck9WOTNlak0YCg",
               "isTarget": false
             },
             {
@@ -1509,7 +1503,7 @@
               "name": "Roof-It, Inc.",
               "cid": "14355335798757301774",
               "domain": "google.com",
-              "url": "https://www.google.com/searchviewer/10?sca_esv=0ab4c29f2e17ee32&hl=en&gl=US&output=search&svid=CAwSHBIaCgNwdnESE0Nnd3ZaeTh4TWpZeWJXTmljalkYCg",
+              "url": "https://www.google.com/searchviewer/10?sca_esv=18f1ac768794601a&hl=en&gl=US&output=search&svid=CAwSHBIaCgNwdnESE0Nnd3ZaeTh4TWpZeWJXTmljalkYCg",
               "isTarget": false
             },
             {
@@ -1517,7 +1511,7 @@
               "name": "EZ Roofing Utah",
               "cid": "14301646460605096465",
               "domain": "google.com",
-              "url": "https://www.google.com/searchviewer/10?sca_esv=0ab4c29f2e17ee32&hl=en&gl=US&output=search&svid=CAwSHRIbCgNwdnESFENnMHZaeTh4TVhGdE1HSmthREJpGAo",
+              "url": "https://www.google.com/searchviewer/10?sca_esv=18f1ac768794601a&hl=en&gl=US&output=search&svid=CAwSHRIbCgNwdnESFENnMHZaeTh4TVhGdE1HSmthREJpGAo",
               "isTarget": false
             }
           ]
@@ -1545,31 +1539,31 @@
           "state": "target-outside-measured-depth",
           "top": {
             "rank": 1,
-            "domain": "reddit.com",
-            "url": "https://www.reddit.com/r/SaltLakeCity/comments/14ejppp/roofer_recommendation/",
-            "title": "Roofer recommendation. : r/SaltLakeCity",
+            "domain": "m.yelp.com",
+            "url": "https://m.yelp.com/search?cflt=roofing&find_loc=Salt+Lake+City%2C+UT",
+            "title": "THE BEST 10 Roofing in SALT LAKE CITY, UT - (2026 GUIDE)",
             "isTarget": false
           },
           "leaders": [
             {
               "rank": 1,
-              "domain": "reddit.com",
-              "url": "https://www.reddit.com/r/SaltLakeCity/comments/14ejppp/roofer_recommendation/",
-              "title": "Roofer recommendation. : r/SaltLakeCity",
+              "domain": "m.yelp.com",
+              "url": "https://m.yelp.com/search?cflt=roofing&find_loc=Salt+Lake+City%2C+UT",
+              "title": "THE BEST 10 Roofing in SALT LAKE CITY, UT - (2026 GUIDE)",
               "isTarget": false
             },
             {
               "rank": 2,
-              "domain": "gaf.com",
-              "url": "https://www.gaf.com/en-us/roofing-contractors/residential/usa/ut/salt-lake-city",
-              "title": "Best Roofers in Salt Lake City, UT | GAF Roofing Contractors",
+              "domain": "shawroofing.com",
+              "url": "https://www.shawroofing.com/",
+              "title": "WELCOME TO SHAW ROOFING",
               "isTarget": false
             },
             {
               "rank": 3,
-              "domain": "m.yelp.com",
-              "url": "https://m.yelp.com/search?cflt=roofing&find_loc=Salt+Lake+City%2C+UT",
-              "title": "THE BEST 10 ROOFING IN SALT LAKE CITY, UT",
+              "domain": "reddit.com",
+              "url": "https://www.reddit.com/r/SaltLakeCity/comments/14ejppp/roofer_recommendation/",
+              "title": "Roofer recommendation. : r/SaltLakeCity",
               "isTarget": false
             }
           ]
@@ -1582,7 +1576,7 @@
             "name": "The Roof Doctor",
             "cid": "16329927680093228178",
             "domain": "google.com",
-            "url": "https://www.google.com/searchviewer/10?sca_esv=0ab4c29f2e17ee32&hl=en&gl=US&output=search&svid=CAwSHBIaCgNwdnESE0Nnd3ZaeTh4TW14ck9WOTNlak0YCg",
+            "url": "https://www.google.com/searchviewer/10?sca_esv=18f1ac768794601a&hl=en&gl=US&output=search&svid=CAwSHBIaCgNwdnESE0Nnd3ZaeTh4TW14ck9WOTNlak0YCg",
             "isTarget": false
           },
           "leaders": [
@@ -1591,7 +1585,7 @@
               "name": "The Roof Doctor",
               "cid": "16329927680093228178",
               "domain": "google.com",
-              "url": "https://www.google.com/searchviewer/10?sca_esv=0ab4c29f2e17ee32&hl=en&gl=US&output=search&svid=CAwSHBIaCgNwdnESE0Nnd3ZaeTh4TW14ck9WOTNlak0YCg",
+              "url": "https://www.google.com/searchviewer/10?sca_esv=18f1ac768794601a&hl=en&gl=US&output=search&svid=CAwSHBIaCgNwdnESE0Nnd3ZaeTh4TW14ck9WOTNlak0YCg",
               "isTarget": false
             },
             {
@@ -1599,7 +1593,7 @@
               "name": "Shingle Pro Roofing",
               "cid": "9926634112120129216",
               "domain": "google.com",
-              "url": "https://www.google.com/searchviewer/10?sca_esv=0ab4c29f2e17ee32&hl=en&gl=US&output=search&svid=CAwSGxIZCgNwdnESEkNnc3ZaeTh4ZEc1bmNYTTJOZxgK",
+              "url": "https://www.google.com/searchviewer/10?sca_esv=18f1ac768794601a&hl=en&gl=US&output=search&svid=CAwSGxIZCgNwdnESEkNnc3ZaeTh4ZEc1bmNYTTJOZxgK",
               "isTarget": false
             },
             {
@@ -1607,7 +1601,7 @@
               "name": "American Roofing Company",
               "cid": "14175353960427916811",
               "domain": "google.com",
-              "url": "https://www.google.com/searchviewer/10?sca_esv=0ab4c29f2e17ee32&hl=en&gl=US&output=search&svid=CAwSGxIZCgNwdnESEkNnc3ZaeTh4ZEdaamJuUjZNURgK",
+              "url": "https://www.google.com/searchviewer/10?sca_esv=18f1ac768794601a&hl=en&gl=US&output=search&svid=CAwSGxIZCgNwdnESEkNnc3ZaeTh4ZEdaamJuUjZNURgK",
               "isTarget": false
             }
           ]
@@ -1625,7 +1619,7 @@
       "queryId": "cottonwood-heights-roofing-contractor",
       "keyword": "roofing contractor cottonwood heights",
       "target": {
-        "organicRank": 15,
+        "organicRank": 17,
         "rankingUrl": "https://www.framerestorationutah.com/locations/cottonwood-heights",
         "exactCidMapRank": null,
         "aiOverviewCited": false
@@ -1672,7 +1666,7 @@
             "name": "Utah Roofing Pros",
             "cid": "4118570990011609504",
             "domain": "google.com",
-            "url": "https://www.google.com/searchviewer/10?sca_esv=0ab4c29f2e17ee32&hl=en&gl=US&output=search&svid=CAwSHRIbCgNwdnESFENnMHZaeTh4TVdadWFEWnpibmxuGAo",
+            "url": "https://www.google.com/searchviewer/10?sca_esv=18f1ac768794601a&hl=en&gl=US&output=search&svid=CAwSHRIbCgNwdnESFENnMHZaeTh4TVdadWFEWnpibmxuGAo",
             "isTarget": false
           },
           "leaders": [
@@ -1681,7 +1675,7 @@
               "name": "Utah Roofing Pros",
               "cid": "4118570990011609504",
               "domain": "google.com",
-              "url": "https://www.google.com/searchviewer/10?sca_esv=0ab4c29f2e17ee32&hl=en&gl=US&output=search&svid=CAwSHRIbCgNwdnESFENnMHZaeTh4TVdadWFEWnpibmxuGAo",
+              "url": "https://www.google.com/searchviewer/10?sca_esv=18f1ac768794601a&hl=en&gl=US&output=search&svid=CAwSHRIbCgNwdnESFENnMHZaeTh4TVdadWFEWnpibmxuGAo",
               "isTarget": false
             },
             {
@@ -1689,7 +1683,7 @@
               "name": "Pioneer Roofing Co",
               "cid": "8874014093901703868",
               "domain": "google.com",
-              "url": "https://www.google.com/searchviewer/10?sca_esv=0ab4c29f2e17ee32&hl=en&gl=US&output=search&svid=CAwSGxIZCgNwdnESEkNnc3ZaeTh4ZUdkNll6ZDJZdxgK",
+              "url": "https://www.google.com/searchviewer/10?sca_esv=18f1ac768794601a&hl=en&gl=US&output=search&svid=CAwSGxIZCgNwdnESEkNnc3ZaeTh4ZUdkNll6ZDJZdxgK",
               "isTarget": false
             },
             {
@@ -1697,7 +1691,7 @@
               "name": "ReRoofIt",
               "cid": "3305979678440818523",
               "domain": "google.com",
-              "url": "https://www.google.com/searchviewer/10?sca_esv=0ab4c29f2e17ee32&hl=en&gl=US&output=search&svid=CAwSHRIbCgNwdnESFENnMHZaeTh4TVdwdGQyNXRaMnA0GAo",
+              "url": "https://www.google.com/searchviewer/10?sca_esv=18f1ac768794601a&hl=en&gl=US&output=search&svid=CAwSHRIbCgNwdnESFENnMHZaeTh4TVdwdGQyNXRaMnA0GAo",
               "isTarget": false
             }
           ]
@@ -1715,97 +1709,7 @@
       "queryId": "cottonwood-heights-roof-repair",
       "keyword": "roof repair cottonwood heights",
       "target": {
-        "organicRank": 10,
-        "rankingUrl": "https://www.framerestorationutah.com/locations/cottonwood-heights",
-        "exactCidMapRank": null,
-        "aiOverviewCited": false
-      },
-      "surfaces": {
-        "organic": {
-          "state": "target-displaced",
-          "top": {
-            "rank": 1,
-            "domain": "m.yelp.com",
-            "url": "https://m.yelp.com/search?find_desc=Roof+Repair&find_loc=Cottonwood+Heights%2C+UT",
-            "title": "Best Roof Repair near Cottonwood Heights, UT",
-            "isTarget": false
-          },
-          "leaders": [
-            {
-              "rank": 1,
-              "domain": "m.yelp.com",
-              "url": "https://m.yelp.com/search?find_desc=Roof+Repair&find_loc=Cottonwood+Heights%2C+UT",
-              "title": "Best Roof Repair near Cottonwood Heights, UT",
-              "isTarget": false
-            },
-            {
-              "rank": 2,
-              "domain": "whitakerroofing.com",
-              "url": "https://whitakerroofing.com/locations/salt-lake-county/cottonwood-heights",
-              "title": "Roofing Services in Cottonwood Heights, UT",
-              "isTarget": false
-            },
-            {
-              "rank": 3,
-              "domain": "shelley-construction.com",
-              "url": "https://shelley-construction.com/service-area/cottonwood-heights",
-              "title": "Cottonwood Heights Roofer | Roof Repair & Replacement",
-              "isTarget": false
-            }
-          ]
-        },
-        "maps": {
-          "state": "exact-cid-not-returned-in-pack",
-          "packPresent": true,
-          "top": {
-            "rank": 1,
-            "name": "Utah Roofing Pros",
-            "cid": "4118570990011609504",
-            "domain": "google.com",
-            "url": "https://www.google.com/searchviewer/10?sca_esv=0ab4c29f2e17ee32&hl=en&gl=US&output=search&svid=CAwSHRIbCgNwdnESFENnMHZaeTh4TVdadWFEWnpibmxuGAo",
-            "isTarget": false
-          },
-          "leaders": [
-            {
-              "rank": 1,
-              "name": "Utah Roofing Pros",
-              "cid": "4118570990011609504",
-              "domain": "google.com",
-              "url": "https://www.google.com/searchviewer/10?sca_esv=0ab4c29f2e17ee32&hl=en&gl=US&output=search&svid=CAwSHRIbCgNwdnESFENnMHZaeTh4TVdadWFEWnpibmxuGAo",
-              "isTarget": false
-            },
-            {
-              "rank": 2,
-              "name": "Pioneer Roofing Co",
-              "cid": "8874014093901703868",
-              "domain": "google.com",
-              "url": "https://www.google.com/searchviewer/10?sca_esv=0ab4c29f2e17ee32&hl=en&gl=US&output=search&svid=CAwSGxIZCgNwdnESEkNnc3ZaeTh4ZUdkNll6ZDJZdxgK",
-              "isTarget": false
-            },
-            {
-              "rank": 3,
-              "name": "ReRoofIt",
-              "cid": "3305979678440818523",
-              "domain": "google.com",
-              "url": "https://www.google.com/searchviewer/10?sca_esv=0ab4c29f2e17ee32&hl=en&gl=US&output=search&svid=CAwSHRIbCgNwdnESFENnMHZaeTh4TVdwdGQyNXRaMnA0GAo",
-              "isTarget": false
-            }
-          ]
-        },
-        "googleAiOverview": {
-          "state": "not-present",
-          "rivalSources": []
-        }
-      }
-    },
-    {
-      "cohort": "core-weekly",
-      "city": "Cottonwood Heights",
-      "panelId": "utah-cottonwood-heights-google-v1",
-      "queryId": "cottonwood-heights-roof-replacement",
-      "keyword": "roof replacement cottonwood heights",
-      "target": {
-        "organicRank": 15,
+        "organicRank": 13,
         "rankingUrl": "https://www.framerestorationutah.com/locations/cottonwood-heights",
         "exactCidMapRank": null,
         "aiOverviewCited": false
@@ -1830,16 +1734,16 @@
             },
             {
               "rank": 2,
-              "domain": "legacyroofingutah.com",
-              "url": "https://www.legacyroofingutah.com/service-areas/cottonwood-heights",
-              "title": "Roofing Contractor Cottonwood Heights UT | GAF-Certified",
+              "domain": "diamondcertified.org",
+              "url": "https://www.diamondcertified.org/roofing/ut/salt-lake-county/",
+              "title": "Top Rated Roofing Contractors for Salt Lake County, UT",
               "isTarget": false
             },
             {
               "rank": 3,
-              "domain": "myelevatedroof.com",
-              "url": "https://myelevatedroof.com/roofers-cottonwood-heights-ut/",
-              "title": "Roofers in Cottonwood Heights, UT",
+              "domain": "serviceagent.ai",
+              "url": "https://serviceagent.ai/directory/utah/cottonwood-heights/roofing/utah-roofing-pros/",
+              "title": "Utah Roofing Pros - Roofing in Cottonwood Heights, UT",
               "isTarget": false
             }
           ]
@@ -1852,7 +1756,7 @@
             "name": "Utah Roofing Pros",
             "cid": "4118570990011609504",
             "domain": "google.com",
-            "url": "https://www.google.com/searchviewer/10?sca_esv=0ab4c29f2e17ee32&hl=en&gl=US&output=search&svid=CAwSHRIbCgNwdnESFENnMHZaeTh4TVdadWFEWnpibmxuGAo",
+            "url": "https://www.google.com/searchviewer/10?sca_esv=18f1ac768794601a&hl=en&gl=US&output=search&svid=CAwSHRIbCgNwdnESFENnMHZaeTh4TVdadWFEWnpibmxuGAo",
             "isTarget": false
           },
           "leaders": [
@@ -1861,7 +1765,7 @@
               "name": "Utah Roofing Pros",
               "cid": "4118570990011609504",
               "domain": "google.com",
-              "url": "https://www.google.com/searchviewer/10?sca_esv=0ab4c29f2e17ee32&hl=en&gl=US&output=search&svid=CAwSHRIbCgNwdnESFENnMHZaeTh4TVdadWFEWnpibmxuGAo",
+              "url": "https://www.google.com/searchviewer/10?sca_esv=18f1ac768794601a&hl=en&gl=US&output=search&svid=CAwSHRIbCgNwdnESFENnMHZaeTh4TVdadWFEWnpibmxuGAo",
               "isTarget": false
             },
             {
@@ -1869,7 +1773,7 @@
               "name": "Pioneer Roofing Co",
               "cid": "8874014093901703868",
               "domain": "google.com",
-              "url": "https://www.google.com/searchviewer/10?sca_esv=0ab4c29f2e17ee32&hl=en&gl=US&output=search&svid=CAwSGxIZCgNwdnESEkNnc3ZaeTh4ZUdkNll6ZDJZdxgK",
+              "url": "https://www.google.com/searchviewer/10?sca_esv=18f1ac768794601a&hl=en&gl=US&output=search&svid=CAwSGxIZCgNwdnESEkNnc3ZaeTh4ZUdkNll6ZDJZdxgK",
               "isTarget": false
             },
             {
@@ -1877,7 +1781,7 @@
               "name": "ReRoofIt",
               "cid": "3305979678440818523",
               "domain": "google.com",
-              "url": "https://www.google.com/searchviewer/10?sca_esv=0ab4c29f2e17ee32&hl=en&gl=US&output=search&svid=CAwSHRIbCgNwdnESFENnMHZaeTh4TVdwdGQyNXRaMnA0GAo",
+              "url": "https://www.google.com/searchviewer/10?sca_esv=18f1ac768794601a&hl=en&gl=US&output=search&svid=CAwSHRIbCgNwdnESFENnMHZaeTh4TVdwdGQyNXRaMnA0GAo",
               "isTarget": false
             }
           ]
@@ -1892,10 +1796,10 @@
       "cohort": "core-weekly",
       "city": "Cottonwood Heights",
       "panelId": "utah-cottonwood-heights-google-v1",
-      "queryId": "cottonwood-heights-roofer",
-      "keyword": "roofer cottonwood heights",
+      "queryId": "cottonwood-heights-roof-replacement",
+      "keyword": "roof replacement cottonwood heights",
       "target": {
-        "organicRank": 14,
+        "organicRank": 13,
         "rankingUrl": "https://www.framerestorationutah.com/locations/cottonwood-heights",
         "exactCidMapRank": null,
         "aiOverviewCited": false
@@ -1927,6 +1831,96 @@
             },
             {
               "rank": 3,
+              "domain": "legacyroofingutah.com",
+              "url": "https://www.legacyroofingutah.com/service-areas/cottonwood-heights",
+              "title": "Roofing Contractor Cottonwood Heights UT | GAF-Certified",
+              "isTarget": false
+            }
+          ]
+        },
+        "maps": {
+          "state": "exact-cid-not-returned-in-pack",
+          "packPresent": true,
+          "top": {
+            "rank": 1,
+            "name": "Utah Roofing Pros",
+            "cid": "4118570990011609504",
+            "domain": "google.com",
+            "url": "https://www.google.com/searchviewer/10?sca_esv=18f1ac768794601a&hl=en&gl=US&output=search&svid=CAwSHRIbCgNwdnESFENnMHZaeTh4TVdadWFEWnpibmxuGAo",
+            "isTarget": false
+          },
+          "leaders": [
+            {
+              "rank": 1,
+              "name": "Utah Roofing Pros",
+              "cid": "4118570990011609504",
+              "domain": "google.com",
+              "url": "https://www.google.com/searchviewer/10?sca_esv=18f1ac768794601a&hl=en&gl=US&output=search&svid=CAwSHRIbCgNwdnESFENnMHZaeTh4TVdadWFEWnpibmxuGAo",
+              "isTarget": false
+            },
+            {
+              "rank": 2,
+              "name": "Pioneer Roofing Co",
+              "cid": "8874014093901703868",
+              "domain": "google.com",
+              "url": "https://www.google.com/searchviewer/10?sca_esv=18f1ac768794601a&hl=en&gl=US&output=search&svid=CAwSGxIZCgNwdnESEkNnc3ZaeTh4ZUdkNll6ZDJZdxgK",
+              "isTarget": false
+            },
+            {
+              "rank": 3,
+              "name": "ReRoofIt",
+              "cid": "3305979678440818523",
+              "domain": "google.com",
+              "url": "https://www.google.com/searchviewer/10?sca_esv=18f1ac768794601a&hl=en&gl=US&output=search&svid=CAwSHRIbCgNwdnESFENnMHZaeTh4TVdwdGQyNXRaMnA0GAo",
+              "isTarget": false
+            }
+          ]
+        },
+        "googleAiOverview": {
+          "state": "not-present",
+          "rivalSources": []
+        }
+      }
+    },
+    {
+      "cohort": "core-weekly",
+      "city": "Cottonwood Heights",
+      "panelId": "utah-cottonwood-heights-google-v1",
+      "queryId": "cottonwood-heights-roofer",
+      "keyword": "roofer cottonwood heights",
+      "target": {
+        "organicRank": 14,
+        "rankingUrl": "https://www.framerestorationutah.com/locations/cottonwood-heights",
+        "exactCidMapRank": null,
+        "aiOverviewCited": false
+      },
+      "surfaces": {
+        "organic": {
+          "state": "target-displaced",
+          "top": {
+            "rank": 1,
+            "domain": "shingleproroofing.com",
+            "url": "https://www.shingleproroofing.com/areas-we-serve/roofing-in-cottonwood-heights-utah/",
+            "title": "Roofing in Cottonwood Heights, Utah -",
+            "isTarget": false
+          },
+          "leaders": [
+            {
+              "rank": 1,
+              "domain": "shingleproroofing.com",
+              "url": "https://www.shingleproroofing.com/areas-we-serve/roofing-in-cottonwood-heights-utah/",
+              "title": "Roofing in Cottonwood Heights, Utah -",
+              "isTarget": false
+            },
+            {
+              "rank": 2,
+              "domain": "roofingutah.com",
+              "url": "https://roofingutah.com/cottonwood-heights/",
+              "title": "Roofing for Cottonwood Heights",
+              "isTarget": false
+            },
+            {
+              "rank": 3,
               "domain": "shelley-construction.com",
               "url": "https://shelley-construction.com/service-area/cottonwood-heights",
               "title": "Cottonwood Heights Roofer | Roof Repair & Replacement",
@@ -1942,7 +1936,7 @@
             "name": "Utah Roofing Pros",
             "cid": "4118570990011609504",
             "domain": "google.com",
-            "url": "https://www.google.com/searchviewer/10?sca_esv=0ab4c29f2e17ee32&hl=en&gl=US&output=search&svid=CAwSHRIbCgNwdnESFENnMHZaeTh4TVdadWFEWnpibmxuGAo",
+            "url": "https://www.google.com/searchviewer/10?sca_esv=18f1ac768794601a&hl=en&gl=US&output=search&svid=CAwSHRIbCgNwdnESFENnMHZaeTh4TVdadWFEWnpibmxuGAo",
             "isTarget": false
           },
           "leaders": [
@@ -1951,7 +1945,7 @@
               "name": "Utah Roofing Pros",
               "cid": "4118570990011609504",
               "domain": "google.com",
-              "url": "https://www.google.com/searchviewer/10?sca_esv=0ab4c29f2e17ee32&hl=en&gl=US&output=search&svid=CAwSHRIbCgNwdnESFENnMHZaeTh4TVdadWFEWnpibmxuGAo",
+              "url": "https://www.google.com/searchviewer/10?sca_esv=18f1ac768794601a&hl=en&gl=US&output=search&svid=CAwSHRIbCgNwdnESFENnMHZaeTh4TVdadWFEWnpibmxuGAo",
               "isTarget": false
             },
             {
@@ -1959,7 +1953,7 @@
               "name": "Pioneer Roofing Co",
               "cid": "8874014093901703868",
               "domain": "google.com",
-              "url": "https://www.google.com/searchviewer/10?sca_esv=0ab4c29f2e17ee32&hl=en&gl=US&output=search&svid=CAwSGxIZCgNwdnESEkNnc3ZaeTh4ZUdkNll6ZDJZdxgK",
+              "url": "https://www.google.com/searchviewer/10?sca_esv=18f1ac768794601a&hl=en&gl=US&output=search&svid=CAwSGxIZCgNwdnESEkNnc3ZaeTh4ZUdkNll6ZDJZdxgK",
               "isTarget": false
             },
             {
@@ -1967,7 +1961,7 @@
               "name": "Bartlett Roofing",
               "cid": "14958115238436635129",
               "domain": "google.com",
-              "url": "https://www.google.com/searchviewer/10?sca_esv=0ab4c29f2e17ee32&hl=en&gl=US&output=search&svid=CAwSHRIbCgNwdnESFENnMHZaeTh4TVdad2EzSnFjbk5qGAo",
+              "url": "https://www.google.com/searchviewer/10?sca_esv=18f1ac768794601a&hl=en&gl=US&output=search&svid=CAwSHRIbCgNwdnESFENnMHZaeTh4TVdad2EzSnFjbk5qGAo",
               "isTarget": false
             }
           ]
@@ -1985,7 +1979,7 @@
       "queryId": "holladay-roofing-contractor",
       "keyword": "roofing contractor holladay",
       "target": {
-        "organicRank": 17,
+        "organicRank": 19,
         "rankingUrl": "https://www.framerestorationutah.com/locations/holladay",
         "exactCidMapRank": null,
         "aiOverviewCited": false
@@ -1995,17 +1989,17 @@
           "state": "target-displaced",
           "top": {
             "rank": 1,
-            "domain": "shingleproroofing.com",
-            "url": "https://www.shingleproroofing.com/areas-we-serve/holladay-ut-roofing/",
-            "title": "Roofing in Holladay, Utah -",
+            "domain": "m.yelp.com",
+            "url": "https://m.yelp.com/search?cflt=roofing&find_loc=Holladay%2C+UT",
+            "title": "Top 10 Best Roofing Near Holladay, Utah - With Real Reviews",
             "isTarget": false
           },
           "leaders": [
             {
               "rank": 1,
-              "domain": "shingleproroofing.com",
-              "url": "https://www.shingleproroofing.com/areas-we-serve/holladay-ut-roofing/",
-              "title": "Roofing in Holladay, Utah -",
+              "domain": "m.yelp.com",
+              "url": "https://m.yelp.com/search?cflt=roofing&find_loc=Holladay%2C+UT",
+              "title": "Top 10 Best Roofing Near Holladay, Utah - With Real Reviews",
               "isTarget": false
             },
             {
@@ -2017,9 +2011,9 @@
             },
             {
               "rank": 3,
-              "domain": "m.yelp.com",
-              "url": "https://m.yelp.com/search?find_desc=Roofing+Contractor&find_loc=Holladay%2C+UT",
-              "title": "TOP 10 BEST Roofing Contractor in Holladay, UT - Updated 2026",
+              "domain": "rocksolidutah.com",
+              "url": "https://www.rocksolidutah.com/sap/local-roofing-company/holladay-ut",
+              "title": "Local Roofing Company | Holladay, UT - Rock Solid Roofing",
               "isTarget": false
             }
           ]
@@ -2029,27 +2023,27 @@
           "packPresent": true,
           "top": {
             "rank": 1,
-            "name": "True North Roofing",
-            "cid": "5387650211366766810",
+            "name": "Holladay Roofing",
+            "cid": "4608145956816988456",
             "domain": "google.com",
-            "url": "https://www.google.com/searchviewer/10?sca_esv=0ab4c29f2e17ee32&hl=en&gl=US&output=search&svid=CAwSHRIbCgNwdnESFENnMHZaeTh4TVdzNWREaGtjR3BqGAo",
+            "url": "https://www.google.com/searchviewer/10?sca_esv=18f1ac768794601a&hl=en&gl=US&output=search&svid=CAwSHRIbCgNwdnESFENnMHZaeTh4TVhkNGNIcGZNM2t4GAo",
             "isTarget": false
           },
           "leaders": [
             {
               "rank": 1,
-              "name": "True North Roofing",
-              "cid": "5387650211366766810",
+              "name": "Holladay Roofing",
+              "cid": "4608145956816988456",
               "domain": "google.com",
-              "url": "https://www.google.com/searchviewer/10?sca_esv=0ab4c29f2e17ee32&hl=en&gl=US&output=search&svid=CAwSHRIbCgNwdnESFENnMHZaeTh4TVdzNWREaGtjR3BqGAo",
+              "url": "https://www.google.com/searchviewer/10?sca_esv=18f1ac768794601a&hl=en&gl=US&output=search&svid=CAwSHRIbCgNwdnESFENnMHZaeTh4TVhkNGNIcGZNM2t4GAo",
               "isTarget": false
             },
             {
               "rank": 2,
-              "name": "Holladay Roofing",
-              "cid": "4608145956816988456",
+              "name": "True North Roofing",
+              "cid": "5387650211366766810",
               "domain": "google.com",
-              "url": "https://www.google.com/searchviewer/10?sca_esv=0ab4c29f2e17ee32&hl=en&gl=US&output=search&svid=CAwSHRIbCgNwdnESFENnMHZaeTh4TVhkNGNIcGZNM2t4GAo",
+              "url": "https://www.google.com/searchviewer/10?sca_esv=18f1ac768794601a&hl=en&gl=US&output=search&svid=CAwSHRIbCgNwdnESFENnMHZaeTh4TVdzNWREaGtjR3BqGAo",
               "isTarget": false
             },
             {
@@ -2057,7 +2051,7 @@
               "name": "Utah Roofing Pros",
               "cid": "4118570990011609504",
               "domain": "google.com",
-              "url": "https://www.google.com/searchviewer/10?sca_esv=0ab4c29f2e17ee32&hl=en&gl=US&output=search&svid=CAwSHRIbCgNwdnESFENnMHZaeTh4TVdadWFEWnpibmxuGAo",
+              "url": "https://www.google.com/searchviewer/10?sca_esv=18f1ac768794601a&hl=en&gl=US&output=search&svid=CAwSHRIbCgNwdnESFENnMHZaeTh4TVdadWFEWnpibmxuGAo",
               "isTarget": false
             }
           ]
@@ -2075,7 +2069,97 @@
       "queryId": "holladay-roof-repair",
       "keyword": "roof repair holladay",
       "target": {
-        "organicRank": 10,
+        "organicRank": 12,
+        "rankingUrl": "https://www.framerestorationutah.com/locations/holladay",
+        "exactCidMapRank": null,
+        "aiOverviewCited": false
+      },
+      "surfaces": {
+        "organic": {
+          "state": "target-displaced",
+          "top": {
+            "rank": 1,
+            "domain": "bartlettroofs.com",
+            "url": "https://bartlettroofs.com/service-areas/holladay-ut/",
+            "title": "Premier Roofers in Holladay, UT",
+            "isTarget": false
+          },
+          "leaders": [
+            {
+              "rank": 1,
+              "domain": "bartlettroofs.com",
+              "url": "https://bartlettroofs.com/service-areas/holladay-ut/",
+              "title": "Premier Roofers in Holladay, UT",
+              "isTarget": false
+            },
+            {
+              "rank": 2,
+              "domain": "xperienceroofing.com",
+              "url": "https://xperienceroofing.com/locations/holladay-ut",
+              "title": "Roofing in Holladay, UT | Roof Replacement & Repair",
+              "isTarget": false
+            },
+            {
+              "rank": 3,
+              "domain": "thumbtack.com",
+              "url": "https://www.thumbtack.com/ut/holladay/roofing",
+              "title": "The 10 Best Roofing Contractors in Holladay, UT (with Free Estimates)",
+              "isTarget": false
+            }
+          ]
+        },
+        "maps": {
+          "state": "exact-cid-not-returned-in-pack",
+          "packPresent": true,
+          "top": {
+            "rank": 1,
+            "name": "True North Roofing",
+            "cid": "5387650211366766810",
+            "domain": "google.com",
+            "url": "https://www.google.com/searchviewer/10?sca_esv=18f1ac768794601a&hl=en&gl=US&output=search&svid=CAwSHRIbCgNwdnESFENnMHZaeTh4TVdzNWREaGtjR3BqGAo",
+            "isTarget": false
+          },
+          "leaders": [
+            {
+              "rank": 1,
+              "name": "True North Roofing",
+              "cid": "5387650211366766810",
+              "domain": "google.com",
+              "url": "https://www.google.com/searchviewer/10?sca_esv=18f1ac768794601a&hl=en&gl=US&output=search&svid=CAwSHRIbCgNwdnESFENnMHZaeTh4TVdzNWREaGtjR3BqGAo",
+              "isTarget": false
+            },
+            {
+              "rank": 2,
+              "name": "Holladay Roofing",
+              "cid": "4608145956816988456",
+              "domain": "google.com",
+              "url": "https://www.google.com/searchviewer/10?sca_esv=18f1ac768794601a&hl=en&gl=US&output=search&svid=CAwSHRIbCgNwdnESFENnMHZaeTh4TVhkNGNIcGZNM2t4GAo",
+              "isTarget": false
+            },
+            {
+              "rank": 3,
+              "name": "Utah Roofing Pros",
+              "cid": "4118570990011609504",
+              "domain": "google.com",
+              "url": "https://www.google.com/searchviewer/10?sca_esv=18f1ac768794601a&hl=en&gl=US&output=search&svid=CAwSHRIbCgNwdnESFENnMHZaeTh4TVdadWFEWnpibmxuGAo",
+              "isTarget": false
+            }
+          ]
+        },
+        "googleAiOverview": {
+          "state": "not-present",
+          "rivalSources": []
+        }
+      }
+    },
+    {
+      "cohort": "core-weekly",
+      "city": "Holladay",
+      "panelId": "utah-holladay-google-v1",
+      "queryId": "holladay-roof-replacement",
+      "keyword": "roof replacement holladay",
+      "target": {
+        "organicRank": 4,
         "rankingUrl": "https://www.framerestorationutah.com/locations/holladay",
         "exactCidMapRank": null,
         "aiOverviewCited": false
@@ -2122,7 +2206,7 @@
             "name": "True North Roofing",
             "cid": "5387650211366766810",
             "domain": "google.com",
-            "url": "https://www.google.com/searchviewer/10?sca_esv=0ab4c29f2e17ee32&hl=en&gl=US&output=search&svid=CAwSHRIbCgNwdnESFENnMHZaeTh4TVdzNWREaGtjR3BqGAo",
+            "url": "https://www.google.com/searchviewer/10?sca_esv=18f1ac768794601a&hl=en&gl=US&output=search&svid=CAwSHRIbCgNwdnESFENnMHZaeTh4TVdzNWREaGtjR3BqGAo",
             "isTarget": false
           },
           "leaders": [
@@ -2131,7 +2215,7 @@
               "name": "True North Roofing",
               "cid": "5387650211366766810",
               "domain": "google.com",
-              "url": "https://www.google.com/searchviewer/10?sca_esv=0ab4c29f2e17ee32&hl=en&gl=US&output=search&svid=CAwSHRIbCgNwdnESFENnMHZaeTh4TVdzNWREaGtjR3BqGAo",
+              "url": "https://www.google.com/searchviewer/10?sca_esv=18f1ac768794601a&hl=en&gl=US&output=search&svid=CAwSHRIbCgNwdnESFENnMHZaeTh4TVdzNWREaGtjR3BqGAo",
               "isTarget": false
             },
             {
@@ -2139,7 +2223,7 @@
               "name": "Utah Roofing Pros",
               "cid": "4118570990011609504",
               "domain": "google.com",
-              "url": "https://www.google.com/searchviewer/10?sca_esv=0ab4c29f2e17ee32&hl=en&gl=US&output=search&svid=CAwSHRIbCgNwdnESFENnMHZaeTh4TVdadWFEWnpibmxuGAo",
+              "url": "https://www.google.com/searchviewer/10?sca_esv=18f1ac768794601a&hl=en&gl=US&output=search&svid=CAwSHRIbCgNwdnESFENnMHZaeTh4TVdadWFEWnpibmxuGAo",
               "isTarget": false
             },
             {
@@ -2147,97 +2231,7 @@
               "name": "Holladay Roofing",
               "cid": "4608145956816988456",
               "domain": "google.com",
-              "url": "https://www.google.com/searchviewer/10?sca_esv=0ab4c29f2e17ee32&hl=en&gl=US&output=search&svid=CAwSHRIbCgNwdnESFENnMHZaeTh4TVhkNGNIcGZNM2t4GAo",
-              "isTarget": false
-            }
-          ]
-        },
-        "googleAiOverview": {
-          "state": "not-present",
-          "rivalSources": []
-        }
-      }
-    },
-    {
-      "cohort": "core-weekly",
-      "city": "Holladay",
-      "panelId": "utah-holladay-google-v1",
-      "queryId": "holladay-roof-replacement",
-      "keyword": "roof replacement holladay",
-      "target": {
-        "organicRank": 4,
-        "rankingUrl": "https://www.framerestorationutah.com/locations/holladay",
-        "exactCidMapRank": null,
-        "aiOverviewCited": false
-      },
-      "surfaces": {
-        "organic": {
-          "state": "target-displaced",
-          "top": {
-            "rank": 1,
-            "domain": "m.yelp.com",
-            "url": "https://m.yelp.com/search?cflt=roofing&find_loc=Holladay%2C+UT",
-            "title": "Top 10 Best Roofing Near Holladay, Utah - With Real Reviews",
-            "isTarget": false
-          },
-          "leaders": [
-            {
-              "rank": 1,
-              "domain": "m.yelp.com",
-              "url": "https://m.yelp.com/search?cflt=roofing&find_loc=Holladay%2C+UT",
-              "title": "Top 10 Best Roofing Near Holladay, Utah - With Real Reviews",
-              "isTarget": false
-            },
-            {
-              "rank": 2,
-              "domain": "bartlettroofs.com",
-              "url": "https://bartlettroofs.com/service-areas/holladay-ut/",
-              "title": "Premier Roofers in Holladay, UT",
-              "isTarget": false
-            },
-            {
-              "rank": 3,
-              "domain": "xperienceroofing.com",
-              "url": "https://xperienceroofing.com/locations/holladay-ut",
-              "title": "Roofing in Holladay, UT | Roof Replacement & Repair",
-              "isTarget": false
-            }
-          ]
-        },
-        "maps": {
-          "state": "exact-cid-not-returned-in-pack",
-          "packPresent": true,
-          "top": {
-            "rank": 1,
-            "name": "True North Roofing",
-            "cid": "5387650211366766810",
-            "domain": "google.com",
-            "url": "https://www.google.com/searchviewer/10?sca_esv=0ab4c29f2e17ee32&hl=en&gl=US&output=search&svid=CAwSHRIbCgNwdnESFENnMHZaeTh4TVdzNWREaGtjR3BqGAo",
-            "isTarget": false
-          },
-          "leaders": [
-            {
-              "rank": 1,
-              "name": "True North Roofing",
-              "cid": "5387650211366766810",
-              "domain": "google.com",
-              "url": "https://www.google.com/searchviewer/10?sca_esv=0ab4c29f2e17ee32&hl=en&gl=US&output=search&svid=CAwSHRIbCgNwdnESFENnMHZaeTh4TVdzNWREaGtjR3BqGAo",
-              "isTarget": false
-            },
-            {
-              "rank": 2,
-              "name": "Utah Roofing Pros",
-              "cid": "4118570990011609504",
-              "domain": "google.com",
-              "url": "https://www.google.com/searchviewer/10?sca_esv=0ab4c29f2e17ee32&hl=en&gl=US&output=search&svid=CAwSHRIbCgNwdnESFENnMHZaeTh4TVdadWFEWnpibmxuGAo",
-              "isTarget": false
-            },
-            {
-              "rank": 3,
-              "name": "Holladay Roofing",
-              "cid": "4608145956816988456",
-              "domain": "google.com",
-              "url": "https://www.google.com/searchviewer/10?sca_esv=0ab4c29f2e17ee32&hl=en&gl=US&output=search&svid=CAwSHRIbCgNwdnESFENnMHZaeTh4TVhkNGNIcGZNM2t4GAo",
+              "url": "https://www.google.com/searchviewer/10?sca_esv=18f1ac768794601a&hl=en&gl=US&output=search&svid=CAwSHRIbCgNwdnESFENnMHZaeTh4TVhkNGNIcGZNM2t4GAo",
               "isTarget": false
             }
           ]
@@ -2255,7 +2249,7 @@
       "queryId": "holladay-roofer",
       "keyword": "roofer holladay",
       "target": {
-        "organicRank": 12,
+        "organicRank": 19,
         "rankingUrl": "https://www.framerestorationutah.com/locations/holladay",
         "exactCidMapRank": null,
         "aiOverviewCited": false
@@ -2299,27 +2293,27 @@
           "packPresent": true,
           "top": {
             "rank": 1,
-            "name": "True North Roofing",
-            "cid": "5387650211366766810",
+            "name": "Holladay Roofing",
+            "cid": "4608145956816988456",
             "domain": "google.com",
-            "url": "https://www.google.com/searchviewer/10?sca_esv=0ab4c29f2e17ee32&hl=en&gl=US&output=search&svid=CAwSHRIbCgNwdnESFENnMHZaeTh4TVdzNWREaGtjR3BqGAo",
+            "url": "https://www.google.com/searchviewer/10?sca_esv=18f1ac768794601a&hl=en&gl=US&output=search&svid=CAwSHRIbCgNwdnESFENnMHZaeTh4TVhkNGNIcGZNM2t4GAo",
             "isTarget": false
           },
           "leaders": [
             {
               "rank": 1,
-              "name": "True North Roofing",
-              "cid": "5387650211366766810",
+              "name": "Holladay Roofing",
+              "cid": "4608145956816988456",
               "domain": "google.com",
-              "url": "https://www.google.com/searchviewer/10?sca_esv=0ab4c29f2e17ee32&hl=en&gl=US&output=search&svid=CAwSHRIbCgNwdnESFENnMHZaeTh4TVdzNWREaGtjR3BqGAo",
+              "url": "https://www.google.com/searchviewer/10?sca_esv=18f1ac768794601a&hl=en&gl=US&output=search&svid=CAwSHRIbCgNwdnESFENnMHZaeTh4TVhkNGNIcGZNM2t4GAo",
               "isTarget": false
             },
             {
               "rank": 2,
-              "name": "Holladay Roofing",
-              "cid": "4608145956816988456",
+              "name": "True North Roofing",
+              "cid": "5387650211366766810",
               "domain": "google.com",
-              "url": "https://www.google.com/searchviewer/10?sca_esv=0ab4c29f2e17ee32&hl=en&gl=US&output=search&svid=CAwSHRIbCgNwdnESFENnMHZaeTh4TVhkNGNIcGZNM2t4GAo",
+              "url": "https://www.google.com/searchviewer/10?sca_esv=18f1ac768794601a&hl=en&gl=US&output=search&svid=CAwSHRIbCgNwdnESFENnMHZaeTh4TVdzNWREaGtjR3BqGAo",
               "isTarget": false
             },
             {
@@ -2327,7 +2321,7 @@
               "name": "Utah Roofing Pros",
               "cid": "4118570990011609504",
               "domain": "google.com",
-              "url": "https://www.google.com/searchviewer/10?sca_esv=0ab4c29f2e17ee32&hl=en&gl=US&output=search&svid=CAwSHRIbCgNwdnESFENnMHZaeTh4TVdadWFEWnpibmxuGAo",
+              "url": "https://www.google.com/searchviewer/10?sca_esv=18f1ac768794601a&hl=en&gl=US&output=search&svid=CAwSHRIbCgNwdnESFENnMHZaeTh4TVdadWFEWnpibmxuGAo",
               "isTarget": false
             }
           ]
@@ -2385,46 +2379,75 @@
           ]
         },
         "maps": {
-          "state": "exact-cid-not-returned-in-pack",
-          "packPresent": true,
-          "top": {
-            "rank": 1,
-            "name": "Millcreek Roof Repair",
-            "cid": "15265859284064313678",
-            "domain": "google.com",
-            "url": "https://www.google.com/searchviewer/10?sca_esv=0ab4c29f2e17ee32&hl=en&gl=US&output=search&svid=CAwSHRIbCgNwdnESFENnMHZaeTh4TVhkNGJYY3dkMkpuGAo",
-            "isTarget": false
-          },
-          "leaders": [
+          "state": "local-pack-not-present",
+          "packPresent": false,
+          "top": null,
+          "leaders": []
+        },
+        "googleAiOverview": {
+          "state": "present-without-frame-citation",
+          "rivalSources": [
             {
-              "rank": 1,
-              "name": "Millcreek Roof Repair",
-              "cid": "15265859284064313678",
-              "domain": "google.com",
-              "url": "https://www.google.com/searchviewer/10?sca_esv=0ab4c29f2e17ee32&hl=en&gl=US&output=search&svid=CAwSHRIbCgNwdnESFENnMHZaeTh4TVhkNGJYY3dkMkpuGAo",
+              "domain": "rooftek.com",
+              "url": "https://rooftek.com/location-home/northern-utah/millcreek-ut/",
+              "title": "Roofing Contractor Millcreek, UT | Roofer Near Me - RoofTek",
               "isTarget": false
             },
             {
-              "rank": 2,
-              "name": "Whitaker Roofing Services",
-              "cid": "11316815627233980109",
-              "domain": "google.com",
-              "url": "https://www.google.com/searchviewer/10?sca_esv=0ab4c29f2e17ee32&hl=en&gl=US&output=search&svid=CAwSGxIZCgNwdnESEkNnc3ZaeTh4ZEdSM1ptUnJlQRgK",
+              "domain": "reroofit.com",
+              "url": "https://reroofit.com/service-areas/roofing-millcreek-ut",
+              "title": "Roofing Contractor Millcreek, Utah - ReRoofIt",
               "isTarget": false
             },
             {
-              "rank": 3,
-              "name": "True North Roofing",
-              "cid": "5387650211366766810",
+              "domain": "reddit.com",
+              "url": "https://www.reddit.com/r/SaltLakeCity/comments/1o38k09/best_roofing_contractors_in_the_salt_lake_valley/",
+              "title": "Best Roofing Contractors in the Salt Lake Valley? : r/SaltLakeCity - Reddit",
+              "isTarget": false
+            },
+            {
               "domain": "google.com",
-              "url": "https://www.google.com/searchviewer/10?sca_esv=0ab4c29f2e17ee32&hl=en&gl=US&output=search&svid=CAwSHRIbCgNwdnESFENnMHZaeTh4TVdzNWREaGtjR3BqGAo",
+              "url": "https://www.google.com/searchviewer/10?svid=CAwSGxIZCgNwdnESEkNnc3ZaeTh4ZEdSM1ptUnJlQRgK",
+              "title": "Whitaker Roofing Services",
+              "isTarget": false
+            },
+            {
+              "domain": "google.com",
+              "url": "https://www.google.com/searchviewer/10?svid=CAwSHRIbCgNwdnESFENnMHZaeTh4TVhOck16TnpkbmhmGAo",
+              "title": "Vault Roofing LLC",
+              "isTarget": false
+            },
+            {
+              "domain": "google.com",
+              "url": "https://www.google.com/searchviewer/10?svid=CAwSHRIbCgNwdnESFENnMHZaeTh4TVdZemJtd3liRFpvGAo",
+              "title": "RoofTek",
+              "isTarget": false
+            },
+            {
+              "domain": "google.com",
+              "url": "https://www.google.com/searchviewer/10?svid=CAwSGxIZCgNwdnESEkNnc3ZaeTh4ZEc1bmNYTTJOZxgK",
+              "title": "Shingle Pro Roofing",
+              "isTarget": false
+            },
+            {
+              "domain": "google.com",
+              "url": "https://www.google.com/searchviewer/10?svid=CAwSHRIbCgNwdnESFENnMHZaeTh4TVdwdGQyNXRaMnA0GAo",
+              "title": "ReRoofIt",
+              "isTarget": false
+            },
+            {
+              "domain": "google.com",
+              "url": "https://www.google.com/searchviewer/10?svid=CAwSHRIbCgNwdnESFENnMHZaeTh4TVhjM2JHeHllVEI1GAo",
+              "title": "Stone Ranch Roofing",
+              "isTarget": false
+            },
+            {
+              "domain": "google.com",
+              "url": "https://www.google.com/searchviewer/10?svid=CAwSHRIbCgNwdnESFENnMHZaeTh4TVdzNWREaGtjR3BqGAo",
+              "title": "True North Roofing",
               "isTarget": false
             }
           ]
-        },
-        "googleAiOverview": {
-          "state": "not-present",
-          "rivalSources": []
         }
       }
     },
@@ -2436,203 +2459,6 @@
       "keyword": "roof repair millcreek",
       "target": {
         "organicRank": 4,
-        "rankingUrl": "https://www.framerestorationutah.com/locations/millcreek",
-        "exactCidMapRank": null,
-        "aiOverviewCited": true
-      },
-      "surfaces": {
-        "organic": {
-          "state": "target-displaced",
-          "top": {
-            "rank": 1,
-            "domain": "yelp.com",
-            "url": "https://www.yelp.com/search?cflt=roofing&find_loc=Millcreek%2C+UT",
-            "title": "THE BEST 10 ROOFING IN MILLCREEK, UT",
-            "isTarget": false
-          },
-          "leaders": [
-            {
-              "rank": 1,
-              "domain": "yelp.com",
-              "url": "https://www.yelp.com/search?cflt=roofing&find_loc=Millcreek%2C+UT",
-              "title": "THE BEST 10 ROOFING IN MILLCREEK, UT",
-              "isTarget": false
-            },
-            {
-              "rank": 2,
-              "domain": "rooftek.com",
-              "url": "https://rooftek.com/location-home/northern-utah/millcreek-ut/roof-repair/",
-              "title": "Roof Repair Millcreek, UT | Free Estimates",
-              "isTarget": false
-            },
-            {
-              "rank": 3,
-              "domain": "skyridgeco.com",
-              "url": "https://skyridgeco.com/cities/millcreek",
-              "title": "Millcreek Roofing Contractor & Services",
-              "isTarget": false
-            }
-          ]
-        },
-        "maps": {
-          "state": "local-pack-not-present",
-          "packPresent": false,
-          "top": null,
-          "leaders": []
-        },
-        "googleAiOverview": {
-          "state": "present-and-frame-cited",
-          "rivalSources": [
-            {
-              "domain": "rooftek.com",
-              "url": "https://rooftek.com/location-home/northern-utah/millcreek-ut/roof-repair/",
-              "title": "Roof Repair Millcreek, UT | Free Estimates - RoofTek",
-              "isTarget": false
-            },
-            {
-              "domain": "rooftek.com",
-              "url": "https://rooftek.com/location-home/northern-utah/millcreek-ut/",
-              "title": "Roofing Contractor Millcreek, UT | Roofer Near Me",
-              "isTarget": false
-            },
-            {
-              "domain": "skyridgeco.com",
-              "url": "https://skyridgeco.com/cities/millcreek",
-              "title": "Millcreek Roofing Contractor & Services - Sky Ridge Roofing",
-              "isTarget": false
-            },
-            {
-              "domain": "todayshomeowner.com",
-              "url": "https://todayshomeowner.com/near-me/utah/millcreek/roofing/",
-              "title": "10 Best Roofers in Millcreek, UT - Today's Homeowner",
-              "isTarget": false
-            },
-            {
-              "domain": "gobighorn.com",
-              "url": "https://gobighorn.com/millcreek-ut/",
-              "title": "Roof Replacement Experts Serving Millcreek, UT",
-              "isTarget": false
-            },
-            {
-              "domain": "integrityhomeexteriors.com",
-              "url": "https://integrityhomeexteriors.com/services/roofing/residential/roof-repair",
-              "title": "Roof Repair | Fast Leak & Shingle Fixes",
-              "isTarget": false
-            },
-            {
-              "domain": "christensenexteriors.com",
-              "url": "https://christensenexteriors.com/millcreek-ut/",
-              "title": "Window Integration Millcreek UT",
-              "isTarget": false
-            },
-            {
-              "domain": "proshingle.com",
-              "url": "https://www.proshingle.com/olive-branch-ms/",
-              "title": "Roofing Services | Olive Branch, MS",
-              "isTarget": false
-            }
-          ]
-        }
-      }
-    },
-    {
-      "cohort": "core-weekly",
-      "city": "Millcreek",
-      "panelId": "utah-millcreek-google-v1",
-      "queryId": "millcreek-roof-replacement",
-      "keyword": "roof replacement millcreek",
-      "target": {
-        "organicRank": 3,
-        "rankingUrl": "https://www.framerestorationutah.com/locations/millcreek",
-        "exactCidMapRank": null,
-        "aiOverviewCited": false
-      },
-      "surfaces": {
-        "organic": {
-          "state": "target-displaced",
-          "top": {
-            "rank": 1,
-            "domain": "rooftek.com",
-            "url": "https://rooftek.com/location-home/northern-utah/millcreek-ut/roof-replacement/",
-            "title": "Roof Replacement in Millcreek, UT & Salt Lake County",
-            "isTarget": false
-          },
-          "leaders": [
-            {
-              "rank": 1,
-              "domain": "rooftek.com",
-              "url": "https://rooftek.com/location-home/northern-utah/millcreek-ut/roof-replacement/",
-              "title": "Roof Replacement in Millcreek, UT & Salt Lake County",
-              "isTarget": false
-            },
-            {
-              "rank": 2,
-              "domain": "yelp.com",
-              "url": "https://www.yelp.com/search?cflt=roofing&find_loc=Millcreek%2C+UT",
-              "title": "THE BEST 10 ROOFING IN MILLCREEK, UT",
-              "isTarget": false
-            },
-            {
-              "rank": 3,
-              "domain": "framerestorationutah.com",
-              "url": "https://www.framerestorationutah.com/locations/millcreek",
-              "title": "Premium Reroofing Millcreek UT",
-              "isTarget": true
-            }
-          ]
-        },
-        "maps": {
-          "state": "exact-cid-not-returned-in-pack",
-          "packPresent": true,
-          "top": {
-            "rank": 1,
-            "name": "Whitaker Roofing Services",
-            "cid": "11316815627233980109",
-            "domain": "google.com",
-            "url": "https://www.google.com/searchviewer/10?sca_esv=0ab4c29f2e17ee32&hl=en&gl=US&output=search&svid=CAwSGxIZCgNwdnESEkNnc3ZaeTh4ZEdSM1ptUnJlQRgK",
-            "isTarget": false
-          },
-          "leaders": [
-            {
-              "rank": 1,
-              "name": "Whitaker Roofing Services",
-              "cid": "11316815627233980109",
-              "domain": "google.com",
-              "url": "https://www.google.com/searchviewer/10?sca_esv=0ab4c29f2e17ee32&hl=en&gl=US&output=search&svid=CAwSGxIZCgNwdnESEkNnc3ZaeTh4ZEdSM1ptUnJlQRgK",
-              "isTarget": false
-            },
-            {
-              "rank": 2,
-              "name": "Millcreek Roof Repair",
-              "cid": "15265859284064313678",
-              "domain": "google.com",
-              "url": "https://www.google.com/searchviewer/10?sca_esv=0ab4c29f2e17ee32&hl=en&gl=US&output=search&svid=CAwSHRIbCgNwdnESFENnMHZaeTh4TVhkNGJYY3dkMkpuGAo",
-              "isTarget": false
-            },
-            {
-              "rank": 3,
-              "name": "Vault Roofing LLC",
-              "cid": "9387084358687172308",
-              "domain": "google.com",
-              "url": "https://www.google.com/searchviewer/10?sca_esv=0ab4c29f2e17ee32&hl=en&gl=US&output=search&svid=CAwSHRIbCgNwdnESFENnMHZaeTh4TVhOck16TnpkbmhmGAo",
-              "isTarget": false
-            }
-          ]
-        },
-        "googleAiOverview": {
-          "state": "not-present",
-          "rivalSources": []
-        }
-      }
-    },
-    {
-      "cohort": "core-weekly",
-      "city": "Millcreek",
-      "panelId": "utah-millcreek-google-v1",
-      "queryId": "millcreek-roofer",
-      "keyword": "roofer millcreek",
-      "target": {
-        "organicRank": 5,
         "rankingUrl": "https://www.framerestorationutah.com/locations/millcreek",
         "exactCidMapRank": null,
         "aiOverviewCited": false
@@ -2676,35 +2502,215 @@
           "packPresent": true,
           "top": {
             "rank": 1,
-            "name": "Millcreek Roof Repair",
-            "cid": "15265859284064313678",
+            "name": "Whitaker Roofing Services",
+            "cid": "11316815627233980109",
             "domain": "google.com",
-            "url": "https://www.google.com/searchviewer/10?sca_esv=0ab4c29f2e17ee32&hl=en&gl=US&output=search&svid=CAwSHRIbCgNwdnESFENnMHZaeTh4TVhkNGJYY3dkMkpuGAo",
+            "url": "https://www.google.com/searchviewer/10?sca_esv=18f1ac768794601a&hl=en&gl=US&output=search&svid=CAwSGxIZCgNwdnESEkNnc3ZaeTh4ZEdSM1ptUnJlQRgK",
             "isTarget": false
           },
           "leaders": [
             {
               "rank": 1,
-              "name": "Millcreek Roof Repair",
-              "cid": "15265859284064313678",
+              "name": "Whitaker Roofing Services",
+              "cid": "11316815627233980109",
               "domain": "google.com",
-              "url": "https://www.google.com/searchviewer/10?sca_esv=0ab4c29f2e17ee32&hl=en&gl=US&output=search&svid=CAwSHRIbCgNwdnESFENnMHZaeTh4TVhkNGJYY3dkMkpuGAo",
+              "url": "https://www.google.com/searchviewer/10?sca_esv=18f1ac768794601a&hl=en&gl=US&output=search&svid=CAwSGxIZCgNwdnESEkNnc3ZaeTh4ZEdSM1ptUnJlQRgK",
               "isTarget": false
             },
             {
               "rank": 2,
-              "name": "Whitaker Roofing Services",
-              "cid": "11316815627233980109",
+              "name": "Sky Bridge Roofing",
+              "cid": "5327886489350788974",
               "domain": "google.com",
-              "url": "https://www.google.com/searchviewer/10?sca_esv=0ab4c29f2e17ee32&hl=en&gl=US&output=search&svid=CAwSGxIZCgNwdnESEkNnc3ZaeTh4ZEdSM1ptUnJlQRgK",
+              "url": "https://www.google.com/searchviewer/10?sca_esv=18f1ac768794601a&hl=en&gl=US&output=search&svid=CAwSHRIbCgNwdnESFENnMHZaeTh4TVc1cVpIcHdOVEo1GAo",
               "isTarget": false
             },
             {
               "rank": 3,
+              "name": "Vault Roofing LLC",
+              "cid": "9387084358687172308",
+              "domain": "google.com",
+              "url": "https://www.google.com/searchviewer/10?sca_esv=18f1ac768794601a&hl=en&gl=US&output=search&svid=CAwSHRIbCgNwdnESFENnMHZaeTh4TVhOck16TnpkbmhmGAo",
+              "isTarget": false
+            }
+          ]
+        },
+        "googleAiOverview": {
+          "state": "not-present",
+          "rivalSources": []
+        }
+      }
+    },
+    {
+      "cohort": "core-weekly",
+      "city": "Millcreek",
+      "panelId": "utah-millcreek-google-v1",
+      "queryId": "millcreek-roof-replacement",
+      "keyword": "roof replacement millcreek",
+      "target": {
+        "organicRank": 4,
+        "rankingUrl": "https://www.framerestorationutah.com/locations/millcreek",
+        "exactCidMapRank": null,
+        "aiOverviewCited": false
+      },
+      "surfaces": {
+        "organic": {
+          "state": "target-displaced",
+          "top": {
+            "rank": 1,
+            "domain": "rooftek.com",
+            "url": "https://rooftek.com/location-home/northern-utah/millcreek-ut/roof-replacement/",
+            "title": "Roof Replacement in Millcreek, UT & Salt Lake County",
+            "isTarget": false
+          },
+          "leaders": [
+            {
+              "rank": 1,
+              "domain": "rooftek.com",
+              "url": "https://rooftek.com/location-home/northern-utah/millcreek-ut/roof-replacement/",
+              "title": "Roof Replacement in Millcreek, UT & Salt Lake County",
+              "isTarget": false
+            },
+            {
+              "rank": 2,
+              "domain": "yelp.com",
+              "url": "https://www.yelp.com/search?cflt=roofing&find_loc=Millcreek%2C+UT",
+              "title": "THE BEST 10 ROOFING IN MILLCREEK, UT",
+              "isTarget": false
+            },
+            {
+              "rank": 3,
+              "domain": "northcreekroofing.com",
+              "url": "https://northcreekroofing.com/areas-served/mill-creek/",
+              "title": "Trusted Roofer | Mill Creek, WA",
+              "isTarget": false
+            }
+          ]
+        },
+        "maps": {
+          "state": "exact-cid-not-returned-in-pack",
+          "packPresent": true,
+          "top": {
+            "rank": 1,
+            "name": "Whitaker Roofing Services",
+            "cid": "11316815627233980109",
+            "domain": "google.com",
+            "url": "https://www.google.com/searchviewer/10?sca_esv=18f1ac768794601a&hl=en&gl=US&output=search&svid=CAwSGxIZCgNwdnESEkNnc3ZaeTh4ZEdSM1ptUnJlQRgK",
+            "isTarget": false
+          },
+          "leaders": [
+            {
+              "rank": 1,
+              "name": "Whitaker Roofing Services",
+              "cid": "11316815627233980109",
+              "domain": "google.com",
+              "url": "https://www.google.com/searchviewer/10?sca_esv=18f1ac768794601a&hl=en&gl=US&output=search&svid=CAwSGxIZCgNwdnESEkNnc3ZaeTh4ZEdSM1ptUnJlQRgK",
+              "isTarget": false
+            },
+            {
+              "rank": 2,
+              "name": "True North Roofing",
+              "cid": "5387650211366766810",
+              "domain": "google.com",
+              "url": "https://www.google.com/searchviewer/10?sca_esv=18f1ac768794601a&hl=en&gl=US&output=search&svid=CAwSHRIbCgNwdnESFENnMHZaeTh4TVdzNWREaGtjR3BqGAo",
+              "isTarget": false
+            },
+            {
+              "rank": 3,
+              "name": "Vault Roofing LLC",
+              "cid": "9387084358687172308",
+              "domain": "google.com",
+              "url": "https://www.google.com/searchviewer/10?sca_esv=18f1ac768794601a&hl=en&gl=US&output=search&svid=CAwSHRIbCgNwdnESFENnMHZaeTh4TVhOck16TnpkbmhmGAo",
+              "isTarget": false
+            }
+          ]
+        },
+        "googleAiOverview": {
+          "state": "not-present",
+          "rivalSources": []
+        }
+      }
+    },
+    {
+      "cohort": "core-weekly",
+      "city": "Millcreek",
+      "panelId": "utah-millcreek-google-v1",
+      "queryId": "millcreek-roofer",
+      "keyword": "roofer millcreek",
+      "target": {
+        "organicRank": 9,
+        "rankingUrl": "https://www.framerestorationutah.com/locations/millcreek",
+        "exactCidMapRank": null,
+        "aiOverviewCited": false
+      },
+      "surfaces": {
+        "organic": {
+          "state": "target-displaced",
+          "top": {
+            "rank": 1,
+            "domain": "rooftek.com",
+            "url": "https://rooftek.com/location-home/northern-utah/millcreek-ut/roof-repair/",
+            "title": "Roof Repair Millcreek, UT | Free Estimates",
+            "isTarget": false
+          },
+          "leaders": [
+            {
+              "rank": 1,
+              "domain": "rooftek.com",
+              "url": "https://rooftek.com/location-home/northern-utah/millcreek-ut/roof-repair/",
+              "title": "Roof Repair Millcreek, UT | Free Estimates",
+              "isTarget": false
+            },
+            {
+              "rank": 2,
+              "domain": "reroofit.com",
+              "url": "https://reroofit.com/service-areas/roofing-millcreek-ut",
+              "title": "Roofing Contractor Millcreek, Utah",
+              "isTarget": false
+            },
+            {
+              "rank": 3,
+              "domain": "yelp.com",
+              "url": "https://www.yelp.com/search?cflt=roofing&find_loc=Millcreek%2C+UT",
+              "title": "THE BEST 10 ROOFING IN MILLCREEK, UT",
+              "isTarget": false
+            }
+          ]
+        },
+        "maps": {
+          "state": "exact-cid-not-returned-in-pack",
+          "packPresent": true,
+          "top": {
+            "rank": 1,
+            "name": "Whitaker Roofing Services",
+            "cid": "11316815627233980109",
+            "domain": "google.com",
+            "url": "https://www.google.com/searchviewer/10?sca_esv=18f1ac768794601a&hl=en&gl=US&output=search&svid=CAwSGxIZCgNwdnESEkNnc3ZaeTh4ZEdSM1ptUnJlQRgK",
+            "isTarget": false
+          },
+          "leaders": [
+            {
+              "rank": 1,
+              "name": "Whitaker Roofing Services",
+              "cid": "11316815627233980109",
+              "domain": "google.com",
+              "url": "https://www.google.com/searchviewer/10?sca_esv=18f1ac768794601a&hl=en&gl=US&output=search&svid=CAwSGxIZCgNwdnESEkNnc3ZaeTh4ZEdSM1ptUnJlQRgK",
+              "isTarget": false
+            },
+            {
+              "rank": 2,
               "name": "RoofTek",
               "cid": "2008385778269964311",
               "domain": "google.com",
-              "url": "https://www.google.com/searchviewer/10?sca_esv=0ab4c29f2e17ee32&hl=en&gl=US&output=search&svid=CAwSHRIbCgNwdnESFENnMHZaeTh4TVdZemJtd3liRFpvGAo",
+              "url": "https://www.google.com/searchviewer/10?sca_esv=18f1ac768794601a&hl=en&gl=US&output=search&svid=CAwSHRIbCgNwdnESFENnMHZaeTh4TVdZemJtd3liRFpvGAo",
+              "isTarget": false
+            },
+            {
+              "rank": 3,
+              "name": "Legacy Roofing",
+              "cid": "676887641215503941",
+              "domain": "google.com",
+              "url": "https://www.google.com/searchviewer/10?sca_esv=18f1ac768794601a&hl=en&gl=US&output=search&svid=CAwSHRIbCgNwdnESFENnMHZaeTh4TVhScU16bGtaREkxGAo",
               "isTarget": false
             }
           ]
@@ -2722,187 +2728,7 @@
       "queryId": "sandy-roofing-contractor",
       "keyword": "roofing contractor sandy",
       "target": {
-        "organicRank": 17,
-        "rankingUrl": "https://www.framerestorationutah.com/locations/sandy",
-        "exactCidMapRank": null,
-        "aiOverviewCited": false
-      },
-      "surfaces": {
-        "organic": {
-          "state": "target-displaced",
-          "top": {
-            "rank": 1,
-            "domain": "mightydogroofing.com",
-            "url": "https://www.mightydogroofing.com/sandy-utah/",
-            "title": "Roofing contractor | Sandy, Utah",
-            "isTarget": false
-          },
-          "leaders": [
-            {
-              "rank": 1,
-              "domain": "mightydogroofing.com",
-              "url": "https://www.mightydogroofing.com/sandy-utah/",
-              "title": "Roofing contractor | Sandy, Utah",
-              "isTarget": false
-            },
-            {
-              "rank": 2,
-              "domain": "m.yelp.com",
-              "url": "https://m.yelp.com/search?find_desc=Roofing&find_loc=Sandy%2C+UT",
-              "title": "TOP 10 BEST Roofing in Sandy, UT - Updated 2026 - Quality & Affordability",
-              "isTarget": false
-            },
-            {
-              "rank": 3,
-              "domain": "gaf.com",
-              "url": "https://www.gaf.com/en-us/roofing-contractors/residential/usa/ut/sandy",
-              "title": "Best Roofers in Sandy, UT | GAF Roofing Contractors",
-              "isTarget": false
-            }
-          ]
-        },
-        "maps": {
-          "state": "exact-cid-not-returned-in-pack",
-          "packPresent": true,
-          "top": {
-            "rank": 1,
-            "name": "ReRoofIt",
-            "cid": "3305979678440818523",
-            "domain": "google.com",
-            "url": "https://www.google.com/searchviewer/10?sca_esv=0ab4c29f2e17ee32&hl=en&gl=US&output=search&svid=CAwSHRIbCgNwdnESFENnMHZaeTh4TVdwdGQyNXRaMnA0GAo",
-            "isTarget": false
-          },
-          "leaders": [
-            {
-              "rank": 1,
-              "name": "ReRoofIt",
-              "cid": "3305979678440818523",
-              "domain": "google.com",
-              "url": "https://www.google.com/searchviewer/10?sca_esv=0ab4c29f2e17ee32&hl=en&gl=US&output=search&svid=CAwSHRIbCgNwdnESFENnMHZaeTh4TVdwdGQyNXRaMnA0GAo",
-              "isTarget": false
-            },
-            {
-              "rank": 2,
-              "name": "The Roofing Center",
-              "cid": "5187111774548334344",
-              "domain": "google.com",
-              "url": "https://www.google.com/searchviewer/10?sca_esv=0ab4c29f2e17ee32&hl=en&gl=US&output=search&svid=CAwSHRIbCgNwdnESFENnMHZaeTh4TVdZMFgyNXphak50GAo",
-              "isTarget": false
-            },
-            {
-              "rank": 3,
-              "name": "Red Star Roofing",
-              "cid": "16317468138973610641",
-              "domain": "google.com",
-              "url": "https://www.google.com/searchviewer/10?sca_esv=0ab4c29f2e17ee32&hl=en&gl=US&output=search&svid=CAwSHRIbCgNwdnESFENnMHZaeTh4TVcxMk5IRm9iVGxyGAo",
-              "isTarget": false
-            }
-          ]
-        },
-        "googleAiOverview": {
-          "state": "not-present",
-          "rivalSources": []
-        }
-      }
-    },
-    {
-      "cohort": "core-weekly",
-      "city": "Sandy",
-      "panelId": "utah-sandy-google-v1",
-      "queryId": "sandy-roof-repair",
-      "keyword": "roof repair sandy",
-      "target": {
-        "organicRank": 13,
-        "rankingUrl": "https://www.framerestorationutah.com/locations/sandy",
-        "exactCidMapRank": null,
-        "aiOverviewCited": false
-      },
-      "surfaces": {
-        "organic": {
-          "state": "target-displaced",
-          "top": {
-            "rank": 1,
-            "domain": "gaf.com",
-            "url": "https://www.gaf.com/en-us/roofing-contractors/residential/usa/ut/sandy",
-            "title": "Best Roofers in Sandy, UT | GAF Roofing Contractors",
-            "isTarget": false
-          },
-          "leaders": [
-            {
-              "rank": 1,
-              "domain": "gaf.com",
-              "url": "https://www.gaf.com/en-us/roofing-contractors/residential/usa/ut/sandy",
-              "title": "Best Roofers in Sandy, UT | GAF Roofing Contractors",
-              "isTarget": false
-            },
-            {
-              "rank": 2,
-              "domain": "rooval-roofing.com",
-              "url": "https://rooval-roofing.com/roofing-sandy-utah/",
-              "title": "Sandy UT Roof Repair & Roofing | 5.0★ Rated",
-              "isTarget": false
-            },
-            {
-              "rank": 3,
-              "domain": "ezroofingnow.com",
-              "url": "https://ezroofingnow.com/utah-city/roofing-sandy-ut/",
-              "title": "Sandy, Utah Roofing Services by EZ Roofing Utah",
-              "isTarget": false
-            }
-          ]
-        },
-        "maps": {
-          "state": "exact-cid-not-returned-in-pack",
-          "packPresent": true,
-          "top": {
-            "rank": 1,
-            "name": "ReRoofIt",
-            "cid": "3305979678440818523",
-            "domain": "google.com",
-            "url": "https://www.google.com/searchviewer/10?sca_esv=0ab4c29f2e17ee32&hl=en&gl=US&output=search&svid=CAwSHRIbCgNwdnESFENnMHZaeTh4TVdwdGQyNXRaMnA0GAo",
-            "isTarget": false
-          },
-          "leaders": [
-            {
-              "rank": 1,
-              "name": "ReRoofIt",
-              "cid": "3305979678440818523",
-              "domain": "google.com",
-              "url": "https://www.google.com/searchviewer/10?sca_esv=0ab4c29f2e17ee32&hl=en&gl=US&output=search&svid=CAwSHRIbCgNwdnESFENnMHZaeTh4TVdwdGQyNXRaMnA0GAo",
-              "isTarget": false
-            },
-            {
-              "rank": 2,
-              "name": "The Roofing Center",
-              "cid": "5187111774548334344",
-              "domain": "google.com",
-              "url": "https://www.google.com/searchviewer/10?sca_esv=0ab4c29f2e17ee32&hl=en&gl=US&output=search&svid=CAwSHRIbCgNwdnESFENnMHZaeTh4TVdZMFgyNXphak50GAo",
-              "isTarget": false
-            },
-            {
-              "rank": 3,
-              "name": "Red Star Roofing",
-              "cid": "16317468138973610641",
-              "domain": "google.com",
-              "url": "https://www.google.com/searchviewer/10?sca_esv=0ab4c29f2e17ee32&hl=en&gl=US&output=search&svid=CAwSHRIbCgNwdnESFENnMHZaeTh4TVcxMk5IRm9iVGxyGAo",
-              "isTarget": false
-            }
-          ]
-        },
-        "googleAiOverview": {
-          "state": "not-present",
-          "rivalSources": []
-        }
-      }
-    },
-    {
-      "cohort": "core-weekly",
-      "city": "Sandy",
-      "panelId": "utah-sandy-google-v1",
-      "queryId": "sandy-roof-replacement",
-      "keyword": "roof replacement sandy",
-      "target": {
-        "organicRank": 13,
+        "organicRank": 15,
         "rankingUrl": "https://www.framerestorationutah.com/locations/sandy",
         "exactCidMapRank": null,
         "aiOverviewCited": false
@@ -2934,9 +2760,9 @@
             },
             {
               "rank": 3,
-              "domain": "xperienceroofing.com",
-              "url": "https://xperienceroofing.com/locations/sandy-ut",
-              "title": "Roofing in Sandy, UT | Roof Replacement & Repair",
+              "domain": "rooval-roofing.com",
+              "url": "https://rooval-roofing.com/roofing-sandy-utah/",
+              "title": "Sandy UT Roof Repair & Roofing | 5.0★ Rated",
               "isTarget": false
             }
           ]
@@ -2949,7 +2775,7 @@
             "name": "ReRoofIt",
             "cid": "3305979678440818523",
             "domain": "google.com",
-            "url": "https://www.google.com/searchviewer/10?sca_esv=0ab4c29f2e17ee32&hl=en&gl=US&output=search&svid=CAwSHRIbCgNwdnESFENnMHZaeTh4TVdwdGQyNXRaMnA0GAo",
+            "url": "https://www.google.com/searchviewer/10?sca_esv=18f1ac768794601a&hl=en&gl=US&output=search&svid=CAwSHRIbCgNwdnESFENnMHZaeTh4TVdwdGQyNXRaMnA0GAo",
             "isTarget": false
           },
           "leaders": [
@@ -2958,7 +2784,7 @@
               "name": "ReRoofIt",
               "cid": "3305979678440818523",
               "domain": "google.com",
-              "url": "https://www.google.com/searchviewer/10?sca_esv=0ab4c29f2e17ee32&hl=en&gl=US&output=search&svid=CAwSHRIbCgNwdnESFENnMHZaeTh4TVdwdGQyNXRaMnA0GAo",
+              "url": "https://www.google.com/searchviewer/10?sca_esv=18f1ac768794601a&hl=en&gl=US&output=search&svid=CAwSHRIbCgNwdnESFENnMHZaeTh4TVdwdGQyNXRaMnA0GAo",
               "isTarget": false
             },
             {
@@ -2966,7 +2792,187 @@
               "name": "The Roofing Center",
               "cid": "5187111774548334344",
               "domain": "google.com",
-              "url": "https://www.google.com/searchviewer/10?sca_esv=0ab4c29f2e17ee32&hl=en&gl=US&output=search&svid=CAwSHRIbCgNwdnESFENnMHZaeTh4TVdZMFgyNXphak50GAo",
+              "url": "https://www.google.com/searchviewer/10?sca_esv=18f1ac768794601a&hl=en&gl=US&output=search&svid=CAwSHRIbCgNwdnESFENnMHZaeTh4TVdZMFgyNXphak50GAo",
+              "isTarget": false
+            },
+            {
+              "rank": 3,
+              "name": "Forge Roofing",
+              "cid": "5464243620653197056",
+              "domain": "google.com",
+              "url": "https://www.google.com/searchviewer/10?sca_esv=18f1ac768794601a&hl=en&gl=US&output=search&svid=CAwSHRIbCgNwdnESFENnMHZaeTh4TVc1cWNUTTJOMlIzGAo",
+              "isTarget": false
+            }
+          ]
+        },
+        "googleAiOverview": {
+          "state": "not-present",
+          "rivalSources": []
+        }
+      }
+    },
+    {
+      "cohort": "core-weekly",
+      "city": "Sandy",
+      "panelId": "utah-sandy-google-v1",
+      "queryId": "sandy-roof-repair",
+      "keyword": "roof repair sandy",
+      "target": {
+        "organicRank": 14,
+        "rankingUrl": "https://www.framerestorationutah.com/locations/sandy",
+        "exactCidMapRank": null,
+        "aiOverviewCited": false
+      },
+      "surfaces": {
+        "organic": {
+          "state": "target-displaced",
+          "top": {
+            "rank": 1,
+            "domain": "rooval-roofing.com",
+            "url": "https://rooval-roofing.com/roofing-sandy-utah/",
+            "title": "Sandy UT Roof Repair & Roofing | 5.0★ Rated",
+            "isTarget": false
+          },
+          "leaders": [
+            {
+              "rank": 1,
+              "domain": "rooval-roofing.com",
+              "url": "https://rooval-roofing.com/roofing-sandy-utah/",
+              "title": "Sandy UT Roof Repair & Roofing | 5.0★ Rated",
+              "isTarget": false
+            },
+            {
+              "rank": 2,
+              "domain": "thumbtack.com",
+              "url": "https://www.thumbtack.com/ut/sandy/roofing",
+              "title": "The 10 Best Roofing Contractors in Sandy, UT (with Free Estimates)",
+              "isTarget": false
+            },
+            {
+              "rank": 3,
+              "domain": "skyridgeco.com",
+              "url": "https://skyridgeco.com/cities/sandy",
+              "title": "Sandy Roofing Contractor & Services",
+              "isTarget": false
+            }
+          ]
+        },
+        "maps": {
+          "state": "exact-cid-not-returned-in-pack",
+          "packPresent": true,
+          "top": {
+            "rank": 1,
+            "name": "ReRoofIt",
+            "cid": "3305979678440818523",
+            "domain": "google.com",
+            "url": "https://www.google.com/searchviewer/10?sca_esv=18f1ac768794601a&hl=en&gl=US&output=search&svid=CAwSHRIbCgNwdnESFENnMHZaeTh4TVdwdGQyNXRaMnA0GAo",
+            "isTarget": false
+          },
+          "leaders": [
+            {
+              "rank": 1,
+              "name": "ReRoofIt",
+              "cid": "3305979678440818523",
+              "domain": "google.com",
+              "url": "https://www.google.com/searchviewer/10?sca_esv=18f1ac768794601a&hl=en&gl=US&output=search&svid=CAwSHRIbCgNwdnESFENnMHZaeTh4TVdwdGQyNXRaMnA0GAo",
+              "isTarget": false
+            },
+            {
+              "rank": 2,
+              "name": "Forge Roofing",
+              "cid": "5464243620653197056",
+              "domain": "google.com",
+              "url": "https://www.google.com/searchviewer/10?sca_esv=18f1ac768794601a&hl=en&gl=US&output=search&svid=CAwSHRIbCgNwdnESFENnMHZaeTh4TVc1cWNUTTJOMlIzGAo",
+              "isTarget": false
+            },
+            {
+              "rank": 3,
+              "name": "The Roofing Center",
+              "cid": "5187111774548334344",
+              "domain": "google.com",
+              "url": "https://www.google.com/searchviewer/10?sca_esv=18f1ac768794601a&hl=en&gl=US&output=search&svid=CAwSHRIbCgNwdnESFENnMHZaeTh4TVdZMFgyNXphak50GAo",
+              "isTarget": false
+            }
+          ]
+        },
+        "googleAiOverview": {
+          "state": "not-present",
+          "rivalSources": []
+        }
+      }
+    },
+    {
+      "cohort": "core-weekly",
+      "city": "Sandy",
+      "panelId": "utah-sandy-google-v1",
+      "queryId": "sandy-roof-replacement",
+      "keyword": "roof replacement sandy",
+      "target": {
+        "organicRank": 5,
+        "rankingUrl": "https://www.framerestorationutah.com/locations/sandy",
+        "exactCidMapRank": null,
+        "aiOverviewCited": false
+      },
+      "surfaces": {
+        "organic": {
+          "state": "target-displaced",
+          "top": {
+            "rank": 1,
+            "domain": "xperienceroofing.com",
+            "url": "https://xperienceroofing.com/locations/sandy-ut",
+            "title": "Roofing in Sandy, UT | Roof Replacement & Repair",
+            "isTarget": false
+          },
+          "leaders": [
+            {
+              "rank": 1,
+              "domain": "xperienceroofing.com",
+              "url": "https://xperienceroofing.com/locations/sandy-ut",
+              "title": "Roofing in Sandy, UT | Roof Replacement & Repair",
+              "isTarget": false
+            },
+            {
+              "rank": 2,
+              "domain": "dynamiteutah.com",
+              "url": "https://www.dynamiteutah.com/residential-roof-replacement/sandy-ut",
+              "title": "Sandy Utah Roof Replacement / Professional Installation ...",
+              "isTarget": false
+            },
+            {
+              "rank": 3,
+              "domain": "thumbtack.com",
+              "url": "https://www.thumbtack.com/ut/sandy/roofing",
+              "title": "The 10 Best Roofing Contractors in Sandy, UT (with Free Estimates)",
+              "isTarget": false
+            }
+          ]
+        },
+        "maps": {
+          "state": "exact-cid-not-returned-in-pack",
+          "packPresent": true,
+          "top": {
+            "rank": 1,
+            "name": "ReRoofIt",
+            "cid": "3305979678440818523",
+            "domain": "google.com",
+            "url": "https://www.google.com/searchviewer/10?sca_esv=18f1ac768794601a&hl=en&gl=US&output=search&svid=CAwSHRIbCgNwdnESFENnMHZaeTh4TVdwdGQyNXRaMnA0GAo",
+            "isTarget": false
+          },
+          "leaders": [
+            {
+              "rank": 1,
+              "name": "ReRoofIt",
+              "cid": "3305979678440818523",
+              "domain": "google.com",
+              "url": "https://www.google.com/searchviewer/10?sca_esv=18f1ac768794601a&hl=en&gl=US&output=search&svid=CAwSHRIbCgNwdnESFENnMHZaeTh4TVdwdGQyNXRaMnA0GAo",
+              "isTarget": false
+            },
+            {
+              "rank": 2,
+              "name": "The Roofing Center",
+              "cid": "5187111774548334344",
+              "domain": "google.com",
+              "url": "https://www.google.com/searchviewer/10?sca_esv=18f1ac768794601a&hl=en&gl=US&output=search&svid=CAwSHRIbCgNwdnESFENnMHZaeTh4TVdZMFgyNXphak50GAo",
               "isTarget": false
             },
             {
@@ -2974,7 +2980,7 @@
               "name": "Red Star Roofing",
               "cid": "16317468138973610641",
               "domain": "google.com",
-              "url": "https://www.google.com/searchviewer/10?sca_esv=0ab4c29f2e17ee32&hl=en&gl=US&output=search&svid=CAwSHRIbCgNwdnESFENnMHZaeTh4TVcxMk5IRm9iVGxyGAo",
+              "url": "https://www.google.com/searchviewer/10?sca_esv=18f1ac768794601a&hl=en&gl=US&output=search&svid=CAwSHRIbCgNwdnESFENnMHZaeTh4TVcxMk5IRm9iVGxyGAo",
               "isTarget": false
             }
           ]
@@ -3024,9 +3030,9 @@
             },
             {
               "rank": 3,
-              "domain": "mightydogroofing.com",
-              "url": "https://www.mightydogroofing.com/sandy-utah/",
-              "title": "Roofing contractor | Sandy, Utah",
+              "domain": "thumbtack.com",
+              "url": "https://www.thumbtack.com/ut/sandy/roofing",
+              "title": "The 10 Best Roofing Contractors in Sandy, UT (with Free Estimates)",
               "isTarget": false
             }
           ]
@@ -3039,7 +3045,7 @@
             "name": "The Roofing Center",
             "cid": "5187111774548334344",
             "domain": "google.com",
-            "url": "https://www.google.com/searchviewer/10?sca_esv=0ab4c29f2e17ee32&hl=en&gl=US&output=search&svid=CAwSHRIbCgNwdnESFENnMHZaeTh4TVdZMFgyNXphak50GAo",
+            "url": "https://www.google.com/searchviewer/10?sca_esv=18f1ac768794601a&hl=en&gl=US&output=search&svid=CAwSHRIbCgNwdnESFENnMHZaeTh4TVdZMFgyNXphak50GAo",
             "isTarget": false
           },
           "leaders": [
@@ -3048,7 +3054,7 @@
               "name": "The Roofing Center",
               "cid": "5187111774548334344",
               "domain": "google.com",
-              "url": "https://www.google.com/searchviewer/10?sca_esv=0ab4c29f2e17ee32&hl=en&gl=US&output=search&svid=CAwSHRIbCgNwdnESFENnMHZaeTh4TVdZMFgyNXphak50GAo",
+              "url": "https://www.google.com/searchviewer/10?sca_esv=18f1ac768794601a&hl=en&gl=US&output=search&svid=CAwSHRIbCgNwdnESFENnMHZaeTh4TVdZMFgyNXphak50GAo",
               "isTarget": false
             },
             {
@@ -3056,7 +3062,7 @@
               "name": "ReRoofIt",
               "cid": "3305979678440818523",
               "domain": "google.com",
-              "url": "https://www.google.com/searchviewer/10?sca_esv=0ab4c29f2e17ee32&hl=en&gl=US&output=search&svid=CAwSHRIbCgNwdnESFENnMHZaeTh4TVdwdGQyNXRaMnA0GAo",
+              "url": "https://www.google.com/searchviewer/10?sca_esv=18f1ac768794601a&hl=en&gl=US&output=search&svid=CAwSHRIbCgNwdnESFENnMHZaeTh4TVdwdGQyNXRaMnA0GAo",
               "isTarget": false
             },
             {
@@ -3064,7 +3070,7 @@
               "name": "Red Star Roofing",
               "cid": "16317468138973610641",
               "domain": "google.com",
-              "url": "https://www.google.com/searchviewer/10?sca_esv=0ab4c29f2e17ee32&hl=en&gl=US&output=search&svid=CAwSHRIbCgNwdnESFENnMHZaeTh4TVcxMk5IRm9iVGxyGAo",
+              "url": "https://www.google.com/searchviewer/10?sca_esv=18f1ac768794601a&hl=en&gl=US&output=search&svid=CAwSHRIbCgNwdnESFENnMHZaeTh4TVcxMk5IRm9iVGxyGAo",
               "isTarget": false
             }
           ]
@@ -3129,7 +3135,7 @@
             "name": "Rocky Mountain Roofing UT, LLC",
             "cid": "11642763325802433097",
             "domain": "google.com",
-            "url": "https://www.google.com/searchviewer/10?sca_esv=0ab4c29f2e17ee32&hl=en&gl=US&output=search&svid=CAwSHRIbCgNwdnESFENnMHZaeTh4TVdZMVpHTjZhR05xGAo",
+            "url": "https://www.google.com/searchviewer/10?sca_esv=18f1ac768794601a&hl=en&gl=US&output=search&svid=CAwSHRIbCgNwdnESFENnMHZaeTh4TVdZMVpHTjZhR05xGAo",
             "isTarget": false
           },
           "leaders": [
@@ -3138,7 +3144,7 @@
               "name": "Rocky Mountain Roofing UT, LLC",
               "cid": "11642763325802433097",
               "domain": "google.com",
-              "url": "https://www.google.com/searchviewer/10?sca_esv=0ab4c29f2e17ee32&hl=en&gl=US&output=search&svid=CAwSHRIbCgNwdnESFENnMHZaeTh4TVdZMVpHTjZhR05xGAo",
+              "url": "https://www.google.com/searchviewer/10?sca_esv=18f1ac768794601a&hl=en&gl=US&output=search&svid=CAwSHRIbCgNwdnESFENnMHZaeTh4TVdZMVpHTjZhR05xGAo",
               "isTarget": false
             },
             {
@@ -3146,7 +3152,7 @@
               "name": "The Roofing Contractor",
               "cid": "10363506003073586853",
               "domain": "google.com",
-              "url": "https://www.google.com/searchviewer/10?sca_esv=0ab4c29f2e17ee32&hl=en&gl=US&output=search&svid=CAwSHRIbCgNwdnESFENnMHZaeTh4TVhaNWRHMWZObTV6GAo",
+              "url": "https://www.google.com/searchviewer/10?sca_esv=18f1ac768794601a&hl=en&gl=US&output=search&svid=CAwSHRIbCgNwdnESFENnMHZaeTh4TVhaNWRHMWZObTV6GAo",
               "isTarget": false
             },
             {
@@ -3154,7 +3160,7 @@
               "name": "Pride Roofing & Contracting, LLC",
               "cid": "15206834657984643450",
               "domain": "google.com",
-              "url": "https://www.google.com/searchviewer/10?sca_esv=0ab4c29f2e17ee32&hl=en&gl=US&output=search&svid=CAwSHRIbCgNwdnESFENnMHZaeTh4TVd0ME1YbzNaekJ3GAo",
+              "url": "https://www.google.com/searchviewer/10?sca_esv=18f1ac768794601a&hl=en&gl=US&output=search&svid=CAwSHRIbCgNwdnESFENnMHZaeTh4TVd0ME1YbzNaekJ3GAo",
               "isTarget": false
             }
           ]
@@ -3197,16 +3203,16 @@
             },
             {
               "rank": 2,
-              "domain": "thumbtack.com",
-              "url": "https://www.thumbtack.com/ut/draper/roofing",
-              "title": "The 10 Best Roofing Contractors in Draper, UT (with Free Estimates)",
+              "domain": "reroofit.com",
+              "url": "https://reroofit.com/service-areas/roofing-draper-utah",
+              "title": "Roofing Contractor Draper, Utah",
               "isTarget": false
             },
             {
               "rank": 3,
-              "domain": "reroofit.com",
-              "url": "https://reroofit.com/service-areas/roofing-draper-utah",
-              "title": "Roofing Contractor Draper, Utah",
+              "domain": "thumbtack.com",
+              "url": "https://www.thumbtack.com/ut/draper/roofing",
+              "title": "The 10 Best Roofing Contractors in Draper, UT (with Free Estimates)",
               "isTarget": false
             }
           ]
@@ -3219,7 +3225,7 @@
             "name": "Pride Roofing & Contracting, LLC",
             "cid": "15206834657984643450",
             "domain": "google.com",
-            "url": "https://www.google.com/searchviewer/10?sca_esv=0ab4c29f2e17ee32&hl=en&gl=US&output=search&svid=CAwSHRIbCgNwdnESFENnMHZaeTh4TVd0ME1YbzNaekJ3GAo",
+            "url": "https://www.google.com/searchviewer/10?sca_esv=18f1ac768794601a&hl=en&gl=US&output=search&svid=CAwSHRIbCgNwdnESFENnMHZaeTh4TVd0ME1YbzNaekJ3GAo",
             "isTarget": false
           },
           "leaders": [
@@ -3228,7 +3234,7 @@
               "name": "Pride Roofing & Contracting, LLC",
               "cid": "15206834657984643450",
               "domain": "google.com",
-              "url": "https://www.google.com/searchviewer/10?sca_esv=0ab4c29f2e17ee32&hl=en&gl=US&output=search&svid=CAwSHRIbCgNwdnESFENnMHZaeTh4TVd0ME1YbzNaekJ3GAo",
+              "url": "https://www.google.com/searchviewer/10?sca_esv=18f1ac768794601a&hl=en&gl=US&output=search&svid=CAwSHRIbCgNwdnESFENnMHZaeTh4TVd0ME1YbzNaekJ3GAo",
               "isTarget": false
             },
             {
@@ -3236,15 +3242,15 @@
               "name": "Rocky Mountain Roofing UT, LLC",
               "cid": "11642763325802433097",
               "domain": "google.com",
-              "url": "https://www.google.com/searchviewer/10?sca_esv=0ab4c29f2e17ee32&hl=en&gl=US&output=search&svid=CAwSHRIbCgNwdnESFENnMHZaeTh4TVdZMVpHTjZhR05xGAo",
+              "url": "https://www.google.com/searchviewer/10?sca_esv=18f1ac768794601a&hl=en&gl=US&output=search&svid=CAwSHRIbCgNwdnESFENnMHZaeTh4TVdZMVpHTjZhR05xGAo",
               "isTarget": false
             },
             {
               "rank": 3,
-              "name": "ReRoofIt",
-              "cid": "3305979678440818523",
+              "name": "MAD Roofing & Exteriors",
+              "cid": "948726251693855103",
               "domain": "google.com",
-              "url": "https://www.google.com/searchviewer/10?sca_esv=0ab4c29f2e17ee32&hl=en&gl=US&output=search&svid=CAwSHRIbCgNwdnESFENnMHZaeTh4TVdwdGQyNXRaMnA0GAo",
+              "url": "https://www.google.com/searchviewer/10?sca_esv=18f1ac768794601a&hl=en&gl=US&output=search&svid=CAwSHRIbCgNwdnESFENnMHZaeTh4TVhSdGVHaDZiSGR0GAo",
               "isTarget": false
             }
           ]
@@ -3287,9 +3293,9 @@
             },
             {
               "rank": 2,
-              "domain": "bartlettroofs.com",
-              "url": "https://bartlettroofs.com/service-areas/draper-ut/",
-              "title": "Trusted Roofing Contractors in Draper, UT",
+              "domain": "reroofit.com",
+              "url": "https://reroofit.com/service-areas/roofing-draper-utah",
+              "title": "Roofing Contractor Draper, Utah",
               "isTarget": false
             },
             {
@@ -3309,7 +3315,7 @@
             "name": "Pride Roofing & Contracting, LLC",
             "cid": "15206834657984643450",
             "domain": "google.com",
-            "url": "https://www.google.com/searchviewer/10?sca_esv=0ab4c29f2e17ee32&hl=en&gl=US&output=search&svid=CAwSHRIbCgNwdnESFENnMHZaeTh4TVd0ME1YbzNaekJ3GAo",
+            "url": "https://www.google.com/searchviewer/10?sca_esv=18f1ac768794601a&hl=en&gl=US&output=search&svid=CAwSHRIbCgNwdnESFENnMHZaeTh4TVd0ME1YbzNaekJ3GAo",
             "isTarget": false
           },
           "leaders": [
@@ -3318,23 +3324,23 @@
               "name": "Pride Roofing & Contracting, LLC",
               "cid": "15206834657984643450",
               "domain": "google.com",
-              "url": "https://www.google.com/searchviewer/10?sca_esv=0ab4c29f2e17ee32&hl=en&gl=US&output=search&svid=CAwSHRIbCgNwdnESFENnMHZaeTh4TVd0ME1YbzNaekJ3GAo",
+              "url": "https://www.google.com/searchviewer/10?sca_esv=18f1ac768794601a&hl=en&gl=US&output=search&svid=CAwSHRIbCgNwdnESFENnMHZaeTh4TVd0ME1YbzNaekJ3GAo",
               "isTarget": false
             },
             {
               "rank": 2,
-              "name": "Rocky Mountain Roofing UT, LLC",
-              "cid": "11642763325802433097",
+              "name": "MAD Roofing & Exteriors",
+              "cid": "948726251693855103",
               "domain": "google.com",
-              "url": "https://www.google.com/searchviewer/10?sca_esv=0ab4c29f2e17ee32&hl=en&gl=US&output=search&svid=CAwSHRIbCgNwdnESFENnMHZaeTh4TVdZMVpHTjZhR05xGAo",
+              "url": "https://www.google.com/searchviewer/10?sca_esv=18f1ac768794601a&hl=en&gl=US&output=search&svid=CAwSHRIbCgNwdnESFENnMHZaeTh4TVhSdGVHaDZiSGR0GAo",
               "isTarget": false
             },
             {
               "rank": 3,
-              "name": "MAD Roofing & Exteriors",
-              "cid": "948726251693855103",
+              "name": "Rocky Mountain Roofing UT, LLC",
+              "cid": "11642763325802433097",
               "domain": "google.com",
-              "url": "https://www.google.com/searchviewer/10?sca_esv=0ab4c29f2e17ee32&hl=en&gl=US&output=search&svid=CAwSHRIbCgNwdnESFENnMHZaeTh4TVhSdGVHaDZiSGR0GAo",
+              "url": "https://www.google.com/searchviewer/10?sca_esv=18f1ac768794601a&hl=en&gl=US&output=search&svid=CAwSHRIbCgNwdnESFENnMHZaeTh4TVdZMVpHTjZhR05xGAo",
               "isTarget": false
             }
           ]
@@ -3377,16 +3383,16 @@
             },
             {
               "rank": 2,
-              "domain": "roofingdraper.com",
-              "url": "https://roofingdraper.com/",
-              "title": "Roofing Draper, UT | Roof Repair & Replacement",
+              "domain": "reroofit.com",
+              "url": "https://reroofit.com/service-areas/roofing-draper-utah",
+              "title": "Roofing Contractor Draper, Utah",
               "isTarget": false
             },
             {
               "rank": 3,
-              "domain": "reroofit.com",
-              "url": "https://reroofit.com/service-areas/roofing-draper-utah",
-              "title": "Roofing Contractor Draper, Utah",
+              "domain": "legacyroofingutah.com",
+              "url": "https://www.legacyroofingutah.com/draper",
+              "title": "Draper Roofer & Roofing Contractor",
               "isTarget": false
             }
           ]
@@ -3399,7 +3405,7 @@
             "name": "Pride Roofing & Contracting, LLC",
             "cid": "15206834657984643450",
             "domain": "google.com",
-            "url": "https://www.google.com/searchviewer/10?sca_esv=0ab4c29f2e17ee32&hl=en&gl=US&output=search&svid=CAwSHRIbCgNwdnESFENnMHZaeTh4TVd0ME1YbzNaekJ3GAo",
+            "url": "https://www.google.com/searchviewer/10?sca_esv=18f1ac768794601a&hl=en&gl=US&output=search&svid=CAwSHRIbCgNwdnESFENnMHZaeTh4TVd0ME1YbzNaekJ3GAo",
             "isTarget": false
           },
           "leaders": [
@@ -3408,7 +3414,7 @@
               "name": "Pride Roofing & Contracting, LLC",
               "cid": "15206834657984643450",
               "domain": "google.com",
-              "url": "https://www.google.com/searchviewer/10?sca_esv=0ab4c29f2e17ee32&hl=en&gl=US&output=search&svid=CAwSHRIbCgNwdnESFENnMHZaeTh4TVd0ME1YbzNaekJ3GAo",
+              "url": "https://www.google.com/searchviewer/10?sca_esv=18f1ac768794601a&hl=en&gl=US&output=search&svid=CAwSHRIbCgNwdnESFENnMHZaeTh4TVd0ME1YbzNaekJ3GAo",
               "isTarget": false
             },
             {
@@ -3416,15 +3422,15 @@
               "name": "Rocky Mountain Roofing UT, LLC",
               "cid": "11642763325802433097",
               "domain": "google.com",
-              "url": "https://www.google.com/searchviewer/10?sca_esv=0ab4c29f2e17ee32&hl=en&gl=US&output=search&svid=CAwSHRIbCgNwdnESFENnMHZaeTh4TVdZMVpHTjZhR05xGAo",
+              "url": "https://www.google.com/searchviewer/10?sca_esv=18f1ac768794601a&hl=en&gl=US&output=search&svid=CAwSHRIbCgNwdnESFENnMHZaeTh4TVdZMVpHTjZhR05xGAo",
               "isTarget": false
             },
             {
               "rank": 3,
-              "name": "MAD Roofing & Exteriors",
-              "cid": "948726251693855103",
+              "name": "Patriot Roofing & Construction",
+              "cid": "103033090419837437",
               "domain": "google.com",
-              "url": "https://www.google.com/searchviewer/10?sca_esv=0ab4c29f2e17ee32&hl=en&gl=US&output=search&svid=CAwSHRIbCgNwdnESFENnMHZaeTh4TVhSdGVHaDZiSGR0GAo",
+              "url": "https://www.google.com/searchviewer/10?sca_esv=18f1ac768794601a&hl=en&gl=US&output=search&svid=CAwSHRIbCgNwdnESFENnMHZaeTh4TVdoa1pqZ3lhMlowGAo",
               "isTarget": false
             }
           ]
