@@ -114,9 +114,10 @@ assert.equal(tasks[0].location_name, 'Salt Lake City,Utah,United States');
 assert.equal(tasks[0].device, 'mobile');
 assert.equal(tasks[0].depth, 30);
 assert.equal(tasks[0].tag, 'slc-repair');
+assert.equal(tasks[0].priority, 2, 'tasks must be posted at high priority so the panel lands inside the poll window');
 assert.equal(buildTaskMatrix([config]).length, 1);
 assert.throws(() => buildTaskMatrix([config, config]), /Duplicate keyword id across rank panels/);
-assert.equal(estimatedPanelCost(config), 0.0024);
+assert.equal(estimatedPanelCost(config), 0.0048); // priority 2 = 2x
 
 const report = buildReport(config, new Map([['slc-repair', fixture]]), '2026-08-11T20:04:27.000Z');
 assert.equal(report.date, '2026-08-11');
@@ -188,7 +189,7 @@ const registryConfigs = activePanels.map((panel) => {
 assert.equal(registryConfigs.length, 6);
 assert.equal(registryConfigs.reduce((sum, panelConfig) => sum + panelConfig.keywords.length, 0), 24);
 assert.equal(buildTaskMatrix(registryConfigs).length, 24);
-assert.ok(Math.abs(registryConfigs.reduce((sum, panelConfig) => sum + estimatedPanelCost(panelConfig), 0) - 0.0576) < Number.EPSILON);
+assert.ok(Math.abs(registryConfigs.reduce((sum, panelConfig) => sum + estimatedPanelCost(panelConfig), 0) - 0.1152) < Number.EPSILON);
 assert.deepEqual(new Set(registryConfigs.map((panelConfig) => panelConfig.city)).size, 6);
 assert.throws(
   () => validateRegistry({ ...registry, panels: [...registry.panels, registry.panels[0]] }),
@@ -206,7 +207,7 @@ const expansionConfigs = expansionRegistry.panels.map((panel) => {
 assert.equal(expansionConfigs.length, 12);
 assert.equal(expansionConfigs.reduce((sum, panelConfig) => sum + panelConfig.keywords.length, 0), 48);
 assert.equal(buildTaskMatrix(expansionConfigs).length, 48);
-assert.ok(Math.abs(expansionConfigs.reduce((sum, panelConfig) => sum + estimatedPanelCost(panelConfig), 0) - 0.1152) < Number.EPSILON);
+assert.ok(Math.abs(expansionConfigs.reduce((sum, panelConfig) => sum + estimatedPanelCost(panelConfig), 0) - 0.2304) < Number.EPSILON);
 assert.equal(new Set(expansionConfigs.map((panelConfig) => panelConfig.city)).size, 12);
 
 console.log('dataforseo rank tracker: all assertions passed');

@@ -12,7 +12,16 @@ const TASK_POST = '/serp/google/organic/task_post';
 const TASKS_READY = '/serp/google/organic/tasks_ready';
 const TASK_GET = '/serp/google/organic/task_get/advanced';
 const POLL_INTERVAL_MS = 15_000;
-const POLL_TIMEOUT_MS = 20 * 60_000;
+const POLL_TIMEOUT_MS = 24 * 60_000;
+// DataForSEO priority 2 = high. Without it every task sits in the default queue,
+// which is slow enough that the complete panel does not land inside the poll
+// window: the first scheduled run (Mon 2026-08-17 09:00 UTC) collected 19 of 24
+// and threw away all 19, because this tracker is deliberately all-or-nothing.
+// Each panel also sets load_async_ai_overview, which adds provider-side latency
+// on top. Priority 2 doubles the per-task cost -- roughly $0.058 -> $0.115 for
+// the whole weekly 24-task matrix, which is noise against the account balance
+// and far cheaper than losing the week's measurement.
+const PROVIDER_PRIORITY = 2;
 
 const normalizeDomain = (value) => String(value || '')
   .toLowerCase()
@@ -222,6 +231,7 @@ export function buildTasks(config) {
     os: config.os,
     depth: config.depth,
     load_async_ai_overview: Boolean(config.loadAsyncAiOverview),
+    priority: PROVIDER_PRIORITY,
     tag: id,
   }));
 }
@@ -240,7 +250,9 @@ export function estimatedPanelCost(config) {
   const queueBase = 0.0006;
   const depthCost = queueBase * Math.max(1, Math.ceil(config.depth / 10));
   const asyncAiCost = config.loadAsyncAiOverview ? queueBase : 0;
-  return Number(((depthCost + asyncAiCost) * config.keywords.length).toFixed(4));
+  // Multiplied by PROVIDER_PRIORITY so the dry-run estimate stays truthful about
+  // what a run actually spends -- high priority is billed at the higher rate.
+  return Number(((depthCost + asyncAiCost) * config.keywords.length * PROVIDER_PRIORITY).toFixed(4));
 }
 
 export function buildReport(config, rawResults, observedAt = new Date().toISOString()) {
