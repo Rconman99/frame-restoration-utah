@@ -383,7 +383,21 @@ assert.equal(registry.score.fixedOrganicNumberOne, registry.cities.reduce((sum, 
 assert.equal(registry.score.exactCidMapsNumberOne, registry.cities.reduce((sum, city) => sum + city.measurement.exactCidMapsNumberOne, 0));
 assert.equal(registry.score.citiesAtSustainedGoal, weeklyDecisions.summary.citiesAtSustainedGoal);
 assert.ok(["unmeasured", "measured-exact-cid"].includes(entityHealth.reviews.saltLakeValley.state));
-assert.equal(entityHealth.reviews.heber.aggregateReviewCount, 34);
+// Google review counts grow (and can shrink when Google removes one), so a
+// frozen equality here breaks the whole pipeline the moment Landon earns a
+// 35th review. Sanity-bound it and surface movement against the recorded
+// 2026-08-12 baseline instead of failing on it.
+const heberReviewCount = entityHealth.reviews.heber.aggregateReviewCount;
+assert.ok(
+  Number.isInteger(heberReviewCount) && heberReviewCount >= 0,
+  `Heber aggregate review count must be a non-negative integer, got ${heberReviewCount}`,
+);
+if (heberReviewCount !== 34) {
+  console.log(`SLV execution registry: Heber aggregate review count ${heberReviewCount} (2026-08-12 baseline 34)`);
+}
+if (heberReviewCount < 34) {
+  console.warn(`WARN Heber aggregate review count ${heberReviewCount} is below the 2026-08-12 baseline of 34 — Google does remove reviews, but confirm the read is not broken.`);
+}
 assert.equal(entityHealth.editorial.evidenceFirstGaps.length, 5);
 assert.equal(weeklyDecisions.summary.integrityKeep, 1);
 assert.equal(weeklyDecisions.summary.rankingHold, 18);
