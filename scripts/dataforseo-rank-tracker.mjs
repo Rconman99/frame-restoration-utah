@@ -383,6 +383,32 @@ async function providerCall(endpoint, auth, options = {}) {
   throw new Error(`DataForSEO ${endpoint} failed after 3 attempts: ${lastError.message}`);
 }
 
+// Observed in production 2026-08-17: a single task came back "40101 Internal SE
+// Server Error" while the other 23 succeeded, and the all-or-nothing throw
+// discarded the entire paid matrix. That is a provider-side hiccup on one
+// keyword, not a reason to lose the week.
+//
+// Matched on message text rather than an invented status-code list -- only the
+// 40101 shape has actually been observed, and guessing at other numeric codes
+// would risk silently retrying real, permanent failures.
+const RETRYABLE_TASK_ERROR_PATTERN = /internal se server error|internal error|timeout|temporar/iu;
+const MAX_TASK_REPOSTS = 2;
+
+export function isRetryableTaskError(statusMessage) {
+  return RETRYABLE_TASK_ERROR_PATTERN.test(String(statusMessage || ''));
+}
+
+async function repostTask(taskPayload, auth) {
+  if (!taskPayload) throw new Error('Cannot re-post an unknown task');
+  const posted = await providerCall(TASK_POST, auth, { method: 'POST', body: [taskPayload] });
+  const task = (posted.tasks || [])[0];
+  if (!task || ![20000, 20100].includes(task.status_code)) {
+    throw new Error(`Re-post rejected for ${taskPayload.tag}: ${task?.status_code} ${task?.status_message}`);
+  }
+  if (!task.id) throw new Error(`Re-post for ${taskPayload.tag} returned no task id`);
+  return task;
+}
+
 async function fetchTaskQueue(configs) {
   const tasks = buildTaskMatrix(configs);
   const auth = credentials();
@@ -399,6 +425,8 @@ async function fetchTaskQueue(configs) {
     throw new Error(`Provider accepted ${taskIds.size}/${tasks.length} tasks`);
   }
 
+  const tagToTask = new Map(tasks.map((task) => [task.tag, task]));
+  const reposts = new Map();
   const pending = new Set(taskIds.keys());
   const rawResults = new Map();
   const deadline = Date.now() + POLL_TIMEOUT_MS;
@@ -415,6 +443,21 @@ async function fetchTaskQueue(configs) {
       const response = await providerCall(`${TASK_GET}/${taskId}`, auth);
       const task = response.tasks?.[0];
       if (task?.status_code && task.status_code !== 20000) {
+        const tag = taskIds.get(taskId);
+        const used = reposts.get(tag) || 0;
+        if (isRetryableTaskError(task.status_message) && used < MAX_TASK_REPOSTS) {
+          // One provider-side hiccup on a single keyword must not discard the
+          // other 23 completed results. Re-post just that keyword and keep
+          // polling; the overall deadline still governs.
+          reposts.set(tag, used + 1);
+          pending.delete(taskId);
+          taskIds.delete(taskId);
+          const replacement = await repostTask(tagToTask.get(tag), auth);
+          taskIds.set(replacement.id, tag);
+          pending.add(replacement.id);
+          console.log(`Task ${tag} failed with ${task.status_code} ${task.status_message}; re-posted (${used + 1}/${MAX_TASK_REPOSTS}).`);
+          continue;
+        }
         throw new Error(`Provider task ${taskId} failed: ${task.status_code} ${task.status_message}`);
       }
       const result = task?.result?.[0];
