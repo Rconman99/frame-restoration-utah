@@ -16,7 +16,10 @@ concurrency:
 jobs:
   measure:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    # Must stay above the tracker's own 24-minute poll deadline plus the
+    # surrounding steps, so the script's fail-closed message is what surfaces
+    # rather than an opaque job kill.
+    timeout-minutes: 35
     steps:
       - name: Check out the repository
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
