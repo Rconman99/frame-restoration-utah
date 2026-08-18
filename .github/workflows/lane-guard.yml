@@ -1,0 +1,81 @@
+name: Lane guard
+
+# Every AI lane pushes to GitHub as the same user, so git authorship cannot tell
+# lanes apart. The branch prefix is the only lane signal that survives into a PR,
+# which is what makes the author-≠-verifier rule mechanically checkable instead
+# of a matter of etiquette.
+#
+# Protocol: https://github.com/Rconman99/agentic-context-hub/blob/main/ACTIVE-LANES.md
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize, edited]
+
+permissions:
+  contents: read
+
+jobs:
+  lane-prefix:
+    name: Branch declares its lane
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check the head branch declares a lane
+        env:
+          HEAD_REF: ${{ github.head_ref }}
+        run: |
+          set -euo pipefail
+
+          # Recognised lanes. `human` is deliberate — a person working by hand is
+          # a lane too, and saying so is better than an unattributable branch.
+          LANES="claude codex cowork agy human"
+
+          # Branches that predate this check. Each one is a PR that was already
+          # open and green; failing them retroactively would punish work for a
+          # rule that did not exist when it was written. Remove entries as those
+          # PRs merge or close — this list should only ever shrink.
+          LEGACY="fix/idaho-photo-restoration"
+
+          prefix="${HEAD_REF%%/*}"
+
+          for legacy in $LEGACY; do
+            if [ "$HEAD_REF" = "$legacy" ]; then
+              echo "::notice title=Legacy branch::'$HEAD_REF' predates the lane-prefix rule and is grandfathered. New branches must declare a lane."
+              exit 0
+            fi
+          done
+
+          for lane in $LANES; do
+            if [ "$prefix" = "$lane" ]; then
+              echo "::notice title=Lane::$lane"
+              echo "Branch '$HEAD_REF' declares lane '$lane'."
+              exit 0
+            fi
+          done
+
+          echo "::error title=Branch does not declare a lane::'$HEAD_REF' has no lane prefix."
+          cat <<EOF
+
+          Branch '$HEAD_REF' does not declare which lane produced it.
+
+          Every lane pushes as the same GitHub user, so without a prefix nobody
+          can tell whether this PR was written by Claude, Codex, Cowork, agy, or
+          a person. That means nobody knows who is disqualified from reviewing
+          it — and in practice, nobody reviews it at all.
+
+          Rename the branch to lead with your lane:
+
+            claude/<scope>-<date>     codex/<scope>-<date>
+            cowork/<scope>-<date>     agy/<scope>-<date>
+            human/<scope>
+
+          Type goes in the scope, not the prefix:  claude/fix-idaho-hero-20260817
+
+            git branch -m '$HEAD_REF' 'claude/<scope>-<date>'
+            git push origin -u 'claude/<scope>-<date>'
+            git push origin --delete '$HEAD_REF'
+
+          Then retarget or reopen the PR against the renamed branch.
+
+          Protocol: agentic-context-hub/ACTIVE-LANES.md
+          EOF
+          exit 1
