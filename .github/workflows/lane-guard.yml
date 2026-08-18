@@ -9,7 +9,7 @@ name: Lane guard
 
 on:
   pull_request:
-    types: [opened, reopened, synchronize, edited]
+    types: [opened, reopened, synchronize, edited, ready_for_review]
 
 permissions:
   contents: read
@@ -22,32 +22,49 @@ jobs:
       - name: Check the head branch declares a lane
         env:
           HEAD_REF: ${{ github.head_ref }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
         run: |
           set -euo pipefail
 
           # Recognised lanes. `human` is deliberate — a person working by hand is
           # a lane too, and saying so is better than an unattributable branch.
+          # It is a declaration, not an authentication: CI cannot verify that a
+          # human actually created the branch.
           LANES="claude codex cowork agy human"
 
-          # Branches that predate this check. Each one is a PR that was already
-          # open and green; failing them retroactively would punish work for a
-          # rule that did not exist when it was written. Remove entries as those
-          # PRs merge or close — this list should only ever shrink.
-          LEGACY="fix/idaho-photo-restoration"
+          # Grandfathered exceptions, scoped to THIS repository only.
+          # Each is bound to both PR number and exact branch, so the entry cannot
+          # silently cover a different PR that reuses the branch name.
+          # Format: <pr-number>:<branch>
+          LEGACY=""
+
+          # Hard expiry. An exception list with no deadline is not a migration,
+          # it is a permanent bypass with an apologetic comment attached.
+          LEGACY_EXPIRY="2026-08-31"
 
           prefix="${HEAD_REF%%/*}"
-
-          for legacy in $LEGACY; do
-            if [ "$HEAD_REF" = "$legacy" ]; then
-              echo "::notice title=Legacy branch::'$HEAD_REF' predates the lane-prefix rule and is grandfathered. New branches must declare a lane."
-              exit 0
-            fi
-          done
+          today="$(date -u +%F)"
 
           for lane in $LANES; do
             if [ "$prefix" = "$lane" ]; then
               echo "::notice title=Lane::$lane"
               echo "Branch '$HEAD_REF' declares lane '$lane'."
+              exit 0
+            fi
+          done
+
+          # Only reached when the branch does NOT declare a lane.
+          for entry in $LEGACY; do
+            [ -z "$entry" ] && continue
+            legacy_pr="${entry%%:*}"
+            legacy_branch="${entry#*:}"
+            if [ "$HEAD_REF" = "$legacy_branch" ] && [ "$PR_NUMBER" = "$legacy_pr" ]; then
+              if [ "$today" \> "$LEGACY_EXPIRY" ]; then
+                echo "::error title=Grandfather expired::PR #$PR_NUMBER ('$HEAD_REF') was exempt until $LEGACY_EXPIRY. That date has passed."
+                echo "Rename the branch to declare a lane, or close the PR. The exception list is a migration window, not a permanent bypass."
+                exit 1
+              fi
+              echo "::warning title=Grandfathered until $LEGACY_EXPIRY::PR #$PR_NUMBER ('$HEAD_REF') predates the lane-prefix rule. Rename before $LEGACY_EXPIRY."
               exit 0
             fi
           done
