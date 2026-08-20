@@ -137,277 +137,214 @@ on:
 permissions:
   contents: read
 
+
+# ---------------------------------------------------------------------------
+# JOB BATCHING (2026-08-19). These 21 gates previously ran as 21 separate jobs.
+# GitHub bills Actions PER JOB, rounded UP to a full minute, so 21 jobs that
+# finished in 109 seconds of wall time were billed 23 minutes -- 248 runs/month
+# = 5,704 billed minutes, 58% of the entire account's Actions spend.
+#
+# Same 37 commands, same blocking semantics, grouped by RUNTIME so each toolchain
+# is installed once instead of 21 times.
+#
+# Every gate step carries `if: ${{ !cancelled() }}` on purpose: with separate
+# jobs a red run showed you EVERY failing gate at once. Sequential steps would
+# normally stop at the first failure and hide the rest, so the condition forces
+# all of them to run. The job still fails if any step failed.
+# ---------------------------------------------------------------------------
+
+concurrency:
+  # Supersede in-flight runs for the same PR -- an amended push should not leave
+  # the previous run billing in parallel. main is never cancelled.
+  group: compliance-gate-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
 jobs:
-  provider-workflow-regressions:
-    name: Provider workflow fail-closed regressions (blocking)
+  static-audits:
+    name: Static corpus audits (blocking)
     runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
-      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
-        with:
-          python-version: '3.12'
-      - name: Exercise provider outages, atomic snapshots, and workflow contracts
-        run: python3 tests/test_provider_workflows.py
-
-  edge-function-compile:
-    name: Supabase Edge entrypoint typecheck (blocking)
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
-      - uses: denoland/setup-deno@22d081ff2d3a40755e97629de92e3bcbfa7cf2ed
-        with:
-          deno-version: v2.x
-      - name: Typecheck every deployed Edge Function entrypoint
-        run: deno check --frozen --node-modules-dir=auto supabase/functions/*/index.ts
-
-  static-assets:
-    name: Sitemap static asset integrity (blocking)
-    runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
         with:
           node-version: '20'
-      - run: node scripts/audit-static-assets.mjs
-
-  lead-form-single-submit:
-    name: Lead form single-submit contract (blocking)
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
-      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
-        with:
-          node-version: '20'
-          cache: npm
-      - run: npm ci
-      - run: npx playwright install --with-deps chromium
-      - run: npm run test:lead-form
-
-  lead-sms-contract:
-    name: Lead SMS consent + A2P message contract (blocking)
-    runs-on: ubuntu-latest
-    # BLOCKING (added 2026-06-10, ported from the TX pattern). handle-lead's
-    # customer auto-reply is texted to real homeowners on the LIVE 10DLC number,
-    # but v8 had no test coverage AND ignored the form's sms_consent checkbox.
-    # The builders now live in _shared/lead-sms.ts (the real handler imports
-    # them); lead-sms.test.ts asserts: every auto-reply carries the A2P
-    # "Reply STOP to opt out." line + the business number, no Utah forbidden
-    # term (same canonical compliance-words.json as the site gate), and the
-    # TCPA consent gate (no sms_consent → NO auto-text). auth-throttle.test.ts
-    # freezes the adapter for the database-atomic per-IP login throttle (the
-    # first 10 total attempts / fixed 15-minute window may continue; successful
-    # logins never reset it). audit:dashboard-security freezes the RPC itself.
-    steps:
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
-      - uses: denoland/setup-deno@22d081ff2d3a40755e97629de92e3bcbfa7cf2ed
-        with:
-          deno-version: v2.x
-      - name: Run SMS, missed-call, and auth-throttle fixtures
-        run: deno test supabase/functions/_shared/lead-sms.test.ts supabase/functions/_shared/missed-call-alert.test.ts supabase/functions/_shared/auth-throttle.test.ts supabase/functions/_shared/client-ip.test.ts supabase/functions/_shared/lead-intake-rate-limit.test.ts supabase/functions/_shared/lead-notification.test.ts supabase/functions/_shared/lead-request.test.ts supabase/functions/_shared/webhook-request.test.ts
-      - name: Verify missed-call source, migration, and release-order contract
-        run: deno test --allow-read=supabase/functions/handle-call/index.ts,supabase/functions/handle-call/DEPLOY.md,supabase/functions/handle-sms/index.ts,supabase/migrations/20260812010000_missed_call_alerts.sql,scripts/run-missed-call-migration.sh,.github/workflows/compliance-gate.yml,.github/workflows/deploy-edge-function.yml supabase/functions/_shared/missed-call-alert-source.test.ts
-      - name: Verify notification worker/scheduler secret parity
-        run: deno test --allow-read=supabase/functions/lead-notification-worker/index.ts,supabase/functions/handle-lead/index.ts,supabase/functions/handle-lead/DEPLOY.md,supabase/functions/resend-webhook/index.ts,supabase/functions/_shared/webhook-request.ts,.github/workflows/lead-notification-worker.yml,.github/workflows/deploy-edge-function.yml,.github/workflows/compliance-gate.yml,supabase/migrations/20260807000090_emergency_dashboard_secret_containment.sql,supabase/migrations/20260807000100_lead_notification_outbox.sql,supabase/migrations/20260807000125_add_ul_request_spam_status.sql,supabase/migrations/20260807000140_atomic_dashboard_auth_throttle.sql,supabase/migrations/20260807000150_dashboard_session_credentials.sql,supabase/migrations/20260807000160_lead_intake_rate_limit.sql,supabase/migrations/20260807000165_activate_lead_notification_outbox.sql,supabase/migrations/20260807000170_report_test_markers.sql,supabase/migration-baselines/remote-applied-history-guard.sql,DASHBOARD-SECURITY-CHECKLIST.md supabase/functions/_shared/lead-notification-source.test.ts
-      - name: Verify lead-intake abuse controls and public form parity
-        run: deno test --allow-read=supabase/functions/handle-lead/index.ts,supabase/migrations/20260807000160_lead_intake_rate_limit.sql,index.html,hero.html,global-modal.js supabase/functions/_shared/lead-intake-source.test.ts
-
-  dashboard-security:
-    name: Dashboard session revocation + credential security (blocking)
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
-      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
-        with:
-          node-version: '20'
-      - uses: denoland/setup-deno@22d081ff2d3a40755e97629de92e3bcbfa7cf2ed
-        with:
-          deno-version: v2.x
-      - name: Reject unsafe client-IP probe sources and live mutation tooling
-        run: node scripts/audit-client-ip-probe-contract.mjs
-      - name: Reject intake and CRM deploys without a fresh client-IP canary receipt
-        run: node scripts/test-client-ip-deploy-receipt.mjs
-      - name: Reject browser PIN leaks and unsafe access management
-        run: npm run audit:dashboard-security
-      - name: Reject dashboard deploys without a complete rollout receipt
-        run: node scripts/test-dashboard-deploy-receipt.mjs
-      - name: Run dashboard authorization and session-version fixtures
-        run: deno test --allow-read=locations supabase/functions/_shared/crm-access.test.ts supabase/functions/_shared/dashboard-session.test.ts supabase/functions/_shared/dashboard-credential.test.ts supabase/functions/weekly-report/report-contract.test.ts
-      - name: Reject recovered or URL-borne weekly-report credentials
-        run: deno test --allow-read=supabase/functions/weekly-report/index.ts,scripts/refresh-traffic-snapshot.sh supabase/functions/weekly-report/source-security.test.ts
-
-  relay-classification:
-    name: SMS relay classification eval (blocking)
-    runs-on: ubuntu-latest
-    # BLOCKING (added 2026-06-12, relay-parity port from the TX repo). handle-sms
-    # routes inbound webhooks: operator commands (CALL / TO:<number> message) vs
-    # customer messages, and Twilio Advanced Opt-Out (STOP/START/HELP) which must
-    # NOT become a sticky conversation or get force-forwarded. In the TX repo this
-    # routing misclassified inbound THREE times before it was frozen (#215). The
-    # pure decisions now live in _shared/classify-inbound.ts (handle-sms imports
-    # them); classify-inbound.test.ts freezes them so a one-line routing slip can't
-    # ship. Behavior-preserving extraction — no routing change shipped with the
-    # port. Deno = same runtime that deploys.
-    steps:
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
-      - uses: denoland/setup-deno@22d081ff2d3a40755e97629de92e3bcbfa7cf2ed
-        with:
-          deno-version: v2.x
-      - name: Run relay classification fixtures
-        run: deno test supabase/functions/_shared/classify-inbound.test.ts
-
-  lead-tier-classification:
-    name: Lead tier classification eval (blocking)
-    runs-on: ubuntu-latest
-    # BLOCKING (added 2026-06-12, parity port from the TX repo #217). handle-lead
-    # routes every lead into a 5-way tier (emergency/urgent/scheduled/general/spam)
-    # that drives notification urgency (emergency pages Landon loudest) and SMS
-    # suppression. The heuristic dropdown short-circuit classifies most leads BEFORE
-    # the optional, timeout-bounded OpenRouter LLM — so an emergency-leak lead
-    # silently dropping to "general", or a hallucinated LLM tier reaching the DB, is
-    # the regression this freezes. The pure decisions now live in _shared/lead-tier.ts
-    # (handle-lead imports them): heuristicClassify + coerceLlmClassification (the
-    # parse contract) + fallbackClassification. Behavior-preserving extraction.
-    steps:
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
-      - uses: denoland/setup-deno@22d081ff2d3a40755e97629de92e3bcbfa7cf2ed
-        with:
-          deno-version: v2.x
-      - name: Run lead tier classification fixtures
-        run: deno test supabase/functions/_shared/lead-tier.test.ts
-
-  compliance-words:
-    name: Forbidden-word + saturation audit (blocking)
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
-      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
-        with:
-          node-version: '20'
+      - name: static-assets - node scripts/audit-static-assets.mjs
+        if: ${{ !cancelled() }}
+        run: node scripts/audit-static-assets.mjs
       - name: Run compliance-words validator
-        # exits 1 on any forbidden-word blocker; saturation stays a warning
-        # unless --strict is added later.
+        if: ${{ !cancelled() }}
         run: node scripts/audit-compliance-words.mjs
-
-  claim-registry:
-    name: Verified claim registry + llms.txt parity (blocking)
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
-      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
-        with:
-          node-version: '20'
       - name: Fail on unverified, expired, conflicting, or drifted narrative claims
+        if: ${{ !cancelled() }}
         run: node scripts/audit-claim-registry.mjs
-
-  aeo-topic-portfolio:
-    name: AEO topic-portfolio measurement contract (blocking)
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
-      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
-        with:
-          node-version: '20'
       - name: Require three topics, five intents, durable tags, and no page-fanout contract
+        if: ${{ !cancelled() }}
         run: node scripts/validate-aeo-topic-portfolio.mjs
-
-  jsonld-validity:
-    name: JSON-LD structured-data validity (blocking)
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
-      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
-        with:
-          node-version: '20'
       - name: Parse all JSON-LD blocks (fails on any invalid block)
+        if: ${{ !cancelled() }}
         run: node scripts/audit-jsonld.mjs
       - name: Require every FAQ schema question to be visible
+        if: ${{ !cancelled() }}
         run: npm run audit:faq-parity
-
-
-  link-integrity:
-    name: Internal link integrity (blocking)
-    runs-on: ubuntu-latest
-    # RATCHET CLOSED 2026-06-01: the 17 broken links were triaged to 0 on live
-    # pages (the rest were archive/draft noise; scanner now scopes to served
-    # pages). Now blocking, like TX.
-    steps:
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
-      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
-        with:
-          node-version: '20'
+      # RATCHET CLOSED 2026-06-01: the 17 broken links were triaged to 0 on live
+      # pages (the rest were archive/draft noise; scanner now scopes to served
+      # pages). Now blocking, like TX.
       - name: Fail on broken internal links
-        # vercel.json redirects/rewrites are resolved, so routed links pass.
+        if: ${{ !cancelled() }}
         run: node scripts/audit-links.mjs --strict
-
-  cta-integrity:
-    name: CTA & external-link integrity (blocking)
-    runs-on: ubuntu-latest
-    # BLOCKING. Asserts every customer-facing page matches the canonical identity
-    # in data/route-factory/business.json: no internal-only phone leak, no wrong/
-    # dead Google listing cid/data_id, no placeholder links, no generic-search
-    # review CTAs. Added 2026-06-01 after a review CTA shipped pointing at a dead
-    # Google listing (cid 16833…) — this gate makes that class un-mergeable.
-    steps:
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
-      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
-        with:
-          node-version: '20'
+      # BLOCKING. Asserts every customer-facing page matches the canonical identity
+      # in data/route-factory/business.json: no internal-only phone leak, no wrong/
+      # dead Google listing cid/data_id, no placeholder links, no generic-search
+      # review CTAs. Added 2026-06-01 after a review CTA shipped pointing at a dead
+      # Google listing (cid 16833…) — this gate makes that class un-mergeable.
       - name: Fail on CTA / external-link integrity violations
+        if: ${{ !cancelled() }}
         run: node scripts/audit-cta-integrity.mjs --strict
-
-  city-quality:
-    name: Doorway / thin / duplicate-page guard (blocking)
-    runs-on: ubuntu-latest
-    # RATCHET CLOSED 2026-06-02: all 45 location pages now clear the depth/
-    # local-substance/rating-integrity checks (the last 15 thin pages were
-    # deepened past the 500-unique-word floor in PR #72). Now BLOCKING — a thin
-    # or templated location page can no longer silently ship.
-    steps:
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
-      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
-        with:
-          node-version: '20'
+      # RATCHET CLOSED 2026-06-02: all 45 location pages now clear the depth/
+      # local-substance/rating-integrity checks (the last 15 thin pages were
+      # deepened past the 500-unique-word floor in PR #72). Now BLOCKING — a thin
+      # or templated location page can no longer silently ship.
       - name: Corpus-level location-page quality report
+        if: ${{ !cancelled() }}
         run: node scripts/audit-city-quality.mjs locations/*.html
-
-  gbp-copy:
-    name: GBP paste-ready copy compliance (blocking)
-    runs-on: ubuntu-latest
-    # BLOCKING. Scans the paste-ready Google Business Profile copy in data/GBP-*.md
-    # (Posts, Services, descriptions) — the text pasted into the merchant panel —
-    # for the violations that put Frame's GBP on Google enforcement watch:
-    # unlicensed-adjusting language (reused from compliance-words.json), "Free"/promo
-    # in a service NAME (instant Google rejection), reviews/stars solicitation (DPNB),
-    # and the internal LANDON_PHONE (business.json). Closes the gap that the on-site
-    # compliance gate leaves open by design (it ignores data/). Config + provenance:
-    # data/route-factory/gbp-copy.json. Passes clean on main as of 2026-06-02
-    # (post-#71 scrub; only promo-in-post WARNs remain, which are non-blocking).
-    steps:
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
-      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
-        with:
-          node-version: '20'
+      # BLOCKING. Scans the paste-ready Google Business Profile copy in data/GBP-*.md
+      # (Posts, Services, descriptions) — the text pasted into the merchant panel —
+      # for the violations that put Frame's GBP on Google enforcement watch:
+      # unlicensed-adjusting language (reused from compliance-words.json), "Free"/promo
+      # in a service NAME (instant Google rejection), reviews/stars solicitation (DPNB),
+      # and the internal LANDON_PHONE (business.json). Closes the gap that the on-site
+      # compliance gate leaves open by design (it ignores data/). Config + provenance:
+      # data/route-factory/gbp-copy.json. Passes clean on main as of 2026-06-02
+      # (post-#71 scrub; only promo-in-post WARNs remain, which are non-blocking).
       - name: Fail on GBP-copy compliance violations
+        if: ${{ !cancelled() }}
         run: node scripts/audit-gbp-copy.mjs
+      # BLOCKING. Static HTML sites can accidentally keep old public deliverables
+      # live even after a domain/NAP migration. This catches stale old-domain
+      # references, legacy internal phone leaks, and sitemap URLs that point at
+      # noindex pages.
+      - name: Fail on stale public SEO signals
+        if: ${{ !cancelled() }}
+        run: npm run audit:public-seo
+      # BLOCKING. Codifies the compliance line from commit 816c280 (which removed a
+      # cloned AggregateRating from 45 city pages): location pages may carry
+      # individual <Review> markup from REAL reviewers only (reviews.json /
+      # data/reviews-full.json, written by google-reviews-sync), and NEVER an
+      # AggregateRating — replicating the single sitewide GBP rating per-city is the
+      # banned clone. Makes "fake/cloned rating" un-mergeable. Required before the
+      # top-10-cities Review-schema rollout so that work can't re-introduce a clone.
+      - name: Fail on cloned ratings or fabricated reviews
+        if: ${{ !cancelled() }}
+        run: node scripts/audit-review-integrity.mjs --strict
+      # BLOCKING (added 2026-06-03, AEO Pillar 2). Asserts every location page's
+      # primary RoofingContractor node carries hasMap + sameAs EXACTLY matching the
+      # keystone in data/route-factory/business.json. AI engines resolve a citation
+      # to one business only when identity links agree everywhere; this prevents
+      # drift (a new page missing them, an altered/stray profile URL). A new
+      # location page can no longer ship without consistent entity links.
+      - name: Fail on missing or drifted hasMap/sameAs
+        if: ${{ !cancelled() }}
+        run: node scripts/audit-entity-consistency.mjs --strict
+      - name: Fail on SLC identity or claim drift
+        if: ${{ !cancelled() }}
+        run: npm run audit:slc-identity
+      # BLOCKING (added 2026-06-08). Mirrored from TX PR #208 (which graduated the CBP
+      # refinement loop's draft proposal #2, source frame-tx#101). Static-HTML site →
+      # Vercel serves the repo as files, so any markdown not excluded by .vercelignore
+      # is publicly fetchable (e.g. /AEO-BUILDOUT-HANDOFF-*.md). Utah was covered by the
+      # `*.md` rule but ungated; this asserts NO .md is in the public build tree so the
+      # handoff/plan docs can't leak if someone drops `*.md` or adds a doc in an
+      # un-ignored spot.
+      - name: Fail if any internal doc would deploy publicly
+        if: ${{ !cancelled() }}
+        run: node scripts/audit-doc-isolation.mjs --strict
 
-  public-seo-surface:
-    name: Public SEO surface drift (blocking)
+  runtime-contracts:
+    name: Edge runtime + security contracts (blocking)
     runs-on: ubuntu-latest
-    # BLOCKING. Static HTML sites can accidentally keep old public deliverables
-    # live even after a domain/NAP migration. This catches stale old-domain
-    # references, legacy internal phone leaks, and sitemap URLs that point at
-    # noindex pages.
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - uses: denoland/setup-deno@22d081ff2d3a40755e97629de92e3bcbfa7cf2ed
+        with:
+          deno-version: v2.x
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
         with:
           node-version: '20'
-      - name: Fail on stale public SEO signals
-        run: npm run audit:public-seo
+      - name: Typecheck every deployed Edge Function entrypoint
+        if: ${{ !cancelled() }}
+        run: deno check --frozen --node-modules-dir=auto supabase/functions/*/index.ts
+      # BLOCKING (added 2026-06-10, ported from the TX pattern). handle-lead's
+      # customer auto-reply is texted to real homeowners on the LIVE 10DLC number,
+      # but v8 had no test coverage AND ignored the form's sms_consent checkbox.
+      # The builders now live in _shared/lead-sms.ts (the real handler imports
+      # them); lead-sms.test.ts asserts: every auto-reply carries the A2P
+      # "Reply STOP to opt out." line + the business number, no Utah forbidden
+      # term (same canonical compliance-words.json as the site gate), and the
+      # TCPA consent gate (no sms_consent → NO auto-text). auth-throttle.test.ts
+      # freezes the adapter for the database-atomic per-IP login throttle (the
+      # first 10 total attempts / fixed 15-minute window may continue; successful
+      # logins never reset it). audit:dashboard-security freezes the RPC itself.
+      - name: Run SMS, missed-call, and auth-throttle fixtures
+        if: ${{ !cancelled() }}
+        run: deno test supabase/functions/_shared/lead-sms.test.ts supabase/functions/_shared/missed-call-alert.test.ts supabase/functions/_shared/auth-throttle.test.ts supabase/functions/_shared/client-ip.test.ts supabase/functions/_shared/lead-intake-rate-limit.test.ts supabase/functions/_shared/lead-notification.test.ts supabase/functions/_shared/lead-request.test.ts supabase/functions/_shared/webhook-request.test.ts
+      - name: Verify missed-call source, migration, and release-order contract
+        if: ${{ !cancelled() }}
+        run: deno test --allow-read=supabase/functions/handle-call/index.ts,supabase/functions/handle-call/DEPLOY.md,supabase/functions/handle-sms/index.ts,supabase/migrations/20260812010000_missed_call_alerts.sql,scripts/run-missed-call-migration.sh,.github/workflows/compliance-gate.yml,.github/workflows/deploy-edge-function.yml supabase/functions/_shared/missed-call-alert-source.test.ts
+      - name: Verify notification worker/scheduler secret parity
+        if: ${{ !cancelled() }}
+        run: deno test --allow-read=supabase/functions/lead-notification-worker/index.ts,supabase/functions/handle-lead/index.ts,supabase/functions/handle-lead/DEPLOY.md,supabase/functions/resend-webhook/index.ts,supabase/functions/_shared/webhook-request.ts,.github/workflows/lead-notification-worker.yml,.github/workflows/deploy-edge-function.yml,.github/workflows/compliance-gate.yml,supabase/migrations/20260807000090_emergency_dashboard_secret_containment.sql,supabase/migrations/20260807000100_lead_notification_outbox.sql,supabase/migrations/20260807000125_add_ul_request_spam_status.sql,supabase/migrations/20260807000140_atomic_dashboard_auth_throttle.sql,supabase/migrations/20260807000150_dashboard_session_credentials.sql,supabase/migrations/20260807000160_lead_intake_rate_limit.sql,supabase/migrations/20260807000165_activate_lead_notification_outbox.sql,supabase/migrations/20260807000170_report_test_markers.sql,supabase/migration-baselines/remote-applied-history-guard.sql,DASHBOARD-SECURITY-CHECKLIST.md supabase/functions/_shared/lead-notification-source.test.ts
+      - name: Verify lead-intake abuse controls and public form parity
+        if: ${{ !cancelled() }}
+        run: deno test --allow-read=supabase/functions/handle-lead/index.ts,supabase/migrations/20260807000160_lead_intake_rate_limit.sql,index.html,hero.html,global-modal.js supabase/functions/_shared/lead-intake-source.test.ts
+      # BLOCKING (added 2026-06-12, relay-parity port from the TX repo). handle-sms
+      # routes inbound webhooks: operator commands (CALL / TO:<number> message) vs
+      # customer messages, and Twilio Advanced Opt-Out (STOP/START/HELP) which must
+      # NOT become a sticky conversation or get force-forwarded. In the TX repo this
+      # routing misclassified inbound THREE times before it was frozen (#215). The
+      # pure decisions now live in _shared/classify-inbound.ts (handle-sms imports
+      # them); classify-inbound.test.ts freezes them so a one-line routing slip can't
+      # ship. Behavior-preserving extraction — no routing change shipped with the
+      # port. Deno = same runtime that deploys.
+      - name: Run relay classification fixtures
+        if: ${{ !cancelled() }}
+        run: deno test supabase/functions/_shared/classify-inbound.test.ts
+      # BLOCKING (added 2026-06-12, parity port from the TX repo #217). handle-lead
+      # routes every lead into a 5-way tier (emergency/urgent/scheduled/general/spam)
+      # that drives notification urgency (emergency pages Landon loudest) and SMS
+      # suppression. The heuristic dropdown short-circuit classifies most leads BEFORE
+      # the optional, timeout-bounded OpenRouter LLM — so an emergency-leak lead
+      # silently dropping to "general", or a hallucinated LLM tier reaching the DB, is
+      # the regression this freezes. The pure decisions now live in _shared/lead-tier.ts
+      # (handle-lead imports them): heuristicClassify + coerceLlmClassification (the
+      # parse contract) + fallbackClassification. Behavior-preserving extraction.
+      - name: Run lead tier classification fixtures
+        if: ${{ !cancelled() }}
+        run: deno test supabase/functions/_shared/lead-tier.test.ts
+      - name: Reject unsafe client-IP probe sources and live mutation tooling
+        if: ${{ !cancelled() }}
+        run: node scripts/audit-client-ip-probe-contract.mjs
+      - name: Reject intake and CRM deploys without a fresh client-IP canary receipt
+        if: ${{ !cancelled() }}
+        run: node scripts/test-client-ip-deploy-receipt.mjs
+      - name: Reject browser PIN leaks and unsafe access management
+        if: ${{ !cancelled() }}
+        run: npm run audit:dashboard-security
+      - name: Reject dashboard deploys without a complete rollout receipt
+        if: ${{ !cancelled() }}
+        run: node scripts/test-dashboard-deploy-receipt.mjs
+      - name: Run dashboard authorization and session-version fixtures
+        if: ${{ !cancelled() }}
+        run: deno test --allow-read=locations supabase/functions/_shared/crm-access.test.ts supabase/functions/_shared/dashboard-session.test.ts supabase/functions/_shared/dashboard-credential.test.ts supabase/functions/weekly-report/report-contract.test.ts
+      - name: Reject recovered or URL-borne weekly-report credentials
+        if: ${{ !cancelled() }}
+        run: deno test --allow-read=supabase/functions/weekly-report/index.ts,scripts/refresh-traffic-snapshot.sh supabase/functions/weekly-report/source-security.test.ts
 
-  mobile-ui-quality:
-    name: Mobile conversion UI quality (blocking)
+  browser-qa:
+    name: Rendered browser QA (blocking)
     runs-on: ubuntu-latest
+    timeout-minutes: 25
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
@@ -418,66 +355,29 @@ jobs:
         run: npm ci
       - name: Install Chromium for rendered QA
         run: npx playwright install --with-deps chromium
+      - name: lead-form-single-submit - npm run test:lead-form
+        if: ${{ !cancelled() }}
+        run: npm run test:lead-form
       - name: Verify mobile UI and immutable asset version contracts
+        if: ${{ !cancelled() }}
         run: npm run audit:mobile-ui
       - name: Verify mobile dock across representative routes and phone sizes
+        if: ${{ !cancelled() }}
         run: npm run test:mobile-ui
       - name: Verify dashboard bearer session and stored-XSS browser flow
+        if: ${{ !cancelled() }}
         run: npm run test:dashboard-session-client
 
-  review-integrity:
-    name: Review & rating integrity (blocking)
+  provider-workflows:
+    name: Provider workflow fail-closed regressions (blocking)
     runs-on: ubuntu-latest
-    # BLOCKING. Codifies the compliance line from commit 816c280 (which removed a
-    # cloned AggregateRating from 45 city pages): location pages may carry
-    # individual <Review> markup from REAL reviewers only (reviews.json /
-    # data/reviews-full.json, written by google-reviews-sync), and NEVER an
-    # AggregateRating — replicating the single sitewide GBP rating per-city is the
-    # banned clone. Makes "fake/cloned rating" un-mergeable. Required before the
-    # top-10-cities Review-schema rollout so that work can't re-introduce a clone.
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
-      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
         with:
-          node-version: '20'
-      - name: Fail on cloned ratings or fabricated reviews
-        run: node scripts/audit-review-integrity.mjs --strict
+          python-version: '3.12'
+      - name: Exercise provider outages, atomic snapshots, and workflow contracts
+        if: ${{ !cancelled() }}
+        run: python3 tests/test_provider_workflows.py
 
-  entity-consistency:
-    name: Entity consistency — hasMap + sameAs (blocking)
-    runs-on: ubuntu-latest
-    # BLOCKING (added 2026-06-03, AEO Pillar 2). Asserts every location page's
-    # primary RoofingContractor node carries hasMap + sameAs EXACTLY matching the
-    # keystone in data/route-factory/business.json. AI engines resolve a citation
-    # to one business only when identity links agree everywhere; this prevents
-    # drift (a new page missing them, an altered/stray profile URL). A new
-    # location page can no longer ship without consistent entity links.
-    steps:
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
-      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
-        with:
-          node-version: '20'
-      - name: Fail on missing or drifted hasMap/sameAs
-        run: node scripts/audit-entity-consistency.mjs --strict
-      # Regression for the 2026-08-11 SLC drift: staged contact data and Heber
-      # entity URLs must never replace the separately verified service-area CID.
-      - name: Fail on SLC identity or claim drift
-        run: npm run audit:slc-identity
-
-  doc-isolation:
-    name: Internal-doc isolation (blocking)
-    runs-on: ubuntu-latest
-    # BLOCKING (added 2026-06-08). Mirrored from TX PR #208 (which graduated the CBP
-    # refinement loop's draft proposal #2, source frame-tx#101). Static-HTML site →
-    # Vercel serves the repo as files, so any markdown not excluded by .vercelignore
-    # is publicly fetchable (e.g. /AEO-BUILDOUT-HANDOFF-*.md). Utah was covered by the
-    # `*.md` rule but ungated; this asserts NO .md is in the public build tree so the
-    # handoff/plan docs can't leak if someone drops `*.md` or adds a doc in an
-    # un-ignored spot.
-    steps:
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
-      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
-        with:
-          node-version: '20'
-      - name: Fail if any internal doc would deploy publicly
-        run: node scripts/audit-doc-isolation.mjs --strict
