@@ -80,15 +80,15 @@
   "sources": {
     "portfolio": {
       "file": "data/rank-tracker/SLV-18-CITY-GOAL-PORTFOLIO-2026-08-12.json",
-      "sha256": "6551c4f256ce6fe293f8279777605642ec8ac05f5c5a201205508a83f105c88a"
+      "sha256": "509f1b70b63744936122b1b1c900d0cb6274784dfdd12b5d4605ca9fead77968"
     },
     "weeklyDecisions": {
       "file": "data/rank-tracker/SLV-WEEKLY-DECISIONS-2026-08-12.json",
-      "sha256": "bc91e031e1c5b5d3cbe0045c2878ce4241605d0ff2d149115a9e9b92aaa39adf"
+      "sha256": "32fac9bda854c39d2ed92def876f456f783776c06ce0f78361546ea93f21fd29"
     },
     "gscAttribution": {
       "file": "data/rank-tracker/SLV-GSC-URL-ATTRIBUTION-LATEST.json",
-      "sha256": "3aa0a2a402fe8e232bb947e4ebaaefd4852fd90b8c15d2a223ff393eb1e50158"
+      "sha256": "4f8438d5f0a0d87a904ea57e5b06691eef1cea55bb9da2503317fa8151a12a9f"
     },
     "gscSplitUrlDiagnosis": {
       "file": "data/rank-tracker/SLV-GSC-SPLIT-URL-DIAGNOSIS-2026-08-12.json",
@@ -96,19 +96,19 @@
     },
     "displacement": {
       "file": "data/rank-tracker/SLV-COMPETITOR-DISPLACEMENT-2026-08-12.json",
-      "sha256": "845b4dbf45e59fec93650b3e8f2b8e2144287c0f09201bb3414fa5f94dd70f74"
+      "sha256": "1466d510fd5441f7b5ba26c943224dadf92262ec23736ef7efe958247a78e3af"
     },
     "entityHealth": {
       "file": "data/rank-tracker/SLV-ENTITY-HEALTH-2026-08-12.json",
-      "sha256": "7195c1eb457b1cd0fce9f530c54a3376f812f05406883be4b4e76c9535aa3295"
+      "sha256": "4630dc203e4e072d97d3d5eb9cb105ef74ee7eabb1ed7486e082386667f160a6"
     },
     "mapsReadiness": {
       "file": "data/rank-tracker/SLV-MAPS-READINESS-2026-08-12.json",
-      "sha256": "94f958bbbd954337c8c2fc3d8a8b0de143ba816317122477566859053af88589"
+      "sha256": "8acd3255cf3a233b3b43243bcc45258a4a68f79b9700c32df80f779699a27cdb"
     },
     "expansionArchitecture": {
       "file": "data/rank-tracker/SLV-EXPANSION-ARCHITECTURE-2026-08-12.json",
-      "sha256": "5a34653717291e9f79b9760273780fd2f0fb69ad567a651c59711953902e5b8d"
+      "sha256": "60eb1caca9457f0f11d22df6127ab141e852fba6d5b8a2f665757dceaee5d581"
     },
     "corePriority": {
       "file": "data/rank-tracker/SLV-PRIORITY-2026-08-12.json",
@@ -240,15 +240,15 @@
       "lane": "observe-time-gated-slc-experiment",
       "decision": "Monitor",
       "evidenceFeatures": {
-        "observedAt": "2026-08-17T20:32:28.755Z",
+        "observedAt": "2026-08-24T09:57:09.354Z",
         "organicRanks": [
-          null,
-          21,
-          null,
+          29,
+          22,
+          23,
           null
         ],
-        "bestMeasuredOrganicRank": 21,
-        "measuredMeanOrganicRank": 21,
+        "bestMeasuredOrganicRank": 22,
+        "measuredMeanOrganicRank": 24.67,
         "exactCidMapsNumberOne": 0,
         "exactCidMapsReturned": 0,
         "mapsPacksPresent": 3,
@@ -258,7 +258,7 @@
           "cid": "16329927680093228178",
           "domain": "google.com",
           "appearances": 3,
-          "numberOneQueries": 2,
+          "numberOneQueries": 1,
           "bestRank": 1,
           "keywords": [
             "roof repair salt lake city",
@@ -281,7 +281,7 @@
         "architectureState": "not-separately-diagnosed",
         "protectedRelatedRoutes": [],
         "consumerAiState": "configured-scheduled-unmeasured-invalid-provider-credential",
-        "comparableWeeklyGooglePanels": 2,
+        "comparableWeeklyGooglePanels": 3,
         "comparableWeeklyConsumerAiPanels": 0
       },
       "scoreVector": {
@@ -341,33 +341,34 @@
       "lane": "owner-gated-verified-identity-and-integrity-cleanup",
       "decision": "Request input",
       "evidenceFeatures": {
-        "observedAt": "2026-08-17T20:32:28.757Z",
+        "observedAt": "2026-08-24T09:57:09.356Z",
         "organicRanks": [
           4,
           4,
-          4,
-          9
+          5,
+          12
         ],
         "bestMeasuredOrganicRank": 4,
-        "measuredMeanOrganicRank": 5.25,
+        "measuredMeanOrganicRank": 6.25,
         "exactCidMapsNumberOne": 0,
         "exactCidMapsReturned": 0,
-        "mapsPacksPresent": 3,
+        "mapsPacksPresent": 4,
         "mapsReadinessLane": "owner-gated-page-identity-correction",
         "dominantMapsDisplacer": {
           "name": "Whitaker Roofing Services",
           "cid": "11316815627233980109",
           "domain": "google.com",
-          "appearances": 3,
+          "appearances": 4,
           "numberOneQueries": 3,
           "bestRank": 1,
           "keywords": [
+            "roofing contractor millcreek",
             "roof repair millcreek",
             "roof replacement millcreek",
             "roofer millcreek"
           ]
         },
-        "googleAiOverviewsPresent": 1,
+        "googleAiOverviewsPresent": 0,
         "googleAiOverviewOwnedQueries": [],
         "protectedOrganicNumberOneQueries": [],
         "intendedPageSelectedForEveryMeasuredRank": true,
@@ -382,14 +383,14 @@
         "architectureState": "not-evidenced",
         "protectedRelatedRoutes": [],
         "consumerAiState": "configured-scheduled-unmeasured-invalid-provider-credential",
-        "comparableWeeklyGooglePanels": 2,
+        "comparableWeeklyGooglePanels": 3,
         "comparableWeeklyConsumerAiPanels": 0
       },
       "scoreVector": {
         "businessValue": 10,
         "confidence": 8,
         "leadValue": 8,
-        "authorityValue": 7,
+        "authorityValue": 5,
         "learningValue": 6,
         "implementationCost": 5,
         "complianceRisk": 8,
@@ -654,15 +655,15 @@
       "lane": "owner-gated-core-integrity-then-single-variable-intent-test",
       "decision": "Request input",
       "evidenceFeatures": {
-        "observedAt": "2026-08-17T20:32:28.757Z",
+        "observedAt": "2026-08-24T09:57:09.356Z",
         "organicRanks": [
-          15,
+          null,
           14,
-          5,
-          11
+          13,
+          null
         ],
-        "bestMeasuredOrganicRank": 5,
-        "measuredMeanOrganicRank": 11.25,
+        "bestMeasuredOrganicRank": 13,
+        "measuredMeanOrganicRank": 13.5,
         "exactCidMapsNumberOne": 0,
         "exactCidMapsReturned": 0,
         "mapsPacksPresent": 4,
@@ -696,13 +697,13 @@
         "architectureState": "not-evidenced",
         "protectedRelatedRoutes": [],
         "consumerAiState": "configured-manual-unmeasured-invalid-provider-credential",
-        "comparableWeeklyGooglePanels": 2,
+        "comparableWeeklyGooglePanels": 3,
         "comparableWeeklyConsumerAiPanels": 0
       },
       "scoreVector": {
         "businessValue": 10,
         "confidence": 6,
-        "leadValue": 8,
+        "leadValue": 5,
         "authorityValue": 5,
         "learningValue": 6,
         "implementationCost": 5,
@@ -759,25 +760,25 @@
       "lane": "diagnose-url-consolidation-before-intent-change",
       "decision": "Monitor",
       "evidenceFeatures": {
-        "observedAt": "2026-08-17T20:32:28.757Z",
+        "observedAt": "2026-08-24T09:57:09.356Z",
         "organicRanks": [
           19,
-          12,
+          10,
           4,
-          19
+          15
         ],
         "bestMeasuredOrganicRank": 4,
-        "measuredMeanOrganicRank": 13.5,
+        "measuredMeanOrganicRank": 12,
         "exactCidMapsNumberOne": 0,
         "exactCidMapsReturned": 0,
         "mapsPacksPresent": 4,
         "mapsReadinessLane": "service-area-proof-before-exact-cid-planning",
         "dominantMapsDisplacer": {
-          "name": "Holladay Roofing",
-          "cid": "4608145956816988456",
+          "name": "True North Roofing",
+          "cid": "5387650211366766810",
           "domain": "google.com",
           "appearances": 4,
-          "numberOneQueries": 2,
+          "numberOneQueries": 4,
           "bestRank": 1,
           "keywords": [
             "roofing contractor holladay",
@@ -786,7 +787,7 @@
             "roofer holladay"
           ]
         },
-        "googleAiOverviewsPresent": 0,
+        "googleAiOverviewsPresent": 1,
         "googleAiOverviewOwnedQueries": [],
         "protectedOrganicNumberOneQueries": [],
         "intendedPageSelectedForEveryMeasuredRank": true,
@@ -805,14 +806,14 @@
         "architectureState": "not-evidenced",
         "protectedRelatedRoutes": [],
         "consumerAiState": "configured-manual-unmeasured-invalid-provider-credential",
-        "comparableWeeklyGooglePanels": 2,
+        "comparableWeeklyGooglePanels": 3,
         "comparableWeeklyConsumerAiPanels": 0
       },
       "scoreVector": {
         "businessValue": 10,
         "confidence": 6,
         "leadValue": 8,
-        "authorityValue": 5,
+        "authorityValue": 7,
         "learningValue": 6,
         "implementationCost": 3,
         "complianceRisk": 1,
@@ -868,15 +869,15 @@
       "lane": "owner-gated-core-integrity-then-single-variable-intent-test",
       "decision": "Request input",
       "evidenceFeatures": {
-        "observedAt": "2026-08-17T20:32:28.757Z",
+        "observedAt": "2026-08-24T09:57:09.356Z",
         "organicRanks": [
-          17,
-          13,
-          13,
-          14
+          15,
+          12,
+          10,
+          11
         ],
-        "bestMeasuredOrganicRank": 13,
-        "measuredMeanOrganicRank": 14.25,
+        "bestMeasuredOrganicRank": 10,
+        "measuredMeanOrganicRank": 12,
         "exactCidMapsNumberOne": 0,
         "exactCidMapsReturned": 0,
         "mapsPacksPresent": 4,
@@ -910,13 +911,13 @@
         "architectureState": "not-evidenced",
         "protectedRelatedRoutes": [],
         "consumerAiState": "configured-manual-unmeasured-invalid-provider-credential",
-        "comparableWeeklyGooglePanels": 2,
+        "comparableWeeklyGooglePanels": 3,
         "comparableWeeklyConsumerAiPanels": 0
       },
       "scoreVector": {
         "businessValue": 10,
         "confidence": 6,
-        "leadValue": 5,
+        "leadValue": 7,
         "authorityValue": 5,
         "learningValue": 6,
         "implementationCost": 5,
@@ -1807,7 +1808,7 @@
       "lane": "owner-gated-core-integrity-then-single-variable-intent-test",
       "decision": "Request input",
       "evidenceFeatures": {
-        "observedAt": "2026-08-17T20:32:28.758Z",
+        "observedAt": "2026-08-24T09:57:09.357Z",
         "organicRanks": [
           null,
           null,
@@ -1825,7 +1826,7 @@
           "cid": "15206834657984643450",
           "domain": "google.com",
           "appearances": 4,
-          "numberOneQueries": 3,
+          "numberOneQueries": 4,
           "bestRank": 1,
           "keywords": [
             "roofing contractor draper",
@@ -1849,7 +1850,7 @@
         "architectureState": "not-evidenced",
         "protectedRelatedRoutes": [],
         "consumerAiState": "configured-manual-unmeasured-invalid-provider-credential",
-        "comparableWeeklyGooglePanels": 2,
+        "comparableWeeklyGooglePanels": 3,
         "comparableWeeklyConsumerAiPanels": 0
       },
       "scoreVector": {

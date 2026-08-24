@@ -52,15 +52,15 @@
   "sources": {
     "portfolio": {
       "file": "data/rank-tracker/SLV-18-CITY-GOAL-PORTFOLIO-2026-08-12.json",
-      "sha256": "6551c4f256ce6fe293f8279777605642ec8ac05f5c5a201205508a83f105c88a"
+      "sha256": "509f1b70b63744936122b1b1c900d0cb6274784dfdd12b5d4605ca9fead77968"
     },
     "displacement": {
       "file": "data/rank-tracker/SLV-COMPETITOR-DISPLACEMENT-2026-08-12.json",
-      "sha256": "845b4dbf45e59fec93650b3e8f2b8e2144287c0f09201bb3414fa5f94dd70f74"
+      "sha256": "1466d510fd5441f7b5ba26c943224dadf92262ec23736ef7efe958247a78e3af"
     },
     "entityHealth": {
       "file": "data/rank-tracker/SLV-ENTITY-HEALTH-2026-08-12.json",
-      "sha256": "7195c1eb457b1cd0fce9f530c54a3376f812f05406883be4b4e76c9535aa3295"
+      "sha256": "4630dc203e4e072d97d3d5eb9cb105ef74ee7eabb1ed7486e082386667f160a6"
     },
     "serviceAreaRequest": {
       "file": "data/authority/SLV-SERVICE-AREA-EVIDENCE-REQUEST-2026-08-12.json",
@@ -78,8 +78,8 @@
   "summary": {
     "cities": 18,
     "queries": 72,
-    "mapsPacksPresent": 69,
-    "mapsPacksAbsent": 3,
+    "mapsPacksPresent": 70,
+    "mapsPacksAbsent": 2,
     "exactCidReturned": 0,
     "exactCidNumberOne": 0,
     "profileVerifiedCities": 2,
@@ -152,11 +152,22 @@
             "cid": "16329927680093228178",
             "domain": "google.com",
             "appearances": 3,
-            "numberOneQueries": 2,
+            "numberOneQueries": 1,
             "bestRank": 1,
             "keywords": [
               "roof repair salt lake city",
               "roof replacement salt lake city",
+              "roofer salt lake city"
+            ]
+          },
+          {
+            "name": "Sky Bridge Roofing",
+            "cid": "5327886489350788974",
+            "domain": "google.com",
+            "appearances": 1,
+            "numberOneQueries": 1,
+            "bestRank": 1,
+            "keywords": [
               "roofer salt lake city"
             ]
           },
@@ -169,17 +180,6 @@
             "bestRank": 1,
             "keywords": [
               "roof repair salt lake city"
-            ]
-          },
-          {
-            "name": "Roof-It, Inc.",
-            "cid": "14355335798757301774",
-            "domain": "google.com",
-            "appearances": 1,
-            "numberOneQueries": 0,
-            "bestRank": 2,
-            "keywords": [
-              "roof replacement salt lake city"
             ]
           }
         ]
@@ -218,8 +218,8 @@
           "packState": "exact-cid-not-returned-in-pack",
           "exactCidRank": null,
           "numberOneEntity": {
-            "name": "The Roof Doctor",
-            "cid": "16329927680093228178"
+            "name": "Sky Bridge Roofing",
+            "cid": "5327886489350788974"
           }
         }
       ],
@@ -257,8 +257,8 @@
         }
       },
       "maps": {
-        "packsPresent": 3,
-        "packsAbsent": 1,
+        "packsPresent": 4,
+        "packsAbsent": 0,
         "exactCidReturned": 0,
         "exactCidNumberOne": 0,
         "exactCidRanks": [
@@ -272,25 +272,14 @@
             "name": "Whitaker Roofing Services",
             "cid": "11316815627233980109",
             "domain": "google.com",
-            "appearances": 3,
+            "appearances": 4,
             "numberOneQueries": 3,
             "bestRank": 1,
             "keywords": [
+              "roofing contractor millcreek",
               "roof repair millcreek",
               "roof replacement millcreek",
               "roofer millcreek"
-            ]
-          },
-          {
-            "name": "Vault Roofing LLC",
-            "cid": "9387084358687172308",
-            "domain": "google.com",
-            "appearances": 2,
-            "numberOneQueries": 0,
-            "bestRank": 3,
-            "keywords": [
-              "roof repair millcreek",
-              "roof replacement millcreek"
             ]
           },
           {
@@ -298,10 +287,22 @@
             "cid": "2008385778269964311",
             "domain": "google.com",
             "appearances": 1,
+            "numberOneQueries": 1,
+            "bestRank": 1,
+            "keywords": [
+              "roofer millcreek"
+            ]
+          },
+          {
+            "name": "Sky Bridge Roofing",
+            "cid": "5327886489350788974",
+            "domain": "google.com",
+            "appearances": 2,
             "numberOneQueries": 0,
             "bestRank": 2,
             "keywords": [
-              "roofer millcreek"
+              "roofing contractor millcreek",
+              "roof repair millcreek"
             ]
           }
         ]
@@ -310,9 +311,12 @@
         {
           "queryId": "millcreek-roofing-contractor",
           "keyword": "roofing contractor millcreek",
-          "packState": "local-pack-not-present",
+          "packState": "exact-cid-not-returned-in-pack",
           "exactCidRank": null,
-          "numberOneEntity": null
+          "numberOneEntity": {
+            "name": "Whitaker Roofing Services",
+            "cid": "11316815627233980109"
+          }
         },
         {
           "queryId": "millcreek-roof-repair",
@@ -340,8 +344,8 @@
           "packState": "exact-cid-not-returned-in-pack",
           "exactCidRank": null,
           "numberOneEntity": {
-            "name": "Whitaker Roofing Services",
-            "cid": "11316815627233980109"
+            "name": "RoofTek",
+            "cid": "2008385778269964311"
           }
         }
       ],
@@ -424,7 +428,7 @@
             "domain": "google.com",
             "appearances": 2,
             "numberOneQueries": 0,
-            "bestRank": 2,
+            "bestRank": 3,
             "keywords": [
               "roofing contractor sandy",
               "roof repair sandy"
@@ -520,11 +524,11 @@
         ],
         "dominantDisplacers": [
           {
-            "name": "Holladay Roofing",
-            "cid": "4608145956816988456",
+            "name": "True North Roofing",
+            "cid": "5387650211366766810",
             "domain": "google.com",
             "appearances": 4,
-            "numberOneQueries": 2,
+            "numberOneQueries": 4,
             "bestRank": 1,
             "keywords": [
               "roofing contractor holladay",
@@ -534,12 +538,12 @@
             ]
           },
           {
-            "name": "True North Roofing",
-            "cid": "5387650211366766810",
+            "name": "Holladay Roofing",
+            "cid": "4608145956816988456",
             "domain": "google.com",
             "appearances": 4,
-            "numberOneQueries": 2,
-            "bestRank": 1,
+            "numberOneQueries": 0,
+            "bestRank": 2,
             "keywords": [
               "roofing contractor holladay",
               "roof repair holladay",
@@ -570,8 +574,8 @@
           "packState": "exact-cid-not-returned-in-pack",
           "exactCidRank": null,
           "numberOneEntity": {
-            "name": "Holladay Roofing",
-            "cid": "4608145956816988456"
+            "name": "True North Roofing",
+            "cid": "5387650211366766810"
           }
         },
         {
@@ -600,8 +604,8 @@
           "packState": "exact-cid-not-returned-in-pack",
           "exactCidRank": null,
           "numberOneEntity": {
-            "name": "Holladay Roofing",
-            "cid": "4608145956816988456"
+            "name": "True North Roofing",
+            "cid": "5387650211366766810"
           }
         }
       ],
@@ -785,7 +789,7 @@
             "cid": "15206834657984643450",
             "domain": "google.com",
             "appearances": 4,
-            "numberOneQueries": 3,
+            "numberOneQueries": 4,
             "bestRank": 1,
             "keywords": [
               "roofing contractor draper",
@@ -799,8 +803,8 @@
             "cid": "11642763325802433097",
             "domain": "google.com",
             "appearances": 4,
-            "numberOneQueries": 1,
-            "bestRank": 1,
+            "numberOneQueries": 0,
+            "bestRank": 2,
             "keywords": [
               "roofing contractor draper",
               "roof repair draper",
@@ -814,7 +818,7 @@
             "domain": "google.com",
             "appearances": 2,
             "numberOneQueries": 0,
-            "bestRank": 2,
+            "bestRank": 3,
             "keywords": [
               "roof repair draper",
               "roof replacement draper"
@@ -829,8 +833,8 @@
           "packState": "exact-cid-not-returned-in-pack",
           "exactCidRank": null,
           "numberOneEntity": {
-            "name": "Rocky Mountain Roofing UT, LLC",
-            "cid": "11642763325802433097"
+            "name": "Pride Roofing & Contracting, LLC",
+            "cid": "15206834657984643450"
           }
         },
         {

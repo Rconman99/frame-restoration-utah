@@ -23,7 +23,7 @@
   "sources": {
     "portfolio": {
       "file": "data/rank-tracker/SLV-18-CITY-GOAL-PORTFOLIO-2026-08-12.json",
-      "sha256": "6551c4f256ce6fe293f8279777605642ec8ac05f5c5a201205508a83f105c88a"
+      "sha256": "509f1b70b63744936122b1b1c900d0cb6274784dfdd12b5d4605ca9fead77968"
     },
     "corePriority": {
       "file": "data/rank-tracker/SLV-PRIORITY-2026-08-12.json",
@@ -35,7 +35,7 @@
     },
     "displacement": {
       "file": "data/rank-tracker/SLV-COMPETITOR-DISPLACEMENT-2026-08-12.json",
-      "sha256": "845b4dbf45e59fec93650b3e8f2b8e2144287c0f09201bb3414fa5f94dd70f74"
+      "sha256": "1466d510fd5441f7b5ba26c943224dadf92262ec23736ef7efe958247a78e3af"
     },
     "coreCleanupPacket": {
       "file": "data/authority/SLV-CITY-PUBLIC-REMEDIATION-PACKET-2026-08-12.json",
@@ -51,19 +51,19 @@
     },
     "expansionArchitecture": {
       "file": "data/rank-tracker/SLV-EXPANSION-ARCHITECTURE-2026-08-12.json",
-      "sha256": "5a34653717291e9f79b9760273780fd2f0fb69ad567a651c59711953902e5b8d"
+      "sha256": "60eb1caca9457f0f11d22df6127ab141e852fba6d5b8a2f665757dceaee5d581"
     },
     "entityHealth": {
       "file": "data/rank-tracker/SLV-ENTITY-HEALTH-2026-08-12.json",
-      "sha256": "7195c1eb457b1cd0fce9f530c54a3376f812f05406883be4b4e76c9535aa3295"
+      "sha256": "4630dc203e4e072d97d3d5eb9cb105ef74ee7eabb1ed7486e082386667f160a6"
     },
     "weeklyDecisions": {
       "file": "data/rank-tracker/SLV-WEEKLY-DECISIONS-2026-08-12.json",
-      "sha256": "bc91e031e1c5b5d3cbe0045c2878ce4241605d0ff2d149115a9e9b92aaa39adf"
+      "sha256": "32fac9bda854c39d2ed92def876f456f783776c06ce0f78361546ea93f21fd29"
     },
     "gscAttribution": {
       "file": "data/rank-tracker/SLV-GSC-URL-ATTRIBUTION-LATEST.json",
-      "sha256": "3aa0a2a402fe8e232bb947e4ebaaefd4852fd90b8c15d2a223ff393eb1e50158"
+      "sha256": "4f8438d5f0a0d87a904ea57e5b06691eef1cea55bb9da2503317fa8151a12a9f"
     },
     "consumerAi": {
       "file": "data/rank-tracker/SLV-CONSUMER-AI-LATEST.json",
@@ -71,11 +71,11 @@
     },
     "interventions": {
       "file": "data/rank-tracker/SLV-INTERVENTION-QUEUE-2026-08-12.json",
-      "sha256": "5e3b1395a0be8817fdf396a4fd2f4b20b5b5c233d513f1c0c8bf9ac79f87b515"
+      "sha256": "564a4027c2fde2c376ed369a9480702923c78d6c9d0ea8ebaf02b77e1ba0766e"
     },
     "mapsReadiness": {
       "file": "data/rank-tracker/SLV-MAPS-READINESS-2026-08-12.json",
-      "sha256": "94f958bbbd954337c8c2fc3d8a8b0de143ba816317122477566859053af88589"
+      "sha256": "8acd3255cf3a233b3b43243bcc45258a4a68f79b9700c32df80f779699a27cdb"
     },
     "ownerProfileAuditRequest": {
       "file": "data/authority/SLV-GBP-OWNER-AUDIT-REQUEST-2026-08-12.json",
@@ -264,11 +264,11 @@
       "page": "locations/salt-lake-city.html",
       "panelId": "utah-salt-lake-city-google-v1",
       "measurement": {
-        "observedAt": "2026-08-17T20:32:28.755Z",
+        "observedAt": "2026-08-24T09:57:09.354Z",
         "organicRanks": [
-          null,
-          21,
-          null,
+          29,
+          22,
+          23,
           null
         ],
         "organicNumberOne": [],
@@ -333,7 +333,7 @@
           "cid": "16329927680093228178",
           "domain": "google.com",
           "appearances": 3,
-          "numberOneQueries": 2,
+          "numberOneQueries": 1,
           "bestRank": 1,
           "keywords": [
             "roof repair salt lake city",
@@ -359,12 +359,12 @@
       "page": "locations/millcreek.html",
       "panelId": "utah-millcreek-google-v1",
       "measurement": {
-        "observedAt": "2026-08-17T20:32:28.757Z",
+        "observedAt": "2026-08-24T09:57:09.356Z",
         "organicRanks": [
           4,
           4,
-          4,
-          9
+          5,
+          12
         ],
         "organicNumberOne": [],
         "exactCidMapsNumberOne": 0,
@@ -400,7 +400,7 @@
           "businessValue": 10,
           "confidence": 8,
           "leadValue": 8,
-          "authorityValue": 7,
+          "authorityValue": 5,
           "learningValue": 6,
           "implementationCost": 5,
           "complianceRisk": 8,
@@ -420,17 +420,18 @@
       },
       "mapsReadiness": {
         "lane": "owner-gated-page-identity-correction",
-        "packsPresent": 3,
+        "packsPresent": 4,
         "exactCidReturned": 0,
         "exactCidNumberOne": 0,
         "dominantDisplacer": {
           "name": "Whitaker Roofing Services",
           "cid": "11316815627233980109",
           "domain": "google.com",
-          "appearances": 3,
+          "appearances": 4,
           "numberOneQueries": 3,
           "bestRank": 1,
           "keywords": [
+            "roofing contractor millcreek",
             "roof repair millcreek",
             "roof replacement millcreek",
             "roofer millcreek"
@@ -651,12 +652,12 @@
       "page": "locations/sandy.html",
       "panelId": "utah-sandy-google-v1",
       "measurement": {
-        "observedAt": "2026-08-17T20:32:28.757Z",
+        "observedAt": "2026-08-24T09:57:09.356Z",
         "organicRanks": [
-          15,
+          null,
           14,
-          5,
-          11
+          13,
+          null
         ],
         "organicNumberOne": [],
         "exactCidMapsNumberOne": 0,
@@ -691,7 +692,7 @@
         "scoreVector": {
           "businessValue": 10,
           "confidence": 6,
-          "leadValue": 8,
+          "leadValue": 5,
           "authorityValue": 5,
           "learningValue": 6,
           "implementationCost": 5,
@@ -747,12 +748,12 @@
       "page": "locations/holladay.html",
       "panelId": "utah-holladay-google-v1",
       "measurement": {
-        "observedAt": "2026-08-17T20:32:28.757Z",
+        "observedAt": "2026-08-24T09:57:09.356Z",
         "organicRanks": [
           19,
-          12,
+          10,
           4,
-          19
+          15
         ],
         "organicNumberOne": [],
         "exactCidMapsNumberOne": 0,
@@ -792,7 +793,7 @@
           "businessValue": 10,
           "confidence": 6,
           "leadValue": 8,
-          "authorityValue": 5,
+          "authorityValue": 7,
           "learningValue": 6,
           "implementationCost": 3,
           "complianceRisk": 1,
@@ -816,11 +817,11 @@
         "exactCidReturned": 0,
         "exactCidNumberOne": 0,
         "dominantDisplacer": {
-          "name": "Holladay Roofing",
-          "cid": "4608145956816988456",
+          "name": "True North Roofing",
+          "cid": "5387650211366766810",
           "domain": "google.com",
           "appearances": 4,
-          "numberOneQueries": 2,
+          "numberOneQueries": 4,
           "bestRank": 1,
           "keywords": [
             "roofing contractor holladay",
@@ -847,12 +848,12 @@
       "page": "locations/cottonwood-heights.html",
       "panelId": "utah-cottonwood-heights-google-v1",
       "measurement": {
-        "observedAt": "2026-08-17T20:32:28.757Z",
+        "observedAt": "2026-08-24T09:57:09.356Z",
         "organicRanks": [
-          17,
-          13,
-          13,
-          14
+          15,
+          12,
+          10,
+          11
         ],
         "organicNumberOne": [],
         "exactCidMapsNumberOne": 0,
@@ -887,7 +888,7 @@
         "scoreVector": {
           "businessValue": 10,
           "confidence": 6,
-          "leadValue": 5,
+          "leadValue": 7,
           "authorityValue": 5,
           "learningValue": 6,
           "implementationCost": 5,
@@ -1712,7 +1713,7 @@
       "page": "locations/draper.html",
       "panelId": "utah-draper-google-v1",
       "measurement": {
-        "observedAt": "2026-08-17T20:32:28.758Z",
+        "observedAt": "2026-08-24T09:57:09.357Z",
         "organicRanks": [
           null,
           null,
@@ -1781,7 +1782,7 @@
           "cid": "15206834657984643450",
           "domain": "google.com",
           "appearances": 4,
-          "numberOneQueries": 3,
+          "numberOneQueries": 4,
           "bestRank": 1,
           "keywords": [
             "roofing contractor draper",
