@@ -139,9 +139,18 @@ permissions:
 
 # Supersede in-flight runs for the same PR: an amended push should not leave the
 # run it replaced still billing. Every job here pays GitHub's 1-minute floor, so a
-# superseded run is ~23 wasted minutes. main is never cancelled.
+# superseded run is ~23 wasted minutes.
+#
+# Non-PR events take a UNIQUE group (github.run_id) instead of all sharing
+# compliance-gate-refs/heads/main. The previous comment here claimed "main is never
+# cancelled" and that was FALSE: cancel-in-progress:false protects only the RUNNING
+# run, while GitHub's concurrency queue holds at most ONE pending run per group — so
+# a third rapid main event cancels the pending second one and leaves that commit
+# with no gate verdict. Found by codex's 2026-08-25 cross-lane audit.
+#
+# PR events keep grouping by PR ref, so supersession still saves the ~23 minutes.
 concurrency:
-  group: compliance-gate-${{ github.ref }}
+  group: compliance-gate-${{ github.event_name == 'pull_request' && github.ref || github.run_id }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:

@@ -87,7 +87,7 @@ const CLIENT_TEST_SPAWN_SURFACE_SHA256 =
 const OWNER_TEST_SPAWN_SURFACE_SHA256 =
   "506d45a03413389a4ab1d07aeedfc9b4b1908420a156e0714b614d5dc233080a";
 const SCANNER_NORMALIZED_SOURCE_SHA256 =
-  "a61b2d01b638d5455baf6d3c3b2c16be360c8b03223155670cb51570160d218b";
+  "d56056ca45104b7a156153a75310270b320ba10dca68bd8100571ef3bdb80fec";
 const SIGNED_RECEIPT_PARSER_SHA256 =
   "1e854738f0555804f52266a1833cd279ef83482b4946a63c226781be045114df";
 const ISSUER_SIGNER_SHA256 =
@@ -96,7 +96,7 @@ const FINAL_DEPLOY_STEP_SHA256 =
   "51684632cec58637dac60f1d85dbeb442e31bd4f7a9ee6551c2c370015acdcf0";
 const REVIEWED_CRITICAL_SOURCE_SHA256 = Object.freeze({
   ".github/workflows/compliance-gate.yml":
-    "ff2699d93858c90d01e1190f15f09eefbc3cfa4d43cee8ae6b853fdf80d9f566",
+    "bb70ae0eceb5cc6fbf8fbd9dd101cb609da63130f3087c932b9cb72a2b4176e7",
   ".github/workflows/deploy-edge-function.yml":
     "b8a20f6b6684a0586e5fb88543ecf848f90f61acad1264d9d6bba125bd983475",
   "scripts/issue-client-ip-deploy-receipt.mjs":
@@ -1215,6 +1215,22 @@ function complianceWorkflowViolations(source, trustedDigests) {
   }
   if (/^\s*-?\s*(?:if|continue-on-error|["'](?:if|continue-on-error)["'])\s*:/m.test(source)) {
     violations.push("compliance workflow has conditional/error bypass");
+  }
+  // Semantic concurrency scoping. The digest pin catches byte drift but says
+  // nothing about whether the grouping is SAFE, so a re-bless would silently
+  // re-approve a regression here. PR events group by PR ref (supersession is
+  // fail-closed: required checks bind to the latest commit, and cancelled is not
+  // a success conclusion). Non-PR events must stay unique, or a queued main run
+  // can evict a pending one and leave that commit ungated.
+  if (
+    !source.includes(
+      "group: compliance-gate-${{ github.event_name == 'pull_request' && github.ref || github.run_id }}",
+    ) ||
+    !source.includes(
+      "cancel-in-progress: ${{ github.event_name == 'pull_request' }}",
+    )
+  ) {
+    violations.push("compliance workflow concurrency scoping differs");
   }
   if (!source.includes("run: node scripts/audit-client-ip-probe-contract.mjs")) {
     violations.push("compliance workflow lacks direct scanner invocation");
