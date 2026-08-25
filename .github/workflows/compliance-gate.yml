@@ -137,10 +137,18 @@ on:
 permissions:
   contents: read
 
+# Supersede in-flight runs for the same PR: an amended push should not leave the
+# run it replaced still billing. Every job here pays GitHub's 1-minute floor, so a
+# superseded run is ~23 wasted minutes. main is never cancelled.
+concurrency:
+  group: compliance-gate-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
 jobs:
   provider-workflow-regressions:
     name: Provider workflow fail-closed regressions (blocking)
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
       - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
@@ -152,6 +160,7 @@ jobs:
   edge-function-compile:
     name: Supabase Edge entrypoint typecheck (blocking)
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
       - uses: denoland/setup-deno@22d081ff2d3a40755e97629de92e3bcbfa7cf2ed
@@ -163,6 +172,7 @@ jobs:
   static-assets:
     name: Sitemap static asset integrity (blocking)
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
@@ -173,6 +183,7 @@ jobs:
   lead-form-single-submit:
     name: Lead form single-submit contract (blocking)
     runs-on: ubuntu-latest
+    timeout-minutes: 25
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
@@ -186,6 +197,7 @@ jobs:
   lead-sms-contract:
     name: Lead SMS consent + A2P message contract (blocking)
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     # BLOCKING (added 2026-06-10, ported from the TX pattern). handle-lead's
     # customer auto-reply is texted to real homeowners on the LIVE 10DLC number,
     # but v8 had no test coverage AND ignored the form's sms_consent checkbox.
@@ -214,6 +226,7 @@ jobs:
   dashboard-security:
     name: Dashboard session revocation + credential security (blocking)
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
@@ -238,6 +251,7 @@ jobs:
   relay-classification:
     name: SMS relay classification eval (blocking)
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     # BLOCKING (added 2026-06-12, relay-parity port from the TX repo). handle-sms
     # routes inbound webhooks: operator commands (CALL / TO:<number> message) vs
     # customer messages, and Twilio Advanced Opt-Out (STOP/START/HELP) which must
@@ -258,6 +272,7 @@ jobs:
   lead-tier-classification:
     name: Lead tier classification eval (blocking)
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     # BLOCKING (added 2026-06-12, parity port from the TX repo #217). handle-lead
     # routes every lead into a 5-way tier (emergency/urgent/scheduled/general/spam)
     # that drives notification urgency (emergency pages Landon loudest) and SMS
@@ -278,6 +293,7 @@ jobs:
   compliance-words:
     name: Forbidden-word + saturation audit (blocking)
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
@@ -291,6 +307,7 @@ jobs:
   claim-registry:
     name: Verified claim registry + llms.txt parity (blocking)
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
@@ -302,6 +319,7 @@ jobs:
   aeo-topic-portfolio:
     name: AEO topic-portfolio measurement contract (blocking)
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
@@ -313,6 +331,7 @@ jobs:
   jsonld-validity:
     name: JSON-LD structured-data validity (blocking)
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
@@ -327,6 +346,7 @@ jobs:
   link-integrity:
     name: Internal link integrity (blocking)
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     # RATCHET CLOSED 2026-06-01: the 17 broken links were triaged to 0 on live
     # pages (the rest were archive/draft noise; scanner now scopes to served
     # pages). Now blocking, like TX.
@@ -342,6 +362,7 @@ jobs:
   cta-integrity:
     name: CTA & external-link integrity (blocking)
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     # BLOCKING. Asserts every customer-facing page matches the canonical identity
     # in data/route-factory/business.json: no internal-only phone leak, no wrong/
     # dead Google listing cid/data_id, no placeholder links, no generic-search
@@ -358,6 +379,7 @@ jobs:
   city-quality:
     name: Doorway / thin / duplicate-page guard (blocking)
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     # RATCHET CLOSED 2026-06-02: all 45 location pages now clear the depth/
     # local-substance/rating-integrity checks (the last 15 thin pages were
     # deepened past the 500-unique-word floor in PR #72). Now BLOCKING — a thin
@@ -373,6 +395,7 @@ jobs:
   gbp-copy:
     name: GBP paste-ready copy compliance (blocking)
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     # BLOCKING. Scans the paste-ready Google Business Profile copy in data/GBP-*.md
     # (Posts, Services, descriptions) — the text pasted into the merchant panel —
     # for the violations that put Frame's GBP on Google enforcement watch:
@@ -393,6 +416,7 @@ jobs:
   public-seo-surface:
     name: Public SEO surface drift (blocking)
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     # BLOCKING. Static HTML sites can accidentally keep old public deliverables
     # live even after a domain/NAP migration. This catches stale old-domain
     # references, legacy internal phone leaks, and sitemap URLs that point at
@@ -408,6 +432,7 @@ jobs:
   mobile-ui-quality:
     name: Mobile conversion UI quality (blocking)
     runs-on: ubuntu-latest
+    timeout-minutes: 25
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
@@ -428,6 +453,7 @@ jobs:
   review-integrity:
     name: Review & rating integrity (blocking)
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     # BLOCKING. Codifies the compliance line from commit 816c280 (which removed a
     # cloned AggregateRating from 45 city pages): location pages may carry
     # individual <Review> markup from REAL reviewers only (reviews.json /
@@ -446,6 +472,7 @@ jobs:
   entity-consistency:
     name: Entity consistency — hasMap + sameAs (blocking)
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     # BLOCKING (added 2026-06-03, AEO Pillar 2). Asserts every location page's
     # primary RoofingContractor node carries hasMap + sameAs EXACTLY matching the
     # keystone in data/route-factory/business.json. AI engines resolve a citation
@@ -467,6 +494,7 @@ jobs:
   doc-isolation:
     name: Internal-doc isolation (blocking)
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     # BLOCKING (added 2026-06-08). Mirrored from TX PR #208 (which graduated the CBP
     # refinement loop's draft proposal #2, source frame-tx#101). Static-HTML site →
     # Vercel serves the repo as files, so any markdown not excluded by .vercelignore
