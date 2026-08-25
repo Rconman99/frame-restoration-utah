@@ -13,7 +13,7 @@
         "Holladay",
         "Herriman"
       ],
-      "activeSnapshotSha256": "7a321aac5c1270952cf009ae03cc6c7837690e756e873fff30c14f1b845a0142",
+      "activeSnapshotSha256": "a58cf8c9e1da56ea70aec3550513aec76ec0a948f2b6d87bb74fef355734bb99",
       "diagnosisSnapshotSha256": "a1b7d5aa2acc3a5b663da345ba6eb7242e411661807ae1296f50854702b1a7eb",
       "behavior": "Ignore the stale split-URL disposition and keep affected URL-competition cities in the diagnosis lane; do not suppress, redirect, canonicalize, noindex, delete, or rewrite a route from stale evidence.",
       "requiredAction": "Refresh the bounded Holladay/Herriman split-URL diagnosis against the current GSC attribution snapshot."
@@ -88,7 +88,7 @@
     },
     "gscAttribution": {
       "file": "data/rank-tracker/SLV-GSC-URL-ATTRIBUTION-LATEST.json",
-      "sha256": "f4de7393f7a878f89ae9a6f481b55bc2c232c984a10c3fbdac149166ce712095"
+      "sha256": "4b483aa0f9466c1281ec68db031b9f3c954c62af9d780146dae151e72c4b4c3b"
     },
     "gscSplitUrlDiagnosis": {
       "file": "data/rank-tracker/SLV-GSC-SPLIT-URL-DIAGNOSIS-2026-08-12.json",
@@ -108,7 +108,7 @@
     },
     "expansionArchitecture": {
       "file": "data/rank-tracker/SLV-EXPANSION-ARCHITECTURE-2026-08-12.json",
-      "sha256": "d62d38b016f30bfd7010802b493c51e1a32e88f8ff02b4ed39a0b3d88fa7c2b9"
+      "sha256": "874c29fd8b15ae4af756f0d86384e9216c629bc10b2cdd8dca3d7c3d244df611"
     },
     "corePriority": {
       "file": "data/rank-tracker/SLV-PRIORITY-2026-08-12.json",
@@ -270,9 +270,9 @@
         "googleAiOverviewOwnedQueries": [],
         "protectedOrganicNumberOneQueries": [],
         "intendedPageSelectedForEveryMeasuredRank": true,
-        "gscState": "complete-request-with-unreturned-rows",
+        "gscState": "intended-url-only-for-all-returned-rows",
         "gscRequestedQueries": 4,
-        "gscReturnedQueries": 3,
+        "gscReturnedQueries": 4,
         "gscAlternateNormalizedUrls": [],
         "gscUrlDiagnosis": null,
         "serviceAreaStatus": "verified-profile-identity-city",
