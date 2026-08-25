@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-18T15:51:38.218136+00:00",
+  "generated_at": "2026-08-25T15:38:55.725332+00:00",
   "open_actions": [
     {
       "id": "aeo-76a17e0e",
@@ -7,7 +7,7 @@
       "action_type": "authority-boost",
       "priority": "medium",
       "title": "Boost internal-link authority for `blog/utah/roof-replacement-cost-utah-2026.html` (target: 'roof replacement cost Utah 2026')",
-      "rationale": "Post exists with correct keyword in title but isn't ranking. Most likely a domain-authority gap (last modified 2026-08-18, 2500 words). Add internal links from high-authority pages + monitor 4-6 weeks.",
+      "rationale": "Post exists with correct keyword in title but isn't ranking. Most likely a domain-authority gap (last modified 2026-08-25, 2500 words). Add internal links from high-authority pages + monitor 4-6 weeks.",
       "files": [
         "blog/utah/roof-replacement-cost-utah-2026.html"
       ],
@@ -17,7 +17,7 @@
           "date_modified_schema": "2026-04-22",
           "word_count": 2500,
           "path": "blog/utah/roof-replacement-cost-utah-2026.html",
-          "git_last_modified": "2026-08-18"
+          "git_last_modified": "2026-08-25"
         }
       ],
       "lead_value": 8,
@@ -29,8 +29,79 @@
         "internal-links"
       ],
       "first_seen": "2026-08-11",
-      "last_seen": "2026-08-18",
-      "weeks_open": 1
+      "last_seen": "2026-08-25",
+      "weeks_open": 2
+    },
+    {
+      "id": "aeo-ef3d8192",
+      "query": "storm damage roofing Park City",
+      "action_type": "internal-link-boost",
+      "priority": "medium",
+      "title": "Add internal links pointing to `pages/storm-damage.html` (target: 'storm damage roofing Park City')",
+      "rationale": "Post `pages/storm-damage.html` exists (1297 words) but isn't ranking. Likely needs internal-link authority \u2014 add links from index, locations, related blog posts.",
+      "files": [
+        "pages/storm-damage.html",
+        "locations/park-city.html",
+        "blog/park-city/storm-damage-roof-repair-park-city.html",
+        "blog/park-city/standing-seam-metal-roofing.html",
+        "blog/park-city/ice-dam-winter-roof-damage.html",
+        "blog/park-city/designer-shake-style-shingles.html"
+      ],
+      "files_meta": [
+        {
+          "title": "Storm Damage Roof Repair Utah | Frame Restoration Utah",
+          "date_modified_schema": "2026-08-10",
+          "word_count": 1297,
+          "path": "pages/storm-damage.html",
+          "git_last_modified": "2026-08-25"
+        },
+        {
+          "title": "Luxury Roofing Park City: Metal &amp; Shake Experts",
+          "date_modified_schema": "2026-08-10",
+          "word_count": 1886,
+          "path": "locations/park-city.html",
+          "git_last_modified": "2026-08-25"
+        },
+        {
+          "title": "Storm Damage at 7,000 Feet: A Park City Homeowner Guide (2026) | Frame Restoration Utah",
+          "date_modified_schema": "2026-07-26",
+          "word_count": 2360,
+          "path": "blog/park-city/storm-damage-roof-repair-park-city.html",
+          "git_last_modified": "2026-08-25"
+        },
+        {
+          "title": "Standing Seam Metal Roofing \u2014 Park City | Frame Restoration",
+          "date_modified_schema": "2026-07-18",
+          "word_count": 2276,
+          "path": "blog/park-city/standing-seam-metal-roofing.html",
+          "git_last_modified": "2026-08-25"
+        },
+        {
+          "title": "Ice Dam &amp; Winter Roof Damage Park City | Frame Restoration",
+          "date_modified_schema": "2026-07-18",
+          "word_count": 1882,
+          "path": "blog/park-city/ice-dam-winter-roof-damage.html",
+          "git_last_modified": "2026-08-25"
+        },
+        {
+          "title": "Designer Shake Shingles \u2014 Park City | Frame Restoration Utah",
+          "date_modified_schema": "2026-07-18",
+          "word_count": 2591,
+          "path": "blog/park-city/designer-shake-style-shingles.html",
+          "git_last_modified": "2026-08-25"
+        }
+      ],
+      "lead_value": 9,
+      "severity": 5,
+      "leverage": 45,
+      "effort_hours": 1.5,
+      "tags": [
+        "authority",
+        "internal-links"
+      ],
+      "first_seen": "2026-08-25",
+      "last_seen": "2026-08-25",
+      "weeks_open": 0
     },
     {
       "id": "aeo-242b4a61",
@@ -50,8 +121,8 @@
         "reviews"
       ],
       "first_seen": "2026-05-06",
-      "last_seen": "2026-08-18",
-      "weeks_open": 14
+      "last_seen": "2026-08-25",
+      "weeks_open": 15
     }
   ]
 }
