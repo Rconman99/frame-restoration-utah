@@ -392,8 +392,16 @@ export function rankPanelLines(snapshot) {
   const measured = measurement?.queriesMeasured ?? measuredRows.length;
   let freshness = "";
   if (oldestObserved) {
-    const ageDays = (Date.parse(`${snapshot.date}T23:59:59Z`) - Date.parse(oldestObserved)) / 86400000;
-    if (Number.isFinite(ageDays) && ageDays > 8) freshness = ` — **STALE ${Math.floor(ageDays)}d; weekly rank workflow needs attention**`;
+    const snapshotEnd = Date.parse(`${snapshot.date}T23:59:59Z`);
+    const oldestAgeDays = (snapshotEnd - Date.parse(oldestObserved)) / 86400000;
+    const newestAgeDays = newestObserved ? (snapshotEnd - Date.parse(newestObserved)) / 86400000 : oldestAgeDays;
+    if (Number.isFinite(oldestAgeDays) && oldestAgeDays > 8) {
+      if (Number.isFinite(newestAgeDays) && newestAgeDays <= 8 && measurement?.cadence?.expansion?.startsWith("manual-baseline")) {
+        freshness = ` — mixed cadence: weekly core current; manual expansion baseline ${Math.floor(oldestAgeDays)}d old`;
+      } else {
+        freshness = ` — **STALE ${Math.floor(oldestAgeDays)}d; weekly rank workflow needs attention**`;
+      }
+    }
   }
   const sourceLabel = measurement?.source === "dataforseo-task-queue" ? "DataForSEO task-queue panel" : "Rank panel";
   const completeness = measurement?.available === false ? " — **INCOMPLETE**" : "";
