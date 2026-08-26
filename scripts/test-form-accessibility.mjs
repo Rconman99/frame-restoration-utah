@@ -87,6 +87,12 @@ try {
   });
   await page.goto(origin, { waitUntil: "domcontentloaded" });
 
+  assert.equal(
+    await page.locator('meta[name="frame-build-marker"]').getAttribute("content"),
+    "utah-form-accessibility-v1",
+    "the immutable preview/production freshness marker must remain in live HTML",
+  );
+
   await page.evaluate(() => {
     const trigger = document.createElement("button");
     trigger.className = "free-inspection-trigger";
