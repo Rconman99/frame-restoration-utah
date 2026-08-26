@@ -1,0 +1,418 @@
+{
+  "schema_version": "1.0",
+  "contract": "frame-utah-home-media-source",
+  "contract_sha256": "7f2eed7601f6be26c977577d548295aa7e6e896cc963acc8ca5e7592135389d7",
+  "contract_snapshot": {
+    "schema_version": "1.0",
+    "name": "frame-utah-home-media-source",
+    "expected_serving_origin": "http://127.0.0.1:4173",
+    "expected_canonical_origin": "https://www.framerestorationutah.com",
+    "freshness_markers": [
+      "utah-form-accessibility-v1",
+      "Recent Utah Project Media",
+      "utah-july-2026-finished-roof-mountain-close-1600.webp",
+      "wasatch-back-completed-roof-flyover-2026-06.mp4"
+    ],
+    "max_redirects": 0,
+    "min_touch_target_css_px": 44,
+    "max_fixed_viewport_ratio": 0.15,
+    "max_landscape_fixed_viewport_ratio": 0.24,
+    "stability_wait_ms": 500,
+    "readiness_selector": "main",
+    "viewports": [
+      {
+        "name": "small-320",
+        "width": 320,
+        "height": 568
+      },
+      {
+        "name": "landscape-740",
+        "width": 740,
+        "height": 360
+      }
+    ],
+    "routes": [
+      {
+        "path": "/",
+        "expected_canonical_path": "/"
+      }
+    ],
+    "critical_targets": [
+      {
+        "selector": "#menuBtn",
+        "max_viewport_width": 900
+      },
+      {
+        "selector": ".nav-call-mobile",
+        "expected_href_pattern": "^tel:\\+14352928802$"
+      },
+      {
+        "selector": ".sticky-call-phone",
+        "expected_href_pattern": "^tel:\\+14352928802$",
+        "max_viewport_width": 900
+      },
+      {
+        "selector": ".sticky-call-text",
+        "expected_href_pattern": "^sms:\\+14352928802$",
+        "max_viewport_width": 900
+      },
+      {
+        "selector": "a[data-cta=\"hero-call\"]",
+        "expected_href_pattern": "^tel:\\+14352928802$",
+        "min_viewport_width": 901
+      },
+      {
+        "selector": "a[data-cta=\"hero-sms\"]",
+        "expected_href_pattern": "^sms:\\+14352928802$",
+        "min_viewport_width": 901
+      }
+    ],
+    "fixed_elements": [
+      {
+        "selector": "nav",
+        "max_viewport_ratio": 0.15,
+        "max_landscape_viewport_ratio": 0.24
+      },
+      {
+        "selector": ".sticky-call",
+        "max_viewport_ratio": 0.15,
+        "max_landscape_viewport_ratio": 0.24
+      }
+    ],
+    "forbidden_visible_selectors": [
+      ".fr-modal-overlay.open"
+    ],
+    "max_console_errors": 0,
+    "max_page_errors": 0,
+    "allowed_console_error_patterns": [],
+    "canonical_policy": "match"
+  },
+  "stage": "source",
+  "base_url": "http://127.0.0.1:4173",
+  "observed_at": "2026-08-26T05:41:24.707538Z",
+  "verdict": "pass",
+  "summary": {
+    "checks": 46,
+    "failures": 0,
+    "routes": 1,
+    "viewports": 2
+  },
+  "runs": [
+    {
+      "route": "/",
+      "viewport": {
+        "name": "small-320",
+        "width": 320,
+        "height": 568
+      },
+      "url": "http://127.0.0.1:4173/",
+      "checks": [
+        {
+          "name": "http-200",
+          "pass": true,
+          "detail": "status=200"
+        },
+        {
+          "name": "redirect-budget",
+          "pass": true,
+          "detail": "redirects=0 cap=0"
+        },
+        {
+          "name": "serving-origin",
+          "pass": true,
+          "detail": "final=http://127.0.0.1:4173 expected=http://127.0.0.1:4173"
+        },
+        {
+          "name": "viewport-meta",
+          "pass": true,
+          "detail": "content='width=device-width, initial-scale=1.0, viewport-fit=cover'"
+        },
+        {
+          "name": "canonical",
+          "pass": true,
+          "detail": "count=1 actual='https://www.framerestorationutah.com/' expected='https://www.framerestorationutah.com/'"
+        },
+        {
+          "name": "freshness:utah-form-accessibility-v1",
+          "pass": true,
+          "detail": "marker present"
+        },
+        {
+          "name": "freshness:Recent Utah Project Media",
+          "pass": true,
+          "detail": "marker present"
+        },
+        {
+          "name": "freshness:utah-july-2026-finished-roof-mountain-close-1600.webp",
+          "pass": true,
+          "detail": "marker present"
+        },
+        {
+          "name": "freshness:wasatch-back-completed-roof-flyover-2026-06.mp4",
+          "pass": true,
+          "detail": "marker present"
+        },
+        {
+          "name": "horizontal-reflow",
+          "pass": true,
+          "detail": "scrollWidth=320 innerWidth=320"
+        },
+        {
+          "name": "critical-target:#menuBtn",
+          "pass": true,
+          "detail": "present, sized, hittable, and href-valid"
+        },
+        {
+          "name": "critical-target:.nav-call-mobile",
+          "pass": true,
+          "detail": "present, sized, hittable, and href-valid"
+        },
+        {
+          "name": "critical-target:.sticky-call-phone",
+          "pass": true,
+          "detail": "present, sized, hittable, and href-valid"
+        },
+        {
+          "name": "critical-target:.sticky-call-text",
+          "pass": true,
+          "detail": "present, sized, hittable, and href-valid"
+        },
+        {
+          "name": "critical-target:a[data-cta=\"hero-call\"]:not-applicable",
+          "pass": true,
+          "detail": "viewport-width=320"
+        },
+        {
+          "name": "critical-target:a[data-cta=\"hero-sms\"]:not-applicable",
+          "pass": true,
+          "detail": "viewport-width=320"
+        },
+        {
+          "name": "fixed-element:nav",
+          "pass": true,
+          "detail": "present and within orientation budget"
+        },
+        {
+          "name": "fixed-element:.sticky-call",
+          "pass": true,
+          "detail": "present and within orientation budget"
+        },
+        {
+          "name": "forbidden-visible:.fr-modal-overlay.open",
+          "pass": true,
+          "detail": "visible=0"
+        },
+        {
+          "name": "focus-not-obscured",
+          "pass": true,
+          "detail": "sampled keyboard focus is exposed"
+        },
+        {
+          "name": "forbidden-visible-post-focus:.fr-modal-overlay.open",
+          "pass": true,
+          "detail": "visible=0"
+        },
+        {
+          "name": "console-errors",
+          "pass": true,
+          "detail": "count=0 cap=0 errors=[] guard_suppressed=0"
+        },
+        {
+          "name": "page-errors",
+          "pass": true,
+          "detail": "count=0 cap=0 errors=[]"
+        }
+      ],
+      "failures": [],
+      "http": {
+        "status": 200,
+        "final_url": "http://127.0.0.1:4173/",
+        "redirects": 0,
+        "headers": {
+          "content-length": "180602",
+          "content-type": "text/html",
+          "date": "Wed, 26 Aug 2026 05:41:25 GMT",
+          "last-modified": "Wed, 26 Aug 2026 05:27:03 GMT",
+          "server": "SimpleHTTP/0.6 Python/3.14.6"
+        }
+      },
+      "screenshot": {
+        "path": "/Users/agenticmac/.frame-automation/worktrees/utah-accessible-form-20260825/qa/screenshots/form-accessibility-source-20260825/home--8a5edab28263--small-320.png",
+        "sha256": "f6a9264e87bdb01af9b316a4ae4f566eda5f69813d355537e4af393a2bcd77f6",
+        "captured_scroll_y": 0
+      },
+      "network_guard": {
+        "mode": "read_only",
+        "auth_bootstrap_used": false,
+        "protection_bypass_used": false,
+        "preview_toolbar_suppression_requested": false,
+        "service_workers_blocked": true,
+        "websockets_blocked": true,
+        "stability_wait_ms": 500,
+        "readiness_selector": "main",
+        "blocked_count": 0,
+        "blocked": [],
+        "console_errors_suppressed": 0
+      }
+    },
+    {
+      "route": "/",
+      "viewport": {
+        "name": "landscape-740",
+        "width": 740,
+        "height": 360
+      },
+      "url": "http://127.0.0.1:4173/",
+      "checks": [
+        {
+          "name": "http-200",
+          "pass": true,
+          "detail": "status=200"
+        },
+        {
+          "name": "redirect-budget",
+          "pass": true,
+          "detail": "redirects=0 cap=0"
+        },
+        {
+          "name": "serving-origin",
+          "pass": true,
+          "detail": "final=http://127.0.0.1:4173 expected=http://127.0.0.1:4173"
+        },
+        {
+          "name": "viewport-meta",
+          "pass": true,
+          "detail": "content='width=device-width, initial-scale=1.0, viewport-fit=cover'"
+        },
+        {
+          "name": "canonical",
+          "pass": true,
+          "detail": "count=1 actual='https://www.framerestorationutah.com/' expected='https://www.framerestorationutah.com/'"
+        },
+        {
+          "name": "freshness:utah-form-accessibility-v1",
+          "pass": true,
+          "detail": "marker present"
+        },
+        {
+          "name": "freshness:Recent Utah Project Media",
+          "pass": true,
+          "detail": "marker present"
+        },
+        {
+          "name": "freshness:utah-july-2026-finished-roof-mountain-close-1600.webp",
+          "pass": true,
+          "detail": "marker present"
+        },
+        {
+          "name": "freshness:wasatch-back-completed-roof-flyover-2026-06.mp4",
+          "pass": true,
+          "detail": "marker present"
+        },
+        {
+          "name": "horizontal-reflow",
+          "pass": true,
+          "detail": "scrollWidth=740 innerWidth=740"
+        },
+        {
+          "name": "critical-target:#menuBtn",
+          "pass": true,
+          "detail": "present, sized, hittable, and href-valid"
+        },
+        {
+          "name": "critical-target:.nav-call-mobile",
+          "pass": true,
+          "detail": "present, sized, hittable, and href-valid"
+        },
+        {
+          "name": "critical-target:.sticky-call-phone",
+          "pass": true,
+          "detail": "present, sized, hittable, and href-valid"
+        },
+        {
+          "name": "critical-target:.sticky-call-text",
+          "pass": true,
+          "detail": "present, sized, hittable, and href-valid"
+        },
+        {
+          "name": "critical-target:a[data-cta=\"hero-call\"]:not-applicable",
+          "pass": true,
+          "detail": "viewport-width=740"
+        },
+        {
+          "name": "critical-target:a[data-cta=\"hero-sms\"]:not-applicable",
+          "pass": true,
+          "detail": "viewport-width=740"
+        },
+        {
+          "name": "fixed-element:nav",
+          "pass": true,
+          "detail": "present and within orientation budget"
+        },
+        {
+          "name": "fixed-element:.sticky-call",
+          "pass": true,
+          "detail": "present and within orientation budget"
+        },
+        {
+          "name": "forbidden-visible:.fr-modal-overlay.open",
+          "pass": true,
+          "detail": "visible=0"
+        },
+        {
+          "name": "focus-not-obscured",
+          "pass": true,
+          "detail": "sampled keyboard focus is exposed"
+        },
+        {
+          "name": "forbidden-visible-post-focus:.fr-modal-overlay.open",
+          "pass": true,
+          "detail": "visible=0"
+        },
+        {
+          "name": "console-errors",
+          "pass": true,
+          "detail": "count=0 cap=0 errors=[] guard_suppressed=0"
+        },
+        {
+          "name": "page-errors",
+          "pass": true,
+          "detail": "count=0 cap=0 errors=[]"
+        }
+      ],
+      "failures": [],
+      "http": {
+        "status": 200,
+        "final_url": "http://127.0.0.1:4173/",
+        "redirects": 0,
+        "headers": {
+          "content-length": "180602",
+          "content-type": "text/html",
+          "date": "Wed, 26 Aug 2026 05:41:27 GMT",
+          "last-modified": "Wed, 26 Aug 2026 05:27:03 GMT",
+          "server": "SimpleHTTP/0.6 Python/3.14.6"
+        }
+      },
+      "screenshot": {
+        "path": "/Users/agenticmac/.frame-automation/worktrees/utah-accessible-form-20260825/qa/screenshots/form-accessibility-source-20260825/home--8a5edab28263--landscape-740.png",
+        "sha256": "1cc5d5c73fa994a076f26d110e1c64c5b878f48860399811dd96ecf1d6b5dda8",
+        "captured_scroll_y": 0
+      },
+      "network_guard": {
+        "mode": "read_only",
+        "auth_bootstrap_used": false,
+        "protection_bypass_used": false,
+        "preview_toolbar_suppression_requested": false,
+        "service_workers_blocked": true,
+        "websockets_blocked": true,
+        "stability_wait_ms": 500,
+        "readiness_selector": "main",
+        "blocked_count": 0,
+        "blocked": [],
+        "console_errors_suppressed": 0
+      }
+    }
+  ],
+  "duration_seconds": 5.646,
+  "receipt_path": "/Users/agenticmac/.frame-automation/worktrees/utah-accessible-form-20260825/qa/receipts/form-accessibility-source-20260825.json"
+}

@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="frame-build-marker" content="utah-form-accessibility-v1" />
   <meta name="google-site-verification" content="R0MBHOzkGuo-nyTFsuNjnwUK8CrNfoG9whM7Ew8q06U" />
 
   <!-- SEO: Title 55 chars, keyword-first, Utah-specific -->
@@ -1191,14 +1192,14 @@
         <form id="heroForm" class="hero-form" method="post" action="https://hdcflshhomzildwqlmwh.supabase.co/functions/v1/handle-lead" accept-charset="UTF-8" data-endpoint="https://hdcflshhomzildwqlmwh.supabase.co/functions/v1/handle-lead">
           <input type="hidden" name="source_page" value="/">
           <div aria-hidden="true" style="position:absolute;left:-10000px;width:1px;height:1px;overflow:hidden;"><label>Company website<input type="text" name="company_website" tabindex="-1" autocomplete="off"></label></div>
-          <div class="form-row"><input type="text" name="name" placeholder="Full Name" required autocomplete="name"></div>
-          <div class="form-row"><input type="tel" name="phone" placeholder="Mobile Phone" required autocomplete="tel"></div>
-          <div class="form-row"><input type="text" name="address" placeholder="Street Address (optional)" autocomplete="street-address"></div>
-          <div class="form-row"><input type="text" name="zip" placeholder="ZIP Code" required autocomplete="postal-code" inputmode="numeric" pattern="[0-9]{5}" maxlength="5"></div>
+          <div class="form-row"><label for="heroName" class="sr-only">Full name</label><input id="heroName" type="text" name="name" placeholder="Full Name" required autocomplete="name"></div>
+          <div class="form-row"><label for="heroPhone" class="sr-only">Mobile phone</label><input id="heroPhone" type="tel" name="phone" placeholder="Mobile Phone" required autocomplete="tel"></div>
+          <div class="form-row"><label for="heroAddress" class="sr-only">Street address (optional)</label><input id="heroAddress" type="text" name="address" placeholder="Street Address (optional)" autocomplete="street-address"></div>
+          <div class="form-row"><label for="heroZip" class="sr-only">ZIP code</label><input id="heroZip" type="text" name="zip" placeholder="ZIP Code" required autocomplete="postal-code" inputmode="numeric" pattern="[0-9]{5}" maxlength="5"></div>
           <details class="form-optional" style="margin:6px 0 4px;font-size:13px;color:#4A5464;">
             <summary style="cursor:pointer;list-style:none;padding:6px 0;color:#0B4060;font-weight:600;">+ Add details (optional)</summary>
-            <div class="form-row" style="margin-top:8px"><input type="email" name="email" placeholder="Email Address (optional)" autocomplete="email"></div>
-            <div class="form-row"><input type="text" name="city" placeholder="City (optional)"></div>
+            <div class="form-row" style="margin-top:8px"><label for="heroEmail" class="sr-only">Email address (optional)</label><input id="heroEmail" type="email" name="email" placeholder="Email Address (optional)" autocomplete="email"></div>
+            <div class="form-row"><label for="heroCity" class="sr-only">City (optional)</label><input id="heroCity" type="text" name="city" placeholder="City (optional)"></div>
             <div class="form-row">
               <label for="heroIssue" class="sr-only">What do you need?</label>
               <select id="heroIssue" name="issue">

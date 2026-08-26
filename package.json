@@ -74,6 +74,7 @@
     "sync:shared-assets": "node scripts/sync-shared-asset-versions.mjs --write",
     "test:mobile-ui": "node scripts/test-mobile-ui.mjs",
     "test:lead-form": "node scripts/test-lead-form-submit.mjs",
+    "test:form-accessibility": "node scripts/test-form-accessibility.mjs",
     "test:dashboard-session-client": "node scripts/test-dashboard-session-client.mjs",
     "test:client-ip-receipt": "node scripts/test-client-ip-deploy-receipt.mjs",
     "audit:payson-storm-guide": "node scripts/validate-payson-storm-guide.mjs",
