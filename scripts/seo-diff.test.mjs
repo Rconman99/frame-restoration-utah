@@ -99,6 +99,29 @@ test("fixed panel readout exposes a stale weekly measurement", () => {
   assert.match(output, /STALE 9d/);
 });
 
+test("fixed panel readout distinguishes a current weekly core from an older manual expansion baseline", () => {
+  const output = rankPanelLines(snap({
+    date: "2026-08-25",
+    rank_measurement: {
+      queriesExpected: 2,
+      queriesMeasured: 2,
+      oldestObservedAt: "2026-08-12T17:40:30.498Z",
+      newestObservedAt: "2026-08-24T09:57:09.357Z",
+      cadence: {
+        core: "weekly",
+        expansion: "manual-baseline-not-yet-admitted-to-weekly-spend",
+      },
+      issues: [],
+    },
+    ranks: [
+      { city: "Salt Lake City", keyword: "contractor", position: 29, measured: true, observedAt: "2026-08-24T09:57:09.357Z" },
+      { city: "Bluffdale", keyword: "contractor", position: 18, measured: true, observedAt: "2026-08-12T17:40:30.498Z" },
+    ],
+  })).join("\n");
+  assert.match(output, /mixed cadence: weekly core current; manual expansion baseline 13d old/);
+  assert.doesNotMatch(output, /weekly rank workflow needs attention/);
+});
+
 test("fixed panel readout renders measured organic, maps, and AIO displacement evidence", () => {
   const output = displacementLines(snap({
     ranks: [{
