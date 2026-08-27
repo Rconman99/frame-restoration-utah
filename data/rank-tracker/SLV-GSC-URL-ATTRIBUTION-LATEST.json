@@ -2,14 +2,14 @@
   "schemaVersion": 1,
   "ledgerId": "frame-utah-slv-18-city-gsc-url-attribution-v1",
   "market": "utah-salt-lake-valley",
-  "asOfSnapshotDate": "2026-08-26",
-  "latestSeoSnapshotDate": "2026-08-26",
+  "asOfSnapshotDate": "2026-08-27",
+  "latestSeoSnapshotDate": "2026-08-27",
   "measurementFreshness": "latest-snapshot-measured",
   "status": "complete-targeted-request-evidence",
   "publicMutationPerformed": false,
   "evidenceWindow": {
-    "startDate": "2026-07-27",
-    "endDate": "2026-08-23"
+    "startDate": "2026-07-28",
+    "endDate": "2026-08-24"
   },
   "measurementContract": {
     "workflowTargetQueries": 72,
@@ -32,12 +32,12 @@
       "sha256": "272b73505c7100ba3002fbc2f47bd04463f37759966ad689d76e334871576195"
     },
     "gscSnapshot": {
-      "file": "data/seo/snapshots/2026-08-26.json",
-      "sha256": "4e0dcf6fb6421a339be9f2a6f7d30c983db5031e702f89613f18d6846d781a22"
+      "file": "data/seo/snapshots/2026-08-27.json",
+      "sha256": "97d4ab8820c91f2e9ca6a4459a823a3c53f54c29ea56e34361e6ff4450a1a8f2"
     },
     "latestSeoSnapshot": {
-      "file": "data/seo/snapshots/2026-08-26.json",
-      "sha256": "4e0dcf6fb6421a339be9f2a6f7d30c983db5031e702f89613f18d6846d781a22"
+      "file": "data/seo/snapshots/2026-08-27.json",
+      "sha256": "97d4ab8820c91f2e9ca6a4459a823a3c53f54c29ea56e34361e6ff4450a1a8f2"
     }
   },
   "policy": {
@@ -50,14 +50,14 @@
     "cities": 18,
     "fixedQueries": 72,
     "requestedQueries": 72,
-    "queriesWithRows": 29,
-    "exactRows": 34,
+    "queriesWithRows": 30,
+    "exactRows": 36,
     "intendedUrlOnlyQueries": 26,
-    "multiUrlIncludingIntendedQueries": 3,
+    "multiUrlIncludingIntendedQueries": 4,
     "alternateUrlOnlyQueries": 0,
-    "requestedNoRowQueries": 43,
+    "requestedNoRowQueries": 42,
     "unrequestedQueries": 0,
-    "citiesWithUrlCompetitionEvidence": 2,
+    "citiesWithUrlCompetitionEvidence": 3,
     "citiesWithAllFourQueriesRequested": 18,
     "publicMutations": 0
   },
@@ -85,6 +85,16 @@
     {
       "priority": 1,
       "city": "Holladay",
+      "state": "url-competition-requires-diagnosis",
+      "protectedFootholds": {
+        "organicNumberOneQueries": [],
+        "googleAiOverviewCitedQueries": []
+      },
+      "action": "Inspect the alternate URLs against redirect dates, canonicals, current live routing, and query intent. Treat this blended 28-day evidence as a diagnosis trigger, not proof of current cannibalization or permission to redirect."
+    },
+    {
+      "priority": 1,
+      "city": "Millcreek",
       "state": "url-competition-requires-diagnosis",
       "protectedFootholds": {
         "organicNumberOneQueries": [],
@@ -151,16 +161,6 @@
     {
       "priority": 4,
       "city": "Midvale",
-      "state": "complete-request-with-unreturned-rows",
-      "protectedFootholds": {
-        "organicNumberOneQueries": [],
-        "googleAiOverviewCitedQueries": []
-      },
-      "action": "Preserve the intended city hub and all related routes; use the next complete targeted GSC read before selecting an architecture or intent experiment."
-    },
-    {
-      "priority": 4,
-      "city": "Millcreek",
       "state": "complete-request-with-unreturned-rows",
       "protectedFootholds": {
         "organicNumberOneQueries": [],
@@ -294,8 +294,8 @@
                 "https://www.framerestorationutah.com/locations/salt-lake-city"
               ],
               "clicks": 0,
-              "impressions": 52,
-              "position": 32.4,
+              "impressions": 64,
+              "position": 32.3,
               "intended": true
             }
           ],
@@ -317,7 +317,7 @@
                 "https://www.framerestorationutah.com/locations/salt-lake-city"
               ],
               "clicks": 0,
-              "impressions": 674,
+              "impressions": 721,
               "position": 24.9,
               "intended": true
             }
@@ -340,7 +340,7 @@
                 "https://www.framerestorationutah.com/locations/salt-lake-city"
               ],
               "clicks": 0,
-              "impressions": 178,
+              "impressions": 188,
               "position": 26,
               "intended": true
             }
@@ -381,25 +381,27 @@
       "page": "locations/millcreek.html",
       "intendedCanonical": "https://www.framerestorationutah.com/locations/millcreek",
       "intendedPageSha256": "d3171172fcd5b796b12134fc91e1bd366952a3c83e13a160a3106262197b215d",
-      "state": "complete-request-with-unreturned-rows",
+      "state": "url-competition-requires-diagnosis",
       "coverage": {
         "fixedQueries": 4,
         "requestedQueries": 4,
         "returnedQueries": 1,
-        "exactRows": 1
+        "exactRows": 2
       },
       "protectedFootholds": {
         "organicNumberOneQueries": [],
         "googleAiOverviewCitedQueries": []
       },
-      "alternateNormalizedUrls": [],
-      "nextEvidenceAction": "Preserve the intended city hub and all related routes; use the next complete targeted GSC read before selecting an architecture or intent experiment.",
+      "alternateNormalizedUrls": [
+        "framerestorationutah.com/salt-lake-city"
+      ],
+      "nextEvidenceAction": "Inspect the alternate URLs against redirect dates, canonicals, current live routing, and query intent. Treat this blended 28-day evidence as a diagnosis trigger, not proof of current cannibalization or permission to redirect.",
       "queries": [
         {
           "queryId": "millcreek-roofing-contractor",
           "keyword": "roofing contractor millcreek",
           "requested": true,
-          "state": "intended-url-only",
+          "state": "multi-url-including-intended",
           "intendedCanonical": "https://www.framerestorationutah.com/locations/millcreek",
           "intendedPageObserved": true,
           "highestImpressionUrl": "framerestorationutah.com/locations/millcreek",
@@ -411,12 +413,22 @@
                 "https://www.framerestorationutah.com/locations/millcreek"
               ],
               "clicks": 0,
-              "impressions": 8,
-              "position": 6.6,
+              "impressions": 10,
+              "position": 6.5,
               "intended": true
+            },
+            {
+              "normalizedUrl": "framerestorationutah.com/salt-lake-city",
+              "urlVariants": [
+                "https://www.framerestorationutah.com/salt-lake-city"
+              ],
+              "clicks": 0,
+              "impressions": 1,
+              "position": 12,
+              "intended": false
             }
           ],
-          "interpretation": "Only the intended city hub appears in the exact query-to-page rows; preserve that route and canonical."
+          "interpretation": "The intended hub and at least one other Frame URL appear in the 28-day window; diagnose timing, redirects, canonicals, and intent before any architecture change."
         },
         {
           "queryId": "millcreek-roof-repair",
@@ -495,7 +507,7 @@
                 "https://www.framerestorationutah.com/locations/sandy"
               ],
               "clicks": 0,
-              "impressions": 40,
+              "impressions": 39,
               "position": 17,
               "intended": true
             }
@@ -518,8 +530,8 @@
                 "https://www.framerestorationutah.com/locations/sandy"
               ],
               "clicks": 0,
-              "impressions": 62,
-              "position": 15.8,
+              "impressions": 65,
+              "position": 15.5,
               "intended": true
             }
           ],
@@ -541,8 +553,8 @@
                 "https://www.framerestorationutah.com/locations/sandy"
               ],
               "clicks": 0,
-              "impressions": 45,
-              "position": 9.6,
+              "impressions": 46,
+              "position": 10,
               "intended": true
             }
           ],
@@ -618,23 +630,23 @@
               ],
               "clicks": 0,
               "impressions": 27,
-              "position": 16.9,
+              "position": 17.1,
               "intended": true
-            },
-            {
-              "normalizedUrl": "framerestorationutah.com/salt-lake-city",
-              "urlVariants": [
-                "https://www.framerestorationutah.com/salt-lake-city"
-              ],
-              "clicks": 0,
-              "impressions": 2,
-              "position": 8,
-              "intended": false
             },
             {
               "normalizedUrl": "framerestorationutah.com/",
               "urlVariants": [
                 "https://www.framerestorationutah.com/?utm_source=google&utm_medium=organic&utm_campaign=gbp"
+              ],
+              "clicks": 0,
+              "impressions": 1,
+              "position": 8,
+              "intended": false
+            },
+            {
+              "normalizedUrl": "framerestorationutah.com/salt-lake-city",
+              "urlVariants": [
+                "https://www.framerestorationutah.com/salt-lake-city"
               ],
               "clicks": 0,
               "impressions": 1,
@@ -660,8 +672,8 @@
                 "https://www.framerestorationutah.com/locations/holladay"
               ],
               "clicks": 0,
-              "impressions": 24,
-              "position": 11,
+              "impressions": 29,
+              "position": 11.4,
               "intended": true
             }
           ],
@@ -683,8 +695,8 @@
                 "https://www.framerestorationutah.com/locations/holladay"
               ],
               "clicks": 0,
-              "impressions": 29,
-              "position": 5.9,
+              "impressions": 28,
+              "position": 6.1,
               "intended": true
             },
             {
@@ -693,8 +705,8 @@
                 "https://www.framerestorationutah.com/blog/holladay/roof-replacement-holladay-utah"
               ],
               "clicks": 0,
-              "impressions": 11,
-              "position": 20.2,
+              "impressions": 13,
+              "position": 20.9,
               "intended": false
             },
             {
@@ -810,8 +822,8 @@
       "coverage": {
         "fixedQueries": 4,
         "requestedQueries": 4,
-        "returnedQueries": 0,
-        "exactRows": 0
+        "returnedQueries": 1,
+        "exactRows": 1
       },
       "protectedFootholds": {
         "organicNumberOneQueries": [],
@@ -848,13 +860,24 @@
           "queryId": "draper-roof-replacement",
           "keyword": "roof replacement draper",
           "requested": true,
-          "state": "requested-no-row-returned",
+          "state": "intended-url-only",
           "intendedCanonical": "https://www.framerestorationutah.com/locations/draper",
-          "intendedPageObserved": false,
-          "highestImpressionUrl": null,
-          "highestImpressionUrlIsIntended": null,
-          "rows": [],
-          "interpretation": "The exact query was requested but GSC returned no row; this is withheld or absent row evidence, not zero demand or proof that no Frame URL ranks."
+          "intendedPageObserved": true,
+          "highestImpressionUrl": "framerestorationutah.com/locations/draper",
+          "highestImpressionUrlIsIntended": true,
+          "rows": [
+            {
+              "normalizedUrl": "framerestorationutah.com/locations/draper",
+              "urlVariants": [
+                "https://www.framerestorationutah.com/locations/draper"
+              ],
+              "clicks": 0,
+              "impressions": 2,
+              "position": 15,
+              "intended": true
+            }
+          ],
+          "interpretation": "Only the intended city hub appears in the exact query-to-page rows; preserve that route and canonical."
         },
         {
           "queryId": "draper-roofer",
@@ -1007,8 +1030,8 @@
                 "https://www.framerestorationutah.com/locations/herriman"
               ],
               "clicks": 0,
-              "impressions": 44,
-              "position": 14.5,
+              "impressions": 41,
+              "position": 15.2,
               "intended": true
             }
           ],
@@ -1030,8 +1053,8 @@
                 "https://www.framerestorationutah.com/locations/herriman"
               ],
               "clicks": 0,
-              "impressions": 63,
-              "position": 8,
+              "impressions": 62,
+              "position": 8.1,
               "intended": true
             },
             {
@@ -1370,7 +1393,7 @@
                 "https://www.framerestorationutah.com/locations/murray"
               ],
               "clicks": 0,
-              "impressions": 16,
+              "impressions": 17,
               "position": 10.1,
               "intended": true
             }
@@ -1500,8 +1523,8 @@
                 "https://www.framerestorationutah.com/locations/riverton"
               ],
               "clicks": 0,
-              "impressions": 13,
-              "position": 13.2,
+              "impressions": 14,
+              "position": 13.1,
               "intended": true
             }
           ],
@@ -1548,8 +1571,8 @@
                 "https://www.framerestorationutah.com/locations/south-jordan"
               ],
               "clicks": 0,
-              "impressions": 31,
-              "position": 16.9,
+              "impressions": 30,
+              "position": 17.1,
               "intended": true
             }
           ],
@@ -1594,8 +1617,8 @@
                 "https://www.framerestorationutah.com/locations/south-jordan"
               ],
               "clicks": 0,
-              "impressions": 20,
-              "position": 7.2,
+              "impressions": 19,
+              "position": 7.4,
               "intended": true
             }
           ],
@@ -1800,8 +1823,8 @@
                 "https://www.framerestorationutah.com/locations/west-jordan"
               ],
               "clicks": 0,
-              "impressions": 42,
-              "position": 33.3,
+              "impressions": 49,
+              "position": 33.4,
               "intended": true
             }
           ],
@@ -1823,7 +1846,7 @@
                 "https://www.framerestorationutah.com/locations/west-jordan"
               ],
               "clicks": 0,
-              "impressions": 20,
+              "impressions": 21,
               "position": 21.3,
               "intended": true
             }
@@ -1907,7 +1930,7 @@
               ],
               "clicks": 0,
               "impressions": 5,
-              "position": 37.8,
+              "position": 25.2,
               "intended": true
             }
           ],
