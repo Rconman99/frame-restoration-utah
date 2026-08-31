@@ -1,18 +1,18 @@
-# Holladay Google rank tracker — 2026-08-24
+# Holladay Google rank tracker — 2026-08-31
 
 - Panel: `utah-holladay-google-v1`
 - Provider: DataForSEO task-queue
 - Location: Holladay,Utah,United States
 - Device/depth: mobile / top 30
-- Observed: 2026-08-24T09:57:09.356Z
+- Observed: 2026-08-31T09:24:07.921Z
 - Estimated panel cost: $0.0192
 
 | Query | Organic | Exact-CID map pack | AI Overview | Frame cited in AI Overview |
 |---|---:|---:|---:|---:|
 | roofing contractor holladay | #19 | Not found in top 30 | No | No |
-| roof repair holladay | #10 | Not found in top 30 | No | No |
-| roof replacement holladay | #4 | Not found in top 30 | Yes | No |
-| roofer holladay | #15 | Not found in top 30 | No | No |
+| roof repair holladay | #10 | Not found in top 30 | Yes | No |
+| roof replacement holladay | #4 | Not found in top 30 | No | No |
+| roofer holladay | #13 | Not found in top 30 | No | No |
 
 ## Displacement targets
 
@@ -23,16 +23,16 @@
 - AI Overview sources: no AI Overview.
 
 ### roof repair holladay
-- Organic top 3: #1 bartlettroofs.com; #2 xperienceroofing.com; #3 thumbtack.com.
+- Organic top 3: #1 xperienceroofing.com; #2 bartlettroofs.com; #3 thumbtack.com.
 - Map-pack top 3: #1 True North Roofing [CID 5387650211366766810]; #2 Utah Roofing Pros [CID 4118570990011609504]; #3 Holladay Roofing [CID 4608145956816988456].
 - Paid local placements (excluded from Maps rank): none.
-- AI Overview sources: no AI Overview.
+- AI Overview sources: present, sources not returned.
 
 ### roof replacement holladay
 - Organic top 3: #1 xperienceroofing.com; #2 bartlettroofs.com; #3 thumbtack.com.
 - Map-pack top 3: #1 True North Roofing [CID 5387650211366766810]; #2 Utah Roofing Pros [CID 4118570990011609504]; #3 Holladay Roofing [CID 4608145956816988456].
 - Paid local placements (excluded from Maps rank): none.
-- AI Overview sources: present, sources not returned.
+- AI Overview sources: no AI Overview.
 
 ### roofer holladay
 - Organic top 3: #1 reroofit.com; #2 xperienceroofing.com; #3 thumbtack.com.

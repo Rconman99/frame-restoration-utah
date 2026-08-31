@@ -80,15 +80,15 @@
   "sources": {
     "portfolio": {
       "file": "data/rank-tracker/SLV-18-CITY-GOAL-PORTFOLIO-2026-08-12.json",
-      "sha256": "509f1b70b63744936122b1b1c900d0cb6274784dfdd12b5d4605ca9fead77968"
+      "sha256": "d292019270a0dd604cf59a09d045a971bd65e6d8df043bba63f5d400ec568480"
     },
     "weeklyDecisions": {
       "file": "data/rank-tracker/SLV-WEEKLY-DECISIONS-2026-08-12.json",
-      "sha256": "32fac9bda854c39d2ed92def876f456f783776c06ce0f78361546ea93f21fd29"
+      "sha256": "86d4423b4c36e5c45e8850188ac8b9243a27b405966c58cc00c537f67d8dbbf9"
     },
     "gscAttribution": {
       "file": "data/rank-tracker/SLV-GSC-URL-ATTRIBUTION-LATEST.json",
-      "sha256": "2e6352ab5c1e5f508c94610eafcc62bddf6fd4bfff8720cda406c3186a980569"
+      "sha256": "514432e6ce89b656c7d7a19b6ab5818ab78cb9357d58b61740d8ce8b447c4d9d"
     },
     "gscSplitUrlDiagnosis": {
       "file": "data/rank-tracker/SLV-GSC-SPLIT-URL-DIAGNOSIS-2026-08-12.json",
@@ -96,19 +96,19 @@
     },
     "displacement": {
       "file": "data/rank-tracker/SLV-COMPETITOR-DISPLACEMENT-2026-08-12.json",
-      "sha256": "1466d510fd5441f7b5ba26c943224dadf92262ec23736ef7efe958247a78e3af"
+      "sha256": "6535034ddc1d3dda8b65d042e96f320c530e91afb690524da2dec8e5bc3055a8"
     },
     "entityHealth": {
       "file": "data/rank-tracker/SLV-ENTITY-HEALTH-2026-08-12.json",
-      "sha256": "4630dc203e4e072d97d3d5eb9cb105ef74ee7eabb1ed7486e082386667f160a6"
+      "sha256": "501005618f37805a8413a68ce5f98c490035d03ffb4dd1d0874a9e5f9b492156"
     },
     "mapsReadiness": {
       "file": "data/rank-tracker/SLV-MAPS-READINESS-2026-08-12.json",
-      "sha256": "8acd3255cf3a233b3b43243bcc45258a4a68f79b9700c32df80f779699a27cdb"
+      "sha256": "873c8ac46752ff0ee4993960968e5f49d1e72ff330d141647543d697dbf4dcf0"
     },
     "expansionArchitecture": {
       "file": "data/rank-tracker/SLV-EXPANSION-ARCHITECTURE-2026-08-12.json",
-      "sha256": "ea660525476d5be37c407c9d70fbb64193a386e2a4fabe2526d01d2d5ae7facd"
+      "sha256": "1434955b65468fa25d865ecefb750ffcb6c33a9028270a27e384cfbd63b88421"
     },
     "corePriority": {
       "file": "data/rank-tracker/SLV-PRIORITY-2026-08-12.json",
@@ -166,7 +166,7 @@
     "monitor": 3,
     "requestInput": 15,
     "protectedOrganicNumberOneQueries": 2,
-    "protectedGoogleAiOverviewCitations": 1,
+    "protectedGoogleAiOverviewCitations": 2,
     "citiesPendingServiceAreaEvidence": 16,
     "citiesWithAllFourTargetedGscQueriesRequested": 18,
     "citiesAtSustainedGoal": 0,
@@ -240,15 +240,15 @@
       "lane": "observe-time-gated-slc-experiment",
       "decision": "Monitor",
       "evidenceFeatures": {
-        "observedAt": "2026-08-24T09:57:09.354Z",
+        "observedAt": "2026-08-31T09:24:07.918Z",
         "organicRanks": [
-          29,
-          22,
+          null,
           23,
+          21,
           null
         ],
-        "bestMeasuredOrganicRank": 22,
-        "measuredMeanOrganicRank": 24.67,
+        "bestMeasuredOrganicRank": 21,
+        "measuredMeanOrganicRank": 22,
         "exactCidMapsNumberOne": 0,
         "exactCidMapsReturned": 0,
         "mapsPacksPresent": 3,
@@ -256,9 +256,9 @@
         "dominantMapsDisplacer": {
           "name": "The Roof Doctor",
           "cid": "16329927680093228178",
-          "domain": "google.com",
+          "domain": null,
           "appearances": 3,
-          "numberOneQueries": 1,
+          "numberOneQueries": 2,
           "bestRank": 1,
           "keywords": [
             "roof repair salt lake city",
@@ -281,7 +281,7 @@
         "architectureState": "not-separately-diagnosed",
         "protectedRelatedRoutes": [],
         "consumerAiState": "configured-scheduled-unmeasured-invalid-provider-credential",
-        "comparableWeeklyGooglePanels": 3,
+        "comparableWeeklyGooglePanels": 4,
         "comparableWeeklyConsumerAiPanels": 0
       },
       "scoreVector": {
@@ -341,15 +341,15 @@
       "lane": "owner-gated-verified-identity-and-integrity-cleanup",
       "decision": "Request input",
       "evidenceFeatures": {
-        "observedAt": "2026-08-24T09:57:09.356Z",
+        "observedAt": "2026-08-31T09:24:07.921Z",
         "organicRanks": [
           4,
           4,
           5,
-          12
+          13
         ],
         "bestMeasuredOrganicRank": 4,
-        "measuredMeanOrganicRank": 6.25,
+        "measuredMeanOrganicRank": 6.5,
         "exactCidMapsNumberOne": 0,
         "exactCidMapsReturned": 0,
         "mapsPacksPresent": 4,
@@ -357,7 +357,7 @@
         "dominantMapsDisplacer": {
           "name": "Whitaker Roofing Services",
           "cid": "11316815627233980109",
-          "domain": "google.com",
+          "domain": "whitakerroofing.com",
           "appearances": 4,
           "numberOneQueries": 3,
           "bestRank": 1,
@@ -368,8 +368,10 @@
             "roofer millcreek"
           ]
         },
-        "googleAiOverviewsPresent": 0,
-        "googleAiOverviewOwnedQueries": [],
+        "googleAiOverviewsPresent": 1,
+        "googleAiOverviewOwnedQueries": [
+          "roof replacement millcreek"
+        ],
         "protectedOrganicNumberOneQueries": [],
         "intendedPageSelectedForEveryMeasuredRank": true,
         "gscState": "url-competition-requires-diagnosis",
@@ -385,14 +387,14 @@
         "architectureState": "not-evidenced",
         "protectedRelatedRoutes": [],
         "consumerAiState": "configured-scheduled-unmeasured-invalid-provider-credential",
-        "comparableWeeklyGooglePanels": 3,
+        "comparableWeeklyGooglePanels": 4,
         "comparableWeeklyConsumerAiPanels": 0
       },
       "scoreVector": {
         "businessValue": 10,
-        "confidence": 8,
+        "confidence": 10,
         "leadValue": 8,
-        "authorityValue": 5,
+        "authorityValue": 10,
         "learningValue": 6,
         "implementationCost": 5,
         "complianceRisk": 8,
@@ -657,15 +659,15 @@
       "lane": "owner-gated-core-integrity-then-single-variable-intent-test",
       "decision": "Request input",
       "evidenceFeatures": {
-        "observedAt": "2026-08-24T09:57:09.356Z",
+        "observedAt": "2026-08-31T09:24:07.921Z",
         "organicRanks": [
-          null,
-          14,
-          13,
+          16,
+          15,
+          5,
           null
         ],
-        "bestMeasuredOrganicRank": 13,
-        "measuredMeanOrganicRank": 13.5,
+        "bestMeasuredOrganicRank": 5,
+        "measuredMeanOrganicRank": 12,
         "exactCidMapsNumberOne": 0,
         "exactCidMapsReturned": 0,
         "mapsPacksPresent": 4,
@@ -673,7 +675,7 @@
         "dominantMapsDisplacer": {
           "name": "ReRoofIt",
           "cid": "3305979678440818523",
-          "domain": "google.com",
+          "domain": "reroofit.com",
           "appearances": 4,
           "numberOneQueries": 3,
           "bestRank": 1,
@@ -699,13 +701,13 @@
         "architectureState": "not-evidenced",
         "protectedRelatedRoutes": [],
         "consumerAiState": "configured-manual-unmeasured-invalid-provider-credential",
-        "comparableWeeklyGooglePanels": 3,
+        "comparableWeeklyGooglePanels": 4,
         "comparableWeeklyConsumerAiPanels": 0
       },
       "scoreVector": {
         "businessValue": 10,
         "confidence": 6,
-        "leadValue": 5,
+        "leadValue": 8,
         "authorityValue": 5,
         "learningValue": 6,
         "implementationCost": 5,
@@ -762,15 +764,15 @@
       "lane": "diagnose-url-consolidation-before-intent-change",
       "decision": "Monitor",
       "evidenceFeatures": {
-        "observedAt": "2026-08-24T09:57:09.356Z",
+        "observedAt": "2026-08-31T09:24:07.921Z",
         "organicRanks": [
           19,
           10,
           4,
-          15
+          13
         ],
         "bestMeasuredOrganicRank": 4,
-        "measuredMeanOrganicRank": 12,
+        "measuredMeanOrganicRank": 11.5,
         "exactCidMapsNumberOne": 0,
         "exactCidMapsReturned": 0,
         "mapsPacksPresent": 4,
@@ -778,7 +780,7 @@
         "dominantMapsDisplacer": {
           "name": "True North Roofing",
           "cid": "5387650211366766810",
-          "domain": "google.com",
+          "domain": "truenorthroof.com",
           "appearances": 4,
           "numberOneQueries": 4,
           "bestRank": 1,
@@ -808,7 +810,7 @@
         "architectureState": "not-evidenced",
         "protectedRelatedRoutes": [],
         "consumerAiState": "configured-manual-unmeasured-invalid-provider-credential",
-        "comparableWeeklyGooglePanels": 3,
+        "comparableWeeklyGooglePanels": 4,
         "comparableWeeklyConsumerAiPanels": 0
       },
       "scoreVector": {
@@ -871,34 +873,33 @@
       "lane": "owner-gated-core-integrity-then-single-variable-intent-test",
       "decision": "Request input",
       "evidenceFeatures": {
-        "observedAt": "2026-08-24T09:57:09.356Z",
+        "observedAt": "2026-08-31T09:24:07.920Z",
         "organicRanks": [
-          15,
+          16,
           12,
           10,
           11
         ],
         "bestMeasuredOrganicRank": 10,
-        "measuredMeanOrganicRank": 12,
+        "measuredMeanOrganicRank": 12.25,
         "exactCidMapsNumberOne": 0,
         "exactCidMapsReturned": 0,
-        "mapsPacksPresent": 4,
+        "mapsPacksPresent": 3,
         "mapsReadinessLane": "service-area-proof-before-exact-cid-planning",
         "dominantMapsDisplacer": {
           "name": "Utah Roofing Pros",
           "cid": "4118570990011609504",
-          "domain": "google.com",
-          "appearances": 4,
-          "numberOneQueries": 4,
+          "domain": "utahroofingpros.com",
+          "appearances": 3,
+          "numberOneQueries": 3,
           "bestRank": 1,
           "keywords": [
-            "roofing contractor cottonwood heights",
             "roof repair cottonwood heights",
             "roof replacement cottonwood heights",
             "roofer cottonwood heights"
           ]
         },
-        "googleAiOverviewsPresent": 0,
+        "googleAiOverviewsPresent": 1,
         "googleAiOverviewOwnedQueries": [],
         "protectedOrganicNumberOneQueries": [],
         "intendedPageSelectedForEveryMeasuredRank": true,
@@ -913,14 +914,14 @@
         "architectureState": "not-evidenced",
         "protectedRelatedRoutes": [],
         "consumerAiState": "configured-manual-unmeasured-invalid-provider-credential",
-        "comparableWeeklyGooglePanels": 3,
+        "comparableWeeklyGooglePanels": 4,
         "comparableWeeklyConsumerAiPanels": 0
       },
       "scoreVector": {
         "businessValue": 10,
         "confidence": 6,
         "leadValue": 7,
-        "authorityValue": 5,
+        "authorityValue": 7,
         "learningValue": 6,
         "implementationCost": 5,
         "complianceRisk": 8,
@@ -1810,15 +1811,15 @@
       "lane": "owner-gated-core-integrity-then-single-variable-intent-test",
       "decision": "Request input",
       "evidenceFeatures": {
-        "observedAt": "2026-08-24T09:57:09.357Z",
+        "observedAt": "2026-08-31T09:24:07.921Z",
         "organicRanks": [
-          null,
-          null,
-          null,
-          null
+          20,
+          14,
+          4,
+          18
         ],
-        "bestMeasuredOrganicRank": null,
-        "measuredMeanOrganicRank": null,
+        "bestMeasuredOrganicRank": 4,
+        "measuredMeanOrganicRank": 14,
         "exactCidMapsNumberOne": 0,
         "exactCidMapsReturned": 0,
         "mapsPacksPresent": 4,
@@ -1826,7 +1827,7 @@
         "dominantMapsDisplacer": {
           "name": "Pride Roofing & Contracting, LLC",
           "cid": "15206834657984643450",
-          "domain": "google.com",
+          "domain": "prideroofing.net",
           "appearances": 4,
           "numberOneQueries": 4,
           "bestRank": 1,
@@ -1852,13 +1853,13 @@
         "architectureState": "not-evidenced",
         "protectedRelatedRoutes": [],
         "consumerAiState": "configured-manual-unmeasured-invalid-provider-credential",
-        "comparableWeeklyGooglePanels": 3,
+        "comparableWeeklyGooglePanels": 4,
         "comparableWeeklyConsumerAiPanels": 0
       },
       "scoreVector": {
         "businessValue": 10,
         "confidence": 6,
-        "leadValue": 2,
+        "leadValue": 8,
         "authorityValue": 5,
         "learningValue": 6,
         "implementationCost": 5,

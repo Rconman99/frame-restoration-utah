@@ -15,15 +15,15 @@
     "exactCidMapsTargets": 72,
     "exactCidMapsTargetsMeasured": 72,
     "exactCidMapsNumberOne": 0,
-    "googleAiOverviewCitations": 1,
-    "googleAiOverviewsPresent": 4,
+    "googleAiOverviewCitations": 2,
+    "googleAiOverviewsPresent": 6,
     "consumerAiCompleteCityPanels": 0,
     "citiesAtSustainedGoal": 0
   },
   "sources": {
     "portfolio": {
       "file": "data/rank-tracker/SLV-18-CITY-GOAL-PORTFOLIO-2026-08-12.json",
-      "sha256": "509f1b70b63744936122b1b1c900d0cb6274784dfdd12b5d4605ca9fead77968"
+      "sha256": "d292019270a0dd604cf59a09d045a971bd65e6d8df043bba63f5d400ec568480"
     },
     "corePriority": {
       "file": "data/rank-tracker/SLV-PRIORITY-2026-08-12.json",
@@ -35,7 +35,7 @@
     },
     "displacement": {
       "file": "data/rank-tracker/SLV-COMPETITOR-DISPLACEMENT-2026-08-12.json",
-      "sha256": "1466d510fd5441f7b5ba26c943224dadf92262ec23736ef7efe958247a78e3af"
+      "sha256": "6535034ddc1d3dda8b65d042e96f320c530e91afb690524da2dec8e5bc3055a8"
     },
     "coreCleanupPacket": {
       "file": "data/authority/SLV-CITY-PUBLIC-REMEDIATION-PACKET-2026-08-12.json",
@@ -51,19 +51,19 @@
     },
     "expansionArchitecture": {
       "file": "data/rank-tracker/SLV-EXPANSION-ARCHITECTURE-2026-08-12.json",
-      "sha256": "ea660525476d5be37c407c9d70fbb64193a386e2a4fabe2526d01d2d5ae7facd"
+      "sha256": "1434955b65468fa25d865ecefb750ffcb6c33a9028270a27e384cfbd63b88421"
     },
     "entityHealth": {
       "file": "data/rank-tracker/SLV-ENTITY-HEALTH-2026-08-12.json",
-      "sha256": "4630dc203e4e072d97d3d5eb9cb105ef74ee7eabb1ed7486e082386667f160a6"
+      "sha256": "501005618f37805a8413a68ce5f98c490035d03ffb4dd1d0874a9e5f9b492156"
     },
     "weeklyDecisions": {
       "file": "data/rank-tracker/SLV-WEEKLY-DECISIONS-2026-08-12.json",
-      "sha256": "32fac9bda854c39d2ed92def876f456f783776c06ce0f78361546ea93f21fd29"
+      "sha256": "86d4423b4c36e5c45e8850188ac8b9243a27b405966c58cc00c537f67d8dbbf9"
     },
     "gscAttribution": {
       "file": "data/rank-tracker/SLV-GSC-URL-ATTRIBUTION-LATEST.json",
-      "sha256": "2e6352ab5c1e5f508c94610eafcc62bddf6fd4bfff8720cda406c3186a980569"
+      "sha256": "514432e6ce89b656c7d7a19b6ab5818ab78cb9357d58b61740d8ce8b447c4d9d"
     },
     "consumerAi": {
       "file": "data/rank-tracker/SLV-CONSUMER-AI-LATEST.json",
@@ -71,11 +71,11 @@
     },
     "interventions": {
       "file": "data/rank-tracker/SLV-INTERVENTION-QUEUE-2026-08-12.json",
-      "sha256": "dde27979a2e11c3e2175d4fd8d74b0230cc22b0f15a81d49f07b06ac9ef38cef"
+      "sha256": "23b27f5114d546a38bbbe1488d70d64bde3c409e9209b7d5427c9d571dfec5b6"
     },
     "mapsReadiness": {
       "file": "data/rank-tracker/SLV-MAPS-READINESS-2026-08-12.json",
-      "sha256": "8acd3255cf3a233b3b43243bcc45258a4a68f79b9700c32df80f779699a27cdb"
+      "sha256": "873c8ac46752ff0ee4993960968e5f49d1e72ff330d141647543d697dbf4dcf0"
     },
     "ownerProfileAuditRequest": {
       "file": "data/authority/SLV-GBP-OWNER-AUDIT-REQUEST-2026-08-12.json",
@@ -264,11 +264,11 @@
       "page": "locations/salt-lake-city.html",
       "panelId": "utah-salt-lake-city-google-v1",
       "measurement": {
-        "observedAt": "2026-08-24T09:57:09.354Z",
+        "observedAt": "2026-08-31T09:24:07.918Z",
         "organicRanks": [
-          29,
-          22,
+          null,
           23,
+          21,
           null
         ],
         "organicNumberOne": [],
@@ -331,9 +331,9 @@
         "dominantDisplacer": {
           "name": "The Roof Doctor",
           "cid": "16329927680093228178",
-          "domain": "google.com",
+          "domain": null,
           "appearances": 3,
-          "numberOneQueries": 1,
+          "numberOneQueries": 2,
           "bestRank": 1,
           "keywords": [
             "roof repair salt lake city",
@@ -359,16 +359,18 @@
       "page": "locations/millcreek.html",
       "panelId": "utah-millcreek-google-v1",
       "measurement": {
-        "observedAt": "2026-08-24T09:57:09.356Z",
+        "observedAt": "2026-08-31T09:24:07.921Z",
         "organicRanks": [
           4,
           4,
           5,
-          12
+          13
         ],
         "organicNumberOne": [],
         "exactCidMapsNumberOne": 0,
-        "googleAiOverviewOwnedQueries": [],
+        "googleAiOverviewOwnedQueries": [
+          "roof replacement millcreek"
+        ],
         "consumerAi": "configured-scheduled-unmeasured-invalid-provider-credential"
       },
       "gscAttribution": {
@@ -400,9 +402,9 @@
         "acceptanceCheck": "Both Millcreek routes publish the reviewed Salt Lake Valley CID/sameAs set, strict integrity is green, all five rendered release gates pass, and a fresh baseline opens the 28-day observation window.",
         "scoreVector": {
           "businessValue": 10,
-          "confidence": 8,
+          "confidence": 10,
           "leadValue": 8,
-          "authorityValue": 5,
+          "authorityValue": 10,
           "learningValue": 6,
           "implementationCost": 5,
           "complianceRisk": 8,
@@ -428,7 +430,7 @@
         "dominantDisplacer": {
           "name": "Whitaker Roofing Services",
           "cid": "11316815627233980109",
-          "domain": "google.com",
+          "domain": "whitakerroofing.com",
           "appearances": 4,
           "numberOneQueries": 3,
           "bestRank": 1,
@@ -654,11 +656,11 @@
       "page": "locations/sandy.html",
       "panelId": "utah-sandy-google-v1",
       "measurement": {
-        "observedAt": "2026-08-24T09:57:09.356Z",
+        "observedAt": "2026-08-31T09:24:07.921Z",
         "organicRanks": [
-          null,
-          14,
-          13,
+          16,
+          15,
+          5,
           null
         ],
         "organicNumberOne": [],
@@ -694,7 +696,7 @@
         "scoreVector": {
           "businessValue": 10,
           "confidence": 6,
-          "leadValue": 5,
+          "leadValue": 8,
           "authorityValue": 5,
           "learningValue": 6,
           "implementationCost": 5,
@@ -721,7 +723,7 @@
         "dominantDisplacer": {
           "name": "ReRoofIt",
           "cid": "3305979678440818523",
-          "domain": "google.com",
+          "domain": "reroofit.com",
           "appearances": 4,
           "numberOneQueries": 3,
           "bestRank": 1,
@@ -750,12 +752,12 @@
       "page": "locations/holladay.html",
       "panelId": "utah-holladay-google-v1",
       "measurement": {
-        "observedAt": "2026-08-24T09:57:09.356Z",
+        "observedAt": "2026-08-31T09:24:07.921Z",
         "organicRanks": [
           19,
           10,
           4,
-          15
+          13
         ],
         "organicNumberOne": [],
         "exactCidMapsNumberOne": 0,
@@ -821,7 +823,7 @@
         "dominantDisplacer": {
           "name": "True North Roofing",
           "cid": "5387650211366766810",
-          "domain": "google.com",
+          "domain": "truenorthroof.com",
           "appearances": 4,
           "numberOneQueries": 4,
           "bestRank": 1,
@@ -850,9 +852,9 @@
       "page": "locations/cottonwood-heights.html",
       "panelId": "utah-cottonwood-heights-google-v1",
       "measurement": {
-        "observedAt": "2026-08-24T09:57:09.356Z",
+        "observedAt": "2026-08-31T09:24:07.920Z",
         "organicRanks": [
-          15,
+          16,
           12,
           10,
           11
@@ -891,7 +893,7 @@
           "businessValue": 10,
           "confidence": 6,
           "leadValue": 7,
-          "authorityValue": 5,
+          "authorityValue": 7,
           "learningValue": 6,
           "implementationCost": 5,
           "complianceRisk": 8,
@@ -911,18 +913,17 @@
       },
       "mapsReadiness": {
         "lane": "service-area-proof-before-exact-cid-planning",
-        "packsPresent": 4,
+        "packsPresent": 3,
         "exactCidReturned": 0,
         "exactCidNumberOne": 0,
         "dominantDisplacer": {
           "name": "Utah Roofing Pros",
           "cid": "4118570990011609504",
-          "domain": "google.com",
-          "appearances": 4,
-          "numberOneQueries": 4,
+          "domain": "utahroofingpros.com",
+          "appearances": 3,
+          "numberOneQueries": 3,
           "bestRank": 1,
           "keywords": [
-            "roofing contractor cottonwood heights",
             "roof repair cottonwood heights",
             "roof replacement cottonwood heights",
             "roofer cottonwood heights"
@@ -1715,12 +1716,12 @@
       "page": "locations/draper.html",
       "panelId": "utah-draper-google-v1",
       "measurement": {
-        "observedAt": "2026-08-24T09:57:09.357Z",
+        "observedAt": "2026-08-31T09:24:07.921Z",
         "organicRanks": [
-          null,
-          null,
-          null,
-          null
+          20,
+          14,
+          4,
+          18
         ],
         "organicNumberOne": [],
         "exactCidMapsNumberOne": 0,
@@ -1755,7 +1756,7 @@
         "scoreVector": {
           "businessValue": 10,
           "confidence": 6,
-          "leadValue": 2,
+          "leadValue": 8,
           "authorityValue": 5,
           "learningValue": 6,
           "implementationCost": 5,
@@ -1782,7 +1783,7 @@
         "dominantDisplacer": {
           "name": "Pride Roofing & Contracting, LLC",
           "cid": "15206834657984643450",
-          "domain": "google.com",
+          "domain": "prideroofing.net",
           "appearances": 4,
           "numberOneQueries": 4,
           "bestRank": 1,

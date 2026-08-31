@@ -52,15 +52,15 @@
   "sources": {
     "portfolio": {
       "file": "data/rank-tracker/SLV-18-CITY-GOAL-PORTFOLIO-2026-08-12.json",
-      "sha256": "509f1b70b63744936122b1b1c900d0cb6274784dfdd12b5d4605ca9fead77968"
+      "sha256": "d292019270a0dd604cf59a09d045a971bd65e6d8df043bba63f5d400ec568480"
     },
     "displacement": {
       "file": "data/rank-tracker/SLV-COMPETITOR-DISPLACEMENT-2026-08-12.json",
-      "sha256": "1466d510fd5441f7b5ba26c943224dadf92262ec23736ef7efe958247a78e3af"
+      "sha256": "6535034ddc1d3dda8b65d042e96f320c530e91afb690524da2dec8e5bc3055a8"
     },
     "entityHealth": {
       "file": "data/rank-tracker/SLV-ENTITY-HEALTH-2026-08-12.json",
-      "sha256": "4630dc203e4e072d97d3d5eb9cb105ef74ee7eabb1ed7486e082386667f160a6"
+      "sha256": "501005618f37805a8413a68ce5f98c490035d03ffb4dd1d0874a9e5f9b492156"
     },
     "serviceAreaRequest": {
       "file": "data/authority/SLV-SERVICE-AREA-EVIDENCE-REQUEST-2026-08-12.json",
@@ -78,8 +78,8 @@
   "summary": {
     "cities": 18,
     "queries": 72,
-    "mapsPacksPresent": 70,
-    "mapsPacksAbsent": 2,
+    "mapsPacksPresent": 69,
+    "mapsPacksAbsent": 3,
     "exactCidReturned": 0,
     "exactCidNumberOne": 0,
     "profileVerifiedCities": 2,
@@ -150,9 +150,9 @@
           {
             "name": "The Roof Doctor",
             "cid": "16329927680093228178",
-            "domain": "google.com",
+            "domain": null,
             "appearances": 3,
-            "numberOneQueries": 1,
+            "numberOneQueries": 2,
             "bestRank": 1,
             "keywords": [
               "roof repair salt lake city",
@@ -161,25 +161,26 @@
             ]
           },
           {
-            "name": "Sky Bridge Roofing",
-            "cid": "5327886489350788974",
-            "domain": "google.com",
-            "appearances": 1,
-            "numberOneQueries": 1,
-            "bestRank": 1,
-            "keywords": [
-              "roofer salt lake city"
-            ]
-          },
-          {
             "name": "We Do Roofing Salt Lake City",
             "cid": "14346566316923503344",
-            "domain": "google.com",
+            "domain": null,
             "appearances": 1,
             "numberOneQueries": 1,
             "bestRank": 1,
             "keywords": [
               "roof repair salt lake city"
+            ]
+          },
+          {
+            "name": "Shingle Pro Roofing",
+            "cid": "9926634112120129216",
+            "domain": "shingleproroofing.com",
+            "appearances": 2,
+            "numberOneQueries": 0,
+            "bestRank": 2,
+            "keywords": [
+              "roof repair salt lake city",
+              "roofer salt lake city"
             ]
           }
         ]
@@ -218,8 +219,8 @@
           "packState": "exact-cid-not-returned-in-pack",
           "exactCidRank": null,
           "numberOneEntity": {
-            "name": "Sky Bridge Roofing",
-            "cid": "5327886489350788974"
+            "name": "The Roof Doctor",
+            "cid": "16329927680093228178"
           }
         }
       ],
@@ -252,7 +253,9 @@
         "prominence": {
           "exactCidReviews": "measured-exact-cid",
           "organicNumberOneQueries": [],
-          "ownedGoogleAiOverviewCitations": [],
+          "ownedGoogleAiOverviewCitations": [
+            "roof replacement millcreek"
+          ],
           "rule": "Measure genuine review strength and earned web authority separately; no incentives, gating, fabricated reviews, or paid ranking links."
         }
       },
@@ -271,7 +274,7 @@
           {
             "name": "Whitaker Roofing Services",
             "cid": "11316815627233980109",
-            "domain": "google.com",
+            "domain": "whitakerroofing.com",
             "appearances": 4,
             "numberOneQueries": 3,
             "bestRank": 1,
@@ -285,7 +288,7 @@
           {
             "name": "RoofTek",
             "cid": "2008385778269964311",
-            "domain": "google.com",
+            "domain": null,
             "appearances": 1,
             "numberOneQueries": 1,
             "bestRank": 1,
@@ -296,7 +299,7 @@
           {
             "name": "Sky Bridge Roofing",
             "cid": "5327886489350788974",
-            "domain": "google.com",
+            "domain": "skybridgeroofings.com",
             "appearances": 2,
             "numberOneQueries": 0,
             "bestRank": 2,
@@ -397,7 +400,7 @@
           {
             "name": "ReRoofIt",
             "cid": "3305979678440818523",
-            "domain": "google.com",
+            "domain": "reroofit.com",
             "appearances": 4,
             "numberOneQueries": 3,
             "bestRank": 1,
@@ -411,7 +414,7 @@
           {
             "name": "The Roofing Center",
             "cid": "5187111774548334344",
-            "domain": "google.com",
+            "domain": "roofingcenter.com",
             "appearances": 4,
             "numberOneQueries": 1,
             "bestRank": 1,
@@ -425,7 +428,7 @@
           {
             "name": "Forge Roofing",
             "cid": "5464243620653197056",
-            "domain": "google.com",
+            "domain": "forge-roofing.com",
             "appearances": 2,
             "numberOneQueries": 0,
             "bestRank": 3,
@@ -526,7 +529,7 @@
           {
             "name": "True North Roofing",
             "cid": "5387650211366766810",
-            "domain": "google.com",
+            "domain": "truenorthroof.com",
             "appearances": 4,
             "numberOneQueries": 4,
             "bestRank": 1,
@@ -540,7 +543,7 @@
           {
             "name": "Holladay Roofing",
             "cid": "4608145956816988456",
-            "domain": "google.com",
+            "domain": "holladayroofing.xyz",
             "appearances": 4,
             "numberOneQueries": 0,
             "bestRank": 2,
@@ -554,7 +557,7 @@
           {
             "name": "Utah Roofing Pros",
             "cid": "4118570990011609504",
-            "domain": "google.com",
+            "domain": "utahroofingpros.com",
             "appearances": 4,
             "numberOneQueries": 0,
             "bestRank": 2,
@@ -643,8 +646,8 @@
         }
       },
       "maps": {
-        "packsPresent": 4,
-        "packsAbsent": 0,
+        "packsPresent": 3,
+        "packsAbsent": 1,
         "exactCidReturned": 0,
         "exactCidNumberOne": 0,
         "exactCidRanks": [
@@ -657,12 +660,11 @@
           {
             "name": "Utah Roofing Pros",
             "cid": "4118570990011609504",
-            "domain": "google.com",
-            "appearances": 4,
-            "numberOneQueries": 4,
+            "domain": "utahroofingpros.com",
+            "appearances": 3,
+            "numberOneQueries": 3,
             "bestRank": 1,
             "keywords": [
-              "roofing contractor cottonwood heights",
               "roof repair cottonwood heights",
               "roof replacement cottonwood heights",
               "roofer cottonwood heights"
@@ -671,12 +673,11 @@
           {
             "name": "Pioneer Roofing Co",
             "cid": "8874014093901703868",
-            "domain": "google.com",
-            "appearances": 4,
+            "domain": "pioneerroofingutah.com",
+            "appearances": 3,
             "numberOneQueries": 0,
             "bestRank": 2,
             "keywords": [
-              "roofing contractor cottonwood heights",
               "roof repair cottonwood heights",
               "roof replacement cottonwood heights",
               "roofer cottonwood heights"
@@ -685,12 +686,11 @@
           {
             "name": "ReRoofIt",
             "cid": "3305979678440818523",
-            "domain": "google.com",
-            "appearances": 3,
+            "domain": "reroofit.com",
+            "appearances": 2,
             "numberOneQueries": 0,
             "bestRank": 3,
             "keywords": [
-              "roofing contractor cottonwood heights",
               "roof repair cottonwood heights",
               "roof replacement cottonwood heights"
             ]
@@ -701,12 +701,9 @@
         {
           "queryId": "cottonwood-heights-roofing-contractor",
           "keyword": "roofing contractor cottonwood heights",
-          "packState": "exact-cid-not-returned-in-pack",
+          "packState": "local-pack-not-present",
           "exactCidRank": null,
-          "numberOneEntity": {
-            "name": "Utah Roofing Pros",
-            "cid": "4118570990011609504"
-          }
+          "numberOneEntity": null
         },
         {
           "queryId": "cottonwood-heights-roof-repair",
@@ -787,7 +784,7 @@
           {
             "name": "Pride Roofing & Contracting, LLC",
             "cid": "15206834657984643450",
-            "domain": "google.com",
+            "domain": "prideroofing.net",
             "appearances": 4,
             "numberOneQueries": 4,
             "bestRank": 1,
@@ -801,7 +798,7 @@
           {
             "name": "Rocky Mountain Roofing UT, LLC",
             "cid": "11642763325802433097",
-            "domain": "google.com",
+            "domain": "rockymountainroofingut.net",
             "appearances": 4,
             "numberOneQueries": 0,
             "bestRank": 2,
@@ -815,11 +812,12 @@
           {
             "name": "MAD Roofing & Exteriors",
             "cid": "948726251693855103",
-            "domain": "google.com",
-            "appearances": 2,
+            "domain": "madroofers.com",
+            "appearances": 3,
             "numberOneQueries": 0,
             "bestRank": 3,
             "keywords": [
+              "roofing contractor draper",
               "roof repair draper",
               "roof replacement draper"
             ]
