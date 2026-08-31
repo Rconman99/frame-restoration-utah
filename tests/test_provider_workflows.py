@@ -14,6 +14,7 @@ import importlib.util
 import io
 import json
 import os
+import re
 import sys
 import tempfile
 import unittest
@@ -621,6 +622,15 @@ class WorkflowContractTests(unittest.TestCase):
         self.assertIn("schedule:", traction)
         self.assertIn('echo "push failed after retries"; exit 1', traction)
         self.assertNotIn("continue-on-error", traction)
+
+    def test_lead_notification_recovery_has_no_empty_schedule(self) -> None:
+        workflow = (REPO / ".github/workflows/lead-notification-worker.yml").read_text(
+            encoding="utf-8"
+        )
+        self.assertIn("workflow_dispatch:", workflow)
+        self.assertIsNone(re.search(r"(?m)^\s{2}schedule\s*:", workflow))
+        self.assertIn("SCHEDULE DISABLED", workflow)
+        self.assertIn("cron.unschedule('lead-notification-worker')", workflow)
 
     def test_split_url_validator_warns_instead_of_killing_refresh(self) -> None:
         validator = (REPO / "scripts/validate-slv-gsc-split-url-diagnosis.mjs").read_text(

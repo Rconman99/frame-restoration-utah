@@ -1,12 +1,12 @@
 name: Utah Lead Notification Recovery
 
 on:
-  schedule:
-    # SCHEDULE DISABLED 2026-08-19 — replaced by pg_cron in
-    # supabase/migrations/20260819000000_pgcron_lead_notification_worker.sql
-    # 4,320 runs/month of an 8-second job = 4,320 billed minutes (1-min floor).
-    # Rollback: uncomment, then select cron.unschedule('lead-notification-worker');
-    # - cron: '*/10 * * * *'
+  # SCHEDULE DISABLED 2026-08-19 — replaced by pg_cron in
+  # supabase/migrations/20260819000000_pgcron_lead_notification_worker.sql.
+  # Do not leave an empty schedule mapping here: GitHub rejects the entire
+  # workflow at startup. Before rollback adds the GitHub cron entry back under
+  # schedule, first run `select cron.unschedule('lead-notification-worker');`
+  # so both schedulers cannot send duplicate owner notifications.
   workflow_dispatch:
 
 permissions:
