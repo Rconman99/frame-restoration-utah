@@ -1,35 +1,22 @@
-name: Blog auto-post (Utah)
+name: Blog draft (Utah)
 
-# Cloud-native, Mac-independent blog auto-poster (owner decision 2026-07-09:
-# fully autonomous — supersedes the local launchd job com.ryan.frame-roofing-blog
-# and the Wave-3 owner-merge PR flow for scheduled posts).
+# Cloud-native, Mac-independent DRAFT-ONLY blog lane. The standing public-side-
+# effect gate requires separate approval before publishing. Scheduled and manual
+# runs therefore pick a target, draft it, exercise the complete local publish
+# fence in no-push mode, quarantine the manifest as needs-review, and upload it
+# as an artifact. This workflow cannot push a branch, promote main, or deploy.
 #
-# Each run: pick the top weather+tracking target (blog-target-prioritizer, free
-# NWS + in-repo PostHog snapshot) -> draft via OpenRouter (blog-draft-openrouter,
-# status=drafted) -> blog-publish.py --push, which renders + runs the HARD
-# compliance fence (§31A forbidden-phrase + insurance-claim cap) + structural
-# gates (jsonld/links/doc-isolation/compliance-words). Clean -> unique candidate
-# branch -> exact-SHA Compliance Gate -> fast-forward main -> Vercel production
-# deploy. A draft that trips the fence/gates fail-closes to
-# status=needs-review and is NOT published (the next run drafts a fresh target).
-#
-# Only secret needed: OPENROUTER_API_KEY (drafting). The gates + publish need no
-# API keys; the built-in GITHUB_TOKEN (contents: write) pushes to main.
+# Only secret needed: OPENROUTER_API_KEY (drafting). Repository access is
+# read-only. OpenRouter billing/auth failures remain blocking and visible.
 
 on:
   schedule:
     # Mon + Thu ~9:31am Denver (15:31 UTC in MDT; matches the retired launchd cadence).
     - cron: '31 15 * * 1,4'
   workflow_dispatch:
-    inputs:
-      dry_run:
-        description: 'Draft + gate only, do NOT publish (true/false)'
-        required: false
-        default: 'false'
 
 permissions:
-  contents: write
-  actions: write
+  contents: read
 
 concurrency:
   group: blog-autopost-utah
@@ -38,6 +25,8 @@ concurrency:
 jobs:
   autopost:
     runs-on: ubuntu-latest
+    env:
+      DRAFT_PATH: data/blog-pending/ci-draft-${{ github.run_id }}-${{ github.run_attempt }}.json
     steps:
       - uses: actions/checkout@v4
 
@@ -48,11 +37,6 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-
-      - name: Configure git identity
-        run: |
-          git config user.name "Frame Blog Bot"
-          git config user.email "blog-bot@users.noreply.github.com"
 
       - name: Pick weather + tracking target
         id: target
@@ -73,82 +57,37 @@ jobs:
           OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
         run: |
           python3 scripts/blog-autobrief.py --from-prioritizer /tmp/target.json --out /tmp/brief.json
-          python3 scripts/blog-draft-openrouter.py --brief /tmp/brief.json --status drafted
+          python3 scripts/blog-draft-openrouter.py \
+            --brief /tmp/brief.json \
+            --out "$DRAFT_PATH" \
+            --status drafted
 
-      - name: Stage candidate (HARD compliance fence + complete local gates)
-        id: publish
-        if: steps.target.outputs.count != '0' && github.event.inputs.dry_run != 'true'
-        env:
-          CANDIDATE_BRANCH: blog-autopost-candidate-${{ github.run_id }}-${{ github.run_attempt }}
+      - name: Run HARD compliance fence and complete local gates (no push)
+        if: steps.target.outputs.count != '0'
+        run: python3 scripts/blog-publish.py --manifest "$DRAFT_PATH"
+
+      - name: Quarantine gated draft for human review
+        if: steps.target.outputs.count != '0'
         run: |
-          set +e
-          python3 scripts/blog-publish.py --push --push-ref "$CANDIDATE_BRANCH"
-          PUBLISH_EXIT=$?
-          set -e
-          if [ "$PUBLISH_EXIT" -eq 3 ]; then
-            echo "::warning::Draft failed its publish fence and was safely staged as needs-review"
-            echo "candidate_outcome=quarantined" >> "$GITHUB_OUTPUT"
-          elif [ "$PUBLISH_EXIT" -ne 0 ]; then
-            exit "$PUBLISH_EXIT"
-          else
-            echo "candidate_outcome=publish" >> "$GITHUB_OUTPUT"
-          fi
-          echo "candidate_sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
-          echo "candidate_branch=$CANDIDATE_BRANCH" >> "$GITHUB_OUTPUT"
+          python3 - "$DRAFT_PATH" <<'PY'
+          import json
+          import pathlib
+          import sys
 
-      - name: Run full Compliance Gate for the exact candidate SHA
-        if: steps.publish.outputs.candidate_sha != ''
-        env:
-          GH_TOKEN: ${{ github.token }}
-          CANDIDATE_SHA: ${{ steps.publish.outputs.candidate_sha }}
-          CANDIDATE_BRANCH: ${{ steps.publish.outputs.candidate_branch }}
-        run: |
-          gh workflow run compliance-gate.yml --repo "$GITHUB_REPOSITORY" --ref "$CANDIDATE_BRANCH"
-          RUN_ID=""
-          for attempt in $(seq 1 30); do
-            RUN_ID=$(gh run list --repo "$GITHUB_REPOSITORY" --workflow compliance-gate.yml \
-              --event workflow_dispatch --branch "$CANDIDATE_BRANCH" --limit 20 \
-              --json databaseId,headSha \
-              --jq ".[] | select(.headSha == \"$CANDIDATE_SHA\") | .databaseId" | head -n 1)
-            if [ -n "$RUN_ID" ]; then break; fi
-            sleep 2
-          done
-          if [ -z "$RUN_ID" ]; then
-            echo "::error::Compliance Gate did not start for candidate SHA $CANDIDATE_SHA"
-            exit 1
-          fi
-          gh run watch "$RUN_ID" --repo "$GITHUB_REPOSITORY" --exit-status
+          path = pathlib.Path(sys.argv[1])
+          manifest = json.loads(path.read_text(encoding="utf-8"))
+          manifest["status"] = "needs-review"
+          manifest.setdefault("edit_log", []).append(
+              "CI draft-only lane: local gates passed; explicit approval still required"
+          )
+          path.write_text(json.dumps(manifest, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+          PY
 
-      - name: Promote the exact green candidate to main
-        if: steps.publish.outputs.candidate_sha != ''
-        env:
-          CANDIDATE_SHA: ${{ steps.publish.outputs.candidate_sha }}
-        run: |
-          git fetch origin main
-          CURRENT_MAIN=$(git rev-parse origin/main)
-          CANDIDATE_PARENT=$(git rev-parse "$CANDIDATE_SHA^")
-          if [ "$CANDIDATE_PARENT" != "$CURRENT_MAIN" ]; then
-            echo "::error::main moved after staging; refusing non-fast-forward promotion"
-            exit 1
-          fi
-          git push origin "$CANDIDATE_SHA:refs/heads/main"
-          REMOTE_MAIN=$(git ls-remote origin refs/heads/main | awk '{print $1}')
-          if [ "$REMOTE_MAIN" != "$CANDIDATE_SHA" ]; then
-            echo "::error::promotion verification failed: origin/main is not the green candidate"
-            exit 1
-          fi
-
-      - name: Report candidate outcome
-        if: steps.publish.outputs.candidate_sha != ''
-        env:
-          CANDIDATE_OUTCOME: ${{ steps.publish.outputs.candidate_outcome }}
-        run: |
-          if [ "$CANDIDATE_OUTCOME" = "quarantined" ]; then
-            echo "::warning::The needs-review quarantine was promoted; no blog page was published"
-          else
-            echo "The exact green blog candidate was promoted to main."
-          fi
-
-      - name: Dry-run (manual dispatch with dry_run=true)
-        if: steps.target.outputs.count != '0' && github.event.inputs.dry_run == 'true'
-        run: python3 scripts/blog-publish.py
+      - name: Upload gated needs-review draft
+        if: steps.target.outputs.count != '0'
+        uses: actions/upload-artifact@v4
+        with:
+          name: utah-blog-draft-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ env.DRAFT_PATH }}
+          if-no-files-found: error
+          retention-days: 14

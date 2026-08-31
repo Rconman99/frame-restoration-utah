@@ -590,40 +590,28 @@ class WorkflowContractTests(unittest.TestCase):
         self.assertNotIn("continue-on-error", workflow)
         self.assertNotIn("update-google-reviews.py || true", workflow)
 
-    def test_blog_workflows_fail_closed_on_publish_or_push_failure(self) -> None:
+    def test_blog_workflow_is_gated_draft_only(self) -> None:
         autopost = (REPO / ".github/workflows/blog-autopost.yml").read_text(encoding="utf-8")
         traction = (REPO / ".github/workflows/blog-traction.yml").read_text(encoding="utf-8")
-        compliance = (REPO / ".github/workflows/compliance-gate.yml").read_text(encoding="utf-8")
         publisher = (REPO / "scripts/blog-publish.py").read_text(encoding="utf-8")
-        self.assertIn('python3 scripts/blog-publish.py --push --push-ref "$CANDIDATE_BRANCH"', autopost)
-        self.assertNotIn("blog-publish.py --push ||", autopost)
-        self.assertIn("actions: write", autopost)
-        self.assertIn("gh workflow run compliance-gate.yml", autopost)
-        self.assertIn("select(.headSha ==", autopost)
-        self.assertIn('gh run watch "$RUN_ID"', autopost)
-        self.assertIn('git push origin "$CANDIDATE_SHA:refs/heads/main"', autopost)
-        self.assertNotIn("python3 scripts/blog-publish.py --push\n", autopost)
-        self.assertIn('if [ "$PUBLISH_EXIT" -eq 3 ]', autopost)
+        self.assertIn("contents: read", autopost)
+        self.assertNotIn("contents: write", autopost)
+        self.assertNotIn("actions: write", autopost)
+        self.assertIn('python3 scripts/blog-publish.py --manifest "$DRAFT_PATH"', autopost)
+        self.assertIn('manifest["status"] = "needs-review"', autopost)
+        self.assertIn("actions/upload-artifact@v4", autopost)
+        self.assertNotIn("--push", autopost)
+        self.assertNotIn("git push", autopost)
+        self.assertNotIn("gh workflow run", autopost)
+        self.assertNotIn("FRAME_TX_VERCEL_DEPLOY_HOOK_URL", autopost)
+        self.assertNotIn("vercel deploy", autopost.lower())
+        self.assertNotIn("continue-on-error", autopost)
         self.assertIn("direct-to-main publishing is forbidden", publisher)
         self.assertNotIn('git("push", "origin", "HEAD:main")', publisher)
-        promote_step = autopost.split("- name: Promote the exact green candidate to main", 1)[1].split(
-            "- name: Report candidate outcome", 1
-        )[0]
-        self.assertIn('git push origin "$CANDIDATE_SHA:refs/heads/main"', promote_step)
-        report_step = autopost.split("- name: Report candidate outcome", 1)[1].split(
-            "- name: Dry-run", 1
-        )[0]
-        self.assertNotIn("git push origin", report_step)
-        self.assertLess(
-            autopost.index('gh run watch "$RUN_ID"'),
-            autopost.index('git push origin "$CANDIDATE_SHA:refs/heads/main"'),
-        )
-        self.assertIn("workflow_dispatch:", compliance)
         self.assertIn('(\"public-seo-and-mobile\", [\"npm\", \"run\", \"audit:public-seo\"])', publisher)
         self.assertIn('(\"links\", [\"node\", \"scripts/audit-links.mjs\", \"--strict\"])', publisher)
         self.assertIn("github.event.workflow_run.conclusion == 'success'", traction)
         self.assertIn('echo "push failed after retries"; exit 1', traction)
-        self.assertNotIn("continue-on-error", autopost)
         self.assertNotIn("continue-on-error", traction)
 
     def test_split_url_validator_warns_instead_of_killing_refresh(self) -> None:
