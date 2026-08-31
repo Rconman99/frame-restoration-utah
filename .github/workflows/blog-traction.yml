@@ -13,15 +13,11 @@ name: Blog traction refresh (Utah)
 # structural metrics, freshness, and new posts refresh here regardless.)
 #
 # Triggers:
-#   - after every "Blog auto-post (Utah)" run, so a newly-published post enters
-#     the tracker and the champion/floor ratchet immediately (no poster edit)
-#   - weekly, so freshness drift + any manual post edits are picked up
+#   - weekly, so freshness drift + any approved post edits are picked up
 #   - manual dispatch
+# Draft completion deliberately does not trigger this write-enabled workflow.
 
 on:
-  workflow_run:
-    workflows: ["Blog auto-post (Utah)"]
-    types: [completed]
   schedule:
     - cron: '41 21 * * 1'   # Mondays ~15:41 Denver — hours AFTER the poster
                             # (15:31 UTC) so the two never race on a push to main
@@ -37,9 +33,6 @@ concurrency:
 jobs:
   refresh:
     runs-on: ubuntu-latest
-    # Skip when triggered by a FAILED poster run (workflow_run fires on every
-    # completion); scheduled/manual runs have no workflow_run payload.
-    if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
     steps:
       - uses: actions/checkout@v4
         with:
