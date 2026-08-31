@@ -615,7 +615,10 @@ class WorkflowContractTests(unittest.TestCase):
         self.assertNotIn('git("push", "origin", "HEAD:main")', publisher)
         self.assertIn('(\"public-seo-and-mobile\", [\"npm\", \"run\", \"audit:public-seo\"])', publisher)
         self.assertIn('(\"links\", [\"node\", \"scripts/audit-links.mjs\", \"--strict\"])', publisher)
-        self.assertIn("github.event.workflow_run.conclusion == 'success'", traction)
+        self.assertNotIn("workflow_run:", traction)
+        self.assertNotIn("Blog auto-post (Utah)", traction)
+        self.assertIn("workflow_dispatch:", traction)
+        self.assertIn("schedule:", traction)
         self.assertIn('echo "push failed after retries"; exit 1', traction)
         self.assertNotIn("continue-on-error", traction)
 
