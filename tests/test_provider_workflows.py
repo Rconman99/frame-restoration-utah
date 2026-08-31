@@ -14,6 +14,7 @@ import importlib.util
 import io
 import json
 import os
+import re
 import sys
 import tempfile
 import unittest
@@ -627,8 +628,9 @@ class WorkflowContractTests(unittest.TestCase):
             encoding="utf-8"
         )
         self.assertIn("workflow_dispatch:", workflow)
-        self.assertNotIn("\n  schedule:\n", workflow)
+        self.assertIsNone(re.search(r"(?m)^\s{2}schedule\s*:", workflow))
         self.assertIn("SCHEDULE DISABLED", workflow)
+        self.assertIn("cron.unschedule('lead-notification-worker')", workflow)
 
     def test_split_url_validator_warns_instead_of_killing_refresh(self) -> None:
         validator = (REPO / "scripts/validate-slv-gsc-split-url-diagnosis.mjs").read_text(

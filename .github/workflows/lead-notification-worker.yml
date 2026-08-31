@@ -4,7 +4,9 @@ on:
   # SCHEDULE DISABLED 2026-08-19 — replaced by pg_cron in
   # supabase/migrations/20260819000000_pgcron_lead_notification_worker.sql.
   # Do not leave an empty schedule mapping here: GitHub rejects the entire
-  # workflow at startup. Rollback adds the cron entry back under schedule.
+  # workflow at startup. Before rollback adds the GitHub cron entry back under
+  # schedule, first run `select cron.unschedule('lead-notification-worker');`
+  # so both schedulers cannot send duplicate owner notifications.
   workflow_dispatch:
 
 permissions:
