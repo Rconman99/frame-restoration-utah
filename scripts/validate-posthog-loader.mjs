@@ -70,7 +70,7 @@ const document = {
 };
 
 window.window = window;
-vm.runInNewContext(source, { Blob, document, Math, Object, window });
+vm.runInNewContext(source, { Blob, URL, document, Math, Object, window });
 
 assert.equal(Array.isArray(window.posthog), true, 'PostHog bootstrap must use an array-backed stub');
 window.posthog.register({ landing_page: '/pages/storm-damage' });
@@ -90,6 +90,8 @@ const encodedPageview = new URLSearchParams(await beacons[0].body.text()).get('d
 const pageview = JSON.parse(Buffer.from(encodedPageview, 'base64').toString('utf8'));
 assert.equal(pageview.event, '$pageview');
 assert.equal(pageview.properties.distinct_id, 'frame_test-device-id');
+assert.equal(pageview.properties.$referrer, 'https://www.google.com/');
+assert.equal(pageview.properties.$referring_domain, 'www.google.com');
 
 scheduled[0].callback();
 assert.equal(beacons.length, 1, 'scheduled capture must not duplicate a short-session pageview');

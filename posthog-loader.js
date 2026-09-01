@@ -36,6 +36,14 @@
     }
   }
 
+  function getReferringDomain() {
+    try {
+      return document.referrer ? new URL(document.referrer).hostname : '$direct';
+    } catch (e) {
+      return '$direct';
+    }
+  }
+
   function sendLightweightPageview() {
     if (pageviewSent) return;
 
@@ -50,6 +58,7 @@
         $host: window.location.host,
         $pathname: window.location.pathname,
         $referrer: document.referrer || '',
+        $referring_domain: getReferringDomain(),
         $lib: 'frame-lite',
         $lib_version: '1'
       }
