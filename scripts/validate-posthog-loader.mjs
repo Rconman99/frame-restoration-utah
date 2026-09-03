@@ -3,6 +3,74 @@ import fs from 'node:fs';
 import vm from 'node:vm';
 
 const source = fs.readFileSync(new URL('../posthog-loader.js', import.meta.url), 'utf8');
+
+async function captureLightweightPageview(referrer) {
+  const isolatedBeacons = [];
+  const isolatedListeners = {};
+  const isolatedStorage = new Map();
+  const isolatedWindow = {
+    addEventListener(type, callback) {
+      isolatedListeners[type] = callback;
+    },
+    btoa(value) {
+      return Buffer.from(value, 'binary').toString('base64');
+    },
+    crypto: {
+      randomUUID() {
+        return 'isolated-device-id';
+      },
+    },
+    fetch() {
+      throw new Error('sendBeacon should handle the isolated pageview path');
+    },
+    localStorage: {
+      getItem(key) {
+        return isolatedStorage.get(key) || null;
+      },
+      setItem(key, value) {
+        isolatedStorage.set(key, value);
+      },
+    },
+    location: {
+      host: 'www.framerestorationutah.com',
+      href: 'https://www.framerestorationutah.com/',
+      pathname: '/',
+    },
+    navigator: {
+      sendBeacon(url, body) {
+        isolatedBeacons.push({ body, url });
+        return true;
+      },
+    },
+    requestIdleCallback() {},
+    setTimeout() {},
+  };
+  const isolatedDocument = {
+    referrer,
+    readyState: 'complete',
+    createElement() {
+      return {};
+    },
+    getElementsByTagName() {
+      return [{ parentNode: { insertBefore() {} } }];
+    },
+  };
+
+  isolatedWindow.window = isolatedWindow;
+  vm.runInNewContext(source, {
+    Blob,
+    URL,
+    document: isolatedDocument,
+    Math,
+    Object,
+    window: isolatedWindow,
+  });
+  isolatedListeners.pagehide();
+  assert.equal(isolatedBeacons.length, 1, 'isolated unload must emit one pageview beacon');
+  const encoded = new URLSearchParams(await isolatedBeacons[0].body.text()).get('data');
+  return JSON.parse(Buffer.from(encoded, 'base64').toString('utf8')).properties;
+}
+
 const scheduled = [];
 const idleCallbacks = [];
 const insertedScripts = [];
@@ -92,6 +160,14 @@ assert.equal(pageview.event, '$pageview');
 assert.equal(pageview.properties.distinct_id, 'frame_test-device-id');
 assert.equal(pageview.properties.$referrer, 'https://www.google.com/');
 assert.equal(pageview.properties.$referring_domain, 'www.google.com');
+
+const directPageview = await captureLightweightPageview('');
+assert.equal(directPageview.$referrer, '');
+assert.equal(directPageview.$referring_domain, '$direct');
+
+const malformedReferrerPageview = await captureLightweightPageview('not a valid URL');
+assert.equal(malformedReferrerPageview.$referrer, 'not a valid URL');
+assert.equal(malformedReferrerPageview.$referring_domain, '$direct');
 
 scheduled[0].callback();
 assert.equal(beacons.length, 1, 'scheduled capture must not duplicate a short-session pageview');
