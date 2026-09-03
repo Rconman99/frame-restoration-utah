@@ -6,8 +6,8 @@ name: Google Reviews Sync
 # being awake. Verifies the result with the ported gates and opens a DRAFT PR for
 # human review — never auto-merges.
 #
-# Cadence mirrors the prior launchd cron: 1st & 15th of each month, ~7:17am Denver
-# (13:17 UTC). Also runnable on demand via workflow_dispatch.
+# Cadence: weekly on Fridays at ~7:17am Denver (13:17 UTC). Also runnable on
+# demand via workflow_dispatch.
 #
 # Secret required: SERPAPI_KEY (repo Settings → Secrets → Actions). If it's not
 # set, the job logs a notice and exits 0 (no failure) — so merging this workflow
@@ -15,7 +15,7 @@ name: Google Reviews Sync
 
 on:
   schedule:
-    # Weekly, Fridays ~7:17am Denver — upgraded from 1st+15th on 2026-08-07
+    # Weekly, Fridays ~7:17am Denver — cadence upgraded on 2026-08-07
     # (SerpAPI Starter plan restored; review recency is the #1 Heber diagnostic).
     - cron: '17 13 * * 5'
   workflow_dispatch:
@@ -83,8 +83,19 @@ jobs:
           git commit -m "chore(reviews): sync Google review state"
           git push --force-with-lease origin "$BRANCH"
 
-          if gh pr view "$BRANCH" >/dev/null 2>&1; then
-            gh pr edit "$BRANCH" \
+          # A merged/closed PR may still exist for this long-lived bot branch.
+          # Reuse only an OPEN PR; otherwise create a fresh draft for this run.
+          OPEN_PR_NUMBER="$(
+            gh pr list \
+              --head "$BRANCH" \
+              --base main \
+              --state open \
+              --json number \
+              --jq '.[0].number // empty'
+          )"
+
+          if [ -n "$OPEN_PR_NUMBER" ]; then
+            gh pr edit "$OPEN_PR_NUMBER" \
               --title "chore(reviews): sync Google review state" \
               --body "Automated Google review sync from SerpAPI (Utah scraper). Updates reviews.json plus visible review counts and rating on the homepage and About page. Draft PR for review; no auto-merge."
           else
