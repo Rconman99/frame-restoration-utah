@@ -1,0 +1,49 @@
+{
+  "schema_version": "1.0",
+  "name": "frame-utah-click-tracking-coverage-source",
+  "expected_serving_origin": "http://127.0.0.1:4174",
+  "expected_canonical_origin": "https://www.framerestorationutah.com",
+  "freshness_markers": [
+    "track-clicks.js?v=2"
+  ],
+  "max_redirects": 0,
+  "min_touch_target_css_px": 44,
+  "max_fixed_viewport_ratio": 0.15,
+  "max_landscape_fixed_viewport_ratio": 0.24,
+  "stability_wait_ms": 500,
+  "readiness_selector": "body",
+  "viewports": [
+    {"name": "small-320", "width": 320, "height": 568},
+    {"name": "landscape-740", "width": 740, "height": 360}
+  ],
+  "routes": [
+    {"path": "/review.html", "expected_canonical_path": "/review"},
+    {"path": "/blog/alpine/storm-damage-roof-repair-alpine.html", "expected_canonical_path": "/blog/alpine/storm-damage-roof-repair-alpine"},
+    {"path": "/blog/american-fork/roof-replacement-american-fork-utah.html", "expected_canonical_path": "/blog/american-fork/roof-replacement-american-fork-utah"},
+    {"path": "/blog/bluffdale/storm-damage-roof-repair-bluffdale.html", "expected_canonical_path": "/blog/bluffdale/storm-damage-roof-repair-bluffdale"},
+    {"path": "/blog/cottonwood-heights/wind-damage-roof-repair-cottonwood-heights.html", "expected_canonical_path": "/blog/cottonwood-heights/wind-damage-roof-repair-cottonwood-heights"},
+    {"path": "/blog/draper/roof-replacement-draper-utah.html", "expected_canonical_path": "/blog/draper/roof-replacement-draper-utah"},
+    {"path": "/blog/highland/roof-replacement-highland-utah.html", "expected_canonical_path": "/blog/highland/roof-replacement-highland-utah"},
+    {"path": "/blog/holladay/roof-replacement-holladay-utah.html", "expected_canonical_path": "/blog/holladay/roof-replacement-holladay-utah"},
+    {"path": "/blog/kaysville/wind-damage-roof-repair-kaysville.html", "expected_canonical_path": "/blog/kaysville/wind-damage-roof-repair-kaysville"},
+    {"path": "/blog/lehi/roof-replacement-lehi-utah-2026.html", "expected_canonical_path": "/blog/lehi/roof-replacement-lehi-utah-2026"},
+    {"path": "/blog/lindon/storm-damage-roof-repair-lindon.html", "expected_canonical_path": "/blog/lindon/storm-damage-roof-repair-lindon"},
+    {"path": "/blog/millcreek/wind-damage-roof-repair-millcreek.html", "expected_canonical_path": "/blog/millcreek/wind-damage-roof-repair-millcreek"},
+    {"path": "/blog/park-city/storm-damage-roof-repair-park-city.html", "expected_canonical_path": "/blog/park-city/storm-damage-roof-repair-park-city"},
+    {"path": "/blog/payson/storm-damage-roof-repair-payson.html", "expected_canonical_path": "/blog/payson/storm-damage-roof-repair-payson"},
+    {"path": "/blog/pleasant-grove/roof-replacement-pleasant-grove-utah.html", "expected_canonical_path": "/blog/pleasant-grove/roof-replacement-pleasant-grove-utah"},
+    {"path": "/blog/south-jordan/storm-damage-roof-repair-south-jordan-utah.html", "expected_canonical_path": "/blog/south-jordan/storm-damage-roof-repair-south-jordan-utah"},
+    {"path": "/blog/springville/storm-damage-roof-repair-springville-utah.html", "expected_canonical_path": "/blog/springville/storm-damage-roof-repair-springville-utah"},
+    {"path": "/blog/utah/asphalt-shingles-vs-metal-roof-utah.html", "expected_canonical_path": "/blog/utah/asphalt-shingles-vs-metal-roof-utah"}
+  ],
+  "critical_targets": [
+    {"selector": ".sticky-call-phone", "expected_href_pattern": "^tel:\\+14352928802$"}
+  ],
+  "fixed_elements": [],
+  "forbidden_visible_selectors": [
+    ".fr-modal-overlay.open"
+  ],
+  "max_console_errors": 0,
+  "max_page_errors": 0,
+  "allowed_console_error_patterns": []
+}

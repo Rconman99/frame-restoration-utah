@@ -1,44 +1,57 @@
 #!/usr/bin/env python3
-"""Inject /track-clicks.js into every live HTML page that has a tel: or sms: link.
+"""Inject or verify click tracking on every live HTML page with a phone CTA.
 
 Rules:
   - If page already includes track-attribution.js → add track-clicks.js right after it.
   - If page has tel:/sms: but no track-attribution.js → add BOTH before </head>.
   - Skip if track-clicks.js already present.
-  - Skip archive/, node_modules/, tmp-*, data/blog-published/, leads.html (dashboard).
+  - Skip non-public artifacts and dashboard/redirect-only HTML files.
+  - With --check, fail without writing if any live phone CTA is uninstrumented.
 """
 
-import os, re, sys
+import argparse
+import os
+import re
+from pathlib import Path
 
-ROOT = '/Users/agenticmac/projects/frame-restoration-utah'
-SKIP_DIRS = ('archive', 'node_modules', 'tmp-landon-apr20', 'data/blog-published', 'screenshots', 'images-stock-backup', 'vendor', '.git')
-SKIP_FILES = {'leads.html'}  # dashboard — clicks here aren't real customer intent
+ROOT = Path(__file__).resolve().parents[1]
+SKIP_DIRS = {
+    '.git',
+    'archive',
+    'data',
+    'images-stock-backup',
+    'node_modules',
+    'previews',
+    'qa',
+    'screenshots',
+    'tmp-landon-apr20',
+    'vendor',
+}
+SKIP_FILES = {
+    'hero.html',       # /hero redirects to the instrumented homepage
+    'leads.html',      # authenticated dashboard, not customer intent
+}
 
 ATTR_INCLUDE = '<script src="/track-attribution.js" defer></script>'
-CLICKS_INCLUDE = '<script src="/track-clicks.js" defer></script>'
+CLICKS_INCLUDE = '<script src="/track-clicks.js?v=2" defer></script>'
+PHONE_LINK_RE = re.compile(r'href\s*=\s*["\'](?:tel|sms):', re.IGNORECASE)
+ATTR_SCRIPT_RE = re.compile(r'<script\b[^>]*\bsrc=["\']/track-attribution\.js(?:\?[^"\']*)?["\'][^>]*>\s*</script>', re.IGNORECASE)
+CLICKS_SCRIPT_RE = re.compile(r'<script\b[^>]*\bsrc=["\']/track-clicks\.js(?:\?[^"\']*)?["\'][^>]*>\s*</script>', re.IGNORECASE)
 
-def should_skip(path_rel):
-    if any(path_rel.startswith(d + os.sep) or '/' + d + '/' in path_rel for d in SKIP_DIRS):
-        return True
-    if os.path.basename(path_rel) in SKIP_FILES:
-        return True
-    return False
+def should_skip(path_rel: Path) -> bool:
+    return bool(SKIP_DIRS.intersection(path_rel.parts)) or path_rel.name in SKIP_FILES
 
-def process_file(full_path):
-    with open(full_path, 'r', encoding='utf-8') as f:
-        html = f.read()
+def process_file(full_path: Path, *, apply: bool) -> str:
+    html = full_path.read_text(encoding='utf-8')
 
-    if 'track-clicks.js' in html:
+    if CLICKS_SCRIPT_RE.search(html):
         return 'already_has_clicks'
-    if 'href="tel:' not in html and 'href="sms:' not in html and 'href="sms:' not in html:
+    if not PHONE_LINK_RE.search(html):
         return 'no_tel_link'
 
-    new_html = html
-    if ATTR_INCLUDE in html:
-        new_html = html.replace(
-            ATTR_INCLUDE,
-            ATTR_INCLUDE + '\n  ' + CLICKS_INCLUDE
-        )
+    attr_match = ATTR_SCRIPT_RE.search(html)
+    if attr_match:
+        new_html = html[:attr_match.end()] + '\n  ' + CLICKS_INCLUDE + html[attr_match.end():]
     elif '</head>' in html:
         injection = '  ' + ATTR_INCLUDE + '\n  ' + CLICKS_INCLUDE + '\n</head>'
         new_html = html.replace('</head>', injection, 1)
@@ -48,34 +61,40 @@ def process_file(full_path):
     if new_html == html:
         return 'no_change'
 
-    with open(full_path, 'w', encoding='utf-8') as f:
-        f.write(new_html)
-    return 'updated'
+    if apply:
+        full_path.write_text(new_html, encoding='utf-8')
+        return 'updated'
+    return 'missing_clicks'
 
 def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--check', action='store_true', help='fail on gaps without writing')
+    args = parser.parse_args()
     counts = {}
-    updated_files = []
+    changed_files = []
     for dirpath, dirnames, filenames in os.walk(ROOT):
         dirnames[:] = [d for d in dirnames if d not in SKIP_DIRS]
-        rel_dir = os.path.relpath(dirpath, ROOT)
         for fn in filenames:
             if not fn.endswith('.html'):
                 continue
-            rel = os.path.normpath(os.path.join(rel_dir, fn)) if rel_dir != '.' else fn
+            full = Path(dirpath) / fn
+            rel = full.relative_to(ROOT)
             if should_skip(rel):
                 continue
-            full = os.path.join(dirpath, fn)
-            result = process_file(full)
+            result = process_file(full, apply=not args.check)
             counts[result] = counts.get(result, 0) + 1
-            if result == 'updated':
-                updated_files.append(rel)
+            if result in {'updated', 'missing_clicks'}:
+                changed_files.append(str(rel))
     for k, v in sorted(counts.items()):
         print(f'{k}: {v}')
-    print(f'\nUpdated files ({len(updated_files)}):')
-    for f in updated_files[:60]:
+    action = 'Missing instrumentation' if args.check else 'Updated files'
+    print(f'\n{action} ({len(changed_files)}):')
+    for f in changed_files[:60]:
         print(' ', f)
-    if len(updated_files) > 60:
-        print(f'  ...and {len(updated_files) - 60} more')
+    if len(changed_files) > 60:
+        print(f'  ...and {len(changed_files) - 60} more')
+    if args.check and changed_files:
+        raise SystemExit(1)
 
 if __name__ == '__main__':
     main()
