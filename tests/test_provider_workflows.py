@@ -591,6 +591,18 @@ class WorkflowContractTests(unittest.TestCase):
         self.assertNotIn("continue-on-error", workflow)
         self.assertNotIn("update-google-reviews.py || true", workflow)
 
+    def test_review_sync_reuses_only_an_open_draft_pr(self) -> None:
+        workflow = (REPO / ".github/workflows/google-reviews-sync.yml").read_text(encoding="utf-8")
+        self.assertRegex(
+            workflow,
+            r'gh pr list \\\s+--head "\$BRANCH" \\\s+--base main \\\s+--state open',
+        )
+        self.assertIn('if [ -n "$OPEN_PR_NUMBER" ]; then', workflow)
+        self.assertIn('gh pr edit "$OPEN_PR_NUMBER"', workflow)
+        self.assertRegex(workflow, r"gh pr create \\\s+--draft")
+        self.assertNotIn('gh pr view "$BRANCH"', workflow)
+        self.assertNotIn("1st & 15th", workflow)
+
     def test_blog_workflow_is_gated_draft_only(self) -> None:
         autopost = (REPO / ".github/workflows/blog-autopost.yml").read_text(encoding="utf-8")
         traction = (REPO / ".github/workflows/blog-traction.yml").read_text(encoding="utf-8")
