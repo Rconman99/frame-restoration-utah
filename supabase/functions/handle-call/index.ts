@@ -1,5 +1,10 @@
-// handle-call v4 — Frame Restoration Utah
+// handle-call v5 — Frame Restoration Utah
 // ─────────────────────────────────────────────────────────────────────────────
+// v5 (2026-09-04): Humanized voice. Caller-facing prompts use Twilio's Google
+//   Chirp 3 HD generative voice; the private owner whisper stays on Amazon
+//   Polly's deterministic Joanna Neural engine so names and callback digits are
+//   less exposed to generative speech variation.
+//
 // v4 (2026-09-04): Virtual receptionist (Phase 1). Known customers ring through.
 //   Every other caller must say their name, callback number, and reason for the
 //   call. Silent bots go to voicemail, narrow high-confidence solicitation
@@ -50,6 +55,8 @@ const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ??
   "";
 const LANDON_PHONE = "+14353024422";
 const POSTHOG_API_KEY = "phc_BnECzlZ2OeDujli2dbqcgGODXlv2tYERbp40dTF7UBV";
+const CALLER_VOICE = "Google.en-US-Chirp3-HD-Aoede";
+const OWNER_WHISPER_VOICE = "Polly.Joanna-Neural";
 
 // ── Call-source attribution (commission tracking) ────────────────────────────
 // Each public tracking number maps to a lead source + whether that lead counts
@@ -157,21 +164,21 @@ function screenTwiml(): string {
   <Gather input="dtmf speech" numDigits="1" timeout="6" speechTimeout="auto" language="en-US"
           actionOnEmptyResult="true" method="POST"
           action="${SUPABASE_URL}/functions/v1/handle-call/screen">
-    <Say>Hi, thanks for calling Frame Restoration Utah. I'm Frame's virtual assistant. We don't accept sales or solicitation calls. If you're calling about your home or property, please say your name, the best number to call you back, and briefly how we can help. If you can't speak, press 1 to leave a message.</Say>
+    <Say voice="${CALLER_VOICE}">Hi, thanks for calling Frame Restoration Utah. I'm the virtual assistant for the team. To keep sales calls from interrupting our crews, I'll ask one quick question. Please tell me your name, the best number to reach you, and what we can help with. If you can't speak right now, press one to leave a message.</Say>
   </Gather>
 </Response>`;
 }
 
 function voicemailTwiml(): string {
   return `<Response>
-  <Say>Please leave a message after the beep and we'll call you back.</Say>
+  <Say voice="${CALLER_VOICE}">Please leave a message after the beep and we'll call you back.</Say>
   ${RECORD}
 </Response>`;
 }
 
 function blockedTwiml(): string {
   return `<Response>
-  <Say>This number does not accept solicitation calls. Goodbye.</Say>
+  <Say voice="${CALLER_VOICE}">This number does not accept solicitation calls. Goodbye.</Say>
   <Hangup/>
 </Response>`;
 }
@@ -605,13 +612,13 @@ Deno.serve(async (req: Request) => {
 
     if (decision.action === "reject") {
       return xml(`<Response>
-  <Say>We don't accept sales or solicitation calls by phone. Goodbye.</Say>
+  <Say voice="${CALLER_VOICE}">We don't accept sales or solicitation calls by phone. Goodbye.</Say>
   <Hangup/>
 </Response>`);
     }
     if (decision.action === "voicemail" || !/^CA[0-9a-f]{32}$/i.test(callSid)) {
       return xml(`<Response>
-  <Say>I didn't hear enough information to connect your call. Please leave your name, callback number, and message after the beep.</Say>
+  <Say voice="${CALLER_VOICE}">I didn't hear enough information to connect your call. Please leave your name, callback number, and message after the beep.</Say>
   ${RECORD}
 </Response>`);
     }
@@ -640,7 +647,7 @@ Deno.serve(async (req: Request) => {
     return xml(`<Response>
   <Gather input="dtmf" numDigits="1" timeout="10" actionOnEmptyResult="true"
           method="POST" action="${decisionUrl}">
-    <Say>This is a screened Frame call. The caller said: ${
+    <Say voice="${OWNER_WHISPER_VOICE}">This is a screened Frame call. The caller said: ${
       xmlEscape(transcript)
     }. Press 1 to accept. Press 2 to send the caller to voicemail.</Say>
   </Gather>
@@ -692,9 +699,13 @@ Deno.serve(async (req: Request) => {
         lead_id: leadId,
       }).eq("call_sid", screenCallSid);
     }
-    return accepted ? xml(`<Response><Say>Connecting.</Say></Response>`) : xml(
-      `<Response><Say>Sending the caller to voicemail.</Say><Hangup/></Response>`,
-    );
+    return accepted
+      ? xml(
+        `<Response><Say voice="${OWNER_WHISPER_VOICE}">Connecting.</Say></Response>`,
+      )
+      : xml(
+        `<Response><Say voice="${OWNER_WHISPER_VOICE}">Sending the caller to voicemail.</Say><Hangup/></Response>`,
+      );
   }
 
   // === CALL COMPLETED ===
@@ -758,7 +769,7 @@ Deno.serve(async (req: Request) => {
     if (path === "completed") {
       if (ownerDeclined) {
         return xml(`<Response>
-  <Say>The team is unavailable. Please leave your name, callback number, and message after the beep.</Say>
+  <Say voice="${CALLER_VOICE}">The team is unavailable. Please leave your name, callback number, and message after the beep.</Say>
   ${RECORD}
 </Response>`);
       }
@@ -820,7 +831,7 @@ Deno.serve(async (req: Request) => {
           );
         })());
         return xml(`<Response>
-  <Say>Sorry, no one is available right now. Please leave a message after the beep.</Say>
+  <Say voice="${CALLER_VOICE}">Sorry, no one is available right now. Please leave a message after the beep.</Say>
   ${RECORD}
 </Response>`);
       }
