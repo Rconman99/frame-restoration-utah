@@ -612,7 +612,7 @@ class WorkflowContractTests(unittest.TestCase):
         self.assertNotIn("actions: write", autopost)
         self.assertIn('python3 scripts/blog-publish.py --manifest "$DRAFT_PATH"', autopost)
         self.assertIn('manifest["status"] = "needs-review"', autopost)
-        self.assertIn("actions/upload-artifact@v4", autopost)
+        self.assertIn("actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a", autopost)
         self.assertIn("always() && steps.target.outputs.count != '0'", autopost)
         self.assertIn("steps.draft.outcome == 'success'", autopost)
         self.assertIn('GATE_OUTCOME: ${{ steps.gate.outcome }}', autopost)

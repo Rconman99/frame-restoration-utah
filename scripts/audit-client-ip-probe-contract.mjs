@@ -27,10 +27,10 @@ const TRUSTED_SOURCE_PATHS = [
 const EXPECTED_TEMPLATE_SHA256 =
   "1a45cf1b9d7dcc7ca514ff334b81e93b5024ff45301489c1f4e9ed20535e0c53";
 const ACTION_SHAS = Object.freeze({
-  checkout: "11d5960a326750d5838078e36cf38b85af677262",
-  setupNode: "49933ea5288caeca8642d1e84afbd3f7d6820020",
+  checkout: "3d3c42e5aac5ba805825da76410c181273ba90b1",
+  setupNode: "820762786026740c76f36085b0efc47a31fe5020",
   setupDeno: "22d081ff2d3a40755e97629de92e3bcbfa7cf2ed",
-  setupPython: "a26af69be951a213d495a4c3e4e4022e16d87065",
+  setupPython: "5fda3b95a4ea91299a34e894583c3862153e4b97",
   setupSupabase: "ab058987d8d6c725971f6cf9d0b5c98467e30bd1",
 });
 const APPROVED_DEPLOY_FUNCTIONS = [
@@ -83,11 +83,11 @@ const ISSUER_SECURITY_SURFACE_SHA256 =
 const RENDERER_OUTPUT_SURFACE_SHA256 =
   "9a96422d770af9e6bddcd1a91313db157648faa9cc516b17eca992af04fbf414";
 const CLIENT_TEST_SPAWN_SURFACE_SHA256 =
-  "41816bfcde668cb0df0a0bf03780fb79a57cf312ebfa99b91263a1efe660ae5f";
+  "f48b36674e18d1c8c8853078407e9850d1fcefeef879b8a675dc4cbc25afa406";
 const OWNER_TEST_SPAWN_SURFACE_SHA256 =
   "506d45a03413389a4ab1d07aeedfc9b4b1908420a156e0714b614d5dc233080a";
 const SCANNER_NORMALIZED_SOURCE_SHA256 =
-  "d56056ca45104b7a156153a75310270b320ba10dca68bd8100571ef3bdb80fec";
+  "a9fe6ebd4e8944f3d42799cdd6bf13e072e7d5cd4b223612e9cee6983a337611";
 const SIGNED_RECEIPT_PARSER_SHA256 =
   "1e854738f0555804f52266a1833cd279ef83482b4946a63c226781be045114df";
 const ISSUER_SIGNER_SHA256 =
@@ -96,15 +96,15 @@ const FINAL_DEPLOY_STEP_SHA256 =
   "51684632cec58637dac60f1d85dbeb442e31bd4f7a9ee6551c2c370015acdcf0";
 const REVIEWED_CRITICAL_SOURCE_SHA256 = Object.freeze({
   ".github/workflows/compliance-gate.yml":
-    "bb70ae0eceb5cc6fbf8fbd9dd101cb609da63130f3087c932b9cb72a2b4176e7",
+    "e4b5d3c3dbcd96306e733f2bba2741e6dafc1d4490f58fcad7f09065f601acbc",
   ".github/workflows/deploy-edge-function.yml":
-    "b8a20f6b6684a0586e5fb88543ecf848f90f61acad1264d9d6bba125bd983475",
+    "5e4eec18dd4bbbf84286ae6b8ce9e29373350451828a182a2c5a37fdeadbb02b",
   "scripts/issue-client-ip-deploy-receipt.mjs":
     "73d295e7d088347fceef4f8fb0aea5d50e596ef276e2766789598ff257a31894",
   "scripts/render-client-ip-probe.mjs":
     "b78a424c672f9df9309748b85608b653038fc7eddd806d1d2526dbd692b9fee0",
   "scripts/test-client-ip-deploy-receipt.mjs":
-    "a115e725c73f62c06208cb6150249d8a3b26f0ae6a5a7ced7fb0e960b84b6421",
+    "920d5bac3b512e3b48ea5c474d6119352401bd06f827930be8c65c5682f722cd",
   "scripts/test-owner-notification-deploy-receipt.mjs":
     "37b1d7a82ad3f0feedb461fcd3301f92e91323eb3c3710a8d6bbbf1c48a0d8e3",
   "scripts/verify-client-ip-deploy-receipt.mjs":
