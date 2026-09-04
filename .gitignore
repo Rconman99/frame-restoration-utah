@@ -1,4 +1,9 @@
 .vercel
+
+# Local environment files may contain short-lived credentials; never track them.
+.env*
+!.env.example
+!.env.sample
 images-stock-backup/
 node_modules/
 __pycache__/
