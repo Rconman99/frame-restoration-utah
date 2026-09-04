@@ -62,17 +62,11 @@
       "expiresOn": null,
       "evidence": [
         {
-          "kind": "local-json",
-          "path": "data/route-factory/business.json",
-          "pointer": "/dopl_license"
+          "kind": "local-html",
+          "path": "pages/licensed-roofer-wasatch-front.html"
         }
       ],
-      "mirrors": [
-        {
-          "path": "data/route-factory/business.json",
-          "pointer": "/dopl_license"
-        }
-      ],
+      "mirrors": [],
       "allowedSurfaces": ["llms.txt", "visible-copy", "structured-data", "directory-packet"],
       "prohibitedVariants": []
     },
