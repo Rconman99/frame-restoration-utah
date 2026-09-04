@@ -92,10 +92,13 @@ function findingsForWorkflowActions(relative, text) {
   const findings = [];
   const lines = text.split(/\r?\n/);
   for (let index = 0; index < lines.length; index += 1) {
-    const match = lines[index].match(/^\s*(?:-\s*)?uses:\s*([^\s#]+)/);
-    if (!match || match[1].startsWith('./')) continue;
-    const at = match[1].lastIndexOf('@');
-    const ref = at >= 0 ? match[1].slice(at + 1) : '';
+    const match = lines[index].match(
+      /^\s*(?:-\s*)?(?:uses|"uses"|'uses')\s*:\s*(?:(["'])([^"']+)\1|([^\s#]+))/,
+    );
+    const action = match ? (match[2] ?? match[3]) : '';
+    if (!action || action.startsWith('./')) continue;
+    const at = action.lastIndexOf('@');
+    const ref = at >= 0 ? action.slice(at + 1) : '';
     if (!/^[0-9a-f]{40}$/.test(ref)) {
       findings.push({ line: index + 1, label: 'unpinned-action-reference' });
     }
@@ -153,11 +156,26 @@ function selfTest() {
   if (findingsForWorkflowActions('.github/workflows/test.yml', pinnedAction).length !== 0) {
     failures.push('pinned-action-reference');
   }
+  const quotedPinnedAction = ['      - "uses": "actions/checkout@', 'a'.repeat(40), '"'].join('');
+  if (findingsForWorkflowActions('.github/workflows/test.yml', quotedPinnedAction).length !== 0) {
+    failures.push('quoted-pinned-action-reference');
+  }
   if (
     findingsForWorkflowActions('.github/workflows/test.yml', '      - uses: actions/checkout@v5')
       .filter((finding) => finding.label === 'unpinned-action-reference').length !== 1
   ) {
     failures.push('floating-action-reference');
+  }
+  for (const floatingAction of [
+    '      - "uses": actions/checkout@v5',
+    "      - 'uses': 'actions/checkout@v5'",
+  ]) {
+    if (
+      findingsForWorkflowActions('.github/workflows/test.yml', floatingAction)
+        .filter((finding) => finding.label === 'unpinned-action-reference').length !== 1
+    ) {
+      failures.push('quoted-floating-action-reference');
+    }
   }
   if (findingsForWorkflowActions('.github/workflows/test.yml', '      - uses: ./local-action').length !== 0) {
     failures.push('local-action-reference');
