@@ -276,7 +276,7 @@ try {
       body: JSON.stringify({
         user: { name: 'Admin', role: 'admin' },
         generated_at: '2026-08-07T12:00:00Z',
-        summary: { total_pageviews: 1, total_leads: 1, total_calls: 1 },
+        summary: { total_pageviews: 1, total_leads: 1, total_calls: 1, total_job_value: 1000, conversion_rate_pct: 13.9 },
         gap_summary: { locations_with_traffic: 1, total_locations: 1, coverage_pct: 100, locations_no_traffic: 0 },
         top_pages: [{ path: `/${tainted}`, views: 1 }],
         location_performance: [{ location: tainted, views: 1 }],
@@ -307,6 +307,12 @@ try {
   assert.equal(serializedStorage.includes('frame-roofing-2026'), false, 'routing key persisted in browser storage');
   assert.equal(await page.locator('#ct img').count(), 0, 'tainted report field created an element');
   assert.equal(await page.evaluate(() => globalThis.__dashboardStolen), undefined, 'tainted handler executed');
+  const dashboardText = await page.locator('#ct').innerText();
+  assert.match(dashboardText, /Lead Records/, 'dashboard mislabels mixed rows as form leads');
+  assert.match(dashboardText, /Completed Call Events/, 'dashboard hides call-event grain');
+  assert.match(dashboardText, /Qualified Conversion \(unmeasured\)/, 'dashboard does not disclose unavailable qualified conversion');
+  assert.match(dashboardText, /Job Value Entered/, 'dashboard mislabels entered job value as revenue');
+  assert.doesNotMatch(dashboardText, /13\.9|Conversion Rate|Form Leads|Revenue Tracked/, 'dashboard rendered a retired or misleading KPI');
 
   await page.evaluate(() => window.__dashboard.openAdmin());
   await page.waitForFunction((value) => document.getElementById('accessBody').textContent.includes(value), tainted);
@@ -332,6 +338,9 @@ try {
   await page.waitForFunction((value) => document.getElementById('ct').textContent.includes(value), tainted);
   assert.equal(await page.inputValue('#pinInput'), '', 'legacy report retained PIN');
   assert.equal(await page.locator('#ct img').count(), 0, 'legacy report tainted field created an element');
+  const legacyDashboardText = await page.locator('#ct').innerText();
+  assert.match(legacyDashboardText, /Qualified Conversion \(unmeasured\)/, 'legacy report hides unavailable qualified conversion');
+  assert.doesNotMatch(legacyDashboardText, /13\.9|Conversion Rate|Form Leads|Revenue Tracked/, 'legacy report rendered a retired or misleading KPI');
 
   await page.evaluate(() => sessionStorage.removeItem('frame.dashboard.session'));
   await page.goto(`http://127.0.0.1:${address.port}/leads.html`, { waitUntil: 'domcontentloaded' });
