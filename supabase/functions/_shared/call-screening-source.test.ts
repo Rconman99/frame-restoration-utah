@@ -17,7 +17,7 @@ Deno.test("unknown callers must complete the speech interview", () => {
   assertStringIncludes(handleCall, 'actionOnEmptyResult="true"');
   assertStringIncludes(
     handleCall.toLowerCase(),
-    "please say your name, the best number to call you back",
+    "please tell me your name, the best number to reach you",
   );
   assertEquals(handleCall.includes("UTAH_AREA_CODES"), false);
   assertEquals(handleCall.includes("isUtahNumber"), false);
@@ -29,6 +29,23 @@ Deno.test("unknown callers must complete the speech interview", () => {
     handleCall,
     "isTrustedCallerLead(lead.status, lead.source_page)",
   );
+});
+
+Deno.test("caller prompts use a humanized generative voice without weakening the owner whisper", () => {
+  assertStringIncludes(
+    handleCall,
+    'const CALLER_VOICE = "Google.en-US-Chirp3-HD-Aoede"',
+  );
+  assertStringIncludes(
+    handleCall,
+    'const OWNER_WHISPER_VOICE = "Polly.Joanna-Neural"',
+  );
+  assertStringIncludes(handleCall, '<Say voice="${CALLER_VOICE}">Hi, thanks');
+  assertStringIncludes(
+    handleCall,
+    '<Say voice="${OWNER_WHISPER_VOICE}">This is a screened Frame call.',
+  );
+  assertEquals(handleCall.includes("<Say>"), false);
 });
 
 Deno.test("screening cannot create a lead before owner acceptance", () => {
