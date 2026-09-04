@@ -42,9 +42,10 @@ const detectors = [
   },
 ];
 
-const placeholderPattern = /(?:example|placeholder|replace[_-]?me|change[_-]?me|your[_-]|dummy|redacted|not[_-]?a[_-]?secret|process\.env|import\.meta\.env|Deno\.env|secrets\.|vars\.|github\.|steps\.|needs\.|env\.|\$|__[A-Z0-9_]+__|<[^>]+>)/i;
+const placeholderPattern = /(?:example|placeholder|replace[_-]?me|change[_-]?me|your[_-]|dummy|redacted|not[_-]?a[_-]?secret|process\.env|import\.meta\.env|Deno\.env|secrets\.|vars\.|github\.|steps\.|needs\.|env\.|\$\{|__[A-Z0-9_]+__|<[^>]+>)/i;
+const referenceValuePattern = /^(?:\$[A-Za-z_][A-Za-z0-9_]*|\$\([^)]*\)|\$\{[A-Za-z_][A-Za-z0-9_]*(?::?-[^}]*)?\})$/;
 const publicClientPrefix = /^(?:phc_|pk[._](?:live|test)[._]|pk\.)/;
-const assignmentPattern = /\b([A-Z][A-Z0-9_]*(?:TOKEN|SECRET|PASSWORD|PRIVATE_KEY|SERVICE_ROLE_KEY|API_KEY)[A-Z0-9_]*)\b\s*[:=]\s*["'`]?([^\s,"'`;#}]+)/g;
+const assignmentPattern = /\b((?=[A-Z][A-Z0-9_]*\b)(?=[A-Z0-9_]*(?:TOKEN|SECRET|PASSWORD|PRIVATE_KEY|SERVICE_ROLE_KEY|API_KEY))[A-Z][A-Z0-9_]*)\b\s*[:=]\s*["'`]?([^\s,"'`;#}]+)/g;
 
 // These are intentionally browser-public API identifiers. Keep the exception
 // occurrence-bounded so an additional key in either file still fails the audit.
@@ -54,7 +55,7 @@ const publicDetectorBudgets = new Map([
 ]);
 
 function looksLikeLiteralCredential(variable, value) {
-  if (value.length < 20 || placeholderPattern.test(value)) return false;
+  if (value.length < 20 || placeholderPattern.test(value) || referenceValuePattern.test(value)) return false;
   if (publicClientPrefix.test(value) || /(?:PUBLIC|PUBLISHABLE|CLIENT)_/.test(variable)) return false;
   if (/(?:PATH|FILE|DIR|FILENAME|METADATA)/.test(variable)) return false;
   if (/^(?:true|false|null|undefined)$/i.test(value)) return false;
@@ -69,7 +70,9 @@ function findingsForText(text) {
     const line = lines[index];
     for (const detector of detectors) {
       detector.pattern.lastIndex = 0;
-      if (detector.pattern.test(line)) findings.push({ line: index + 1, label: detector.label });
+      for (const _match of line.matchAll(detector.pattern)) {
+        findings.push({ line: index + 1, label: detector.label });
+      }
     }
 
     assignmentPattern.lastIndex = 0;
@@ -105,11 +108,26 @@ function selfTest() {
     failures.push('literal-secret-assignment');
   }
 
+  const dollarLiteral = ['PASSWORD=', 'A1b2$', 'C3d4'.repeat(5)].join('');
+  if (!findingsForText(dollarLiteral).some((finding) => finding.label === 'literal-secret-assignment')) {
+    failures.push('dollar-literal-secret-assignment');
+  }
+
+  const repeatedGoogleKeyLine = [
+    ['AIza', 'A1'.repeat(12)].join(''),
+    ['AIza', 'B2'.repeat(12)].join(''),
+  ].join(' ');
+  if (findingsForText(repeatedGoogleKeyLine).filter((finding) => finding.label === 'google-api-key').length !== 2) {
+    failures.push('per-occurrence-detector-count');
+  }
+
   for (const safe of [
     'API_KEY=process.env.API_KEY',
     'API_KEY=${{ secrets.API_KEY }}',
     'PUBLIC_API_KEY=pk_live_A1b2A1b2A1b2A1b2A1b2',
     'TOKEN=replace-me',
+    'ACCESS_TOKEN=$SUPABASE_ACCESS_TOKEN',
+    'ACCESS_TOKEN=$(credential-helper)',
   ]) {
     if (findingsForText(safe).length > 0) failures.push('placeholder-safety');
   }
