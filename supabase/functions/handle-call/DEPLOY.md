@@ -52,3 +52,34 @@ It requires the reviewed 32-version production history, the current main SHA,
 the pinned CLI hash, two unchanged catalog probes immediately before apply, and
 an exact postflight. Existing suppression rows are never read or printed; only
 their aggregate count is compared before and after.
+
+## Virtual receptionist Phase 1
+
+The 2026-09-04 owner request authorizes screening unknown inbound callers to
+reduce spam reaching the owner's phone. This release changes `handle-call`
+only. It adds no migration and uses the existing private `call_logs.notes` and
+`leads` fields.
+
+Call contract:
+
+- blocked callers remain declined;
+- trusted recent contacts ring directly;
+- other callers must say their name, callback number, and reason for calling;
+- silence goes to voicemail and narrow, high-confidence solicitation phrases
+  are declined;
+- other responses are read privately to the owner, who presses 1 to accept or
+  2 to send the caller to voicemail;
+- a lead is created only after the owner accepts.
+
+Release contract:
+
+1. Merge only after every blocking check passes on the exact reviewed head SHA.
+2. Require a successful main-push Compliance Gate on the exact new main SHA.
+3. Issue a fresh single-use client-IP receipt and dispatch
+   `.github/workflows/deploy-edge-function.yml` for `handle-call` only.
+4. Verify the deployed function version and source hash. A merge or successful
+   workflow alone is not proof that the new call experience works.
+5. Do not place an automated or billable test call. Obtain a natural or
+   explicitly approved human call from a number that is not already trusted,
+   then verify the spoken interview, owner whisper, accept path, reject-to-
+   voicemail path, call-log state, and lead-creation timing.
