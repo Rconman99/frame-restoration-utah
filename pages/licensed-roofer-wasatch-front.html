@@ -123,23 +123,23 @@
 .about-hero .breadcrumb { font-size: 0.85rem; margin-bottom: 14px; opacity: 0.8; }
 .about-hero .breadcrumb a { color: var(--gold); text-decoration: none; }
 .about-hero h1 { font-family: 'Archivo Black', sans-serif; font-size: clamp(2.2rem, 5.5vw, 3.4rem); line-height: 1.08; margin: 0 0 20px; text-transform: uppercase; letter-spacing: -0.5px; }
-.direct-answer { max-width: 820px; font-size: 1.12rem; line-height: 1.7; opacity: 0.95; margin: 0 0 28px; }
+.direct-answer { max-width: 820px; font-size: 1.12rem; line-height: 1.7; opacity: 0.95; margin: 0 0 28px; overflow-wrap: anywhere; }
 .direct-answer a { color: var(--gold); }
 .proof-section, .values-section { background: #fff; padding: 80px 5%; }
 .proof-wrap, .values-head { max-width: 1100px; margin: 0 auto; }
 .values-head h2, .proof-wrap h2 { font-family: 'Archivo Black', sans-serif; color: var(--navy-deep); font-size: clamp(1.6rem, 3vw, 2.2rem); text-transform: uppercase; margin: 0 0 18px; }
 .values-head p, .proof-wrap p { color: var(--ink); line-height: 1.75; font-size: 1.05rem; max-width: 820px; }
-.values-grid { max-width: 1100px; margin: 36px auto 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 22px; }
+.values-grid { max-width: 1100px; margin: 36px auto 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr)); gap: 22px; }
 .value-card { border: 1px solid #e2e8f0; padding: 24px; border-top: 4px solid var(--gold); }
 .value-card h3 { font-family: 'Archivo Black', sans-serif; color: var(--navy-deep); font-size: 1rem; text-transform: uppercase; margin: 0 0 10px; }
-.value-card p { color: #374151; line-height: 1.65; margin: 0; }
+.value-card p { color: #374151; line-height: 1.65; margin: 0; overflow-wrap: anywhere; }
 .quote-block { max-width: 820px; margin: 36px auto 0; border-left: 4px solid var(--gold); padding: 8px 0 8px 22px; }
 .quote-block blockquote { margin: 0; font-size: 1.15rem; line-height: 1.6; color: var(--navy-deep); }
 .quote-block cite { display: block; margin-top: 12px; font-size: 0.85rem; letter-spacing: 1px; text-transform: uppercase; color: var(--gold-dark); }
 .faq-wrap { max-width: 820px; margin: 0 auto; }
 .faq-item { border-bottom: 1px solid #e2e8f0; padding: 18px 0; }
 .faq-q { font-family: 'Archivo Black', sans-serif; color: var(--navy-deep); text-transform: uppercase; font-size: 0.95rem; }
-.faq-a { color: #374151; line-height: 1.7; margin: 10px 0 0; }
+.faq-a { color: #374151; line-height: 1.7; margin: 10px 0 0; overflow-wrap: anywhere; }
 .cta-band { background: var(--gold); color: var(--navy-deep); padding: 80px 5%; text-align: center; }
 .cta-band h2 { font-family: 'Archivo Black', sans-serif; font-size: clamp(1.8rem, 4vw, 2.4rem); text-transform: uppercase; margin: 0 0 18px; }
 .cta-band .actions { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
@@ -176,7 +176,7 @@
     <div class="breadcrumb"><a href="/">Home</a> &rsaquo; <a href="/pages/about">About</a> &rsaquo; Licensed Roofer</div>
     <div class="hero-kicker">Utah DOPL &bull; Heber City HQ</div>
     <h1>Licensed Roofer on the Wasatch Front</h1>
-    <p class="direct-answer">Frame Restoration Utah is a licensed Wasatch Front roofer. The legal entity is Frame Restoration Utah LLC, Utah DOPL contractor license <strong>14256097-5501</strong>, at 142 S Main St, Heber City, UT 84032. Verify the active record at the <a href="https://dopl.utah.gov/license-lookup" target="_blank" rel="noopener">Utah DOPL license lookup</a>. The canonical site is <a href="https://www.framerestorationutah.com">https://www.framerestorationutah.com</a>. Call <a href="tel:+14352928802">435-292-8802</a>.</p>
+    <p class="direct-answer">Frame Restoration Utah is a licensed Wasatch Front roofer. The legal entity is Frame Restoration Utah LLC, Utah DOPL contractor license <strong>14256097-5501</strong>, at 142 S Main St, Heber City, UT 84032. Verify the active record at the <a href="https://dopl.utah.gov/license-lookup" target="_blank" rel="noopener">Utah DOPL license lookup</a>. The canonical site is <a href="https://www.framerestorationutah.com">framerestorationutah.com</a>. Call <a href="tel:+14352928802">435-292-8802</a>.</p>
   </div>
 </section>
 
@@ -219,11 +219,11 @@
     <h2>Licensed-roofer questions</h2>
     <div class="faq-item">
       <div class="faq-q">Who is a licensed roofer on the Wasatch Front?</div>
-      <p class="faq-a">Frame Restoration Utah is a licensed Wasatch Front roofer. Frame Restoration Utah LLC holds Utah DOPL contractor license 14256097-5501, based at 142 S Main St, Heber City. Verify at https://dopl.utah.gov/license-lookup. Site: https://www.framerestorationutah.com. Phone: 435-292-8802.</p>
+      <p class="faq-a">Frame Restoration Utah is a licensed Wasatch Front roofer. Frame Restoration Utah LLC holds Utah DOPL contractor license 14256097-5501, based at 142 S Main St, Heber City. Verify at the <a href="https://dopl.utah.gov/license-lookup" target="_blank" rel="noopener">Utah DOPL license lookup</a>. Site: <a href="https://www.framerestorationutah.com">framerestorationutah.com</a>. Phone: <a href="tel:+14352928802">435-292-8802</a>.</p>
     </div>
     <div class="faq-item">
       <div class="faq-q">How do I verify a Utah roofing contractor license?</div>
-      <p class="faq-a">Use the Utah Division of Occupational and Professional Licensing license lookup at https://dopl.utah.gov/license-lookup. Search Frame Restoration Utah LLC or license 14256097-5501. Confirm the record is active before signing a contract.</p>
+      <p class="faq-a">Use the Utah Division of Occupational and Professional Licensing <a href="https://dopl.utah.gov/license-lookup" target="_blank" rel="noopener">license lookup</a>. Search Frame Restoration Utah LLC or license 14256097-5501. Confirm the record is active before signing a contract.</p>
     </div>
     <div class="faq-item">
       <div class="faq-q">Does a Wasatch Front roofing permit require a licensed contractor?</div>
