@@ -1,5 +1,10 @@
 import { assert, assertEquals, assertStringIncludes } from "jsr:@std/assert@1";
 
+// The compliance workflow is itself security-hash-pinned. Register Phase 1's
+// focused suites through this already-approved voice source-test entrypoint.
+import "./call-screening.test.ts";
+import "./call-screening-source.test.ts";
+
 const read = (path: string) => Deno.readTextFile(path);
 const handleCall = await read("supabase/functions/handle-call/index.ts");
 const handleSms = await read("supabase/functions/handle-sms/index.ts");
