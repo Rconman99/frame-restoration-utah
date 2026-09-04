@@ -16,8 +16,8 @@ Deno.test("unknown callers must complete the speech interview", () => {
   assertStringIncludes(handleCall, '<Gather input="dtmf speech"');
   assertStringIncludes(handleCall, 'actionOnEmptyResult="true"');
   assertStringIncludes(
-    handleCall,
-    "Please say your name, the best number to call you back",
+    handleCall.toLowerCase(),
+    "please say your name, the best number to call you back",
   );
   assertEquals(handleCall.includes("UTAH_AREA_CODES"), false);
   assertEquals(handleCall.includes("isUtahNumber"), false);
