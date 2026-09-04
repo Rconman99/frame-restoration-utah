@@ -83,3 +83,21 @@ Release contract:
    explicitly approved human call from a number that is not already trusted,
    then verify the spoken interview, owner whisper, accept path, reject-to-
    voicemail path, call-log state, and lead-creation timing.
+
+## Humanized voice update
+
+The 2026-09-04 caller test confirmed the screening flow but found the default
+Twilio voice noticeably synthetic. Caller-facing prompts now use
+`Google.en-US-Chirp3-HD-Aoede`. The private owner whisper uses
+`Polly.Joanna-Neural` because it reads caller-supplied names and callback
+numbers, where deterministic delivery matters more than naturalness. Chirp 3
+HD is Twilio's documented conversational-agent option and works through the
+existing `<Say>` flow without adding a WebSocket relay or another runtime.
+
+The assistant must continue identifying itself as virtual. Do not clone or
+impersonate an employee's voice. This release changes voice selection and
+caller-facing wording only; screening, lead creation, and routing stay intact.
+After deployment, obtain an explicitly approved human call from an untrusted
+number and compare naturalness, prompt clarity, and digit accuracy. Twilio's
+generative TTS is a beta surface, so retain the Neural voice as the documented
+fallback if synthesis reliability regresses.
