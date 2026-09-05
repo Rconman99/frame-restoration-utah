@@ -32,6 +32,11 @@ import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { verifyTwilioRequest } from "../_shared/twilio-verify.ts";
 import {
+  callerIdIntroduction,
+  enrichCallerId,
+  forwardedCallerId,
+} from "../_shared/caller-id.ts";
+import {
   classifyScreeningResponse,
   isReusableCallerLead,
   isTrustedCallerLead,
@@ -432,6 +437,7 @@ Deno.serve(async (req: Request) => {
 
   const safeLogData = { ...data };
   if (safeLogData.SpeechResult) safeLogData.SpeechResult = "[redacted]";
+  if (safeLogData.CallerName) safeLogData.CallerName = "[redacted]";
   console.log(`[handle-call] path=${path}`, JSON.stringify(safeLogData));
 
   // ─── SECURITY GATE: verify Twilio signature BEFORE any DB write / TwiML.
@@ -508,6 +514,14 @@ Deno.serve(async (req: Request) => {
         lead_id: leadId,
       });
       if (error) console.error("[handle-call] call_logs insert error:", error);
+      if (!error && route !== "blocked") {
+        await enrichCallerId(callSid, fromNumber, data.CallerName, {
+          supabaseUrl: SUPABASE_URL,
+          serviceKey: SUPABASE_SERVICE_ROLE_KEY,
+          accountSid: creds.sid || "",
+          authToken: creds.auth || "",
+        });
+      }
 
       await sendPostHogEvent(
         route === "blocked"
@@ -530,7 +544,7 @@ Deno.serve(async (req: Request) => {
 
     if (route === "blocked") return xml(blockedTwiml());
     if (route === "screen") return xml(screenTwiml());
-    return xml(dialLandonTwiml(toNumber));
+    return xml(dialLandonTwiml(forwardedCallerId(fromNumber, toNumber)));
   }
 
   // === LEGACY SCREEN RESULT ("press 1 to connect") ===
@@ -539,7 +553,7 @@ Deno.serve(async (req: Request) => {
     const digits = (data.Digits || "").trim();
     const callSid = (data.CallSid || "").trim();
     const fromNumber = data.From || "unknown";
-    const callerId = data.To || creds.phone || "";
+    const callerId = forwardedCallerId(data.From, data.To || creds.phone || "");
     // Classify off the ORIGINAL dialed number ONLY (data.To). Never fall back to
     // creds.phone here — that's the commissionable website line, so a /connect
     // callback missing `To` would silently become google_website/commission=true.
@@ -584,7 +598,7 @@ Deno.serve(async (req: Request) => {
   if (path === "screen") {
     const callSid = (data.CallSid || "").trim();
     const fromNumber = data.From || "unknown";
-    const callerId = data.To || creds.phone || "";
+    const callerId = forwardedCallerId(data.From, data.To || creds.phone || "");
     const decision = classifyScreeningResponse(data.SpeechResult);
     const note = screeningNote(decision.transcript);
 
@@ -632,12 +646,14 @@ Deno.serve(async (req: Request) => {
   if (path === "whisper") {
     const screenCallSid = url.searchParams.get("screenCallSid") || "";
     let transcript = "a caller provided a response";
+    let callerIdentity = "";
     if (/^CA[0-9a-f]{32}$/i.test(screenCallSid)) {
       const { data: callLog } = await supabase.from("call_logs")
-        .select("notes")
+        .select("notes,caller_name")
         .eq("call_sid", screenCallSid)
         .maybeSingle();
       const stored = transcriptFromScreeningNote(callLog?.notes);
+      callerIdentity = callerIdIntroduction(callLog?.caller_name);
       if (stored) {
         transcript = normalizeScreeningTranscript(stored).slice(0, 280);
       }
@@ -647,7 +663,9 @@ Deno.serve(async (req: Request) => {
     return xml(`<Response>
   <Gather input="dtmf" numDigits="1" timeout="10" actionOnEmptyResult="true"
           method="POST" action="${decisionUrl}">
-    <Say voice="${OWNER_WHISPER_VOICE}">This is a screened Frame call. The caller said: ${
+    <Say voice="${OWNER_WHISPER_VOICE}">This is a screened Frame call. ${
+      xmlEscape(callerIdentity)
+    }The caller said: ${
       xmlEscape(transcript)
     }. Press 1 to accept. Press 2 to send the caller to voicemail.</Say>
   </Gather>
