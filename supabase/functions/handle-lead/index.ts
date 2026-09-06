@@ -37,6 +37,7 @@
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { ipHashSecretReady } from "../_shared/client-ip.ts";
+import { applySender } from "../_shared/twilio-sender.ts";
 import {
   LEAD_INTAKE_RATE_LIMIT_RPC,
   leadIntakeThrottleKey,
@@ -250,8 +251,9 @@ async function sendTwilioSMS(
   const params = new URLSearchParams();
   params.set("To", to);
   params.set("Body", body);
-  if (msgService) params.set("MessagingServiceSid", msgService);
-  else params.set("From", from);
+  // Sender is pinned centrally — see _shared/twilio-sender.ts. Never set From
+  // in an else branch: the Messaging Service pool would pick the sender.
+  applySender(params, { from, msgService });
 
   const resp = await fetch(
     `https://api.twilio.com/2010-04-01/Accounts/${sid}/Messages.json`,

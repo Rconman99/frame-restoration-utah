@@ -1,5 +1,6 @@
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { applySender } from "../_shared/twilio-sender.ts";
 
 // review-request v2 (2026-05-16) — bugfix: filter on status='won' + job_completed_at,
 // not status='completed' (which never gets set anywhere). The dashboard sets status='won'
@@ -36,8 +37,9 @@ async function sendTwilioSMS(config: Record<string, string>, to: string, body: s
   const params = new URLSearchParams();
   params.set("To", to);
   params.set("Body", body);
-  if (msgServiceSid) params.set("MessagingServiceSid", msgServiceSid);
-  else params.set("From", fromNumber);
+  // Sender is pinned centrally — see _shared/twilio-sender.ts. Never set From
+  // in an else branch: the Messaging Service pool would pick the sender.
+  applySender(params, { from: fromNumber, msgService: msgServiceSid });
   const resp = await fetch(
     `https://api.twilio.com/2010-04-01/Accounts/${accountSid}/Messages.json`,
     { method: "POST", headers: { "Content-Type": "application/x-www-form-urlencoded", "Authorization": "Basic " + btoa(accountSid + ":" + authToken) }, body: params.toString() }
