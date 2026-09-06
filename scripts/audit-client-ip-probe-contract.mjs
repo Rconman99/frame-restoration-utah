@@ -87,7 +87,7 @@ const CLIENT_TEST_SPAWN_SURFACE_SHA256 =
 const OWNER_TEST_SPAWN_SURFACE_SHA256 =
   "506d45a03413389a4ab1d07aeedfc9b4b1908420a156e0714b614d5dc233080a";
 const SCANNER_NORMALIZED_SOURCE_SHA256 =
-  "a9fe6ebd4e8944f3d42799cdd6bf13e072e7d5cd4b223612e9cee6983a337611";
+  "d237cf15e57de87af03524ffca49be400ae0cbe606e7d8caddc9d3d13cd8166f";
 const SIGNED_RECEIPT_PARSER_SHA256 =
   "1e854738f0555804f52266a1833cd279ef83482b4946a63c226781be045114df";
 const ISSUER_SIGNER_SHA256 =
@@ -96,7 +96,7 @@ const FINAL_DEPLOY_STEP_SHA256 =
   "51684632cec58637dac60f1d85dbeb442e31bd4f7a9ee6551c2c370015acdcf0";
 const REVIEWED_CRITICAL_SOURCE_SHA256 = Object.freeze({
   ".github/workflows/compliance-gate.yml":
-    "e4b5d3c3dbcd96306e733f2bba2741e6dafc1d4490f58fcad7f09065f601acbc",
+    "5cafbe3ed00d609a08d549f8ca12a8f6795a597be785a6d32f17b18b1de781e3",
   ".github/workflows/deploy-edge-function.yml":
     "5e4eec18dd4bbbf84286ae6b8ce9e29373350451828a182a2c5a37fdeadbb02b",
   "scripts/issue-client-ip-deploy-receipt.mjs":
@@ -1242,15 +1242,15 @@ function complianceWorkflowViolations(source, trustedDigests) {
     (source.match(new RegExp(
       `uses:\\s*actions/checkout@${ACTION_SHAS.checkout}`,
       "g",
-    ))?.length ?? 0) !== 21 ||
-    (source.match(/uses:\s*actions\/checkout@/g)?.length ?? 0) !== 21 ||
+    ))?.length ?? 0) !== 22 ||
+    (source.match(/uses:\s*actions\/checkout@/g)?.length ?? 0) !== 22 ||
     /uses:\s*actions\/checkout@[0-9a-f]{40}\s*\n\s+with\s*:/.test(source)
   ) {
     violations.push("compliance workflow checkout semantics differ");
   }
   for (const [action, expectedSha, expectedCount] of [
     ["actions/setup-node", ACTION_SHAS.setupNode, 16],
-    ["denoland/setup-deno", ACTION_SHAS.setupDeno, 5],
+    ["denoland/setup-deno", ACTION_SHAS.setupDeno, 6],
     ["actions/setup-python", ACTION_SHAS.setupPython, 1],
   ]) {
     const escapedAction = action.replace("/", "\\/");
