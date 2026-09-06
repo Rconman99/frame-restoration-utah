@@ -35,8 +35,6 @@ on:
           - resend-webhook
           - lead-notification-worker
           - weekly-report
-          - inbound-media
-          - sms-fallback
       receipt_nonce:
         description: "Exact nonce embedded in the single-use client-IP receipt"
         required: true
