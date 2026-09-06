@@ -278,6 +278,27 @@ jobs:
       - name: Run relay classification fixtures
         run: deno test supabase/functions/_shared/classify-inbound.test.ts
 
+  sms-fallback-relay:
+    name: Inbound SMS fallback relay (blocking)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    # BLOCKING (added 2026-09-06). Twilio does NOT retry a failed inbound
+    # webhook -- it calls the fallback URL exactly once, then gives up. With no
+    # fallback configured, a handle-sms 5xx silently drops an inbound lead and
+    # any photo attached to it, on the line where inbound IS the lead flow.
+    # sms-fallback is the second chance, so it is deliberately dependency-free:
+    # no Supabase client, no app_config read, no DB write. These fixtures freeze
+    # the relay shape (sender + body always reach Landon, attachments are
+    # announced, a malformed request still relays) and the shared-secret gate
+    # that keeps the --no-verify-jwt endpoint from being an open SMS relay.
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      - uses: denoland/setup-deno@22d081ff2d3a40755e97629de92e3bcbfa7cf2ed
+        with:
+          deno-version: v2.x
+      - name: Run inbound SMS fallback fixtures
+        run: deno test supabase/functions/sms-fallback/fallback-message.test.ts
+
   lead-tier-classification:
     name: Lead tier classification eval (blocking)
     runs-on: ubuntu-latest
