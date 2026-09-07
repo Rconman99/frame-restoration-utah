@@ -13,7 +13,7 @@
         "Holladay",
         "Herriman"
       ],
-      "activeSnapshotSha256": "9590d481d500fe4d0471ebbbaa4296f8bf270bee6a25434e801634c4fe57a08f",
+      "activeSnapshotSha256": "eb46dc51c4075986438ca74d13e1c6545016fe2abc08064df4e2ef4bc88ed43b",
       "diagnosisSnapshotSha256": "a1b7d5aa2acc3a5b663da345ba6eb7242e411661807ae1296f50854702b1a7eb",
       "behavior": "Ignore the stale split-URL disposition and keep affected URL-competition cities in the diagnosis lane; do not suppress, redirect, canonicalize, noindex, delete, or rewrite a route from stale evidence.",
       "requiredAction": "Refresh the bounded Holladay/Herriman split-URL diagnosis against the current GSC attribution snapshot."
@@ -88,7 +88,7 @@
     },
     "gscAttribution": {
       "file": "data/rank-tracker/SLV-GSC-URL-ATTRIBUTION-LATEST.json",
-      "sha256": "ef6525d9c760240d9225ca3d229ab74b038b697f813e748659038b08c3cc5c96"
+      "sha256": "a096689abd65a3ec04870814817931817188cd8d548713153c34680084ec56d6"
     },
     "gscSplitUrlDiagnosis": {
       "file": "data/rank-tracker/SLV-GSC-SPLIT-URL-DIAGNOSIS-2026-08-12.json",
@@ -108,7 +108,7 @@
     },
     "expansionArchitecture": {
       "file": "data/rank-tracker/SLV-EXPANSION-ARCHITECTURE-2026-08-12.json",
-      "sha256": "05b74c2814ec252b0426cbd275c00132f2e2c07f87516fe0f73acfbe44714676"
+      "sha256": "5bb6f36bd2e16d79d2815675fa8d70ed689643c60fc8244a3593265dba82def1"
     },
     "corePriority": {
       "file": "data/rank-tracker/SLV-PRIORITY-2026-08-12.json",
@@ -1632,17 +1632,15 @@
         "googleAiOverviewOwnedQueries": [],
         "protectedOrganicNumberOneQueries": [],
         "intendedPageSelectedForEveryMeasuredRank": true,
-        "gscState": "url-competition-requires-diagnosis",
+        "gscState": "complete-request-with-unreturned-rows",
         "gscRequestedQueries": 4,
         "gscReturnedQueries": 3,
-        "gscAlternateNormalizedUrls": [
-          "framerestorationutah.com/salt-lake-city"
-        ],
+        "gscAlternateNormalizedUrls": [],
         "gscUrlDiagnosis": null,
         "serviceAreaStatus": "pending-current-profile-service-area-verification",
         "identityProfile": "heber-keystone-cid",
         "citySpecificEditorialAsset": true,
-        "architectureState": "not-proven-blended-gsc-multi-url-evidence-requires-timing-and-routing-diagnosis",
+        "architectureState": "not-evidenced-all-four-fixed-serps-select-main",
         "protectedRelatedRoutes": [
           "blog/herriman/hail-damage-new-homes.html"
         ],
