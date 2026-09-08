@@ -1,0 +1,35 @@
+{
+  "schema_version": "1.0",
+  "name": "utah-slc-attribution-production",
+  "expected_serving_origin": "https://www.framerestorationutah.com",
+  "expected_canonical_origin": "https://www.framerestorationutah.com",
+  "freshness_markers": ["track-clicks.js?v=2"],
+  "max_redirects": 0,
+  "min_touch_target_css_px": 44,
+  "max_fixed_viewport_ratio": 0.25,
+  "max_landscape_fixed_viewport_ratio": 0.3,
+  "stability_wait_ms": 500,
+  "readiness_selector": "main",
+  "viewports": [
+    {"name": "small-320", "width": 320, "height": 568},
+    {"name": "android-360", "width": 360, "height": 800},
+    {"name": "iphone-393", "width": 393, "height": 852},
+    {"name": "large-430", "width": 430, "height": 932},
+    {"name": "landscape-740", "width": 740, "height": 360}
+  ],
+  "routes": [
+    {"path": "/locations/salt-lake-city", "expected_canonical_path": "/locations/salt-lake-city"},
+    {"path": "/", "expected_canonical_path": "/"}
+  ],
+  "critical_targets": [
+    {"selector": "#menuBtn", "max_viewport_width": 900},
+    {"selector": ".nav-call-mobile", "expected_href_pattern": "^tel:\\+14352928802$"},
+    {"selector": ".sticky-call a[href^=\"sms:\"]", "max_viewport_width": 640, "expected_href_pattern": "^sms:\\+14352928802$"}
+  ],
+  "fixed_elements": [{"selector": "nav", "max_viewport_ratio": 0.15, "max_landscape_viewport_ratio": 0.24}],
+  "forbidden_visible_selectors": [".fr-modal-overlay.open"],
+  "required_response_headers": {"cache-control": "max-age=0|no-cache|no-store"},
+  "max_console_errors": 0,
+  "max_page_errors": 0,
+  "allowed_console_error_patterns": []
+}

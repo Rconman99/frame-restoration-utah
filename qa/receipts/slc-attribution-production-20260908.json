@@ -1,0 +1,1513 @@
+{
+  "schema_version": "1.0",
+  "contract": "utah-slc-attribution-production",
+  "contract_sha256": "efcfaf165ad18834d502a9a999c98e712f534559c869d5d582050f234177b208",
+  "contract_snapshot": {
+    "schema_version": "1.0",
+    "name": "utah-slc-attribution-production",
+    "expected_serving_origin": "https://www.framerestorationutah.com",
+    "expected_canonical_origin": "https://www.framerestorationutah.com",
+    "freshness_markers": [
+      "track-clicks.js?v=2"
+    ],
+    "max_redirects": 0,
+    "min_touch_target_css_px": 44,
+    "max_fixed_viewport_ratio": 0.25,
+    "max_landscape_fixed_viewport_ratio": 0.3,
+    "stability_wait_ms": 500,
+    "readiness_selector": "main",
+    "viewports": [
+      {
+        "name": "small-320",
+        "width": 320,
+        "height": 568
+      },
+      {
+        "name": "android-360",
+        "width": 360,
+        "height": 800
+      },
+      {
+        "name": "iphone-393",
+        "width": 393,
+        "height": 852
+      },
+      {
+        "name": "large-430",
+        "width": 430,
+        "height": 932
+      },
+      {
+        "name": "landscape-740",
+        "width": 740,
+        "height": 360
+      }
+    ],
+    "routes": [
+      {
+        "path": "/locations/salt-lake-city",
+        "expected_canonical_path": "/locations/salt-lake-city"
+      },
+      {
+        "path": "/",
+        "expected_canonical_path": "/"
+      }
+    ],
+    "critical_targets": [
+      {
+        "selector": "#menuBtn",
+        "max_viewport_width": 900
+      },
+      {
+        "selector": ".nav-call-mobile",
+        "expected_href_pattern": "^tel:\\+14352928802$"
+      },
+      {
+        "selector": ".sticky-call a[href^=\"sms:\"]",
+        "max_viewport_width": 640,
+        "expected_href_pattern": "^sms:\\+14352928802$"
+      }
+    ],
+    "fixed_elements": [
+      {
+        "selector": "nav",
+        "max_viewport_ratio": 0.15,
+        "max_landscape_viewport_ratio": 0.24
+      }
+    ],
+    "forbidden_visible_selectors": [
+      ".fr-modal-overlay.open"
+    ],
+    "required_response_headers": {
+      "cache-control": "max-age=0|no-cache|no-store"
+    },
+    "max_console_errors": 0,
+    "max_page_errors": 0,
+    "allowed_console_error_patterns": [],
+    "canonical_policy": "match"
+  },
+  "stage": "production",
+  "base_url": "https://www.framerestorationutah.com",
+  "observed_at": "2026-09-08T21:23:38.215056Z",
+  "verdict": "pass",
+  "summary": {
+    "checks": 170,
+    "failures": 0,
+    "routes": 2,
+    "viewports": 5
+  },
+  "runs": [
+    {
+      "route": "/locations/salt-lake-city",
+      "viewport": {
+        "name": "small-320",
+        "width": 320,
+        "height": 568
+      },
+      "url": "https://www.framerestorationutah.com/locations/salt-lake-city",
+      "checks": [
+        {
+          "name": "http-200",
+          "pass": true,
+          "detail": "status=200"
+        },
+        {
+          "name": "redirect-budget",
+          "pass": true,
+          "detail": "redirects=0 cap=0"
+        },
+        {
+          "name": "serving-origin",
+          "pass": true,
+          "detail": "final=https://www.framerestorationutah.com expected=https://www.framerestorationutah.com"
+        },
+        {
+          "name": "header:cache-control",
+          "pass": true,
+          "detail": "value='public, max-age=0, must-revalidate' expected=/max-age=0|no-cache|no-store/"
+        },
+        {
+          "name": "viewport-meta",
+          "pass": true,
+          "detail": "content='width=device-width, initial-scale=1.0'"
+        },
+        {
+          "name": "canonical",
+          "pass": true,
+          "detail": "count=1 actual='https://www.framerestorationutah.com/locations/salt-lake-city' expected='https://www.framerestorationutah.com/locations/salt-lake-city'"
+        },
+        {
+          "name": "freshness:track-clicks.js?v=2",
+          "pass": true,
+          "detail": "marker present"
+        },
+        {
+          "name": "horizontal-reflow",
+          "pass": true,
+          "detail": "scrollWidth=320 innerWidth=320"
+        },
+        {
+          "name": "critical-target:#menuBtn",
+          "pass": true,
+          "detail": "present, sized, hittable, and href-valid"
+        },
+        {
+          "name": "critical-target:.nav-call-mobile",
+          "pass": true,
+          "detail": "present, sized, hittable, and href-valid"
+        },
+        {
+          "name": "critical-target:.sticky-call a[href^=\"sms:\"]",
+          "pass": true,
+          "detail": "present, sized, hittable, and href-valid"
+        },
+        {
+          "name": "fixed-element:nav",
+          "pass": true,
+          "detail": "present and within orientation budget"
+        },
+        {
+          "name": "forbidden-visible:.fr-modal-overlay.open",
+          "pass": true,
+          "detail": "visible=0"
+        },
+        {
+          "name": "focus-not-obscured",
+          "pass": true,
+          "detail": "sampled keyboard focus is exposed"
+        },
+        {
+          "name": "forbidden-visible-post-focus:.fr-modal-overlay.open",
+          "pass": true,
+          "detail": "visible=0"
+        },
+        {
+          "name": "console-errors",
+          "pass": true,
+          "detail": "count=0 cap=0 errors=[] guard_suppressed=0"
+        },
+        {
+          "name": "page-errors",
+          "pass": true,
+          "detail": "count=0 cap=0 errors=[]"
+        }
+      ],
+      "failures": [],
+      "http": {
+        "status": 200,
+        "final_url": "https://www.framerestorationutah.com/locations/salt-lake-city",
+        "redirects": 0,
+        "headers": {
+          "access-control-allow-origin": "*",
+          "age": "0",
+          "cache-control": "public, max-age=0, must-revalidate",
+          "content-disposition": "inline; filename=\"salt-lake-city\"",
+          "content-encoding": "br",
+          "content-security-policy": "default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'self'; form-action 'self' https://hdcflshhomzildwqlmwh.supabase.co; script-src 'self' 'unsafe-inline' https://us.i.posthog.com https://us-assets.i.posthog.com https://cdnjs.cloudflare.com https://api.mapbox.com; worker-src 'self' blob:; child-src blob:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://api.mapbox.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: blob: https://www.framerestorationutah.com https://cdnjs.cloudflare.com https://*.tile.openstreetmap.org https://*.mapbox.com; frame-src https://www.google.com; connect-src 'self' https://us.i.posthog.com https://hdcflshhomzildwqlmwh.supabase.co https://api.mapbox.com https://events.mapbox.com https://*.tiles.mapbox.com https://api.weather.gov https://www.googleapis.com",
+          "content-type": "text/html; charset=utf-8",
+          "date": "Tue, 08 Sep 2026 21:23:39 GMT",
+          "etag": "W/\"390978bcd521e7f6bf451a4fac10541c\"",
+          "last-modified": "Tue, 08 Sep 2026 21:23:39 GMT",
+          "permissions-policy": "camera=(), microphone=(), geolocation=()",
+          "referrer-policy": "strict-origin-when-cross-origin",
+          "server": "Vercel",
+          "strict-transport-security": "max-age=31536000; includeSubDomains; preload",
+          "x-content-type-options": "nosniff",
+          "x-frame-options": "SAMEORIGIN",
+          "x-vercel-cache": "MISS",
+          "x-vercel-id": "pdx1::jmcwb-1788902619013-11a3d648324e",
+          "x-xss-protection": "1; mode=block"
+        }
+      },
+      "screenshot": {
+        "path": "/Users/agenticmac/projects/_wt-slc-lead-growth-20260908/qa/receipts/slc-attribution-production-20260908/locations-salt-lake-city--cce0784711c5--small-320.png",
+        "sha256": "f72c9510ab14f13e0107db6a2d610fc927e75666b0a46e32ed7fc8c2b8013900",
+        "captured_scroll_y": 0
+      },
+      "network_guard": {
+        "mode": "read_only",
+        "auth_bootstrap_used": false,
+        "protection_bypass_used": false,
+        "preview_toolbar_suppression_requested": false,
+        "service_workers_blocked": true,
+        "websockets_blocked": true,
+        "stability_wait_ms": 500,
+        "readiness_selector": "main",
+        "blocked_count": 0,
+        "blocked": [],
+        "console_errors_suppressed": 0
+      }
+    },
+    {
+      "route": "/locations/salt-lake-city",
+      "viewport": {
+        "name": "android-360",
+        "width": 360,
+        "height": 800
+      },
+      "url": "https://www.framerestorationutah.com/locations/salt-lake-city",
+      "checks": [
+        {
+          "name": "http-200",
+          "pass": true,
+          "detail": "status=200"
+        },
+        {
+          "name": "redirect-budget",
+          "pass": true,
+          "detail": "redirects=0 cap=0"
+        },
+        {
+          "name": "serving-origin",
+          "pass": true,
+          "detail": "final=https://www.framerestorationutah.com expected=https://www.framerestorationutah.com"
+        },
+        {
+          "name": "header:cache-control",
+          "pass": true,
+          "detail": "value='public, max-age=0, must-revalidate' expected=/max-age=0|no-cache|no-store/"
+        },
+        {
+          "name": "viewport-meta",
+          "pass": true,
+          "detail": "content='width=device-width, initial-scale=1.0'"
+        },
+        {
+          "name": "canonical",
+          "pass": true,
+          "detail": "count=1 actual='https://www.framerestorationutah.com/locations/salt-lake-city' expected='https://www.framerestorationutah.com/locations/salt-lake-city'"
+        },
+        {
+          "name": "freshness:track-clicks.js?v=2",
+          "pass": true,
+          "detail": "marker present"
+        },
+        {
+          "name": "horizontal-reflow",
+          "pass": true,
+          "detail": "scrollWidth=360 innerWidth=360"
+        },
+        {
+          "name": "critical-target:#menuBtn",
+          "pass": true,
+          "detail": "present, sized, hittable, and href-valid"
+        },
+        {
+          "name": "critical-target:.nav-call-mobile",
+          "pass": true,
+          "detail": "present, sized, hittable, and href-valid"
+        },
+        {
+          "name": "critical-target:.sticky-call a[href^=\"sms:\"]",
+          "pass": true,
+          "detail": "present, sized, hittable, and href-valid"
+        },
+        {
+          "name": "fixed-element:nav",
+          "pass": true,
+          "detail": "present and within orientation budget"
+        },
+        {
+          "name": "forbidden-visible:.fr-modal-overlay.open",
+          "pass": true,
+          "detail": "visible=0"
+        },
+        {
+          "name": "focus-not-obscured",
+          "pass": true,
+          "detail": "sampled keyboard focus is exposed"
+        },
+        {
+          "name": "forbidden-visible-post-focus:.fr-modal-overlay.open",
+          "pass": true,
+          "detail": "visible=0"
+        },
+        {
+          "name": "console-errors",
+          "pass": true,
+          "detail": "count=0 cap=0 errors=[] guard_suppressed=0"
+        },
+        {
+          "name": "page-errors",
+          "pass": true,
+          "detail": "count=0 cap=0 errors=[]"
+        }
+      ],
+      "failures": [],
+      "http": {
+        "status": 200,
+        "final_url": "https://www.framerestorationutah.com/locations/salt-lake-city",
+        "redirects": 0,
+        "headers": {
+          "access-control-allow-origin": "*",
+          "age": "3",
+          "cache-control": "public, max-age=0, must-revalidate",
+          "content-disposition": "inline; filename=\"salt-lake-city\"",
+          "content-encoding": "br",
+          "content-security-policy": "default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'self'; form-action 'self' https://hdcflshhomzildwqlmwh.supabase.co; script-src 'self' 'unsafe-inline' https://us.i.posthog.com https://us-assets.i.posthog.com https://cdnjs.cloudflare.com https://api.mapbox.com; worker-src 'self' blob:; child-src blob:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://api.mapbox.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: blob: https://www.framerestorationutah.com https://cdnjs.cloudflare.com https://*.tile.openstreetmap.org https://*.mapbox.com; frame-src https://www.google.com; connect-src 'self' https://us.i.posthog.com https://hdcflshhomzildwqlmwh.supabase.co https://api.mapbox.com https://events.mapbox.com https://*.tiles.mapbox.com https://api.weather.gov https://www.googleapis.com",
+          "content-type": "text/html; charset=utf-8",
+          "date": "Tue, 08 Sep 2026 21:23:42 GMT",
+          "etag": "W/\"390978bcd521e7f6bf451a4fac10541c\"",
+          "last-modified": "Tue, 08 Sep 2026 21:23:39 GMT",
+          "permissions-policy": "camera=(), microphone=(), geolocation=()",
+          "referrer-policy": "strict-origin-when-cross-origin",
+          "server": "Vercel",
+          "strict-transport-security": "max-age=31536000; includeSubDomains; preload",
+          "x-content-type-options": "nosniff",
+          "x-frame-options": "SAMEORIGIN",
+          "x-vercel-cache": "HIT",
+          "x-vercel-id": "pdx1::2lj5r-1788902622232-011aec3fa502",
+          "x-xss-protection": "1; mode=block"
+        }
+      },
+      "screenshot": {
+        "path": "/Users/agenticmac/projects/_wt-slc-lead-growth-20260908/qa/receipts/slc-attribution-production-20260908/locations-salt-lake-city--cce0784711c5--android-360.png",
+        "sha256": "798ba4acfaacc44b3ca03c6a9781ad456c3283a24f1c83bd683ae089e6488538",
+        "captured_scroll_y": 0
+      },
+      "network_guard": {
+        "mode": "read_only",
+        "auth_bootstrap_used": false,
+        "protection_bypass_used": false,
+        "preview_toolbar_suppression_requested": false,
+        "service_workers_blocked": true,
+        "websockets_blocked": true,
+        "stability_wait_ms": 500,
+        "readiness_selector": "main",
+        "blocked_count": 0,
+        "blocked": [],
+        "console_errors_suppressed": 0
+      }
+    },
+    {
+      "route": "/locations/salt-lake-city",
+      "viewport": {
+        "name": "iphone-393",
+        "width": 393,
+        "height": 852
+      },
+      "url": "https://www.framerestorationutah.com/locations/salt-lake-city",
+      "checks": [
+        {
+          "name": "http-200",
+          "pass": true,
+          "detail": "status=200"
+        },
+        {
+          "name": "redirect-budget",
+          "pass": true,
+          "detail": "redirects=0 cap=0"
+        },
+        {
+          "name": "serving-origin",
+          "pass": true,
+          "detail": "final=https://www.framerestorationutah.com expected=https://www.framerestorationutah.com"
+        },
+        {
+          "name": "header:cache-control",
+          "pass": true,
+          "detail": "value='public, max-age=0, must-revalidate' expected=/max-age=0|no-cache|no-store/"
+        },
+        {
+          "name": "viewport-meta",
+          "pass": true,
+          "detail": "content='width=device-width, initial-scale=1.0'"
+        },
+        {
+          "name": "canonical",
+          "pass": true,
+          "detail": "count=1 actual='https://www.framerestorationutah.com/locations/salt-lake-city' expected='https://www.framerestorationutah.com/locations/salt-lake-city'"
+        },
+        {
+          "name": "freshness:track-clicks.js?v=2",
+          "pass": true,
+          "detail": "marker present"
+        },
+        {
+          "name": "horizontal-reflow",
+          "pass": true,
+          "detail": "scrollWidth=393 innerWidth=393"
+        },
+        {
+          "name": "critical-target:#menuBtn",
+          "pass": true,
+          "detail": "present, sized, hittable, and href-valid"
+        },
+        {
+          "name": "critical-target:.nav-call-mobile",
+          "pass": true,
+          "detail": "present, sized, hittable, and href-valid"
+        },
+        {
+          "name": "critical-target:.sticky-call a[href^=\"sms:\"]",
+          "pass": true,
+          "detail": "present, sized, hittable, and href-valid"
+        },
+        {
+          "name": "fixed-element:nav",
+          "pass": true,
+          "detail": "present and within orientation budget"
+        },
+        {
+          "name": "forbidden-visible:.fr-modal-overlay.open",
+          "pass": true,
+          "detail": "visible=0"
+        },
+        {
+          "name": "focus-not-obscured",
+          "pass": true,
+          "detail": "sampled keyboard focus is exposed"
+        },
+        {
+          "name": "forbidden-visible-post-focus:.fr-modal-overlay.open",
+          "pass": true,
+          "detail": "visible=0"
+        },
+        {
+          "name": "console-errors",
+          "pass": true,
+          "detail": "count=0 cap=0 errors=[] guard_suppressed=0"
+        },
+        {
+          "name": "page-errors",
+          "pass": true,
+          "detail": "count=0 cap=0 errors=[]"
+        }
+      ],
+      "failures": [],
+      "http": {
+        "status": 200,
+        "final_url": "https://www.framerestorationutah.com/locations/salt-lake-city",
+        "redirects": 0,
+        "headers": {
+          "access-control-allow-origin": "*",
+          "age": "5",
+          "cache-control": "public, max-age=0, must-revalidate",
+          "content-disposition": "inline; filename=\"salt-lake-city\"",
+          "content-encoding": "br",
+          "content-security-policy": "default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'self'; form-action 'self' https://hdcflshhomzildwqlmwh.supabase.co; script-src 'self' 'unsafe-inline' https://us.i.posthog.com https://us-assets.i.posthog.com https://cdnjs.cloudflare.com https://api.mapbox.com; worker-src 'self' blob:; child-src blob:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://api.mapbox.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: blob: https://www.framerestorationutah.com https://cdnjs.cloudflare.com https://*.tile.openstreetmap.org https://*.mapbox.com; frame-src https://www.google.com; connect-src 'self' https://us.i.posthog.com https://hdcflshhomzildwqlmwh.supabase.co https://api.mapbox.com https://events.mapbox.com https://*.tiles.mapbox.com https://api.weather.gov https://www.googleapis.com",
+          "content-type": "text/html; charset=utf-8",
+          "date": "Tue, 08 Sep 2026 21:23:44 GMT",
+          "etag": "W/\"390978bcd521e7f6bf451a4fac10541c\"",
+          "last-modified": "Tue, 08 Sep 2026 21:23:39 GMT",
+          "permissions-policy": "camera=(), microphone=(), geolocation=()",
+          "referrer-policy": "strict-origin-when-cross-origin",
+          "server": "Vercel",
+          "strict-transport-security": "max-age=31536000; includeSubDomains; preload",
+          "x-content-type-options": "nosniff",
+          "x-frame-options": "SAMEORIGIN",
+          "x-vercel-cache": "HIT",
+          "x-vercel-id": "pdx1::kr2tk-1788902624801-aec89a4fdc54",
+          "x-xss-protection": "1; mode=block"
+        }
+      },
+      "screenshot": {
+        "path": "/Users/agenticmac/projects/_wt-slc-lead-growth-20260908/qa/receipts/slc-attribution-production-20260908/locations-salt-lake-city--cce0784711c5--iphone-393.png",
+        "sha256": "eeda36415ccd4aa1c009fdbc7b8757b027e33bc8cb20f5a9c52f94b7928bd5ba",
+        "captured_scroll_y": 0
+      },
+      "network_guard": {
+        "mode": "read_only",
+        "auth_bootstrap_used": false,
+        "protection_bypass_used": false,
+        "preview_toolbar_suppression_requested": false,
+        "service_workers_blocked": true,
+        "websockets_blocked": true,
+        "stability_wait_ms": 500,
+        "readiness_selector": "main",
+        "blocked_count": 0,
+        "blocked": [],
+        "console_errors_suppressed": 0
+      }
+    },
+    {
+      "route": "/locations/salt-lake-city",
+      "viewport": {
+        "name": "large-430",
+        "width": 430,
+        "height": 932
+      },
+      "url": "https://www.framerestorationutah.com/locations/salt-lake-city",
+      "checks": [
+        {
+          "name": "http-200",
+          "pass": true,
+          "detail": "status=200"
+        },
+        {
+          "name": "redirect-budget",
+          "pass": true,
+          "detail": "redirects=0 cap=0"
+        },
+        {
+          "name": "serving-origin",
+          "pass": true,
+          "detail": "final=https://www.framerestorationutah.com expected=https://www.framerestorationutah.com"
+        },
+        {
+          "name": "header:cache-control",
+          "pass": true,
+          "detail": "value='public, max-age=0, must-revalidate' expected=/max-age=0|no-cache|no-store/"
+        },
+        {
+          "name": "viewport-meta",
+          "pass": true,
+          "detail": "content='width=device-width, initial-scale=1.0'"
+        },
+        {
+          "name": "canonical",
+          "pass": true,
+          "detail": "count=1 actual='https://www.framerestorationutah.com/locations/salt-lake-city' expected='https://www.framerestorationutah.com/locations/salt-lake-city'"
+        },
+        {
+          "name": "freshness:track-clicks.js?v=2",
+          "pass": true,
+          "detail": "marker present"
+        },
+        {
+          "name": "horizontal-reflow",
+          "pass": true,
+          "detail": "scrollWidth=430 innerWidth=430"
+        },
+        {
+          "name": "critical-target:#menuBtn",
+          "pass": true,
+          "detail": "present, sized, hittable, and href-valid"
+        },
+        {
+          "name": "critical-target:.nav-call-mobile",
+          "pass": true,
+          "detail": "present, sized, hittable, and href-valid"
+        },
+        {
+          "name": "critical-target:.sticky-call a[href^=\"sms:\"]",
+          "pass": true,
+          "detail": "present, sized, hittable, and href-valid"
+        },
+        {
+          "name": "fixed-element:nav",
+          "pass": true,
+          "detail": "present and within orientation budget"
+        },
+        {
+          "name": "forbidden-visible:.fr-modal-overlay.open",
+          "pass": true,
+          "detail": "visible=0"
+        },
+        {
+          "name": "focus-not-obscured",
+          "pass": true,
+          "detail": "sampled keyboard focus is exposed"
+        },
+        {
+          "name": "forbidden-visible-post-focus:.fr-modal-overlay.open",
+          "pass": true,
+          "detail": "visible=0"
+        },
+        {
+          "name": "console-errors",
+          "pass": true,
+          "detail": "count=0 cap=0 errors=[] guard_suppressed=0"
+        },
+        {
+          "name": "page-errors",
+          "pass": true,
+          "detail": "count=0 cap=0 errors=[]"
+        }
+      ],
+      "failures": [],
+      "http": {
+        "status": 200,
+        "final_url": "https://www.framerestorationutah.com/locations/salt-lake-city",
+        "redirects": 0,
+        "headers": {
+          "access-control-allow-origin": "*",
+          "age": "8",
+          "cache-control": "public, max-age=0, must-revalidate",
+          "content-disposition": "inline; filename=\"salt-lake-city\"",
+          "content-encoding": "br",
+          "content-security-policy": "default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'self'; form-action 'self' https://hdcflshhomzildwqlmwh.supabase.co; script-src 'self' 'unsafe-inline' https://us.i.posthog.com https://us-assets.i.posthog.com https://cdnjs.cloudflare.com https://api.mapbox.com; worker-src 'self' blob:; child-src blob:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://api.mapbox.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: blob: https://www.framerestorationutah.com https://cdnjs.cloudflare.com https://*.tile.openstreetmap.org https://*.mapbox.com; frame-src https://www.google.com; connect-src 'self' https://us.i.posthog.com https://hdcflshhomzildwqlmwh.supabase.co https://api.mapbox.com https://events.mapbox.com https://*.tiles.mapbox.com https://api.weather.gov https://www.googleapis.com",
+          "content-type": "text/html; charset=utf-8",
+          "date": "Tue, 08 Sep 2026 21:23:47 GMT",
+          "etag": "W/\"390978bcd521e7f6bf451a4fac10541c\"",
+          "last-modified": "Tue, 08 Sep 2026 21:23:39 GMT",
+          "permissions-policy": "camera=(), microphone=(), geolocation=()",
+          "referrer-policy": "strict-origin-when-cross-origin",
+          "server": "Vercel",
+          "strict-transport-security": "max-age=31536000; includeSubDomains; preload",
+          "x-content-type-options": "nosniff",
+          "x-frame-options": "SAMEORIGIN",
+          "x-vercel-cache": "HIT",
+          "x-vercel-id": "pdx1::tj856-1788902627268-683d4a086bdf",
+          "x-xss-protection": "1; mode=block"
+        }
+      },
+      "screenshot": {
+        "path": "/Users/agenticmac/projects/_wt-slc-lead-growth-20260908/qa/receipts/slc-attribution-production-20260908/locations-salt-lake-city--cce0784711c5--large-430.png",
+        "sha256": "28c8f53edf4d2d6b06018a2f4659a04c69f1a16d0ec2189099b4c2051692e549",
+        "captured_scroll_y": 0
+      },
+      "network_guard": {
+        "mode": "read_only",
+        "auth_bootstrap_used": false,
+        "protection_bypass_used": false,
+        "preview_toolbar_suppression_requested": false,
+        "service_workers_blocked": true,
+        "websockets_blocked": true,
+        "stability_wait_ms": 500,
+        "readiness_selector": "main",
+        "blocked_count": 0,
+        "blocked": [],
+        "console_errors_suppressed": 0
+      }
+    },
+    {
+      "route": "/locations/salt-lake-city",
+      "viewport": {
+        "name": "landscape-740",
+        "width": 740,
+        "height": 360
+      },
+      "url": "https://www.framerestorationutah.com/locations/salt-lake-city",
+      "checks": [
+        {
+          "name": "http-200",
+          "pass": true,
+          "detail": "status=200"
+        },
+        {
+          "name": "redirect-budget",
+          "pass": true,
+          "detail": "redirects=0 cap=0"
+        },
+        {
+          "name": "serving-origin",
+          "pass": true,
+          "detail": "final=https://www.framerestorationutah.com expected=https://www.framerestorationutah.com"
+        },
+        {
+          "name": "header:cache-control",
+          "pass": true,
+          "detail": "value='public, max-age=0, must-revalidate' expected=/max-age=0|no-cache|no-store/"
+        },
+        {
+          "name": "viewport-meta",
+          "pass": true,
+          "detail": "content='width=device-width, initial-scale=1.0'"
+        },
+        {
+          "name": "canonical",
+          "pass": true,
+          "detail": "count=1 actual='https://www.framerestorationutah.com/locations/salt-lake-city' expected='https://www.framerestorationutah.com/locations/salt-lake-city'"
+        },
+        {
+          "name": "freshness:track-clicks.js?v=2",
+          "pass": true,
+          "detail": "marker present"
+        },
+        {
+          "name": "horizontal-reflow",
+          "pass": true,
+          "detail": "scrollWidth=740 innerWidth=740"
+        },
+        {
+          "name": "critical-target:#menuBtn",
+          "pass": true,
+          "detail": "present, sized, hittable, and href-valid"
+        },
+        {
+          "name": "critical-target:.nav-call-mobile",
+          "pass": true,
+          "detail": "present, sized, hittable, and href-valid"
+        },
+        {
+          "name": "critical-target:.sticky-call a[href^=\"sms:\"]:not-applicable",
+          "pass": true,
+          "detail": "viewport-width=740"
+        },
+        {
+          "name": "fixed-element:nav",
+          "pass": true,
+          "detail": "present and within orientation budget"
+        },
+        {
+          "name": "forbidden-visible:.fr-modal-overlay.open",
+          "pass": true,
+          "detail": "visible=0"
+        },
+        {
+          "name": "focus-not-obscured",
+          "pass": true,
+          "detail": "sampled keyboard focus is exposed"
+        },
+        {
+          "name": "forbidden-visible-post-focus:.fr-modal-overlay.open",
+          "pass": true,
+          "detail": "visible=0"
+        },
+        {
+          "name": "console-errors",
+          "pass": true,
+          "detail": "count=0 cap=0 errors=[] guard_suppressed=0"
+        },
+        {
+          "name": "page-errors",
+          "pass": true,
+          "detail": "count=0 cap=0 errors=[]"
+        }
+      ],
+      "failures": [],
+      "http": {
+        "status": 200,
+        "final_url": "https://www.framerestorationutah.com/locations/salt-lake-city",
+        "redirects": 0,
+        "headers": {
+          "access-control-allow-origin": "*",
+          "age": "10",
+          "cache-control": "public, max-age=0, must-revalidate",
+          "content-disposition": "inline; filename=\"salt-lake-city\"",
+          "content-encoding": "br",
+          "content-security-policy": "default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'self'; form-action 'self' https://hdcflshhomzildwqlmwh.supabase.co; script-src 'self' 'unsafe-inline' https://us.i.posthog.com https://us-assets.i.posthog.com https://cdnjs.cloudflare.com https://api.mapbox.com; worker-src 'self' blob:; child-src blob:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://api.mapbox.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: blob: https://www.framerestorationutah.com https://cdnjs.cloudflare.com https://*.tile.openstreetmap.org https://*.mapbox.com; frame-src https://www.google.com; connect-src 'self' https://us.i.posthog.com https://hdcflshhomzildwqlmwh.supabase.co https://api.mapbox.com https://events.mapbox.com https://*.tiles.mapbox.com https://api.weather.gov https://www.googleapis.com",
+          "content-type": "text/html; charset=utf-8",
+          "date": "Tue, 08 Sep 2026 21:23:49 GMT",
+          "etag": "W/\"390978bcd521e7f6bf451a4fac10541c\"",
+          "last-modified": "Tue, 08 Sep 2026 21:23:39 GMT",
+          "permissions-policy": "camera=(), microphone=(), geolocation=()",
+          "referrer-policy": "strict-origin-when-cross-origin",
+          "server": "Vercel",
+          "strict-transport-security": "max-age=31536000; includeSubDomains; preload",
+          "x-content-type-options": "nosniff",
+          "x-frame-options": "SAMEORIGIN",
+          "x-vercel-cache": "HIT",
+          "x-vercel-id": "pdx1::kr2tk-1788902629806-bc041ccf73e5",
+          "x-xss-protection": "1; mode=block"
+        }
+      },
+      "screenshot": {
+        "path": "/Users/agenticmac/projects/_wt-slc-lead-growth-20260908/qa/receipts/slc-attribution-production-20260908/locations-salt-lake-city--cce0784711c5--landscape-740.png",
+        "sha256": "2297314033aa1701b354f99f7ff341ee6418a02892cfb6190b89f30984b84e35",
+        "captured_scroll_y": 0
+      },
+      "network_guard": {
+        "mode": "read_only",
+        "auth_bootstrap_used": false,
+        "protection_bypass_used": false,
+        "preview_toolbar_suppression_requested": false,
+        "service_workers_blocked": true,
+        "websockets_blocked": true,
+        "stability_wait_ms": 500,
+        "readiness_selector": "main",
+        "blocked_count": 0,
+        "blocked": [],
+        "console_errors_suppressed": 0
+      }
+    },
+    {
+      "route": "/",
+      "viewport": {
+        "name": "small-320",
+        "width": 320,
+        "height": 568
+      },
+      "url": "https://www.framerestorationutah.com/",
+      "checks": [
+        {
+          "name": "http-200",
+          "pass": true,
+          "detail": "status=200"
+        },
+        {
+          "name": "redirect-budget",
+          "pass": true,
+          "detail": "redirects=0 cap=0"
+        },
+        {
+          "name": "serving-origin",
+          "pass": true,
+          "detail": "final=https://www.framerestorationutah.com expected=https://www.framerestorationutah.com"
+        },
+        {
+          "name": "header:cache-control",
+          "pass": true,
+          "detail": "value='public, max-age=0, must-revalidate' expected=/max-age=0|no-cache|no-store/"
+        },
+        {
+          "name": "viewport-meta",
+          "pass": true,
+          "detail": "content='width=device-width, initial-scale=1.0, viewport-fit=cover'"
+        },
+        {
+          "name": "canonical",
+          "pass": true,
+          "detail": "count=1 actual='https://www.framerestorationutah.com/' expected='https://www.framerestorationutah.com/'"
+        },
+        {
+          "name": "freshness:track-clicks.js?v=2",
+          "pass": true,
+          "detail": "marker present"
+        },
+        {
+          "name": "horizontal-reflow",
+          "pass": true,
+          "detail": "scrollWidth=320 innerWidth=320"
+        },
+        {
+          "name": "critical-target:#menuBtn",
+          "pass": true,
+          "detail": "present, sized, hittable, and href-valid"
+        },
+        {
+          "name": "critical-target:.nav-call-mobile",
+          "pass": true,
+          "detail": "present, sized, hittable, and href-valid"
+        },
+        {
+          "name": "critical-target:.sticky-call a[href^=\"sms:\"]",
+          "pass": true,
+          "detail": "present, sized, hittable, and href-valid"
+        },
+        {
+          "name": "fixed-element:nav",
+          "pass": true,
+          "detail": "present and within orientation budget"
+        },
+        {
+          "name": "forbidden-visible:.fr-modal-overlay.open",
+          "pass": true,
+          "detail": "visible=0"
+        },
+        {
+          "name": "focus-not-obscured",
+          "pass": true,
+          "detail": "sampled keyboard focus is exposed"
+        },
+        {
+          "name": "forbidden-visible-post-focus:.fr-modal-overlay.open",
+          "pass": true,
+          "detail": "visible=0"
+        },
+        {
+          "name": "console-errors",
+          "pass": true,
+          "detail": "count=0 cap=0 errors=[] guard_suppressed=0"
+        },
+        {
+          "name": "page-errors",
+          "pass": true,
+          "detail": "count=0 cap=0 errors=[]"
+        }
+      ],
+      "failures": [],
+      "http": {
+        "status": 200,
+        "final_url": "https://www.framerestorationutah.com/",
+        "redirects": 0,
+        "headers": {
+          "access-control-allow-origin": "*",
+          "age": "0",
+          "cache-control": "public, max-age=0, must-revalidate",
+          "content-disposition": "inline",
+          "content-encoding": "br",
+          "content-security-policy": "default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'self'; form-action 'self' https://hdcflshhomzildwqlmwh.supabase.co; script-src 'self' 'unsafe-inline' https://us.i.posthog.com https://us-assets.i.posthog.com https://cdnjs.cloudflare.com https://api.mapbox.com; worker-src 'self' blob:; child-src blob:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://api.mapbox.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: blob: https://www.framerestorationutah.com https://cdnjs.cloudflare.com https://*.tile.openstreetmap.org https://*.mapbox.com; frame-src https://www.google.com; connect-src 'self' https://us.i.posthog.com https://hdcflshhomzildwqlmwh.supabase.co https://api.mapbox.com https://events.mapbox.com https://*.tiles.mapbox.com https://api.weather.gov https://www.googleapis.com",
+          "content-type": "text/html; charset=utf-8",
+          "date": "Tue, 08 Sep 2026 21:23:52 GMT",
+          "etag": "W/\"1ca9e5d5b6d2f638ec8808da5f124c79\"",
+          "last-modified": "Tue, 08 Sep 2026 21:23:52 GMT",
+          "permissions-policy": "camera=(), microphone=(), geolocation=()",
+          "referrer-policy": "strict-origin-when-cross-origin",
+          "server": "Vercel",
+          "strict-transport-security": "max-age=31536000; includeSubDomains; preload",
+          "x-content-type-options": "nosniff",
+          "x-frame-options": "SAMEORIGIN",
+          "x-vercel-cache": "MISS",
+          "x-vercel-id": "pdx1::nm7nh-1788902632338-e09aac89395b",
+          "x-xss-protection": "1; mode=block"
+        }
+      },
+      "screenshot": {
+        "path": "/Users/agenticmac/projects/_wt-slc-lead-growth-20260908/qa/receipts/slc-attribution-production-20260908/home--8a5edab28263--small-320.png",
+        "sha256": "f6a9264e87bdb01af9b316a4ae4f566eda5f69813d355537e4af393a2bcd77f6",
+        "captured_scroll_y": 0
+      },
+      "network_guard": {
+        "mode": "read_only",
+        "auth_bootstrap_used": false,
+        "protection_bypass_used": false,
+        "preview_toolbar_suppression_requested": false,
+        "service_workers_blocked": true,
+        "websockets_blocked": true,
+        "stability_wait_ms": 500,
+        "readiness_selector": "main",
+        "blocked_count": 0,
+        "blocked": [],
+        "console_errors_suppressed": 0
+      }
+    },
+    {
+      "route": "/",
+      "viewport": {
+        "name": "android-360",
+        "width": 360,
+        "height": 800
+      },
+      "url": "https://www.framerestorationutah.com/",
+      "checks": [
+        {
+          "name": "http-200",
+          "pass": true,
+          "detail": "status=200"
+        },
+        {
+          "name": "redirect-budget",
+          "pass": true,
+          "detail": "redirects=0 cap=0"
+        },
+        {
+          "name": "serving-origin",
+          "pass": true,
+          "detail": "final=https://www.framerestorationutah.com expected=https://www.framerestorationutah.com"
+        },
+        {
+          "name": "header:cache-control",
+          "pass": true,
+          "detail": "value='public, max-age=0, must-revalidate' expected=/max-age=0|no-cache|no-store/"
+        },
+        {
+          "name": "viewport-meta",
+          "pass": true,
+          "detail": "content='width=device-width, initial-scale=1.0, viewport-fit=cover'"
+        },
+        {
+          "name": "canonical",
+          "pass": true,
+          "detail": "count=1 actual='https://www.framerestorationutah.com/' expected='https://www.framerestorationutah.com/'"
+        },
+        {
+          "name": "freshness:track-clicks.js?v=2",
+          "pass": true,
+          "detail": "marker present"
+        },
+        {
+          "name": "horizontal-reflow",
+          "pass": true,
+          "detail": "scrollWidth=360 innerWidth=360"
+        },
+        {
+          "name": "critical-target:#menuBtn",
+          "pass": true,
+          "detail": "present, sized, hittable, and href-valid"
+        },
+        {
+          "name": "critical-target:.nav-call-mobile",
+          "pass": true,
+          "detail": "present, sized, hittable, and href-valid"
+        },
+        {
+          "name": "critical-target:.sticky-call a[href^=\"sms:\"]",
+          "pass": true,
+          "detail": "present, sized, hittable, and href-valid"
+        },
+        {
+          "name": "fixed-element:nav",
+          "pass": true,
+          "detail": "present and within orientation budget"
+        },
+        {
+          "name": "forbidden-visible:.fr-modal-overlay.open",
+          "pass": true,
+          "detail": "visible=0"
+        },
+        {
+          "name": "focus-not-obscured",
+          "pass": true,
+          "detail": "sampled keyboard focus is exposed"
+        },
+        {
+          "name": "forbidden-visible-post-focus:.fr-modal-overlay.open",
+          "pass": true,
+          "detail": "visible=0"
+        },
+        {
+          "name": "console-errors",
+          "pass": true,
+          "detail": "count=0 cap=0 errors=[] guard_suppressed=0"
+        },
+        {
+          "name": "page-errors",
+          "pass": true,
+          "detail": "count=0 cap=0 errors=[]"
+        }
+      ],
+      "failures": [],
+      "http": {
+        "status": 200,
+        "final_url": "https://www.framerestorationutah.com/",
+        "redirects": 0,
+        "headers": {
+          "access-control-allow-origin": "*",
+          "age": "2",
+          "cache-control": "public, max-age=0, must-revalidate",
+          "content-disposition": "inline",
+          "content-encoding": "br",
+          "content-security-policy": "default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'self'; form-action 'self' https://hdcflshhomzildwqlmwh.supabase.co; script-src 'self' 'unsafe-inline' https://us.i.posthog.com https://us-assets.i.posthog.com https://cdnjs.cloudflare.com https://api.mapbox.com; worker-src 'self' blob:; child-src blob:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://api.mapbox.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: blob: https://www.framerestorationutah.com https://cdnjs.cloudflare.com https://*.tile.openstreetmap.org https://*.mapbox.com; frame-src https://www.google.com; connect-src 'self' https://us.i.posthog.com https://hdcflshhomzildwqlmwh.supabase.co https://api.mapbox.com https://events.mapbox.com https://*.tiles.mapbox.com https://api.weather.gov https://www.googleapis.com",
+          "content-type": "text/html; charset=utf-8",
+          "date": "Tue, 08 Sep 2026 21:23:55 GMT",
+          "etag": "W/\"1ca9e5d5b6d2f638ec8808da5f124c79\"",
+          "last-modified": "Tue, 08 Sep 2026 21:23:52 GMT",
+          "permissions-policy": "camera=(), microphone=(), geolocation=()",
+          "referrer-policy": "strict-origin-when-cross-origin",
+          "server": "Vercel",
+          "strict-transport-security": "max-age=31536000; includeSubDomains; preload",
+          "x-content-type-options": "nosniff",
+          "x-frame-options": "SAMEORIGIN",
+          "x-vercel-cache": "HIT",
+          "x-vercel-id": "pdx1::2w6mr-1788902635184-95d75c4f4ebf",
+          "x-xss-protection": "1; mode=block"
+        }
+      },
+      "screenshot": {
+        "path": "/Users/agenticmac/projects/_wt-slc-lead-growth-20260908/qa/receipts/slc-attribution-production-20260908/home--8a5edab28263--android-360.png",
+        "sha256": "9e0e4ce3a88d6b7090ab1084d922488299575fb1633f93e16d5da55a8eb3a99b",
+        "captured_scroll_y": 0
+      },
+      "network_guard": {
+        "mode": "read_only",
+        "auth_bootstrap_used": false,
+        "protection_bypass_used": false,
+        "preview_toolbar_suppression_requested": false,
+        "service_workers_blocked": true,
+        "websockets_blocked": true,
+        "stability_wait_ms": 500,
+        "readiness_selector": "main",
+        "blocked_count": 0,
+        "blocked": [],
+        "console_errors_suppressed": 0
+      }
+    },
+    {
+      "route": "/",
+      "viewport": {
+        "name": "iphone-393",
+        "width": 393,
+        "height": 852
+      },
+      "url": "https://www.framerestorationutah.com/",
+      "checks": [
+        {
+          "name": "http-200",
+          "pass": true,
+          "detail": "status=200"
+        },
+        {
+          "name": "redirect-budget",
+          "pass": true,
+          "detail": "redirects=0 cap=0"
+        },
+        {
+          "name": "serving-origin",
+          "pass": true,
+          "detail": "final=https://www.framerestorationutah.com expected=https://www.framerestorationutah.com"
+        },
+        {
+          "name": "header:cache-control",
+          "pass": true,
+          "detail": "value='public, max-age=0, must-revalidate' expected=/max-age=0|no-cache|no-store/"
+        },
+        {
+          "name": "viewport-meta",
+          "pass": true,
+          "detail": "content='width=device-width, initial-scale=1.0, viewport-fit=cover'"
+        },
+        {
+          "name": "canonical",
+          "pass": true,
+          "detail": "count=1 actual='https://www.framerestorationutah.com/' expected='https://www.framerestorationutah.com/'"
+        },
+        {
+          "name": "freshness:track-clicks.js?v=2",
+          "pass": true,
+          "detail": "marker present"
+        },
+        {
+          "name": "horizontal-reflow",
+          "pass": true,
+          "detail": "scrollWidth=393 innerWidth=393"
+        },
+        {
+          "name": "critical-target:#menuBtn",
+          "pass": true,
+          "detail": "present, sized, hittable, and href-valid"
+        },
+        {
+          "name": "critical-target:.nav-call-mobile",
+          "pass": true,
+          "detail": "present, sized, hittable, and href-valid"
+        },
+        {
+          "name": "critical-target:.sticky-call a[href^=\"sms:\"]",
+          "pass": true,
+          "detail": "present, sized, hittable, and href-valid"
+        },
+        {
+          "name": "fixed-element:nav",
+          "pass": true,
+          "detail": "present and within orientation budget"
+        },
+        {
+          "name": "forbidden-visible:.fr-modal-overlay.open",
+          "pass": true,
+          "detail": "visible=0"
+        },
+        {
+          "name": "focus-not-obscured",
+          "pass": true,
+          "detail": "sampled keyboard focus is exposed"
+        },
+        {
+          "name": "forbidden-visible-post-focus:.fr-modal-overlay.open",
+          "pass": true,
+          "detail": "visible=0"
+        },
+        {
+          "name": "console-errors",
+          "pass": true,
+          "detail": "count=0 cap=0 errors=[] guard_suppressed=0"
+        },
+        {
+          "name": "page-errors",
+          "pass": true,
+          "detail": "count=0 cap=0 errors=[]"
+        }
+      ],
+      "failures": [],
+      "http": {
+        "status": 200,
+        "final_url": "https://www.framerestorationutah.com/",
+        "redirects": 0,
+        "headers": {
+          "access-control-allow-origin": "*",
+          "age": "5",
+          "cache-control": "public, max-age=0, must-revalidate",
+          "content-disposition": "inline",
+          "content-encoding": "br",
+          "content-security-policy": "default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'self'; form-action 'self' https://hdcflshhomzildwqlmwh.supabase.co; script-src 'self' 'unsafe-inline' https://us.i.posthog.com https://us-assets.i.posthog.com https://cdnjs.cloudflare.com https://api.mapbox.com; worker-src 'self' blob:; child-src blob:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://api.mapbox.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: blob: https://www.framerestorationutah.com https://cdnjs.cloudflare.com https://*.tile.openstreetmap.org https://*.mapbox.com; frame-src https://www.google.com; connect-src 'self' https://us.i.posthog.com https://hdcflshhomzildwqlmwh.supabase.co https://api.mapbox.com https://events.mapbox.com https://*.tiles.mapbox.com https://api.weather.gov https://www.googleapis.com",
+          "content-type": "text/html; charset=utf-8",
+          "date": "Tue, 08 Sep 2026 21:23:57 GMT",
+          "etag": "W/\"1ca9e5d5b6d2f638ec8808da5f124c79\"",
+          "last-modified": "Tue, 08 Sep 2026 21:23:52 GMT",
+          "permissions-policy": "camera=(), microphone=(), geolocation=()",
+          "referrer-policy": "strict-origin-when-cross-origin",
+          "server": "Vercel",
+          "strict-transport-security": "max-age=31536000; includeSubDomains; preload",
+          "x-content-type-options": "nosniff",
+          "x-frame-options": "SAMEORIGIN",
+          "x-vercel-cache": "HIT",
+          "x-vercel-id": "pdx1::6ggmr-1788902637744-cb567a1d6eb9",
+          "x-xss-protection": "1; mode=block"
+        }
+      },
+      "screenshot": {
+        "path": "/Users/agenticmac/projects/_wt-slc-lead-growth-20260908/qa/receipts/slc-attribution-production-20260908/home--8a5edab28263--iphone-393.png",
+        "sha256": "367fea5e5be082edcf853509649079c0cc369cf696fd0e9dbc2b6db8d94d1107",
+        "captured_scroll_y": 0
+      },
+      "network_guard": {
+        "mode": "read_only",
+        "auth_bootstrap_used": false,
+        "protection_bypass_used": false,
+        "preview_toolbar_suppression_requested": false,
+        "service_workers_blocked": true,
+        "websockets_blocked": true,
+        "stability_wait_ms": 500,
+        "readiness_selector": "main",
+        "blocked_count": 0,
+        "blocked": [],
+        "console_errors_suppressed": 0
+      }
+    },
+    {
+      "route": "/",
+      "viewport": {
+        "name": "large-430",
+        "width": 430,
+        "height": 932
+      },
+      "url": "https://www.framerestorationutah.com/",
+      "checks": [
+        {
+          "name": "http-200",
+          "pass": true,
+          "detail": "status=200"
+        },
+        {
+          "name": "redirect-budget",
+          "pass": true,
+          "detail": "redirects=0 cap=0"
+        },
+        {
+          "name": "serving-origin",
+          "pass": true,
+          "detail": "final=https://www.framerestorationutah.com expected=https://www.framerestorationutah.com"
+        },
+        {
+          "name": "header:cache-control",
+          "pass": true,
+          "detail": "value='public, max-age=0, must-revalidate' expected=/max-age=0|no-cache|no-store/"
+        },
+        {
+          "name": "viewport-meta",
+          "pass": true,
+          "detail": "content='width=device-width, initial-scale=1.0, viewport-fit=cover'"
+        },
+        {
+          "name": "canonical",
+          "pass": true,
+          "detail": "count=1 actual='https://www.framerestorationutah.com/' expected='https://www.framerestorationutah.com/'"
+        },
+        {
+          "name": "freshness:track-clicks.js?v=2",
+          "pass": true,
+          "detail": "marker present"
+        },
+        {
+          "name": "horizontal-reflow",
+          "pass": true,
+          "detail": "scrollWidth=430 innerWidth=430"
+        },
+        {
+          "name": "critical-target:#menuBtn",
+          "pass": true,
+          "detail": "present, sized, hittable, and href-valid"
+        },
+        {
+          "name": "critical-target:.nav-call-mobile",
+          "pass": true,
+          "detail": "present, sized, hittable, and href-valid"
+        },
+        {
+          "name": "critical-target:.sticky-call a[href^=\"sms:\"]",
+          "pass": true,
+          "detail": "present, sized, hittable, and href-valid"
+        },
+        {
+          "name": "fixed-element:nav",
+          "pass": true,
+          "detail": "present and within orientation budget"
+        },
+        {
+          "name": "forbidden-visible:.fr-modal-overlay.open",
+          "pass": true,
+          "detail": "visible=0"
+        },
+        {
+          "name": "focus-not-obscured",
+          "pass": true,
+          "detail": "sampled keyboard focus is exposed"
+        },
+        {
+          "name": "forbidden-visible-post-focus:.fr-modal-overlay.open",
+          "pass": true,
+          "detail": "visible=0"
+        },
+        {
+          "name": "console-errors",
+          "pass": true,
+          "detail": "count=0 cap=0 errors=[] guard_suppressed=0"
+        },
+        {
+          "name": "page-errors",
+          "pass": true,
+          "detail": "count=0 cap=0 errors=[]"
+        }
+      ],
+      "failures": [],
+      "http": {
+        "status": 200,
+        "final_url": "https://www.framerestorationutah.com/",
+        "redirects": 0,
+        "headers": {
+          "access-control-allow-origin": "*",
+          "age": "7",
+          "cache-control": "public, max-age=0, must-revalidate",
+          "content-disposition": "inline",
+          "content-encoding": "br",
+          "content-security-policy": "default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'self'; form-action 'self' https://hdcflshhomzildwqlmwh.supabase.co; script-src 'self' 'unsafe-inline' https://us.i.posthog.com https://us-assets.i.posthog.com https://cdnjs.cloudflare.com https://api.mapbox.com; worker-src 'self' blob:; child-src blob:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://api.mapbox.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: blob: https://www.framerestorationutah.com https://cdnjs.cloudflare.com https://*.tile.openstreetmap.org https://*.mapbox.com; frame-src https://www.google.com; connect-src 'self' https://us.i.posthog.com https://hdcflshhomzildwqlmwh.supabase.co https://api.mapbox.com https://events.mapbox.com https://*.tiles.mapbox.com https://api.weather.gov https://www.googleapis.com",
+          "content-type": "text/html; charset=utf-8",
+          "date": "Tue, 08 Sep 2026 21:24:00 GMT",
+          "etag": "W/\"1ca9e5d5b6d2f638ec8808da5f124c79\"",
+          "last-modified": "Tue, 08 Sep 2026 21:23:52 GMT",
+          "permissions-policy": "camera=(), microphone=(), geolocation=()",
+          "referrer-policy": "strict-origin-when-cross-origin",
+          "server": "Vercel",
+          "strict-transport-security": "max-age=31536000; includeSubDomains; preload",
+          "x-content-type-options": "nosniff",
+          "x-frame-options": "SAMEORIGIN",
+          "x-vercel-cache": "HIT",
+          "x-vercel-id": "pdx1::5ph27-1788902640342-c0eee8bad625",
+          "x-xss-protection": "1; mode=block"
+        }
+      },
+      "screenshot": {
+        "path": "/Users/agenticmac/projects/_wt-slc-lead-growth-20260908/qa/receipts/slc-attribution-production-20260908/home--8a5edab28263--large-430.png",
+        "sha256": "9661e8247b77eb812ebc52311e099185d75f9b89d0a2026ae3b68c9242155579",
+        "captured_scroll_y": 0
+      },
+      "network_guard": {
+        "mode": "read_only",
+        "auth_bootstrap_used": false,
+        "protection_bypass_used": false,
+        "preview_toolbar_suppression_requested": false,
+        "service_workers_blocked": true,
+        "websockets_blocked": true,
+        "stability_wait_ms": 500,
+        "readiness_selector": "main",
+        "blocked_count": 0,
+        "blocked": [],
+        "console_errors_suppressed": 0
+      }
+    },
+    {
+      "route": "/",
+      "viewport": {
+        "name": "landscape-740",
+        "width": 740,
+        "height": 360
+      },
+      "url": "https://www.framerestorationutah.com/",
+      "checks": [
+        {
+          "name": "http-200",
+          "pass": true,
+          "detail": "status=200"
+        },
+        {
+          "name": "redirect-budget",
+          "pass": true,
+          "detail": "redirects=0 cap=0"
+        },
+        {
+          "name": "serving-origin",
+          "pass": true,
+          "detail": "final=https://www.framerestorationutah.com expected=https://www.framerestorationutah.com"
+        },
+        {
+          "name": "header:cache-control",
+          "pass": true,
+          "detail": "value='public, max-age=0, must-revalidate' expected=/max-age=0|no-cache|no-store/"
+        },
+        {
+          "name": "viewport-meta",
+          "pass": true,
+          "detail": "content='width=device-width, initial-scale=1.0, viewport-fit=cover'"
+        },
+        {
+          "name": "canonical",
+          "pass": true,
+          "detail": "count=1 actual='https://www.framerestorationutah.com/' expected='https://www.framerestorationutah.com/'"
+        },
+        {
+          "name": "freshness:track-clicks.js?v=2",
+          "pass": true,
+          "detail": "marker present"
+        },
+        {
+          "name": "horizontal-reflow",
+          "pass": true,
+          "detail": "scrollWidth=740 innerWidth=740"
+        },
+        {
+          "name": "critical-target:#menuBtn",
+          "pass": true,
+          "detail": "present, sized, hittable, and href-valid"
+        },
+        {
+          "name": "critical-target:.nav-call-mobile",
+          "pass": true,
+          "detail": "present, sized, hittable, and href-valid"
+        },
+        {
+          "name": "critical-target:.sticky-call a[href^=\"sms:\"]:not-applicable",
+          "pass": true,
+          "detail": "viewport-width=740"
+        },
+        {
+          "name": "fixed-element:nav",
+          "pass": true,
+          "detail": "present and within orientation budget"
+        },
+        {
+          "name": "forbidden-visible:.fr-modal-overlay.open",
+          "pass": true,
+          "detail": "visible=0"
+        },
+        {
+          "name": "focus-not-obscured",
+          "pass": true,
+          "detail": "sampled keyboard focus is exposed"
+        },
+        {
+          "name": "forbidden-visible-post-focus:.fr-modal-overlay.open",
+          "pass": true,
+          "detail": "visible=0"
+        },
+        {
+          "name": "console-errors",
+          "pass": true,
+          "detail": "count=0 cap=0 errors=[] guard_suppressed=0"
+        },
+        {
+          "name": "page-errors",
+          "pass": true,
+          "detail": "count=0 cap=0 errors=[]"
+        }
+      ],
+      "failures": [],
+      "http": {
+        "status": 200,
+        "final_url": "https://www.framerestorationutah.com/",
+        "redirects": 0,
+        "headers": {
+          "access-control-allow-origin": "*",
+          "age": "10",
+          "cache-control": "public, max-age=0, must-revalidate",
+          "content-disposition": "inline",
+          "content-encoding": "br",
+          "content-security-policy": "default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'self'; form-action 'self' https://hdcflshhomzildwqlmwh.supabase.co; script-src 'self' 'unsafe-inline' https://us.i.posthog.com https://us-assets.i.posthog.com https://cdnjs.cloudflare.com https://api.mapbox.com; worker-src 'self' blob:; child-src blob:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://api.mapbox.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: blob: https://www.framerestorationutah.com https://cdnjs.cloudflare.com https://*.tile.openstreetmap.org https://*.mapbox.com; frame-src https://www.google.com; connect-src 'self' https://us.i.posthog.com https://hdcflshhomzildwqlmwh.supabase.co https://api.mapbox.com https://events.mapbox.com https://*.tiles.mapbox.com https://api.weather.gov https://www.googleapis.com",
+          "content-type": "text/html; charset=utf-8",
+          "date": "Tue, 08 Sep 2026 21:24:02 GMT",
+          "etag": "W/\"1ca9e5d5b6d2f638ec8808da5f124c79\"",
+          "last-modified": "Tue, 08 Sep 2026 21:23:52 GMT",
+          "permissions-policy": "camera=(), microphone=(), geolocation=()",
+          "referrer-policy": "strict-origin-when-cross-origin",
+          "server": "Vercel",
+          "strict-transport-security": "max-age=31536000; includeSubDomains; preload",
+          "x-content-type-options": "nosniff",
+          "x-frame-options": "SAMEORIGIN",
+          "x-vercel-cache": "HIT",
+          "x-vercel-id": "pdx1::zkwd4-1788902642937-2a6cb4c7f491",
+          "x-xss-protection": "1; mode=block"
+        }
+      },
+      "screenshot": {
+        "path": "/Users/agenticmac/projects/_wt-slc-lead-growth-20260908/qa/receipts/slc-attribution-production-20260908/home--8a5edab28263--landscape-740.png",
+        "sha256": "1cc5d5c73fa994a076f26d110e1c64c5b878f48860399811dd96ecf1d6b5dda8",
+        "captured_scroll_y": 0
+      },
+      "network_guard": {
+        "mode": "read_only",
+        "auth_bootstrap_used": false,
+        "protection_bypass_used": false,
+        "preview_toolbar_suppression_requested": false,
+        "service_workers_blocked": true,
+        "websockets_blocked": true,
+        "stability_wait_ms": 500,
+        "readiness_selector": "main",
+        "blocked_count": 0,
+        "blocked": [],
+        "console_errors_suppressed": 0
+      }
+    }
+  ],
+  "duration_seconds": 27.137,
+  "receipt_path": "/Users/agenticmac/projects/_wt-slc-lead-growth-20260908/qa/receipts/slc-attribution-production-20260908.json"
+}

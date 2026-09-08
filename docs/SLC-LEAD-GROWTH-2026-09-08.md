@@ -3,6 +3,21 @@
 Observed September 8, 2026. Scope: Utah / Landon only. These are dated findings,
 not a claim that seven fixes shipped or that ranking gains have occurred.
 
+Release receipt: PR286 merged at21:22:35 UTC as
+`e5c7d5bb1c86233ea66c7d9815fec671e6f31625`. Source60, immutable preview160,
+and canonical production170 rendered checks passed without failures. Production
+`track-clicks.js` SHA256 `dea48b7b079fd97a78afb6a73ad4bc7491e30fab3b662c084a2b95323c0a6212`
+matches reviewed source; normal JS revalidation remains enabled. Main blocking
+checks pass. Fresh rank run34280344748 is separate from rollout proof.
+The dated findings below preserve the investigation state; the two implemented
+repairs are now released, not the owner-gated remaining work. Real-device,
+inbound-call/MMS and booked-job outcome tests were not performed.
+
+Shared context: hub PR81 merged as28f0f6de157fdf9a6d7aec6fe8c2c38276dab110.
+The runtime sync attempt correctly refused the now-stale pinned hub snapshot;
+a reviewed context rebind remains necessary before claiming these new facts
+appear in the running Command Center. No binding override was performed.
+
 ## Outcome and baseline
 
 The primary demonstrated acquisition gap is low commercial-search visibility.
