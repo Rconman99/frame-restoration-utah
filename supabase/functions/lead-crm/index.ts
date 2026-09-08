@@ -53,7 +53,10 @@ import {
   issueDashboardSession,
   verifyDashboardSession,
 } from "../_shared/dashboard-session.ts";
+import { completeReset, readRecoveryBody, recoveryConfigured, requestReset, sendResetEmail, sha256Hex, validNewPassword } from "./recovery.ts";
 import { readBoundedJsonObject } from "../_shared/bounded-json.ts";
+
+declare const EdgeRuntime: { waitUntil(task: Promise<unknown>): void };
 
 const SUPABASE_URL = "https://hdcflshhomzildwqlmwh.supabase.co";
 const SUPABASE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
@@ -78,6 +81,8 @@ const ALLOWED_STATUS = new Set([
 ]);
 const ALLOWED_GROWTH_STATES = new Set(["open", "done", "snoozed"]);
 const KNOWN_ACTIONS = new Set([
+  "request_password_reset",
+  "reset_password",
   "login",
   "session",
   "list",
@@ -289,6 +294,26 @@ Deno.serve(async (req: Request) => {
 
   const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
+  if (action === "request_password_reset" || action === "reset_password") {
+    if (req.method !== "POST") return jsonResp(req, { error: "method_not_allowed" }, 405);
+    if (!recoveryConfigured(action, (key) => Deno.env.get(key))) return jsonResp(req, { error: "recovery_unavailable" }, 503);
+    const body = await readRecoveryBody(req);
+    if (!body) return jsonResp(req, { error: "invalid_request" }, 400);
+    const identity = await dashboardThrottleKey(SESSION_SECRET, req.headers);
+    const deps = {
+      rpc: (name: string, args: Record<string, unknown>) => supabase.rpc(name, args),
+      log: (event: string) => console.error(event),
+      background: (task: Promise<void>) => EdgeRuntime.waitUntil(task),
+      send: (email: string, token: string, idempotencyKey: string) => sendResetEmail(
+        Deno.env.get("RESEND_API_KEY") ?? "", Deno.env.get("CRM_RECOVERY_FROM") ?? "", email, token, idempotencyKey),
+    };
+    const clientHash = await sha256Hex(identity.key);
+    const result = action === "request_password_reset"
+      ? await requestReset(body, clientHash, deps)
+      : await completeReset(body, clientHash, deps, CREDENTIAL_PEPPER);
+    return jsonResp(req, result.body, result.status);
+  }
+
   let accessRow: {
     id: string;
     name: string;
@@ -357,8 +382,8 @@ Deno.serve(async (req: Request) => {
     }
     const body = bodyResult.value;
     const routingKey = cleanText(body.routing_key, 240);
-    const pin = cleanText(body.pin, 32);
-    if (routingKey !== API_KEY || !legacyPinCandidate(pin)) {
+    const pin = typeof body.pin === "string" ? body.pin : "";
+    if (routingKey !== API_KEY || (!legacyPinCandidate(pin) && !validNewPassword(pin))) {
       return jsonResp(req, { error: "invalid_credentials" }, 403);
     }
 
