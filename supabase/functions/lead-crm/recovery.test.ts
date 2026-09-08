@@ -30,7 +30,7 @@ Deno.test("delivered links remain usable during mail configuration outages", () 
 Deno.test("recovery link is pinned to the canonical portal and keeps token out of query string", () => {
   const url = new URL(resetLink(token));
   check(
-    url.origin === "https://www.framerestorationutah.com" && url.pathname === "/seo-report.html",
+    url.origin === "https://www.framerestorationutah.com" && url.pathname === "/dashboard",
     "untrusted destination",
   );
   check(url.search === "" && url.hash === `#reset=${token}`, "token is in server URL");
