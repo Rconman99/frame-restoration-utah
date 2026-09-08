@@ -13,7 +13,7 @@ test('older recovery cannot replace a newer latest or same-day report; equal rep
   const candidate = { report: { date: '2026-09-08', observedAt: '2026-09-08T21:00:00Z' }, outputDir: directory };
   try {
     await assertNoNewerRankReports([candidate]);
-    for (const name of ['latest.json', '2026-09-08.json']) {
+    for (const name of ['latest.json', '2026-09-08.json', '2026-09-09.json']) {
       const target = path.join(directory, name);
       await fs.writeFile(target, JSON.stringify({ observedAt: '2026-09-08T22:00:00Z' }));
       await assert.rejects(assertNoNewerRankReports([candidate]), /newer/);

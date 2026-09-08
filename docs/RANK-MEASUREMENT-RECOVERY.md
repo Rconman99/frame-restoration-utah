@@ -24,7 +24,8 @@ Do not label that artifact a fresh complete baseline.
   24 hours. Reports retain the collection start timestamp, not the recovery time.
 - Do not change published `latest.json` unless the full matrix is collected.
 - Preflight every destination under a shared promotion lock; an older recovery
-  cannot replace newer latest or same-day observations.
+  cannot replace newer latest or dated observations, including a dated file
+  left behind by a promotion that crashed before updating latest.
 - Both rank workflows archive checkpoints even on failure. Recovery files are
   git-ignored; credentials are not stored in them.
 - A dedicated `*-recovery-*` artifact requires the actual checkpoint file;

@@ -29,7 +29,13 @@ export async function assertNoNewerRankReports(reports) {
   for (const { report, outputDir } of reports) {
     const observedAt = Date.parse(report.observedAt);
     if (!Number.isFinite(observedAt)) throw new Error('Invalid candidate observation timestamp');
-    for (const name of ['latest.json', `${report.date}.json`]) {
+    let files;
+    try { files = await fs.readdir(outputDir); }
+    catch (error) { if (error.code === 'ENOENT') files = []; else throw error; }
+    // A previous promotion may have written its dated file before crashing
+    // while replacing latest. Every dated observation is a freshness watermark.
+    const destinations = new Set(['latest.json', `${report.date}.json`, ...files.filter((name) => /^\d{4}-\d{2}-\d{2}\.json$/.test(name))]);
+    for (const name of destinations) {
       let existing;
       try { existing = JSON.parse(await fs.readFile(path.join(outputDir, name), 'utf8')); }
       catch (error) { if (error.code === 'ENOENT') continue; throw error; }
