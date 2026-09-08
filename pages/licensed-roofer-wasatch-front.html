@@ -130,8 +130,11 @@
 .hero-actions .primary { background:var(--gold); color:var(--navy-deep); }
 .hero-actions .secondary { border:1px solid rgba(255,255,255,.55); color:#fff; }
 .hero-visual { position:relative; }
-.hero-visual img { display:block; width:100%; aspect-ratio:16/10; object-fit:cover; object-position:center; border-radius:6px; box-shadow:18px 18px 0 var(--gold); }
-.license-badge { position:absolute; left:-18px; bottom:24px; background:#fff; color:var(--navy-deep); padding:16px 18px; border-radius:4px; box-shadow:0 10px 30px rgba(0,0,0,.25); font-size:.85rem; line-height:1.35; z-index:2; }
+.hero-proof { min-height:300px; background:linear-gradient(145deg,#0b4060,#082d44); border-radius:6px; box-shadow:18px 18px 0 var(--gold); padding:34px; display:flex; flex-direction:column; justify-content:center; }
+.hero-proof img { width:min(100%,290px); height:auto; margin:0 auto 28px; }
+.hero-proof p { color:#fff; text-align:center; margin:0; line-height:1.6; font-size:.98rem; }
+.license-badge { position:absolute; left:-18px; bottom:24px; background:#fff; color:#082d44 !important; padding:16px 18px; border-radius:4px; box-shadow:0 10px 30px rgba(0,0,0,.25); font-size:.85rem; line-height:1.35; z-index:2; }
+.license-badge strong, .license-badge br { color:#082d44 !important; }
 .license-badge strong { display:block; font-family:'Archivo Black',sans-serif; font-size:1.1rem; }
 .trust-strip { background:#f3f6f8; padding:22px 5%; }
 .trust-grid { max-width:1100px; margin:0 auto; display:grid; grid-template-columns:repeat(4,1fr); gap:18px; }
@@ -162,7 +165,7 @@
   .about-hero { padding: 96px 5% 58px; }
   .about-hero .hero-inner { grid-template-columns:1fr; gap:28px; }
   .hero-visual { max-width:360px; margin:0 auto; }
-  .hero-visual img { box-shadow:10px 10px 0 var(--gold); aspect-ratio:16/10; }
+  .hero-proof { box-shadow:10px 10px 0 var(--gold); min-height:240px; padding:24px; }
   .license-badge { left:10px; bottom:14px; }
   .trust-grid { grid-template-columns:repeat(2,1fr); gap:20px 14px; }
 }
@@ -200,7 +203,7 @@
     <div class="hero-actions"><a class="primary" href="https://calendar.app.google/cR4bBSWfb9TQ28UF8" target="_blank" rel="noopener">Book a free inspection</a><a class="secondary" href="tel:+14352928802">Call 435-292-8802</a></div>
   </div>
   <div class="hero-visual">
-    <img src="/images/og-image.webp" alt="Frame Restoration Utah roofing and construction" width="1200" height="750" />
+    <div class="hero-proof"><img src="/images/wordmark-rc-yellow-white.webp" alt="Frame Restoration Utah" width="580" height="160" /><p>Roofing across the Wasatch Front<br />Heber City headquarters · Utah DOPL #14256097-5501</p></div>
     <div class="license-badge"><strong>DOPL #14256097-5501</strong>Licensed Utah contractor<br />Heber City headquarters</div>
   </div>
 </section>
