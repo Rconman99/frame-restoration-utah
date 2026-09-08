@@ -1,6 +1,6 @@
 # Owner password recovery
 
-The three Utah sign-in pages (`/leads`, `/seo-report.html`, and `/dashboard/`)
+The Utah sign-in pages (`/leads` and `/dashboard`, including legacy report aliases)
 share a Forgot password form. An owner supplies the full account name and their
 provisioned recovery email. The response is identical whether or not the
 account matches. Only the database's recipient can receive a link.
@@ -63,11 +63,13 @@ pixels, including landscape, expired/malformed links, password confirmation,
 URL/storage containment, delayed login/session responses, and keyboard focus.
 
 Shared surface contracts are `qa/surface-contract.owner-recovery.source.json`
-and `qa/surface-contract.owner-recovery-report.source.json`; adapt only the
-serving origin for immutable previews. The legacy report intentionally has no
-canonical and uses the absent-canonical source/preview contract. Production
-must additionally verify its exact URL, noindex/no-canonical boundary, marker,
-and recovery browser flow. Do not add a public canonical to satisfy a gate.
+and `qa/surface-contract.owner-recovery-report.source.json`. For deployed
+previews and production use the clean paths `/leads` and `/dashboard` with their
+matching canonical paths and zero redirects. Separately check the legacy
+`/seo-report.html` alias with a two-redirect budget and `/dashboard` canonical;
+Vercel already redirects that alias to the dashboard. Only the local legacy
+source file uses the absent-canonical contract. Reset emails point directly to
+`/dashboard#reset=…` and need no redirect. Preserve noindex on all owner routes.
 
 Real-device iOS/Android, screen-reader behavior, and owner receipt/use remain
 separate from emulated Chromium and mocked API tests.

@@ -27,7 +27,7 @@ export function validNewPassword(value: unknown): value is string {
 
 export function resetLink(token: string): string {
   if (!RESET_TOKEN_PATTERN.test(token)) throw new Error("invalid_reset_token");
-  return `${RESET_ORIGIN}/seo-report.html#reset=${token}`;
+  return `${RESET_ORIGIN}/dashboard#reset=${token}`;
 }
 
 export async function readRecoveryBody(req: Request): Promise<Record<string, unknown> | null> {
