@@ -9,6 +9,11 @@ and canonical production170 rendered checks passed without failures. Production
 `track-clicks.js` SHA256 `dea48b7b079fd97a78afb6a73ad4bc7491e30fab3b662c084a2b95323c0a6212`
 matches reviewed source; normal JS revalidation remains enabled. Main blocking
 checks pass. Fresh rank run34280344748 is separate from rollout proof.
+That run FAILED at21:27 UTC: provider40106 partial results,22/24 queries collected.
+Artifact10077465254 was saved, but no fresh complete panel was promoted; older
+checked-out observations in that archive are not a new baseline. No second paid
+batch was dispatched. The original intervention-sync regression remains repaired
+and tested; this is a separate upstream provider evidence failure.
 The dated findings below preserve the investigation state; the two implemented
 repairs are now released, not the owner-gated remaining work. Real-device,
 inbound-call/MMS and booked-job outcome tests were not performed.
