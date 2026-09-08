@@ -6,9 +6,12 @@ cleanup() { docker rm -f "$container" >/dev/null 2>&1 || true; }
 trap cleanup EXIT
 docker run --rm -d --name "$container" -e POSTGRES_PASSWORD=synthetic-test-only postgres:16-alpine >/dev/null
 for attempt in $(seq 1 40); do
- if docker exec "$container" pg_isready -U postgres >/dev/null 2>&1; then break; fi
+ # PostgreSQL's initialization server listens only on its Unix socket. Wait
+ # for the final TCP listener so setup cannot race the initialization restart.
+ if docker exec "$container" pg_isready -h 127.0.0.1 -U postgres >/dev/null 2>&1; then break; fi
  sleep 0.25
 done
+docker exec "$container" pg_isready -h 127.0.0.1 -U postgres >/dev/null
 docker exec -i "$container" psql -U postgres -v ON_ERROR_STOP=1 -q <<'SQL'
 create role anon; create role authenticated; create role service_role;
 create schema extensions; create extension pgcrypto with schema extensions;

@@ -1,7 +1,7 @@
 """Rendered recovery regression check. API calls are intercepted; no email or live writes.
 Run against source or an immutable preview with --base-url and --receipt-dir.
 """
-import argparse, hashlib, json
+import argparse, hashlib, json, os
 from datetime import datetime, timezone
 from pathlib import Path
 from urllib.parse import urlparse, parse_qs
@@ -39,6 +39,11 @@ try:
            return route.fulfill(status=status,json=data,headers={'access-control-allow-origin':'*'})
          if req.method!='GET' or u.hostname not in (urlparse(args.base_url).hostname,'cdnjs.cloudflare.com'):
            return route.abort()
+         if u.scheme+'://'+u.netloc == args.base_url.rstrip('/'):
+           headers={**req.headers,'x-vercel-skip-toolbar':'1'}
+           bypass=os.environ.get('SURFACE_GATE_PROTECTION_BYPASS_SECRET')
+           if bypass: headers['x-vercel-protection-bypass']=bypass
+           return route.continue_(headers=headers)
          return route.continue_()
        context.route('**/*',route_request)
        page=context.new_page();page.on('pageerror',lambda e:errors.append(str(e)))
