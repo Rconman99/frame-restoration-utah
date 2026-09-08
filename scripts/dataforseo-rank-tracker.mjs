@@ -3,16 +3,12 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { assertNoNewerRankReports, collectRankTasks, retryableRankTask, withRankCheckpointLock } from './lib/rank-task-recovery.mjs';
 
 const SCRIPT_DIR = path.dirname(fileURLToPath(import.meta.url));
 const REPO_ROOT = path.resolve(SCRIPT_DIR, '..');
 const DEFAULT_CONFIG_PATH = path.join(REPO_ROOT, 'data', 'rank-tracker', 'config.json');
 const API_ROOT = 'https://api.dataforseo.com/v3';
-const TASK_POST = '/serp/google/organic/task_post';
-const TASKS_READY = '/serp/google/organic/tasks_ready';
-const TASK_GET = '/serp/google/organic/task_get/advanced';
-const POLL_INTERVAL_MS = 15_000;
-const POLL_TIMEOUT_MS = 24 * 60_000;
 // DataForSEO priority 2 = high. Without it every task sits in the default queue,
 // which is slow enough that the complete panel does not land inside the poll
 // window: the first scheduled run (Mon 2026-08-17 09:00 UTC) collected 19 of 24
@@ -357,7 +353,8 @@ function credentials() {
 
 async function providerCall(endpoint, auth, options = {}) {
   let lastError;
-  for (let attempt = 1; attempt <= 3; attempt += 1) {
+  const attempts = options.method === 'POST' ? 1 : 3;
+  for (let attempt = 1; attempt <= attempts; attempt += 1) {
     try {
       const response = await fetch(`${API_ROOT}${endpoint}`, {
         method: options.method || 'GET',
@@ -377,99 +374,14 @@ async function providerCall(endpoint, auth, options = {}) {
       return json;
     } catch (error) {
       lastError = error;
-      if (attempt < 3) await new Promise((resolve) => setTimeout(resolve, attempt * 2_000));
+      if (attempt < attempts) await new Promise((resolve) => setTimeout(resolve, attempt * 2_000));
     }
   }
-  throw new Error(`DataForSEO ${endpoint} failed after 3 attempts: ${lastError.message}`);
+  throw new Error(`DataForSEO ${endpoint} failed after ${attempts} attempt(s): ${lastError.message}`);
 }
-
-// Observed in production 2026-08-17: a single task came back "40101 Internal SE
-// Server Error" while the other 23 succeeded, and the all-or-nothing throw
-// discarded the entire paid matrix. That is a provider-side hiccup on one
-// keyword, not a reason to lose the week.
-//
-// Matched on message text rather than an invented status-code list -- only the
-// 40101 shape has actually been observed, and guessing at other numeric codes
-// would risk silently retrying real, permanent failures.
-const RETRYABLE_TASK_ERROR_PATTERN = /internal se server error|internal error|timeout|temporar/iu;
-const MAX_TASK_REPOSTS = 2;
 
 export function isRetryableTaskError(statusMessage) {
-  return RETRYABLE_TASK_ERROR_PATTERN.test(String(statusMessage || ''));
-}
-
-async function repostTask(taskPayload, auth) {
-  if (!taskPayload) throw new Error('Cannot re-post an unknown task');
-  const posted = await providerCall(TASK_POST, auth, { method: 'POST', body: [taskPayload] });
-  const task = (posted.tasks || [])[0];
-  if (!task || ![20000, 20100].includes(task.status_code)) {
-    throw new Error(`Re-post rejected for ${taskPayload.tag}: ${task?.status_code} ${task?.status_message}`);
-  }
-  if (!task.id) throw new Error(`Re-post for ${taskPayload.tag} returned no task id`);
-  return task;
-}
-
-async function fetchTaskQueue(configs) {
-  const tasks = buildTaskMatrix(configs);
-  const auth = credentials();
-  const posted = await providerCall(TASK_POST, auth, { method: 'POST', body: tasks });
-  const taskIds = new Map();
-  for (const task of posted.tasks || []) {
-    if (![20000, 20100].includes(task.status_code)) {
-      throw new Error(`Provider rejected ${task.data?.tag || task.data?.keyword || 'task'}: ${task.status_code} ${task.status_message}`);
-    }
-    if (!task.id || !task.data?.tag) throw new Error('Provider did not return a task id and tag');
-    taskIds.set(task.id, task.data.tag);
-  }
-  if (taskIds.size !== tasks.length) {
-    throw new Error(`Provider accepted ${taskIds.size}/${tasks.length} tasks`);
-  }
-
-  const tagToTask = new Map(tasks.map((task) => [task.tag, task]));
-  const reposts = new Map();
-  const pending = new Set(taskIds.keys());
-  const rawResults = new Map();
-  const deadline = Date.now() + POLL_TIMEOUT_MS;
-  console.log(`Posted ${pending.size} task(s); waiting for the complete panel.`);
-
-  while (pending.size && Date.now() < deadline) {
-    await new Promise((resolve) => setTimeout(resolve, POLL_INTERVAL_MS));
-    const ready = await providerCall(TASKS_READY, auth);
-    const readyIds = (ready.tasks?.[0]?.result || [])
-      .map((item) => item.id)
-      .filter((id) => pending.has(id));
-
-    for (const taskId of readyIds) {
-      const response = await providerCall(`${TASK_GET}/${taskId}`, auth);
-      const task = response.tasks?.[0];
-      if (task?.status_code && task.status_code !== 20000) {
-        const tag = taskIds.get(taskId);
-        const used = reposts.get(tag) || 0;
-        if (isRetryableTaskError(task.status_message) && used < MAX_TASK_REPOSTS) {
-          // One provider-side hiccup on a single keyword must not discard the
-          // other 23 completed results. Re-post just that keyword and keep
-          // polling; the overall deadline still governs.
-          reposts.set(tag, used + 1);
-          pending.delete(taskId);
-          taskIds.delete(taskId);
-          const replacement = await repostTask(tagToTask.get(tag), auth);
-          taskIds.set(replacement.id, tag);
-          pending.add(replacement.id);
-          console.log(`Task ${tag} failed with ${task.status_code} ${task.status_message}; re-posted (${used + 1}/${MAX_TASK_REPOSTS}).`);
-          continue;
-        }
-        throw new Error(`Provider task ${taskId} failed: ${task.status_code} ${task.status_message}`);
-      }
-      const result = task?.result?.[0];
-      if (!result || !Array.isArray(result.items)) throw new Error(`Provider task ${taskId} returned no complete SERP result`);
-      rawResults.set(taskIds.get(taskId), result);
-      pending.delete(taskId);
-    }
-    console.log(`Collected ${rawResults.size}/${taskIds.size}; ${pending.size} pending.`);
-  }
-
-  if (pending.size) throw new Error(`Timed out with ${pending.size} task(s) pending; no report was written`);
-  return rawResults;
+  return retryableRankTask(null, statusMessage);
 }
 
 function repoPath(relativeOrAbsolute) {
@@ -510,6 +422,9 @@ async function main(args = process.argv.slice(2)) {
   const dryRun = args.includes('--dry-run');
   const registryArg = argValue(args, '--registry');
   const configArg = argValue(args, '--config');
+  const resumeArg = argValue(args, '--resume');
+  const checkpointArg = argValue(args, '--checkpoint');
+  if (resumeArg && checkpointArg) throw new Error('Use --resume or --checkpoint, not both');
   if (registryArg && configArg) throw new Error('Use either --registry or --config, not both');
 
   let entries;
@@ -533,19 +448,39 @@ async function main(args = process.argv.slice(2)) {
     return;
   }
 
-  // Submit every city in one provider batch, then collect every result before
-  // writing any file. A failed or partial matrix leaves the previous complete
-  // weekly matrix untouched.
-  console.log(`Measuring ${entries.length} panel(s) and ${queryCount} queries in one task batch.`);
-  const rawMatrix = await fetchTaskQueue(entries.map((entry) => entry.config));
+  // Checkpoints survive failures; only complete matrices replace weekly reports.
+  console.log(`${resumeArg ? 'Recovering' : 'Measuring'} ${entries.length} panel(s) and ${queryCount} queries.`);
+  const checkpointPath = repoPath(resumeArg || checkpointArg || 'data/rank-tracker/recovery/checkpoint.json');
+  await fs.mkdir(path.dirname(checkpointPath), { recursive: true });
+  await withRankCheckpointLock(checkpointPath, async () => {
+  let checkpoint = null;
+  if (resumeArg) checkpoint = JSON.parse(await fs.readFile(checkpointPath, 'utf8'));
+  else {
+    try {
+      await fs.access(checkpointPath);
+      throw new Error('Checkpoint already exists. Use --resume or a new --checkpoint path; do not buy a duplicate batch.');
+    } catch (error) { if (error.code !== 'ENOENT') throw error; }
+  }
+  const auth = credentials();
+  const { rawResults: rawMatrix, observedAt } = await collectRankTasks(buildTaskMatrix(entries.map((entry) => entry.config)), {
+    checkpoint,
+    call: (endpoint, options) => providerCall(endpoint, auth, options),
+    save: (state) => atomicWrite(checkpointPath, `${JSON.stringify(state)}\n`),
+  });
   const reports = entries.map((entry) => ({
-    report: buildReport(entry.config, rawMatrix),
+    report: buildReport(entry.config, rawMatrix, observedAt),
     outputDir: entry.outputDir,
   }));
-  for (const { report, outputDir } of reports) await persistReport(report, outputDir);
+  const promotionLock = path.join(REPO_ROOT, 'data/rank-tracker/recovery/report-promotion');
+  await fs.mkdir(path.dirname(promotionLock), { recursive: true });
+  await withRankCheckpointLock(promotionLock, async () => {
+    await assertNoNewerRankReports(reports);
+    for (const { report, outputDir } of reports) await persistReport(report, outputDir);
+  });
   for (const { report } of reports) {
     console.log(`Wrote complete ${report.date} ${report.panelId}: organic ${report.summary.organicRanked}/${report.summary.queries}, exact-CID map pack ${report.summary.mapPackMatched}/${report.summary.queries}, AIO citations ${report.summary.aiOverviewCitations}/${report.summary.queries}.`);
   }
+  });
 }
 
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
