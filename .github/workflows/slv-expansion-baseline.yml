@@ -15,6 +15,12 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
+      - name: Refuse paid batch replay on workflow rerun
+        if: github.run_attempt != 1
+        run: |
+          echo 'Recover the previous checkpoint using docs/RANK-MEASUREMENT-RECOVERY.md. Workflow reruns must not buy the matrix again.'
+          exit 1
+
       - name: Check out the repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
 
@@ -24,7 +30,9 @@ jobs:
           node-version: '24'
 
       - name: Test tracker parsing and fail-closed behavior
-        run: node scripts/test-dataforseo-rank-tracker.mjs
+        run: |
+          node scripts/test-dataforseo-rank-tracker.mjs
+          node --test scripts/test-rank-task-recovery.mjs
 
       - name: Validate the 12-city expansion contract without provider spend
         run: npm run audit:slv-expansion-panels
@@ -36,6 +44,7 @@ jobs:
         run: node scripts/dataforseo-rank-tracker.mjs --registry data/rank-tracker/expansion-panels.json --dry-run
 
       - name: Measure the complete 12-city baseline atomically
+        id: collect
         env:
           DATAFORSEO_LOGIN: ${{ secrets.DATAFORSEO_LOGIN }}
           DATAFORSEO_PASSWORD: ${{ secrets.DATAFORSEO_PASSWORD }}
@@ -77,11 +86,30 @@ jobs:
       - name: Add measurement summary
         if: always()
         run: |
+          echo 'Collection outcome: ${{ steps.collect.outcome }}. Files below may be checked-in historical panels; their observation dates, not this run date, determine freshness.' >> "$GITHUB_STEP_SUMMARY"
           while IFS= read -r report; do
             cat "$report" >> "$GITHUB_STEP_SUMMARY"
             echo >> "$GITHUB_STEP_SUMMARY"
           done < <(find data/rank-tracker/expansion -name latest.md -type f | sort)
           jq -r '"### Salt Lake Valley weekly decisions\n\n- Ranking lanes held for evidence: \(.summary.rankingHold)\n- Protected organic #1 queries: \(.summary.protectedOrganicNumberOneQueries)\n- Sustained cities: \(.summary.citiesAtSustainedGoal)"' data/rank-tracker/SLV-WEEKLY-DECISIONS-2026-08-12.json >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Preserve provider recovery checkpoint and observations
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: slv-expansion-observations-${{ github.run_id }}-${{ github.run_attempt }}
+          path: data/rank-tracker/
+          retention-days: 30
+          if-no-files-found: error
+
+      - name: Preserve actual current-run recovery checkpoint
+        if: always() && steps.collect.outcome != 'skipped' && steps.collect.outcome != ''
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: slv-expansion-recovery-${{ github.run_id }}-${{ github.run_attempt }}
+          path: data/rank-tracker/recovery/checkpoint.json
+          retention-days: 30
+          if-no-files-found: error
 
       - name: Commit the complete dated expansion baseline
         run: |

@@ -5,11 +5,40 @@ import {
   assertScoreVector,
   bestMeasuredRank,
   gscStateWithStaleSplitUrlFallback,
+  guardSelectedOrganicUrls,
   interventionLane,
   measuredMeanRank,
   scoreVector,
   splitUrlDiagnosisFreshness,
 } from "./slv-intervention-queue.mjs";
+
+const gatedAction = {
+  decision: "Request input", action: "Improve supported service intent",
+  gate: "Owner approval required", ownerApprovalPhrase: "Approve the exact scope",
+  acceptanceCheck: "Protect existing footholds",
+};
+
+test("weekly results survive alternate selected URLs, but optimization is held", () => {
+  for (const url of ["https://www.framerestorationutah.com/", "https://other.example/locations/salt-lake-city", "malformed", "javascript:alert(1)"]) {
+    const result = guardSelectedOrganicUrls({ page: "locations/salt-lake-city.html", urls: [null, url], action: gatedAction });
+    assert.equal(result.intended, false);
+    assert.equal(result.action.decision, "Monitor");
+    assert.match(result.action.action, /^Diagnose unexpected organic URL selection/);
+    assert.match(result.action.gate, /Owner approval required/);
+    assert.equal(result.action.ownerApprovalPhrase, gatedAction.ownerApprovalPhrase);
+  }
+  assert.equal(gatedAction.decision, "Request input", "must not mutate the original gate");
+});
+
+test("canonical, trailing-slash and HTML forms preserve a matching selection; no rank stays unmeasured", () => {
+  for (const suffix of ["", "/", ".html", "?utm_source=google"]) {
+    const result = guardSelectedOrganicUrls({ page: "locations/salt-lake-city.html", urls: [null, "https://www.framerestorationutah.com/locations/salt-lake-city" + suffix], action: gatedAction });
+    assert.equal(result.intended, true);
+    assert.equal(result.action, gatedAction);
+  }
+  assert.equal(guardSelectedOrganicUrls({ page: "locations/salt-lake-city.html", urls: [null, null], action: gatedAction }).intended, true);
+  assert.throws(() => guardSelectedOrganicUrls({ page: "locations/salt-lake-city.html", urls: null, action: gatedAction }));
+});
 
 test("a changed GSC snapshot emits a named warning and expires only the split-URL suppression", () => {
   const fresh = splitUrlDiagnosisFreshness({

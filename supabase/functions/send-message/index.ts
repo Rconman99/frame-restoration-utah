@@ -22,6 +22,7 @@
 
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { createClient } from "jsr:@supabase/supabase-js@2";
+import { applySender } from "../_shared/twilio-sender.ts";
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
@@ -67,8 +68,9 @@ async function sendTwilio(
   const params = new URLSearchParams();
   params.set("To", to);
   params.set("Body", body);
-  if (msgService) params.set("MessagingServiceSid", msgService);
-  else params.set("From", from);
+  // Sender is pinned centrally — see _shared/twilio-sender.ts. Never set From
+  // in an else branch: the Messaging Service pool would pick the sender.
+  applySender(params, { from, msgService });
 
   const resp = await fetch(
     `https://api.twilio.com/2010-04-01/Accounts/${sid}/Messages.json`,

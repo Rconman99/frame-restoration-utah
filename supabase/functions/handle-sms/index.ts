@@ -27,6 +27,7 @@ import {
   isBlockCommandAttempt,
   parseBlockCommand,
 } from "../_shared/missed-call-alert.ts";
+import { collectInboundMedia, createMediaProxyUrl } from "../_shared/inbound-media.ts";
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
@@ -69,6 +70,7 @@ async function findRecentLead(phone: string): Promise<number | null> {
 async function createInboundSmsLead(
   fromNumber: string,
   body: string,
+  mediaProxyUrls: string[] = [],
 ): Promise<number | null> {
   if (!fromNumber) return null;
   const preview = (body || "").slice(0, 500);
@@ -84,7 +86,8 @@ async function createInboundSmsLead(
       tier_classifier: "auto-inbound-sms",
       tier_reason: "Auto-created by handle-sms on first SMS from this number",
       notes: "Auto-created from inbound SMS. Reply via /leads or text 'TO:" +
-        lastFour(fromNumber) + " message' from Landon's phone.",
+        lastFour(fromNumber) + " message' from Landon's phone." +
+        (mediaProxyUrls.length ? "\nAttachments:\n" + mediaProxyUrls.join("\n") : ""),
     })
     .select("id")
     .single();
@@ -172,6 +175,12 @@ function escapeXml(str: string): string {
   ).replace(/"/g, "&quot;").replace(/'/g, "&apos;");
 }
 
+function forwardInboundTwiml(message: string, mediaProxyUrls: string[] = []) {
+  const mediaXml = mediaProxyUrls.map((url) => "<Media>" + escapeXml(url) + "</Media>").join("");
+  const twiml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><Response><Message to=\"" + LANDON_PHONE + "\">" + escapeXml(message) + mediaXml + "</Message></Response>";
+  return new Response(twiml, { headers: { "Content-Type": "text/xml" } });
+}
+
 Deno.serve(async (req: Request) => {
   try {
     const formData = await req.formData();
@@ -186,6 +195,7 @@ Deno.serve(async (req: Request) => {
     formData.forEach((v, k) => {
       params[k] = v.toString();
     });
+    const inboundMedia = collectInboundMedia(params);
 
     // Load Twilio creds from app_config (auth token + business number) up front;
     // the operator path below reuses these instead of re-loading.
@@ -204,6 +214,20 @@ Deno.serve(async (req: Request) => {
     // (skip if the TWILIO_PHONE_NUMBER key is absent, to avoid breaking the line).
     if (creds.phone && params.To !== creds.phone) {
       return new Response("Forbidden", { status: 403 });
+    }
+
+    let mediaProxyUrls: string[] = [];
+    if (inboundMedia.length && SUPABASE_SERVICE_ROLE_KEY) {
+      try {
+        mediaProxyUrls = await Promise.all(inboundMedia.map((media) =>
+          createMediaProxyUrl(
+            SUPABASE_URL + "/functions/v1/inbound-media",
+            media,
+            SUPABASE_SERVICE_ROLE_KEY,
+          )));
+      } catch (error) {
+        console.error("[handle-sms] media proxy signing failed:", error);
+      }
     }
 
     const isFromLandon = isOperator(from);
@@ -472,15 +496,21 @@ Deno.serve(async (req: Request) => {
     // Find or create a lead for this customer phone (new in v5)
     let leadId: number | null = await findRecentLead(from);
     if (!leadId) {
-      leadId = await createInboundSmsLead(from, body);
+      leadId = await createInboundSmsLead(from, body, mediaProxyUrls);
     }
 
+    const attachmentNotes = mediaProxyUrls.length
+      ? "attachments=" + mediaProxyUrls.length + "\n" + mediaProxyUrls.join("\n")
+      : inboundMedia.length
+      ? "attachments_received=" + inboundMedia.length + "; forwarding unavailable"
+      : "";
     await supabase.from("sms_logs").insert({
       message_sid: messageSid,
       direction: "inbound",
       from_number: from,
       to_number: to,
       body: body,
+      notes: attachmentNotes,
       lead_id: leadId,
     });
 
@@ -502,6 +532,12 @@ Deno.serve(async (req: Request) => {
         }),
       });
     } catch (_) {}
+    const attachmentLabel = mediaProxyUrls.length
+      ? "[" + mediaProxyUrls.length + " photo attachment" + (mediaProxyUrls.length === 1 ? "" : "s") + " included]"
+      : inboundMedia.length
+      ? "[" + inboundMedia.length + " attachment" + (inboundMedia.length === 1 ? "" : "s") + " received; forwarding unavailable]"
+      : "";
+    return forwardInboundTwiml("[From: " + from + "]\n" + body + (attachmentLabel ? "\n" + attachmentLabel : ""), mediaProxyUrls);
 
     const forwardMsg = `[From: ${from}]\n${body}`;
     const twiml =

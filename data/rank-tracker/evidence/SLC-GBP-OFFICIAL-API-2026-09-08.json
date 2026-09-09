@@ -1,0 +1,59 @@
+{
+  "schemaVersion": 1,
+  "source": "Google Business Profile official authenticated read-only APIs",
+  "observedAt": "2026-09-08T23:35:00Z",
+  "timestampPrecision": "minute",
+  "profile": {
+    "locationResource": "locations/9007705197244307984",
+    "cid": "5689850818145735734",
+    "cidVerifiedVia": "Business Information metadata.mapsUri",
+    "title": "Frame Restoration Utah LLC.",
+    "primaryPhone": "435-292-8802",
+    "primaryCategory": "Roofing contractor",
+    "businessType": "CUSTOMER_LOCATION_ONLY",
+    "websiteUri": "https://www.framerestorationutah.com/salt-lake-city",
+    "websiteHttpStatus": 308,
+    "websiteRedirectLocation": "/locations/salt-lake-city",
+    "savedServiceAreas": ["Millcreek, UT, USA"],
+    "saltLakeCityExplicitlySaved": false,
+    "configuredServiceTypeIds": [
+      "job_type_id:roof_inspection",
+      "job_type_id:roof_installation",
+      "job_type_id:roof_repair"
+    ],
+    "regularHoursPeriodCount": 6
+  },
+  "performance": {
+    "httpStatus": 200,
+    "startDate": "2026-08-11",
+    "endDate": "2026-09-07",
+    "dailyRowsPerMetric": 28,
+    "metrics": {
+      "CALL_CLICKS": 1,
+      "WEBSITE_CLICKS": 8,
+      "BUSINESS_IMPRESSIONS_DESKTOP_MAPS": 10,
+      "BUSINESS_IMPRESSIONS_MOBILE_MAPS": 12,
+      "BUSINESS_IMPRESSIONS_DESKTOP_SEARCH": 61,
+      "BUSINESS_IMPRESSIONS_MOBILE_SEARCH": 40
+    },
+    "interpretation": "Profile interactions and segmented impressions, not deduplicated people, connected calls, qualified leads, booked jobs or revenue. Do not add to website CRM or click counts as unique leads."
+  },
+  "access": {
+    "oauthRefresh": "working_existing_command_center_configuration",
+    "accountDiscoveryHttpStatus": 200,
+    "businessInformationHttpStatus": 200,
+    "performanceHttpStatus": 200,
+    "reviewsApiHttpStatus": 403,
+    "reviewsCount": null,
+    "reviewsRating": null,
+    "correction": "Supersedes the old universal quota-zero/API-unapproved blocker for the endpoints verified here. Reviews remain inaccessible through this API check."
+  },
+  "safety": {
+    "gbpMutationPerformed": false,
+    "ownerAttestationClaimed": false,
+    "credentialsStored": false,
+    "reviewerIdentitiesStored": false,
+    "privateAddressStored": false,
+    "customerDataStored": false
+  }
+}
