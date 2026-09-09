@@ -1,4 +1,9 @@
 .vercel
+
+# Local environment files may contain short-lived credentials; never track them.
+.env*
+!.env.example
+!.env.sample
 images-stock-backup/
 node_modules/
 __pycache__/
@@ -19,3 +24,6 @@ data/weather-event-signals.json
 
 # Owner-view GBP source transcriptions/screenshots are private inputs; commit only the sanitized receipt.
 data/private-owner-evidence/
+
+# Provider recovery checkpoints are CI artifacts, not published rank panels.
+data/rank-tracker/recovery/

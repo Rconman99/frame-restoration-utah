@@ -46,6 +46,7 @@ function renderLlms(registry, claimsById) {
     `- Phone: ${claim("identity.public_phone")}`,
     `- Email: ${claim("identity.public_email")}`,
     `- Address: ${claim("identity.public_address")}`,
+    `- Utah DOPL contractor license: ${claim("identity.dopl_license")} (verify at https://dopl.utah.gov/license-lookup)`,
     "",
     "## Published roofing services",
     ...registry.services.map((service) => `- ${service.name}: ${baseUrl}${service.path}`),
@@ -202,6 +203,7 @@ const requiredClaimIds = [
   "identity.public_phone",
   "identity.public_email",
   "identity.public_address",
+  "identity.dopl_license",
   "operations.summary",
   "operations.insurance_boundary",
 ];

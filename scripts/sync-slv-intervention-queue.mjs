@@ -10,6 +10,7 @@ import {
   assertScoreVector,
   bestMeasuredRank,
   gscStateWithStaleSplitUrlFallback,
+  guardSelectedOrganicUrls,
   interventionLane,
   measuredMeanRank,
   scoreVector,
@@ -203,7 +204,12 @@ const candidates = portfolio.cityGoals.map((goal) => {
     lane,
   });
   assertScoreVector(vector);
-  const action = selectedAction(goal, lane, diagnosis, decision.protectedFootholds, gscUrlDiagnosis);
+  const selectionGuard = guardSelectedOrganicUrls({
+    page: goal.page,
+    urls: goal.current.selectedOrganicUrls,
+    action: selectedAction(goal, lane, diagnosis, decision.protectedFootholds, gscUrlDiagnosis),
+  });
+  const action = selectionGuard.action;
   return {
     interventionPriority: interventionPriorityByCity.get(goal.city),
     city: goal.city,
@@ -226,7 +232,7 @@ const candidates = portfolio.cityGoals.map((goal) => {
       googleAiOverviewsPresent: goal.current.googleAiOverview.present,
       googleAiOverviewOwnedQueries: aioOwned,
       protectedOrganicNumberOneQueries: organicNumberOne,
-      intendedPageSelectedForEveryMeasuredRank: goal.current.selectedOrganicUrls.every((url) => url == null || new URL(url).pathname.replace(/^\//, "").replace(/\/$/, "") === goal.page.replace(/\.html$/, "")),
+      intendedPageSelectedForEveryMeasuredRank: selectionGuard.intended,
       gscState: gscCity.state,
       gscRequestedQueries: gscCity.coverage.requestedQueries,
       gscReturnedQueries: gscCity.coverage.returnedQueries,
@@ -426,7 +432,8 @@ assert.ok(candidates.every((candidate) => candidate.feedback.requiredComparableP
 assert.ok(candidates.every((candidate) => candidate.decision === "Monitor" || candidate.ownerApprovalPhrase));
 assert.ok(candidates.filter((candidate) => pendingServiceArea.has(candidate.city)).every((candidate) => candidate.evidenceFeatures.serviceAreaStatus.startsWith("pending-")));
 assert.ok(candidates.filter((candidate) => candidate.evidenceFeatures.serviceAreaStatus.startsWith("not-saved-")).every((candidate) => candidate.lane === "not-saved-service-area-no-exact-cid-planning"));
-assert.ok(candidates.every((candidate) => candidate.evidenceFeatures.intendedPageSelectedForEveryMeasuredRank));
+assert.ok(candidates.filter((candidate) => !candidate.evidenceFeatures.intendedPageSelectedForEveryMeasuredRank)
+  .every((candidate) => candidate.decision === "Monitor" && candidate.selectedAction.startsWith("Diagnose unexpected organic URL selection")));
 assert.equal(candidates.reduce((sum, candidate) => sum + candidate.evidenceFeatures.protectedRelatedRoutes.length, 0), expansionArchitecture.summary.relatedRoutesProtected);
 assert.ok(candidates.every((candidate) => Object.values(candidate.scoreVector).every((value) => Number.isInteger(value) && value >= 0 && value <= 10)));
 

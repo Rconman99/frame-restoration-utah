@@ -859,7 +859,7 @@ for (const [label, source] of [
   ["working directory", deployWorkflowSource.replace("    runs-on: ubuntu-latest", "    runs-on: ubuntu-latest\n    defaults:\n      run:\n        working-directory: scripts")],
   ["secret set", `${deployWorkflowSource}\n# supabase secrets set CLIENT_IP_PROBE_SECRET=x`],
   ["mutable checkout action", deployWorkflowSource.replace(
-    "actions/checkout@11d5960a326750d5838078e36cf38b85af677262",
+    "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
     "actions/checkout@v4",
   )],
   ["mutable setup-cli action", deployWorkflowSource.replace(
@@ -899,15 +899,15 @@ for (const source of [
   complianceSource.replace("      - '**'\n", ""),
   `${complianceSource}\n# ["supabase","functions","deploy"].join(" ")`,
   complianceSource.replace(
-    "      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262",
-    "      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262\n        with:\n          ref: refs/heads/attacker",
+    "      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+    "      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1\n        with:\n          ref: refs/heads/attacker",
   ),
   `${complianceSource}\nenv:\n  NODE_OPTIONS: --require ./scripts/exit-zero.cjs`,
   `${complianceSource}\nenv:\n  NODE_PATH: ./scripts`,
   `${complianceSource}\ndefaults:\n  run:\n    shell: bash {0} || true`,
   complianceSource.replace("    runs-on: ubuntu-latest", "    runs-on: ubuntu-latest\n    defaults:\n      run:\n        working-directory: scripts"),
   complianceSource.replace(
-    "actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020",
+    "actions/setup-node@820762786026740c76f36085b0efc47a31fe5020",
     "actions/setup-node@v4",
   ),
 ]) {
@@ -1121,7 +1121,7 @@ for (const [label, relative, source] of [
     "deploy workflow mutable action",
     ".github/workflows/deploy-edge-function.yml",
     deployWorkflowSource.replace(
-      "actions/checkout@11d5960a326750d5838078e36cf38b85af677262",
+      "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
       "actions/checkout@v4",
     ),
   ],
@@ -1158,7 +1158,7 @@ for (const [label, relative, source] of [
     "compliance workflow mutable action",
     ".github/workflows/compliance-gate.yml",
     complianceSource.replace(
-      "actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020",
+      "actions/setup-node@820762786026740c76f36085b0efc47a31fe5020",
       "actions/setup-node@v4",
     ),
   ],
@@ -2011,7 +2011,7 @@ assert.equal(
 );
 assert.equal(
   deploySteps[0].uses,
-  "actions/checkout@11d5960a326750d5838078e36cf38b85af677262",
+  "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
 );
 assert(
   deploySteps.some((step) =>

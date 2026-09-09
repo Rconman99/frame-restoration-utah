@@ -53,6 +53,24 @@
       "prohibitedVariants": []
     },
     {
+      "id": "identity.dopl_license",
+      "label": "Utah DOPL contractor license",
+      "value": "14256097-5501",
+      "status": "verified",
+      "verifiedBy": "existing-public-site-and-gbp-description",
+      "verifiedOn": "2026-05-11",
+      "expiresOn": null,
+      "evidence": [
+        {
+          "kind": "local-html",
+          "path": "pages/licensed-roofer-wasatch-front.html"
+        }
+      ],
+      "mirrors": [],
+      "allowedSurfaces": ["llms.txt", "visible-copy", "structured-data", "directory-packet"],
+      "prohibitedVariants": []
+    },
+    {
       "id": "identity.canonical_url",
       "label": "Canonical website",
       "value": "https://www.framerestorationutah.com",
@@ -259,6 +277,11 @@
       "name": "Gutters",
       "path": "/pages/gutters",
       "sourceFile": "pages/gutters.html"
+    },
+    {
+      "name": "Licensed Wasatch Front roofer",
+      "path": "/pages/licensed-roofer-wasatch-front",
+      "sourceFile": "pages/licensed-roofer-wasatch-front.html"
     }
   ],
   "surfacePolicy": {

@@ -1,5 +1,42 @@
 # Activity Log
 
+## 2026-09-05 — AEO Citation Monitor (flat score, improving positions, two instrumentation defects found)
+
+**Routine:** AEO citation monitor (5-query core panel: best roofer Heber City / roof replacement cost Utah 2026 / storm damage Park City / Utah roof insurance / licensed roofer Wasatch Front).
+
+**Score:** 2/5 — **flat vs 2026-08-05 on the same instrument**, with both cited positions +1 (Park City 3→2, insurance 4→3). Series on this panel: 1/5 → 0/5 → 2/5 → 2/5.
+
+**Actions this run:**
+- Ran WebSearch across all 5 tracked queries; recorded competitors, authority sites, and answer-text snippets per query.
+- Attempted Perplexity verification via WebFetch on `https://www.perplexity.ai/search?q=…` — returned `EGRESS_BLOCKED` from the remote container's network proxy on every query. Recorded as **unmeasured**, not as not-cited.
+- Diffed competitors against every prior report. **First diff was wrong** — see Corrections below.
+- Wrote report `data/aeo-citations/2026-09-05.md`; committed `f6bf616` under `AEO Monitor <aeo-monitor@frameroofingutah.com>`; pushed `76ee52c..f6bf616` to `main` as a fast-forward from lane branch `claude/aeo-citation-monitor-20260905`.
+- Sent PushNotification to owner: 2/5, the retired-domain spec defect, the blocked Perplexity channel, and the instrument caveat against reading 2/5 as a decline from 5/12.
+- Corrected the report and updated `state.json` + `activity-log.md` in a follow-up commit.
+
+**Headline findings:**
+1. 🔴 **The stored task prompt is checking a retired domain.** It still instructs a match on `frameroofingutah.com`, which has 301'd to `www.framerestorationutah.com` since the 2026-06-17 canonical migration (`0ef10e6`). **Both of today's citations landed on the canonical host and would have scored as misses under a literal reading.** Same defect class as the stale `TARGET_DOMAIN` that produced a false 0/5 before `331dc22` fixed it in the scripts — fixed in code, still live in this prompt.
+2. 🔴 **Perplexity channel produced zero data** — egress-blocked. Logged as unmeasured specifically to avoid repeating the 2026-08-05 incident, where 12 swallowed SerpAPI 429s were published as a false `0 of 12` and overwrote a real 2/5 report.
+3. 🟢 **Both citations are extractive, not just links.** Google's answer text reproduces Frame's own copy nearly verbatim — the Park City elevation/snow-load/I-80-corridor specifics, and the insurance guide's 15-day/30-day Utah Insurance Department timelines plus the deductible-fraud warning. That is the AEO outcome the content moat was built for.
+4. 🟢 **Both cited URLs are blog posts**, not service or location pages — the third independent instrument to say so, corroborating the 09-02 sweep (13/13 AIO citations informational, zero local_commercial) and the 09-04 finding. The blog wins AI answers; the 60 location and 15 service pages remain absent.
+5. 🟡 **The cost SERP is being colonized by calculators.** Five of nine slots are now tools/aggregators, two of them new this cycle. This reframes why the 2026-05-20 cost-page rewrite (`cdee7de`) never earned its citation — it was competing for a slot increasingly not allocated to contractor pages.
+6. ⚠️ **`best roofer Heber City Utah` is not scoreable on this instrument.** It held Local Pack #1 on the 09-01 SerpAPI run; this panel has no local-pack channel and returns ~7 links. Logged as an instrument gap, explicitly **not** as a regression.
+
+**Corrections made this run:**
+- An earlier draft of the report claimed **9 new competitors**. The diff was domain-string-based, but prior reports frequently name competitors in prose ("Rooval Roofing", "Crown Roofing Park City") without the domain — producing **6 false positives**. Re-run by company name, the true count is **3** (Lloyd's Quality Roofing, Vanderflip Home, smartroofingcalculator.com), all on the cost query. The report was corrected before the final push. **Standing lesson: diff competitors by NAME as well as domain.**
+- The first draft also under-reported the trend by comparing 2/5 against the 12-query SerpAPI panel's 5/12. The valid comparison is against `2026-08-05.md` — same panel, same tool — which shows flat score with both positions improving.
+
+**Guardrails honored:** monitoring-only — no site HTML/schema/copy change; no GBP publish; no edge-function deploy; no migration; no CI-skip token in any commit message; no force-push; no hook bypass. Pushed from a lane-prefixed branch to `main` as a clean fast-forward (HEAD was detached at `origin/main`, 0/0 divergence, no lane-guard hook present in this remote clone).
+
+**Errors this run:** `EGRESS_BLOCKED` on all 5 Perplexity fetches — recorded in `state.json.last_error`, non-blocking, Google-proxy channel unaffected.
+
+**Files touched:**
+- `data/aeo-citations/2026-09-05.md` (created, then corrected)
+- `state.json` (updated — timestamp, score history 2/5, last_error set, pending_actions rebuilt with the retired-domain fix as highest priority, threats re-diffed to 3 new)
+- `activity-log.md` (this entry prepended)
+
+---
+
 ## 2026-08-05 — AEO Citation Monitor (FIRST scheduled cron fire + first score improvement)
 
 **Routine:** AEO citation monitor (5-query panel: best roofer Heber City / roof replacement cost Utah 2026 / storm damage Park City / Utah roof insurance / licensed roofer Wasatch Front).
