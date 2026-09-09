@@ -1,29 +1,29 @@
-# Cottonwood Heights Google rank tracker — 2026-08-31
+# Cottonwood Heights Google rank tracker — 2026-09-08
 
 - Panel: `utah-cottonwood-heights-google-v1`
 - Provider: DataForSEO task-queue
 - Location: Cottonwood Heights,Utah,United States
 - Device/depth: mobile / top 30
-- Observed: 2026-08-31T09:24:07.920Z
+- Observed: 2026-09-08T21:23:56.000Z
 - Estimated panel cost: $0.0192
 
 | Query | Organic | Exact-CID map pack | AI Overview | Frame cited in AI Overview |
 |---|---:|---:|---:|---:|
-| roofing contractor cottonwood heights | #16 | Not found in top 30 | Yes | No |
-| roof repair cottonwood heights | #12 | Not found in top 30 | No | No |
+| roofing contractor cottonwood heights | #18 | Not found in top 30 | No | No |
+| roof repair cottonwood heights | #14 | Not found in top 30 | No | No |
 | roof replacement cottonwood heights | #10 | Not found in top 30 | No | No |
-| roofer cottonwood heights | #11 | Not found in top 30 | No | No |
+| roofer cottonwood heights | #12 | Not found in top 30 | No | No |
 
 ## Displacement targets
 
 ### roofing contractor cottonwood heights
-- Organic top 3: #1 roofingutah.com; #2 shingleproroofing.com; #3 rocksolidutah.com.
-- Map-pack top 3: no local pack.
+- Organic top 3: #1 roofingutah.com; #2 shingleproroofing.com; #3 reroofit.com.
+- Map-pack top 3: #1 Utah Roofing Pros [CID 4118570990011609504]; #2 Pioneer Roofing Co [CID 8874014093901703868]; #3 ReRoofIt [CID 3305979678440818523].
 - Paid local placements (excluded from Maps rank): none.
-- AI Overview sources: roofingutah.com; madroofers.com; serviceagent.ai; google.com; google.com; google.com; google.com; google.com.
+- AI Overview sources: no AI Overview.
 
 ### roof repair cottonwood heights
-- Organic top 3: #1 roofingutah.com; #2 diamondcertified.org; #3 xperienceroofing.com.
+- Organic top 3: #1 roofingutah.com; #2 xperienceroofing.com; #3 serviceagent.ai.
 - Map-pack top 3: #1 Utah Roofing Pros [CID 4118570990011609504]; #2 Pioneer Roofing Co [CID 8874014093901703868]; #3 ReRoofIt [CID 3305979678440818523].
 - Paid local placements (excluded from Maps rank): none.
 - AI Overview sources: no AI Overview.

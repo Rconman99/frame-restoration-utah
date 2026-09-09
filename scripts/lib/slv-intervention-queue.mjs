@@ -2,6 +2,35 @@ import assert from "node:assert/strict";
 
 export const SPLIT_URL_DIAGNOSIS_STALE_WARNING = "stale-slv-gsc-split-url-diagnosis";
 
+// SERP selection is an observation, not a structural invariant. An alternate
+// URL must block optimization, not prevent the weekly observations being saved.
+export function guardSelectedOrganicUrls({ page, urls, action }) {
+  assert.ok(Array.isArray(urls), "selected organic URLs must be an array");
+  const normalizePath = (value) => value.replace(/^\//, "").replace(/\/$/, "").replace(/\.html$/, "");
+  const mismatches = urls.filter((value) => {
+    if (value == null) return false; // unranked is not a competing URL
+    try {
+      const url = new URL(value);
+      return !["http:", "https:"].includes(url.protocol)
+        || !["framerestorationutah.com", "www.framerestorationutah.com"].includes(url.hostname)
+        || normalizePath(url.pathname) !== normalizePath(page);
+    } catch {
+      return true; // malformed observations cannot authorize an intervention
+    }
+  });
+  if (!mismatches.length) return { intended: true, action };
+  return {
+    intended: false,
+    action: {
+      ...action,
+      decision: "Monitor",
+      action: "Diagnose unexpected organic URL selection against the dated fixed panel and exact-query GSC rows before any intent or architecture change. Preserve all existing experiment, foothold, identity, and owner gates. Previously gated action: " + action.action,
+      gate: "Unexpected organic URL selection requires read-only diagnosis; no public mutation. Existing gate: " + action.gate,
+      acceptanceCheck: "Reconcile every unexpected selected URL with fresh evidence; do not automatically redirect, delete, canonicalize, or rewrite a page. Existing acceptance: " + action.acceptanceCheck,
+    },
+  };
+}
+
 export function splitUrlDiagnosisFreshness({ activeSnapshotSha256, diagnosisSnapshotSha256 }) {
   const current = typeof activeSnapshotSha256 === "string"
     && activeSnapshotSha256.length > 0

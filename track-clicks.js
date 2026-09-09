@@ -42,7 +42,8 @@
 
   function getCityFromPath() {
     var path = (window.location.pathname || '').toLowerCase();
-    var m = path.match(/\/locations\/([a-z-]+)\.html/);
+    // Production uses clean URLs; retain legacy .html and trailing-slash forms.
+    var m = path.match(/^\/locations\/([a-z-]+)(?:\.html)?\/?$/);
     if (m) return m[1].replace(/-/g, ' ');
     m = path.match(/\/blog\/([a-z-]+)\//);
     if (m && m[1] !== 'utah') return m[1].replace(/-/g, ' ');

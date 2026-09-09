@@ -1,0 +1,550 @@
+{
+  "schema_version": "1.0",
+  "contract": "utah-slc-attribution-source",
+  "contract_sha256": "b0736a57581a460466409e5309d6075e2a79e7acfe7f255182fd0940aa36c9bd",
+  "contract_snapshot": {
+    "schema_version": "1.0",
+    "name": "utah-slc-attribution-source",
+    "expected_serving_origin": "http://127.0.0.1:4198",
+    "expected_canonical_origin": "https://www.framerestorationutah.com",
+    "max_redirects": 0,
+    "min_touch_target_css_px": 44,
+    "max_fixed_viewport_ratio": 0.25,
+    "max_landscape_fixed_viewport_ratio": 0.3,
+    "stability_wait_ms": 500,
+    "readiness_selector": "main",
+    "viewports": [
+      {
+        "name": "small-320",
+        "width": 320,
+        "height": 568
+      },
+      {
+        "name": "landscape-740",
+        "width": 740,
+        "height": 360
+      }
+    ],
+    "routes": [
+      {
+        "path": "/locations/salt-lake-city.html",
+        "expected_canonical_path": "/locations/salt-lake-city"
+      },
+      {
+        "path": "/",
+        "expected_canonical_path": "/"
+      }
+    ],
+    "critical_targets": [
+      {
+        "selector": "#menuBtn",
+        "max_viewport_width": 900
+      },
+      {
+        "selector": ".nav-call-mobile",
+        "expected_href_pattern": "^tel:\\+14352928802$"
+      },
+      {
+        "selector": ".sticky-call a[href^=\"sms:\"]",
+        "max_viewport_width": 640,
+        "expected_href_pattern": "^sms:\\+14352928802$"
+      }
+    ],
+    "fixed_elements": [
+      {
+        "selector": "nav",
+        "max_viewport_ratio": 0.15,
+        "max_landscape_viewport_ratio": 0.24
+      }
+    ],
+    "forbidden_visible_selectors": [
+      ".fr-modal-overlay.open"
+    ],
+    "max_console_errors": 0,
+    "max_page_errors": 0,
+    "allowed_console_error_patterns": [],
+    "canonical_policy": "match"
+  },
+  "stage": "source",
+  "base_url": "http://127.0.0.1:4198",
+  "observed_at": "2026-09-08T21:12:00.801392Z",
+  "verdict": "pass",
+  "summary": {
+    "checks": 60,
+    "failures": 0,
+    "routes": 2,
+    "viewports": 2
+  },
+  "runs": [
+    {
+      "route": "/locations/salt-lake-city.html",
+      "viewport": {
+        "name": "small-320",
+        "width": 320,
+        "height": 568
+      },
+      "url": "http://127.0.0.1:4198/locations/salt-lake-city.html",
+      "checks": [
+        {
+          "name": "http-200",
+          "pass": true,
+          "detail": "status=200"
+        },
+        {
+          "name": "redirect-budget",
+          "pass": true,
+          "detail": "redirects=0 cap=0"
+        },
+        {
+          "name": "serving-origin",
+          "pass": true,
+          "detail": "final=http://127.0.0.1:4198 expected=http://127.0.0.1:4198"
+        },
+        {
+          "name": "viewport-meta",
+          "pass": true,
+          "detail": "content='width=device-width, initial-scale=1.0'"
+        },
+        {
+          "name": "canonical",
+          "pass": true,
+          "detail": "count=1 actual='https://www.framerestorationutah.com/locations/salt-lake-city' expected='https://www.framerestorationutah.com/locations/salt-lake-city'"
+        },
+        {
+          "name": "horizontal-reflow",
+          "pass": true,
+          "detail": "scrollWidth=320 innerWidth=320"
+        },
+        {
+          "name": "critical-target:#menuBtn",
+          "pass": true,
+          "detail": "present, sized, hittable, and href-valid"
+        },
+        {
+          "name": "critical-target:.nav-call-mobile",
+          "pass": true,
+          "detail": "present, sized, hittable, and href-valid"
+        },
+        {
+          "name": "critical-target:.sticky-call a[href^=\"sms:\"]",
+          "pass": true,
+          "detail": "present, sized, hittable, and href-valid"
+        },
+        {
+          "name": "fixed-element:nav",
+          "pass": true,
+          "detail": "present and within orientation budget"
+        },
+        {
+          "name": "forbidden-visible:.fr-modal-overlay.open",
+          "pass": true,
+          "detail": "visible=0"
+        },
+        {
+          "name": "focus-not-obscured",
+          "pass": true,
+          "detail": "sampled keyboard focus is exposed"
+        },
+        {
+          "name": "forbidden-visible-post-focus:.fr-modal-overlay.open",
+          "pass": true,
+          "detail": "visible=0"
+        },
+        {
+          "name": "console-errors",
+          "pass": true,
+          "detail": "count=0 cap=0 errors=[] guard_suppressed=0"
+        },
+        {
+          "name": "page-errors",
+          "pass": true,
+          "detail": "count=0 cap=0 errors=[]"
+        }
+      ],
+      "failures": [],
+      "http": {
+        "status": 200,
+        "final_url": "http://127.0.0.1:4198/locations/salt-lake-city.html",
+        "redirects": 0,
+        "headers": {
+          "content-length": "52987",
+          "content-type": "text/html",
+          "date": "Tue, 08 Sep 2026 21:12:01 GMT",
+          "last-modified": "Tue, 08 Sep 2026 21:01:07 GMT",
+          "server": "SimpleHTTP/0.6 Python/3.14.7"
+        }
+      },
+      "screenshot": {
+        "path": "/Users/agenticmac/projects/_wt-slc-lead-growth-20260908/qa/receipts/slc-attribution-source-20260908/locations-salt-lake-city.html--693bb97035d9--small-320.png",
+        "sha256": "f72c9510ab14f13e0107db6a2d610fc927e75666b0a46e32ed7fc8c2b8013900",
+        "captured_scroll_y": 0
+      },
+      "network_guard": {
+        "mode": "read_only",
+        "auth_bootstrap_used": false,
+        "protection_bypass_used": false,
+        "preview_toolbar_suppression_requested": false,
+        "service_workers_blocked": true,
+        "websockets_blocked": true,
+        "stability_wait_ms": 500,
+        "readiness_selector": "main",
+        "blocked_count": 0,
+        "blocked": [],
+        "console_errors_suppressed": 0
+      }
+    },
+    {
+      "route": "/locations/salt-lake-city.html",
+      "viewport": {
+        "name": "landscape-740",
+        "width": 740,
+        "height": 360
+      },
+      "url": "http://127.0.0.1:4198/locations/salt-lake-city.html",
+      "checks": [
+        {
+          "name": "http-200",
+          "pass": true,
+          "detail": "status=200"
+        },
+        {
+          "name": "redirect-budget",
+          "pass": true,
+          "detail": "redirects=0 cap=0"
+        },
+        {
+          "name": "serving-origin",
+          "pass": true,
+          "detail": "final=http://127.0.0.1:4198 expected=http://127.0.0.1:4198"
+        },
+        {
+          "name": "viewport-meta",
+          "pass": true,
+          "detail": "content='width=device-width, initial-scale=1.0'"
+        },
+        {
+          "name": "canonical",
+          "pass": true,
+          "detail": "count=1 actual='https://www.framerestorationutah.com/locations/salt-lake-city' expected='https://www.framerestorationutah.com/locations/salt-lake-city'"
+        },
+        {
+          "name": "horizontal-reflow",
+          "pass": true,
+          "detail": "scrollWidth=740 innerWidth=740"
+        },
+        {
+          "name": "critical-target:#menuBtn",
+          "pass": true,
+          "detail": "present, sized, hittable, and href-valid"
+        },
+        {
+          "name": "critical-target:.nav-call-mobile",
+          "pass": true,
+          "detail": "present, sized, hittable, and href-valid"
+        },
+        {
+          "name": "critical-target:.sticky-call a[href^=\"sms:\"]:not-applicable",
+          "pass": true,
+          "detail": "viewport-width=740"
+        },
+        {
+          "name": "fixed-element:nav",
+          "pass": true,
+          "detail": "present and within orientation budget"
+        },
+        {
+          "name": "forbidden-visible:.fr-modal-overlay.open",
+          "pass": true,
+          "detail": "visible=0"
+        },
+        {
+          "name": "focus-not-obscured",
+          "pass": true,
+          "detail": "sampled keyboard focus is exposed"
+        },
+        {
+          "name": "forbidden-visible-post-focus:.fr-modal-overlay.open",
+          "pass": true,
+          "detail": "visible=0"
+        },
+        {
+          "name": "console-errors",
+          "pass": true,
+          "detail": "count=0 cap=0 errors=[] guard_suppressed=0"
+        },
+        {
+          "name": "page-errors",
+          "pass": true,
+          "detail": "count=0 cap=0 errors=[]"
+        }
+      ],
+      "failures": [],
+      "http": {
+        "status": 200,
+        "final_url": "http://127.0.0.1:4198/locations/salt-lake-city.html",
+        "redirects": 0,
+        "headers": {
+          "content-length": "52987",
+          "content-type": "text/html",
+          "date": "Tue, 08 Sep 2026 21:12:03 GMT",
+          "last-modified": "Tue, 08 Sep 2026 21:01:07 GMT",
+          "server": "SimpleHTTP/0.6 Python/3.14.7"
+        }
+      },
+      "screenshot": {
+        "path": "/Users/agenticmac/projects/_wt-slc-lead-growth-20260908/qa/receipts/slc-attribution-source-20260908/locations-salt-lake-city.html--693bb97035d9--landscape-740.png",
+        "sha256": "2297314033aa1701b354f99f7ff341ee6418a02892cfb6190b89f30984b84e35",
+        "captured_scroll_y": 0
+      },
+      "network_guard": {
+        "mode": "read_only",
+        "auth_bootstrap_used": false,
+        "protection_bypass_used": false,
+        "preview_toolbar_suppression_requested": false,
+        "service_workers_blocked": true,
+        "websockets_blocked": true,
+        "stability_wait_ms": 500,
+        "readiness_selector": "main",
+        "blocked_count": 0,
+        "blocked": [],
+        "console_errors_suppressed": 0
+      }
+    },
+    {
+      "route": "/",
+      "viewport": {
+        "name": "small-320",
+        "width": 320,
+        "height": 568
+      },
+      "url": "http://127.0.0.1:4198/",
+      "checks": [
+        {
+          "name": "http-200",
+          "pass": true,
+          "detail": "status=200"
+        },
+        {
+          "name": "redirect-budget",
+          "pass": true,
+          "detail": "redirects=0 cap=0"
+        },
+        {
+          "name": "serving-origin",
+          "pass": true,
+          "detail": "final=http://127.0.0.1:4198 expected=http://127.0.0.1:4198"
+        },
+        {
+          "name": "viewport-meta",
+          "pass": true,
+          "detail": "content='width=device-width, initial-scale=1.0, viewport-fit=cover'"
+        },
+        {
+          "name": "canonical",
+          "pass": true,
+          "detail": "count=1 actual='https://www.framerestorationutah.com/' expected='https://www.framerestorationutah.com/'"
+        },
+        {
+          "name": "horizontal-reflow",
+          "pass": true,
+          "detail": "scrollWidth=320 innerWidth=320"
+        },
+        {
+          "name": "critical-target:#menuBtn",
+          "pass": true,
+          "detail": "present, sized, hittable, and href-valid"
+        },
+        {
+          "name": "critical-target:.nav-call-mobile",
+          "pass": true,
+          "detail": "present, sized, hittable, and href-valid"
+        },
+        {
+          "name": "critical-target:.sticky-call a[href^=\"sms:\"]",
+          "pass": true,
+          "detail": "present, sized, hittable, and href-valid"
+        },
+        {
+          "name": "fixed-element:nav",
+          "pass": true,
+          "detail": "present and within orientation budget"
+        },
+        {
+          "name": "forbidden-visible:.fr-modal-overlay.open",
+          "pass": true,
+          "detail": "visible=0"
+        },
+        {
+          "name": "focus-not-obscured",
+          "pass": true,
+          "detail": "sampled keyboard focus is exposed"
+        },
+        {
+          "name": "forbidden-visible-post-focus:.fr-modal-overlay.open",
+          "pass": true,
+          "detail": "visible=0"
+        },
+        {
+          "name": "console-errors",
+          "pass": true,
+          "detail": "count=0 cap=0 errors=[] guard_suppressed=0"
+        },
+        {
+          "name": "page-errors",
+          "pass": true,
+          "detail": "count=0 cap=0 errors=[]"
+        }
+      ],
+      "failures": [],
+      "http": {
+        "status": 200,
+        "final_url": "http://127.0.0.1:4198/",
+        "redirects": 0,
+        "headers": {
+          "content-length": "181389",
+          "content-type": "text/html",
+          "date": "Tue, 08 Sep 2026 21:12:05 GMT",
+          "last-modified": "Tue, 08 Sep 2026 21:01:07 GMT",
+          "server": "SimpleHTTP/0.6 Python/3.14.7"
+        }
+      },
+      "screenshot": {
+        "path": "/Users/agenticmac/projects/_wt-slc-lead-growth-20260908/qa/receipts/slc-attribution-source-20260908/home--8a5edab28263--small-320.png",
+        "sha256": "f6a9264e87bdb01af9b316a4ae4f566eda5f69813d355537e4af393a2bcd77f6",
+        "captured_scroll_y": 0
+      },
+      "network_guard": {
+        "mode": "read_only",
+        "auth_bootstrap_used": false,
+        "protection_bypass_used": false,
+        "preview_toolbar_suppression_requested": false,
+        "service_workers_blocked": true,
+        "websockets_blocked": true,
+        "stability_wait_ms": 500,
+        "readiness_selector": "main",
+        "blocked_count": 0,
+        "blocked": [],
+        "console_errors_suppressed": 0
+      }
+    },
+    {
+      "route": "/",
+      "viewport": {
+        "name": "landscape-740",
+        "width": 740,
+        "height": 360
+      },
+      "url": "http://127.0.0.1:4198/",
+      "checks": [
+        {
+          "name": "http-200",
+          "pass": true,
+          "detail": "status=200"
+        },
+        {
+          "name": "redirect-budget",
+          "pass": true,
+          "detail": "redirects=0 cap=0"
+        },
+        {
+          "name": "serving-origin",
+          "pass": true,
+          "detail": "final=http://127.0.0.1:4198 expected=http://127.0.0.1:4198"
+        },
+        {
+          "name": "viewport-meta",
+          "pass": true,
+          "detail": "content='width=device-width, initial-scale=1.0, viewport-fit=cover'"
+        },
+        {
+          "name": "canonical",
+          "pass": true,
+          "detail": "count=1 actual='https://www.framerestorationutah.com/' expected='https://www.framerestorationutah.com/'"
+        },
+        {
+          "name": "horizontal-reflow",
+          "pass": true,
+          "detail": "scrollWidth=740 innerWidth=740"
+        },
+        {
+          "name": "critical-target:#menuBtn",
+          "pass": true,
+          "detail": "present, sized, hittable, and href-valid"
+        },
+        {
+          "name": "critical-target:.nav-call-mobile",
+          "pass": true,
+          "detail": "present, sized, hittable, and href-valid"
+        },
+        {
+          "name": "critical-target:.sticky-call a[href^=\"sms:\"]:not-applicable",
+          "pass": true,
+          "detail": "viewport-width=740"
+        },
+        {
+          "name": "fixed-element:nav",
+          "pass": true,
+          "detail": "present and within orientation budget"
+        },
+        {
+          "name": "forbidden-visible:.fr-modal-overlay.open",
+          "pass": true,
+          "detail": "visible=0"
+        },
+        {
+          "name": "focus-not-obscured",
+          "pass": true,
+          "detail": "sampled keyboard focus is exposed"
+        },
+        {
+          "name": "forbidden-visible-post-focus:.fr-modal-overlay.open",
+          "pass": true,
+          "detail": "visible=0"
+        },
+        {
+          "name": "console-errors",
+          "pass": true,
+          "detail": "count=0 cap=0 errors=[] guard_suppressed=0"
+        },
+        {
+          "name": "page-errors",
+          "pass": true,
+          "detail": "count=0 cap=0 errors=[]"
+        }
+      ],
+      "failures": [],
+      "http": {
+        "status": 200,
+        "final_url": "http://127.0.0.1:4198/",
+        "redirects": 0,
+        "headers": {
+          "content-length": "181389",
+          "content-type": "text/html",
+          "date": "Tue, 08 Sep 2026 21:12:08 GMT",
+          "last-modified": "Tue, 08 Sep 2026 21:01:07 GMT",
+          "server": "SimpleHTTP/0.6 Python/3.14.7"
+        }
+      },
+      "screenshot": {
+        "path": "/Users/agenticmac/projects/_wt-slc-lead-growth-20260908/qa/receipts/slc-attribution-source-20260908/home--8a5edab28263--landscape-740.png",
+        "sha256": "1cc5d5c73fa994a076f26d110e1c64c5b878f48860399811dd96ecf1d6b5dda8",
+        "captured_scroll_y": 0
+      },
+      "network_guard": {
+        "mode": "read_only",
+        "auth_bootstrap_used": false,
+        "protection_bypass_used": false,
+        "preview_toolbar_suppression_requested": false,
+        "service_workers_blocked": true,
+        "websockets_blocked": true,
+        "stability_wait_ms": 500,
+        "readiness_selector": "main",
+        "blocked_count": 0,
+        "blocked": [],
+        "console_errors_suppressed": 0
+      }
+    }
+  ],
+  "duration_seconds": 9.729,
+  "receipt_path": "/Users/agenticmac/projects/_wt-slc-lead-growth-20260908/qa/receipts/slc-attribution-source-20260908.json"
+}
