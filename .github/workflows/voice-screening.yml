@@ -1,10 +1,10 @@
 name: Voice screening contracts
 on:
   pull_request:
-    paths: ['supabase/functions/handle-call/**', 'supabase/functions/_shared/**', 'supabase/migrations/*call_screenings.sql', 'supabase/tests/call_screenings*.sql', 'scripts/voice-screening-report*', '.github/workflows/voice-screening.yml']
+    paths: ['supabase/functions/handle-call/**', 'supabase/functions/_shared/**', 'supabase/migrations/*call_screenings.sql', 'supabase/tests/call_screenings*.sql', 'scripts/voice-screening-*', '.github/workflows/voice-screening.yml']
   push:
     branches: [main]
-    paths: ['supabase/functions/handle-call/**', 'supabase/functions/_shared/**', 'supabase/migrations/*call_screenings.sql', 'supabase/tests/call_screenings*.sql', 'scripts/voice-screening-report*', '.github/workflows/voice-screening.yml']
+    paths: ['supabase/functions/handle-call/**', 'supabase/functions/_shared/**', 'supabase/migrations/*call_screenings.sql', 'supabase/tests/call_screenings*.sql', 'scripts/voice-screening-*', '.github/workflows/voice-screening.yml']
 permissions:
   contents: read
 jobs:
@@ -28,8 +28,8 @@ jobs:
           node-version: '24'
       - name: Signed in-process handler, state machine and persistence contracts (no provider calls)
         run: deno test --node-modules-dir=auto --allow-read --allow-env supabase/functions/handle-call/receptionist-handler.test.ts supabase/functions/_shared/receptionist.test.ts supabase/functions/_shared/receptionist-store.test.ts
-      - name: Private readout argument and SQL contracts
-        run: node --test scripts/voice-screening-report.test.mjs
+      - name: Private readout, exact migration and deployment scope contracts
+        run: node --test scripts/voice-screening-*.test.mjs
       - name: Isolated PostgreSQL migration, privilege and outcome contracts
         env:
           PGPASSWORD: synthetic-ci-only

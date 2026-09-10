@@ -112,13 +112,34 @@ Obtain a different-lane review of the exact release SHA. The new migration must
 be admitted/applied **before** the handler through the market's approved release
 process, with an exclusive migration-writer window and migration-history receipt.
 Never run the full historical migration tree or bypass production deploy gates.
-For Utah, the existing `handle-call/DEPLOY.md` workflow-only/single-use receipt
-requirements continue to apply; do not substitute direct CLI deployment.
+For Utah, the existing `handle-call/DEPLOY.md` workflow-only, exact-main and
+green-compliance requirements continue to apply; do not substitute direct CLI
+deployment. The client-IP receipt verifier protects `handle-lead` and
+`lead-crm`, not `handle-call`. No signed client-IP receipt is required for
+this phone release. The workflow still requires its nonce input syntactically;
+use a descriptive run identifier for this non-protected function, not a
+fabricated receipt. Keep the protected-function verifier unchanged.
 
 Release only `handle-call` and its imported shared modules. Download/diff deployed
 source before and after. Preserve pre-release source for an authorized rollback;
 keep the additive private table and evidence if rolling the handler back.
 Legacy Gather callbacks remain for in-flight calls.
+
+The exact-prefix migration runner is `scripts/voice-screening-migration.mjs`.
+After review, merge, and green exact-main checks, use a clean checkout of that
+main SHA and claim the market's exclusive migration-writer window. Set
+`RELEASE_SHA` and `VOICE_MIGRATION_EXCLUSIVE_WRITER_ACK` to that full SHA,
+and `SUPABASE_BIN` to the verified official macOS arm64 CLI 2.113.0 binary
+(SHA-256 `ad4957e507ffc178fa27dd9256eb666f34bade172058b66e97f230413564494a`).
+It uses the existing macOS Supabase Keychain profile, never newly issued keys.
+Run `node scripts/voice-screening-migration.mjs utah preflight`, then
+the same command with `apply` in a fresh process after a successful preflight.
+Retain both private receipt directories. The runner accepts only the reviewed
+history, installs throwing guards in place of historical SQL, and admits only
+`20260910200000_call_screenings.sql`. It verifies history and private grants
+afterward. On any failure stop; do not repair history, substitute a raw mutation
+query, or replay the baseline. This runner never deploys an edge function.
+
 A merge/check/deployed-source match is not an audible end-to-end call test.
 A natural or separately approved human call must confirm greeting, real voice,
 owner acceptance, voicemail, caller-ID forwarding and final private trace/CRM link.
