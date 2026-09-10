@@ -1,0 +1,39 @@
+name: Voice screening contracts
+on:
+  pull_request:
+    paths: ['supabase/functions/handle-call/**', 'supabase/functions/_shared/**', 'supabase/migrations/*call_screenings.sql', 'supabase/tests/call_screenings*.sql', 'scripts/voice-screening-report*', '.github/workflows/voice-screening.yml']
+  push:
+    branches: [main]
+    paths: ['supabase/functions/handle-call/**', 'supabase/functions/_shared/**', 'supabase/migrations/*call_screenings.sql', 'supabase/tests/call_screenings*.sql', 'scripts/voice-screening-report*', '.github/workflows/voice-screening.yml']
+permissions:
+  contents: read
+jobs:
+  contracts:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_PASSWORD: synthetic-ci-only
+        ports: ['5432:5432']
+        options: --health-cmd pg_isready --health-interval 5s --health-timeout 5s --health-retries 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      - uses: denoland/setup-deno@22d081ff2d3a40755e97629de92e3bcbfa7cf2ed
+        with:
+          deno-version: v2.x
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+        with:
+          node-version: '24'
+      - name: Signed in-process handler, state machine and persistence contracts (no provider calls)
+        run: deno test --node-modules-dir=auto --allow-read --allow-env supabase/functions/handle-call/receptionist-handler.test.ts supabase/functions/_shared/receptionist.test.ts supabase/functions/_shared/receptionist-store.test.ts
+      - name: Private readout argument and SQL contracts
+        run: node --test scripts/voice-screening-report.test.mjs
+      - name: Isolated PostgreSQL migration, privilege and outcome contracts
+        env:
+          PGPASSWORD: synthetic-ci-only
+        run: |
+          psql -h localhost -U postgres -v ON_ERROR_STOP=1 -f supabase/tests/call_screenings_fixture.sql
+          psql -h localhost -U postgres -v ON_ERROR_STOP=1 -f supabase/migrations/20260910200000_call_screenings.sql
+          psql -h localhost -U postgres -v ON_ERROR_STOP=1 -f supabase/tests/call_screenings.sql

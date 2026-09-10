@@ -1,4 +1,4 @@
-// handle-call v5 — Frame Restoration Utah
+// handle-call v6 — Frame Restoration Utah: approved lead-first screening + private trace.
 // ─────────────────────────────────────────────────────────────────────────────
 // v5 (2026-09-04): Humanized voice. Caller-facing prompts use Twilio's Google
 //   Chirp 3 HD generative voice; the private owner whisper stays on Amazon
@@ -32,6 +32,13 @@ import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { verifyTwilioRequest } from "../_shared/twilio-verify.ts";
 import {
+  continueReceptionist,
+  readScreening,
+  recordScreeningOutcome,
+  type ScreeningConfig,
+  startReceptionist,
+} from "../_shared/receptionist-store.ts";
+import {
   callerIdIntroduction,
   enrichCallerId,
   forwardedCallerId,
@@ -62,6 +69,14 @@ const LANDON_PHONE = "+14353024422";
 const POSTHOG_API_KEY = "phc_BnECzlZ2OeDujli2dbqcgGODXlv2tYERbp40dTF7UBV";
 const CALLER_VOICE = "Google.en-US-Chirp3-HD-Aoede";
 const OWNER_WHISPER_VOICE = "Polly.Joanna-Neural";
+const receptionistConfig = (): ScreeningConfig => ({
+  supabaseUrl: SUPABASE_URL,
+  serviceKey: SUPABASE_SERVICE_ROLE_KEY,
+  owner: "Landon",
+  voice: CALLER_VOICE,
+  dial: dialLandonTwiml,
+  voicemail: voicemailTwiml,
+});
 
 // ── Call-source attribution (commission tracking) ────────────────────────────
 // Each public tracking number maps to a lead source + whether that lead counts
@@ -174,9 +189,14 @@ function screenTwiml(): string {
 </Response>`;
 }
 
-function voicemailTwiml(): string {
+function voicemailTwiml(intro?: string): string {
   return `<Response>
-  <Say voice="${CALLER_VOICE}">Please leave a message after the beep and we'll call you back.</Say>
+  <Say voice="${CALLER_VOICE}">${
+    xmlEscape(
+      intro ||
+        "Landon couldn't pick up. Please leave your name, the best number to reach you, and a message after the beep.",
+    )
+  }</Say>
   ${RECORD}
 </Response>`;
 }
@@ -244,14 +264,15 @@ async function createInboundCallLead(
   },
   assistantTranscript = "",
   initialStatus = "new",
+  callerReportedName = "",
 ): Promise<number | null> {
   if (!fromNumber || fromNumber === "unknown") return null;
   const { data, error } = await supabase
     .from("leads")
     .insert({
-      name: `Inbound caller — ${lastFour(fromNumber)}`,
+      name: callerReportedName || `Inbound caller — ${lastFour(fromNumber)}`,
       phone: normalizePhone(fromNumber),
-      address: city || null,
+      address: null, // Caller-ID locality is not the customer's service address.
       city: city ? city.split(",")[0].trim() : null,
       source_page: "inbound-call",
       call_source: attribution.source,
@@ -262,8 +283,10 @@ async function createInboundCallLead(
       tier_reason: "Auto-created by handle-call on first call from this number",
       notes: assistantTranscript
         ? `${
-          screeningNote(assistantTranscript)
-        } Update name/details after speaking with the caller.`
+          assistantTranscript.startsWith("Assistant screening (")
+            ? assistantTranscript
+            : screeningNote(assistantTranscript)
+        } Caller-ID locality is not the service address. Confirm name and job details with the caller.`
         : "Auto-created from inbound call. Update name/details when you have them.",
     })
     .select("id")
@@ -423,7 +446,7 @@ async function sendPostHogEvent(
   }
 }
 
-Deno.serve(async (req: Request) => {
+export async function handleCallRequest(req: Request): Promise<Response> {
   const url = new URL(req.url);
   // Normalize trailing slashes so `/handle-call/status/` routes the same as
   // `/handle-call/status` (otherwise `.pop()` yields "" and misroutes to inbound).
@@ -435,10 +458,8 @@ Deno.serve(async (req: Request) => {
     data[key] = value.toString();
   });
 
-  const safeLogData = { ...data };
-  if (safeLogData.SpeechResult) safeLogData.SpeechResult = "[redacted]";
-  if (safeLogData.CallerName) safeLogData.CallerName = "[redacted]";
-  console.log(`[handle-call] path=${path}`, JSON.stringify(safeLogData));
+  // Keep caller text, phone numbers, recordings and signatures out of runtime logs.
+  console.log(`[handle-call] path=${path}`);
 
   // ─── SECURITY GATE: verify Twilio signature BEFORE any DB write / TwiML.
   // Covers all paths (inbound + /status + /completed). The body has already been
@@ -543,8 +564,30 @@ Deno.serve(async (req: Request) => {
     }
 
     if (route === "blocked") return xml(blockedTwiml());
-    if (route === "screen") return xml(screenTwiml());
+    if (route === "screen") {
+      return xml(
+        await startReceptionist(
+          receptionistConfig(),
+          callSid,
+          forwardedCallerId(fromNumber, toNumber),
+        ),
+      );
+    }
     return xml(dialLandonTwiml(forwardedCallerId(fromNumber, toNumber)));
+  }
+
+  if (path === "receptionist") {
+    if (!isOurBusinessNumber(data.To, creds.phone)) {
+      return new Response("Forbidden", { status: 403 });
+    }
+    return xml(
+      await continueReceptionist(
+        receptionistConfig(),
+        data,
+        url.searchParams.get("step") || "",
+        forwardedCallerId(data.From, data.To),
+      ),
+    );
   }
 
   // === LEGACY SCREEN RESULT ("press 1 to connect") ===
@@ -647,7 +690,20 @@ Deno.serve(async (req: Request) => {
     const screenCallSid = url.searchParams.get("screenCallSid") || "";
     let transcript = "a caller provided a response";
     let callerIdentity = "";
+    let approvedSummary = "";
     if (/^CA[0-9a-f]{32}$/i.test(screenCallSid)) {
+      try {
+        const trace = await readScreening(receptionistConfig(), screenCallSid);
+        if (trace?.stage === "done") {
+          approvedSummary = `${
+            trace.state.name || "Name not provided"
+          }. Calling about: ${
+            trace.state.purpose.slice(0, 200) || "reason unclear"
+          }`;
+        }
+      } catch {
+        /* Legacy/private fallback remains available during a store outage. */
+      }
       const { data: callLog } = await supabase.from("call_logs")
         .select("notes,caller_name")
         .eq("call_sid", screenCallSid)
@@ -663,11 +719,11 @@ Deno.serve(async (req: Request) => {
     return xml(`<Response>
   <Gather input="dtmf" numDigits="1" timeout="10" actionOnEmptyResult="true"
           method="POST" action="${decisionUrl}">
-    <Say voice="${OWNER_WHISPER_VOICE}">This is a screened Frame call. ${
-      xmlEscape(callerIdentity)
-    }The caller said: ${
-      xmlEscape(transcript)
-    }. Press 1 to accept. Press 2 to send the caller to voicemail.</Say>
+    <Say voice="${OWNER_WHISPER_VOICE}">Frame call. ${
+      xmlEscape(
+        approvedSummary || `${callerIdentity}The caller said: ${transcript}`,
+      )
+    }. Press one to connect, or two to send to voicemail.</Say>
   </Gather>
 </Response>`);
   }
@@ -675,21 +731,35 @@ Deno.serve(async (req: Request) => {
   // === OWNER ACCEPT / REJECT ===
   if (path === "whisper-decision") {
     const screenCallSid = url.searchParams.get("screenCallSid") || "";
-    const accepted = (data.Digits || "").trim() === "1";
+    const requestedAcceptance = (data.Digits || "").trim() === "1";
     const validScreenCallSid = /^CA[0-9a-f]{32}$/i.test(screenCallSid);
-    // Persist the decision on every retry. This write is idempotent and must not
-    // depend on the once-only lead-creation claim, because /completed uses it to
-    // distinguish an accepted conversation from an owner-declined call.
+    let accepted = false;
+    // Compare-and-swap prevents stale owner decisions from rewinding a call.
     if (validScreenCallSid) {
-      await supabase.from("call_logs").update({
-        status: accepted
+      const { error } = await supabase.from("call_logs").update({
+        status: requestedAcceptance
           ? "screened-owner-accepted"
           : "screened-owner-rejected",
-      }).eq("call_sid", screenCallSid);
+      }).eq("call_sid", screenCallSid).eq("status", "screened-awaiting-owner");
+      const { data: saved, error: readError } = await supabase.from("call_logs")
+        .select("status").eq("call_sid", screenCallSid).maybeSingle();
+      accepted = !readError && saved?.status === "screened-owner-accepted";
+      if (
+        !error && !readError &&
+        (accepted || saved?.status === "screened-owner-rejected")
+      ) {
+        await recordScreeningOutcome(
+          receptionistConfig(),
+          screenCallSid,
+          accepted
+            ? "accepted"
+            : (data.Digits === "2" ? "voicemail" : "timeout"),
+        );
+      }
     }
-    const persistDecision = validScreenCallSid &&
+    const persistDecision = accepted &&
       await claimWebhook(`owner-screen:${screenCallSid}`, false);
-    if (persistDecision && accepted) {
+    if (persistDecision) {
       const { data: callLog } = await supabase.from("call_logs")
         .select("from_number,to_number,city,notes,lead_id")
         .eq("call_sid", screenCallSid)
@@ -698,24 +768,30 @@ Deno.serve(async (req: Request) => {
       if (!leadId && callLog?.from_number) {
         leadId = await findRecentLead(callLog.from_number);
         if (!leadId) {
+          let reportedName = "";
+          try {
+            reportedName =
+              (await readScreening(receptionistConfig(), screenCallSid))?.state
+                .name || "";
+          } catch { /* Preserve lead capture with the existing placeholder. */ }
           leadId = await createInboundCallLead(
             callLog.from_number,
             callLog.city || "unknown",
             "auto-inbound-call-assistant",
             classifyDialedNumber(callLog.to_number || "unknown"),
-            transcriptFromScreeningNote(callLog.notes),
-            "contacted",
+            String(callLog.notes || "").startsWith("Assistant screening (")
+              ? callLog.notes
+              : transcriptFromScreeningNote(callLog.notes),
+            "new",
+            reportedName,
           );
         }
       }
       if (leadId) {
-        await supabase.from("leads").update({ status: "contacted" })
-          .eq("id", leadId)
-          .eq("status", "new");
+        await supabase.from("call_logs").update({
+          lead_id: leadId,
+        }).eq("call_sid", screenCallSid);
       }
-      await supabase.from("call_logs").update({
-        lead_id: leadId,
-      }).eq("call_sid", screenCallSid);
     }
     return accepted
       ? xml(
@@ -738,6 +814,17 @@ Deno.serve(async (req: Request) => {
     const callStatus = data.DialCallStatus || data.CallStatus || "unknown";
     const recordingUrl = data.RecordingUrl || null;
     const dial = (data.DialCallStatus || "").toLowerCase();
+    const bridged = String(data.DialBridged).toLowerCase() === "true";
+    if (
+      path === "completed" && callSid &&
+      ["true", "false"].includes(String(data.DialBridged).toLowerCase())
+    ) {
+      await recordScreeningOutcome(
+        receptionistConfig(),
+        callSid,
+        bridged ? "bridged" : "unbridged",
+      );
+    }
     let screeningStatus = "";
 
     if (callSid && path === "completed") {
@@ -747,9 +834,10 @@ Deno.serve(async (req: Request) => {
         .maybeSingle();
       screeningStatus = callLog?.status || "";
     }
-    const ownerDeclined = screeningStatus === "screened-owner-rejected" ||
-      (screeningStatus === "screened-awaiting-owner" &&
-        (dial === "completed" || dial === "answered"));
+    const ownerDeclined = !bridged &&
+      (screeningStatus === "screened-owner-rejected" ||
+        (screeningStatus === "screened-awaiting-owner" &&
+          (dial === "completed" || dial === "answered")));
 
     if (callSid) {
       const updateData: Record<string, unknown> = { status: callStatus };
@@ -785,11 +873,20 @@ Deno.serve(async (req: Request) => {
     // offer voicemail instead of returning silence. The per-leg /status callbacks
     // also land here — guard on path === "completed" so they don't emit voicemail.
     if (path === "completed") {
+      if (bridged) {
+        const { data: linked } = await supabase.from("call_logs").select(
+          "lead_id",
+        ).eq("call_sid", callSid).maybeSingle();
+        if (linked?.lead_id) {
+          await supabase.from("leads").update({ status: "contacted" }).eq(
+            "id",
+            linked.lead_id,
+          ).eq("status", "new");
+        }
+        return xml(`<Response></Response>`);
+      }
       if (ownerDeclined) {
-        return xml(`<Response>
-  <Say voice="${CALLER_VOICE}">The team is unavailable. Please leave your name, callback number, and message after the beep.</Say>
-  ${RECORD}
-</Response>`);
+        return xml(voicemailTwiml());
       }
       if (dial && dial !== "completed" && dial !== "answered") {
         // Return voicemail immediately; the runtime keeps the alert task alive.
@@ -848,11 +945,9 @@ Deno.serve(async (req: Request) => {
             } for ${caller}`,
           );
         })());
-        return xml(`<Response>
-  <Say voice="${CALLER_VOICE}">Sorry, no one is available right now. Please leave a message after the beep.</Say>
-  ${RECORD}
-</Response>`);
+        return xml(voicemailTwiml());
       }
+      return xml(voicemailTwiml());
     }
     return xml(`<Response></Response>`);
   }
@@ -864,6 +959,11 @@ Deno.serve(async (req: Request) => {
     const callSid = (data.CallSid || data.ParentCallSid || "").trim();
     const recordingUrl = data.RecordingUrl || null;
     if (callSid && recordingUrl) {
+      await recordScreeningOutcome(
+        receptionistConfig(),
+        callSid,
+        "voicemail_received",
+      );
       const { error } = await supabase.from("call_logs")
         .update({ recording_url: recordingUrl, status: "voicemail" }).eq(
           "call_sid",
@@ -875,4 +975,5 @@ Deno.serve(async (req: Request) => {
   }
 
   return new Response("OK", { status: 200 });
-});
+}
+Deno.serve(handleCallRequest);
