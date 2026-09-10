@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import {readFileSync} from 'node:fs';
 import {createHash} from 'node:crypto';
-import {MARKETS,TARGET,BASENAME,TARGET_HASH,GUARD,rows,validateHistory,validateList,validateProbe} from './voice-screening-migration.mjs';
+import {MARKETS,TARGET,BASENAME,TARGET_HASH,GUARD,rows,validRemote,validateHistory,validateList,validateProbe} from './voice-screening-migration.mjs';
 
 test('migration hash pins reviewed bytes; history placeholders are poison',()=>{
   assert.equal(createHash('sha256').update(readFileSync(new URL('../supabase/migrations/'+BASENAME,import.meta.url))).digest('hex'),TARGET_HASH);
@@ -13,6 +13,17 @@ test('both CLI SQL envelopes are parsed, other shapes fail',()=>{
   assert.deepEqual(rows([{ok:true}]),[{ok:true}]);
   assert.deepEqual(rows({rows:[{ok:true}]}),[{ok:true}]);
   assert.throws(()=>rows({data:[]}));
+});
+test('release remote must be the exact market repository on GitHub',()=>{
+  for(const market of Object.keys(MARKETS)){
+    const path='Rconman99/'+MARKETS[market].repo;
+    assert.ok(validRemote(market,'https://github.com/'+path+'.git'));
+    assert.ok(validRemote(market,'git@github.com:'+path));
+    for(const remote of ['https://other.invalid/'+path,'https://github.com.evil.invalid/'+path,'https://github.com/unrelated/'+path,'https://github.com/'+path+'?other=true'])
+      assert.equal(validRemote(market,remote),false);
+  }
+  assert.equal(validRemote('idaho','https://github.com/Rconman99/frame-idaho-web'),false);
+  assert.equal(validRemote('utah','https://github.com/Rconman99/frame-restoration-texas-v2'),false);
 });
 for(const market of Object.keys(MARKETS)){
   test(market+' admits only exact history and the single intended pending migration',()=>{

@@ -19,6 +19,12 @@ export const MARKETS = Object.freeze({
 const check = (value, message) => { if (!value) throw new Error(message); };
 const hash = bytes => createHash('sha256').update(bytes).digest('hex');
 const equal = (a,b) => JSON.stringify(a) === JSON.stringify(b);
+export function validRemote(market, remote) {
+  if (!Object.hasOwn(MARKETS,market) || typeof remote !== 'string') return false;
+  const path='Rconman99/'+MARKETS[market].repo;
+  return ['https://github.com/'+path,'git@github.com:'+path]
+    .some(expected => remote===expected || remote===expected+'.git');
+}
 export function rows(value) {
   const result = Array.isArray(value) ? value : value?.rows;
   check(Array.isArray(result), 'unexpected SQL result shape');
@@ -82,7 +88,7 @@ export function main(args) {
   };
   const git=(...argv)=>run('git',argv).stdout.trim();
   const requireMain=()=>{git('fetch','--quiet','origin','main');check(git('rev-parse','origin/main')===sha && git('rev-parse','HEAD')===sha,'exact current-main checkout required');};
-  check(git('remote','get-url','origin').replace(/\.git$/,'').endsWith('Rconman99/'+config.repo),'market/repository mismatch');
+  check(validRemote(market,git('remote','get-url','origin')),'market/repository/host mismatch');
   requireMain();
   check(git('status','--porcelain')==='','release checkout must be clean');
   check(run(cli,['--version']).stdout.trim()==='2.113.0','CLI version mismatch');
