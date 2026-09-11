@@ -13,7 +13,7 @@
         "Holladay",
         "Herriman"
       ],
-      "activeSnapshotSha256": "468b72105871e85ced80a6030ba208f724899ba3c07b1dcea4672c5b2c444415",
+      "activeSnapshotSha256": "d7acea85bb2e5fa045ba70d29b820f2a03004ea5bd0804961272ea38a370f114",
       "diagnosisSnapshotSha256": "a1b7d5aa2acc3a5b663da345ba6eb7242e411661807ae1296f50854702b1a7eb",
       "behavior": "Ignore the stale split-URL disposition and keep affected URL-competition cities in the diagnosis lane; do not suppress, redirect, canonicalize, noindex, delete, or rewrite a route from stale evidence.",
       "requiredAction": "Refresh the bounded Holladay/Herriman split-URL diagnosis against the current GSC attribution snapshot."
@@ -88,7 +88,7 @@
     },
     "gscAttribution": {
       "file": "data/rank-tracker/SLV-GSC-URL-ATTRIBUTION-LATEST.json",
-      "sha256": "073203a7d013ae99e83b7af66005a668397cfd58152ab9368e96461382b0035d"
+      "sha256": "cafb2a1b05c1038703bbc25ff01835ca7061a7e631a2aa8556ab58500068ce7c"
     },
     "gscSplitUrlDiagnosis": {
       "file": "data/rank-tracker/SLV-GSC-SPLIT-URL-DIAGNOSIS-2026-08-12.json",
@@ -100,15 +100,15 @@
     },
     "entityHealth": {
       "file": "data/rank-tracker/SLV-ENTITY-HEALTH-2026-08-12.json",
-      "sha256": "3bc9acda6acc68e15edf2444f08943c0a9ffa0d4ce478d7995ba0d1bfd7fde5b"
+      "sha256": "1f7fdbc558bad38e3d92d9f84b0071abe2ea9d4122374e90c55e2bfe4a42fc50"
     },
     "mapsReadiness": {
       "file": "data/rank-tracker/SLV-MAPS-READINESS-2026-08-12.json",
-      "sha256": "cbfb7f2c2625f8ae67e0a67da411dae7eb8e7bd73cf1bb23b36af143091cbd23"
+      "sha256": "06a0c576f4682c567351e6984e573af583b152c91cdf0d1f1a6b1f841f9b137c"
     },
     "expansionArchitecture": {
       "file": "data/rank-tracker/SLV-EXPANSION-ARCHITECTURE-2026-08-12.json",
-      "sha256": "010a7245242d472d0b2ce3c00bbe2eb2025587f4c5897f71a4306ac19f0c8b5b"
+      "sha256": "52958f0d669326a44e28d076931fa9e9af37342cfbf730bdba2198938b2de4d1"
     },
     "corePriority": {
       "file": "data/rank-tracker/SLV-PRIORITY-2026-08-12.json",
@@ -149,7 +149,7 @@
       },
       "Holladay": {
         "file": "data/rank-tracker/HOLLADAY-ARCHITECTURE-DIAGNOSIS-2026-08-12.json",
-        "sha256": "877c50679c08e890122c7c7b33b8320cd83e5f34588498ca228da756f419682e"
+        "sha256": "e36c13fdeac3551d444a7d90c4b04d69b78c8e425712ee4d1248b623a6a8f0d6"
       },
       "Cottonwood Heights": {
         "file": "data/rank-tracker/COTTONWOOD-HEIGHTS-ARCHITECTURE-DIAGNOSIS-2026-08-12.json",
@@ -840,7 +840,7 @@
       "sources": {
         "diagnosis": {
           "file": "data/rank-tracker/HOLLADAY-ARCHITECTURE-DIAGNOSIS-2026-08-12.json",
-          "sha256": "877c50679c08e890122c7c7b33b8320cd83e5f34588498ca228da756f419682e"
+          "sha256": "e36c13fdeac3551d444a7d90c4b04d69b78c8e425712ee4d1248b623a6a8f0d6"
         },
         "panelEvidence": [
           {

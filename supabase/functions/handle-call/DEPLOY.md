@@ -36,8 +36,8 @@ test call or text.
    A non-zero exit is a hard stop: retain receipts and resume only through this
    same exact-prefix runner. Never substitute the Management API, SQL Editor,
    pasted SQL, migration repair, or a full-tree migration command.
-5. Confirm the exact-main Compliance Gate remains green. Issue a fresh,
-   single-use signed client-IP receipt for each function dispatch. Deploy
+5. Confirm the exact-main Compliance Gate remains green. The client-IP verifier
+   protects `handle-lead` and `lead-crm`, not these phone functions. Deploy
    `handle-sms` first so caller-specific `BLOCK ####` handling is live before
    alerts can begin, then deploy `handle-call`, through
    `.github/workflows/deploy-edge-function.yml` only.
@@ -75,8 +75,11 @@ Release contract:
 
 1. Merge only after every blocking check passes on the exact reviewed head SHA.
 2. Require a successful main-push Compliance Gate on the exact new main SHA.
-3. Issue a fresh single-use client-IP receipt and dispatch
+3. Dispatch
    `.github/workflows/deploy-edge-function.yml` for `handle-call` only.
+   No signed client-IP receipt is required for this function. The required
+   workflow nonce input can be a descriptive run identifier; it is not evidence
+   and does not bypass the verifier for protected form/CRM functions.
 4. Verify the deployed function version and source hash. A merge or successful
    workflow alone is not proof that the new call experience works.
 5. Do not place an automated or billable test call. Obtain a natural or

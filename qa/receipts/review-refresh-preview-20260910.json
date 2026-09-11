@@ -1,0 +1,1526 @@
+{
+  "schema_version": "1.0",
+  "contract": "frame-utah-review-refresh-preview",
+  "contract_sha256": "e9cad97d98a140aadb6a3e2ce3fb8a3a243a63e09f49fb1da1272d76f29645c1",
+  "contract_snapshot": {
+    "schema_version": "1.0",
+    "name": "frame-utah-review-refresh-preview",
+    "expected_serving_origin": "https://frame-restoration-utah-kxmf32smt-ryans-projects-51d84217.vercel.app",
+    "expected_canonical_origin": "https://www.framerestorationutah.com",
+    "freshness_markers": [
+      "google-reviews-36"
+    ],
+    "max_redirects": 0,
+    "min_touch_target_css_px": 44,
+    "max_fixed_viewport_ratio": 0.15,
+    "max_landscape_fixed_viewport_ratio": 0.24,
+    "stability_wait_ms": 500,
+    "readiness_selector": "body",
+    "viewports": [
+      {
+        "name": "small-320",
+        "width": 320,
+        "height": 568
+      },
+      {
+        "name": "android-360",
+        "width": 360,
+        "height": 800
+      },
+      {
+        "name": "iphone-393",
+        "width": 393,
+        "height": 852
+      },
+      {
+        "name": "large-430",
+        "width": 430,
+        "height": 932
+      },
+      {
+        "name": "landscape-740",
+        "width": 740,
+        "height": 360
+      }
+    ],
+    "routes": [
+      {
+        "path": "/",
+        "expected_canonical_path": "/"
+      },
+      {
+        "path": "/pages/about",
+        "expected_canonical_path": "/pages/about"
+      }
+    ],
+    "critical_targets": [
+      {
+        "selector": "#menuBtn",
+        "max_viewport_width": 900
+      },
+      {
+        "selector": ".nav-call-mobile",
+        "expected_href_pattern": "^tel:\\+14352928802$",
+        "max_viewport_width": 900
+      },
+      {
+        "selector": ".sticky-call-phone",
+        "expected_href_pattern": "^tel:\\+14352928802$",
+        "max_viewport_width": 900
+      }
+    ],
+    "fixed_elements": [
+      {
+        "selector": "nav",
+        "max_viewport_ratio": 0.15,
+        "max_landscape_viewport_ratio": 0.24
+      },
+      {
+        "selector": ".sticky-call",
+        "max_viewport_ratio": 0.15,
+        "max_landscape_viewport_ratio": 0.24
+      }
+    ],
+    "forbidden_visible_selectors": [
+      ".fr-modal-overlay.open"
+    ],
+    "max_console_errors": 0,
+    "max_page_errors": 0,
+    "allowed_console_error_patterns": [],
+    "canonical_policy": "match"
+  },
+  "stage": "preview",
+  "base_url": "https://frame-restoration-utah-kxmf32smt-ryans-projects-51d84217.vercel.app",
+  "observed_at": "2026-09-10T17:46:11.631330Z",
+  "verdict": "pass",
+  "summary": {
+    "checks": 170,
+    "failures": 0,
+    "routes": 2,
+    "viewports": 5
+  },
+  "runs": [
+    {
+      "route": "/",
+      "viewport": {
+        "name": "small-320",
+        "width": 320,
+        "height": 568
+      },
+      "url": "https://frame-restoration-utah-kxmf32smt-ryans-projects-51d84217.vercel.app/",
+      "checks": [
+        {
+          "name": "http-200",
+          "pass": true,
+          "detail": "status=200"
+        },
+        {
+          "name": "redirect-budget",
+          "pass": true,
+          "detail": "redirects=0 cap=0"
+        },
+        {
+          "name": "serving-origin",
+          "pass": true,
+          "detail": "final=https://frame-restoration-utah-kxmf32smt-ryans-projects-51d84217.vercel.app expected=https://frame-restoration-utah-kxmf32smt-ryans-projects-51d84217.vercel.app"
+        },
+        {
+          "name": "viewport-meta",
+          "pass": true,
+          "detail": "content='width=device-width, initial-scale=1.0, viewport-fit=cover'"
+        },
+        {
+          "name": "canonical",
+          "pass": true,
+          "detail": "count=1 actual='https://www.framerestorationutah.com/' expected='https://www.framerestorationutah.com/'"
+        },
+        {
+          "name": "freshness:google-reviews-36",
+          "pass": true,
+          "detail": "marker present"
+        },
+        {
+          "name": "horizontal-reflow",
+          "pass": true,
+          "detail": "scrollWidth=320 innerWidth=320"
+        },
+        {
+          "name": "critical-target:#menuBtn",
+          "pass": true,
+          "detail": "present, sized, hittable, and href-valid"
+        },
+        {
+          "name": "critical-target:.nav-call-mobile",
+          "pass": true,
+          "detail": "present, sized, hittable, and href-valid"
+        },
+        {
+          "name": "critical-target:.sticky-call-phone",
+          "pass": true,
+          "detail": "present, sized, hittable, and href-valid"
+        },
+        {
+          "name": "fixed-element:nav",
+          "pass": true,
+          "detail": "present and within orientation budget"
+        },
+        {
+          "name": "fixed-element:.sticky-call",
+          "pass": true,
+          "detail": "present and within orientation budget"
+        },
+        {
+          "name": "forbidden-visible:.fr-modal-overlay.open",
+          "pass": true,
+          "detail": "visible=0"
+        },
+        {
+          "name": "focus-not-obscured",
+          "pass": true,
+          "detail": "sampled keyboard focus is exposed"
+        },
+        {
+          "name": "forbidden-visible-post-focus:.fr-modal-overlay.open",
+          "pass": true,
+          "detail": "visible=0"
+        },
+        {
+          "name": "console-errors",
+          "pass": true,
+          "detail": "count=0 cap=0 errors=[] guard_suppressed=0"
+        },
+        {
+          "name": "page-errors",
+          "pass": true,
+          "detail": "count=0 cap=0 errors=[]"
+        }
+      ],
+      "failures": [],
+      "http": {
+        "status": 200,
+        "final_url": "https://frame-restoration-utah-kxmf32smt-ryans-projects-51d84217.vercel.app/",
+        "redirects": 0,
+        "headers": {
+          "access-control-allow-origin": "*",
+          "age": "0",
+          "cache-control": "public, max-age=0, must-revalidate",
+          "content-disposition": "inline",
+          "content-encoding": "br",
+          "content-security-policy": "default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'self'; form-action 'self' https://hdcflshhomzildwqlmwh.supabase.co; script-src 'self' 'unsafe-inline' https://us.i.posthog.com https://us-assets.i.posthog.com https://cdnjs.cloudflare.com https://api.mapbox.com; worker-src 'self' blob:; child-src blob:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://api.mapbox.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: blob: https://www.framerestorationutah.com https://cdnjs.cloudflare.com https://*.tile.openstreetmap.org https://*.mapbox.com; frame-src https://www.google.com; connect-src 'self' https://us.i.posthog.com https://hdcflshhomzildwqlmwh.supabase.co https://api.mapbox.com https://events.mapbox.com https://*.tiles.mapbox.com https://api.weather.gov https://www.googleapis.com",
+          "content-type": "text/html; charset=utf-8",
+          "date": "Thu, 10 Sep 2026 17:46:12 GMT",
+          "etag": "W/\"4a784a9d5a22bc7680473b27390d06f0\"",
+          "last-modified": "Thu, 10 Sep 2026 17:46:12 GMT",
+          "permissions-policy": "camera=(), microphone=(), geolocation=()",
+          "referrer-policy": "strict-origin-when-cross-origin",
+          "server": "Vercel",
+          "strict-transport-security": "max-age=31536000; includeSubDomains; preload",
+          "x-content-type-options": "nosniff",
+          "x-frame-options": "SAMEORIGIN",
+          "x-robots-tag": "noindex",
+          "x-vercel-cache": "MISS",
+          "x-vercel-id": "pdx1::kpktb-1789062372458-7df0a334b0d6",
+          "x-xss-protection": "1; mode=block"
+        }
+      },
+      "screenshot": {
+        "path": "/Users/agenticmac/projects/_wt-utah-reviews-20260910/qa/screenshots/review-refresh-preview-20260910/home--8a5edab28263--small-320.png",
+        "sha256": "6e8ac40d0281df2f8a41f6978f9a6d4f91c1f895a66b6cbe769d5c571a98b070",
+        "captured_scroll_y": 0
+      },
+      "network_guard": {
+        "mode": "read_only",
+        "auth_bootstrap_used": false,
+        "protection_bypass_used": true,
+        "preview_toolbar_suppression_requested": true,
+        "service_workers_blocked": true,
+        "websockets_blocked": true,
+        "stability_wait_ms": 500,
+        "readiness_selector": "body",
+        "blocked_count": 0,
+        "blocked": [],
+        "console_errors_suppressed": 0
+      }
+    },
+    {
+      "route": "/",
+      "viewport": {
+        "name": "android-360",
+        "width": 360,
+        "height": 800
+      },
+      "url": "https://frame-restoration-utah-kxmf32smt-ryans-projects-51d84217.vercel.app/",
+      "checks": [
+        {
+          "name": "http-200",
+          "pass": true,
+          "detail": "status=200"
+        },
+        {
+          "name": "redirect-budget",
+          "pass": true,
+          "detail": "redirects=0 cap=0"
+        },
+        {
+          "name": "serving-origin",
+          "pass": true,
+          "detail": "final=https://frame-restoration-utah-kxmf32smt-ryans-projects-51d84217.vercel.app expected=https://frame-restoration-utah-kxmf32smt-ryans-projects-51d84217.vercel.app"
+        },
+        {
+          "name": "viewport-meta",
+          "pass": true,
+          "detail": "content='width=device-width, initial-scale=1.0, viewport-fit=cover'"
+        },
+        {
+          "name": "canonical",
+          "pass": true,
+          "detail": "count=1 actual='https://www.framerestorationutah.com/' expected='https://www.framerestorationutah.com/'"
+        },
+        {
+          "name": "freshness:google-reviews-36",
+          "pass": true,
+          "detail": "marker present"
+        },
+        {
+          "name": "horizontal-reflow",
+          "pass": true,
+          "detail": "scrollWidth=360 innerWidth=360"
+        },
+        {
+          "name": "critical-target:#menuBtn",
+          "pass": true,
+          "detail": "present, sized, hittable, and href-valid"
+        },
+        {
+          "name": "critical-target:.nav-call-mobile",
+          "pass": true,
+          "detail": "present, sized, hittable, and href-valid"
+        },
+        {
+          "name": "critical-target:.sticky-call-phone",
+          "pass": true,
+          "detail": "present, sized, hittable, and href-valid"
+        },
+        {
+          "name": "fixed-element:nav",
+          "pass": true,
+          "detail": "present and within orientation budget"
+        },
+        {
+          "name": "fixed-element:.sticky-call",
+          "pass": true,
+          "detail": "present and within orientation budget"
+        },
+        {
+          "name": "forbidden-visible:.fr-modal-overlay.open",
+          "pass": true,
+          "detail": "visible=0"
+        },
+        {
+          "name": "focus-not-obscured",
+          "pass": true,
+          "detail": "sampled keyboard focus is exposed"
+        },
+        {
+          "name": "forbidden-visible-post-focus:.fr-modal-overlay.open",
+          "pass": true,
+          "detail": "visible=0"
+        },
+        {
+          "name": "console-errors",
+          "pass": true,
+          "detail": "count=0 cap=0 errors=[] guard_suppressed=0"
+        },
+        {
+          "name": "page-errors",
+          "pass": true,
+          "detail": "count=0 cap=0 errors=[]"
+        }
+      ],
+      "failures": [],
+      "http": {
+        "status": 200,
+        "final_url": "https://frame-restoration-utah-kxmf32smt-ryans-projects-51d84217.vercel.app/",
+        "redirects": 0,
+        "headers": {
+          "access-control-allow-origin": "*",
+          "age": "2",
+          "cache-control": "public, max-age=0, must-revalidate",
+          "content-disposition": "inline",
+          "content-encoding": "br",
+          "content-security-policy": "default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'self'; form-action 'self' https://hdcflshhomzildwqlmwh.supabase.co; script-src 'self' 'unsafe-inline' https://us.i.posthog.com https://us-assets.i.posthog.com https://cdnjs.cloudflare.com https://api.mapbox.com; worker-src 'self' blob:; child-src blob:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://api.mapbox.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: blob: https://www.framerestorationutah.com https://cdnjs.cloudflare.com https://*.tile.openstreetmap.org https://*.mapbox.com; frame-src https://www.google.com; connect-src 'self' https://us.i.posthog.com https://hdcflshhomzildwqlmwh.supabase.co https://api.mapbox.com https://events.mapbox.com https://*.tiles.mapbox.com https://api.weather.gov https://www.googleapis.com",
+          "content-type": "text/html; charset=utf-8",
+          "date": "Thu, 10 Sep 2026 17:46:15 GMT",
+          "etag": "W/\"4a784a9d5a22bc7680473b27390d06f0\"",
+          "last-modified": "Thu, 10 Sep 2026 17:46:12 GMT",
+          "permissions-policy": "camera=(), microphone=(), geolocation=()",
+          "referrer-policy": "strict-origin-when-cross-origin",
+          "server": "Vercel",
+          "strict-transport-security": "max-age=31536000; includeSubDomains; preload",
+          "x-content-type-options": "nosniff",
+          "x-frame-options": "SAMEORIGIN",
+          "x-robots-tag": "noindex",
+          "x-vercel-cache": "HIT",
+          "x-vercel-id": "pdx1::284lj-1789062375382-5c1f189d820b",
+          "x-xss-protection": "1; mode=block"
+        }
+      },
+      "screenshot": {
+        "path": "/Users/agenticmac/projects/_wt-utah-reviews-20260910/qa/screenshots/review-refresh-preview-20260910/home--8a5edab28263--android-360.png",
+        "sha256": "9daa978632edab4b8d4bcb57d7bb0893350ce5038ff8871239cec646858de2dd",
+        "captured_scroll_y": 0
+      },
+      "network_guard": {
+        "mode": "read_only",
+        "auth_bootstrap_used": false,
+        "protection_bypass_used": true,
+        "preview_toolbar_suppression_requested": true,
+        "service_workers_blocked": true,
+        "websockets_blocked": true,
+        "stability_wait_ms": 500,
+        "readiness_selector": "body",
+        "blocked_count": 0,
+        "blocked": [],
+        "console_errors_suppressed": 0
+      }
+    },
+    {
+      "route": "/",
+      "viewport": {
+        "name": "iphone-393",
+        "width": 393,
+        "height": 852
+      },
+      "url": "https://frame-restoration-utah-kxmf32smt-ryans-projects-51d84217.vercel.app/",
+      "checks": [
+        {
+          "name": "http-200",
+          "pass": true,
+          "detail": "status=200"
+        },
+        {
+          "name": "redirect-budget",
+          "pass": true,
+          "detail": "redirects=0 cap=0"
+        },
+        {
+          "name": "serving-origin",
+          "pass": true,
+          "detail": "final=https://frame-restoration-utah-kxmf32smt-ryans-projects-51d84217.vercel.app expected=https://frame-restoration-utah-kxmf32smt-ryans-projects-51d84217.vercel.app"
+        },
+        {
+          "name": "viewport-meta",
+          "pass": true,
+          "detail": "content='width=device-width, initial-scale=1.0, viewport-fit=cover'"
+        },
+        {
+          "name": "canonical",
+          "pass": true,
+          "detail": "count=1 actual='https://www.framerestorationutah.com/' expected='https://www.framerestorationutah.com/'"
+        },
+        {
+          "name": "freshness:google-reviews-36",
+          "pass": true,
+          "detail": "marker present"
+        },
+        {
+          "name": "horizontal-reflow",
+          "pass": true,
+          "detail": "scrollWidth=393 innerWidth=393"
+        },
+        {
+          "name": "critical-target:#menuBtn",
+          "pass": true,
+          "detail": "present, sized, hittable, and href-valid"
+        },
+        {
+          "name": "critical-target:.nav-call-mobile",
+          "pass": true,
+          "detail": "present, sized, hittable, and href-valid"
+        },
+        {
+          "name": "critical-target:.sticky-call-phone",
+          "pass": true,
+          "detail": "present, sized, hittable, and href-valid"
+        },
+        {
+          "name": "fixed-element:nav",
+          "pass": true,
+          "detail": "present and within orientation budget"
+        },
+        {
+          "name": "fixed-element:.sticky-call",
+          "pass": true,
+          "detail": "present and within orientation budget"
+        },
+        {
+          "name": "forbidden-visible:.fr-modal-overlay.open",
+          "pass": true,
+          "detail": "visible=0"
+        },
+        {
+          "name": "focus-not-obscured",
+          "pass": true,
+          "detail": "sampled keyboard focus is exposed"
+        },
+        {
+          "name": "forbidden-visible-post-focus:.fr-modal-overlay.open",
+          "pass": true,
+          "detail": "visible=0"
+        },
+        {
+          "name": "console-errors",
+          "pass": true,
+          "detail": "count=0 cap=0 errors=[] guard_suppressed=0"
+        },
+        {
+          "name": "page-errors",
+          "pass": true,
+          "detail": "count=0 cap=0 errors=[]"
+        }
+      ],
+      "failures": [],
+      "http": {
+        "status": 200,
+        "final_url": "https://frame-restoration-utah-kxmf32smt-ryans-projects-51d84217.vercel.app/",
+        "redirects": 0,
+        "headers": {
+          "access-control-allow-origin": "*",
+          "age": "5",
+          "cache-control": "public, max-age=0, must-revalidate",
+          "content-disposition": "inline",
+          "content-encoding": "br",
+          "content-security-policy": "default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'self'; form-action 'self' https://hdcflshhomzildwqlmwh.supabase.co; script-src 'self' 'unsafe-inline' https://us.i.posthog.com https://us-assets.i.posthog.com https://cdnjs.cloudflare.com https://api.mapbox.com; worker-src 'self' blob:; child-src blob:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://api.mapbox.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: blob: https://www.framerestorationutah.com https://cdnjs.cloudflare.com https://*.tile.openstreetmap.org https://*.mapbox.com; frame-src https://www.google.com; connect-src 'self' https://us.i.posthog.com https://hdcflshhomzildwqlmwh.supabase.co https://api.mapbox.com https://events.mapbox.com https://*.tiles.mapbox.com https://api.weather.gov https://www.googleapis.com",
+          "content-type": "text/html; charset=utf-8",
+          "date": "Thu, 10 Sep 2026 17:46:17 GMT",
+          "etag": "W/\"4a784a9d5a22bc7680473b27390d06f0\"",
+          "last-modified": "Thu, 10 Sep 2026 17:46:12 GMT",
+          "permissions-policy": "camera=(), microphone=(), geolocation=()",
+          "referrer-policy": "strict-origin-when-cross-origin",
+          "server": "Vercel",
+          "strict-transport-security": "max-age=31536000; includeSubDomains; preload",
+          "x-content-type-options": "nosniff",
+          "x-frame-options": "SAMEORIGIN",
+          "x-robots-tag": "noindex",
+          "x-vercel-cache": "HIT",
+          "x-vercel-id": "pdx1::qsgxp-1789062377905-9d4881af0446",
+          "x-xss-protection": "1; mode=block"
+        }
+      },
+      "screenshot": {
+        "path": "/Users/agenticmac/projects/_wt-utah-reviews-20260910/qa/screenshots/review-refresh-preview-20260910/home--8a5edab28263--iphone-393.png",
+        "sha256": "436fa835ab19736ead8ff169a9532ec8233acef81df90ecb2ab88b762b47b82a",
+        "captured_scroll_y": 0
+      },
+      "network_guard": {
+        "mode": "read_only",
+        "auth_bootstrap_used": false,
+        "protection_bypass_used": true,
+        "preview_toolbar_suppression_requested": true,
+        "service_workers_blocked": true,
+        "websockets_blocked": true,
+        "stability_wait_ms": 500,
+        "readiness_selector": "body",
+        "blocked_count": 0,
+        "blocked": [],
+        "console_errors_suppressed": 0
+      }
+    },
+    {
+      "route": "/",
+      "viewport": {
+        "name": "large-430",
+        "width": 430,
+        "height": 932
+      },
+      "url": "https://frame-restoration-utah-kxmf32smt-ryans-projects-51d84217.vercel.app/",
+      "checks": [
+        {
+          "name": "http-200",
+          "pass": true,
+          "detail": "status=200"
+        },
+        {
+          "name": "redirect-budget",
+          "pass": true,
+          "detail": "redirects=0 cap=0"
+        },
+        {
+          "name": "serving-origin",
+          "pass": true,
+          "detail": "final=https://frame-restoration-utah-kxmf32smt-ryans-projects-51d84217.vercel.app expected=https://frame-restoration-utah-kxmf32smt-ryans-projects-51d84217.vercel.app"
+        },
+        {
+          "name": "viewport-meta",
+          "pass": true,
+          "detail": "content='width=device-width, initial-scale=1.0, viewport-fit=cover'"
+        },
+        {
+          "name": "canonical",
+          "pass": true,
+          "detail": "count=1 actual='https://www.framerestorationutah.com/' expected='https://www.framerestorationutah.com/'"
+        },
+        {
+          "name": "freshness:google-reviews-36",
+          "pass": true,
+          "detail": "marker present"
+        },
+        {
+          "name": "horizontal-reflow",
+          "pass": true,
+          "detail": "scrollWidth=430 innerWidth=430"
+        },
+        {
+          "name": "critical-target:#menuBtn",
+          "pass": true,
+          "detail": "present, sized, hittable, and href-valid"
+        },
+        {
+          "name": "critical-target:.nav-call-mobile",
+          "pass": true,
+          "detail": "present, sized, hittable, and href-valid"
+        },
+        {
+          "name": "critical-target:.sticky-call-phone",
+          "pass": true,
+          "detail": "present, sized, hittable, and href-valid"
+        },
+        {
+          "name": "fixed-element:nav",
+          "pass": true,
+          "detail": "present and within orientation budget"
+        },
+        {
+          "name": "fixed-element:.sticky-call",
+          "pass": true,
+          "detail": "present and within orientation budget"
+        },
+        {
+          "name": "forbidden-visible:.fr-modal-overlay.open",
+          "pass": true,
+          "detail": "visible=0"
+        },
+        {
+          "name": "focus-not-obscured",
+          "pass": true,
+          "detail": "sampled keyboard focus is exposed"
+        },
+        {
+          "name": "forbidden-visible-post-focus:.fr-modal-overlay.open",
+          "pass": true,
+          "detail": "visible=0"
+        },
+        {
+          "name": "console-errors",
+          "pass": true,
+          "detail": "count=0 cap=0 errors=[] guard_suppressed=0"
+        },
+        {
+          "name": "page-errors",
+          "pass": true,
+          "detail": "count=0 cap=0 errors=[]"
+        }
+      ],
+      "failures": [],
+      "http": {
+        "status": 200,
+        "final_url": "https://frame-restoration-utah-kxmf32smt-ryans-projects-51d84217.vercel.app/",
+        "redirects": 0,
+        "headers": {
+          "access-control-allow-origin": "*",
+          "age": "7",
+          "cache-control": "public, max-age=0, must-revalidate",
+          "content-disposition": "inline",
+          "content-encoding": "br",
+          "content-security-policy": "default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'self'; form-action 'self' https://hdcflshhomzildwqlmwh.supabase.co; script-src 'self' 'unsafe-inline' https://us.i.posthog.com https://us-assets.i.posthog.com https://cdnjs.cloudflare.com https://api.mapbox.com; worker-src 'self' blob:; child-src blob:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://api.mapbox.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: blob: https://www.framerestorationutah.com https://cdnjs.cloudflare.com https://*.tile.openstreetmap.org https://*.mapbox.com; frame-src https://www.google.com; connect-src 'self' https://us.i.posthog.com https://hdcflshhomzildwqlmwh.supabase.co https://api.mapbox.com https://events.mapbox.com https://*.tiles.mapbox.com https://api.weather.gov https://www.googleapis.com",
+          "content-type": "text/html; charset=utf-8",
+          "date": "Thu, 10 Sep 2026 17:46:20 GMT",
+          "etag": "W/\"4a784a9d5a22bc7680473b27390d06f0\"",
+          "last-modified": "Thu, 10 Sep 2026 17:46:12 GMT",
+          "permissions-policy": "camera=(), microphone=(), geolocation=()",
+          "referrer-policy": "strict-origin-when-cross-origin",
+          "server": "Vercel",
+          "strict-transport-security": "max-age=31536000; includeSubDomains; preload",
+          "x-content-type-options": "nosniff",
+          "x-frame-options": "SAMEORIGIN",
+          "x-robots-tag": "noindex",
+          "x-vercel-cache": "HIT",
+          "x-vercel-id": "pdx1::gh8v8-1789062380404-6a17e4d80067",
+          "x-xss-protection": "1; mode=block"
+        }
+      },
+      "screenshot": {
+        "path": "/Users/agenticmac/projects/_wt-utah-reviews-20260910/qa/screenshots/review-refresh-preview-20260910/home--8a5edab28263--large-430.png",
+        "sha256": "74e5e9e0959409a83c50f4a24d9e30f33e4acdda485e4069633bd398969a800c",
+        "captured_scroll_y": 0
+      },
+      "network_guard": {
+        "mode": "read_only",
+        "auth_bootstrap_used": false,
+        "protection_bypass_used": true,
+        "preview_toolbar_suppression_requested": true,
+        "service_workers_blocked": true,
+        "websockets_blocked": true,
+        "stability_wait_ms": 500,
+        "readiness_selector": "body",
+        "blocked_count": 0,
+        "blocked": [],
+        "console_errors_suppressed": 0
+      }
+    },
+    {
+      "route": "/",
+      "viewport": {
+        "name": "landscape-740",
+        "width": 740,
+        "height": 360
+      },
+      "url": "https://frame-restoration-utah-kxmf32smt-ryans-projects-51d84217.vercel.app/",
+      "checks": [
+        {
+          "name": "http-200",
+          "pass": true,
+          "detail": "status=200"
+        },
+        {
+          "name": "redirect-budget",
+          "pass": true,
+          "detail": "redirects=0 cap=0"
+        },
+        {
+          "name": "serving-origin",
+          "pass": true,
+          "detail": "final=https://frame-restoration-utah-kxmf32smt-ryans-projects-51d84217.vercel.app expected=https://frame-restoration-utah-kxmf32smt-ryans-projects-51d84217.vercel.app"
+        },
+        {
+          "name": "viewport-meta",
+          "pass": true,
+          "detail": "content='width=device-width, initial-scale=1.0, viewport-fit=cover'"
+        },
+        {
+          "name": "canonical",
+          "pass": true,
+          "detail": "count=1 actual='https://www.framerestorationutah.com/' expected='https://www.framerestorationutah.com/'"
+        },
+        {
+          "name": "freshness:google-reviews-36",
+          "pass": true,
+          "detail": "marker present"
+        },
+        {
+          "name": "horizontal-reflow",
+          "pass": true,
+          "detail": "scrollWidth=740 innerWidth=740"
+        },
+        {
+          "name": "critical-target:#menuBtn",
+          "pass": true,
+          "detail": "present, sized, hittable, and href-valid"
+        },
+        {
+          "name": "critical-target:.nav-call-mobile",
+          "pass": true,
+          "detail": "present, sized, hittable, and href-valid"
+        },
+        {
+          "name": "critical-target:.sticky-call-phone",
+          "pass": true,
+          "detail": "present, sized, hittable, and href-valid"
+        },
+        {
+          "name": "fixed-element:nav",
+          "pass": true,
+          "detail": "present and within orientation budget"
+        },
+        {
+          "name": "fixed-element:.sticky-call",
+          "pass": true,
+          "detail": "present and within orientation budget"
+        },
+        {
+          "name": "forbidden-visible:.fr-modal-overlay.open",
+          "pass": true,
+          "detail": "visible=0"
+        },
+        {
+          "name": "focus-not-obscured",
+          "pass": true,
+          "detail": "sampled keyboard focus is exposed"
+        },
+        {
+          "name": "forbidden-visible-post-focus:.fr-modal-overlay.open",
+          "pass": true,
+          "detail": "visible=0"
+        },
+        {
+          "name": "console-errors",
+          "pass": true,
+          "detail": "count=0 cap=0 errors=[] guard_suppressed=0"
+        },
+        {
+          "name": "page-errors",
+          "pass": true,
+          "detail": "count=0 cap=0 errors=[]"
+        }
+      ],
+      "failures": [],
+      "http": {
+        "status": 200,
+        "final_url": "https://frame-restoration-utah-kxmf32smt-ryans-projects-51d84217.vercel.app/",
+        "redirects": 0,
+        "headers": {
+          "access-control-allow-origin": "*",
+          "age": "10",
+          "cache-control": "public, max-age=0, must-revalidate",
+          "content-disposition": "inline",
+          "content-encoding": "br",
+          "content-security-policy": "default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'self'; form-action 'self' https://hdcflshhomzildwqlmwh.supabase.co; script-src 'self' 'unsafe-inline' https://us.i.posthog.com https://us-assets.i.posthog.com https://cdnjs.cloudflare.com https://api.mapbox.com; worker-src 'self' blob:; child-src blob:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://api.mapbox.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: blob: https://www.framerestorationutah.com https://cdnjs.cloudflare.com https://*.tile.openstreetmap.org https://*.mapbox.com; frame-src https://www.google.com; connect-src 'self' https://us.i.posthog.com https://hdcflshhomzildwqlmwh.supabase.co https://api.mapbox.com https://events.mapbox.com https://*.tiles.mapbox.com https://api.weather.gov https://www.googleapis.com",
+          "content-type": "text/html; charset=utf-8",
+          "date": "Thu, 10 Sep 2026 17:46:22 GMT",
+          "etag": "W/\"4a784a9d5a22bc7680473b27390d06f0\"",
+          "last-modified": "Thu, 10 Sep 2026 17:46:12 GMT",
+          "permissions-policy": "camera=(), microphone=(), geolocation=()",
+          "referrer-policy": "strict-origin-when-cross-origin",
+          "server": "Vercel",
+          "strict-transport-security": "max-age=31536000; includeSubDomains; preload",
+          "x-content-type-options": "nosniff",
+          "x-frame-options": "SAMEORIGIN",
+          "x-robots-tag": "noindex",
+          "x-vercel-cache": "HIT",
+          "x-vercel-id": "pdx1::mlfgl-1789062382986-de49967dfd5c",
+          "x-xss-protection": "1; mode=block"
+        }
+      },
+      "screenshot": {
+        "path": "/Users/agenticmac/projects/_wt-utah-reviews-20260910/qa/screenshots/review-refresh-preview-20260910/home--8a5edab28263--landscape-740.png",
+        "sha256": "1cc5d5c73fa994a076f26d110e1c64c5b878f48860399811dd96ecf1d6b5dda8",
+        "captured_scroll_y": 0
+      },
+      "network_guard": {
+        "mode": "read_only",
+        "auth_bootstrap_used": false,
+        "protection_bypass_used": true,
+        "preview_toolbar_suppression_requested": true,
+        "service_workers_blocked": true,
+        "websockets_blocked": true,
+        "stability_wait_ms": 500,
+        "readiness_selector": "body",
+        "blocked_count": 0,
+        "blocked": [],
+        "console_errors_suppressed": 0
+      }
+    },
+    {
+      "route": "/pages/about",
+      "viewport": {
+        "name": "small-320",
+        "width": 320,
+        "height": 568
+      },
+      "url": "https://frame-restoration-utah-kxmf32smt-ryans-projects-51d84217.vercel.app/pages/about",
+      "checks": [
+        {
+          "name": "http-200",
+          "pass": true,
+          "detail": "status=200"
+        },
+        {
+          "name": "redirect-budget",
+          "pass": true,
+          "detail": "redirects=0 cap=0"
+        },
+        {
+          "name": "serving-origin",
+          "pass": true,
+          "detail": "final=https://frame-restoration-utah-kxmf32smt-ryans-projects-51d84217.vercel.app expected=https://frame-restoration-utah-kxmf32smt-ryans-projects-51d84217.vercel.app"
+        },
+        {
+          "name": "viewport-meta",
+          "pass": true,
+          "detail": "content='width=device-width, initial-scale=1.0'"
+        },
+        {
+          "name": "canonical",
+          "pass": true,
+          "detail": "count=1 actual='https://www.framerestorationutah.com/pages/about' expected='https://www.framerestorationutah.com/pages/about'"
+        },
+        {
+          "name": "freshness:google-reviews-36",
+          "pass": true,
+          "detail": "marker present"
+        },
+        {
+          "name": "horizontal-reflow",
+          "pass": true,
+          "detail": "scrollWidth=320 innerWidth=320"
+        },
+        {
+          "name": "critical-target:#menuBtn",
+          "pass": true,
+          "detail": "present, sized, hittable, and href-valid"
+        },
+        {
+          "name": "critical-target:.nav-call-mobile",
+          "pass": true,
+          "detail": "present, sized, hittable, and href-valid"
+        },
+        {
+          "name": "critical-target:.sticky-call-phone",
+          "pass": true,
+          "detail": "present, sized, hittable, and href-valid"
+        },
+        {
+          "name": "fixed-element:nav",
+          "pass": true,
+          "detail": "present and within orientation budget"
+        },
+        {
+          "name": "fixed-element:.sticky-call",
+          "pass": true,
+          "detail": "present and within orientation budget"
+        },
+        {
+          "name": "forbidden-visible:.fr-modal-overlay.open",
+          "pass": true,
+          "detail": "visible=0"
+        },
+        {
+          "name": "focus-not-obscured",
+          "pass": true,
+          "detail": "sampled keyboard focus is exposed"
+        },
+        {
+          "name": "forbidden-visible-post-focus:.fr-modal-overlay.open",
+          "pass": true,
+          "detail": "visible=0"
+        },
+        {
+          "name": "console-errors",
+          "pass": true,
+          "detail": "count=0 cap=0 errors=[] guard_suppressed=0"
+        },
+        {
+          "name": "page-errors",
+          "pass": true,
+          "detail": "count=0 cap=0 errors=[]"
+        }
+      ],
+      "failures": [],
+      "http": {
+        "status": 200,
+        "final_url": "https://frame-restoration-utah-kxmf32smt-ryans-projects-51d84217.vercel.app/pages/about",
+        "redirects": 0,
+        "headers": {
+          "access-control-allow-origin": "*",
+          "age": "0",
+          "cache-control": "public, max-age=0, must-revalidate",
+          "content-disposition": "inline; filename=\"about\"",
+          "content-encoding": "br",
+          "content-security-policy": "default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'self'; form-action 'self' https://hdcflshhomzildwqlmwh.supabase.co; script-src 'self' 'unsafe-inline' https://us.i.posthog.com https://us-assets.i.posthog.com https://cdnjs.cloudflare.com https://api.mapbox.com; worker-src 'self' blob:; child-src blob:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://api.mapbox.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: blob: https://www.framerestorationutah.com https://cdnjs.cloudflare.com https://*.tile.openstreetmap.org https://*.mapbox.com; frame-src https://www.google.com; connect-src 'self' https://us.i.posthog.com https://hdcflshhomzildwqlmwh.supabase.co https://api.mapbox.com https://events.mapbox.com https://*.tiles.mapbox.com https://api.weather.gov https://www.googleapis.com",
+          "content-type": "text/html; charset=utf-8",
+          "date": "Thu, 10 Sep 2026 17:46:25 GMT",
+          "etag": "W/\"3b73d5423705240dee1f4862239846ff\"",
+          "last-modified": "Thu, 10 Sep 2026 17:46:25 GMT",
+          "permissions-policy": "camera=(), microphone=(), geolocation=()",
+          "referrer-policy": "strict-origin-when-cross-origin",
+          "server": "Vercel",
+          "strict-transport-security": "max-age=31536000; includeSubDomains; preload",
+          "x-content-type-options": "nosniff",
+          "x-frame-options": "SAMEORIGIN",
+          "x-robots-tag": "noindex",
+          "x-vercel-cache": "MISS",
+          "x-vercel-id": "pdx1::xpbbn-1789062385484-a4f628eada01",
+          "x-xss-protection": "1; mode=block"
+        }
+      },
+      "screenshot": {
+        "path": "/Users/agenticmac/projects/_wt-utah-reviews-20260910/qa/screenshots/review-refresh-preview-20260910/pages-about--2bec1cc40090--small-320.png",
+        "sha256": "e9b650ff652260dc294711cb37d154a9fbe98d618c3059946a9d2d226333ca53",
+        "captured_scroll_y": 0
+      },
+      "network_guard": {
+        "mode": "read_only",
+        "auth_bootstrap_used": false,
+        "protection_bypass_used": true,
+        "preview_toolbar_suppression_requested": true,
+        "service_workers_blocked": true,
+        "websockets_blocked": true,
+        "stability_wait_ms": 500,
+        "readiness_selector": "body",
+        "blocked_count": 0,
+        "blocked": [],
+        "console_errors_suppressed": 0
+      }
+    },
+    {
+      "route": "/pages/about",
+      "viewport": {
+        "name": "android-360",
+        "width": 360,
+        "height": 800
+      },
+      "url": "https://frame-restoration-utah-kxmf32smt-ryans-projects-51d84217.vercel.app/pages/about",
+      "checks": [
+        {
+          "name": "http-200",
+          "pass": true,
+          "detail": "status=200"
+        },
+        {
+          "name": "redirect-budget",
+          "pass": true,
+          "detail": "redirects=0 cap=0"
+        },
+        {
+          "name": "serving-origin",
+          "pass": true,
+          "detail": "final=https://frame-restoration-utah-kxmf32smt-ryans-projects-51d84217.vercel.app expected=https://frame-restoration-utah-kxmf32smt-ryans-projects-51d84217.vercel.app"
+        },
+        {
+          "name": "viewport-meta",
+          "pass": true,
+          "detail": "content='width=device-width, initial-scale=1.0'"
+        },
+        {
+          "name": "canonical",
+          "pass": true,
+          "detail": "count=1 actual='https://www.framerestorationutah.com/pages/about' expected='https://www.framerestorationutah.com/pages/about'"
+        },
+        {
+          "name": "freshness:google-reviews-36",
+          "pass": true,
+          "detail": "marker present"
+        },
+        {
+          "name": "horizontal-reflow",
+          "pass": true,
+          "detail": "scrollWidth=360 innerWidth=360"
+        },
+        {
+          "name": "critical-target:#menuBtn",
+          "pass": true,
+          "detail": "present, sized, hittable, and href-valid"
+        },
+        {
+          "name": "critical-target:.nav-call-mobile",
+          "pass": true,
+          "detail": "present, sized, hittable, and href-valid"
+        },
+        {
+          "name": "critical-target:.sticky-call-phone",
+          "pass": true,
+          "detail": "present, sized, hittable, and href-valid"
+        },
+        {
+          "name": "fixed-element:nav",
+          "pass": true,
+          "detail": "present and within orientation budget"
+        },
+        {
+          "name": "fixed-element:.sticky-call",
+          "pass": true,
+          "detail": "present and within orientation budget"
+        },
+        {
+          "name": "forbidden-visible:.fr-modal-overlay.open",
+          "pass": true,
+          "detail": "visible=0"
+        },
+        {
+          "name": "focus-not-obscured",
+          "pass": true,
+          "detail": "sampled keyboard focus is exposed"
+        },
+        {
+          "name": "forbidden-visible-post-focus:.fr-modal-overlay.open",
+          "pass": true,
+          "detail": "visible=0"
+        },
+        {
+          "name": "console-errors",
+          "pass": true,
+          "detail": "count=0 cap=0 errors=[] guard_suppressed=0"
+        },
+        {
+          "name": "page-errors",
+          "pass": true,
+          "detail": "count=0 cap=0 errors=[]"
+        }
+      ],
+      "failures": [],
+      "http": {
+        "status": 200,
+        "final_url": "https://frame-restoration-utah-kxmf32smt-ryans-projects-51d84217.vercel.app/pages/about",
+        "redirects": 0,
+        "headers": {
+          "access-control-allow-origin": "*",
+          "age": "1",
+          "cache-control": "public, max-age=0, must-revalidate",
+          "content-disposition": "inline; filename=\"about\"",
+          "content-encoding": "br",
+          "content-security-policy": "default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'self'; form-action 'self' https://hdcflshhomzildwqlmwh.supabase.co; script-src 'self' 'unsafe-inline' https://us.i.posthog.com https://us-assets.i.posthog.com https://cdnjs.cloudflare.com https://api.mapbox.com; worker-src 'self' blob:; child-src blob:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://api.mapbox.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: blob: https://www.framerestorationutah.com https://cdnjs.cloudflare.com https://*.tile.openstreetmap.org https://*.mapbox.com; frame-src https://www.google.com; connect-src 'self' https://us.i.posthog.com https://hdcflshhomzildwqlmwh.supabase.co https://api.mapbox.com https://events.mapbox.com https://*.tiles.mapbox.com https://api.weather.gov https://www.googleapis.com",
+          "content-type": "text/html; charset=utf-8",
+          "date": "Thu, 10 Sep 2026 17:46:27 GMT",
+          "etag": "W/\"3b73d5423705240dee1f4862239846ff\"",
+          "last-modified": "Thu, 10 Sep 2026 17:46:25 GMT",
+          "permissions-policy": "camera=(), microphone=(), geolocation=()",
+          "referrer-policy": "strict-origin-when-cross-origin",
+          "server": "Vercel",
+          "strict-transport-security": "max-age=31536000; includeSubDomains; preload",
+          "x-content-type-options": "nosniff",
+          "x-frame-options": "SAMEORIGIN",
+          "x-robots-tag": "noindex",
+          "x-vercel-cache": "HIT",
+          "x-vercel-id": "pdx1::ncdhq-1789062387528-69ba3d78935f",
+          "x-xss-protection": "1; mode=block"
+        }
+      },
+      "screenshot": {
+        "path": "/Users/agenticmac/projects/_wt-utah-reviews-20260910/qa/screenshots/review-refresh-preview-20260910/pages-about--2bec1cc40090--android-360.png",
+        "sha256": "c322af751ee989a4b2e39bb6f54613e3c0530d10b480e72139450cbd68f03cf6",
+        "captured_scroll_y": 0
+      },
+      "network_guard": {
+        "mode": "read_only",
+        "auth_bootstrap_used": false,
+        "protection_bypass_used": true,
+        "preview_toolbar_suppression_requested": true,
+        "service_workers_blocked": true,
+        "websockets_blocked": true,
+        "stability_wait_ms": 500,
+        "readiness_selector": "body",
+        "blocked_count": 0,
+        "blocked": [],
+        "console_errors_suppressed": 0
+      }
+    },
+    {
+      "route": "/pages/about",
+      "viewport": {
+        "name": "iphone-393",
+        "width": 393,
+        "height": 852
+      },
+      "url": "https://frame-restoration-utah-kxmf32smt-ryans-projects-51d84217.vercel.app/pages/about",
+      "checks": [
+        {
+          "name": "http-200",
+          "pass": true,
+          "detail": "status=200"
+        },
+        {
+          "name": "redirect-budget",
+          "pass": true,
+          "detail": "redirects=0 cap=0"
+        },
+        {
+          "name": "serving-origin",
+          "pass": true,
+          "detail": "final=https://frame-restoration-utah-kxmf32smt-ryans-projects-51d84217.vercel.app expected=https://frame-restoration-utah-kxmf32smt-ryans-projects-51d84217.vercel.app"
+        },
+        {
+          "name": "viewport-meta",
+          "pass": true,
+          "detail": "content='width=device-width, initial-scale=1.0'"
+        },
+        {
+          "name": "canonical",
+          "pass": true,
+          "detail": "count=1 actual='https://www.framerestorationutah.com/pages/about' expected='https://www.framerestorationutah.com/pages/about'"
+        },
+        {
+          "name": "freshness:google-reviews-36",
+          "pass": true,
+          "detail": "marker present"
+        },
+        {
+          "name": "horizontal-reflow",
+          "pass": true,
+          "detail": "scrollWidth=393 innerWidth=393"
+        },
+        {
+          "name": "critical-target:#menuBtn",
+          "pass": true,
+          "detail": "present, sized, hittable, and href-valid"
+        },
+        {
+          "name": "critical-target:.nav-call-mobile",
+          "pass": true,
+          "detail": "present, sized, hittable, and href-valid"
+        },
+        {
+          "name": "critical-target:.sticky-call-phone",
+          "pass": true,
+          "detail": "present, sized, hittable, and href-valid"
+        },
+        {
+          "name": "fixed-element:nav",
+          "pass": true,
+          "detail": "present and within orientation budget"
+        },
+        {
+          "name": "fixed-element:.sticky-call",
+          "pass": true,
+          "detail": "present and within orientation budget"
+        },
+        {
+          "name": "forbidden-visible:.fr-modal-overlay.open",
+          "pass": true,
+          "detail": "visible=0"
+        },
+        {
+          "name": "focus-not-obscured",
+          "pass": true,
+          "detail": "sampled keyboard focus is exposed"
+        },
+        {
+          "name": "forbidden-visible-post-focus:.fr-modal-overlay.open",
+          "pass": true,
+          "detail": "visible=0"
+        },
+        {
+          "name": "console-errors",
+          "pass": true,
+          "detail": "count=0 cap=0 errors=[] guard_suppressed=0"
+        },
+        {
+          "name": "page-errors",
+          "pass": true,
+          "detail": "count=0 cap=0 errors=[]"
+        }
+      ],
+      "failures": [],
+      "http": {
+        "status": 200,
+        "final_url": "https://frame-restoration-utah-kxmf32smt-ryans-projects-51d84217.vercel.app/pages/about",
+        "redirects": 0,
+        "headers": {
+          "access-control-allow-origin": "*",
+          "age": "3",
+          "cache-control": "public, max-age=0, must-revalidate",
+          "content-disposition": "inline; filename=\"about\"",
+          "content-encoding": "br",
+          "content-security-policy": "default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'self'; form-action 'self' https://hdcflshhomzildwqlmwh.supabase.co; script-src 'self' 'unsafe-inline' https://us.i.posthog.com https://us-assets.i.posthog.com https://cdnjs.cloudflare.com https://api.mapbox.com; worker-src 'self' blob:; child-src blob:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://api.mapbox.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: blob: https://www.framerestorationutah.com https://cdnjs.cloudflare.com https://*.tile.openstreetmap.org https://*.mapbox.com; frame-src https://www.google.com; connect-src 'self' https://us.i.posthog.com https://hdcflshhomzildwqlmwh.supabase.co https://api.mapbox.com https://events.mapbox.com https://*.tiles.mapbox.com https://api.weather.gov https://www.googleapis.com",
+          "content-type": "text/html; charset=utf-8",
+          "date": "Thu, 10 Sep 2026 17:46:29 GMT",
+          "etag": "W/\"3b73d5423705240dee1f4862239846ff\"",
+          "last-modified": "Thu, 10 Sep 2026 17:46:25 GMT",
+          "permissions-policy": "camera=(), microphone=(), geolocation=()",
+          "referrer-policy": "strict-origin-when-cross-origin",
+          "server": "Vercel",
+          "strict-transport-security": "max-age=31536000; includeSubDomains; preload",
+          "x-content-type-options": "nosniff",
+          "x-frame-options": "SAMEORIGIN",
+          "x-robots-tag": "noindex",
+          "x-vercel-cache": "HIT",
+          "x-vercel-id": "pdx1::bx6pb-1789062389432-487e554f7615",
+          "x-xss-protection": "1; mode=block"
+        }
+      },
+      "screenshot": {
+        "path": "/Users/agenticmac/projects/_wt-utah-reviews-20260910/qa/screenshots/review-refresh-preview-20260910/pages-about--2bec1cc40090--iphone-393.png",
+        "sha256": "3b98dffccb2d45c5297ad73646d16f774cecce50be587a77169e6237aef24011",
+        "captured_scroll_y": 0
+      },
+      "network_guard": {
+        "mode": "read_only",
+        "auth_bootstrap_used": false,
+        "protection_bypass_used": true,
+        "preview_toolbar_suppression_requested": true,
+        "service_workers_blocked": true,
+        "websockets_blocked": true,
+        "stability_wait_ms": 500,
+        "readiness_selector": "body",
+        "blocked_count": 0,
+        "blocked": [],
+        "console_errors_suppressed": 0
+      }
+    },
+    {
+      "route": "/pages/about",
+      "viewport": {
+        "name": "large-430",
+        "width": 430,
+        "height": 932
+      },
+      "url": "https://frame-restoration-utah-kxmf32smt-ryans-projects-51d84217.vercel.app/pages/about",
+      "checks": [
+        {
+          "name": "http-200",
+          "pass": true,
+          "detail": "status=200"
+        },
+        {
+          "name": "redirect-budget",
+          "pass": true,
+          "detail": "redirects=0 cap=0"
+        },
+        {
+          "name": "serving-origin",
+          "pass": true,
+          "detail": "final=https://frame-restoration-utah-kxmf32smt-ryans-projects-51d84217.vercel.app expected=https://frame-restoration-utah-kxmf32smt-ryans-projects-51d84217.vercel.app"
+        },
+        {
+          "name": "viewport-meta",
+          "pass": true,
+          "detail": "content='width=device-width, initial-scale=1.0'"
+        },
+        {
+          "name": "canonical",
+          "pass": true,
+          "detail": "count=1 actual='https://www.framerestorationutah.com/pages/about' expected='https://www.framerestorationutah.com/pages/about'"
+        },
+        {
+          "name": "freshness:google-reviews-36",
+          "pass": true,
+          "detail": "marker present"
+        },
+        {
+          "name": "horizontal-reflow",
+          "pass": true,
+          "detail": "scrollWidth=430 innerWidth=430"
+        },
+        {
+          "name": "critical-target:#menuBtn",
+          "pass": true,
+          "detail": "present, sized, hittable, and href-valid"
+        },
+        {
+          "name": "critical-target:.nav-call-mobile",
+          "pass": true,
+          "detail": "present, sized, hittable, and href-valid"
+        },
+        {
+          "name": "critical-target:.sticky-call-phone",
+          "pass": true,
+          "detail": "present, sized, hittable, and href-valid"
+        },
+        {
+          "name": "fixed-element:nav",
+          "pass": true,
+          "detail": "present and within orientation budget"
+        },
+        {
+          "name": "fixed-element:.sticky-call",
+          "pass": true,
+          "detail": "present and within orientation budget"
+        },
+        {
+          "name": "forbidden-visible:.fr-modal-overlay.open",
+          "pass": true,
+          "detail": "visible=0"
+        },
+        {
+          "name": "focus-not-obscured",
+          "pass": true,
+          "detail": "sampled keyboard focus is exposed"
+        },
+        {
+          "name": "forbidden-visible-post-focus:.fr-modal-overlay.open",
+          "pass": true,
+          "detail": "visible=0"
+        },
+        {
+          "name": "console-errors",
+          "pass": true,
+          "detail": "count=0 cap=0 errors=[] guard_suppressed=0"
+        },
+        {
+          "name": "page-errors",
+          "pass": true,
+          "detail": "count=0 cap=0 errors=[]"
+        }
+      ],
+      "failures": [],
+      "http": {
+        "status": 200,
+        "final_url": "https://frame-restoration-utah-kxmf32smt-ryans-projects-51d84217.vercel.app/pages/about",
+        "redirects": 0,
+        "headers": {
+          "access-control-allow-origin": "*",
+          "age": "5",
+          "cache-control": "public, max-age=0, must-revalidate",
+          "content-disposition": "inline; filename=\"about\"",
+          "content-encoding": "br",
+          "content-security-policy": "default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'self'; form-action 'self' https://hdcflshhomzildwqlmwh.supabase.co; script-src 'self' 'unsafe-inline' https://us.i.posthog.com https://us-assets.i.posthog.com https://cdnjs.cloudflare.com https://api.mapbox.com; worker-src 'self' blob:; child-src blob:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://api.mapbox.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: blob: https://www.framerestorationutah.com https://cdnjs.cloudflare.com https://*.tile.openstreetmap.org https://*.mapbox.com; frame-src https://www.google.com; connect-src 'self' https://us.i.posthog.com https://hdcflshhomzildwqlmwh.supabase.co https://api.mapbox.com https://events.mapbox.com https://*.tiles.mapbox.com https://api.weather.gov https://www.googleapis.com",
+          "content-type": "text/html; charset=utf-8",
+          "date": "Thu, 10 Sep 2026 17:46:31 GMT",
+          "etag": "W/\"3b73d5423705240dee1f4862239846ff\"",
+          "last-modified": "Thu, 10 Sep 2026 17:46:25 GMT",
+          "permissions-policy": "camera=(), microphone=(), geolocation=()",
+          "referrer-policy": "strict-origin-when-cross-origin",
+          "server": "Vercel",
+          "strict-transport-security": "max-age=31536000; includeSubDomains; preload",
+          "x-content-type-options": "nosniff",
+          "x-frame-options": "SAMEORIGIN",
+          "x-robots-tag": "noindex",
+          "x-vercel-cache": "HIT",
+          "x-vercel-id": "pdx1::nzt7b-1789062391354-97c998389e48",
+          "x-xss-protection": "1; mode=block"
+        }
+      },
+      "screenshot": {
+        "path": "/Users/agenticmac/projects/_wt-utah-reviews-20260910/qa/screenshots/review-refresh-preview-20260910/pages-about--2bec1cc40090--large-430.png",
+        "sha256": "4ee05e5db2c94f6aa1d65e837d5704bb06199ff98ee054866a66910c4f83d524",
+        "captured_scroll_y": 0
+      },
+      "network_guard": {
+        "mode": "read_only",
+        "auth_bootstrap_used": false,
+        "protection_bypass_used": true,
+        "preview_toolbar_suppression_requested": true,
+        "service_workers_blocked": true,
+        "websockets_blocked": true,
+        "stability_wait_ms": 500,
+        "readiness_selector": "body",
+        "blocked_count": 0,
+        "blocked": [],
+        "console_errors_suppressed": 0
+      }
+    },
+    {
+      "route": "/pages/about",
+      "viewport": {
+        "name": "landscape-740",
+        "width": 740,
+        "height": 360
+      },
+      "url": "https://frame-restoration-utah-kxmf32smt-ryans-projects-51d84217.vercel.app/pages/about",
+      "checks": [
+        {
+          "name": "http-200",
+          "pass": true,
+          "detail": "status=200"
+        },
+        {
+          "name": "redirect-budget",
+          "pass": true,
+          "detail": "redirects=0 cap=0"
+        },
+        {
+          "name": "serving-origin",
+          "pass": true,
+          "detail": "final=https://frame-restoration-utah-kxmf32smt-ryans-projects-51d84217.vercel.app expected=https://frame-restoration-utah-kxmf32smt-ryans-projects-51d84217.vercel.app"
+        },
+        {
+          "name": "viewport-meta",
+          "pass": true,
+          "detail": "content='width=device-width, initial-scale=1.0'"
+        },
+        {
+          "name": "canonical",
+          "pass": true,
+          "detail": "count=1 actual='https://www.framerestorationutah.com/pages/about' expected='https://www.framerestorationutah.com/pages/about'"
+        },
+        {
+          "name": "freshness:google-reviews-36",
+          "pass": true,
+          "detail": "marker present"
+        },
+        {
+          "name": "horizontal-reflow",
+          "pass": true,
+          "detail": "scrollWidth=740 innerWidth=740"
+        },
+        {
+          "name": "critical-target:#menuBtn",
+          "pass": true,
+          "detail": "present, sized, hittable, and href-valid"
+        },
+        {
+          "name": "critical-target:.nav-call-mobile",
+          "pass": true,
+          "detail": "present, sized, hittable, and href-valid"
+        },
+        {
+          "name": "critical-target:.sticky-call-phone",
+          "pass": true,
+          "detail": "present, sized, hittable, and href-valid"
+        },
+        {
+          "name": "fixed-element:nav",
+          "pass": true,
+          "detail": "present and within orientation budget"
+        },
+        {
+          "name": "fixed-element:.sticky-call",
+          "pass": true,
+          "detail": "present and within orientation budget"
+        },
+        {
+          "name": "forbidden-visible:.fr-modal-overlay.open",
+          "pass": true,
+          "detail": "visible=0"
+        },
+        {
+          "name": "focus-not-obscured",
+          "pass": true,
+          "detail": "sampled keyboard focus is exposed"
+        },
+        {
+          "name": "forbidden-visible-post-focus:.fr-modal-overlay.open",
+          "pass": true,
+          "detail": "visible=0"
+        },
+        {
+          "name": "console-errors",
+          "pass": true,
+          "detail": "count=0 cap=0 errors=[] guard_suppressed=0"
+        },
+        {
+          "name": "page-errors",
+          "pass": true,
+          "detail": "count=0 cap=0 errors=[]"
+        }
+      ],
+      "failures": [],
+      "http": {
+        "status": 200,
+        "final_url": "https://frame-restoration-utah-kxmf32smt-ryans-projects-51d84217.vercel.app/pages/about",
+        "redirects": 0,
+        "headers": {
+          "access-control-allow-origin": "*",
+          "age": "7",
+          "cache-control": "public, max-age=0, must-revalidate",
+          "content-disposition": "inline; filename=\"about\"",
+          "content-encoding": "br",
+          "content-security-policy": "default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'self'; form-action 'self' https://hdcflshhomzildwqlmwh.supabase.co; script-src 'self' 'unsafe-inline' https://us.i.posthog.com https://us-assets.i.posthog.com https://cdnjs.cloudflare.com https://api.mapbox.com; worker-src 'self' blob:; child-src blob:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://api.mapbox.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: blob: https://www.framerestorationutah.com https://cdnjs.cloudflare.com https://*.tile.openstreetmap.org https://*.mapbox.com; frame-src https://www.google.com; connect-src 'self' https://us.i.posthog.com https://hdcflshhomzildwqlmwh.supabase.co https://api.mapbox.com https://events.mapbox.com https://*.tiles.mapbox.com https://api.weather.gov https://www.googleapis.com",
+          "content-type": "text/html; charset=utf-8",
+          "date": "Thu, 10 Sep 2026 17:46:33 GMT",
+          "etag": "W/\"3b73d5423705240dee1f4862239846ff\"",
+          "last-modified": "Thu, 10 Sep 2026 17:46:25 GMT",
+          "permissions-policy": "camera=(), microphone=(), geolocation=()",
+          "referrer-policy": "strict-origin-when-cross-origin",
+          "server": "Vercel",
+          "strict-transport-security": "max-age=31536000; includeSubDomains; preload",
+          "x-content-type-options": "nosniff",
+          "x-frame-options": "SAMEORIGIN",
+          "x-robots-tag": "noindex",
+          "x-vercel-cache": "HIT",
+          "x-vercel-id": "pdx1::vtsds-1789062393273-af6f9d521eb5",
+          "x-xss-protection": "1; mode=block"
+        }
+      },
+      "screenshot": {
+        "path": "/Users/agenticmac/projects/_wt-utah-reviews-20260910/qa/screenshots/review-refresh-preview-20260910/pages-about--2bec1cc40090--landscape-740.png",
+        "sha256": "42fd5b80ffeffa3e6bceafe3f61abdf8f457b31f6840ab99b9defeb30e490aa0",
+        "captured_scroll_y": 0
+      },
+      "network_guard": {
+        "mode": "read_only",
+        "auth_bootstrap_used": false,
+        "protection_bypass_used": true,
+        "preview_toolbar_suppression_requested": true,
+        "service_workers_blocked": true,
+        "websockets_blocked": true,
+        "stability_wait_ms": 500,
+        "readiness_selector": "body",
+        "blocked_count": 0,
+        "blocked": [],
+        "console_errors_suppressed": 0
+      }
+    }
+  ],
+  "duration_seconds": 23.403,
+  "receipt_path": "/Users/agenticmac/projects/_wt-utah-reviews-20260910/qa/receipts/review-refresh-preview-20260910.json"
+}

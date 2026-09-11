@@ -4,7 +4,7 @@ const handleCall = await Deno.readTextFile(
   "supabase/functions/handle-call/index.ts",
 );
 
-Deno.test("unknown callers must complete the speech interview", () => {
+Deno.test("unknown callers enter the purpose-first flow without an area-code exemption", () => {
   assertStringIncludes(
     handleCall,
     "await findTrustedRecentLead(fromNumber)",
@@ -15,16 +15,12 @@ Deno.test("unknown callers must complete the speech interview", () => {
   );
   assertStringIncludes(handleCall, '<Gather input="dtmf speech"');
   assertStringIncludes(handleCall, 'actionOnEmptyResult="true"');
-  assertStringIncludes(
-    handleCall.toLowerCase(),
-    "please tell me your name, the best number to reach you",
-  );
+  assertStringIncludes(handleCall, "await startReceptionist(");
+  assertStringIncludes(handleCall, "await continueReceptionist(");
   assertEquals(handleCall.includes("UTAH_AREA_CODES"), false);
   assertEquals(handleCall.includes("isUtahNumber"), false);
-  assertStringIncludes(
-    handleCall,
-    'safeLogData.SpeechResult = "[redacted]"',
-  );
+  assertEquals(handleCall.includes("console.log(JSON.stringify(data"), false);
+  assertStringIncludes(handleCall, "console.log(`[handle-call] path=${path}`)");
   assertStringIncludes(
     handleCall,
     "isTrustedCallerLead(lead.status, lead.source_page)",
@@ -43,7 +39,7 @@ Deno.test("caller prompts use a humanized generative voice without weakening the
   assertStringIncludes(handleCall, '<Say voice="${CALLER_VOICE}">Hi, thanks');
   assertStringIncludes(
     handleCall,
-    '<Say voice="${OWNER_WHISPER_VOICE}">This is a screened Frame call.',
+    '<Say voice="${OWNER_WHISPER_VOICE}">Frame call.',
   );
   assertEquals(handleCall.includes("<Say>"), false);
 });
@@ -65,7 +61,7 @@ Deno.test("screening cannot create a lead before owner acceptance", () => {
   );
   assertStringIncludes(
     handleCall.slice(ownerStart, completedStart),
-    'const accepted = (data.Digits || "").trim() === "1"',
+    'const requestedAcceptance = (data.Digits || "").trim() === "1"',
   );
   assertStringIncludes(
     handleCall.slice(ownerStart, completedStart),
@@ -73,15 +69,14 @@ Deno.test("screening cannot create a lead before owner acceptance", () => {
   );
   assertStringIncludes(
     handleCall.slice(ownerStart, completedStart),
-    '"contacted",',
+    '"new",',
   );
 });
 
 Deno.test("the owner gets a private accept-or-voicemail whisper", () => {
   assertStringIncludes(handleCall, 'answerOnBridge="true"');
   assertStringIncludes(handleCall, "/handle-call/whisper?screenCallSid=");
-  assertStringIncludes(handleCall, "Press 1 to accept");
-  assertStringIncludes(handleCall, "Press 2 to send the caller to voicemail");
+  assertStringIncludes(handleCall, "Press one to connect, or two to send to voicemail");
   assertStringIncludes(handleCall, '"screened-owner-rejected"');
   assertStringIncludes(handleCall, "if (ownerDeclined)");
   assertStringIncludes(

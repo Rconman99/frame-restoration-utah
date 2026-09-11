@@ -1,0 +1,13 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { comparePublication } from './check-review-publication.mjs';
+const feed = { google_cid: '8458659884566588108', aggregate: { review_count: 36, rating: 5 }, updated_at: '2026-09-10T17:40:43Z', reviews: [] };
+const html = '<div data-surface-marker="google-reviews-36">5.0 from 36 Google reviews</div>';
+const pages = { '/': html, '/pages/about': html };
+test('exact snapshot and both HTML counts pass', () => assert.deepEqual(comparePublication(feed, structuredClone(feed), pages), []));
+test('old live feed fails even when the draft has current HTML', () => assert.ok(comparePublication(feed, { ...feed, aggregate: { review_count: 34, rating: 5 } }, pages).length));
+test('stale About page fails', () => assert.ok(comparePublication(feed, feed, { ...pages, '/pages/about': html.replaceAll('36', '34') }).length));
+test('stale homepage stat fails even with current hero and freshness marker', () => assert.ok(comparePublication(feed, feed, { ...pages, '/': html + '<div class="stat-desc">34 Google reviews and counting</div>' }).length));
+test('changed review text or observation timestamp fails', () => assert.ok(comparePublication(feed, { ...feed, updated_at: '2026-08-07' }, pages).length));
+test('SLC cannot replace the Heber feed', () => { const other = { ...feed, google_cid: '5689850818145735734' }; assert.ok(comparePublication(other, other, pages).length); });
+test('omitting a page cannot produce rollout proof', () => assert.ok(comparePublication(feed, feed, { '/': html }).length));
