@@ -16,15 +16,15 @@
     },
     "reviewFeed": {
       "file": "reviews.json",
-      "sha256": "ae4b12fc8e5c91d505c4be3a717add70bd0bb4d8c8966834af26168151b1492b"
+      "sha256": "dc4e510dc1561f7cb6acf2443a5a95c0121ce2db6340ba600998a17e4575fdb2"
     },
     "reviewArchive": {
       "file": "data/reviews-full.json",
-      "sha256": "0e9963222c8643f35f61b68f7604d26f6e69b127f48dd85bd34bacedc0510513"
+      "sha256": "a8e3424cbc0226b9c9c5e389769b9a9b6a0d8b52a6b7536339b6734cc42a7fe5"
     },
     "slvReviewLatest": {
       "file": "data/rank-tracker/reviews/salt-lake-city/latest.json",
-      "sha256": "8826ff2ddf3775372d955151d75bf3f0284bc18ee99a6a74f603753f2cbebd65"
+      "sha256": "945756bdae4893074bf5ac07361fec2427760981309e95a8037e6334cfcbf536"
     }
   },
   "identity": {
@@ -70,22 +70,22 @@
     "heber": {
       "state": "measured-attributed-to-heber-only",
       "storedDataId": "0x874df59069be3e09:0x756332595f702acc",
-      "storedGoogleCid": null,
+      "storedGoogleCid": "8458659884566588108",
       "inferredGoogleCid": "8458659884566588108",
       "aggregateRating": 5,
-      "aggregateReviewCount": 34,
-      "archivedReviewRows": 34,
-      "feedReviewRows": 5,
-      "lastReviewDate": "2026-07-07",
-      "feedUpdatedAt": "2026-08-07T17:25:39Z"
+      "aggregateReviewCount": 36,
+      "archivedReviewRows": 36,
+      "feedReviewRows": 6,
+      "lastReviewDate": "2026-09-10",
+      "feedUpdatedAt": "2026-09-10T17:40:43Z"
     },
     "saltLakeValley": {
       "cid": "5689850818145735734",
       "state": "measured-exact-cid",
-      "observedAt": "2026-08-12T21:28:07Z",
+      "observedAt": "2026-09-10T17:41:13Z",
       "aggregateRating": 5,
-      "aggregateReviewCount": 4,
-      "latestReviewDate": "2026-08-12",
+      "aggregateReviewCount": 6,
+      "latestReviewDate": "2026-08-21",
       "source": "data/rank-tracker/reviews/salt-lake-city/latest.json",
       "rule": "Count only the exact Salt Lake Valley CID receipt; never mix in the Heber export."
     },
