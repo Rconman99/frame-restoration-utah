@@ -363,12 +363,12 @@
     [
       { v: S.total_pageviews || 0, l: 'Pageviews', c: '', growth: gT.pageviews },
       { v: S.google_organic || 0, l: 'Google Organic', c: 'g', growth: gT.organic },
-      { v: S.total_leads || 0, l: 'Form Leads', c: 'b', growth: gT.leads },
-      { v: S.total_calls || 0, l: 'Inbound Calls', c: 'b', growth: gT.calls },
+      { v: S.total_leads || 0, l: 'Lead Records', c: 'b', growth: gT.leads },
+      { v: S.total_calls || 0, l: 'Completed Call Events', c: 'b', growth: gT.calls },
       { v: (S.total_call_minutes || 0) + 'm', l: 'Call Minutes', c: 'p' },
-      { v: (S.conversion_rate_pct || 0) + '%', l: 'Conversion Rate', c: '' },
+      { v: '\u2014', l: 'Qualified Conversion (unmeasured)', c: '' },
       { v: (G.locations_with_traffic || 0) + '/' + (G.total_locations || 0), l: 'Locations Active', c: 'g' },
-      { v: '$' + (S.total_job_value || 0), l: 'Revenue Tracked', c: '' }
+      { v: '$' + (S.total_job_value || 0), l: 'Job Value Entered', c: '' }
     ].forEach(function (k) {
       var growthBadge = '';
       if (k.growth !== undefined) {
