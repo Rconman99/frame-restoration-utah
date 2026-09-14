@@ -69,6 +69,10 @@ const LANDON_PHONE = "+14353024422";
 const POSTHOG_API_KEY = "phc_BnECzlZ2OeDujli2dbqcgGODXlv2tYERbp40dTF7UBV";
 const CALLER_VOICE = "Google.en-US-Chirp3-HD-Aoede";
 const OWNER_WHISPER_VOICE = "Polly.Joanna-Neural";
+const TWILIO_RESPONSE_BUDGET_MS = 6000;
+const TWILIO_DB_OPERATION_CAP_MS = 2500;
+const TWILIO_DURABLE_CALLBACK_OVERRIDES =
+  "ct=1000&rt=5000&tt=15000&rc=2&rp=5xx,ct,rt&e=umatilla,ashburn";
 const receptionistConfig = (): ScreeningConfig => ({
   supabaseUrl: SUPABASE_URL,
   serviceKey: SUPABASE_SERVICE_ROLE_KEY,
@@ -113,6 +117,15 @@ function isOurBusinessNumber(
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
 
+function twilioDeadlineSignal(deadlineMs: number): AbortSignal {
+  return AbortSignal.timeout(
+    Math.max(
+      1,
+      Math.min(TWILIO_DB_OPERATION_CAP_MS, deadlineMs - Date.now()),
+    ),
+  );
+}
+
 function normalizePhone(phone: string): string {
   const digits = (phone || "").replace(/\D/g, "");
   if (digits.length === 10) return "+1" + digits;
@@ -144,11 +157,20 @@ function xml(body: string): Response {
   });
 }
 
+function durableTwilioCallbackUrl(pathAndQuery: string): string {
+  return xmlEscape(
+    `${SUPABASE_URL}/functions/v1/handle-call/${pathAndQuery}#${TWILIO_DURABLE_CALLBACK_OVERRIDES}`,
+  );
+}
+
 // Connect the caller to Landon. Screened callers get a private whisper before
 // the bridge opens; known customers retain the existing direct-ring behavior.
 function dialLandonTwiml(callerId: string, screenCallSid = ""): string {
   const statusCallbackUrl = `${SUPABASE_URL}/functions/v1/handle-call/status`;
   const screened = /^CA[0-9a-f]{32}$/i.test(screenCallSid);
+  const completedCallbackUrl = durableTwilioCallbackUrl(
+    screened ? "completed?screened=1" : "completed",
+  );
   const whisperUrl = screened
     ? `${SUPABASE_URL}/functions/v1/handle-call/whisper?screenCallSid=${screenCallSid}`
     : "";
@@ -156,7 +178,7 @@ function dialLandonTwiml(callerId: string, screenCallSid = ""): string {
   <Dial callerId="${xmlEscape(callerId)}" timeout="30"${
     screened ? ' answerOnBridge="true"' : ""
   }
-        action="${SUPABASE_URL}/functions/v1/handle-call/completed"
+        action="${completedCallbackUrl}"
         record="record-from-answer-dual">
     <Number statusCallbackEvent="initiated ringing answered completed"
             statusCallback="${statusCallbackUrl}"${
@@ -300,11 +322,13 @@ async function createInboundCallLead(
 
 // Load Twilio creds (auth token + account SID + business number) from app_config.
 // handle-call did not previously read these; needed for signature validation.
-async function getTwilioCreds() {
+async function getTwilioCreds(
+  deadlineMs = Date.now() + TWILIO_DB_OPERATION_CAP_MS,
+) {
   const { data } = await supabase.from("app_config").select("key, value").in(
     "key",
     ["TWILIO_ACCOUNT_SID", "TWILIO_AUTH_TOKEN", "TWILIO_PHONE_NUMBER"],
-  );
+  ).abortSignal(twilioDeadlineSignal(deadlineMs));
   const config: Record<string, string> = {};
   data?.forEach((r: any) => {
     config[r.key] = r.value;
@@ -446,7 +470,105 @@ async function sendPostHogEvent(
   }
 }
 
+// Keep the owner whisper callback off the CRM/storage critical path. Twilio
+// allows only 15 seconds for the <Number url> response; lead reconciliation is
+// important, but it must never delay the TwiML that actually bridges the call.
+type OwnerDecision = "accepted" | "voicemail" | "timeout";
+
+type OwnerDecisionResult = {
+  decision: OwnerDecision | null;
+  ambiguousTransportFailure: boolean;
+};
+
+function isAmbiguousTransportFailure(
+  error: unknown,
+  status = 0,
+): boolean {
+  if (status !== 0) return false;
+  const name = error instanceof Error ? error.name : "";
+  const message = error instanceof Error
+    ? error.message
+    : String((error as { message?: unknown } | null)?.message || "");
+  return name === "AbortError" || name === "TimeoutError" ||
+    /(?:AbortError|TimeoutError)/.test(message);
+}
+
+async function persistOwnerScreenDecision(
+  screenCallSid: string,
+  requestedDecision: OwnerDecision,
+  deadlineMs?: number,
+): Promise<OwnerDecisionResult> {
+  try {
+    let request = supabase.rpc(
+      "finalize_owner_screen_decision",
+      {
+        p_call_sid: screenCallSid,
+        p_requested_decision: requestedDecision,
+      },
+    );
+    if (deadlineMs !== undefined) {
+      request = request.abortSignal(twilioDeadlineSignal(deadlineMs));
+    }
+    const { data, error, status } = await request;
+    const decision = data === "accepted" || data === "voicemail" ||
+        data === "timeout"
+      ? data
+      : null;
+    return {
+      decision: error ? null : decision,
+      ambiguousTransportFailure: error
+        ? isAmbiguousTransportFailure(error, status)
+        : false,
+    };
+  } catch (error) {
+    return {
+      decision: null,
+      ambiguousTransportFailure: isAmbiguousTransportFailure(error),
+    };
+  }
+}
+
+async function finalizeOwnerScreenDecision(
+  screenCallSid: string,
+  requestedDecision: OwnerDecision,
+): Promise<void> {
+  const result = await persistOwnerScreenDecision(
+    screenCallSid,
+    requestedDecision,
+  );
+  if (!result.decision) {
+    // Keep provider/database details and caller identifiers out of logs.
+    console.error("[handle-call] owner-screen finalization failed");
+  }
+}
+
+async function repairOwnerScreenDecision(
+  screenCallSid: string,
+  decisionHint: "accepted" | "voicemail" | "timeout" | null,
+): Promise<void> {
+  let decision = decisionHint;
+  if (!decision) {
+    try {
+      const screening = await readScreening(
+        receptionistConfig(),
+        screenCallSid,
+      );
+      decision = screening?.owner_decision ??
+        (screening?.bridged === true ? "accepted" : null);
+    } catch {
+      return;
+    }
+  }
+  if (decision) {
+    await finalizeOwnerScreenDecision(screenCallSid, decision);
+  }
+}
+
 export async function handleCallRequest(req: Request): Promise<Response> {
+  // Reserve nine seconds of Twilio's 15-second webhook window for cold start,
+  // network delivery, and the returned TwiML. Credential loading and the
+  // decision/recovery transaction share one absolute six-second deadline.
+  const twilioResponseDeadline = Date.now() + TWILIO_RESPONSE_BUDGET_MS;
   const url = new URL(req.url);
   // Normalize trailing slashes so `/handle-call/status/` routes the same as
   // `/handle-call/status` (otherwise `.pop()` yields "" and misroutes to inbound).
@@ -464,7 +586,7 @@ export async function handleCallRequest(req: Request): Promise<Response> {
   // ─── SECURITY GATE: verify Twilio signature BEFORE any DB write / TwiML.
   // Covers all paths (inbound + /status + /completed). The body has already been
   // consumed into `data`, which we pass as the signed POST params.
-  const creds = await getTwilioCreds();
+  const creds = await getTwilioCreds(twilioResponseDeadline);
   const verified = await verifyTwilioRequest(req, data, creds.auth);
   if (!verified.ok) {
     console.warn("[handle-call] rejected Twilio request:", verified.reason);
@@ -714,8 +836,9 @@ export async function handleCallRequest(req: Request): Promise<Response> {
         transcript = normalizeScreeningTranscript(stored).slice(0, 280);
       }
     }
-    const decisionUrl =
-      `${SUPABASE_URL}/functions/v1/handle-call/whisper-decision?screenCallSid=${screenCallSid}`;
+    const decisionUrl = durableTwilioCallbackUrl(
+      `whisper-decision?screenCallSid=${screenCallSid}`,
+    );
     return xml(`<Response>
   <Gather input="dtmf" numDigits="1" timeout="10" actionOnEmptyResult="true"
           method="POST" action="${decisionUrl}">
@@ -731,66 +854,31 @@ export async function handleCallRequest(req: Request): Promise<Response> {
   // === OWNER ACCEPT / REJECT ===
   if (path === "whisper-decision") {
     const screenCallSid = url.searchParams.get("screenCallSid") || "";
-    const requestedAcceptance = (data.Digits || "").trim() === "1";
+    const digits = (data.Digits || "").trim();
+    const requestedAcceptance = digits === "1";
+    const requestedDecision = requestedAcceptance
+      ? "accepted"
+      : (digits === "2" ? "voicemail" : "timeout");
     const validScreenCallSid = /^CA[0-9a-f]{32}$/i.test(screenCallSid);
     let accepted = false;
-    // Compare-and-swap prevents stale owner decisions from rewinding a call.
     if (validScreenCallSid) {
-      const { error } = await supabase.from("call_logs").update({
-        status: requestedAcceptance
-          ? "screened-owner-accepted"
-          : "screened-owner-rejected",
-      }).eq("call_sid", screenCallSid).eq("status", "screened-awaiting-owner");
-      const { data: saved, error: readError } = await supabase.from("call_logs")
-        .select("status").eq("call_sid", screenCallSid).maybeSingle();
-      accepted = !readError && saved?.status === "screened-owner-accepted";
-      if (
-        !error && !readError &&
-        (accepted || saved?.status === "screened-owner-rejected")
-      ) {
-        await recordScreeningOutcome(
-          receptionistConfig(),
-          screenCallSid,
-          accepted
-            ? "accepted"
-            : (data.Digits === "2" ? "voicemail" : "timeout"),
+      const result = await persistOwnerScreenDecision(
+        screenCallSid,
+        requestedDecision,
+        twilioResponseDeadline,
+      );
+      if (result.decision) {
+        accepted = result.decision === "accepted";
+      } else if (result.ambiguousTransportFailure) {
+        // A transport timeout is ambiguous: the transaction may have committed
+        // after the client stopped waiting. Honor the signed digit for this live
+        // response, then rerun the same immutable decision in the background.
+        accepted = requestedAcceptance;
+      }
+      if (!result.decision && result.ambiguousTransportFailure) {
+        EdgeRuntime.waitUntil(
+          finalizeOwnerScreenDecision(screenCallSid, requestedDecision),
         );
-      }
-    }
-    const persistDecision = accepted &&
-      await claimWebhook(`owner-screen:${screenCallSid}`, false);
-    if (persistDecision) {
-      const { data: callLog } = await supabase.from("call_logs")
-        .select("from_number,to_number,city,notes,lead_id")
-        .eq("call_sid", screenCallSid)
-        .maybeSingle();
-      let leadId = callLog?.lead_id ?? null;
-      if (!leadId && callLog?.from_number) {
-        leadId = await findRecentLead(callLog.from_number);
-        if (!leadId) {
-          let reportedName = "";
-          try {
-            reportedName =
-              (await readScreening(receptionistConfig(), screenCallSid))?.state
-                .name || "";
-          } catch { /* Preserve lead capture with the existing placeholder. */ }
-          leadId = await createInboundCallLead(
-            callLog.from_number,
-            callLog.city || "unknown",
-            "auto-inbound-call-assistant",
-            classifyDialedNumber(callLog.to_number || "unknown"),
-            String(callLog.notes || "").startsWith("Assistant screening (")
-              ? callLog.notes
-              : transcriptFromScreeningNote(callLog.notes),
-            "new",
-            reportedName,
-          );
-        }
-      }
-      if (leadId) {
-        await supabase.from("call_logs").update({
-          lead_id: leadId,
-        }).eq("call_sid", screenCallSid);
       }
     }
     return accepted
@@ -815,6 +903,21 @@ export async function handleCallRequest(req: Request): Promise<Response> {
     const recordingUrl = data.RecordingUrl || null;
     const dial = (data.DialCallStatus || "").toLowerCase();
     const bridged = String(data.DialBridged).toLowerCase() === "true";
+    const screenedCompletion = url.searchParams.get("screened") === "1";
+    // Run accepted-call recovery before the non-critical completion bookkeeping.
+    // A non-2xx response activates the explicit Twilio 5xx retry override.
+    if (path === "completed" && callSid && bridged && screenedCompletion) {
+      const repair = await persistOwnerScreenDecision(
+        callSid,
+        "accepted",
+        twilioResponseDeadline,
+      );
+      if (repair.decision !== "accepted") {
+        return new Response("Temporary reconciliation failure", {
+          status: 503,
+        });
+      }
+    }
     if (
       path === "completed" && callSid &&
       ["true", "false"].includes(String(data.DialBridged).toLowerCase())
@@ -838,6 +941,18 @@ export async function handleCallRequest(req: Request): Promise<Response> {
       (screeningStatus === "screened-owner-rejected" ||
         (screeningStatus === "screened-awaiting-owner" &&
           (dial === "completed" || dial === "answered")));
+    // Non-bridge terminal outcomes have no lead side effect, but preserve a
+    // background retry for private screening metrics.
+    if (path === "completed" && callSid && !bridged) {
+      EdgeRuntime.waitUntil(
+        repairOwnerScreenDecision(
+          callSid,
+          screeningStatus === "screened-owner-accepted"
+            ? "accepted"
+            : (ownerDeclined ? "timeout" : null),
+        ),
+      );
+    }
 
     if (callSid) {
       const updateData: Record<string, unknown> = { status: callStatus };

@@ -36,4 +36,5 @@ jobs:
         run: |
           psql -h localhost -U postgres -v ON_ERROR_STOP=1 -f supabase/tests/call_screenings_fixture.sql
           psql -h localhost -U postgres -v ON_ERROR_STOP=1 -f supabase/migrations/20260910200000_call_screenings.sql
+          psql -h localhost -U postgres -v ON_ERROR_STOP=1 -f supabase/migrations/20260914200000_reconcile_call_screenings.sql
           psql -h localhost -U postgres -v ON_ERROR_STOP=1 -f supabase/tests/call_screenings.sql

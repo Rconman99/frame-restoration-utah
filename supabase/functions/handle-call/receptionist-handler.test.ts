@@ -4,7 +4,7 @@
 import { assertEquals, assertStringIncludes } from "jsr:@std/assert@1";
 import { crmEvidence } from "../_shared/receptionist.ts";
 
-const DIAL_RESULT_PATH = "completed";
+const DIAL_RESULT_PATH = "completed?screened=1";
 
 Deno.test("new signed purpose-first path connects once without repeating a volunteered name", async () => {
   fakeDb = new FakeSupabaseRest();
@@ -64,6 +64,7 @@ Deno.test("new signed flow takes one optional name, and owner two does not creat
     ),
   );
   assertStringIncludes(await decision.text(), "<Hangup/>");
+  await flushBackgroundTasks();
   assertEquals(fakeDb.screenings.get(CALL_SID)?.owner_decision, "voicemail");
   assertEquals(fakeDb.leadRows.length, 0);
   const retry = await handleCallRequest(
@@ -95,6 +96,7 @@ Deno.test("new CRM lead uses caller-reported context without equating acceptance
     ),
   );
   assertStringIncludes(await decision.text(), "Connecting.");
+  await flushBackgroundTasks();
   assertEquals(fakeDb.screenings.get(CALL_SID)?.owner_decision, "accepted");
   assertEquals(fakeDb.screenings.get(CALL_SID)?.bridged, null);
   assertEquals(fakeDb.leadRows.length, 1);
@@ -107,7 +109,143 @@ Deno.test("new CRM lead uses caller-reported context without equating acceptance
       receptionParams({ Digits: "1" }),
     ),
   );
+  assertEquals(backgroundTasks.length, 0);
+  await flushBackgroundTasks();
   assertEquals(fakeDb.leadRows.length, 1);
+});
+Deno.test("owner connect durably reconciles in one synchronous decision transaction", async () => {
+  fakeDb = new FakeSupabaseRest();
+  await handleCallRequest(
+    await signedRequest("handle-call", receptionParams()),
+  );
+  await handleCallRequest(
+    await signedRequest(
+      "receptionist?step=purpose",
+      receptionParams({
+        SpeechResult: "My name is Jamie and I need a roof inspection",
+      }),
+    ),
+  );
+  const response = await handleCallRequest(
+    await signedRequest(
+      `whisper-decision?screenCallSid=${CALL_SID}`,
+      receptionParams({ Digits: "1" }),
+    ),
+  );
+  assertStringIncludes(await response.text(), "Connecting.");
+  assertEquals(fakeDb.leadRows.length, 1);
+  assertEquals(fakeDb.callLogs.get(CALL_SID)?.lead_id, 100);
+  assertEquals(fakeDb.finalizeRpcCount, 1);
+  assertEquals(backgroundTasks.length, 0);
+});
+Deno.test("a bridged completion returns non-2xx until durable reconciliation succeeds", async () => {
+  fakeDb = new FakeSupabaseRest();
+  await handleCallRequest(
+    await signedRequest("handle-call", receptionParams()),
+  );
+  await handleCallRequest(
+    await signedRequest(
+      "receptionist?step=purpose",
+      receptionParams({ SpeechResult: "Human please" }),
+    ),
+  );
+  fakeDb.screenings.get(CALL_SID)!.owner_decision = "accepted";
+  fakeDb.callLogs.get(CALL_SID)!.status = "screened-owner-accepted";
+  fakeDb.failNextReconcileRpc = true;
+  const failed = await handleCallRequest(
+    await signedRequest(
+      DIAL_RESULT_PATH,
+      receptionParams({ DialCallStatus: "completed", DialBridged: "true" }),
+    ),
+  );
+  assertEquals(failed.status, 503);
+  assertEquals(fakeDb.leadRows.length, 0);
+  const repaired = await handleCallRequest(
+    await signedRequest(
+      DIAL_RESULT_PATH,
+      receptionParams({ DialCallStatus: "completed", DialBridged: "true" }),
+    ),
+  );
+  assertEquals(repaired.status, 200);
+  assertEquals(fakeDb.leadRows.length, 1);
+  assertEquals(fakeDb.callLogs.get(CALL_SID)?.lead_id, 100);
+});
+Deno.test("an ambiguous decision RPC still honors press one and repairs durably", async () => {
+  fakeDb = new FakeSupabaseRest();
+  await handleCallRequest(
+    await signedRequest("handle-call", receptionParams()),
+  );
+  await handleCallRequest(
+    await signedRequest(
+      "receptionist?step=purpose",
+      receptionParams({ SpeechResult: "Human please" }),
+    ),
+  );
+  fakeDb.failNextDecisionRpc = "after-commit";
+  const response = await handleCallRequest(
+    await signedRequest(
+      `whisper-decision?screenCallSid=${CALL_SID}`,
+      receptionParams({ Digits: "1" }),
+    ),
+  );
+  assertStringIncludes(await response.text(), "Connecting.");
+  await flushBackgroundTasks();
+  assertEquals(fakeDb.screenings.get(CALL_SID)?.owner_decision, "accepted");
+  assertEquals(fakeDb.callLogs.get(CALL_SID)?.lead_id, 100);
+});
+Deno.test("a definitive decision rejection does not fail open or create a lead", async () => {
+  fakeDb = new FakeSupabaseRest();
+  await handleCallRequest(
+    await signedRequest("handle-call", receptionParams()),
+  );
+  await handleCallRequest(
+    await signedRequest(
+      "receptionist?step=purpose",
+      receptionParams({ SpeechResult: "Human please" }),
+    ),
+  );
+  fakeDb.failNextDecisionRpc = "database-timeout";
+  const response = await handleCallRequest(
+    await signedRequest(
+      `whisper-decision?screenCallSid=${CALL_SID}`,
+      receptionParams({ Digits: "1" }),
+    ),
+  );
+  assertStringIncludes(await response.text(), "voicemail");
+  assertEquals(backgroundTasks.length, 0);
+  assertEquals(fakeDb.leadRows.length, 0);
+  assertEquals(fakeDb.screenings.get(CALL_SID)?.owner_decision, null);
+});
+Deno.test("atomic reconciliation reuses the lead on duplicate repair", async () => {
+  fakeDb = new FakeSupabaseRest();
+  await handleCallRequest(
+    await signedRequest("handle-call", receptionParams()),
+  );
+  await handleCallRequest(
+    await signedRequest(
+      "receptionist?step=purpose",
+      receptionParams({ SpeechResult: "Human please" }),
+    ),
+  );
+  await handleCallRequest(
+    await signedRequest(
+      `whisper-decision?screenCallSid=${CALL_SID}`,
+      receptionParams({ Digits: "1" }),
+    ),
+  );
+  await flushBackgroundTasks();
+  fakeDb.callLogs.get(CALL_SID)!.lead_id = null;
+  fakeDb.callLogs.get(CALL_SID)!.status = "screened-owner-accepted";
+  await handleCallRequest(
+    await signedRequest(
+      DIAL_RESULT_PATH,
+      receptionParams({ DialCallStatus: "completed", DialBridged: "true" }),
+    ),
+  );
+  await flushBackgroundTasks();
+  assertEquals(fakeDb.leadRows.length, 1);
+  assertEquals(fakeDb.callLogs.get(CALL_SID)?.lead_id, 100);
+  assertEquals(fakeDb.reconcileRpcCount, 2);
 });
 Deno.test("new callback rejects invalid signature, wrong account and other market without storing caller text", async () => {
   fakeDb = new FakeSupabaseRest();
@@ -191,7 +329,9 @@ Deno.test("bridge outcome records only explicit provider proof, not missing data
     ),
   );
   assertEquals((await response.text()).includes("<Record"), false);
+  await flushBackgroundTasks();
   assertEquals(fakeDb.screenings.get(CALL_SID)?.bridged, true);
+  assertEquals(fakeDb.leadRows.length, 1);
 });
 
 function receptionParams(
@@ -224,6 +364,14 @@ class FakeSupabaseRest {
   failNextCallLogPatch = false;
   failNextCallLogPost = false;
   failNextCallLogGet = false;
+  failNextScreeningPatch = false;
+  failNextReconcileRpc = false;
+  failNextDecisionRpc:
+    | "before-commit"
+    | "after-commit"
+    | "definitive"
+    | "database-timeout"
+    | null = null;
   failWebhookGets = false;
   staleNextCallLogStatus: string | null = null;
   callLogPatchCount = 0;
@@ -237,6 +385,43 @@ class FakeSupabaseRest {
   failNextTwilioCallGet = false;
   lookupCount = 0;
   leadRows: Record<string, unknown>[] = [];
+  reconcileRpcCount = 0;
+  finalizeRpcCount = 0;
+
+  private reconcileCall(callSid: string): number | null {
+    this.reconcileRpcCount += 1;
+    const callLog = this.callLogs.get(callSid);
+    const screening = this.screenings.get(callSid);
+    if (!callLog || screening?.owner_decision !== "accepted") return null;
+    if (callLog.lead_id) return Number(callLog.lead_id);
+    const digits = String(callLog.from_number || "").replace(/\D/g, "")
+      .slice(-10);
+    let lead = this.leadRows.find((row) =>
+      String(row.phone || "").replace(/\D/g, "").slice(-10) === digits &&
+      !["spam", "lost", "third_party", "ul_request"].includes(
+        String(row.status || "").toLowerCase(),
+      )
+    );
+    if (!lead) {
+      lead = {
+        id: this.leadRows.length + 100,
+        name: screening.state.name || `Inbound caller — ${digits.slice(-4)}`,
+        phone: `+1${digits}`,
+        status: "new",
+        source_page: "inbound-call",
+        call_source: "google_website",
+        commission_eligible: true,
+        tier: "general",
+        tier_classifier: "auto-inbound-call-assistant",
+        notes:
+          `${callLog.notes} Caller-ID locality is not the service address. Confirm name and job details with the caller.`,
+        submission_key: null,
+      };
+      this.leadRows.push(lead);
+    }
+    callLog.lead_id = lead.id;
+    return Number(lead.id);
+  }
 
   async fetch(input: RequestInfo | URL, init?: RequestInit): Promise<Response> {
     const request = input instanceof Request
@@ -280,6 +465,68 @@ class FakeSupabaseRest {
         return jsonResponse({ message: "synthetic Twilio outage" }, 503);
       }
       return jsonResponse(this.twilioCallIdentity);
+    }
+
+    if (
+      (table === "commit_owner_screen_decision" ||
+        table === "finalize_owner_screen_decision") &&
+      request.method === "POST"
+    ) {
+      const body = JSON.parse(await request.text());
+      const callLog = this.callLogs.get(body.p_call_sid);
+      const screening = this.screenings.get(body.p_call_sid);
+      const failure = this.failNextDecisionRpc;
+      this.failNextDecisionRpc = null;
+      if (table === "finalize_owner_screen_decision") {
+        this.finalizeRpcCount += 1;
+      }
+      if (
+        failure === "definitive" || failure === "database-timeout" ||
+        this.failNextReconcileRpc
+      ) {
+        this.failNextReconcileRpc = false;
+        return jsonResponse(
+          failure === "database-timeout"
+            ? { code: "57014", message: "TimeoutError: query canceled" }
+            : {
+              code: "XX000",
+              message: "synthetic definitive database failure",
+            },
+          failure === "database-timeout" ? 504 : 503,
+        );
+      }
+      if (
+        failure !== "before-commit" && callLog && screening?.stage === "done"
+      ) {
+        screening.owner_decision ??= body.p_requested_decision;
+        callLog.status = screening.owner_decision === "accepted"
+          ? "screened-owner-accepted"
+          : "screened-owner-rejected";
+        if (
+          table === "finalize_owner_screen_decision" &&
+          screening.owner_decision === "accepted"
+        ) {
+          this.reconcileCall(body.p_call_sid);
+        }
+      }
+      if (failure) {
+        throw new DOMException("synthetic transport ambiguity", "TimeoutError");
+      }
+      return jsonResponse(screening?.owner_decision ?? null);
+    }
+
+    if (
+      table === "reconcile_screened_call_lead" && request.method === "POST"
+    ) {
+      if (this.failNextReconcileRpc) {
+        this.failNextReconcileRpc = false;
+        return jsonResponse(
+          { code: "XX000", message: "synthetic reconciliation failure" },
+          503,
+        );
+      }
+      const { p_call_sid: callSid } = JSON.parse(await request.text());
+      return jsonResponse(this.reconcileCall(callSid));
     }
 
     if (table === "processed_webhooks") {
@@ -330,6 +577,14 @@ class FakeSupabaseRest {
         return new Response(null, { status: 201 });
       }
       if (request.method === "PATCH") {
+        const patch = JSON.parse(await request.text());
+        if (this.failNextScreeningPatch) {
+          this.failNextScreeningPatch = false;
+          return jsonResponse(
+            { code: "XX000", message: "synthetic database failure" },
+            503,
+          );
+        }
         const matches = row &&
           (!url.searchParams.has("stage") ||
             url.searchParams.get("stage") === "eq." + row.stage) &&
@@ -337,7 +592,6 @@ class FakeSupabaseRest {
             row.owner_decision === null) &&
           (!url.searchParams.has("bridged") || row.bridged === null);
         if (matches) {
-          const patch = JSON.parse(await request.text());
           Object.assign(row, patch);
           const log = this.callLogs.get(sid);
           if (
@@ -455,7 +709,8 @@ class FakeSupabaseRest {
       request.method === "GET" &&
       (table === "blocked_callers" || table === "leads")
     ) {
-      return jsonResponse(table === "leads" ? this.leadRows : []);
+      if (table !== "leads") return jsonResponse([]);
+      return jsonResponse(this.leadRows);
     }
 
     throw new Error(
@@ -494,6 +749,15 @@ globalThis.fetch = (input: RequestInfo | URL, init?: RequestInit) =>
 
 const originalServe = Deno.serve;
 let registeredHandler: unknown;
+let backgroundTasks: Promise<unknown>[] = [];
+(globalThis as unknown as {
+  EdgeRuntime: { waitUntil(promise: Promise<unknown>): void };
+})
+  .EdgeRuntime = {
+    waitUntil(promise) {
+      backgroundTasks.push(promise);
+    },
+  };
 Deno.serve = ((handler: unknown) => {
   registeredHandler = handler;
   return {} as Deno.HttpServer;
@@ -501,6 +765,12 @@ Deno.serve = ((handler: unknown) => {
 const { handleCallRequest } = await import("./index.ts");
 Deno.serve = originalServe;
 assertEquals(registeredHandler, handleCallRequest);
+
+async function flushBackgroundTasks(): Promise<void> {
+  const pending = backgroundTasks;
+  backgroundTasks = [];
+  await Promise.all(pending);
+}
 
 async function signedRequest(
   path: string,
