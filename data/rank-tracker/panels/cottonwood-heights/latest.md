@@ -1,10 +1,10 @@
-# Cottonwood Heights Google rank tracker — 2026-09-08
+# Cottonwood Heights Google rank tracker — 2026-09-14
 
 - Panel: `utah-cottonwood-heights-google-v1`
 - Provider: DataForSEO task-queue
 - Location: Cottonwood Heights,Utah,United States
 - Device/depth: mobile / top 30
-- Observed: 2026-09-08T21:23:56.000Z
+- Observed: 2026-09-14T09:23:08.764Z
 - Estimated panel cost: $0.0192
 
 | Query | Organic | Exact-CID map pack | AI Overview | Frame cited in AI Overview |
@@ -17,13 +17,13 @@
 ## Displacement targets
 
 ### roofing contractor cottonwood heights
-- Organic top 3: #1 roofingutah.com; #2 shingleproroofing.com; #3 reroofit.com.
+- Organic top 3: #1 roofingutah.com; #2 shingleproroofing.com; #3 diamondcertified.org.
 - Map-pack top 3: #1 Utah Roofing Pros [CID 4118570990011609504]; #2 Pioneer Roofing Co [CID 8874014093901703868]; #3 ReRoofIt [CID 3305979678440818523].
 - Paid local placements (excluded from Maps rank): none.
 - AI Overview sources: no AI Overview.
 
 ### roof repair cottonwood heights
-- Organic top 3: #1 roofingutah.com; #2 xperienceroofing.com; #3 serviceagent.ai.
+- Organic top 3: #1 roofingutah.com; #2 xperienceroofing.com; #3 angi.com.
 - Map-pack top 3: #1 Utah Roofing Pros [CID 4118570990011609504]; #2 Pioneer Roofing Co [CID 8874014093901703868]; #3 ReRoofIt [CID 3305979678440818523].
 - Paid local placements (excluded from Maps rank): none.
 - AI Overview sources: no AI Overview.
