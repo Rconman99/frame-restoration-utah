@@ -13,7 +13,7 @@
         "Holladay",
         "Herriman"
       ],
-      "activeSnapshotSha256": "839753bd0f740b3fbeb84462a1f71ea8ae7b24ea3b64a351b0c20d793b5f8000",
+      "activeSnapshotSha256": "1eb6de0fd5d8a35955f0869b0bdbde6d23dd5c51b486e53068e3a4ad552693c7",
       "diagnosisSnapshotSha256": "a1b7d5aa2acc3a5b663da345ba6eb7242e411661807ae1296f50854702b1a7eb",
       "behavior": "Ignore the stale split-URL disposition and keep affected URL-competition cities in the diagnosis lane; do not suppress, redirect, canonicalize, noindex, delete, or rewrite a route from stale evidence.",
       "requiredAction": "Refresh the bounded Holladay/Herriman split-URL diagnosis against the current GSC attribution snapshot."
@@ -88,7 +88,7 @@
     },
     "gscAttribution": {
       "file": "data/rank-tracker/SLV-GSC-URL-ATTRIBUTION-LATEST.json",
-      "sha256": "25503d90ca344f9f87eff38a03fc5f26c5af246563ad83f55072491672c3e3b2"
+      "sha256": "f6b789773eb4dd93a18a2d52ae2962016ce4f53b7991020c7e2ad45cad7df9d2"
     },
     "gscSplitUrlDiagnosis": {
       "file": "data/rank-tracker/SLV-GSC-SPLIT-URL-DIAGNOSIS-2026-08-12.json",
@@ -108,7 +108,7 @@
     },
     "expansionArchitecture": {
       "file": "data/rank-tracker/SLV-EXPANSION-ARCHITECTURE-2026-08-12.json",
-      "sha256": "d4116760e58c3a169455dda763329d58b22799c5983d62509b3acabcdf5ab9c1"
+      "sha256": "612de53a4aab9f04afccc73ca1bc36da17a4ec6fac8c8a7077423d641186f5fb"
     },
     "corePriority": {
       "file": "data/rank-tracker/SLV-PRIORITY-2026-08-12.json",
@@ -163,20 +163,20 @@
   },
   "summary": {
     "cities": 18,
-    "monitor": 3,
-    "requestInput": 15,
+    "monitor": 4,
+    "requestInput": 14,
     "protectedOrganicNumberOneQueries": 2,
     "protectedGoogleAiOverviewCitations": 1,
     "citiesPendingServiceAreaEvidence": 16,
     "citiesWithAllFourTargetedGscQueriesRequested": 18,
     "citiesAtSustainedGoal": 0,
     "laneCounts": {
-      "diagnose-url-consolidation-before-intent-change": 2,
+      "diagnose-url-consolidation-before-intent-change": 3,
       "observe-time-gated-slc-experiment": 1,
       "owner-gated-core-integrity-then-single-variable-intent-test": 3,
       "owner-gated-verified-identity-and-integrity-cleanup": 1,
       "protect-foothold-before-cleanup-or-intent-change": 2,
-      "service-area-proof-and-targeted-gsc-before-intent-change": 9
+      "service-area-proof-and-targeted-gsc-before-intent-change": 8
     }
   },
   "systemNextActions": [
@@ -270,10 +270,12 @@
         "googleAiOverviewOwnedQueries": [],
         "protectedOrganicNumberOneQueries": [],
         "intendedPageSelectedForEveryMeasuredRank": true,
-        "gscState": "intended-url-only-for-all-returned-rows",
+        "gscState": "url-competition-requires-diagnosis",
         "gscRequestedQueries": 4,
         "gscReturnedQueries": 4,
-        "gscAlternateNormalizedUrls": [],
+        "gscAlternateNormalizedUrls": [
+          "framerestorationutah.com/"
+        ],
         "gscUrlDiagnosis": null,
         "serviceAreaStatus": "verified-profile-identity-city",
         "identityProfile": "salt-lake-valley-exact-cid",
@@ -2011,8 +2013,8 @@
       "cohort": "expansion-manual-baseline-measured",
       "page": "locations/west-jordan.html",
       "panelId": "utah-west-jordan-google-v1",
-      "lane": "service-area-proof-and-targeted-gsc-before-intent-change",
-      "decision": "Request input",
+      "lane": "diagnose-url-consolidation-before-intent-change",
+      "decision": "Monitor",
       "evidenceFeatures": {
         "observedAt": "2026-08-12T17:40:30.503Z",
         "organicRanks": [
@@ -2044,10 +2046,12 @@
         "googleAiOverviewOwnedQueries": [],
         "protectedOrganicNumberOneQueries": [],
         "intendedPageSelectedForEveryMeasuredRank": true,
-        "gscState": "intended-url-only-for-all-returned-rows",
+        "gscState": "url-competition-requires-diagnosis",
         "gscRequestedQueries": 4,
         "gscReturnedQueries": 4,
-        "gscAlternateNormalizedUrls": [],
+        "gscAlternateNormalizedUrls": [
+          "framerestorationutah.com/"
+        ],
         "gscUrlDiagnosis": null,
         "serviceAreaStatus": "pending-current-profile-service-area-verification",
         "identityProfile": "heber-keystone-cid",
@@ -2066,17 +2070,17 @@
         "leadValue": 5,
         "authorityValue": 5,
         "learningValue": 6,
-        "implementationCost": 5,
-        "complianceRisk": 8,
+        "implementationCost": 3,
+        "complianceRisk": 1,
         "customerBlockerRisk": 8,
         "maintenanceCost": 2,
         "sourceBiasRisk": 2,
         "recencyBiasRisk": 1
       },
-      "selectedAction": "Obtain current Salt Lake Valley service-area evidence and the next exact-query GSC attribution for West Jordan; request the bounded expansion cleanup separately, but do not change identity or commercial intent until those evidence gates pass.",
-      "gate": "service-area-evidence-plus-targeted-gsc-plus-explicit-cleanup-approval",
-      "ownerApprovalPhrase": "I explicitly approve editing and publishing the 12-page Salt Lake Valley expansion integrity cleanup defined in packet frame-utah-slv-twelve-page-expansion-public-integrity-cleanup-v1, with expansion identities, titles, H1s, canonicals, and protected related routes unchanged.",
-      "acceptanceCheck": "A current receipt explicitly classifies West Jordan for CID 5689850818145735734, all four exact queries are requested without treating missing rows as zero, and any approved cleanup passes the full release gate.",
+      "selectedAction": "Keep West Jordan's intended page, redirects, canonicals, related routes, and visible intent unchanged while the named stale-slv-gsc-split-url-diagnosis warning is open; refresh the bounded split-URL diagnosis against the current GSC attribution snapshot before suppressing or opening a URL intervention.",
+      "gate": "current-split-url-diagnosis-required",
+      "ownerApprovalPhrase": null,
+      "acceptanceCheck": "A refreshed diagnosis names the current GSC snapshot hash and classifies West Jordan's alternate URL evidence before any redirect, canonical, noindex, deletion, title, H1, copy, schema, or internal-link change is considered.",
       "feedback": {
         "cadence": "weekly",
         "requiredComparablePanels": 4,
