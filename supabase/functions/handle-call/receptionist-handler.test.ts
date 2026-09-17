@@ -3,14 +3,140 @@
 
 import { assertEquals, assertStringIncludes } from "jsr:@std/assert@1";
 import { crmEvidence } from "../_shared/receptionist.ts";
+import { startReceptionist } from "../_shared/receptionist-store.ts";
 
 const DIAL_RESULT_PATH = "completed?screened=1";
 
-Deno.test("new signed purpose-first path connects once without repeating a volunteered name", async () => {
+Deno.test("fast inbound has one short keypad prompt on every Utah line, with no interview or lead", async () => {
+  for (const to of ["+14352928802", "+18014620526", "+14356108978"]) {
+    fakeDb = new FakeSupabaseRest();
+    const response = await handleCallRequest(
+      await signedRequest("handle-call", receptionParams({ To: to })),
+    );
+    const body = await response.text();
+    assertEquals(response.status, 200);
+    assertStringIncludes(body, '<Gather input="dtmf" numDigits="1"');
+    assertStringIncludes(
+      body,
+      'action="https://supabase.test/functions/v1/handle-call/connect"',
+    );
+    assertStringIncludes(
+      body,
+      "Hey, this is Frame Restoration's virtual assistant. Press one to connect.",
+    );
+    assertEquals((body.match(/<Say /g) || []).length, 1);
+    assertEquals(/speech|receptionist|whisper|<Dial/.test(body), false);
+    assertEquals(fakeDb.screenings.size, 0);
+    assertEquals(fakeDb.leadRows.length, 0);
+  }
+});
+
+Deno.test("caller one dials Landon without another prompt and retains each source on retry", async () => {
+  for (
+    const [to, source] of [["+14352928802", "google_website"], [
+      "+18014620526",
+      "slc_gbp",
+    ], ["+14356108978", "slc_backlink"]]
+  ) {
+    fakeDb = new FakeSupabaseRest();
+    await handleCallRequest(
+      await signedRequest("handle-call", receptionParams({ To: to })),
+    );
+    for (let retry = 0; retry < 2; retry++) {
+      const response = await handleCallRequest(
+        await signedRequest(
+          "connect",
+          receptionParams({ To: to, Digits: "1" }),
+        ),
+      );
+      const body = await response.text();
+      assertEquals(response.status, 200);
+      assertStringIncludes(body, '<Dial callerId="+12145550123"');
+      assertStringIncludes(body, "+14353024422");
+      assertEquals(
+        /<Say|<Gather|whisper|screened=1|answerOnBridge/.test(body),
+        false,
+      );
+    }
+    assertEquals(fakeDb.leadRows.length, 1);
+    assertEquals(fakeDb.leadRows[0].call_source, source);
+    assertEquals(fakeDb.leadRows[0].commission_eligible, true);
+    assertEquals(fakeDb.screenings.size, 0);
+  }
+});
+
+Deno.test("silence or a different key goes to explicit voicemail without a lead", async () => {
+  for (const digit of ["", "2", "9"]) {
+    fakeDb = new FakeSupabaseRest();
+    await handleCallRequest(
+      await signedRequest("handle-call", receptionParams()),
+    );
+    const response = await handleCallRequest(
+      await signedRequest("connect", receptionParams({ Digits: digit })),
+    );
+    const body = await response.text();
+    assertStringIncludes(body, '<Record maxLength="120"');
+    assertStringIncludes(body, '/handle-call/voicemail"');
+    assertEquals(body.includes("<Dial"), false);
+    assertEquals(fakeDb.leadRows.length, 0);
+  }
+});
+
+Deno.test("fast connect rejects unsigned, wrong-account, wrong-line and malformed-call requests", async () => {
   fakeDb = new FakeSupabaseRest();
-  const first = await handleCallRequest(
+  const unsigned = new Request(FUNCTION_BASE + "/connect", {
+    method: "POST",
+    body: new URLSearchParams(receptionParams({ Digits: "1" })),
+  });
+  assertEquals((await handleCallRequest(unsigned)).status, 403);
+  for (
+    const extra of [
+      { AccountSid: "AC" + "9".repeat(32) },
+      { To: "+12085977712" },
+      { To: "" },
+      { CallSid: "" },
+      { CallSid: "invalid" },
+    ] as Record<string, string>[]
+  ) {
+    assertEquals(
+      (await handleCallRequest(
+        await signedRequest(
+          "connect",
+          receptionParams({ Digits: "1", ...extra }),
+        ),
+      )).status,
+      403,
+    );
+  }
+  assertEquals(fakeDb.leadRows.length, 0);
+});
+
+Deno.test("blocked callers stay blocked and trusted customers still ring directly", async () => {
+  fakeDb = new FakeSupabaseRest();
+  fakeDb.blocked = true;
+  const blocked = await handleCallRequest(
     await signedRequest("handle-call", receptionParams()),
   );
+  assertStringIncludes(await blocked.text(), "<Hangup/>");
+  assertEquals(fakeDb.leadRows.length, 0);
+  fakeDb = new FakeSupabaseRest();
+  fakeDb.leadRows.push({
+    id: 99,
+    phone: receptionParams().From,
+    status: "estimated",
+    source_page: "inbound-call",
+  });
+  const trusted = await handleCallRequest(
+    await signedRequest("handle-call", receptionParams()),
+  );
+  const body = await trusted.text();
+  assertStringIncludes(body, "<Dial");
+  assertEquals(body.includes("<Gather"), false);
+});
+
+Deno.test("legacy in-flight purpose-first path connects once without repeating a volunteered name", async () => {
+  fakeDb = new FakeSupabaseRest();
+  const first = await startLegacyCall();
   assertStringIncludes(await first.text(), "How can we help you today?");
   const params = receptionParams({
     SpeechResult: "My name is Jamie and I need a roof inspection",
@@ -32,11 +158,9 @@ Deno.test("new signed purpose-first path connects once without repeating a volun
   );
   assertEquals(fakeDb.screenings.get(CALL_SID)?.state.turns.length, 3);
 });
-Deno.test("new signed flow takes one optional name, and owner two does not create a block or lead", async () => {
+Deno.test("legacy in-flight flow takes one optional name, and owner two does not create a block or lead", async () => {
   fakeDb = new FakeSupabaseRest();
-  await handleCallRequest(
-    await signedRequest("handle-call", receptionParams()),
-  );
+  await startLegacyCall();
   const purpose = await handleCallRequest(
     await signedRequest(
       "receptionist?step=purpose",
@@ -78,9 +202,7 @@ Deno.test("new signed flow takes one optional name, and owner two does not creat
 });
 Deno.test("new CRM lead uses caller-reported context without equating acceptance with a bridge", async () => {
   fakeDb = new FakeSupabaseRest();
-  await handleCallRequest(
-    await signedRequest("handle-call", receptionParams()),
-  );
+  await startLegacyCall();
   await handleCallRequest(
     await signedRequest(
       "receptionist?step=purpose",
@@ -115,9 +237,7 @@ Deno.test("new CRM lead uses caller-reported context without equating acceptance
 });
 Deno.test("owner connect durably reconciles in one synchronous decision transaction", async () => {
   fakeDb = new FakeSupabaseRest();
-  await handleCallRequest(
-    await signedRequest("handle-call", receptionParams()),
-  );
+  await startLegacyCall();
   await handleCallRequest(
     await signedRequest(
       "receptionist?step=purpose",
@@ -140,9 +260,7 @@ Deno.test("owner connect durably reconciles in one synchronous decision transact
 });
 Deno.test("a bridged completion returns non-2xx until durable reconciliation succeeds", async () => {
   fakeDb = new FakeSupabaseRest();
-  await handleCallRequest(
-    await signedRequest("handle-call", receptionParams()),
-  );
+  await startLegacyCall();
   await handleCallRequest(
     await signedRequest(
       "receptionist?step=purpose",
@@ -172,9 +290,7 @@ Deno.test("a bridged completion returns non-2xx until durable reconciliation suc
 });
 Deno.test("an ambiguous decision RPC still honors press one and repairs durably", async () => {
   fakeDb = new FakeSupabaseRest();
-  await handleCallRequest(
-    await signedRequest("handle-call", receptionParams()),
-  );
+  await startLegacyCall();
   await handleCallRequest(
     await signedRequest(
       "receptionist?step=purpose",
@@ -195,9 +311,7 @@ Deno.test("an ambiguous decision RPC still honors press one and repairs durably"
 });
 Deno.test("a definitive decision rejection does not fail open or create a lead", async () => {
   fakeDb = new FakeSupabaseRest();
-  await handleCallRequest(
-    await signedRequest("handle-call", receptionParams()),
-  );
+  await startLegacyCall();
   await handleCallRequest(
     await signedRequest(
       "receptionist?step=purpose",
@@ -218,9 +332,7 @@ Deno.test("a definitive decision rejection does not fail open or create a lead",
 });
 Deno.test("atomic reconciliation reuses the lead on duplicate repair", async () => {
   fakeDb = new FakeSupabaseRest();
-  await handleCallRequest(
-    await signedRequest("handle-call", receptionParams()),
-  );
+  await startLegacyCall();
   await handleCallRequest(
     await signedRequest(
       "receptionist?step=purpose",
@@ -269,11 +381,9 @@ Deno.test("new callback rejects invalid signature, wrong account and other marke
   }
   assertEquals(fakeDb.screenings.size, 0);
 });
-Deno.test("new screening blocks an explicit roofing-leads pitch, but silence reaches voicemail after one repair", async () => {
+Deno.test("legacy screening blocks an explicit roofing-leads pitch, but silence reaches voicemail after one repair", async () => {
   fakeDb = new FakeSupabaseRest();
-  await handleCallRequest(
-    await signedRequest("handle-call", receptionParams()),
-  );
+  await startLegacyCall();
   const pitch = await handleCallRequest(
     await signedRequest(
       "receptionist?step=purpose",
@@ -287,9 +397,7 @@ Deno.test("new screening blocks an explicit roofing-leads pitch, but silence rea
   );
   assertEquals(fakeDb.leadRows.length, 0);
   fakeDb = new FakeSupabaseRest();
-  await handleCallRequest(
-    await signedRequest("handle-call", receptionParams()),
-  );
+  await startLegacyCall();
   const repair = await handleCallRequest(
     await signedRequest("receptionist?step=purpose", receptionParams()),
   );
@@ -305,9 +413,7 @@ Deno.test("new screening blocks an explicit roofing-leads pitch, but silence rea
 });
 Deno.test("bridge outcome records only explicit provider proof, not missing data", async () => {
   fakeDb = new FakeSupabaseRest();
-  await handleCallRequest(
-    await signedRequest("handle-call", receptionParams()),
-  );
+  await startLegacyCall();
   await handleCallRequest(
     await signedRequest(
       "receptionist?step=purpose",
@@ -334,6 +440,31 @@ Deno.test("bridge outcome records only explicit provider proof, not missing data
   assertEquals(fakeDb.leadRows.length, 1);
 });
 
+// Seed the interview state that an already-active pre-v7 call would have.
+// Fresh inbound behavior is tested separately below; legacy callbacks stay real.
+async function startLegacyCall(): Promise<Response> {
+  await handleCallRequest(
+    await signedRequest("handle-call", receptionParams()),
+  );
+  const body = await startReceptionist(
+    {
+      supabaseUrl: "https://supabase.test",
+      serviceKey: "local-service-role-test-key",
+      owner: "Landon",
+      voice: "Google.en-US-Chirp3-HD-Aoede",
+      dial: () => {
+        throw new Error("Legacy fixture unexpectedly dialed at start");
+      },
+      voicemail: () => {
+        throw new Error("Legacy fixture failed to initialize");
+      },
+    },
+    CALL_SID,
+    receptionParams().From,
+  );
+  return new Response(body);
+}
+
 function receptionParams(
   extra: Record<string, string> = {},
 ): Record<string, string> {
@@ -358,6 +489,7 @@ Deno.env.set("OWNER_SMS_RECIPIENT", "+12145550199");
 type CallLog = Record<string, unknown> & { call_sid: string; status: string };
 
 class FakeSupabaseRest {
+  blocked = false;
   screenings = new Map<string, ScreeningRecord>();
   callLogs = new Map<string, CallLog>();
   webhookClaims = new Set<string>();
@@ -709,7 +841,11 @@ class FakeSupabaseRest {
       request.method === "GET" &&
       (table === "blocked_callers" || table === "leads")
     ) {
-      if (table !== "leads") return jsonResponse([]);
+      if (table !== "leads") {
+        return jsonResponse(
+          this.blocked ? [{ phone: receptionParams().From }] : [],
+        );
+      }
       return jsonResponse(this.leadRows);
     }
 
