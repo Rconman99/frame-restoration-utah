@@ -277,6 +277,8 @@ jobs:
           deno-version: v2.x
       - name: Run relay classification fixtures
         run: deno test supabase/functions/_shared/classify-inbound.test.ts
+      - name: Require SMS and MMS relay without waiting for analytics
+        run: deno test --frozen --node-modules-dir=auto --allow-env supabase/functions/handle-sms/analytics-handler.test.ts
 
   twilio-sender-pinning:
     name: Twilio outbound sender pinning (blocking)
