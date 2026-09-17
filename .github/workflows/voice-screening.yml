@@ -27,7 +27,7 @@ jobs:
         with:
           node-version: '24'
       - name: Signed in-process handler, state machine and persistence contracts (no provider calls)
-        run: deno test --node-modules-dir=auto --allow-read --allow-env supabase/functions/handle-call/receptionist-handler.test.ts supabase/functions/_shared/receptionist.test.ts supabase/functions/_shared/receptionist-store.test.ts
+        run: deno test --node-modules-dir=auto --allow-read --allow-env supabase/functions/handle-call/receptionist-handler.test.ts supabase/functions/handle-call/caller-id-handler.test.ts supabase/functions/_shared/call-screening-source.test.ts supabase/functions/_shared/receptionist.test.ts supabase/functions/_shared/receptionist-store.test.ts
       - name: Private readout, exact migration and deployment scope contracts
         run: node --test scripts/voice-screening-*.test.mjs
       - name: Isolated PostgreSQL migration, privilege and outcome contracts

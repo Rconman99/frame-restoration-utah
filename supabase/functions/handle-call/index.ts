@@ -1,4 +1,5 @@
-// handle-call v6 — Frame Restoration Utah: approved lead-first screening + private trace.
+// handle-call v7 — one short caller prompt, then press one directly rings Landon.
+// v6 interview/owner-whisper callbacks remain available for in-flight calls.
 // ─────────────────────────────────────────────────────────────────────────────
 // v5 (2026-09-04): Humanized voice. Caller-facing prompts use Twilio's Google
 //   Chirp 3 HD generative voice; the private owner whisper stays on Amazon
@@ -36,7 +37,6 @@ import {
   readScreening,
   recordScreeningOutcome,
   type ScreeningConfig,
-  startReceptionist,
 } from "../_shared/receptionist-store.ts";
 import {
   callerIdIntroduction,
@@ -68,6 +68,7 @@ const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ??
 const LANDON_PHONE = "+14353024422";
 const POSTHOG_API_KEY = "phc_BnECzlZ2OeDujli2dbqcgGODXlv2tYERbp40dTF7UBV";
 const CALLER_VOICE = "Google.en-US-Chirp3-HD-Aoede";
+const CONNECT_VOICE = "Polly.Joanna-Neural";
 const OWNER_WHISPER_VOICE = "Polly.Joanna-Neural";
 const TWILIO_RESPONSE_BUDGET_MS = 6000;
 const TWILIO_DB_OPERATION_CAP_MS = 2500;
@@ -199,14 +200,15 @@ function dialLandonTwiml(callerId: string, screenCallSid = ""): string {
 const RECORD =
   `<Record maxLength="120" transcribe="true" action="${SUPABASE_URL}/functions/v1/handle-call/voicemail" />`;
 
-// Unknown-caller interview. actionOnEmptyResult ensures silence reaches the
-// callback and is explicitly marked as no-input instead of ringing the owner.
+// One caller-side keypress replaces the multi-turn interview and owner whisper.
+// numDigits=1 submits immediately on the first key (no pound key or speech wait).
+// Silence/other keys retain the existing voicemail fallback without creating a lead.
 function screenTwiml(): string {
   return `<Response>
-  <Gather input="dtmf speech" numDigits="1" timeout="6" speechTimeout="auto" language="en-US"
+  <Gather input="dtmf" numDigits="1" timeout="6"
           actionOnEmptyResult="true" method="POST"
-          action="${SUPABASE_URL}/functions/v1/handle-call/screen">
-    <Say voice="${CALLER_VOICE}">Hi, thanks for calling Frame Restoration Utah. I'm the virtual assistant for the team. To keep sales calls from interrupting our crews, I'll ask one quick question. Please tell me your name, the best number to reach you, and what we can help with. If you can't speak right now, press one to leave a message.</Say>
+          action="${SUPABASE_URL}/functions/v1/handle-call/connect">
+    <Say voice="${CONNECT_VOICE}">Hey, this is Frame Restoration's virtual assistant. Press one to connect.</Say>
   </Gather>
 </Response>`;
 }
@@ -618,9 +620,8 @@ export async function handleCallRequest(req: Request): Promise<Response> {
     const callerState = data.FromState || "";
     const cityLabel = callerCity ? `${callerCity}, ${callerState}` : "unknown";
 
-    // v4 routing: blocked callers are declined, known customers ring directly,
-    // and every unknown caller meets the virtual receptionist. A lead lookup
-    // failure safely degrades to screening, where a real caller can still pass.
+    // Blocked callers are declined, known customers ring directly, and unknown
+    // callers get the single press-one gate. A lookup failure safely screens.
     const stirVerstat = data.StirVerstat || "";
     const blocked = await isBlockedCaller(fromNumber);
     const recentLeadId = blocked
@@ -634,7 +635,7 @@ export async function handleCallRequest(req: Request): Promise<Response> {
     // ONCE per call, deduped via the processed_webhooks claim. We ALWAYS return the
     // routed TwiML below, so a retry is still handled: the claim guards side effects,
     // not call handling. For the "screen" route, lead creation is deferred until
-    // Landon accepts the private whisper, so rejected spam stays out of /leads.
+    // the caller presses one; silent robocalls stay out of /leads.
     if (await claimWebhook(`call:${callSid}`)) {
       let leadId: number | null = null;
       let logStatus = "ringing";
@@ -643,7 +644,7 @@ export async function handleCallRequest(req: Request): Promise<Response> {
       } else if (route === "ring") {
         leadId = recentLeadId;
       } else {
-        logStatus = "screening"; // lead deferred until the owner accepts
+        logStatus = "screening"; // lead deferred until the caller presses one
       }
 
       const { error } = await supabase.from("call_logs").insert({
@@ -687,13 +688,7 @@ export async function handleCallRequest(req: Request): Promise<Response> {
 
     if (route === "blocked") return xml(blockedTwiml());
     if (route === "screen") {
-      return xml(
-        await startReceptionist(
-          receptionistConfig(),
-          callSid,
-          forwardedCallerId(fromNumber, toNumber),
-        ),
-      );
+      return xml(screenTwiml());
     }
     return xml(dialLandonTwiml(forwardedCallerId(fromNumber, toNumber)));
   }
@@ -712,11 +707,17 @@ export async function handleCallRequest(req: Request): Promise<Response> {
     );
   }
 
-  // === LEGACY SCREEN RESULT ("press 1 to connect") ===
-  // Backward compatible for an in-flight Phase 0 call during deployment.
+  // === CALLER PRESS-ONE RESULT ===
+  // No interview, connecting announcement, or private owner acceptance prompt.
   if (path === "connect") {
     const digits = (data.Digits || "").trim();
     const callSid = (data.CallSid || "").trim();
+    if (
+      !/^CA[0-9a-f]{32}$/i.test(callSid) ||
+      !isOurBusinessNumber(data.To, creds.phone)
+    ) {
+      return new Response("Forbidden", { status: 403 });
+    }
     const fromNumber = data.From || "unknown";
     const callerId = forwardedCallerId(data.From, data.To || creds.phone || "");
     // Classify off the ORIGINAL dialed number ONLY (data.To). Never fall back to

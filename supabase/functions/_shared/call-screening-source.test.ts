@@ -4,7 +4,7 @@ const handleCall = await Deno.readTextFile(
   "supabase/functions/handle-call/index.ts",
 );
 
-Deno.test("unknown callers enter the purpose-first flow without an area-code exemption", () => {
+Deno.test("unknown callers enter the one-key flow without an area-code exemption", () => {
   assertStringIncludes(
     handleCall,
     "await findTrustedRecentLead(fromNumber)",
@@ -13,9 +13,13 @@ Deno.test("unknown callers enter the purpose-first flow without an area-code exe
     handleCall,
     'const route = blocked ? "blocked" : (recentLeadId ? "ring" : "screen")',
   );
-  assertStringIncludes(handleCall, '<Gather input="dtmf speech"');
+  assertStringIncludes(
+    handleCall,
+    '<Gather input="dtmf" numDigits="1" timeout="6"',
+  );
   assertStringIncludes(handleCall, 'actionOnEmptyResult="true"');
-  assertStringIncludes(handleCall, "await startReceptionist(");
+  assertEquals(handleCall.includes("await startReceptionist("), false);
+  assertStringIncludes(handleCall, "return xml(screenTwiml());");
   assertStringIncludes(handleCall, "await continueReceptionist(");
   assertEquals(handleCall.includes("UTAH_AREA_CODES"), false);
   assertEquals(handleCall.includes("isUtahNumber"), false);
@@ -27,7 +31,7 @@ Deno.test("unknown callers enter the purpose-first flow without an area-code exe
   );
 });
 
-Deno.test("caller prompts use a humanized generative voice without weakening the owner whisper", () => {
+Deno.test("short connect prompt uses deterministic speech; legacy voices stay intact", () => {
   assertStringIncludes(
     handleCall,
     'const CALLER_VOICE = "Google.en-US-Chirp3-HD-Aoede"',
@@ -36,7 +40,14 @@ Deno.test("caller prompts use a humanized generative voice without weakening the
     handleCall,
     'const OWNER_WHISPER_VOICE = "Polly.Joanna-Neural"',
   );
-  assertStringIncludes(handleCall, '<Say voice="${CALLER_VOICE}">Hi, thanks');
+  assertStringIncludes(
+    handleCall,
+    'const CONNECT_VOICE = "Polly.Joanna-Neural"',
+  );
+  assertStringIncludes(
+    handleCall,
+    '<Say voice="${CONNECT_VOICE}">Hey, this is Frame Restoration',
+  );
   assertStringIncludes(
     handleCall,
     '<Say voice="${OWNER_WHISPER_VOICE}">Frame call.',
