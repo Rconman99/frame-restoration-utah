@@ -217,8 +217,75 @@ try {
     await page.close();
   }
   await noScriptContext.close();
+  // Article-to-inquiry journey: all network writes are intercepted. A guide's
+  // town is context, never inferred as the homeowner's property location.
+  for (const city of ['midway', 'hideout', 'charleston']) {
+    for (const id of ['#heroForm', '#leadForm']) {
+      const page = await browser.newPage();
+      const posts = [];
+      await page.route('**/*', async route => {
+        const request = route.request();
+        if (new URL(request.url()).pathname === endpointPath) {
+          posts.push(request.postDataJSON());
+          return route.fulfill({ status: 503, contentType: 'application/json', body: '{}' });
+        }
+        if (request.url().startsWith(origin) && request.method() === 'GET') return route.continue();
+        return route.abort();
+      });
+      const article = `/blog/${city}/hail-roof-inspection-${city}`;
+      await page.goto(origin + article + '?utm_source=google&utm_medium=organic&utm_campaign=hail_fixture');
+      await page.locator(`[data-cta="${city}-hail-inspection"]`).click();
+      assert.equal(new URL(page.url()).search, `?roof_guide=${city}`);
+      const form = page.locator(id);
+      await form.locator('.hail-guide-context').waitFor();
+      await form.locator('[name="name"], [name="first_name"]').fill('Campaign Test');
+      await form.locator('[name="phone"]').fill('4355550100');
+      await form.locator('[name="zip"]').fill('84032');
+      await form.locator('details summary').click();
+      if (id === '#heroForm') {
+        assert.equal(await form.locator('[name="city"]').inputValue(), '', 'Guide must not guess city');
+        await form.locator('[name="city"]').fill('Heber City');
+        await form.locator('[name="issue"]').selectOption('leak');
+      } else {
+        await form.locator('[name="message"]').fill('My roof is in Heber City; no active leak.');
+      }
+      await requireOneAdditionalPost(posts, `${city} ${id}`, () => form.locator('button[type="submit"]').click());
+      const payload = posts[0];
+      assert.equal(payload.source_page, `/?roof_guide=${city}`);
+      assert.equal(payload.utm_source, 'google');
+      assert.equal(payload.utm_campaign, 'hail_fixture');
+      assert(payload.landing_page.startsWith(article));
+      assert.equal(payload.sms_consent, false);
+      if (id === '#heroForm') {
+        assert.equal(payload.city, 'Heber City');
+        assert.equal(payload.issue, 'leak');
+        assert.equal(payload.message, undefined, 'Guide must not change urgent-lead classifier input');
+      } else assert.equal(payload.message, 'My roof is in Heber City; no active leak.');
+      await requireOneAdditionalPost(posts, `${city} retry`, () => form.locator('button[type="submit"]').click());
+      assert.equal(posts[1].message, payload.message, 'Retries must not duplicate annotation');
+      assert.equal(posts[1].submission_key, payload.submission_key);
+      await page.close();
+    }
+  }
+  for (const query of ['', '?roof_guide=__proto__', '?roof_guide=%3Cscript%3E', '?roof_guide=midway&roof_guide=hideout']) {
+    const page = await browser.newPage();
+    await page.route('**/*', route => route.request().url().startsWith(origin) && route.request().method() === 'GET' ? route.continue() : route.abort());
+    await page.goto(origin + query);
+    assert.equal(await page.locator('.hail-guide-context').count(), 0);
+    assert.equal(await page.evaluate(() => typeof window.FrameHailGuideContext), 'undefined');
+    await page.close();
+  }
+  // Context is query-based and remains available without browser storage.
+  const blockedStorage = await browser.newPage();
+  await blockedStorage.addInitScript(() => {
+    for (const key of ['localStorage', 'sessionStorage']) Object.defineProperty(window, key, { get() { throw new Error('blocked'); } });
+  });
+  await blockedStorage.route('**/*', route => route.request().url().startsWith(origin) && route.request().method() === 'GET' ? route.continue() : route.abort());
+  await blockedStorage.goto(origin + '/?roof_guide=midway');
+  assert.equal(await blockedStorage.locator('.hail-guide-context').count(), 2);
+  await blockedStorage.close();
   console.log(
-    "Lead form contract passed: one JSON POST per click, blank honeypots, stable retry keys, and POST-only no-script fallback.",
+    "Lead form contract passed: one JSON POST per click, honeypots, retry keys, native fallback; six article-to-form journeys preserve guide, UTMs, actual city, consent and homeowner text; invalid context rejected.",
   );
 } finally {
   await browser.close();
