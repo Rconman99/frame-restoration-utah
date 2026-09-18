@@ -400,6 +400,8 @@
   <link rel="stylesheet" href="/global-critical.css?v=20260727b">
   <link rel="stylesheet" href="/global.css?v=20260727b" media="print" onload="this.media='all'">
   <noscript><link rel="stylesheet" href="/global.css?v=20260727b"></noscript>
+  <link rel="stylesheet" href="/hail-campaign.css?v=20260917a">
+  <script src="/hail-guide-context.js?v=20260917a" defer></script>
 
   <style>
     /* ─── INDEX-SPECIFIC STYLES ─── */
@@ -1174,7 +1176,7 @@
 </nav>
 
 <!-- ───── HERO START ───── -->
-<main id="main-content">
+<main id="main-content" data-hail-campaign="20260917a">
 <section class="hero" id="home" aria-label="Utah roofing hero">
   <div class="hero-img">
     <picture>
@@ -1205,7 +1207,7 @@
       </div>
       <div class="hero-form-card" aria-label="Request a free roof inspection">
         <h2>Get Your Free Roof Inspection</h2>
-        <p>3 fields, 30 seconds (address optional). We'll call you back within 15 minutes during business hours.</p>
+        <p>Start with your name, phone and ZIP code. Our team will contact you to discuss your roof and confirm availability.</p>
         <form id="heroForm" class="hero-form" method="post" action="https://hdcflshhomzildwqlmwh.supabase.co/functions/v1/handle-lead" accept-charset="UTF-8" data-endpoint="https://hdcflshhomzildwqlmwh.supabase.co/functions/v1/handle-lead">
           <input type="hidden" name="source_page" value="/">
           <div aria-hidden="true" style="position:absolute;left:-10000px;width:1px;height:1px;overflow:hidden;"><label>Company website<input type="text" name="company_website" tabindex="-1" autocomplete="off"></label></div>
@@ -1241,6 +1243,16 @@
   </div>
 </section>
 <!-- ───── HERO END ───── -->
+
+<section class="hail-discovery" aria-labelledby="hail-guides-heading">
+  <h2 id="hail-guides-heading">Roof concerns after hail in the Heber Valley?</h2>
+  <p>Start with your town’s guide: safe ground-level photos, warning signs to discuss and what to share when requesting an inspection.</p>
+  <div class="hail-discovery-links">
+    <a href="/blog/midway/hail-roof-inspection-midway">Midway hail guide</a>
+    <a href="/blog/hideout/hail-roof-inspection-hideout">Hideout hail guide</a>
+    <a href="/blog/charleston/hail-roof-inspection-charleston">Charleston hail guide</a>
+  </div>
+</section>
 
 <!-- ─── VERIFIED UTAH ROOFING STANDARDS ─── -->
 <section class="quick-answer-strip" aria-labelledby="qa-title">
@@ -2039,7 +2051,7 @@
         <input type="hidden" name="source_page" value="/">
         <div aria-hidden="true" style="position:absolute;left:-10000px;width:1px;height:1px;overflow:hidden;"><label>Company website<input type="text" name="company_website" tabindex="-1" autocomplete="off"></label></div>
         <h3>Request a Free Inspection</h3>
-        <p style="font-size:14px;color:var(--gray);margin:-6px 0 18px;">3 quick fields (address optional). We'll call you back within 15 minutes during business hours.</p>
+        <p style="font-size:14px;color:var(--gray);margin:-6px 0 18px;">Start with your name, phone and ZIP code. Our team will contact you to discuss your roof and confirm availability.</p>
         <div class="form-group"><label for="fname">Full Name</label><input type="text" id="fname" name="first_name" placeholder="John Smith" required autocomplete="name" /></div>
         <div class="form-group"><label for="phone">Phone Number</label><input type="tel" id="phone" name="phone" placeholder="(435) 292-8802" required autocomplete="tel" /></div>
         <div class="form-group"><label for="address">Street Address <span style="color:var(--gray);font-weight:400;font-size:12px">(optional)</span></label><input type="text" id="address" name="address" placeholder="123 Main St, City" autocomplete="street-address" /></div>
@@ -2312,6 +2324,7 @@ document.addEventListener('focusin', function(event) {
           }
         }
 
+        if (window.FrameHailGuideContext) window.FrameHailGuideContext.apply(payload);
         fetch(heroForm.getAttribute('data-endpoint'), {
           method: 'POST',
           body: JSON.stringify(payload),
@@ -2363,6 +2376,7 @@ document.addEventListener('focusin', function(event) {
           }
         }
 
+        if (window.FrameHailGuideContext) window.FrameHailGuideContext.apply(payload);
         fetch(leadForm.getAttribute('data-endpoint'), {
           method: 'POST',
           body: JSON.stringify(payload),
