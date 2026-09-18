@@ -10,7 +10,7 @@ for (const html of [home, storm]) {
     assert(html.includes(`href="/blog/${city}/hail-roof-inspection-${city}"`), `${city} crawlable discovery`);
   }
 }
-assert(home.includes('/hail-guide-context.js?v=20260917a'));
+assert(home.includes('/hail-guide-context.js?v=20260918a'));
 assert.equal(home.split('FrameHailGuideContext.apply(payload)').length - 1, 2);
 assert(!/within 15 minutes/i.test(home));
 assert(!/within 24 hours|45[–-]60 days|golf.ball.sized|24\/7/i.test(storm));
@@ -26,7 +26,7 @@ for (const city of ['midway', 'hideout', 'charleston']) {
 }
 console.log('PASS hail campaign: crawlable discovery, versioned scoped assets, form integration, safe claims and repaired FAQ parity');
 const script = fs.readFileSync('hail-guide-context.js', 'utf8');
-for (const key of ['midway', 'hideout', 'charleston']) {
+for (const key of ['midway', 'hideout', 'charleston', 'layton', 'farmington']) {
   const window = { location: { pathname: '/', search: `?roof_guide=${key}&email=private%40example.test` } };
   vm.runInNewContext(script, { window, URLSearchParams, document: { querySelectorAll: () => [] } });
   for (const message of [undefined, '', 'Active leak', 'x'.repeat(5000)]) {
@@ -36,4 +36,10 @@ for (const key of ['midway', 'hideout', 'charleston']) {
     assert.deepEqual(payload, { ...before, source_page: `/?roof_guide=${key}` }, 'Only the bounded actual submit URL may change; classifier/PII/acquisition fields are immutable');
   }
 }
-console.log('PASS guide context: 12 classifier-input invariance cases, including empty and 5000-character messages; arbitrary query PII excluded');
+console.log('PASS guide context: 20 classifier-input invariance cases, including empty and 5000-character messages; arbitrary query PII excluded');
+for (const search of ['', '?roof_guide=unknown', '?roof_guide=layton&roof_guide=farmington', '?roof_guide=Layton', '?roof_guide=']) {
+  const window = { location: { pathname: '/', search } };
+  vm.runInNewContext(script, { window, URLSearchParams, document: { querySelectorAll: () => { throw new Error('Invalid context must not touch forms'); } } });
+  assert.equal(window.FrameHailGuideContext, undefined);
+}
+console.log('PASS invalid, absent, mixed-case and duplicate guide queries are ignored');

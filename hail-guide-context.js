@@ -1,7 +1,7 @@
 /* Explicit guide context, not inferred property location or acquisition source. */
 (function () {
   'use strict';
-  var guides = { midway: 'Midway', hideout: 'Hideout', charleston: 'Charleston' };
+  var guides = { midway: 'Midway', hideout: 'Hideout', charleston: 'Charleston', layton: 'Layton', farmington: 'Farmington' };
   var params = new URLSearchParams(window.location.search);
   var key = params.get('roof_guide');
   if (params.getAll('roof_guide').length !== 1 || !Object.prototype.hasOwnProperty.call(guides, key)) return;
