@@ -31,6 +31,9 @@ try{
   assert((await page.locator('#leadForm .hail-guide-context').textContent()).includes(city[0].toUpperCase()+city.slice(1)));checks++;
   const payload=await page.evaluate(()=>{const p={city:'Actual town',issue:'inspection',message:'No leak reported',utm_source:'google',sms_consent:false};window.FrameHailGuideContext.apply(p);return p;});
   assert.deepEqual(payload,{city:'Actual town',issue:'inspection',message:'No leak reported',utm_source:'google',sms_consent:false,source_page:'/?roof_guide='+city});checks++;
+  // Finish buffered same-origin requests before closing their context; otherwise
+  // a late image response raises TargetClosedError in the route callback.
+  await ctx.unrouteAll({behavior:'wait'});
   await ctx.close();
  }
  console.log('PASS Davis guides rendered semantics: '+checks+' checks; no calls, texts or forms submitted');
