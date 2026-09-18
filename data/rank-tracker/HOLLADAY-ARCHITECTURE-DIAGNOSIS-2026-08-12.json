@@ -200,7 +200,13 @@
       },
       {
         "file": "index.html",
-        "sha256": "a5256f5bc91a03db509070f68a908a09af7d3dcd54648f5d922336b9afad2cd6",
+        "sha256": "d3931904e8e918cf22a5ea66bd8abddd083c1f3de71b378a0907f7568f5cf57f",
+        "davisHailSourceAmendment": {
+          "observedAt": "2026-09-18T22:04:28Z",
+          "priorSha256": "a5256f5bc91a03db509070f68a908a09af7d3dcd54648f5d922336b9afad2cd6",
+          "reason": "Supporting homepage byte pin only: adds the Davis hail release marker and versions the guide-context script for Layton/Farmington. Homepage title, H1, canonical, schema and existing discovery are unchanged. Additional guide pages increase corpus inbound links; historical inbound counts, ranking/GSC observations and Holladay experiment prerequisites remain unchanged. This is not new ranking evidence or authorization to launch a held experiment.",
+          "reviewRequiredBeforeMerge": true
+        },
         "hailCampaignSourceAmendment": {
           "observedAt": "2026-09-18T04:02:00Z",
           "sourceCommit": "00a332e0f72c0659476a5121392a316928624ebe",
