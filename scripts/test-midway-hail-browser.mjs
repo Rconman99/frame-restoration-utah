@@ -2,7 +2,7 @@ import {chromium} from 'playwright';
 import assert from 'node:assert/strict';
 const base=process.argv[2]||'http://127.0.0.1:4187';
 const local=new URL(base).hostname==='127.0.0.1';
-assert(local||/^https:\/\/frame-restoration-utah-[a-z0-9-]+\.vercel\.app$/.test(base));
+assert(local||base==='https://www.framerestorationutah.com'||/^https:\/\/frame-restoration-utah-[a-z0-9-]+\.vercel\.app$/.test(base));
 const browser=await chromium.launch();
 let checks=0;
 try{

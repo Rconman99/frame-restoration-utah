@@ -28,4 +28,14 @@ After authorized release: read actual GSC indexing and page/query observations p
 
 ## Release state
 
-Draft in isolated codex branch. Blog-index and sitemap integration are candidate changes, not evidence that the page is live. Production promotion requires reviewed preview and explicit approval under client-build. Photo/date confirmation pending. Runtime/context rebind is outside this article scope.
+Ryan explicitly approved SEO rebuild and live release on September17 PDT: "yes so reabuild it make it 100 and then lets push it live". This authorizes the scoped release after independent review and checks; it does not establish a100/100 SEO score, photo permission/date, indexing, search rankings or lead lift. Runtime/context rebind remains outside this article scope.
+
+## SEO rebuild and acceptance delta
+
+- Primary intent: Midway hail damage / post-hail roof inspection. Title and H1 now name the location and inspection; first paragraph provides a47-word direct answer. Supporting question headings cover safe observations, repair versus replacement and inspection requests. No keyword-density quota or duplicate city pages.
+- Added homeowner decision checklist for active water entry, exterior observations, no obvious damage and remotely managed property. Six visible FAQs match schema; free inspection offer remains existing approved site offer with appointment confirmation required.
+- Publisher/author reference the existing canonical #organization rather than inventing a Midway branch. Publisher sameAs includes existing Heber Maps CID and Chamber page only; absent directory links are not invented to green an audit.
+- Added one contextual backlink from the existing Midway service page and refreshed blog-card headline; no unrelated city-page claims were copied or changed. Existing city-page warranty, price, accreditation and meteorological claims require a separate evidence audit and are NOT newly verified by this release.
+- Google AI features require ordinary crawlable/indexable SEO, not special AI schema: https://developers.google.com/search/docs/appearance/ai-features . FAQ rich-result retirement is documented at https://developers.google.com/search/updates ; no FAQ rich-result or AI-citation boost promised.
+- Original photo/field observations remain pending. Content and AEO heuristic YELLOW results must remain visible; do not manufacture measurements, author review or directory authority to claim100. No paid provider queries or new schedules.
+- Exact new source/immutable-preview and canonical-production receipts required for all three modified rendered routes: guide, blog index and Midway location. Marker20260917b. New source changes invalidate earlier20260917a receipts.
