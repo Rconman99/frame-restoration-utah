@@ -12,18 +12,18 @@ Qualified leads, inspections, sold jobs and collected revenue: **not measured** 
 
 ## Query discovery — exact query/page diagnosis required
 
-- slc: roof inspection salt lake city — 77 impressions, 0 clicks, position 11.2; exact_query_page_diagnosis_ready.
-- slc: roof inspections salt lake city — 70 impressions, 0 clicks, position 12.5; exact_query_page_diagnosis_ready.
-- heber: roof repair heber city ut — 2434 impressions, 0 clicks, position 10.9; exact_query_page_diagnosis_ready.
-- heber: roofing heber city ut — 1923 impressions, 0 clicks, position 6; exact_query_page_diagnosis_ready.
-- heber: dc biggs roof specialists, llc heber city, ut — 307 impressions, 0 clicks, position 7.5; exact_query_page_diagnosis_ready.
-- hail-service-area: roofing midway ut — 2229 impressions, 0 clicks, position 6; exact_query_page_diagnosis_ready.
-- hail-service-area: roof repair midway ut — 2051 impressions, 0 clicks, position 4.1; exact_query_page_diagnosis_ready.
+- slc: roof inspection salt lake city — 82 impressions, 0 clicks, position 11.7; exact_query_page_diagnosis_ready.
+- slc: roof inspections salt lake city — 72 impressions, 0 clicks, position 12.5; exact_query_page_diagnosis_ready.
+- heber: roof repair heber city ut — 2373 impressions, 0 clicks, position 10.8; exact_query_page_diagnosis_ready.
+- heber: roofing heber city ut — 1881 impressions, 0 clicks, position 6; exact_query_page_diagnosis_ready.
+- heber: dc biggs roof specialists, llc heber city, ut — 310 impressions, 0 clicks, position 7.5; exact_query_page_diagnosis_ready.
+- hail-service-area: roofing midway ut — 2148 impressions, 0 clicks, position 5.9; exact_query_page_diagnosis_ready.
+- hail-service-area: roof repair midway ut — 1987 impressions, 0 clicks, position 4.1; exact_query_page_diagnosis_ready.
 
 ## Priority pages — rolling search window
 
-- slc: 5 clicks / 12179 impressions / position 24.6.
-- heber: 0 clicks / 2715 impressions / position 10.4.
+- slc: 5 clicks / 12456 impressions / position 24.7.
+- heber: 0 clicks / 2726 impressions / position 10.4.
 - midway: not measured or not returned.
 - hideout: not measured or not returned.
 - charleston: not measured or not returned.
