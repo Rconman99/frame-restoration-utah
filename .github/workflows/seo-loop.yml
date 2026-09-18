@@ -38,11 +38,13 @@ on:
   pull_request:
     paths:                  # the suite existed but nothing ran it — a green PR
       - 'scripts/seo-*.mjs' # said nothing about whether the loop still worked
+      - 'scripts/evaluate-homepage-title-experiment.mjs'
       - 'scripts/lib/gsc.mjs'
       - 'scripts/lib/gsc.test.mjs'
       - 'scripts/lib/slv-intervention-queue*.mjs'
       - 'scripts/sync-slv-*.mjs'
       - 'data/seo-experiments/*.json'
+      - 'data/seo/experiment-readouts/*.json'
       - 'scripts/seo-snapshot.test.mjs'
       - 'data/rank-tracker/**/*.json'
       - '.github/workflows/seo-loop.yml'
@@ -63,7 +65,9 @@ jobs:
         with:
           node-version: '22'
       - name: Unit tests
-        run: node --test scripts/seo-diff.test.mjs scripts/seo-crawl.test.mjs scripts/lib/gsc.test.mjs scripts/lib/slv-gsc-attribution.test.mjs scripts/seo-snapshot.test.mjs scripts/seo-growth-operations.test.mjs scripts/lib/slv-intervention-queue.test.mjs
+        run: node --test scripts/seo-diff.test.mjs scripts/seo-crawl.test.mjs scripts/lib/gsc.test.mjs scripts/lib/slv-gsc-attribution.test.mjs scripts/seo-snapshot.test.mjs scripts/seo-growth-operations.test.mjs scripts/lib/slv-intervention-queue.test.mjs scripts/seo-experiment-review.test.mjs
+      - name: Verify retained homepage experiment decision
+        run: node scripts/evaluate-homepage-title-experiment.mjs --check
 
   measure:
     needs: test               # a broken differ must not get to write a snapshot

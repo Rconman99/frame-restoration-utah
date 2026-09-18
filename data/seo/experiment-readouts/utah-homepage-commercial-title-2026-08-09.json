@@ -1,0 +1,59 @@
+{
+  "schemaVersion": 1,
+  "evaluationId": "utah-homepage-commercial-title-2026-08-09-evaluation-v1",
+  "experimentId": "utah-homepage-commercial-title-2026-08-09",
+  "evaluatedAt": "2026-09-18T05:30:30.977Z",
+  "publicMutationPerformed": false,
+  "interpretation": "Pinned-rule observation only, not causal SEO lift or proof of leads/revenue. Crawl indexability counts are not Google indexing confirmation. Other site changes overlapped this period.",
+  "requiredPostWindow": {
+    "start": "2026-08-10",
+    "end": "2026-09-06"
+  },
+  "baseline": {
+    "sourceReceipt": "data/seo/snapshots/2026-08-07.json",
+    "window": {
+      "start": "2026-07-08",
+      "end": "2026-08-04",
+      "searchType": "web",
+      "dataState": "final"
+    },
+    "clicks": 9,
+    "impressions": 4429,
+    "ctr": 0.002032,
+    "averagePosition": 16.8,
+    "crawl": {
+      "sourceReceipt": "data/seo/snapshots/2026-08-09.json",
+      "pages": 151,
+      "indexablePages": 148,
+      "errorIssueUrls": []
+    }
+  },
+  "status": "DECISION_READY",
+  "verdict": "keep",
+  "decisionReady": true,
+  "postMeasurement": {
+    "sourceReceipt": "data/seo/snapshots/2026-09-09.json",
+    "window": {
+      "start": "2026-08-10",
+      "end": "2026-09-06"
+    },
+    "clicks": 8,
+    "impressions": 3197,
+    "ctr": 0.002502,
+    "averagePosition": 20.2,
+    "positionImprovement": -3.3999999999999986,
+    "crawl": {
+      "pages": 152,
+      "indexablePages": 149,
+      "newErrorIssueUrls": []
+    }
+  },
+  "checks": {
+    "fullWindow": true,
+    "minimumHomepageImpressions": true,
+    "ctrImprovesRelative": true,
+    "averagePositionImprovesByAtLeastTwo": false,
+    "noCrawlOrIndexRegression": true
+  },
+  "reason": "Keep: at least one pinned performance signal improved and crawl/index guardrails held."
+}
