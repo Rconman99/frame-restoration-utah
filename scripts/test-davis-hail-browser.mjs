@@ -1,15 +1,19 @@
 import {chromium} from 'playwright';
 import assert from 'node:assert/strict';
-import {createReadOnlyRouteHandler} from './lib/davis-browser-routing.mjs';
 const base=process.argv[2]||'http://127.0.0.1:4192';
 const local=new URL(base).hostname==='127.0.0.1';
-assert(local||base==='https://www.framerestorationutah.com'||/^https:\/\/frame-restoration-utah-[a-z0-9-]+\.vercel\.app$/.test(base));
+assert(!process.env.SURFACE_GATE_PROTECTION_BYPASS_SECRET,'Protected previews use the shared surface gate, not this credential-free journey test');
+assert((local&&base==='http://127.0.0.1:4192')||base==='https://www.framerestorationutah.com');
 const browser=await chromium.launch();
 let checks=0;
 try{
  for(const city of ['layton','farmington']) for(const [width,height] of [[320,568],[360,800],[393,852],[430,932],[740,360],[1440,1000]]){
   const ctx=await browser.newContext({viewport:{width,height},serviceWorkers:'block'});
-  await ctx.route('**/*',createReadOnlyRouteHandler(base,process.env.SURFACE_GATE_PROTECTION_BYPASS_SECRET));
+  await ctx.route('**/*',route=>{
+   const request=route.request();const url=new URL(request.url());
+   if(!['GET','HEAD'].includes(request.method())||/posthog|google-analytics/.test(url.hostname))return route.abort();
+   return route.continue();
+  });
   const page=await ctx.newPage();
   await page.goto(base+`/blog/${city}/hail-roof-inspection-${city}`+(local?'.html':''));
   await page.locator('main').waitFor();
@@ -31,11 +35,6 @@ try{
   assert((await page.locator('#leadForm .hail-guide-context').textContent()).includes(city[0].toUpperCase()+city.slice(1)));checks++;
   const payload=await page.evaluate(()=>{const p={city:'Actual town',issue:'inspection',message:'No leak reported',utm_source:'google',sms_consent:false};window.FrameHailGuideContext.apply(p);return p;});
   assert.deepEqual(payload,{city:'Actual town',issue:'inspection',message:'No leak reported',utm_source:'google',sms_consent:false,source_page:'/?roof_guide='+city});checks++;
-  // Finish buffered same-origin requests before closing their context; otherwise
-  // a late image response raises TargetClosedError in the route callback.
-  // Keep a deny-all page guard while context routes drain.
-  await page.route('**/*',route=>route.abort());
-  await ctx.unrouteAll({behavior:'wait'});
   await ctx.close();
  }
  console.log('PASS Davis guides rendered semantics: '+checks+' checks; no calls, texts or forms submitted');
