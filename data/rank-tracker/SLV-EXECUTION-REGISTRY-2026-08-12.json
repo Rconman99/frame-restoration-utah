@@ -71,7 +71,7 @@
     },
     "interventions": {
       "file": "data/rank-tracker/SLV-INTERVENTION-QUEUE-2026-08-12.json",
-      "sha256": "c3a17ac261c178dfb5518907e26b36dabdfba4b5427d4ab4461e5e675f2d9ad8"
+      "sha256": "1869277be2ad143a5ec62927c38f1fd940ad601721159723aae0a10e85870e64"
     },
     "mapsReadiness": {
       "file": "data/rank-tracker/SLV-MAPS-READINESS-2026-08-12.json",
@@ -292,17 +292,17 @@
         "nextEvidenceAction": "Inspect the alternate URLs against redirect dates, canonicals, current live routing, and query intent. Treat this blended 28-day evidence as a diagnosis trigger, not proof of current cannibalization or permission to redirect."
       },
       "lane": "observe-time-gated-slc-experiment",
-      "action": "Keep the Salt Lake City page frozen and collect the scheduled fixed Google, targeted GSC, exact-CID review, and consumer-AI readings until the existing experiment's evaluation gate opens.",
+      "action": "Review the mature SLC observation now: reconcile the measured Google panels and targeted GSC evidence, record missing same-window consumer-AI evidence and confounds, and retain required factual corrections. Do not claim causal ranking gains or start public edits from an expired time gate.",
       "actionClass": "system-monitor",
-      "gate": "time-gated-until-2026-09-09T04:40:58Z",
+      "gate": "observation-review-due-evidence-and-public-approval-still-required",
       "publicApprovalPacket": null,
       "ownerApprovalPhrase": null,
       "intervention": {
         "lane": "observe-time-gated-slc-experiment",
         "decision": "Monitor",
-        "selectedAction": "Keep the Salt Lake City page frozen and collect the scheduled fixed Google, targeted GSC, exact-CID review, and consumer-AI readings until the existing experiment's evaluation gate opens.",
-        "gate": "time-gated-until-2026-09-09T04:40:58Z",
-        "acceptanceCheck": "No SLC title, H1, copy, schema, canonical, route, or internal-link intent change occurs before the time gate; every weekly panel is retained without converting missing results to zero.",
+        "selectedAction": "Review the mature SLC observation now: reconcile the measured Google panels and targeted GSC evidence, record missing same-window consumer-AI evidence and confounds, and retain required factual corrections. Do not claim causal ranking gains or start public edits from an expired time gate.",
+        "gate": "observation-review-due-evidence-and-public-approval-still-required",
+        "acceptanceCheck": "Record a reviewed observation against the existing experiment, retain all evidence gaps and confounds, never restore unsupported claims, and require separate approval and release checks for public changes.",
         "scoreVector": {
           "businessValue": 10,
           "confidence": 8,

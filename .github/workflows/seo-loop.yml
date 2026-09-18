@@ -40,6 +40,9 @@ on:
       - 'scripts/seo-*.mjs' # said nothing about whether the loop still worked
       - 'scripts/lib/gsc.mjs'
       - 'scripts/lib/gsc.test.mjs'
+      - 'scripts/lib/slv-intervention-queue*.mjs'
+      - 'scripts/sync-slv-*.mjs'
+      - 'data/seo-experiments/*.json'
       - 'scripts/seo-snapshot.test.mjs'
       - 'data/rank-tracker/**/*.json'
       - '.github/workflows/seo-loop.yml'
@@ -60,7 +63,7 @@ jobs:
         with:
           node-version: '22'
       - name: Unit tests
-        run: node --test scripts/seo-diff.test.mjs scripts/seo-crawl.test.mjs scripts/lib/gsc.test.mjs scripts/lib/slv-gsc-attribution.test.mjs scripts/seo-snapshot.test.mjs
+        run: node --test scripts/seo-diff.test.mjs scripts/seo-crawl.test.mjs scripts/lib/gsc.test.mjs scripts/lib/slv-gsc-attribution.test.mjs scripts/seo-snapshot.test.mjs scripts/seo-growth-operations.test.mjs scripts/lib/slv-intervention-queue.test.mjs
 
   measure:
     needs: test               # a broken differ must not get to write a snapshot
@@ -95,6 +98,9 @@ jobs:
           npm run audit:slv-maps-readiness
           npm run audit:slv-interventions
           npm run audit:slv-execution-registry
+
+      - name: Growth operations (priorities, overdue reviews, campaign watch)
+        run: node scripts/seo-growth-operations.mjs | tee -a "$GITHUB_STEP_SUMMARY"
 
       - name: Add exact-query URL attribution summary
         if: always()
