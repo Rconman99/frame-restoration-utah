@@ -6,9 +6,9 @@ Qualified leads, inspections, sold jobs and collected revenue: **not measured** 
 
 ## Work next
 
-- SLC: Review the mature SLC observation now: reconcile the measured Google panels and targeted GSC evidence, record missing same-window consumer-AI evidence and confounds, and retain required factual corrections. Do not claim causal ranking gains or start public edits from an expired time gate.
-- utah-homepage-commercial-title-2026-08-09: deployment_evidence_missing. Public changes remain separately gated.
-- utah-slc-entity-trust-correction-2026-08-12: observation_review_due. Public changes remain separately gated.
+- SLC: Read the next already-scheduled fixed panel, reconcile same-window consumer-AI evidence and review SLC inspection-query intent; no extra paid run or public edit authorized.
+- utah-homepage-commercial-title-2026-08-09: decision_recorded_review_source. Public changes remain separately gated.
+- utah-slc-entity-trust-correction-2026-08-12: review_recorded_evidence_blocked. Public changes remain separately gated.
 
 ## Query discovery — exact query/page diagnosis required
 

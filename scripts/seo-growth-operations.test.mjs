@@ -1,9 +1,32 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import fs from "node:fs";
-import { buildGrowthOperations, renderGrowthOperations, runGrowthOperations } from "./seo-growth-operations.mjs";
+import { buildGrowthOperations, renderGrowthOperations, runGrowthOperations, observationReviewCurrent, validateObservationPanel } from "./seo-growth-operations.mjs";
 
 const now = new Date("2026-09-18T05:00:00Z");
+test("copied observation dates and metrics must agree with the hashed original panel", () => {
+  const review = JSON.parse(fs.readFileSync(new URL("../data/seo/experiment-readouts/utah-slc-observation-2026-09-18.json", import.meta.url)));
+  for (const source of review.evidence) {
+    const bytes = fs.readFileSync(new URL(`../${source.file}`, import.meta.url));
+    assert.doesNotThrow(() => validateObservationPanel(source, bytes));
+    assert.throws(() => validateObservationPanel({ ...source, observedAt: "2026-09-20" }, bytes), /identity\/date mismatch/);
+    const bad = structuredClone(source); bad.rows[0].organicRank = 1;
+    assert.throws(() => validateObservationPanel(bad, bytes), /rows mismatch/);
+    assert.throws(() => validateObservationPanel(source, Buffer.from("{}")), /hash mismatch/);
+  }
+});
+test("completed observation suppresses repeated review only until next panel or dated check", () => {
+  const record = { id: "slc" };
+  const review = { artifact: "frame-seo-observation-review", experimentId: "slc", publicMutationAuthorized: false,
+    reviewedAt: "2026-09-18T04:00:00Z", nextReviewAt: "2026-09-22T00:00:00Z", throughPanelObservedAt: "2026-09-14T09:00:00Z" };
+  const weekly = { cities: [{ city: "Salt Lake City", latestObservedAt: "2026-09-14T09:00:00Z" }] };
+  assert.equal(observationReviewCurrent(review, record, weekly, now), true);
+  assert.equal(observationReviewCurrent(review, record, weekly, new Date("2026-09-22T00:00:00Z")), false);
+  assert.equal(observationReviewCurrent(review, record, { cities: [{ city: "Salt Lake City", latestObservedAt: "2026-09-21T09:00:00Z" }] }, now), false);
+  for (const patch of [{ experimentId: "other" }, { reviewedAt: "2026-09-19" }, { publicMutationAuthorized: true }, { throughPanelObservedAt: null }]) {
+    assert.equal(observationReviewCurrent({ ...review, ...patch }, record, weekly, now), false);
+  }
+});
 function fixture() {
   return { date: "2026-09-17", crawl: { fetched_at: "2026-09-17T13:00:00Z", issues: [] }, gsc: {
     available: true, siteUrl: "https://www.framerestorationutah.com/", window: { startDate: "2026-08-18", endDate: "2026-09-14" },

@@ -24,7 +24,26 @@ const sha256 = bytes => crypto.createHash("sha256").update(bytes).digest("hex");
 const validMetric = row => row && [row.clicks, row.impressions, row.position].every(Number.isFinite)
   && row.clicks >= 0 && row.impressions > 0 && row.clicks <= row.impressions && row.position > 0;
 
-export function buildGrowthOperations({ snapshot, experiments = [], weekly, now = new Date(), sources = [] }) {
+export function validateObservationPanel(source, bytes) {
+  if (sha256(bytes) !== source.sha256) throw new Error("Observation panel evidence hash mismatch");
+  const panel = JSON.parse(bytes);
+  if (panel.market !== "utah" || panel.city !== "Salt Lake City" || panel.observedAt !== source.observedAt) throw new Error("Observation panel identity/date mismatch");
+  const rows = panel.results.map(row => ({ query: row.keyword, organicRank: row.organicRank,
+    depth: panel.provider.depth, mapPackRank: row.mapPackRank, aiOverviewPresent: row.aiOverviewPresent,
+    aiOverviewCited: row.aiOverviewCited, rankingUrl: row.rankingUrl }));
+  if (JSON.stringify(rows) !== JSON.stringify(source.rows)) throw new Error("Observation panel rows mismatch");
+}
+
+export function observationReviewCurrent(review, record, weekly, now) {
+  const panel = weekly?.cities?.find(row => row.city === "Salt Lake City")?.latestObservedAt;
+  const times = [review?.reviewedAt, review?.nextReviewAt, review?.throughPanelObservedAt, panel].map(Date.parse);
+  return review?.artifact === "frame-seo-observation-review" && review.experimentId === record?.id
+    && review.publicMutationAuthorized === false && times.every(Number.isFinite)
+    && times[2] <= times[0] && times[0] <= now.getTime() && now.getTime() < times[1]
+    && times[3] <= times[2];
+}
+
+export function buildGrowthOperations({ snapshot, experiments = [], weekly, reviews = {}, now = new Date(), sources = [] }) {
   const observed = Date.parse(snapshot?.crawl?.fetched_at);
   const ageHours = (now.getTime() - observed) / 3600000;
   const fresh = Number.isFinite(ageHours) && ageHours >= 0 && ageHours <= 48;
@@ -58,16 +77,20 @@ export function buildGrowthOperations({ snapshot, experiments = [], weekly, now 
     const deployed = Date.parse(measurement.deployedAt);
     const earliest = Date.parse(measurement.earliestEvaluationAt);
     const closed = Boolean(measurement.decidedAt);
+    const review = reviews[record.id];
+    const currentReview = observationReviewCurrent(review, record, weekly, now);
     return { id: record.id, page: record.page,
-      state: closed ? "decision_recorded_review_source" : !Number.isFinite(deployed) ? "deployment_evidence_missing"
+      state: closed ? "decision_recorded_review_source" : currentReview ? "review_recorded_evidence_blocked" : !Number.isFinite(deployed) ? "deployment_evidence_missing"
         : !Number.isFinite(earliest) ? "evaluation_date_missing"
         : measured && end >= earliest ? "observation_review_due" : "waiting_for_settled_window",
       earliestEvaluationAt: measurement.earliestEvaluationAt || null,
       decision: measurement.decision || "not_recorded",
       integrityCorrection: record.classification === "integrity-required-observed-for-ranking-impact",
+      nextReviewAt: currentReview ? review.nextReviewAt : null,
       publicMutationAuthorized: false };
   });
   const slcRanking = weekly?.cities?.find(row => row.city === "Salt Lake City")?.decisions?.ranking;
+  const reviewedSlc = experimentReviews.find(row => row.id === "utah-slc-entity-trust-correction-2026-08-12" && row.state === "review_recorded_evidence_blocked");
   return {
     artifact: "frame-utah-growth-operations", version: 1, generatedAt: now.toISOString(),
     snapshotDate: snapshot?.date || null, sourceAgeHours: Number.isFinite(ageHours) ? Math.round(ageHours * 10) / 10 : null,
@@ -78,7 +101,11 @@ export function buildGrowthOperations({ snapshot, experiments = [], weekly, now 
     searchWindow: measured ? gsc.window : null, blockers, crawlErrors,
     priorityPolicy: "Fix regressions first; SLC is the owner's commercial priority, then Heber and the hail-service towns. No inferred profit weighting.",
     pages, opportunities, experimentReviews,
-    slcNextAction: slcObservationAction(slcRanking),
+    slcNextAction: reviewedSlc ? {
+      decision: "Monitor", action: reviews[reviewedSlc.id].nextAction,
+      gate: "review-recorded-wait-for-next-panel-or-review-date-public-approval-required",
+      ownerApprovalPhrase: null,
+    } : slcObservationAction(slcRanking),
     hailCampaign: {
       releaseCommit: "259446f5dd85849061bd136f22b0227087768b3b",
       releasePullRequest: "https://github.com/Rconman99/frame-restoration-utah/pull/295",
@@ -120,7 +147,27 @@ export function runGrowthOperations({ cwd = root, now = new Date(), write = true
   const snapshot = read(`data/seo/snapshots/${dates.at(-1)}`);
   const experiments = fs.readdirSync(path.join(cwd, "data/seo-experiments")).filter(file => file.endsWith(".json")).sort().map(file => read(`data/seo-experiments/${file}`));
   const weekly = read("data/rank-tracker/SLV-WEEKLY-DECISIONS-2026-08-12.json");
-  const report = buildGrowthOperations({ snapshot, experiments, weekly, now, sources });
+  const reviews = {};
+  for (const record of experiments) {
+    for (const reference of [record.measurement?.result?.sourceReceipt, record.measurement?.observationReview?.sourceReceipt].filter(Boolean)) {
+      if (!/^data\/seo\/experiment-readouts\/[a-z0-9-]+\.json$/.test(reference)) throw new Error("Invalid experiment readout path");
+      const receipt = read(reference);
+      if (receipt.experimentId !== record.id) throw new Error("Experiment/readout identity mismatch");
+      if (receipt.artifact === "frame-seo-observation-review") {
+        if (!Array.isArray(receipt.evidence) || receipt.evidence.length < 2) throw new Error("Observation review requires two retained panel receipts");
+        if (new Set(receipt.evidence.map(source => source.file)).size !== receipt.evidence.length) throw new Error("Observation panels must be distinct");
+        if (!receipt.evidence.some(source => source.observedAt === receipt.throughPanelObservedAt)) throw new Error("Observation review end is not evidence-bound");
+        for (const source of receipt.evidence) {
+          if (!/^data\/rank-tracker\/\d{4}-\d{2}-\d{2}\.json$/.test(source.file)) throw new Error("Invalid panel evidence path");
+          const bytes = fs.readFileSync(path.join(cwd, source.file));
+          validateObservationPanel(source, bytes);
+          sources.push({ file: source.file, sha256: source.sha256 });
+        }
+        reviews[record.id] = receipt;
+      }
+    }
+  }
+  const report = buildGrowthOperations({ snapshot, experiments, weekly, reviews, now, sources });
   const markdown = renderGrowthOperations(report);
   if (write) {
     const dir = path.join(cwd, "data/seo/growth");

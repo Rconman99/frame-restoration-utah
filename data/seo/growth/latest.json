@@ -1,9 +1,9 @@
 {
   "artifact": "frame-utah-growth-operations",
   "version": 1,
-  "generatedAt": "2026-09-18T04:25:54.866Z",
+  "generatedAt": "2026-09-18T05:30:31.523Z",
   "snapshotDate": "2026-09-17",
-  "sourceAgeHours": 0,
+  "sourceAgeHours": 1.1,
   "state": "measurement_operational_outcomes_incomplete",
   "northStar": "qualified_organic_leads",
   "publicMutationAuthorized": false,
@@ -138,28 +138,29 @@
     {
       "id": "utah-homepage-commercial-title-2026-08-09",
       "page": "https://www.framerestorationutah.com/",
-      "state": "deployment_evidence_missing",
+      "state": "decision_recorded_review_source",
       "earliestEvaluationAt": "2026-09-08T00:00:00.000Z",
-      "decision": "pending",
+      "decision": "keep",
       "integrityCorrection": false,
+      "nextReviewAt": null,
       "publicMutationAuthorized": false
     },
     {
       "id": "utah-slc-entity-trust-correction-2026-08-12",
       "page": "https://www.framerestorationutah.com/locations/salt-lake-city",
-      "state": "observation_review_due",
+      "state": "review_recorded_evidence_blocked",
       "earliestEvaluationAt": "2026-09-09T04:40:58.000Z",
       "decision": "pending-observation",
       "integrityCorrection": true,
+      "nextReviewAt": "2026-09-22T00:00:00Z",
       "publicMutationAuthorized": false
     }
   ],
   "slcNextAction": {
     "decision": "Monitor",
-    "action": "Review the mature SLC observation now: reconcile the measured Google panels and targeted GSC evidence, record missing same-window consumer-AI evidence and confounds, and retain required factual corrections. Do not claim causal ranking gains or start public edits from an expired time gate.",
-    "gate": "observation-review-due-evidence-and-public-approval-still-required",
-    "ownerApprovalPhrase": null,
-    "acceptanceCheck": "Record a reviewed observation against the existing experiment, retain all evidence gaps and confounds, never restore unsupported claims, and require separate approval and release checks for public changes."
+    "action": "Read the next already-scheduled fixed panel, reconcile same-window consumer-AI evidence and review SLC inspection-query intent; no extra paid run or public edit authorized.",
+    "gate": "review-recorded-wait-for-next-panel-or-review-date-public-approval-required",
+    "ownerApprovalPhrase": null
   },
   "hailCampaign": {
     "releaseCommit": "259446f5dd85849061bd136f22b0227087768b3b",
@@ -182,15 +183,31 @@
     },
     {
       "file": "data/seo-experiments/utah-homepage-commercial-title-2026-08-09.json",
-      "sha256": "131bd769a783265f033b3be3cb007f694b506f3659320b3a9fb5fc5e7343265d"
+      "sha256": "4b74e75d84b28960f3223cbdf0a7f67c9201e05183213b0e913ccc2b9fcbe9e8"
     },
     {
       "file": "data/seo-experiments/utah-slc-entity-trust-correction-2026-08-12.json",
-      "sha256": "4ea4c57b9055571e287da12a389c5903d012b9083f747bcd4675b0bac482be27"
+      "sha256": "c1cf5ef1b300f281c99abc027c1c392ac97601593251418d1e84fa27b0dbd992"
     },
     {
       "file": "data/rank-tracker/SLV-WEEKLY-DECISIONS-2026-08-12.json",
-      "sha256": "48d65ebb3a0abe16fc419f096e73c8c30d3155edd2df3a00c6f7b96d52b904ce"
+      "sha256": "bc10b845c21c5e088db47c3ed3d343591a030677994789814b7001044d9e2e73"
+    },
+    {
+      "file": "data/seo/experiment-readouts/utah-homepage-commercial-title-2026-08-09.json",
+      "sha256": "acfbb0ec0d63db51596559114c09fcdbf167b04f0530cfc5d9c6f61743677dc6"
+    },
+    {
+      "file": "data/seo/experiment-readouts/utah-slc-observation-2026-09-18.json",
+      "sha256": "45711b068e5cc5621c4acc1090f8ae4286501d55cb67369bde017e0f531f6efa"
+    },
+    {
+      "file": "data/rank-tracker/2026-08-12.json",
+      "sha256": "c950426c484a8e0eed6920e5c5a3b584acca30b981159f70d4074a2ee7c6b18e"
+    },
+    {
+      "file": "data/rank-tracker/2026-09-14.json",
+      "sha256": "76acf3eadc318a6b70b77cefbff8a4f273121ee13d9dfff4b3117d7ad2245135"
     }
   ]
 }
