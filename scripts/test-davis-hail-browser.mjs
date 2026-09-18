@@ -1,5 +1,6 @@
 import {chromium} from 'playwright';
 import assert from 'node:assert/strict';
+import {createReadOnlyRouteHandler} from './lib/davis-browser-routing.mjs';
 const base=process.argv[2]||'http://127.0.0.1:4192';
 const local=new URL(base).hostname==='127.0.0.1';
 assert(local||base==='https://www.framerestorationutah.com'||/^https:\/\/frame-restoration-utah-[a-z0-9-]+\.vercel\.app$/.test(base));
@@ -7,12 +8,8 @@ const browser=await chromium.launch();
 let checks=0;
 try{
  for(const city of ['layton','farmington']) for(const [width,height] of [[320,568],[360,800],[393,852],[430,932],[740,360],[1440,1000]]){
-  const ctx=await browser.newContext({viewport:{width,height},serviceWorkers:'block',extraHTTPHeaders:process.env.SURFACE_GATE_PROTECTION_BYPASS_SECRET?{'x-vercel-protection-bypass':process.env.SURFACE_GATE_PROTECTION_BYPASS_SECRET,'x-vercel-skip-toolbar':'1'}:{}});
-  await ctx.route('**/*',route=>{
-   const request=route.request();const u=new URL(request.url());
-   if(!['GET','HEAD'].includes(request.method())||/posthog|google-analytics/.test(u.hostname))return route.abort();
-   return route.continue();
-  });
+  const ctx=await browser.newContext({viewport:{width,height},serviceWorkers:'block'});
+  await ctx.route('**/*',createReadOnlyRouteHandler(base,process.env.SURFACE_GATE_PROTECTION_BYPASS_SECRET));
   const page=await ctx.newPage();
   await page.goto(base+`/blog/${city}/hail-roof-inspection-${city}`+(local?'.html':''));
   await page.locator('main').waitFor();
