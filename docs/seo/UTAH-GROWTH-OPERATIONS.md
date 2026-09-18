@@ -49,6 +49,13 @@ Texas reference: exact-baseline → isolated change → production proof → dat
 readout, as used in PRs #428–430. Utah already had scheduled daily collection;
 this closes missing queue/readout integration, not every growth-system dependency.
 
+September18 Davis extension: the same job now tracks Layton and Farmington guides
+as two additional priority pages and a separate Davis query-discovery region. Its
+fixed campaign window is September19–October16, with readout due no earlier than
+October19 MDT and only with fresh inputs and a settled end. The older Heber Valley
+window remains unchanged. Missing page rows stay null; Davis activity must never
+be recoded as SLC leads or commission. No additional schedule or provider calls.
+
 Google documents that [AI features use the same SEO fundamentals and their traffic
 is included in Web search reporting](https://developers.google.com/search/docs/appearance/ai-features).
 Its [Search Analytics API](https://developers.google.com/webmaster-tools/v1/searchanalytics/query)

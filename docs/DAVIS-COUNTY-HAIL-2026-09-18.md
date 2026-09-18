@@ -33,4 +33,14 @@ If released September 18 MDT, first full observation day is September 19 and the
 
 ## Release gates
 
+### September 18 amplification followthrough
+
+Ryan accepted the seven-item storm traffic plan. The bounded website change adds a dated Davis discovery module to the homepage and storm hub, retaining the older three Heber guides and all approved NAP. No hero, global CSS, tracking script or service-area claim is changed. The existing blocking Davis validator now requires both discovery routes and date/safety language, and rejects internal UTM attribution resets. Below-fold links are tested after scrolling by `scripts/test-davis-discovery-browser.mjs` (six viewports including desktop); the shared surface gate tests initial mobile surfaces separately. Its initial no-scroll assertions cannot establish below-fold occlusion.
+
+Official Google read at 2026-09-18T22:56Z: both new URLs unknown to Google. Sitemap PUT accepted204 at22:56:27Z, GET readback pending with zero errors/warnings; lastDownloaded still03:07Z at that read. Submission is not indexing. Existing verified URL-prefix property is `https://www.framerestorationutah.com/`; do not assume the domain property is authorized. Exact SLC GBP read still shows Millcreek only, the legacy redirecting website path, correct435-292-8802, Roofing contractor, CUSTOMER_LOCATION_ONLY. No profile edits or posts.
+
+Follow-up at23:03:24Z: sitemap freshly downloaded22:56:28.783Z, pending false, zero errors/warnings. Individual indexing requests remain unperformed: browser automation unavailable without disrupting another operator or changing Chrome security settings. No settings were changed. The new CI regression step required a reviewed compliance-workflow hash refresh and its dependent scanner/manifest pins; no scanner logic, security threshold or deploy authorization changed. Retain the semantic regression tests before accepting those pins.
+
+Private owner playbook and Google receipt: `~/outputs/davis-amplification-20260918/`. Includes actual-media checklist, city-specific Facebook/Instagram drafts, permission-first partner/community templates, SLC review/job-proof instructions and separate Davis/SLC paid-search drafts. No sends/posts, budget, ad activation or review requests. No defensible citation baseline: outcomes remain unmeasured and existing windows unchanged. New hub context does not authorize runtime rebind.
+
 Source render, complete-blog differentiation gate, deterministic SEO/claims/routing tests, independent P1/P2 review, exact-head blocking CI, immutable preview five-viewport receipt, authorized squash merge, default-branch CI, canonical production receipt and intended bytes are required before claiming live. Physical-device Safari/Android and screen-reader checks remain residual manual coverage unless separately performed.

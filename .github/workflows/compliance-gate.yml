@@ -484,6 +484,13 @@ jobs:
         run: npm run audit:mobile-ui
       - name: Verify mobile dock across representative routes and phone sizes
         run: npm run test:mobile-ui
+      - name: Verify dated Davis discovery links after scrolling
+        run: |
+          python3 -m http.server 4192 --bind 127.0.0.1 >/dev/null 2>&1 &
+          davis_server_pid=$!
+          trap 'kill "$davis_server_pid"' EXIT
+          node -e 'let ready=false; for(let i=0;i<40;i++){try{if((await fetch("http://127.0.0.1:4192/index.html")).ok){ready=true;break;}}catch{} await new Promise(r=>setTimeout(r,250));} if(!ready)process.exit(1);'
+          node scripts/test-davis-discovery-browser.mjs
       - name: Verify dashboard bearer session and stored-XSS browser flow
         run: npm run test:dashboard-session-client
 

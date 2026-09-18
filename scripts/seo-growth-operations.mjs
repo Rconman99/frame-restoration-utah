@@ -13,12 +13,13 @@ const site = "https://www.framerestorationutah.com";
 const targets = [
   ["slc", "/locations/salt-lake-city"],
   ["heber", "/locations/heber-city"],
-  ...["midway", "hideout", "charleston"].map(city => [city, `/blog/${city}/hail-roof-inspection-${city}`]),
+  ...["midway", "hideout", "charleston", "layton", "farmington"].map(city => [city, `/blog/${city}/hail-roof-inspection-${city}`]),
 ];
 const regions = [
   ["slc", /\bsalt lake (?:city|valley)\b|\bslc\b/i],
   ["heber", /\bheber\b/i],
   ["hail-service-area", /\b(?:midway|hideout|charleston)\b/i],
+  ["davis-hail", /\b(?:layton|farmington)\b/i],
 ];
 const sha256 = bytes => crypto.createHash("sha256").update(bytes).digest("hex");
 const validMetric = row => row && [row.clicks, row.impressions, row.position].every(Number.isFinite)
@@ -113,6 +114,14 @@ export function buildGrowthOperations({ snapshot, experiments = [], weekly, revi
       state: !measured ? "not_measured" : gsc.window.endDate < "2026-09-18" ? "window_precedes_release"
         : gsc.window.endDate >= "2026-10-15" ? "dedicated_readout_due" : "dedicated_window_readout_pending",
       limitation: "The page metrics above are rolling discovery readings, not a fixed campaign outcome. Fetch Sep 18–Oct 15 explicitly at closeout; no pre-release baseline, causality, storm footprint, indexing or lead result is inferred." },
+    davisHailCampaign: {
+      releaseCommit: "69b2295d0fab798a01903482f3c13f3f0d6f7411",
+      releasePullRequest: "https://github.com/Rconman99/frame-restoration-utah/pull/298",
+      firstFullDay: "2026-09-19", observationWindowEnd: "2026-10-16", earliestSettledReadDate: "2026-10-19",
+      state: !measured ? "not_measured" : gsc.window.endDate < "2026-09-19" ? "window_precedes_release"
+        : now.getTime() >= Date.parse("2026-10-19T06:00:00Z") && gsc.window.endDate >= "2026-10-16"
+          ? "dedicated_readout_due" : "dedicated_window_readout_pending",
+      limitation: "Rolling discovery is not a campaign result. Fetch Sep 19–Oct 16 explicitly no earlier than Oct 19 MDT with final data. No baseline, causality, indexing, citation, lead or revenue result inferred. Davis activity is not SLC attribution." },
     aiVisibility: { state: "not_measured_by_this_report", namedCitationRate: null,
       nextAction: "Use existing provider-specific fixed-panel receipts. GSC Web is not a separate AI citation measurement; do not buy new panels or reconnect credentials from this report." },
     sources,
@@ -130,6 +139,7 @@ export function renderGrowthOperations(report) {
     "", "## Priority pages — rolling search window", "",
     ...report.pages.map(row => `- ${row.id}: ${row.metrics ? `${row.metrics.clicks} clicks / ${row.metrics.impressions} impressions / position ${row.metrics.averagePosition}` : "not measured or not returned"}.`),
     "", `Hail campaign: ${report.hailCampaign.state}; fixed Sep 18–Oct 15 readout no earlier than Oct 18, subject to available final data.`,
+    "", `Davis hail campaign: ${report.davisHailCampaign.state}; fixed Sep 19–Oct 16 readout no earlier than Oct 19 MDT, subject to available final data. Keep Davis separate from SLC attribution.`,
     "", "Owner lane: use existing request records for current local photos/permissions, exact-profile GBP evidence and verified job outcomes. No new owner messages, GBP posts, spend or public edits are sent by this job.",
     "", "Source hashes and limitations: data/seo/growth/latest.json. Search visibility is not proof of leads, revenue or causality.", ""];
   return lines.join("\n");
