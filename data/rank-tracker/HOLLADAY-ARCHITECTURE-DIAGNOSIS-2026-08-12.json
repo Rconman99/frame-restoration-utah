@@ -200,7 +200,16 @@
       },
       {
         "file": "index.html",
-        "sha256": "48f364d68fa57cb50258d0a5b41ceb59013f64f6dfaa83e0cc3819b477469eb9",
+        "sha256": "a5256f5bc91a03db509070f68a908a09af7d3dcd54648f5d922336b9afad2cd6",
+        "hailCampaignSourceAmendment": {
+          "observedAt": "2026-09-18T04:02:00Z",
+          "sourceCommit": "00a332e0f72c0659476a5121392a316928624ebe",
+          "priorSha256": "48f364d68fa57cb50258d0a5b41ceb59013f64f6dfaa83e0cc3819b477469eb9",
+          "priorInboundInternalLinks": 1057,
+          "currentInboundInternalLinks": 1078,
+          "reason": "Supersedes the homepage byte pin only. Adds three Heber Valley guide links, scoped assets and allowlisted contact context; replaces unverified 15-minute callback promises. Current corpus has 1078 homepage inbound links. Homepage title, H1, canonical and schema are unchanged; Holladay routes, historical panel/GSC observations, diagnosis and held title experiment are unchanged. This is not fresh ranking evidence or permission to apply the Holladay experiment.",
+          "reviewRequiredBeforeMerge": true
+        },
         "sourceAmendment": {
           "observedAt": "2026-09-10T17:40:43Z",
           "priorSha256": "74d1c5e3e1a5b9ce6d9bb3d8c353a69ea6ab4849c36775b2d9d2aa45408b5984",
