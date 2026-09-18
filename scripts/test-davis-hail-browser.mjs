@@ -33,6 +33,8 @@ try{
   assert.deepEqual(payload,{city:'Actual town',issue:'inspection',message:'No leak reported',utm_source:'google',sms_consent:false,source_page:'/?roof_guide='+city});checks++;
   // Finish buffered same-origin requests before closing their context; otherwise
   // a late image response raises TargetClosedError in the route callback.
+  // Keep a deny-all page guard while context routes drain.
+  await page.route('**/*',route=>route.abort());
   await ctx.unrouteAll({behavior:'wait'});
   await ctx.close();
  }
