@@ -29,10 +29,21 @@ for (const city of ['layton','farmington']) {
  const visible=[...html.matchAll(/<details><summary>(.*?)<\/summary><p>(.*?)<\/p><\/details>/g)];
  assert.equal(faq.length,6);assert.equal(visible.length,6);
  faq.forEach((q,i)=>{assert.equal(q.name,visible[i][1]);assert.equal(q.acceptedAnswer.text,visible[i][2]);});
- for(const file of ['blog/index.html',`locations/${city}.html`])assert(fs.readFileSync(file,'utf8').includes(`href="${route}"`));
+ for(const file of ['blog/index.html',`locations/${city}.html`,'index.html','pages/storm-damage.html'])assert(fs.readFileSync(file,'utf8').includes(`href="${route}"`),`${file}: missing ${city} discovery`);
  assert.equal(fs.readFileSync('sitemap.xml','utf8').split(`<loc>${canonical}</loc>`).length-1,1);
  const text=html.match(/<article[\s\S]*?<\/article>/)[0].replace(/<[^>]*>/g,' ');
  assert(text.split(/\s+/).length>=1150,`${city}: editorial floor`);
  assert(!text.includes('100%'));
  console.log(`PASS ${city}: identity, safe claims, real-photo disclosure, FAQ parity, attribution, discovery, editorial floor`);
 }
+for(const file of ['index.html','pages/storm-damage.html']) {
+ const html=fs.readFileSync(file,'utf8');
+ const module=html.match(/<section[^>]*data-davis-discovery="20260918b"[\s\S]*?<\/section>/)?.[0];
+ assert(module,`${file}: missing dated Davis feature`);
+ assert(module.includes('<time datetime="2026-09-18">September 18, 2026</time>'));
+ assert(module.includes('does not confirm damage to your roof'));
+ assert(!/utm_|SLC|Salt Lake|today|now|guarantee/i.test(module),'No internal campaign overwrite or unsupported urgency/SLC damage');
+ assert(module.includes(`href="${file==='index.html'?'#contact':'/#contact'}"`));
+ for(const city of ['midway','hideout','charleston'])assert(html.includes(`/blog/${city}/hail-roof-inspection-${city}`));
+}
+console.log('PASS Davis amplification: dated safe module, two entry points, original guides preserved, no internal UTM reset');
