@@ -108,3 +108,33 @@ test("real repository inputs are hash-bound and existing daily job runs and comm
   assert.match(workflow, /git add data\/seo\//);
   assert.equal((workflow.match(/cron:/g) || []).length, 1, "reuse existing schedule");
 });
+test("Davis guides are tracked separately without fake zero or SLC attribution", () => {
+  const snapshot=fixture();
+  snapshot.gsc.top_queries.push({query:"hail roof layton",clicks:0,impressions:40,position:7});
+  const report=buildGrowthOperations({snapshot,now});
+  assert.deepEqual(report.pages.map(p=>p.id),["slc","heber","midway","hideout","charleston","layton","farmington"]);
+  assert(report.pages.slice(-2).every(p=>p.metrics===null));
+  assert.equal(report.opportunities.at(-1).region,"davis-hail");
+  assert.equal(report.davisHailCampaign.state,"window_precedes_release");
+  assert.equal(report.hailCampaign.firstFullDay,"2026-09-18");
+  assert.equal(report.hailCampaign.observationWindowEnd,"2026-10-15");
+  assert.equal(report.davisHailCampaign.firstFullDay,"2026-09-19");
+  assert.equal(report.davisHailCampaign.observationWindowEnd,"2026-10-16");
+  assert.match(renderGrowthOperations(report),/Keep Davis separate from SLC/);
+});
+test("Davis fixed-window readout respects local calendar, freshness and settled end", () => {
+  for(const [timestamp,endDate,state] of [
+    ["2026-10-19T05:59:59Z","2026-10-16","dedicated_window_readout_pending"],
+    ["2026-10-19T06:00:00Z","2026-10-16","dedicated_readout_due"],
+    ["2026-10-19T06:00:00Z","2026-10-15","dedicated_window_readout_pending"],
+    ["2026-11-01T14:00:00Z","2026-10-28","dedicated_readout_due"],
+  ]) {
+    const snapshot=fixture();snapshot.crawl.fetched_at=timestamp;
+    snapshot.gsc.window={startDate:"2026-09-19",endDate};
+    const report=buildGrowthOperations({snapshot,now:new Date(timestamp)});
+    assert.equal(report.davisHailCampaign.state,state);
+    assert.equal(report.businessOutcomes.qualifiedLeads,null);
+    snapshot.gsc.available=false;
+    assert.equal(buildGrowthOperations({snapshot,now:new Date(timestamp)}).davisHailCampaign.state,"not_measured");
+  }
+});

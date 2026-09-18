@@ -1,9 +1,9 @@
 {
   "artifact": "frame-utah-growth-operations",
   "version": 1,
-  "generatedAt": "2026-09-18T12:50:04.913Z",
+  "generatedAt": "2026-09-18T23:06:42.429Z",
   "snapshotDate": "2026-09-18",
-  "sourceAgeHours": 0,
+  "sourceAgeHours": 10.3,
   "state": "measurement_operational_outcomes_incomplete",
   "northStar": "qualified_organic_leads",
   "publicMutationAuthorized": false,
@@ -58,6 +58,18 @@
     {
       "id": "charleston",
       "page": "https://www.framerestorationutah.com/blog/charleston/hail-roof-inspection-charleston",
+      "state": "not_measured_or_not_returned",
+      "metrics": null
+    },
+    {
+      "id": "layton",
+      "page": "https://www.framerestorationutah.com/blog/layton/hail-roof-inspection-layton",
+      "state": "not_measured_or_not_returned",
+      "metrics": null
+    },
+    {
+      "id": "farmington",
+      "page": "https://www.framerestorationutah.com/blog/farmington/hail-roof-inspection-farmington",
       "state": "not_measured_or_not_returned",
       "metrics": null
     }
@@ -132,6 +144,36 @@
       "state": "exact_query_page_diagnosis_ready",
       "nextAction": "Obtain an exact query + intended-page baseline; check current URL selection and running experiments before drafting one isolated change.",
       "limitation": "Query-level discovery only: these metrics are not a page baseline, lead count or revenue estimate."
+    },
+    {
+      "region": "davis-hail",
+      "query": "roof repair farmington ut",
+      "clicks": 0,
+      "impressions": 1552,
+      "averagePosition": 9.7,
+      "state": "exact_query_page_diagnosis_ready",
+      "nextAction": "Obtain an exact query + intended-page baseline; check current URL selection and running experiments before drafting one isolated change.",
+      "limitation": "Query-level discovery only: these metrics are not a page baseline, lead count or revenue estimate."
+    },
+    {
+      "region": "davis-hail",
+      "query": "roofing farmington ut",
+      "clicks": 0,
+      "impressions": 1442,
+      "averagePosition": 10.6,
+      "state": "exact_query_page_diagnosis_ready",
+      "nextAction": "Obtain an exact query + intended-page baseline; check current URL selection and running experiments before drafting one isolated change.",
+      "limitation": "Query-level discovery only: these metrics are not a page baseline, lead count or revenue estimate."
+    },
+    {
+      "region": "davis-hail",
+      "query": "which roofing companies in farmington ut handle roof repairs and replacements?",
+      "clicks": 0,
+      "impressions": 199,
+      "averagePosition": 8.4,
+      "state": "exact_query_page_diagnosis_ready",
+      "nextAction": "Obtain an exact query + intended-page baseline; check current URL selection and running experiments before drafting one isolated change.",
+      "limitation": "Query-level discovery only: these metrics are not a page baseline, lead count or revenue estimate."
     }
   ],
   "experimentReviews": [
@@ -170,6 +212,15 @@
     "earliestSettledReadDate": "2026-10-18",
     "state": "window_precedes_release",
     "limitation": "The page metrics above are rolling discovery readings, not a fixed campaign outcome. Fetch Sep 18–Oct 15 explicitly at closeout; no pre-release baseline, causality, storm footprint, indexing or lead result is inferred."
+  },
+  "davisHailCampaign": {
+    "releaseCommit": "69b2295d0fab798a01903482f3c13f3f0d6f7411",
+    "releasePullRequest": "https://github.com/Rconman99/frame-restoration-utah/pull/298",
+    "firstFullDay": "2026-09-19",
+    "observationWindowEnd": "2026-10-16",
+    "earliestSettledReadDate": "2026-10-19",
+    "state": "window_precedes_release",
+    "limitation": "Rolling discovery is not a campaign result. Fetch Sep 19–Oct 16 explicitly no earlier than Oct 19 MDT with final data. No baseline, causality, indexing, citation, lead or revenue result inferred. Davis activity is not SLC attribution."
   },
   "aiVisibility": {
     "state": "not_measured_by_this_report",

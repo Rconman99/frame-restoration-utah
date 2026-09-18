@@ -19,6 +19,9 @@ Qualified leads, inspections, sold jobs and collected revenue: **not measured** 
 - heber: dc biggs roof specialists, llc heber city, ut — 310 impressions, 0 clicks, position 7.5; exact_query_page_diagnosis_ready.
 - hail-service-area: roofing midway ut — 2148 impressions, 0 clicks, position 5.9; exact_query_page_diagnosis_ready.
 - hail-service-area: roof repair midway ut — 1987 impressions, 0 clicks, position 4.1; exact_query_page_diagnosis_ready.
+- davis-hail: roof repair farmington ut — 1552 impressions, 0 clicks, position 9.7; exact_query_page_diagnosis_ready.
+- davis-hail: roofing farmington ut — 1442 impressions, 0 clicks, position 10.6; exact_query_page_diagnosis_ready.
+- davis-hail: which roofing companies in farmington ut handle roof repairs and replacements? — 199 impressions, 0 clicks, position 8.4; exact_query_page_diagnosis_ready.
 
 ## Priority pages — rolling search window
 
@@ -27,8 +30,12 @@ Qualified leads, inspections, sold jobs and collected revenue: **not measured** 
 - midway: not measured or not returned.
 - hideout: not measured or not returned.
 - charleston: not measured or not returned.
+- layton: not measured or not returned.
+- farmington: not measured or not returned.
 
 Hail campaign: window_precedes_release; fixed Sep 18–Oct 15 readout no earlier than Oct 18, subject to available final data.
+
+Davis hail campaign: window_precedes_release; fixed Sep 19–Oct 16 readout no earlier than Oct 19 MDT, subject to available final data. Keep Davis separate from SLC attribution.
 
 Owner lane: use existing request records for current local photos/permissions, exact-profile GBP evidence and verified job outcomes. No new owner messages, GBP posts, spend or public edits are sent by this job.
 
