@@ -1,0 +1,20 @@
+/* utah-owner-recovery-20260908a */
+#loginOverlay { padding: 16px; box-sizing: border-box; overflow-y: auto; }
+#loginOverlay .login-box { box-sizing: border-box; padding: 28px 24px; width: 100%; max-width: 420px; margin: auto; max-height: calc(100dvh - 32px); overflow-y: auto; }
+#loginOverlay [hidden] { display: none !important; }
+#loginOverlay input { box-sizing: border-box; min-height: 48px; max-width: 100%; letter-spacing: normal; text-align: left; }
+#loginOverlay button { min-height: 44px; }
+#loginOverlay .recovery-link { display: block; width: 100%; margin: 8px 0 0; border: 0; border-radius: 6px; background: transparent; color: #69b7ff; cursor: pointer; font: inherit; }
+#loginOverlay .recovery-link:focus-visible { outline: 2px solid #c9a84c; outline-offset: 2px; }
+.owner-recovery h2 { margin: 0 0 12px; font-size: 1.2rem; }
+.owner-recovery p { margin: 10px 0 18px; color: var(--muted, #adb5bd); font-size: .9rem; line-height: 1.5; overflow-wrap: anywhere; }
+.owner-recovery label { display: block; text-align: left; margin-bottom: 6px; font-size: .9rem; }
+.owner-recovery [role=status] { min-height: 24px; }
+@media (max-height: 450px) {
+  #loginOverlay .login-box { padding: 16px 24px; }
+  #loginOverlay .login-lock { display: none; }
+  #loginOverlay .login-box h1 { font-size: 1.25rem; }
+  #loginOverlay .login-box .sub { margin-bottom: 8px; }
+  #loginOverlay input { margin-bottom: 8px; }
+  #loginOverlay .login-err { margin-top: 4px; }
+}
