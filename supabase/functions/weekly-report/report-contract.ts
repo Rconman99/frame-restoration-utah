@@ -14,6 +14,39 @@ export const REPORT_RENDERING_CONTRACT = {
   required_sink: "textContent_or_audited_escape",
 } as const;
 
+// The report exposes event and row counts, not a deduplicated sales funnel.
+// Keep their grain explicit so dashboard consumers cannot present activity as
+// qualified opportunities, collected revenue, or a conversion rate.
+export const REPORT_METRIC_DEFINITIONS = {
+  total_pageviews: {
+    grain: "posthog_pageview_events",
+    status: "measured",
+  },
+  total_leads: {
+    grain: "reportable_lead_table_rows",
+    status: "measured",
+    unique_qualified_opportunities: false,
+  },
+  total_calls: {
+    grain: "reportable_completed_call_log_rows",
+    status: "measured",
+    unique_qualified_opportunities: false,
+  },
+  total_job_value: {
+    grain: "sum_of_populated_lead_job_value_fields",
+    status: "partial",
+    collected_revenue: false,
+  },
+  qualified_conversion_rate: {
+    numerator: "deduplicated_qualified_opportunities",
+    denominator: "eligible_sessions",
+    owner: "business_owner",
+    status: "unavailable",
+    reason:
+      "qualification, deduplication, and eligible-session outcomes are not yet reconciled",
+  },
+} as const;
+
 export const PRODUCTION_REPORT_ORIGINS = [
   "https://www.framerestorationutah.com",
   "https://framerestorationutah.com",
