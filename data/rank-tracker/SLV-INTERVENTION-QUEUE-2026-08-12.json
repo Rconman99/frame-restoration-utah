@@ -80,15 +80,15 @@
   "sources": {
     "portfolio": {
       "file": "data/rank-tracker/SLV-18-CITY-GOAL-PORTFOLIO-2026-08-12.json",
-      "sha256": "b1c09a64ea7f6045abcdc2bbf7dbc2318e94df789ff107bc1550a019676112c4"
+      "sha256": "34d4404e4e2daf8ac3f2c0952016213e21c4b88a966af3d5dc1e66dbc979e077"
     },
     "weeklyDecisions": {
       "file": "data/rank-tracker/SLV-WEEKLY-DECISIONS-2026-08-12.json",
-      "sha256": "bc10b845c21c5e088db47c3ed3d343591a030677994789814b7001044d9e2e73"
+      "sha256": "b0a0916ebf568d8ea16d04582b5238f639ebf09737c064acf7401341244c01f3"
     },
     "gscAttribution": {
       "file": "data/rank-tracker/SLV-GSC-URL-ATTRIBUTION-LATEST.json",
-      "sha256": "5c54c76c7ffecb3aa5f59f499272202c6a6ee3be10ffcf31c8c4f45afd15756e"
+      "sha256": "a2cc27996667203437e70bd4c526383fae287b094fb24b31b3049ee204e1518b"
     },
     "gscSplitUrlDiagnosis": {
       "file": "data/rank-tracker/SLV-GSC-SPLIT-URL-DIAGNOSIS-2026-08-12.json",
@@ -96,19 +96,19 @@
     },
     "displacement": {
       "file": "data/rank-tracker/SLV-COMPETITOR-DISPLACEMENT-2026-08-12.json",
-      "sha256": "7d0f561a2781e8ece9ec40c2811c3cd3ff73981de5db236095923bcdff548414"
+      "sha256": "1503e66a07b70ca21b77f8f6c6d6052cc9bee3dab826346ad9818922bb77b256"
     },
     "entityHealth": {
       "file": "data/rank-tracker/SLV-ENTITY-HEALTH-2026-08-12.json",
-      "sha256": "56575a7ec93a760798c71e4f14ed016fef8bbe6a03d054f10855f4df6400079d"
+      "sha256": "1c13bf31cb4ca0a56f60d93eb8aba127e225a133e5891939a08d19e0665b2644"
     },
     "mapsReadiness": {
       "file": "data/rank-tracker/SLV-MAPS-READINESS-2026-08-12.json",
-      "sha256": "6cdd874b6b6a68da1c90b74d65e3016f4e32e6b64fc5f21eeadedb82a4163a57"
+      "sha256": "d6339d56f98468159ec8419aa8682f8bbe7cdc7b48539fd77d87c2635376c732"
     },
     "expansionArchitecture": {
       "file": "data/rank-tracker/SLV-EXPANSION-ARCHITECTURE-2026-08-12.json",
-      "sha256": "82645f9e2902a3d450209cd8126f67765e1029fdb938cc2a60b56e1c4adaaeca"
+      "sha256": "5635d9a67b11ea2ef80017dba339d36d29c906ca6be1f9243f27a99825166984"
     },
     "corePriority": {
       "file": "data/rank-tracker/SLV-PRIORITY-2026-08-12.json",
@@ -240,15 +240,15 @@
       "lane": "observe-time-gated-slc-experiment",
       "decision": "Monitor",
       "evidenceFeatures": {
-        "observedAt": "2026-09-14T09:23:08.764Z",
+        "observedAt": "2026-09-21T09:23:32.968Z",
         "organicRanks": [
           null,
-          24,
-          25,
-          null
+          null,
+          26,
+          25
         ],
-        "bestMeasuredOrganicRank": 24,
-        "measuredMeanOrganicRank": 24.5,
+        "bestMeasuredOrganicRank": 25,
+        "measuredMeanOrganicRank": 25.5,
         "exactCidMapsNumberOne": 0,
         "exactCidMapsReturned": 0,
         "mapsPacksPresent": 3,
@@ -283,7 +283,7 @@
         "architectureState": "not-separately-diagnosed",
         "protectedRelatedRoutes": [],
         "consumerAiState": "configured-scheduled-unmeasured-invalid-provider-credential",
-        "comparableWeeklyGooglePanels": 6,
+        "comparableWeeklyGooglePanels": 7,
         "comparableWeeklyConsumerAiPanels": 0
       },
       "scoreVector": {
@@ -343,15 +343,15 @@
       "lane": "owner-gated-verified-identity-and-integrity-cleanup",
       "decision": "Request input",
       "evidenceFeatures": {
-        "observedAt": "2026-09-14T09:23:08.764Z",
+        "observedAt": "2026-09-21T09:23:32.968Z",
         "organicRanks": [
+          11,
           4,
-          4,
-          5,
-          5
+          9,
+          10
         ],
         "bestMeasuredOrganicRank": 4,
-        "measuredMeanOrganicRank": 4.5,
+        "measuredMeanOrganicRank": 8.5,
         "exactCidMapsNumberOne": 0,
         "exactCidMapsReturned": 0,
         "mapsPacksPresent": 4,
@@ -387,7 +387,7 @@
         "architectureState": "not-evidenced",
         "protectedRelatedRoutes": [],
         "consumerAiState": "configured-scheduled-unmeasured-invalid-provider-credential",
-        "comparableWeeklyGooglePanels": 6,
+        "comparableWeeklyGooglePanels": 7,
         "comparableWeeklyConsumerAiPanels": 0
       },
       "scoreVector": {
@@ -659,15 +659,15 @@
       "lane": "owner-gated-core-integrity-then-single-variable-intent-test",
       "decision": "Request input",
       "evidenceFeatures": {
-        "observedAt": "2026-09-14T09:23:08.764Z",
+        "observedAt": "2026-09-21T09:23:32.968Z",
         "organicRanks": [
-          23,
+          21,
           20,
-          17,
-          13
+          15,
+          null
         ],
-        "bestMeasuredOrganicRank": 13,
-        "measuredMeanOrganicRank": 18.25,
+        "bestMeasuredOrganicRank": 15,
+        "measuredMeanOrganicRank": 18.67,
         "exactCidMapsNumberOne": 0,
         "exactCidMapsReturned": 0,
         "mapsPacksPresent": 4,
@@ -701,7 +701,7 @@
         "architectureState": "not-evidenced",
         "protectedRelatedRoutes": [],
         "consumerAiState": "configured-manual-unmeasured-invalid-provider-credential",
-        "comparableWeeklyGooglePanels": 6,
+        "comparableWeeklyGooglePanels": 7,
         "comparableWeeklyConsumerAiPanels": 0
       },
       "scoreVector": {
@@ -764,15 +764,15 @@
       "lane": "diagnose-url-consolidation-before-intent-change",
       "decision": "Monitor",
       "evidenceFeatures": {
-        "observedAt": "2026-09-14T09:23:08.764Z",
+        "observedAt": "2026-09-21T09:23:32.968Z",
         "organicRanks": [
-          21,
-          14,
+          25,
+          12,
           5,
-          14
+          null
         ],
         "bestMeasuredOrganicRank": 5,
-        "measuredMeanOrganicRank": 13.5,
+        "measuredMeanOrganicRank": 14,
         "exactCidMapsNumberOne": 0,
         "exactCidMapsReturned": 0,
         "mapsPacksPresent": 4,
@@ -791,10 +791,10 @@
             "roofer holladay"
           ]
         },
-        "googleAiOverviewsPresent": 0,
+        "googleAiOverviewsPresent": 1,
         "googleAiOverviewOwnedQueries": [],
         "protectedOrganicNumberOneQueries": [],
-        "intendedPageSelectedForEveryMeasuredRank": false,
+        "intendedPageSelectedForEveryMeasuredRank": true,
         "gscState": "url-competition-requires-diagnosis",
         "gscRequestedQueries": 4,
         "gscReturnedQueries": 3,
@@ -811,14 +811,14 @@
         "architectureState": "not-evidenced",
         "protectedRelatedRoutes": [],
         "consumerAiState": "configured-manual-unmeasured-invalid-provider-credential",
-        "comparableWeeklyGooglePanels": 6,
+        "comparableWeeklyGooglePanels": 7,
         "comparableWeeklyConsumerAiPanels": 0
       },
       "scoreVector": {
         "businessValue": 10,
         "confidence": 6,
         "leadValue": 8,
-        "authorityValue": 5,
+        "authorityValue": 7,
         "learningValue": 6,
         "implementationCost": 3,
         "complianceRisk": 1,
@@ -827,10 +827,10 @@
         "sourceBiasRisk": 2,
         "recencyBiasRisk": 1
       },
-      "selectedAction": "Diagnose unexpected organic URL selection against the dated fixed panel and exact-query GSC rows before any intent or architecture change. Preserve all existing experiment, foothold, identity, and owner gates. Previously gated action: Complete a full post-August-10 GSC consolidation window while preserving the city hub, redirected legacy route, homepage, and editorial guide; obtain current Salt Lake Valley service-area evidence for the separate Maps lane, request the core cleanup separately, and do not activate the drafted title test until its prerequisites pass.",
-      "gate": "Unexpected organic URL selection requires read-only diagnosis; no public mutation. Existing gate: complete-post-redirect-gsc-window-plus-service-area-evidence-plus-owner-gated-cleanup",
+      "selectedAction": "Complete a full post-August-10 GSC consolidation window while preserving the city hub, redirected legacy route, homepage, and editorial guide; obtain current Salt Lake Valley service-area evidence for the separate Maps lane, request the core cleanup separately, and do not activate the drafted title test until its prerequisites pass.",
+      "gate": "complete-post-redirect-gsc-window-plus-service-area-evidence-plus-owner-gated-cleanup",
       "ownerApprovalPhrase": "I explicitly approve editing and publishing the five-page integrity cleanup defined in PR #242 and the Millcreek storm-child identity correction defined in the pinned Millcreek scope amendment.",
-      "acceptanceCheck": "Reconcile every unexpected selected URL with fresh evidence; do not automatically redirect, delete, canonicalize, or rewrite a page. Existing acceptance: Current query-to-URL evidence no longer depends on the pre-redirect window; the position-4 roof-replacement foothold and all protected routes remain intact; a current receipt separately classifies Holladay for CID 5689850818145735734.",
+      "acceptanceCheck": "Current query-to-URL evidence no longer depends on the pre-redirect window; the position-4 roof-replacement foothold and all protected routes remain intact; a current receipt separately classifies Holladay for CID 5689850818145735734.",
       "feedback": {
         "cadence": "weekly",
         "requiredComparablePanels": 4,
@@ -874,15 +874,15 @@
       "lane": "owner-gated-core-integrity-then-single-variable-intent-test",
       "decision": "Request input",
       "evidenceFeatures": {
-        "observedAt": "2026-09-14T09:23:08.764Z",
+        "observedAt": "2026-09-21T09:23:32.968Z",
         "organicRanks": [
           18,
-          14,
-          10,
-          12
+          18,
+          11,
+          14
         ],
-        "bestMeasuredOrganicRank": 10,
-        "measuredMeanOrganicRank": 13.5,
+        "bestMeasuredOrganicRank": 11,
+        "measuredMeanOrganicRank": 15.25,
         "exactCidMapsNumberOne": 0,
         "exactCidMapsReturned": 0,
         "mapsPacksPresent": 4,
@@ -916,13 +916,13 @@
         "architectureState": "not-evidenced",
         "protectedRelatedRoutes": [],
         "consumerAiState": "configured-manual-unmeasured-invalid-provider-credential",
-        "comparableWeeklyGooglePanels": 6,
+        "comparableWeeklyGooglePanels": 7,
         "comparableWeeklyConsumerAiPanels": 0
       },
       "scoreVector": {
         "businessValue": 10,
         "confidence": 6,
-        "leadValue": 7,
+        "leadValue": 5,
         "authorityValue": 5,
         "learningValue": 6,
         "implementationCost": 5,
@@ -1811,15 +1811,15 @@
       "lane": "owner-gated-core-integrity-then-single-variable-intent-test",
       "decision": "Request input",
       "evidenceFeatures": {
-        "observedAt": "2026-09-14T09:23:08.764Z",
+        "observedAt": "2026-09-21T09:23:32.968Z",
         "organicRanks": [
-          23,
-          14,
-          14,
-          21
+          null,
+          15,
+          null,
+          22
         ],
-        "bestMeasuredOrganicRank": 14,
-        "measuredMeanOrganicRank": 18,
+        "bestMeasuredOrganicRank": 15,
+        "measuredMeanOrganicRank": 18.5,
         "exactCidMapsNumberOne": 0,
         "exactCidMapsReturned": 0,
         "mapsPacksPresent": 4,
@@ -1853,7 +1853,7 @@
         "architectureState": "not-evidenced",
         "protectedRelatedRoutes": [],
         "consumerAiState": "configured-manual-unmeasured-invalid-provider-credential",
-        "comparableWeeklyGooglePanels": 6,
+        "comparableWeeklyGooglePanels": 7,
         "comparableWeeklyConsumerAiPanels": 0
       },
       "scoreVector": {
