@@ -46,9 +46,10 @@
   // ─── Auth ────────────────────────────────────────────────────────────
 
   function doLogin(e) {
+    var authVersion=window.FrameOwnerRecovery?window.FrameOwnerRecovery.version():0;
     e.preventDefault();
-    var p = document.getElementById('pinInput').value.trim();
-    if (!p) { document.getElementById('loginErr').textContent = 'Please enter a PIN'; return false; }
+    var p = document.getElementById('pinInput').value;
+    if (!p) { document.getElementById('loginErr').textContent = 'Please enter your password or PIN'; return false; }
     document.getElementById('loginErr').textContent = '';
     fetch(ACCESS_API + '?action=login', {
       method: 'POST',
@@ -56,7 +57,7 @@
       body: JSON.stringify({ routing_key: ROUTING_KEY, pin: p })
     }).then(function (r) {
       if (r.status === 401 || r.status === 403) {
-        document.getElementById('loginErr').textContent = 'Invalid PIN. Try again.';
+        document.getElementById('loginErr').textContent = 'Invalid password or PIN. Try again.';
         return;
       }
       return r.json().then(function (d) {
@@ -64,6 +65,7 @@
         return d;
       });
     }).then(function (d) {
+      if (window.FrameOwnerRecovery && authVersion !== window.FrameOwnerRecovery.version()) return;
       if (!d || d.error || !d.token) return;
       SESSION_TOKEN = d.token;
       CUR_USER = d.user;
@@ -103,8 +105,11 @@
     document.getElementById('pinInput').focus();
   }
 
-  // Auto-login retains only the short-lived signed token, never a PIN/key.
+  window.addEventListener('frame-owner-recovery-start', doLogout);
+// Auto-login retains only the short-lived signed token, never a PIN/key.
   (function () {
+    if (window.FrameOwnerRecovery && window.FrameOwnerRecovery.active()) return;
+    var authVersion=window.FrameOwnerRecovery?window.FrameOwnerRecovery.version():0;
     var s = sessionStorage.getItem(SESSION_STORAGE_KEY);
     if (s) {
       SESSION_TOKEN = s;
@@ -114,6 +119,7 @@
         if (r.status === 401 || r.status === 403) { doLogout(); return; }
         return r.json();
       }).then(function (d) {
+        if (window.FrameOwnerRecovery && authVersion !== window.FrameOwnerRecovery.version()) return;
         if (!d || d.error) { doLogout(); return; }
         CUR_USER = d.user;
         showReport();
