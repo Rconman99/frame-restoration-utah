@@ -1,0 +1,1538 @@
+{
+  "schema_version": "1.0",
+  "contract": "frame-utah-internal-route-source",
+  "contract_sha256": "caf543610069ddc0fda2b0b8ee59882076660f9257f44296d3c1467f2f463cbb",
+  "contract_snapshot": {
+    "schema_version": "1.0",
+    "name": "frame-utah-internal-route-source",
+    "expected_serving_origin": "http://127.0.0.1:4173",
+    "expected_canonical_origin": "https://www.framerestorationutah.com",
+    "freshness_markers": [],
+    "max_redirects": 0,
+    "min_touch_target_css_px": 44,
+    "max_fixed_viewport_ratio": 0.15,
+    "max_landscape_fixed_viewport_ratio": 0.24,
+    "max_focus_steps": 30,
+    "stability_wait_ms": 500,
+    "readiness_selector": "body",
+    "viewports": [
+      {
+        "name": "small-320",
+        "width": 320,
+        "height": 568
+      },
+      {
+        "name": "android-360",
+        "width": 360,
+        "height": 800
+      },
+      {
+        "name": "iphone-393",
+        "width": 393,
+        "height": 852
+      },
+      {
+        "name": "large-430",
+        "width": 430,
+        "height": 932
+      },
+      {
+        "name": "landscape-740",
+        "width": 740,
+        "height": 360
+      }
+    ],
+    "routes": [
+      {
+        "path": "/review.html",
+        "expected_canonical_path": "/review"
+      },
+      {
+        "path": "/dashboard/",
+        "expected_canonical_path": "/dashboard"
+      },
+      {
+        "path": "/leads.html",
+        "expected_canonical_path": "/leads"
+      }
+    ],
+    "critical_targets": [],
+    "fixed_elements": [],
+    "forbidden_visible_selectors": [
+      ".panel.open"
+    ],
+    "max_console_errors": 0,
+    "max_page_errors": 0,
+    "allowed_console_error_patterns": [],
+    "canonical_policy": "match"
+  },
+  "stage": "source",
+  "base_url": "http://127.0.0.1:4173",
+  "observed_at": "2026-09-04T02:39:09.748337Z",
+  "verdict": "pass",
+  "summary": {
+    "checks": 165,
+    "failures": 0,
+    "routes": 3,
+    "viewports": 5
+  },
+  "runs": [
+    {
+      "route": "/review.html",
+      "viewport": {
+        "name": "small-320",
+        "width": 320,
+        "height": 568
+      },
+      "url": "http://127.0.0.1:4173/review.html",
+      "checks": [
+        {
+          "name": "http-200",
+          "pass": true,
+          "detail": "status=200"
+        },
+        {
+          "name": "redirect-budget",
+          "pass": true,
+          "detail": "redirects=0 cap=0"
+        },
+        {
+          "name": "serving-origin",
+          "pass": true,
+          "detail": "final=http://127.0.0.1:4173 expected=http://127.0.0.1:4173"
+        },
+        {
+          "name": "viewport-meta",
+          "pass": true,
+          "detail": "content='width=device-width, initial-scale=1.0'"
+        },
+        {
+          "name": "canonical",
+          "pass": true,
+          "detail": "count=1 actual='https://www.framerestorationutah.com/review' expected='https://www.framerestorationutah.com/review'"
+        },
+        {
+          "name": "horizontal-reflow",
+          "pass": true,
+          "detail": "scrollWidth=320 innerWidth=320"
+        },
+        {
+          "name": "forbidden-visible:.panel.open",
+          "pass": true,
+          "detail": "visible=0"
+        },
+        {
+          "name": "focus-not-obscured",
+          "pass": true,
+          "detail": "sampled keyboard focus is exposed"
+        },
+        {
+          "name": "forbidden-visible-post-focus:.panel.open",
+          "pass": true,
+          "detail": "visible=0"
+        },
+        {
+          "name": "console-errors",
+          "pass": true,
+          "detail": "count=0 cap=0 errors=[] guard_suppressed=0"
+        },
+        {
+          "name": "page-errors",
+          "pass": true,
+          "detail": "count=0 cap=0 errors=[]"
+        }
+      ],
+      "failures": [],
+      "http": {
+        "status": 200,
+        "final_url": "http://127.0.0.1:4173/review.html",
+        "redirects": 0,
+        "headers": {
+          "content-length": "6525",
+          "content-type": "text/html",
+          "date": "Fri, 04 Sep 2026 02:39:10 GMT",
+          "last-modified": "Fri, 04 Sep 2026 01:18:43 GMT",
+          "server": "SimpleHTTP/0.6 Python/3.14.7"
+        }
+      },
+      "screenshot": {
+        "path": "/Users/agenticmac/projects/_wt-utah-gap-controls-20260903/qa/screenshots/metric-truth-source-20260903/review.html--65957706c451--small-320.png",
+        "sha256": "b52877ee33d22fc6cb06fa13e690d9d9411f71019b58b7a4d66ef135138d6524",
+        "captured_scroll_y": 0
+      },
+      "network_guard": {
+        "mode": "read_only",
+        "auth_bootstrap_used": false,
+        "protection_bypass_used": false,
+        "preview_toolbar_suppression_requested": false,
+        "service_workers_blocked": true,
+        "websockets_blocked": true,
+        "stability_wait_ms": 500,
+        "readiness_selector": "body",
+        "blocked_count": 0,
+        "blocked": [],
+        "console_errors_suppressed": 0
+      }
+    },
+    {
+      "route": "/review.html",
+      "viewport": {
+        "name": "android-360",
+        "width": 360,
+        "height": 800
+      },
+      "url": "http://127.0.0.1:4173/review.html",
+      "checks": [
+        {
+          "name": "http-200",
+          "pass": true,
+          "detail": "status=200"
+        },
+        {
+          "name": "redirect-budget",
+          "pass": true,
+          "detail": "redirects=0 cap=0"
+        },
+        {
+          "name": "serving-origin",
+          "pass": true,
+          "detail": "final=http://127.0.0.1:4173 expected=http://127.0.0.1:4173"
+        },
+        {
+          "name": "viewport-meta",
+          "pass": true,
+          "detail": "content='width=device-width, initial-scale=1.0'"
+        },
+        {
+          "name": "canonical",
+          "pass": true,
+          "detail": "count=1 actual='https://www.framerestorationutah.com/review' expected='https://www.framerestorationutah.com/review'"
+        },
+        {
+          "name": "horizontal-reflow",
+          "pass": true,
+          "detail": "scrollWidth=360 innerWidth=360"
+        },
+        {
+          "name": "forbidden-visible:.panel.open",
+          "pass": true,
+          "detail": "visible=0"
+        },
+        {
+          "name": "focus-not-obscured",
+          "pass": true,
+          "detail": "sampled keyboard focus is exposed"
+        },
+        {
+          "name": "forbidden-visible-post-focus:.panel.open",
+          "pass": true,
+          "detail": "visible=0"
+        },
+        {
+          "name": "console-errors",
+          "pass": true,
+          "detail": "count=0 cap=0 errors=[] guard_suppressed=0"
+        },
+        {
+          "name": "page-errors",
+          "pass": true,
+          "detail": "count=0 cap=0 errors=[]"
+        }
+      ],
+      "failures": [],
+      "http": {
+        "status": 200,
+        "final_url": "http://127.0.0.1:4173/review.html",
+        "redirects": 0,
+        "headers": {
+          "content-length": "6525",
+          "content-type": "text/html",
+          "date": "Fri, 04 Sep 2026 02:39:11 GMT",
+          "last-modified": "Fri, 04 Sep 2026 01:18:43 GMT",
+          "server": "SimpleHTTP/0.6 Python/3.14.7"
+        }
+      },
+      "screenshot": {
+        "path": "/Users/agenticmac/projects/_wt-utah-gap-controls-20260903/qa/screenshots/metric-truth-source-20260903/review.html--65957706c451--android-360.png",
+        "sha256": "ced0c4c071989467b37d516f782d1d4af1d8df1fb5499528f590b30881872dd7",
+        "captured_scroll_y": 0
+      },
+      "network_guard": {
+        "mode": "read_only",
+        "auth_bootstrap_used": false,
+        "protection_bypass_used": false,
+        "preview_toolbar_suppression_requested": false,
+        "service_workers_blocked": true,
+        "websockets_blocked": true,
+        "stability_wait_ms": 500,
+        "readiness_selector": "body",
+        "blocked_count": 0,
+        "blocked": [],
+        "console_errors_suppressed": 0
+      }
+    },
+    {
+      "route": "/review.html",
+      "viewport": {
+        "name": "iphone-393",
+        "width": 393,
+        "height": 852
+      },
+      "url": "http://127.0.0.1:4173/review.html",
+      "checks": [
+        {
+          "name": "http-200",
+          "pass": true,
+          "detail": "status=200"
+        },
+        {
+          "name": "redirect-budget",
+          "pass": true,
+          "detail": "redirects=0 cap=0"
+        },
+        {
+          "name": "serving-origin",
+          "pass": true,
+          "detail": "final=http://127.0.0.1:4173 expected=http://127.0.0.1:4173"
+        },
+        {
+          "name": "viewport-meta",
+          "pass": true,
+          "detail": "content='width=device-width, initial-scale=1.0'"
+        },
+        {
+          "name": "canonical",
+          "pass": true,
+          "detail": "count=1 actual='https://www.framerestorationutah.com/review' expected='https://www.framerestorationutah.com/review'"
+        },
+        {
+          "name": "horizontal-reflow",
+          "pass": true,
+          "detail": "scrollWidth=393 innerWidth=393"
+        },
+        {
+          "name": "forbidden-visible:.panel.open",
+          "pass": true,
+          "detail": "visible=0"
+        },
+        {
+          "name": "focus-not-obscured",
+          "pass": true,
+          "detail": "sampled keyboard focus is exposed"
+        },
+        {
+          "name": "forbidden-visible-post-focus:.panel.open",
+          "pass": true,
+          "detail": "visible=0"
+        },
+        {
+          "name": "console-errors",
+          "pass": true,
+          "detail": "count=0 cap=0 errors=[] guard_suppressed=0"
+        },
+        {
+          "name": "page-errors",
+          "pass": true,
+          "detail": "count=0 cap=0 errors=[]"
+        }
+      ],
+      "failures": [],
+      "http": {
+        "status": 200,
+        "final_url": "http://127.0.0.1:4173/review.html",
+        "redirects": 0,
+        "headers": {
+          "content-length": "6525",
+          "content-type": "text/html",
+          "date": "Fri, 04 Sep 2026 02:39:12 GMT",
+          "last-modified": "Fri, 04 Sep 2026 01:18:43 GMT",
+          "server": "SimpleHTTP/0.6 Python/3.14.7"
+        }
+      },
+      "screenshot": {
+        "path": "/Users/agenticmac/projects/_wt-utah-gap-controls-20260903/qa/screenshots/metric-truth-source-20260903/review.html--65957706c451--iphone-393.png",
+        "sha256": "ff8d6c365573c60864d84a3d5967f0c7552efc609d91f0685bb6943b7dea1dab",
+        "captured_scroll_y": 0
+      },
+      "network_guard": {
+        "mode": "read_only",
+        "auth_bootstrap_used": false,
+        "protection_bypass_used": false,
+        "preview_toolbar_suppression_requested": false,
+        "service_workers_blocked": true,
+        "websockets_blocked": true,
+        "stability_wait_ms": 500,
+        "readiness_selector": "body",
+        "blocked_count": 0,
+        "blocked": [],
+        "console_errors_suppressed": 0
+      }
+    },
+    {
+      "route": "/review.html",
+      "viewport": {
+        "name": "large-430",
+        "width": 430,
+        "height": 932
+      },
+      "url": "http://127.0.0.1:4173/review.html",
+      "checks": [
+        {
+          "name": "http-200",
+          "pass": true,
+          "detail": "status=200"
+        },
+        {
+          "name": "redirect-budget",
+          "pass": true,
+          "detail": "redirects=0 cap=0"
+        },
+        {
+          "name": "serving-origin",
+          "pass": true,
+          "detail": "final=http://127.0.0.1:4173 expected=http://127.0.0.1:4173"
+        },
+        {
+          "name": "viewport-meta",
+          "pass": true,
+          "detail": "content='width=device-width, initial-scale=1.0'"
+        },
+        {
+          "name": "canonical",
+          "pass": true,
+          "detail": "count=1 actual='https://www.framerestorationutah.com/review' expected='https://www.framerestorationutah.com/review'"
+        },
+        {
+          "name": "horizontal-reflow",
+          "pass": true,
+          "detail": "scrollWidth=430 innerWidth=430"
+        },
+        {
+          "name": "forbidden-visible:.panel.open",
+          "pass": true,
+          "detail": "visible=0"
+        },
+        {
+          "name": "focus-not-obscured",
+          "pass": true,
+          "detail": "sampled keyboard focus is exposed"
+        },
+        {
+          "name": "forbidden-visible-post-focus:.panel.open",
+          "pass": true,
+          "detail": "visible=0"
+        },
+        {
+          "name": "console-errors",
+          "pass": true,
+          "detail": "count=0 cap=0 errors=[] guard_suppressed=0"
+        },
+        {
+          "name": "page-errors",
+          "pass": true,
+          "detail": "count=0 cap=0 errors=[]"
+        }
+      ],
+      "failures": [],
+      "http": {
+        "status": 200,
+        "final_url": "http://127.0.0.1:4173/review.html",
+        "redirects": 0,
+        "headers": {
+          "content-length": "6525",
+          "content-type": "text/html",
+          "date": "Fri, 04 Sep 2026 02:39:13 GMT",
+          "last-modified": "Fri, 04 Sep 2026 01:18:43 GMT",
+          "server": "SimpleHTTP/0.6 Python/3.14.7"
+        }
+      },
+      "screenshot": {
+        "path": "/Users/agenticmac/projects/_wt-utah-gap-controls-20260903/qa/screenshots/metric-truth-source-20260903/review.html--65957706c451--large-430.png",
+        "sha256": "b04bc28c4293d0260adbfcb7fa4f70b2277376b10ae62a1169da0a364cbf1e87",
+        "captured_scroll_y": 0
+      },
+      "network_guard": {
+        "mode": "read_only",
+        "auth_bootstrap_used": false,
+        "protection_bypass_used": false,
+        "preview_toolbar_suppression_requested": false,
+        "service_workers_blocked": true,
+        "websockets_blocked": true,
+        "stability_wait_ms": 500,
+        "readiness_selector": "body",
+        "blocked_count": 0,
+        "blocked": [],
+        "console_errors_suppressed": 0
+      }
+    },
+    {
+      "route": "/review.html",
+      "viewport": {
+        "name": "landscape-740",
+        "width": 740,
+        "height": 360
+      },
+      "url": "http://127.0.0.1:4173/review.html",
+      "checks": [
+        {
+          "name": "http-200",
+          "pass": true,
+          "detail": "status=200"
+        },
+        {
+          "name": "redirect-budget",
+          "pass": true,
+          "detail": "redirects=0 cap=0"
+        },
+        {
+          "name": "serving-origin",
+          "pass": true,
+          "detail": "final=http://127.0.0.1:4173 expected=http://127.0.0.1:4173"
+        },
+        {
+          "name": "viewport-meta",
+          "pass": true,
+          "detail": "content='width=device-width, initial-scale=1.0'"
+        },
+        {
+          "name": "canonical",
+          "pass": true,
+          "detail": "count=1 actual='https://www.framerestorationutah.com/review' expected='https://www.framerestorationutah.com/review'"
+        },
+        {
+          "name": "horizontal-reflow",
+          "pass": true,
+          "detail": "scrollWidth=740 innerWidth=740"
+        },
+        {
+          "name": "forbidden-visible:.panel.open",
+          "pass": true,
+          "detail": "visible=0"
+        },
+        {
+          "name": "focus-not-obscured",
+          "pass": true,
+          "detail": "sampled keyboard focus is exposed"
+        },
+        {
+          "name": "forbidden-visible-post-focus:.panel.open",
+          "pass": true,
+          "detail": "visible=0"
+        },
+        {
+          "name": "console-errors",
+          "pass": true,
+          "detail": "count=0 cap=0 errors=[] guard_suppressed=0"
+        },
+        {
+          "name": "page-errors",
+          "pass": true,
+          "detail": "count=0 cap=0 errors=[]"
+        }
+      ],
+      "failures": [],
+      "http": {
+        "status": 200,
+        "final_url": "http://127.0.0.1:4173/review.html",
+        "redirects": 0,
+        "headers": {
+          "content-length": "6525",
+          "content-type": "text/html",
+          "date": "Fri, 04 Sep 2026 02:39:14 GMT",
+          "last-modified": "Fri, 04 Sep 2026 01:18:43 GMT",
+          "server": "SimpleHTTP/0.6 Python/3.14.7"
+        }
+      },
+      "screenshot": {
+        "path": "/Users/agenticmac/projects/_wt-utah-gap-controls-20260903/qa/screenshots/metric-truth-source-20260903/review.html--65957706c451--landscape-740.png",
+        "sha256": "a7fadb2ffedd5972925b2b9b95c80004ab4f781caf9f13d4ff667ee3ef2a2242",
+        "captured_scroll_y": 0
+      },
+      "network_guard": {
+        "mode": "read_only",
+        "auth_bootstrap_used": false,
+        "protection_bypass_used": false,
+        "preview_toolbar_suppression_requested": false,
+        "service_workers_blocked": true,
+        "websockets_blocked": true,
+        "stability_wait_ms": 500,
+        "readiness_selector": "body",
+        "blocked_count": 0,
+        "blocked": [],
+        "console_errors_suppressed": 0
+      }
+    },
+    {
+      "route": "/dashboard/",
+      "viewport": {
+        "name": "small-320",
+        "width": 320,
+        "height": 568
+      },
+      "url": "http://127.0.0.1:4173/dashboard/",
+      "checks": [
+        {
+          "name": "http-200",
+          "pass": true,
+          "detail": "status=200"
+        },
+        {
+          "name": "redirect-budget",
+          "pass": true,
+          "detail": "redirects=0 cap=0"
+        },
+        {
+          "name": "serving-origin",
+          "pass": true,
+          "detail": "final=http://127.0.0.1:4173 expected=http://127.0.0.1:4173"
+        },
+        {
+          "name": "viewport-meta",
+          "pass": true,
+          "detail": "content='width=device-width,initial-scale=1'"
+        },
+        {
+          "name": "canonical",
+          "pass": true,
+          "detail": "count=1 actual='https://www.framerestorationutah.com/dashboard' expected='https://www.framerestorationutah.com/dashboard'"
+        },
+        {
+          "name": "horizontal-reflow",
+          "pass": true,
+          "detail": "scrollWidth=320 innerWidth=320"
+        },
+        {
+          "name": "forbidden-visible:.panel.open",
+          "pass": true,
+          "detail": "visible=0"
+        },
+        {
+          "name": "focus-not-obscured",
+          "pass": true,
+          "detail": "sampled keyboard focus is exposed"
+        },
+        {
+          "name": "forbidden-visible-post-focus:.panel.open",
+          "pass": true,
+          "detail": "visible=0"
+        },
+        {
+          "name": "console-errors",
+          "pass": true,
+          "detail": "count=0 cap=0 errors=[] guard_suppressed=0"
+        },
+        {
+          "name": "page-errors",
+          "pass": true,
+          "detail": "count=0 cap=0 errors=[]"
+        }
+      ],
+      "failures": [],
+      "http": {
+        "status": 200,
+        "final_url": "http://127.0.0.1:4173/dashboard/",
+        "redirects": 0,
+        "headers": {
+          "content-length": "3981",
+          "content-type": "text/html",
+          "date": "Fri, 04 Sep 2026 02:39:15 GMT",
+          "last-modified": "Fri, 04 Sep 2026 02:38:57 GMT",
+          "server": "SimpleHTTP/0.6 Python/3.14.7"
+        }
+      },
+      "screenshot": {
+        "path": "/Users/agenticmac/projects/_wt-utah-gap-controls-20260903/qa/screenshots/metric-truth-source-20260903/dashboard--13fb86da0728--small-320.png",
+        "sha256": "f4696cad5cccd00f5f1536eb282e8c8df39b3d8f7a1e112e69893a6355c63b19",
+        "captured_scroll_y": 0
+      },
+      "network_guard": {
+        "mode": "read_only",
+        "auth_bootstrap_used": false,
+        "protection_bypass_used": false,
+        "preview_toolbar_suppression_requested": false,
+        "service_workers_blocked": true,
+        "websockets_blocked": true,
+        "stability_wait_ms": 500,
+        "readiness_selector": "body",
+        "blocked_count": 0,
+        "blocked": [],
+        "console_errors_suppressed": 0
+      }
+    },
+    {
+      "route": "/dashboard/",
+      "viewport": {
+        "name": "android-360",
+        "width": 360,
+        "height": 800
+      },
+      "url": "http://127.0.0.1:4173/dashboard/",
+      "checks": [
+        {
+          "name": "http-200",
+          "pass": true,
+          "detail": "status=200"
+        },
+        {
+          "name": "redirect-budget",
+          "pass": true,
+          "detail": "redirects=0 cap=0"
+        },
+        {
+          "name": "serving-origin",
+          "pass": true,
+          "detail": "final=http://127.0.0.1:4173 expected=http://127.0.0.1:4173"
+        },
+        {
+          "name": "viewport-meta",
+          "pass": true,
+          "detail": "content='width=device-width,initial-scale=1'"
+        },
+        {
+          "name": "canonical",
+          "pass": true,
+          "detail": "count=1 actual='https://www.framerestorationutah.com/dashboard' expected='https://www.framerestorationutah.com/dashboard'"
+        },
+        {
+          "name": "horizontal-reflow",
+          "pass": true,
+          "detail": "scrollWidth=360 innerWidth=360"
+        },
+        {
+          "name": "forbidden-visible:.panel.open",
+          "pass": true,
+          "detail": "visible=0"
+        },
+        {
+          "name": "focus-not-obscured",
+          "pass": true,
+          "detail": "sampled keyboard focus is exposed"
+        },
+        {
+          "name": "forbidden-visible-post-focus:.panel.open",
+          "pass": true,
+          "detail": "visible=0"
+        },
+        {
+          "name": "console-errors",
+          "pass": true,
+          "detail": "count=0 cap=0 errors=[] guard_suppressed=0"
+        },
+        {
+          "name": "page-errors",
+          "pass": true,
+          "detail": "count=0 cap=0 errors=[]"
+        }
+      ],
+      "failures": [],
+      "http": {
+        "status": 200,
+        "final_url": "http://127.0.0.1:4173/dashboard/",
+        "redirects": 0,
+        "headers": {
+          "content-length": "3981",
+          "content-type": "text/html",
+          "date": "Fri, 04 Sep 2026 02:39:16 GMT",
+          "last-modified": "Fri, 04 Sep 2026 02:38:57 GMT",
+          "server": "SimpleHTTP/0.6 Python/3.14.7"
+        }
+      },
+      "screenshot": {
+        "path": "/Users/agenticmac/projects/_wt-utah-gap-controls-20260903/qa/screenshots/metric-truth-source-20260903/dashboard--13fb86da0728--android-360.png",
+        "sha256": "acce3e5cb6842f3cec9510607c3b86b7658937d9168b5529d308dfb391228168",
+        "captured_scroll_y": 0
+      },
+      "network_guard": {
+        "mode": "read_only",
+        "auth_bootstrap_used": false,
+        "protection_bypass_used": false,
+        "preview_toolbar_suppression_requested": false,
+        "service_workers_blocked": true,
+        "websockets_blocked": true,
+        "stability_wait_ms": 500,
+        "readiness_selector": "body",
+        "blocked_count": 0,
+        "blocked": [],
+        "console_errors_suppressed": 0
+      }
+    },
+    {
+      "route": "/dashboard/",
+      "viewport": {
+        "name": "iphone-393",
+        "width": 393,
+        "height": 852
+      },
+      "url": "http://127.0.0.1:4173/dashboard/",
+      "checks": [
+        {
+          "name": "http-200",
+          "pass": true,
+          "detail": "status=200"
+        },
+        {
+          "name": "redirect-budget",
+          "pass": true,
+          "detail": "redirects=0 cap=0"
+        },
+        {
+          "name": "serving-origin",
+          "pass": true,
+          "detail": "final=http://127.0.0.1:4173 expected=http://127.0.0.1:4173"
+        },
+        {
+          "name": "viewport-meta",
+          "pass": true,
+          "detail": "content='width=device-width,initial-scale=1'"
+        },
+        {
+          "name": "canonical",
+          "pass": true,
+          "detail": "count=1 actual='https://www.framerestorationutah.com/dashboard' expected='https://www.framerestorationutah.com/dashboard'"
+        },
+        {
+          "name": "horizontal-reflow",
+          "pass": true,
+          "detail": "scrollWidth=393 innerWidth=393"
+        },
+        {
+          "name": "forbidden-visible:.panel.open",
+          "pass": true,
+          "detail": "visible=0"
+        },
+        {
+          "name": "focus-not-obscured",
+          "pass": true,
+          "detail": "sampled keyboard focus is exposed"
+        },
+        {
+          "name": "forbidden-visible-post-focus:.panel.open",
+          "pass": true,
+          "detail": "visible=0"
+        },
+        {
+          "name": "console-errors",
+          "pass": true,
+          "detail": "count=0 cap=0 errors=[] guard_suppressed=0"
+        },
+        {
+          "name": "page-errors",
+          "pass": true,
+          "detail": "count=0 cap=0 errors=[]"
+        }
+      ],
+      "failures": [],
+      "http": {
+        "status": 200,
+        "final_url": "http://127.0.0.1:4173/dashboard/",
+        "redirects": 0,
+        "headers": {
+          "content-length": "3981",
+          "content-type": "text/html",
+          "date": "Fri, 04 Sep 2026 02:39:17 GMT",
+          "last-modified": "Fri, 04 Sep 2026 02:38:57 GMT",
+          "server": "SimpleHTTP/0.6 Python/3.14.7"
+        }
+      },
+      "screenshot": {
+        "path": "/Users/agenticmac/projects/_wt-utah-gap-controls-20260903/qa/screenshots/metric-truth-source-20260903/dashboard--13fb86da0728--iphone-393.png",
+        "sha256": "f1adc3b8f859878c616130650ab395e0cd9a017864c4112bb6efba472dd165ca",
+        "captured_scroll_y": 0
+      },
+      "network_guard": {
+        "mode": "read_only",
+        "auth_bootstrap_used": false,
+        "protection_bypass_used": false,
+        "preview_toolbar_suppression_requested": false,
+        "service_workers_blocked": true,
+        "websockets_blocked": true,
+        "stability_wait_ms": 500,
+        "readiness_selector": "body",
+        "blocked_count": 0,
+        "blocked": [],
+        "console_errors_suppressed": 0
+      }
+    },
+    {
+      "route": "/dashboard/",
+      "viewport": {
+        "name": "large-430",
+        "width": 430,
+        "height": 932
+      },
+      "url": "http://127.0.0.1:4173/dashboard/",
+      "checks": [
+        {
+          "name": "http-200",
+          "pass": true,
+          "detail": "status=200"
+        },
+        {
+          "name": "redirect-budget",
+          "pass": true,
+          "detail": "redirects=0 cap=0"
+        },
+        {
+          "name": "serving-origin",
+          "pass": true,
+          "detail": "final=http://127.0.0.1:4173 expected=http://127.0.0.1:4173"
+        },
+        {
+          "name": "viewport-meta",
+          "pass": true,
+          "detail": "content='width=device-width,initial-scale=1'"
+        },
+        {
+          "name": "canonical",
+          "pass": true,
+          "detail": "count=1 actual='https://www.framerestorationutah.com/dashboard' expected='https://www.framerestorationutah.com/dashboard'"
+        },
+        {
+          "name": "horizontal-reflow",
+          "pass": true,
+          "detail": "scrollWidth=430 innerWidth=430"
+        },
+        {
+          "name": "forbidden-visible:.panel.open",
+          "pass": true,
+          "detail": "visible=0"
+        },
+        {
+          "name": "focus-not-obscured",
+          "pass": true,
+          "detail": "sampled keyboard focus is exposed"
+        },
+        {
+          "name": "forbidden-visible-post-focus:.panel.open",
+          "pass": true,
+          "detail": "visible=0"
+        },
+        {
+          "name": "console-errors",
+          "pass": true,
+          "detail": "count=0 cap=0 errors=[] guard_suppressed=0"
+        },
+        {
+          "name": "page-errors",
+          "pass": true,
+          "detail": "count=0 cap=0 errors=[]"
+        }
+      ],
+      "failures": [],
+      "http": {
+        "status": 200,
+        "final_url": "http://127.0.0.1:4173/dashboard/",
+        "redirects": 0,
+        "headers": {
+          "content-length": "3981",
+          "content-type": "text/html",
+          "date": "Fri, 04 Sep 2026 02:39:17 GMT",
+          "last-modified": "Fri, 04 Sep 2026 02:38:57 GMT",
+          "server": "SimpleHTTP/0.6 Python/3.14.7"
+        }
+      },
+      "screenshot": {
+        "path": "/Users/agenticmac/projects/_wt-utah-gap-controls-20260903/qa/screenshots/metric-truth-source-20260903/dashboard--13fb86da0728--large-430.png",
+        "sha256": "5d49f290bcf8d1397164c206b1063c9183a1974f1a9fce72fd1e7a0eba923796",
+        "captured_scroll_y": 0
+      },
+      "network_guard": {
+        "mode": "read_only",
+        "auth_bootstrap_used": false,
+        "protection_bypass_used": false,
+        "preview_toolbar_suppression_requested": false,
+        "service_workers_blocked": true,
+        "websockets_blocked": true,
+        "stability_wait_ms": 500,
+        "readiness_selector": "body",
+        "blocked_count": 0,
+        "blocked": [],
+        "console_errors_suppressed": 0
+      }
+    },
+    {
+      "route": "/dashboard/",
+      "viewport": {
+        "name": "landscape-740",
+        "width": 740,
+        "height": 360
+      },
+      "url": "http://127.0.0.1:4173/dashboard/",
+      "checks": [
+        {
+          "name": "http-200",
+          "pass": true,
+          "detail": "status=200"
+        },
+        {
+          "name": "redirect-budget",
+          "pass": true,
+          "detail": "redirects=0 cap=0"
+        },
+        {
+          "name": "serving-origin",
+          "pass": true,
+          "detail": "final=http://127.0.0.1:4173 expected=http://127.0.0.1:4173"
+        },
+        {
+          "name": "viewport-meta",
+          "pass": true,
+          "detail": "content='width=device-width,initial-scale=1'"
+        },
+        {
+          "name": "canonical",
+          "pass": true,
+          "detail": "count=1 actual='https://www.framerestorationutah.com/dashboard' expected='https://www.framerestorationutah.com/dashboard'"
+        },
+        {
+          "name": "horizontal-reflow",
+          "pass": true,
+          "detail": "scrollWidth=740 innerWidth=740"
+        },
+        {
+          "name": "forbidden-visible:.panel.open",
+          "pass": true,
+          "detail": "visible=0"
+        },
+        {
+          "name": "focus-not-obscured",
+          "pass": true,
+          "detail": "sampled keyboard focus is exposed"
+        },
+        {
+          "name": "forbidden-visible-post-focus:.panel.open",
+          "pass": true,
+          "detail": "visible=0"
+        },
+        {
+          "name": "console-errors",
+          "pass": true,
+          "detail": "count=0 cap=0 errors=[] guard_suppressed=0"
+        },
+        {
+          "name": "page-errors",
+          "pass": true,
+          "detail": "count=0 cap=0 errors=[]"
+        }
+      ],
+      "failures": [],
+      "http": {
+        "status": 200,
+        "final_url": "http://127.0.0.1:4173/dashboard/",
+        "redirects": 0,
+        "headers": {
+          "content-length": "3981",
+          "content-type": "text/html",
+          "date": "Fri, 04 Sep 2026 02:39:18 GMT",
+          "last-modified": "Fri, 04 Sep 2026 02:38:57 GMT",
+          "server": "SimpleHTTP/0.6 Python/3.14.7"
+        }
+      },
+      "screenshot": {
+        "path": "/Users/agenticmac/projects/_wt-utah-gap-controls-20260903/qa/screenshots/metric-truth-source-20260903/dashboard--13fb86da0728--landscape-740.png",
+        "sha256": "a2df15b8613c351b772feb58363adc5eea3879ddcd273c5aef75d8c18f4fc8cb",
+        "captured_scroll_y": 0
+      },
+      "network_guard": {
+        "mode": "read_only",
+        "auth_bootstrap_used": false,
+        "protection_bypass_used": false,
+        "preview_toolbar_suppression_requested": false,
+        "service_workers_blocked": true,
+        "websockets_blocked": true,
+        "stability_wait_ms": 500,
+        "readiness_selector": "body",
+        "blocked_count": 0,
+        "blocked": [],
+        "console_errors_suppressed": 0
+      }
+    },
+    {
+      "route": "/leads.html",
+      "viewport": {
+        "name": "small-320",
+        "width": 320,
+        "height": 568
+      },
+      "url": "http://127.0.0.1:4173/leads.html",
+      "checks": [
+        {
+          "name": "http-200",
+          "pass": true,
+          "detail": "status=200"
+        },
+        {
+          "name": "redirect-budget",
+          "pass": true,
+          "detail": "redirects=0 cap=0"
+        },
+        {
+          "name": "serving-origin",
+          "pass": true,
+          "detail": "final=http://127.0.0.1:4173 expected=http://127.0.0.1:4173"
+        },
+        {
+          "name": "viewport-meta",
+          "pass": true,
+          "detail": "content='width=device-width,initial-scale=1'"
+        },
+        {
+          "name": "canonical",
+          "pass": true,
+          "detail": "count=1 actual='https://www.framerestorationutah.com/leads' expected='https://www.framerestorationutah.com/leads'"
+        },
+        {
+          "name": "horizontal-reflow",
+          "pass": true,
+          "detail": "scrollWidth=320 innerWidth=320"
+        },
+        {
+          "name": "forbidden-visible:.panel.open",
+          "pass": true,
+          "detail": "visible=0"
+        },
+        {
+          "name": "focus-not-obscured",
+          "pass": true,
+          "detail": "sampled keyboard focus is exposed"
+        },
+        {
+          "name": "forbidden-visible-post-focus:.panel.open",
+          "pass": true,
+          "detail": "visible=0"
+        },
+        {
+          "name": "console-errors",
+          "pass": true,
+          "detail": "count=0 cap=0 errors=[] guard_suppressed=0"
+        },
+        {
+          "name": "page-errors",
+          "pass": true,
+          "detail": "count=0 cap=0 errors=[]"
+        }
+      ],
+      "failures": [],
+      "http": {
+        "status": 200,
+        "final_url": "http://127.0.0.1:4173/leads.html",
+        "redirects": 0,
+        "headers": {
+          "content-length": "81366",
+          "content-type": "text/html",
+          "date": "Fri, 04 Sep 2026 02:39:19 GMT",
+          "last-modified": "Fri, 04 Sep 2026 01:18:43 GMT",
+          "server": "SimpleHTTP/0.6 Python/3.14.7"
+        }
+      },
+      "screenshot": {
+        "path": "/Users/agenticmac/projects/_wt-utah-gap-controls-20260903/qa/screenshots/metric-truth-source-20260903/leads.html--ae8e958b822a--small-320.png",
+        "sha256": "fb75c2b0ad5124dab5e7f2be5722e3cacff20d1387a6792adee187431ab8d7c7",
+        "captured_scroll_y": 0
+      },
+      "network_guard": {
+        "mode": "read_only",
+        "auth_bootstrap_used": false,
+        "protection_bypass_used": false,
+        "preview_toolbar_suppression_requested": false,
+        "service_workers_blocked": true,
+        "websockets_blocked": true,
+        "stability_wait_ms": 500,
+        "readiness_selector": "body",
+        "blocked_count": 0,
+        "blocked": [],
+        "console_errors_suppressed": 0
+      }
+    },
+    {
+      "route": "/leads.html",
+      "viewport": {
+        "name": "android-360",
+        "width": 360,
+        "height": 800
+      },
+      "url": "http://127.0.0.1:4173/leads.html",
+      "checks": [
+        {
+          "name": "http-200",
+          "pass": true,
+          "detail": "status=200"
+        },
+        {
+          "name": "redirect-budget",
+          "pass": true,
+          "detail": "redirects=0 cap=0"
+        },
+        {
+          "name": "serving-origin",
+          "pass": true,
+          "detail": "final=http://127.0.0.1:4173 expected=http://127.0.0.1:4173"
+        },
+        {
+          "name": "viewport-meta",
+          "pass": true,
+          "detail": "content='width=device-width,initial-scale=1'"
+        },
+        {
+          "name": "canonical",
+          "pass": true,
+          "detail": "count=1 actual='https://www.framerestorationutah.com/leads' expected='https://www.framerestorationutah.com/leads'"
+        },
+        {
+          "name": "horizontal-reflow",
+          "pass": true,
+          "detail": "scrollWidth=360 innerWidth=360"
+        },
+        {
+          "name": "forbidden-visible:.panel.open",
+          "pass": true,
+          "detail": "visible=0"
+        },
+        {
+          "name": "focus-not-obscured",
+          "pass": true,
+          "detail": "sampled keyboard focus is exposed"
+        },
+        {
+          "name": "forbidden-visible-post-focus:.panel.open",
+          "pass": true,
+          "detail": "visible=0"
+        },
+        {
+          "name": "console-errors",
+          "pass": true,
+          "detail": "count=0 cap=0 errors=[] guard_suppressed=0"
+        },
+        {
+          "name": "page-errors",
+          "pass": true,
+          "detail": "count=0 cap=0 errors=[]"
+        }
+      ],
+      "failures": [],
+      "http": {
+        "status": 200,
+        "final_url": "http://127.0.0.1:4173/leads.html",
+        "redirects": 0,
+        "headers": {
+          "content-length": "81366",
+          "content-type": "text/html",
+          "date": "Fri, 04 Sep 2026 02:39:20 GMT",
+          "last-modified": "Fri, 04 Sep 2026 01:18:43 GMT",
+          "server": "SimpleHTTP/0.6 Python/3.14.7"
+        }
+      },
+      "screenshot": {
+        "path": "/Users/agenticmac/projects/_wt-utah-gap-controls-20260903/qa/screenshots/metric-truth-source-20260903/leads.html--ae8e958b822a--android-360.png",
+        "sha256": "8f97f4b17df5dbd0b16b217d3a8eb94fafcd9a681d817cf4abaae0e93d361f28",
+        "captured_scroll_y": 0
+      },
+      "network_guard": {
+        "mode": "read_only",
+        "auth_bootstrap_used": false,
+        "protection_bypass_used": false,
+        "preview_toolbar_suppression_requested": false,
+        "service_workers_blocked": true,
+        "websockets_blocked": true,
+        "stability_wait_ms": 500,
+        "readiness_selector": "body",
+        "blocked_count": 0,
+        "blocked": [],
+        "console_errors_suppressed": 0
+      }
+    },
+    {
+      "route": "/leads.html",
+      "viewport": {
+        "name": "iphone-393",
+        "width": 393,
+        "height": 852
+      },
+      "url": "http://127.0.0.1:4173/leads.html",
+      "checks": [
+        {
+          "name": "http-200",
+          "pass": true,
+          "detail": "status=200"
+        },
+        {
+          "name": "redirect-budget",
+          "pass": true,
+          "detail": "redirects=0 cap=0"
+        },
+        {
+          "name": "serving-origin",
+          "pass": true,
+          "detail": "final=http://127.0.0.1:4173 expected=http://127.0.0.1:4173"
+        },
+        {
+          "name": "viewport-meta",
+          "pass": true,
+          "detail": "content='width=device-width,initial-scale=1'"
+        },
+        {
+          "name": "canonical",
+          "pass": true,
+          "detail": "count=1 actual='https://www.framerestorationutah.com/leads' expected='https://www.framerestorationutah.com/leads'"
+        },
+        {
+          "name": "horizontal-reflow",
+          "pass": true,
+          "detail": "scrollWidth=393 innerWidth=393"
+        },
+        {
+          "name": "forbidden-visible:.panel.open",
+          "pass": true,
+          "detail": "visible=0"
+        },
+        {
+          "name": "focus-not-obscured",
+          "pass": true,
+          "detail": "sampled keyboard focus is exposed"
+        },
+        {
+          "name": "forbidden-visible-post-focus:.panel.open",
+          "pass": true,
+          "detail": "visible=0"
+        },
+        {
+          "name": "console-errors",
+          "pass": true,
+          "detail": "count=0 cap=0 errors=[] guard_suppressed=0"
+        },
+        {
+          "name": "page-errors",
+          "pass": true,
+          "detail": "count=0 cap=0 errors=[]"
+        }
+      ],
+      "failures": [],
+      "http": {
+        "status": 200,
+        "final_url": "http://127.0.0.1:4173/leads.html",
+        "redirects": 0,
+        "headers": {
+          "content-length": "81366",
+          "content-type": "text/html",
+          "date": "Fri, 04 Sep 2026 02:39:21 GMT",
+          "last-modified": "Fri, 04 Sep 2026 01:18:43 GMT",
+          "server": "SimpleHTTP/0.6 Python/3.14.7"
+        }
+      },
+      "screenshot": {
+        "path": "/Users/agenticmac/projects/_wt-utah-gap-controls-20260903/qa/screenshots/metric-truth-source-20260903/leads.html--ae8e958b822a--iphone-393.png",
+        "sha256": "a29f3b94544ea45868eeefe46861d966186c65782f46017f02baaf5360cb6c13",
+        "captured_scroll_y": 0
+      },
+      "network_guard": {
+        "mode": "read_only",
+        "auth_bootstrap_used": false,
+        "protection_bypass_used": false,
+        "preview_toolbar_suppression_requested": false,
+        "service_workers_blocked": true,
+        "websockets_blocked": true,
+        "stability_wait_ms": 500,
+        "readiness_selector": "body",
+        "blocked_count": 0,
+        "blocked": [],
+        "console_errors_suppressed": 0
+      }
+    },
+    {
+      "route": "/leads.html",
+      "viewport": {
+        "name": "large-430",
+        "width": 430,
+        "height": 932
+      },
+      "url": "http://127.0.0.1:4173/leads.html",
+      "checks": [
+        {
+          "name": "http-200",
+          "pass": true,
+          "detail": "status=200"
+        },
+        {
+          "name": "redirect-budget",
+          "pass": true,
+          "detail": "redirects=0 cap=0"
+        },
+        {
+          "name": "serving-origin",
+          "pass": true,
+          "detail": "final=http://127.0.0.1:4173 expected=http://127.0.0.1:4173"
+        },
+        {
+          "name": "viewport-meta",
+          "pass": true,
+          "detail": "content='width=device-width,initial-scale=1'"
+        },
+        {
+          "name": "canonical",
+          "pass": true,
+          "detail": "count=1 actual='https://www.framerestorationutah.com/leads' expected='https://www.framerestorationutah.com/leads'"
+        },
+        {
+          "name": "horizontal-reflow",
+          "pass": true,
+          "detail": "scrollWidth=430 innerWidth=430"
+        },
+        {
+          "name": "forbidden-visible:.panel.open",
+          "pass": true,
+          "detail": "visible=0"
+        },
+        {
+          "name": "focus-not-obscured",
+          "pass": true,
+          "detail": "sampled keyboard focus is exposed"
+        },
+        {
+          "name": "forbidden-visible-post-focus:.panel.open",
+          "pass": true,
+          "detail": "visible=0"
+        },
+        {
+          "name": "console-errors",
+          "pass": true,
+          "detail": "count=0 cap=0 errors=[] guard_suppressed=0"
+        },
+        {
+          "name": "page-errors",
+          "pass": true,
+          "detail": "count=0 cap=0 errors=[]"
+        }
+      ],
+      "failures": [],
+      "http": {
+        "status": 200,
+        "final_url": "http://127.0.0.1:4173/leads.html",
+        "redirects": 0,
+        "headers": {
+          "content-length": "81366",
+          "content-type": "text/html",
+          "date": "Fri, 04 Sep 2026 02:39:23 GMT",
+          "last-modified": "Fri, 04 Sep 2026 01:18:43 GMT",
+          "server": "SimpleHTTP/0.6 Python/3.14.7"
+        }
+      },
+      "screenshot": {
+        "path": "/Users/agenticmac/projects/_wt-utah-gap-controls-20260903/qa/screenshots/metric-truth-source-20260903/leads.html--ae8e958b822a--large-430.png",
+        "sha256": "b0a9260037bc9079c65e60e957ee7a8d60ae89510546689c8a4fbad5924bc35e",
+        "captured_scroll_y": 0
+      },
+      "network_guard": {
+        "mode": "read_only",
+        "auth_bootstrap_used": false,
+        "protection_bypass_used": false,
+        "preview_toolbar_suppression_requested": false,
+        "service_workers_blocked": true,
+        "websockets_blocked": true,
+        "stability_wait_ms": 500,
+        "readiness_selector": "body",
+        "blocked_count": 0,
+        "blocked": [],
+        "console_errors_suppressed": 0
+      }
+    },
+    {
+      "route": "/leads.html",
+      "viewport": {
+        "name": "landscape-740",
+        "width": 740,
+        "height": 360
+      },
+      "url": "http://127.0.0.1:4173/leads.html",
+      "checks": [
+        {
+          "name": "http-200",
+          "pass": true,
+          "detail": "status=200"
+        },
+        {
+          "name": "redirect-budget",
+          "pass": true,
+          "detail": "redirects=0 cap=0"
+        },
+        {
+          "name": "serving-origin",
+          "pass": true,
+          "detail": "final=http://127.0.0.1:4173 expected=http://127.0.0.1:4173"
+        },
+        {
+          "name": "viewport-meta",
+          "pass": true,
+          "detail": "content='width=device-width,initial-scale=1'"
+        },
+        {
+          "name": "canonical",
+          "pass": true,
+          "detail": "count=1 actual='https://www.framerestorationutah.com/leads' expected='https://www.framerestorationutah.com/leads'"
+        },
+        {
+          "name": "horizontal-reflow",
+          "pass": true,
+          "detail": "scrollWidth=740 innerWidth=740"
+        },
+        {
+          "name": "forbidden-visible:.panel.open",
+          "pass": true,
+          "detail": "visible=0"
+        },
+        {
+          "name": "focus-not-obscured",
+          "pass": true,
+          "detail": "sampled keyboard focus is exposed"
+        },
+        {
+          "name": "forbidden-visible-post-focus:.panel.open",
+          "pass": true,
+          "detail": "visible=0"
+        },
+        {
+          "name": "console-errors",
+          "pass": true,
+          "detail": "count=0 cap=0 errors=[] guard_suppressed=0"
+        },
+        {
+          "name": "page-errors",
+          "pass": true,
+          "detail": "count=0 cap=0 errors=[]"
+        }
+      ],
+      "failures": [],
+      "http": {
+        "status": 200,
+        "final_url": "http://127.0.0.1:4173/leads.html",
+        "redirects": 0,
+        "headers": {
+          "content-length": "81366",
+          "content-type": "text/html",
+          "date": "Fri, 04 Sep 2026 02:39:24 GMT",
+          "last-modified": "Fri, 04 Sep 2026 01:18:43 GMT",
+          "server": "SimpleHTTP/0.6 Python/3.14.7"
+        }
+      },
+      "screenshot": {
+        "path": "/Users/agenticmac/projects/_wt-utah-gap-controls-20260903/qa/screenshots/metric-truth-source-20260903/leads.html--ae8e958b822a--landscape-740.png",
+        "sha256": "2913b67ddff6ea5ece6c8bb983020f8ac66410d4c347aed49972f137c62f0762",
+        "captured_scroll_y": 0
+      },
+      "network_guard": {
+        "mode": "read_only",
+        "auth_bootstrap_used": false,
+        "protection_bypass_used": false,
+        "preview_toolbar_suppression_requested": false,
+        "service_workers_blocked": true,
+        "websockets_blocked": true,
+        "stability_wait_ms": 500,
+        "readiness_selector": "body",
+        "blocked_count": 0,
+        "blocked": [],
+        "console_errors_suppressed": 0
+      }
+    }
+  ],
+  "duration_seconds": 15.928,
+  "receipt_path": "/Users/agenticmac/projects/_wt-utah-gap-controls-20260903/qa/receipts/metric-truth-source-20260903.json"
+}
