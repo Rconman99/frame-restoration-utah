@@ -23,7 +23,7 @@
   "sources": {
     "portfolio": {
       "file": "data/rank-tracker/SLV-18-CITY-GOAL-PORTFOLIO-2026-08-12.json",
-      "sha256": "34d4404e4e2daf8ac3f2c0952016213e21c4b88a966af3d5dc1e66dbc979e077"
+      "sha256": "cb531e68f6716175058000efe0ba234c67943eac31838491c5ee22dfc4455214"
     },
     "corePriority": {
       "file": "data/rank-tracker/SLV-PRIORITY-2026-08-12.json",
@@ -35,7 +35,7 @@
     },
     "displacement": {
       "file": "data/rank-tracker/SLV-COMPETITOR-DISPLACEMENT-2026-08-12.json",
-      "sha256": "1503e66a07b70ca21b77f8f6c6d6052cc9bee3dab826346ad9818922bb77b256"
+      "sha256": "9d034132b74ec445520e68bbcc3e43cdd1e706c3854df4adbf134c44da62c246"
     },
     "coreCleanupPacket": {
       "file": "data/authority/SLV-CITY-PUBLIC-REMEDIATION-PACKET-2026-08-12.json",
@@ -51,19 +51,19 @@
     },
     "expansionArchitecture": {
       "file": "data/rank-tracker/SLV-EXPANSION-ARCHITECTURE-2026-08-12.json",
-      "sha256": "1df1eee25fc89beb9b45592999f75704e6a0494d4ad9225e92ec77fb78d03af6"
+      "sha256": "bd7ea793f5d0b8b74fe7f71a18cad2e45c060c8de7fe099b1dc724f3a77b8971"
     },
     "entityHealth": {
       "file": "data/rank-tracker/SLV-ENTITY-HEALTH-2026-08-12.json",
-      "sha256": "1c13bf31cb4ca0a56f60d93eb8aba127e225a133e5891939a08d19e0665b2644"
+      "sha256": "636ec027e7861c1ee29422f84428318d96312242463cd32eb83b31112eef3462"
     },
     "weeklyDecisions": {
       "file": "data/rank-tracker/SLV-WEEKLY-DECISIONS-2026-08-12.json",
-      "sha256": "b0a0916ebf568d8ea16d04582b5238f639ebf09737c064acf7401341244c01f3"
+      "sha256": "2809bd4633b3527a41d0f824a54d42d3e9a8a846a096ed230d7d658c13590e4a"
     },
     "gscAttribution": {
       "file": "data/rank-tracker/SLV-GSC-URL-ATTRIBUTION-LATEST.json",
-      "sha256": "cb2eb0065972eb29d1bb8a0d3da59a2776b449fe58d9e4f80a9691f22023f3ba"
+      "sha256": "01b5ac73cabed46e43e0707eccb09d752eab95cdfc02f0d55ae9f0d6d57d9bd7"
     },
     "consumerAi": {
       "file": "data/rank-tracker/SLV-CONSUMER-AI-LATEST.json",
@@ -71,11 +71,11 @@
     },
     "interventions": {
       "file": "data/rank-tracker/SLV-INTERVENTION-QUEUE-2026-08-12.json",
-      "sha256": "1325648cf86e4c87b62d98ee2679190a0dd9b139a7423e99622b37241f700beb"
+      "sha256": "55c1a720dc6cf52aa8c7fdc28e5fc471255baef0af35048a137d08931497a76c"
     },
     "mapsReadiness": {
       "file": "data/rank-tracker/SLV-MAPS-READINESS-2026-08-12.json",
-      "sha256": "d6339d56f98468159ec8419aa8682f8bbe7cdc7b48539fd77d87c2635376c732"
+      "sha256": "707ff38ad35dd92e390e08b558dac9f2c77a51884b4b69e74496b159c646c5dd"
     },
     "ownerProfileAuditRequest": {
       "file": "data/authority/SLV-GBP-OWNER-AUDIT-REQUEST-2026-08-12.json",
@@ -264,12 +264,12 @@
       "page": "locations/salt-lake-city.html",
       "panelId": "utah-salt-lake-city-google-v1",
       "measurement": {
-        "observedAt": "2026-09-21T09:23:32.968Z",
+        "observedAt": "2026-09-28T09:27:27.052Z",
         "organicRanks": [
-          null,
-          null,
-          26,
-          25
+          27,
+          21,
+          27,
+          null
         ],
         "organicNumberOne": [],
         "exactCidMapsNumberOne": 0,
@@ -361,12 +361,12 @@
       "page": "locations/millcreek.html",
       "panelId": "utah-millcreek-google-v1",
       "measurement": {
-        "observedAt": "2026-09-21T09:23:32.968Z",
+        "observedAt": "2026-09-28T09:27:27.052Z",
         "organicRanks": [
-          11,
-          4,
-          9,
-          10
+          14,
+          null,
+          null,
+          null
         ],
         "organicNumberOne": [],
         "exactCidMapsNumberOne": 0,
@@ -403,8 +403,8 @@
         "scoreVector": {
           "businessValue": 10,
           "confidence": 8,
-          "leadValue": 8,
-          "authorityValue": 5,
+          "leadValue": 5,
+          "authorityValue": 7,
           "learningValue": 6,
           "implementationCost": 5,
           "complianceRisk": 8,
@@ -424,21 +424,20 @@
       },
       "mapsReadiness": {
         "lane": "owner-gated-page-identity-correction",
-        "packsPresent": 4,
+        "packsPresent": 3,
         "exactCidReturned": 0,
         "exactCidNumberOne": 0,
         "dominantDisplacer": {
           "name": "Whitaker Roofing Services",
           "cid": "11316815627233980109",
           "domain": "whitakerroofing.com",
-          "appearances": 4,
-          "numberOneQueries": 4,
+          "appearances": 3,
+          "numberOneQueries": 3,
           "bestRank": 1,
           "keywords": [
             "roofing contractor millcreek",
             "roof repair millcreek",
-            "roof replacement millcreek",
-            "roofer millcreek"
+            "roof replacement millcreek"
           ]
         },
         "nextAction": "Collect the exact-CID review and owner-profile baselines, then request the pinned Millcreek page-identity correction separately; preserve the owned AIO citation and do not edit GBP from this ledger.",
@@ -656,11 +655,11 @@
       "page": "locations/sandy.html",
       "panelId": "utah-sandy-google-v1",
       "measurement": {
-        "observedAt": "2026-09-21T09:23:32.968Z",
+        "observedAt": "2026-09-28T09:27:27.052Z",
         "organicRanks": [
-          21,
-          20,
-          15,
+          null,
+          19,
+          18,
           null
         ],
         "organicNumberOne": [],
@@ -696,7 +695,7 @@
         "scoreVector": {
           "businessValue": 10,
           "confidence": 6,
-          "leadValue": 5,
+          "leadValue": 3,
           "authorityValue": 5,
           "learningValue": 6,
           "implementationCost": 5,
@@ -752,12 +751,12 @@
       "page": "locations/holladay.html",
       "panelId": "utah-holladay-google-v1",
       "measurement": {
-        "observedAt": "2026-09-21T09:23:32.968Z",
+        "observedAt": "2026-09-28T09:27:27.052Z",
         "organicRanks": [
-          25,
-          12,
-          5,
-          null
+          23,
+          16,
+          11,
+          17
         ],
         "organicNumberOne": [],
         "exactCidMapsNumberOne": 0,
@@ -797,8 +796,8 @@
         "scoreVector": {
           "businessValue": 10,
           "confidence": 6,
-          "leadValue": 8,
-          "authorityValue": 7,
+          "leadValue": 5,
+          "authorityValue": 5,
           "learningValue": 6,
           "implementationCost": 3,
           "complianceRisk": 1,
@@ -853,12 +852,12 @@
       "page": "locations/cottonwood-heights.html",
       "panelId": "utah-cottonwood-heights-google-v1",
       "measurement": {
-        "observedAt": "2026-09-21T09:23:32.968Z",
+        "observedAt": "2026-09-28T09:27:27.052Z",
         "organicRanks": [
-          18,
-          18,
-          11,
-          14
+          19,
+          null,
+          15,
+          19
         ],
         "organicNumberOne": [],
         "exactCidMapsNumberOne": 0,
@@ -1716,12 +1715,12 @@
       "page": "locations/draper.html",
       "panelId": "utah-draper-google-v1",
       "measurement": {
-        "observedAt": "2026-09-21T09:23:32.968Z",
+        "observedAt": "2026-09-28T09:27:27.052Z",
         "organicRanks": [
+          30,
+          16,
           null,
-          15,
-          null,
-          22
+          25
         ],
         "organicNumberOne": [],
         "exactCidMapsNumberOne": 0,
@@ -1756,7 +1755,7 @@
         "scoreVector": {
           "businessValue": 10,
           "confidence": 6,
-          "leadValue": 5,
+          "leadValue": 3,
           "authorityValue": 5,
           "learningValue": 6,
           "implementationCost": 5,

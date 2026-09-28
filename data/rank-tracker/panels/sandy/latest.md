@@ -1,41 +1,41 @@
-# Sandy Google rank tracker — 2026-09-21
+# Sandy Google rank tracker — 2026-09-28
 
 - Panel: `utah-sandy-google-v1`
 - Provider: DataForSEO task-queue
 - Location: Sandy,Utah,United States
 - Device/depth: mobile / top 30
-- Observed: 2026-09-21T09:23:32.968Z
+- Observed: 2026-09-28T09:27:27.052Z
 - Estimated panel cost: $0.0192
 
 | Query | Organic | Exact-CID map pack | AI Overview | Frame cited in AI Overview |
 |---|---:|---:|---:|---:|
-| roofing contractor sandy | #21 | Not found in top 30 | No | No |
-| roof repair sandy | #20 | Not found in top 30 | No | No |
-| roof replacement sandy | #15 | Not found in top 30 | No | No |
+| roofing contractor sandy | Not found in top 30 | Not found in top 30 | No | No |
+| roof repair sandy | #19 | Not found in top 30 | No | No |
+| roof replacement sandy | #18 | Not found in top 30 | No | No |
 | roofer sandy | Not found in top 30 | Not found in top 30 | No | No |
 
 ## Displacement targets
 
 ### roofing contractor sandy
-- Organic top 3: #1 skyridgeco.com; #2 m.yelp.com; #3 mightydogroofing.com.
-- Map-pack top 3: #1 ReRoofIt [CID 3305979678440818523]; #2 The Roofing Center [CID 5187111774548334344]; #3 Red Star Roofing [CID 16317468138973610641].
+- Organic top 3: #1 reddit.com; #2 facebook.com; #3 bellroofingco.com.
+- Map-pack top 3: #1 ReRoofIt [CID 3305979678440818523]; #2 Red Star Roofing [CID 16317468138973610641]; #3 The Roofing Center [CID 5187111774548334344].
 - Paid local placements (excluded from Maps rank): none.
 - AI Overview sources: no AI Overview.
 
 ### roof repair sandy
-- Organic top 3: #1 skyridgeco.com; #2 m.yelp.com; #3 gaf.com.
+- Organic top 3: #1 gaf.com; #2 m.yelp.com; #3 xperienceroofing.com.
 - Map-pack top 3: #1 ReRoofIt [CID 3305979678440818523]; #2 Red Star Roofing [CID 16317468138973610641]; #3 The Roofing Center [CID 5187111774548334344].
 - Paid local placements (excluded from Maps rank): none.
 - AI Overview sources: no AI Overview.
 
 ### roof replacement sandy
-- Organic top 3: #1 xperienceroofing.com; #2 roofmaxx.com; #3 gaf.com.
-- Map-pack top 3: #1 ReRoofIt [CID 3305979678440818523]; #2 Red Star Roofing [CID 16317468138973610641]; #3 The Roofing Center [CID 5187111774548334344].
+- Organic top 3: #1 skyridgeco.com; #2 xperienceroofing.com; #3 builtbynorthridge.com.
+- Map-pack top 3: #1 ReRoofIt [CID 3305979678440818523]; #2 The Roofing Center [CID 5187111774548334344]; #3 Red Star Roofing [CID 16317468138973610641].
 - Paid local placements (excluded from Maps rank): none.
 - AI Overview sources: no AI Overview.
 
 ### roofer sandy
-- Organic top 3: #1 m.yelp.com; #2 mightydogroofing.com; #3 skyridgeco.com.
+- Organic top 3: #1 m.yelp.com; #2 skyridgeco.com; #3 mightydogroofing.com.
 - Map-pack top 3: #1 The Roofing Center [CID 5187111774548334344]; #2 Red Star Roofing [CID 16317468138973610641]; #3 ReRoofIt [CID 3305979678440818523].
 - Paid local placements (excluded from Maps rank): none.
 - AI Overview sources: no AI Overview.

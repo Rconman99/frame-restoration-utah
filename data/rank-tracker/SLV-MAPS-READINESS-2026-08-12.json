@@ -52,15 +52,15 @@
   "sources": {
     "portfolio": {
       "file": "data/rank-tracker/SLV-18-CITY-GOAL-PORTFOLIO-2026-08-12.json",
-      "sha256": "34d4404e4e2daf8ac3f2c0952016213e21c4b88a966af3d5dc1e66dbc979e077"
+      "sha256": "cb531e68f6716175058000efe0ba234c67943eac31838491c5ee22dfc4455214"
     },
     "displacement": {
       "file": "data/rank-tracker/SLV-COMPETITOR-DISPLACEMENT-2026-08-12.json",
-      "sha256": "1503e66a07b70ca21b77f8f6c6d6052cc9bee3dab826346ad9818922bb77b256"
+      "sha256": "9d034132b74ec445520e68bbcc3e43cdd1e706c3854df4adbf134c44da62c246"
     },
     "entityHealth": {
       "file": "data/rank-tracker/SLV-ENTITY-HEALTH-2026-08-12.json",
-      "sha256": "1c13bf31cb4ca0a56f60d93eb8aba127e225a133e5891939a08d19e0665b2644"
+      "sha256": "636ec027e7861c1ee29422f84428318d96312242463cd32eb83b31112eef3462"
     },
     "serviceAreaRequest": {
       "file": "data/authority/SLV-SERVICE-AREA-EVIDENCE-REQUEST-2026-08-12.json",
@@ -78,8 +78,8 @@
   "summary": {
     "cities": 18,
     "queries": 72,
-    "mapsPacksPresent": 70,
-    "mapsPacksAbsent": 2,
+    "mapsPacksPresent": 69,
+    "mapsPacksAbsent": 3,
     "exactCidReturned": 0,
     "exactCidNumberOne": 0,
     "profileVerifiedCities": 2,
@@ -257,8 +257,8 @@
         }
       },
       "maps": {
-        "packsPresent": 4,
-        "packsAbsent": 0,
+        "packsPresent": 3,
+        "packsAbsent": 1,
         "exactCidReturned": 0,
         "exactCidNumberOne": 0,
         "exactCidRanks": [
@@ -272,39 +272,37 @@
             "name": "Whitaker Roofing Services",
             "cid": "11316815627233980109",
             "domain": "whitakerroofing.com",
-            "appearances": 4,
-            "numberOneQueries": 4,
+            "appearances": 3,
+            "numberOneQueries": 3,
             "bestRank": 1,
             "keywords": [
               "roofing contractor millcreek",
               "roof repair millcreek",
-              "roof replacement millcreek",
-              "roofer millcreek"
+              "roof replacement millcreek"
             ]
           },
           {
             "name": "True North Roofing",
             "cid": "5387650211366766810",
             "domain": "truenorthroof.com",
-            "appearances": 3,
-            "numberOneQueries": 0,
-            "bestRank": 2,
-            "keywords": [
-              "roofing contractor millcreek",
-              "roof replacement millcreek",
-              "roofer millcreek"
-            ]
-          },
-          {
-            "name": "Sky Bridge Roofing",
-            "cid": "5327886489350788974",
-            "domain": "skybridgeroofings.com",
             "appearances": 2,
             "numberOneQueries": 0,
             "bestRank": 2,
             "keywords": [
               "roofing contractor millcreek",
-              "roof repair millcreek"
+              "roof replacement millcreek"
+            ]
+          },
+          {
+            "name": "Vault Roofing LLC",
+            "cid": "9387084358687172308",
+            "domain": "vaultroofingutah.com",
+            "appearances": 2,
+            "numberOneQueries": 0,
+            "bestRank": 3,
+            "keywords": [
+              "roof repair millcreek",
+              "roof replacement millcreek"
             ]
           }
         ]
@@ -343,12 +341,9 @@
         {
           "queryId": "millcreek-roofer",
           "keyword": "roofer millcreek",
-          "packState": "exact-cid-not-returned-in-pack",
+          "packState": "local-pack-not-present",
           "exactCidRank": null,
-          "numberOneEntity": {
-            "name": "Whitaker Roofing Services",
-            "cid": "11316815627233980109"
-          }
+          "numberOneEntity": null
         }
       ],
       "nextAction": "Collect the exact-CID review and owner-profile baselines, then request the pinned Millcreek page-identity correction separately; preserve the owned AIO citation and do not edit GBP from this ledger.",
@@ -694,7 +689,7 @@
             "numberOneQueries": 0,
             "bestRank": 3,
             "keywords": [
-              "roof replacement cottonwood heights"
+              "roof repair cottonwood heights"
             ]
           }
         ]
@@ -818,10 +813,11 @@
             "name": "Legacy Roofing",
             "cid": "2263621246550931916",
             "domain": "legacyroofingutah.com",
-            "appearances": 2,
+            "appearances": 3,
             "numberOneQueries": 0,
             "bestRank": 3,
             "keywords": [
+              "roofing contractor draper",
               "roof repair draper",
               "roof replacement draper"
             ]
