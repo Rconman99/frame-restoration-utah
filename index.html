@@ -514,7 +514,7 @@
       grid-template-columns: minmax(320px, 0.9fr) minmax(0, 1.1fr);
       gap: clamp(32px, 4.5vw, 60px);
       align-items: start;
-      margin-bottom: 48px;
+      margin-bottom: 0;
     }
     .qa-overview > * { min-width: 0; }
     .qa-kicker {
@@ -575,106 +575,12 @@
       font-size: 11px;
       letter-spacing: 1.3px;
     }
-    .qa-evidence-heading {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) minmax(260px, 0.72fr);
-      gap: 36px;
-      align-items: end;
-      margin-bottom: 24px;
-    }
-    .qa-evidence-heading h3 {
-      margin: 0;
-      color: var(--navy);
-      font-family: 'Archivo Black', sans-serif;
-      font-size: clamp(22px, 2.5vw, 30px);
-      letter-spacing: 0.01em;
-      line-height: 1.2;
-      text-transform: uppercase;
-    }
-    .qa-evidence-heading p {
-      margin: 0;
-      color: #52606c;
-      font-size: 14px;
-      line-height: 1.65;
-    }
-    .qa-evidence-grid {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 16px;
-      margin: 0;
-      padding: 0;
-      list-style: none;
-    }
-    .qa-evidence-item {
-      display: grid;
-      grid-template-columns: 36px minmax(0, 1fr);
-      gap: 16px;
-      align-items: start;
-      min-width: 0;
-      padding: 22px 24px 22px 20px;
-      background: var(--white);
-      border: 1px solid #d9dee2;
-      border-left: 3px solid var(--gold);
-    }
-    .qa-evidence-number {
-      display: flex;
-      width: 36px;
-      height: 36px;
-      align-items: center;
-      justify-content: center;
-      background: var(--navy);
-      color: var(--gold);
-      font-family: 'Archivo Black', sans-serif;
-      font-size: 12px;
-      letter-spacing: 0.5px;
-      line-height: 1;
-    }
-    .qa-evidence-item h4 {
-      margin: 1px 0 7px;
-      color: var(--navy);
-      font-family: 'Archivo Black', sans-serif;
-      font-size: 13px;
-      letter-spacing: 0.8px;
-      line-height: 1.35;
-      text-transform: uppercase;
-    }
-    .qa-evidence-item p {
-      margin: 0;
-      color: #374151;
-      font-size: 14px;
-      line-height: 1.65;
-    }
-    .qa-evidence-item a {
-      color: var(--navy);
-      font-weight: 700;
-      text-decoration-line: underline;
-      text-decoration-color: var(--gold);
-      text-decoration-thickness: 2px;
-      text-underline-offset: 3px;
-      overflow-wrap: anywhere;
-    }
-    .qa-evidence-item a:hover {
-      color: #082d44;
-      text-decoration-thickness: 3px;
-    }
-    .qa-evidence-item a:focus-visible {
-      outline: 3px solid var(--navy);
-      outline-offset: 3px;
-      border-radius: 1px;
-    }
     @media (max-width: 960px) {
       .quick-answer-strip { padding: 64px 5% 72px; }
       .qa-overview {
         grid-template-columns: minmax(0, 1fr);
         gap: 24px;
-        margin-bottom: 42px;
       }
-      .qa-evidence-heading {
-        grid-template-columns: 1fr;
-        gap: 12px;
-        align-items: start;
-      }
-      .qa-evidence-heading p { max-width: 62ch; }
     }
     @media (max-width: 720px) {
       .quick-answer-strip { padding: 54px 5% 60px; }
@@ -685,8 +591,6 @@
         flex-direction: column;
         gap: 7px;
       }
-      .qa-evidence-grid { grid-template-columns: 1fr; gap: 12px; }
-      .qa-evidence-item { padding: 20px 18px 20px 16px; gap: 14px; }
     }
 
     /* ─── TRUST BAR ─── */
@@ -1266,7 +1170,7 @@
 </section>
 
 <!-- ─── VERIFIED UTAH ROOFING STANDARDS ─── -->
-<section class="quick-answer-strip" aria-labelledby="qa-title">
+<section class="quick-answer-strip" aria-labelledby="qa-title" data-home-summary="20260928">
   <div class="qa-inner">
     <div class="qa-overview">
       <div>
@@ -1284,70 +1188,7 @@
       </div>
     </div>
 
-    <div class="qa-evidence" aria-labelledby="qa-evidence-title">
-      <div class="qa-evidence-heading">
-        <h3 id="qa-evidence-title">Utah roofing evidence checks used on every inspection</h3>
-        <p>Licensing, climate, code, and product sources remain visible so homeowners can review the standards behind the roof plan.</p>
-      </div>
-      <ol class="qa-evidence-grid" role="list">
-        <li class="qa-evidence-item">
-          <span class="qa-evidence-number" aria-hidden="true">01</span>
-          <div>
-            <h4>Business identity</h4>
-            <p>Utah <a href="https://dopl.utah.gov/" target="_blank" rel="noopener">DOPL</a> license lookup and Utah <a href="https://commerce.utah.gov/dcp/education/home-improvement/" target="_blank" rel="noopener">home-improvement guidance</a> anchor license, insurance, and written-scope checks.</p>
-          </div>
-        </li>
-        <li class="qa-evidence-item">
-          <span class="qa-evidence-number" aria-hidden="true">02</span>
-          <div>
-            <h4>Weather record</h4>
-            <p>The <a href="https://www.weather.gov/slc/climatebook" target="_blank" rel="noopener">NWS Salt Lake City Climate Book</a> anchors storm timing, freeze-thaw context, and seasonal roof-risk notes.</p>
-          </div>
-        </li>
-        <li class="qa-evidence-item">
-          <span class="qa-evidence-number" aria-hidden="true">03</span>
-          <div>
-            <h4>Snow load</h4>
-            <p>The <a href="https://www.usu.edu/utahsnowload/" target="_blank" rel="noopener">Utah Ground Snow Load Map</a> informs mountain and bench-area roof-load conversations.</p>
-          </div>
-        </li>
-        <li class="qa-evidence-item">
-          <span class="qa-evidence-number" aria-hidden="true">04</span>
-          <div>
-            <h4>Ventilation ratio</h4>
-            <p><a href="https://codes.iccsafe.org/s/IRC2021P3/chapter-8-roof-ceiling-construction/IRC2021P3-Pt03-Ch08-SecR806.2" target="_blank" rel="noopener">IRC R806.2</a> is the baseline for attic ventilation checks before a reroof is closed up.</p>
-          </div>
-        </li>
-        <li class="qa-evidence-item">
-          <span class="qa-evidence-number" aria-hidden="true">05</span>
-          <div>
-            <h4>Ice barrier</h4>
-            <p><a href="https://codes.iccsafe.org/s/IRC2021P3/chapter-9-roof-assemblies/IRC2021P3-Pt03-Ch09-SecR905.1.2" target="_blank" rel="noopener">IRC R905.1.2</a> informs eave, valley, and ice-dam protection details.</p>
-          </div>
-        </li>
-        <li class="qa-evidence-item">
-          <span class="qa-evidence-number" aria-hidden="true">06</span>
-          <div>
-            <h4>Impact rating</h4>
-            <p><a href="https://www.gaf.com/en-us/roofing-materials/residential-roofing-materials/shingles/class-4-shingles" target="_blank" rel="noopener">Class 4 shingle guidance</a> gives homeowners a measurable hail-resistance comparison.</p>
-          </div>
-        </li>
-        <li class="qa-evidence-item">
-          <span class="qa-evidence-number" aria-hidden="true">07</span>
-          <div>
-            <h4>Solar coordination</h4>
-            <p><a href="https://www.energy.gov/eere/solar/homeowners-guide-going-solar" target="_blank" rel="noopener">DOE homeowner solar guidance</a> keeps roof age, penetrations, and warranty coordination in the plan.</p>
-          </div>
-        </li>
-        <li class="qa-evidence-item">
-          <span class="qa-evidence-number" aria-hidden="true">08</span>
-          <div>
-            <h4>Restoration scope</h4>
-            <p><a href="https://www.epa.gov/indoor-air-quality-iaq/resources-flood-cleanup-and-indoor-air-quality" target="_blank" rel="noopener">EPA flood cleanup guidance</a> and <a href="https://www.cdc.gov/mold-health/about/index.html" target="_blank" rel="noopener">CDC mold guidance</a> inform water-intrusion cleanup notes.</p>
-          </div>
-        </li>
-      </ol>
-    </div>
+
   </div>
 </section>
 

@@ -1,13 +1,14 @@
 {
   "schema_version": "1.0",
-  "name": "frame-utah-home-media-source",
+  "name": "frame-utah-home-owner-cleanup",
   "expected_serving_origin": "http://127.0.0.1:4173",
   "expected_canonical_origin": "https://www.framerestorationutah.com",
   "freshness_markers": [
     "utah-form-accessibility-v1",
     "Recent Utah Project Media",
     "utah-july-2026-finished-roof-mountain-close-1600.webp",
-    "wasatch-back-completed-roof-flyover-2026-06.mp4"
+    "wasatch-back-completed-roof-flyover-2026-06.mp4",
+    "data-home-summary=\"20260928\""
   ],
   "max_redirects": 0,
   "min_touch_target_css_px": 44,
@@ -76,7 +77,9 @@
     }
   ],
   "forbidden_visible_selectors": [
-    ".fr-modal-overlay.open"
+    ".fr-modal-overlay.open",
+    ".qa-evidence",
+    ".qa-evidence-grid"
   ],
   "max_console_errors": 0,
   "max_page_errors": 0,
