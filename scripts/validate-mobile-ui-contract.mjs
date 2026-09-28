@@ -21,6 +21,11 @@ const files = {
 };
 
 const failures = [];
+// Landon's September 16 screenshots identified this dense homepage list.
+// Keep it out of the main reading path instead of regenerating it in a later refresh.
+for (const forbidden of ['class="qa-evidence"', 'class="qa-evidence-grid"', 'id="qa-evidence-title"']) {
+  if (files.home.includes(forbidden)) failures.push(`home: removed technical evidence list returned (${forbidden})`);
+}
 function requireNeedle(sourceName, needle, description) {
   if (!files[sourceName].includes(needle)) failures.push(`${sourceName}: ${description}`);
 }

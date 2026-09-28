@@ -129,41 +129,14 @@ try {
       assert(initial.horizontalOverflow <= 1, `${route} has horizontal mobile overflow`);
 
       if (route === "/") {
-        const evidence = await page.evaluate(() => {
-          const grid = document.querySelector(".qa-evidence-grid");
-          const items = [...document.querySelectorAll(".qa-evidence-item")];
-          const links = [...document.querySelectorAll(".qa-evidence-item a")];
-          const firstLinkStyle = links[0] ? getComputedStyle(links[0]) : null;
-          return {
-            gridColumns: grid ? getComputedStyle(grid).gridTemplateColumns : "",
-            items: items.length,
-            links: links.length,
-            externalLinksSafe: links.every(
-              (link) => link.target === "_blank" && link.relList.contains("noopener"),
-            ),
-            linkColor: firstLinkStyle?.color || "",
-            linkDecorationColor: firstLinkStyle?.textDecorationColor || "",
-            linkDecorationLine: firstLinkStyle?.textDecorationLine || "",
-          };
-        });
-        assert.equal(evidence.items, 8, "homepage must render all eight evidence cards");
-        assert(evidence.links >= 8, "homepage evidence sources must remain linked");
-        assert.equal(evidence.externalLinksSafe, true, "evidence links must open safely");
-        assert.equal(
-          evidence.gridColumns.split(" ").length,
-          1,
-          `homepage evidence grid must be one column at ${viewport.width}px`,
-        );
-        assert.equal(evidence.linkColor, "rgb(11, 64, 96)", "evidence links must use Frame navy");
-        assert.equal(
-          evidence.linkDecorationColor,
-          "rgb(225, 185, 105)",
-          "evidence links must use the Frame gold underline",
-        );
-        assert(
-          evidence.linkDecorationLine.includes("underline"),
-          "evidence links must remain visibly identifiable",
-        );
+        const summary = await page.evaluate(() => ({
+          visibleTechnicalCards: document.querySelectorAll(".qa-evidence, .qa-evidence-grid, .qa-evidence-item").length,
+          businessSummary: document.querySelector(".qa-lead")?.textContent.trim() || "",
+          completedProjectMedia: document.querySelectorAll("#fresh-aerials img").length,
+        }));
+        assert.equal(summary.visibleTechnicalCards, 0, "homepage must not bring back Landon's removed technical list");
+        assert(summary.businessSummary.length > 0, "homepage must retain its business summary");
+        assert(summary.completedProjectMedia > 0, "homepage must retain completed project photos");
       }
 
       await page.evaluate(() => window.scrollTo(0, Math.min(1_600, document.documentElement.scrollHeight / 2)));
