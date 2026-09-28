@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 /**
  * Verify that every local static asset referenced by sitemap pages and shared
- * stylesheets exists in the deployment source tree.
+ * stylesheets exists and is included in the deployment. Original brand design
+ * sources stay in Git but must not be part of the hosted output.
  */
 
 import fs from "node:fs";
@@ -9,7 +10,7 @@ import path from "node:path";
 
 const root = process.cwd();
 const productionHost = "www.framerestorationutah.com";
-const assetExtensions = /\.(?:avif|css|gif|ico|jpe?g|js|json|png|svg|webp|woff2?)(?:[?#]|$)/iu;
+const assetExtensions = /\.(?:avif|css|gif|ico|jpe?g|js|json|mp4|png|svg|ttf|webm|webp|woff2?)(?:[?#]|$)/iu;
 const failures = [];
 const generatedFallbackAsset = "images/projects/heber-valley-drone-poster.webp";
 const generatorSources = [
@@ -17,6 +18,45 @@ const generatorSources = [
   "scripts/blog-cron.sh",
   "scripts/blog-publish.py",
 ];
+
+// Match the site's existing public-SEO audit semantics for .vercelignore.
+const ignoreMatchers = fs.readFileSync(path.join(root, ".vercelignore"), "utf8")
+  .split("\n")
+  .map((line) => line.trim())
+  .filter((line) => line && !line.startsWith("#"))
+  .map((line) => {
+    const neg = line.startsWith("!");
+    const pattern = (neg ? line.slice(1) : line).replace(/^\//u, "");
+    const isDir = pattern.endsWith("/");
+    const base = isDir ? pattern.slice(0, -1) : pattern;
+    const expression = base.replace(/[.+^${}()|[\]\\]/gu, "\\$&")
+      .replace(/\*/gu, "[^/]*").replace(/\?/gu, ".");
+    return {
+      neg,
+      isDir,
+      hasSlash: pattern.includes("/") && !isDir,
+      re: new RegExp(`^${expression}${isDir ? "(/|$)" : "$"}`, "u"),
+    };
+  });
+
+function isDeployed(relative) {
+  let ignored = false;
+  for (const matcher of ignoreMatchers) {
+    const target = matcher.hasSlash || matcher.isDir ? relative : path.basename(relative);
+    if (matcher.re.test(target)) ignored = !matcher.neg;
+  }
+  return !ignored;
+}
+
+function auditOriginalDesignSources(directory) {
+  for (const entry of fs.readdirSync(path.join(root, directory), { withFileTypes: true })) {
+    const relative = `${directory}/${entry.name}`;
+    if (entry.isDirectory()) auditOriginalDesignSources(relative);
+    else if (isDeployed(relative)) failures.push(`Original design source would be deployed: /${relative}`);
+  }
+}
+
+auditOriginalDesignSources("images/brand-source");
 
 function localPageForUrl(value) {
   const url = new URL(value);
@@ -64,6 +104,8 @@ function scan(sourceRel) {
       failures.push(`${sourceRel} references an asset outside the site root: ${value}`);
     } else if (!fs.existsSync(absolute) || !fs.statSync(absolute).isFile()) {
       failures.push(`${sourceRel} references missing asset /${localRel}`);
+    } else if (!isDeployed(localRel)) {
+      failures.push(`${sourceRel} references an asset excluded from deployment: /${localRel}`);
     }
   }
   return seen.size;
@@ -88,7 +130,7 @@ for (const source of generatorSources) {
 
 if (failures.length) {
   for (const failure of failures) console.error(`::error::${failure}`);
-  console.error(`Static asset audit failed: ${failures.length} missing reference(s)`);
+  console.error(`Static asset audit failed: ${failures.length} deployment issue(s)`);
   process.exit(1);
 }
 
