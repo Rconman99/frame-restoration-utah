@@ -200,7 +200,13 @@
       },
       {
         "file": "index.html",
-        "sha256": "98a90dda33af7aacaa708e281027bcf75b10c1cb16c6f2b25f7afa480dd864bd",
+        "sha256": "a6fcea13dfbbfc0851024d66af215d894861002e53118cc37ab8b018ee8bac76",
+        "deploymentAssetSourceAmendment": {
+          "observedAt": "2026-09-28T23:49:16.343497Z",
+          "priorSha256": "98a90dda33af7aacaa708e281027bcf75b10c1cb16c6f2b25f7afa480dd864bd",
+          "reason": "Supporting homepage byte pin only: adds a nonvisual deployment-asset freshness meta tag for the brand-source exclusion. No visible copy, links, media, title, H1, canonical, schema, historical ranking/GSC observations or experiment authorization changed.",
+          "reviewRequiredBeforeMerge": true
+        },
       "ownerCleanupSourceAmendment": {
         "observedAt": "2026-09-28T16:42:26.498141+00:00",
         "priorSha256": "8afca2ace1bc40372e0d6936fd655146a0d96b6d1b08afa17b7a074ea8b4aa9e",
