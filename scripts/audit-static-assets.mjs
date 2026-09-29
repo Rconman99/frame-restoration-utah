@@ -27,7 +27,10 @@ const generatorSources = [
 // Use Git's ignore engine in a disposable repository containing only these rules.
 // This preserves globstar, nested-directory and parent-negation semantics without
 // inheriting this checkout's .gitignore, global excludes, or tracked-file status.
+// Match the case-sensitive Linux deployment paths on every developer platform.
 function ignoredDeploymentFiles(files) {
+  files = [...new Set(files)];
+  if (!files.length) return new Set();
   const fixture = fs.mkdtempSync(path.join(os.tmpdir(), "frame-vercel-ignore-"));
   const env = { ...process.env, GIT_CONFIG_GLOBAL: os.devNull, GIT_CONFIG_NOSYSTEM: "1" };
   for (const key of ["GIT_DIR", "GIT_WORK_TREE", "GIT_INDEX_FILE", "GIT_COMMON_DIR"]) delete env[key];
@@ -35,8 +38,8 @@ function ignoredDeploymentFiles(files) {
     execFileSync("git", ["init", "--quiet", "--template=", fixture], { env });
     fs.copyFileSync(path.join(root, ".vercelignore"), path.join(fixture, ".gitignore"));
     const result = spawnSync("git", ["-C", fixture, "-c", `core.excludesFile=${os.devNull}`,
-      "check-ignore", "--no-index", "--stdin", "-z"], {
-      input: [...new Set(files)].join("\0") + "\0", encoding: "utf8", env,
+      "-c", "core.ignoreCase=false", "check-ignore", "--no-index", "--stdin", "-z"], {
+      input: files.join("\0") + "\0", encoding: "utf8", env,
     });
     if (result.error || ![0, 1].includes(result.status)) {
       throw new Error(`Deployment ignore evaluation failed: ${result.error?.message || result.stderr}`);
@@ -48,6 +51,7 @@ function ignoredDeploymentFiles(files) {
 }
 
 function auditOriginalDesignSources(directory) {
+  if (!fs.existsSync(path.join(root, directory))) return;
   for (const entry of fs.readdirSync(path.join(root, directory), { withFileTypes: true })) {
     const relative = `${directory}/${entry.name}`;
     if (entry.isDirectory()) auditOriginalDesignSources(relative);

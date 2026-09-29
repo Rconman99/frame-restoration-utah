@@ -22,6 +22,7 @@ function run({ rules = "images/brand-source/\n", html = "", files = {} } = {}) {
       ...files,
     };
     for (const [name, content] of Object.entries(fixtures)) {
+      if (content === null) continue;
       fs.mkdirSync(path.dirname(path.join(root, name)), { recursive: true });
       fs.writeFileSync(path.join(root, name), content);
     }
@@ -64,4 +65,14 @@ test("a valid file exception that exposes a design is rejected", () => {
   const result = run({ rules: "images/brand-source/*\n!images/brand-source/original.eps\n" });
   assert.equal(result.status, 1);
   assert.match(result.stderr, /Original design source would be deployed/);
+});
+
+test("an absent original-design folder and empty reference set are valid", () => {
+  const result = run({ files: { "images/brand-source/original.eps": null } });
+  assert.equal(result.status, 0, result.stderr);
+});
+test("ignore matching uses Linux case sensitivity on every platform", () => {
+  const result = run({ rules: "images/brand-source/\nassets/private/\n",
+    html: '<img src="/assets/Private/logo.png">', files: { "assets/Private/logo.png": "image" } });
+  assert.equal(result.status, 0, result.stderr);
 });
