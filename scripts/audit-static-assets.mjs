@@ -7,10 +7,15 @@
 
 import fs from "node:fs";
 import path from "node:path";
+import os from "node:os";
+import { execFileSync, spawnSync } from "node:child_process";
 
 const root = process.cwd();
 const productionHost = "www.framerestorationutah.com";
-const assetExtensions = /\.(?:avif|css|gif|ico|jpe?g|js|json|mp4|png|svg|ttf|webm|webp|woff2?)(?:[?#]|$)/iu;
+// Recognize extensions beyond web media, including original designs and documents.
+const assetExtensions = /\.[a-z0-9]*[a-z][a-z0-9]*(?:[?#]|$)/iu;
+const originalDesignSources = [];
+const referencedAssets = new Map();
 const failures = [];
 const generatedFallbackAsset = "images/projects/heber-valley-drone-poster.webp";
 const generatorSources = [
@@ -19,40 +24,34 @@ const generatorSources = [
   "scripts/blog-publish.py",
 ];
 
-// Match the site's existing public-SEO audit semantics for .vercelignore.
-const ignoreMatchers = fs.readFileSync(path.join(root, ".vercelignore"), "utf8")
-  .split("\n")
-  .map((line) => line.trim())
-  .filter((line) => line && !line.startsWith("#"))
-  .map((line) => {
-    const neg = line.startsWith("!");
-    const pattern = (neg ? line.slice(1) : line).replace(/^\//u, "");
-    const isDir = pattern.endsWith("/");
-    const base = isDir ? pattern.slice(0, -1) : pattern;
-    const expression = base.replace(/[.+^${}()|[\]\\]/gu, "\\$&")
-      .replace(/\*/gu, "[^/]*").replace(/\?/gu, ".");
-    return {
-      neg,
-      isDir,
-      hasSlash: pattern.includes("/") && !isDir,
-      re: new RegExp(`^${expression}${isDir ? "(/|$)" : "$"}`, "u"),
-    };
-  });
-
-function isDeployed(relative) {
-  let ignored = false;
-  for (const matcher of ignoreMatchers) {
-    const target = matcher.hasSlash || matcher.isDir ? relative : path.basename(relative);
-    if (matcher.re.test(target)) ignored = !matcher.neg;
+// Use Git's ignore engine in a disposable repository containing only these rules.
+// This preserves globstar, nested-directory and parent-negation semantics without
+// inheriting this checkout's .gitignore, global excludes, or tracked-file status.
+function ignoredDeploymentFiles(files) {
+  const fixture = fs.mkdtempSync(path.join(os.tmpdir(), "frame-vercel-ignore-"));
+  const env = { ...process.env, GIT_CONFIG_GLOBAL: os.devNull, GIT_CONFIG_NOSYSTEM: "1" };
+  for (const key of ["GIT_DIR", "GIT_WORK_TREE", "GIT_INDEX_FILE", "GIT_COMMON_DIR"]) delete env[key];
+  try {
+    execFileSync("git", ["init", "--quiet", "--template=", fixture], { env });
+    fs.copyFileSync(path.join(root, ".vercelignore"), path.join(fixture, ".gitignore"));
+    const result = spawnSync("git", ["-C", fixture, "-c", `core.excludesFile=${os.devNull}`,
+      "check-ignore", "--no-index", "--stdin", "-z"], {
+      input: [...new Set(files)].join("\0") + "\0", encoding: "utf8", env,
+    });
+    if (result.error || ![0, 1].includes(result.status)) {
+      throw new Error(`Deployment ignore evaluation failed: ${result.error?.message || result.stderr}`);
+    }
+    return new Set(result.stdout.split("\0").filter(Boolean));
+  } finally {
+    fs.rmSync(fixture, { recursive: true, force: true });
   }
-  return !ignored;
 }
 
 function auditOriginalDesignSources(directory) {
   for (const entry of fs.readdirSync(path.join(root, directory), { withFileTypes: true })) {
     const relative = `${directory}/${entry.name}`;
     if (entry.isDirectory()) auditOriginalDesignSources(relative);
-    else if (isDeployed(relative)) failures.push(`Original design source would be deployed: /${relative}`);
+    else originalDesignSources.push(relative);
   }
 }
 
@@ -69,9 +68,9 @@ function localPageForUrl(value) {
 
 function localAssetForToken(rawToken, sourceRel) {
   const token = rawToken.trim().replaceAll("&amp;", "&");
-  if (!assetExtensions.test(token)) return null;
-  if (/^https?:\/\//iu.test(token)) {
-    const url = new URL(token);
+  if (!assetExtensions.test(token) || /^(?:data:|blob:|mailto:|tel:|sms:|#)/iu.test(token)) return null;
+  if (/^(?:https?:)?\/\//iu.test(token)) {
+    const url = new URL(token, `https://${productionHost}`);
     if (url.hostname !== productionHost && url.hostname !== `framerestorationutah.com`) return null;
     return decodeURIComponent(url.pathname).replace(/^\/+/, "");
   }
@@ -104,8 +103,10 @@ function scan(sourceRel) {
       failures.push(`${sourceRel} references an asset outside the site root: ${value}`);
     } else if (!fs.existsSync(absolute) || !fs.statSync(absolute).isFile()) {
       failures.push(`${sourceRel} references missing asset /${localRel}`);
-    } else if (!isDeployed(localRel)) {
-      failures.push(`${sourceRel} references an asset excluded from deployment: /${localRel}`);
+    } else {
+      const owners = referencedAssets.get(localRel) || new Set();
+      owners.add(sourceRel);
+      referencedAssets.set(localRel, owners);
     }
   }
   return seen.size;
@@ -125,6 +126,16 @@ for (const source of generatorSources) {
   const text = fs.readFileSync(path.join(root, source), "utf8");
   if (text.includes("/images/projects/cities/heber-valley-drone-poster.webp")) {
     failures.push(`${source} would regenerate the retired /images/projects/cities fallback path`);
+  }
+}
+
+const ignored = ignoredDeploymentFiles([...originalDesignSources, ...referencedAssets.keys()]);
+for (const file of originalDesignSources) {
+  if (!ignored.has(file)) failures.push(`Original design source would be deployed: /${file}`);
+}
+for (const [file, sources] of referencedAssets) {
+  if (ignored.has(file)) {
+    for (const source of sources) failures.push(`${source} references an asset excluded from deployment: /${file}`);
   }
 }
 
