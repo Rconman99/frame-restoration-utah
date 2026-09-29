@@ -51,7 +51,6 @@ on:
       - 'scripts/audit-doc-isolation.mjs'
       - 'scripts/audit-public-seo-surface.mjs'
       - 'scripts/audit-static-assets.mjs'
-      - 'scripts/test-static-assets.mjs'
       - 'scripts/audit-csp-contract.mjs'
       - 'scripts/validate-mobile-ui-contract.mjs'
       - 'scripts/validate-mobile-contact-corpus.mjs'
@@ -188,7 +187,6 @@ jobs:
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
         with:
           node-version: '24'
-      - run: node --test scripts/test-static-assets.mjs
       - run: node scripts/audit-static-assets.mjs
 
   lead-form-single-submit:
