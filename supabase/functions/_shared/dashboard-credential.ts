@@ -34,7 +34,8 @@ export async function hashDashboardPin(
   if (!dashboardCredentialPepperReady(pepper)) {
     throw new Error("credential_pepper_invalid");
   }
-  if (!legacyPinCandidate(pin)) throw new Error("credential_invalid");
+  const passwordCandidate = Array.from(pin).length >= 12 && encoder.encode(pin).byteLength <= 72 && pin.trim().length > 0;
+  if (!legacyPinCandidate(pin) && !passwordCandidate) throw new Error("credential_invalid");
   const key = await crypto.subtle.importKey(
     "raw",
     encoder.encode(pepper),
