@@ -121,6 +121,21 @@ Deno.test("weekly-report freezes one interval and paginates operational rows", (
   );
 });
 
+Deno.test("weekly-report does not publish the retired cross-grain conversion KPI", () => {
+  assert(
+    !source.includes("conversion_rate_pct"),
+    "legacy conversion field is still published",
+  );
+  assert(
+    !/realLeads\.length\s*\+\s*completedCalls\.length/.test(source),
+    "lead rows and completed calls are still combined as one numerator",
+  );
+  assert(
+    source.includes("metric_definitions: REPORT_METRIC_DEFINITIONS"),
+    "metric definitions are not included with the report",
+  );
+});
+
 Deno.test("traffic snapshot login keeps PIN and token out of request URLs", () => {
   for (
     const forbidden of [
