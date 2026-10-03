@@ -240,6 +240,42 @@
       "mirrors": [],
       "allowedSurfaces": ["visible-copy", "structured-data", "directory-packet", "content-generator"],
       "prohibitedVariants": ["BBB A+", "A+ BBB", "BBB A-", "A- BBB"]
+    },
+    {
+      "id": "operations.water_flood_emergency_24_7",
+      "label": "24/7 emergency response scope",
+      "value": "24/7 on-call emergency response applies only to water damage and flood restoration. Roofing, emergency tarping, fire and smoke, mold, siding, solar, and gutter work follow published business hours (Mon-Fri 8am-7pm, Sat 8am-6pm, Sun closed).",
+      "status": "verified",
+      "verifiedBy": "owner-confirmation",
+      "verifiedOn": "2026-10-03",
+      "expiresOn": "2027-01-03",
+      "evidence": [
+        {
+          "kind": "local-file",
+          "path": "data/authority/UTAH-SERVICE-SCOPE-OWNER-CONFIRMATION-2026-10-03.md"
+        }
+      ],
+      "mirrors": [],
+      "allowedSurfaces": ["visible-copy", "structured-data", "directory-packet"],
+      "prohibitedVariants": ["24/7 roofing", "24/7 tarping", "24/7 storm line", "24/7 fire"]
+    },
+    {
+      "id": "operations.service_scope",
+      "label": "Offered and excluded service lines",
+      "value": "Offered: roofing, water damage and flood restoration, fire and smoke damage restoration, mold remediation, siding, solar, gutters. Not offered: sewage/Category 3 cleanup, kitchen and bathroom remodels.",
+      "status": "verified",
+      "verifiedBy": "owner-confirmation",
+      "verifiedOn": "2026-10-03",
+      "expiresOn": "2027-01-03",
+      "evidence": [
+        {
+          "kind": "local-file",
+          "path": "data/authority/UTAH-SERVICE-SCOPE-OWNER-CONFIRMATION-2026-10-03.md"
+        }
+      ],
+      "mirrors": [],
+      "allowedSurfaces": ["visible-copy", "structured-data", "directory-packet"],
+      "prohibitedVariants": ["sewage cleanup services", "kitchen remodel", "bathroom remodel"]
     }
   ],
   "services": [
@@ -282,6 +318,31 @@
       "name": "Licensed Wasatch Front roofer",
       "path": "/pages/licensed-roofer-wasatch-front",
       "sourceFile": "pages/licensed-roofer-wasatch-front.html"
+    },
+    {
+      "name": "Water damage restoration",
+      "path": "/pages/water-damage-restoration",
+      "sourceFile": "pages/water-damage-restoration.html"
+    },
+    {
+      "name": "Flooded basement and flood cleanup",
+      "path": "/pages/flood-cleanup",
+      "sourceFile": "pages/flood-cleanup.html"
+    },
+    {
+      "name": "Fire and smoke damage restoration",
+      "path": "/pages/fire-damage-restoration",
+      "sourceFile": "pages/fire-damage-restoration.html"
+    },
+    {
+      "name": "Mold remediation",
+      "path": "/pages/mold-remediation",
+      "sourceFile": "pages/mold-remediation.html"
+    },
+    {
+      "name": "Siding replacement and repair",
+      "path": "/pages/siding",
+      "sourceFile": "pages/siding.html"
     }
   ],
   "surfacePolicy": {
