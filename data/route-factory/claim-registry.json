@@ -243,8 +243,8 @@
     },
     {
       "id": "operations.water_flood_emergency_24_7",
-      "label": "24/7 emergency response scope",
-      "value": "24/7 on-call emergency response applies only to water damage and flood restoration. Roofing, emergency tarping, fire and smoke, mold, siding, solar, and gutter work follow published business hours (Mon-Fri 8am-7pm, Sat 8am-6pm, Sun closed).",
+      "label": "24/7 water and flood emergency response",
+      "value": "24/7 on-call emergency response covers water damage and flood restoration. Emergency tarping and storm response are also 24/7 (see operations.storm_tarping_emergency_24_7). Routine roofing, fire and smoke, mold, siding, solar, and gutter work follow published business hours (Mon-Fri 8am-7pm, Sat 8am-6pm, Sun closed).",
       "status": "verified",
       "verifiedBy": "owner-confirmation",
       "verifiedOn": "2026-10-03",
@@ -257,12 +257,12 @@
       ],
       "mirrors": [],
       "allowedSurfaces": ["visible-copy", "structured-data", "directory-packet"],
-      "prohibitedVariants": ["24/7 roofing", "24/7 tarping", "24/7 storm line", "24/7 fire"]
+      "prohibitedVariants": ["24/7 roofing", "24/7 roof replacement", "24/7 fire", "24/7 mold"]
     },
     {
       "id": "operations.service_scope",
       "label": "Offered and excluded service lines",
-      "value": "Offered: roofing, water damage and flood restoration, fire and smoke damage restoration, mold remediation, siding, solar, gutters. Not offered: sewage/Category 3 cleanup, kitchen and bathroom remodels.",
+      "value": "Offered: roofing, emergency roof tarping and storm response, water damage and flood restoration, fire and smoke damage restoration, mold remediation, siding, solar, gutters, and general contracting (home additions and build-outs, decks, and exterior work). Not offered: sewage/Category 3 cleanup, kitchen and bathroom remodels.",
       "status": "verified",
       "verifiedBy": "owner-confirmation",
       "verifiedOn": "2026-10-03",
@@ -276,6 +276,60 @@
       "mirrors": [],
       "allowedSurfaces": ["visible-copy", "structured-data", "directory-packet"],
       "prohibitedVariants": ["sewage cleanup services", "kitchen remodel", "bathroom remodel"]
+    },
+    {
+      "id": "operations.storm_tarping_emergency_24_7",
+      "label": "24/7 emergency tarping and storm response",
+      "value": "Emergency roof tarping and storm-damage response are available 24/7 on-call at 435-292-8802, subject to crew availability, weather, and safety conditions. Routine roofing repair, replacement, inspections, and estimates follow published business hours.",
+      "status": "verified",
+      "verifiedBy": "owner-confirmation",
+      "verifiedOn": "2026-10-03",
+      "expiresOn": "2027-01-03",
+      "evidence": [
+        {
+          "kind": "local-file",
+          "path": "data/authority/UTAH-SERVICE-SCOPE-OWNER-CONFIRMATION-2026-10-03.md"
+        }
+      ],
+      "mirrors": [],
+      "allowedSurfaces": ["visible-copy", "structured-data", "directory-packet"],
+      "prohibitedVariants": ["24/7 roofing", "24/7 roof replacement", "24/7 inspections"]
+    },
+    {
+      "id": "credentials.iicrc_certification",
+      "label": "IICRC certification",
+      "value": "Frame Restoration Utah's restoration work is performed by an IICRC-certified team (owner-confirmed).",
+      "status": "verified",
+      "verifiedBy": "owner-confirmation",
+      "verifiedOn": "2026-10-03",
+      "expiresOn": "2027-01-03",
+      "evidence": [
+        {
+          "kind": "local-file",
+          "path": "data/authority/UTAH-SERVICE-SCOPE-OWNER-CONFIRMATION-2026-10-03.md"
+        }
+      ],
+      "mirrors": [],
+      "allowedSurfaces": ["visible-copy", "structured-data", "directory-packet"],
+      "prohibitedVariants": ["IICRC-certified roofing", "IICRC-approved company"]
+    },
+    {
+      "id": "operations.general_contracting_additions_decks",
+      "label": "General contracting: additions and decks",
+      "value": "General contracting includes home additions and build-outs, decks, and exterior work, coordinated with the roof. Kitchen and bathroom remodels are not offered.",
+      "status": "verified",
+      "verifiedBy": "owner-confirmation",
+      "verifiedOn": "2026-10-03",
+      "expiresOn": "2027-01-03",
+      "evidence": [
+        {
+          "kind": "local-file",
+          "path": "data/authority/UTAH-SERVICE-SCOPE-OWNER-CONFIRMATION-2026-10-03.md"
+        }
+      ],
+      "mirrors": [],
+      "allowedSurfaces": ["visible-copy", "structured-data", "directory-packet"],
+      "prohibitedVariants": ["kitchen remodel", "bathroom remodel", "full home renovations"]
     }
   ],
   "services": [
