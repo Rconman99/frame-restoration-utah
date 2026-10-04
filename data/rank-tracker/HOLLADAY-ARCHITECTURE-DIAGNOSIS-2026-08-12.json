@@ -191,7 +191,15 @@
       },
       {
         "file": "locations/salt-lake-city.html",
-        "sha256": "5ede1bf36700ba357b26387207dc17ffda8076b623b4212c2ea2c1797979261d",
+        "sha256": "80c44281df689b95bc0e04bde9a3afbe55cb1638528bafe4f80d716bca77ec52",
+        "batch1aCityServiceSourceAmendment": {
+          "observedAt": "2026-10-04T04:50:00Z",
+          "priorSha256": "5ede1bf36700ba357b26387207dc17ffda8076b623b4212c2ea2c1797979261d",
+          "priorInboundInternalLinks": 81,
+          "currentInboundInternalLinks": 83,
+          "reason": "Supporting SLC hub byte and inbound pin only: the existing 24/7 scope sentence gains one link to the new /locations/salt-lake-city/storm-damage child (no new 24/7 wording). New Batch 1a child pages (Salt Lake City, West Jordan, South Jordan storm damage; West Jordan water damage) add breadcrumb/resource links to the SLC hub. Title, H1, canonical, schema, identity override and historical ranking/GSC observations, Holladay diagnosis and held experiment are unchanged. Not new ranking evidence or experiment authorization.",
+          "reviewRequiredBeforeMerge": true
+        },
         "restorationScopeSourceAmendment": {
           "observedAt": "2026-10-03T19:20:00Z",
           "priorSha256": "9c247843f17ee6e2e12b118bf8c8a5b05bd291fb4d029afba59daae755f952c8",
@@ -204,7 +212,7 @@
         "title": "Salt Lake City Roof Repair &amp; Replacement | Frame Restoration Utah",
         "h1": "Salt Lake City Roof Repair &amp; Replacement",
         "canonical": "https://www.framerestorationutah.com/locations/salt-lake-city",
-        "inboundInternalLinks": 81
+        "inboundInternalLinks": 83
       },
       {
         "file": "index.html",

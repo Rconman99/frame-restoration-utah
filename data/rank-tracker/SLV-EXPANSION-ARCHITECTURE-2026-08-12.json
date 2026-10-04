@@ -12,7 +12,7 @@
     },
     "priority": {
       "file": "data/rank-tracker/SLV-EXPANSION-PRIORITY-2026-08-12.json",
-      "sha256": "670e1d4ba53fb255ecaf868f8cac46c5d321a4bf0502df997b24e30fb2bb84a6"
+      "sha256": "2050353bd79afd4acbeaf603287c6642bfcf1bda44417eb9334518d29e956d03"
     },
     "integrity": {
       "file": "data/authority/SLV-EXPANSION-INTEGRITY-AUDIT-2026-08-12.json",
@@ -20,7 +20,7 @@
     },
     "gscAttribution": {
       "file": "data/rank-tracker/SLV-GSC-URL-ATTRIBUTION-LATEST.json",
-      "sha256": "94ce2f37c4061c5feebe5d7e1da39ca82bc172a631577cb1d5b7e5efc2039540"
+      "sha256": "ba0fd18b90542b9b758a06113a44069c990b91a1f4b6151d0f9720978a17a6bf"
     },
     "displacement": {
       "file": "data/rank-tracker/SLV-COMPETITOR-DISPLACEMENT-2026-08-12.json",
@@ -30,8 +30,8 @@
   "summary": {
     "cities": 12,
     "fixedQueries": 48,
-    "routesPinned": 23,
-    "relatedRoutesProtected": 11,
+    "routesPinned": 26,
+    "relatedRoutesProtected": 14,
     "targetedGscQueriesRequested": 48,
     "targetedGscRowsReturned": 15,
     "citiesWithCurrentCannibalizationEvidenced": 0,
@@ -40,7 +40,7 @@
   "globalDecision": [
     "All 48 expansion queries have a fixed mobile baseline; the intended main city page is selected for every measured Frame organic result.",
     "The latest measured GSC snapshot requested all 72 fixed queries; unreturned rows remain withheld or absent row evidence, not zero demand.",
-    "Preserve all 12 city hubs and all 11 related city-service/editorial routes; no current evidence supports redirects, canonical changes, noindex, deletion, or bulk service-page generation.",
+    "Preserve all 12 city hubs and all 14 related city-service/editorial routes; no current evidence supports redirects, canonical changes, noindex, deletion, or bulk service-page generation.",
     "Keep refreshing exact-query attribution in the daily SEO loop; diagnose any normalized alternate URL against routing and timing before a ranking-intent experiment.",
     "Integrity cleanup is a separate owner-approved variable and must precede any title/H1/architecture experiment."
   ],
@@ -187,7 +187,7 @@
             "title": "Premium Reroofing Kearns UT | Frame Restoration Utah",
             "h1": "Premium Reroofing in Kearns",
             "canonical": "https://www.framerestorationutah.com/locations/kearns",
-            "inboundInternalLinks": 4,
+            "inboundInternalLinks": 5,
             "role": "commercial-city-hub",
             "aggregateGsc": {
               "window": {
@@ -396,7 +396,7 @@
             "title": "Premium Reroofing Riverton UT | Frame Restoration Utah",
             "h1": "Premium Reroofing in Riverton",
             "canonical": "https://www.framerestorationutah.com/locations/riverton",
-            "inboundInternalLinks": 7,
+            "inboundInternalLinks": 8,
             "role": "commercial-city-hub",
             "aggregateGsc": {
               "window": {
@@ -490,7 +490,7 @@
       "architecture": {
         "currentCommercialCannibalization": "not-evidenced-all-four-fixed-serps-select-main",
         "confidence": "moderate-exact-query-request-complete",
-        "routeCount": 3,
+        "routeCount": 4,
         "routes": [
           {
             "file": "locations/south-jordan.html",
@@ -498,7 +498,7 @@
             "title": "Premium Reroofing South Jordan UT | Frame Restoration Utah",
             "h1": "Premium Reroofing in South Jordan",
             "canonical": "https://www.framerestorationutah.com/locations/south-jordan",
-            "inboundInternalLinks": 16,
+            "inboundInternalLinks": 18,
             "role": "commercial-city-hub",
             "aggregateGsc": {
               "window": {
@@ -547,6 +547,17 @@
               "impressions": 15,
               "position": 4.1
             },
+            "decision": "Protect this route until exact query-to-URL evidence supports a bounded architecture change."
+          },
+          {
+            "file": "locations/south-jordan/storm-damage.html",
+            "sha256": "c67d4ee151b7c9c6cc9062abb4b9530434e514d7996a1eb6577a1d54eec0feeb",
+            "title": "South Jordan Storm &amp; Hail Roof Repair | Frame Restoration Utah",
+            "h1": "Storm and Hail Damage Roof Repair in South Jordan",
+            "canonical": "https://www.framerestorationutah.com/locations/south-jordan/storm-damage",
+            "inboundInternalLinks": 2,
+            "role": "city-service-child",
+            "aggregateGsc": null,
             "decision": "Protect this route until exact query-to-URL evidence supports a bounded architecture change."
           }
         ],
@@ -619,7 +630,7 @@
             "title": "Premium Reroofing Taylorsville UT | Frame Restoration Utah",
             "h1": "Premium Reroofing in Taylorsville",
             "canonical": "https://www.framerestorationutah.com/locations/taylorsville",
-            "inboundInternalLinks": 7,
+            "inboundInternalLinks": 9,
             "role": "commercial-city-hub",
             "aggregateGsc": {
               "window": {
@@ -898,7 +909,7 @@
             "title": "Premium Reroofing Herriman UT | Frame Restoration Utah",
             "h1": "Premium Reroofing in Herriman",
             "canonical": "https://www.framerestorationutah.com/locations/herriman",
-            "inboundInternalLinks": 10,
+            "inboundInternalLinks": 11,
             "role": "commercial-city-hub",
             "aggregateGsc": {
               "window": {
@@ -1000,7 +1011,7 @@
             "title": "Premium Reroofing West Valley City UT | Frame Restoration Utah",
             "h1": "Premium Reroofing in West Valley City",
             "canonical": "https://www.framerestorationutah.com/locations/west-valley-city",
-            "inboundInternalLinks": 9,
+            "inboundInternalLinks": 10,
             "role": "commercial-city-hub",
             "aggregateGsc": {
               "window": {
@@ -1177,7 +1188,7 @@
       "architecture": {
         "currentCommercialCannibalization": "not-evidenced-bounded-panel-selects-main-when-ranked-and-exact-gsc-unmeasured",
         "confidence": "low-until-targeted-gsc",
-        "routeCount": 2,
+        "routeCount": 4,
         "routes": [
           {
             "file": "locations/west-jordan.html",
@@ -1185,7 +1196,7 @@
             "title": "Premium Reroofing West Jordan UT | Frame Restoration Utah",
             "h1": "Premium Reroofing in West Jordan",
             "canonical": "https://www.framerestorationutah.com/locations/west-jordan",
-            "inboundInternalLinks": 19,
+            "inboundInternalLinks": 23,
             "role": "commercial-city-hub",
             "aggregateGsc": {
               "window": {
@@ -1206,6 +1217,28 @@
             "canonical": "https://www.framerestorationutah.com/blog/west-jordan/roof-leak-after-rainstorm",
             "inboundInternalLinks": 6,
             "role": "city-editorial-guide",
+            "aggregateGsc": null,
+            "decision": "Protect this route until exact query-to-URL evidence supports a bounded architecture change."
+          },
+          {
+            "file": "locations/west-jordan/storm-damage.html",
+            "sha256": "0e74b6a9dca10e9e1b6c5c132d6fe43bd34034ea0ed72eb6ef9783a679fd6530",
+            "title": "West Jordan Storm &amp; Hail Roof Repair | Frame Restoration Utah",
+            "h1": "Storm and Hail Damage Roof Repair in West Jordan",
+            "canonical": "https://www.framerestorationutah.com/locations/west-jordan/storm-damage",
+            "inboundInternalLinks": 5,
+            "role": "city-service-child",
+            "aggregateGsc": null,
+            "decision": "Protect this route until exact query-to-URL evidence supports a bounded architecture change."
+          },
+          {
+            "file": "locations/west-jordan/water-damage.html",
+            "sha256": "4a6b2c807833fabab601fce75a72cc2a8b00305393a2df52809c88c785b809ac",
+            "title": "West Jordan Water Damage Restoration, 24/7 | Frame Restoration Utah",
+            "h1": "Water Damage Restoration in West Jordan",
+            "canonical": "https://www.framerestorationutah.com/locations/west-jordan/water-damage",
+            "inboundInternalLinks": 2,
+            "role": "city-service-child",
             "aggregateGsc": null,
             "decision": "Protect this route until exact query-to-URL evidence supports a bounded architecture change."
           }
