@@ -90,11 +90,18 @@
       {
         "file": "locations/draper.html",
         "sha256": "8c8a5f7a9d9f0894640ef2578bc4b175422b24f31f0e990857dd0611b2672d16",
+        "batch1bCityServiceSourceAmendment": {
+          "observedAt": "2026-10-04T17:30:00Z",
+          "priorInboundInternalLinks": 49,
+          "currentInboundInternalLinks": 50,
+          "reason": "Supporting source and inbound pin only: Batch 1b city service pages (Sandy, Provo, Millcreek and Orem water damage; Salt Lake City siding) add breadcrumb, resource and nearby links, and the parent hubs gain one plain link sentence to their new child (no 24/7, pricing, permit or identity wording on the hubs). Title, H1, canonical, schema, identity and historical ranking/GSC observations, diagnoses and held experiments are unchanged. Not new ranking evidence or experiment authorization.",
+          "reviewRequiredBeforeMerge": true
+        },
         "role": "commercial-city-hub",
         "title": "Premium Reroofing Draper UT | Frame Restoration Utah",
         "h1": "Premium Reroofing in Draper",
         "canonical": "https://www.framerestorationutah.com/locations/draper",
-        "inboundInternalLinks": 49,
+        "inboundInternalLinks": 50,
         "visibleTermCounts": {
           "roofer": 0,
           "roofing contractor": 0,
@@ -133,7 +140,7 @@
     ],
     "integrityGate": {
       "packet": "data/authority/SLV-CITY-PUBLIC-REMEDIATION-PACKET-2026-08-12.json",
-      "packetSha256": "b1616942e2e46f33a847d75a9fc75a084585983c91f444ade1ebd84d11b69333",
+      "packetSha256": "123a0b9abdf44c39ecd0844cc3f0faea3fa25b323ce3def94cbab1e2666ab4a3",
       "draperBlockingFindingClasses": 6,
       "draperProvisionalWarnings": 1,
       "cleanupStatus": "awaiting-explicit-owner-approval"

@@ -157,11 +157,18 @@
       {
         "file": "locations/holladay.html",
         "sha256": "791bd58c2a8c1bb9c42d65b4687863fae05126b9eaea0f053eca76a0ca0de0e0",
+        "batch1bCityServiceSourceAmendment": {
+          "observedAt": "2026-10-04T17:30:00Z",
+          "priorInboundInternalLinks": 14,
+          "currentInboundInternalLinks": 15,
+          "reason": "Supporting source and inbound pin only: Batch 1b city service pages (Sandy, Provo, Millcreek and Orem water damage; Salt Lake City siding) add breadcrumb, resource and nearby links, and the parent hubs gain one plain link sentence to their new child (no 24/7, pricing, permit or identity wording on the hubs). Title, H1, canonical, schema, identity and historical ranking/GSC observations, diagnoses and held experiments are unchanged. Not new ranking evidence or experiment authorization.",
+          "reviewRequiredBeforeMerge": true
+        },
         "role": "commercial-city-hub",
         "title": "Premium Reroofing Holladay UT | Frame Restoration Utah",
         "h1": "Premium Reroofing in Holladay",
         "canonical": "https://www.framerestorationutah.com/locations/holladay",
-        "inboundInternalLinks": 14,
+        "inboundInternalLinks": 15,
         "visibleTermCounts": {
           "roofer": 0,
           "roofing contractor": 0,
@@ -191,7 +198,15 @@
       },
       {
         "file": "locations/salt-lake-city.html",
-        "sha256": "80c44281df689b95bc0e04bde9a3afbe55cb1638528bafe4f80d716bca77ec52",
+        "sha256": "9a48879e341103df46d2752041d8a0dc8dfff1a980b04a2a96c5e76913753784",
+        "batch1bCityServiceSourceAmendment": {
+          "observedAt": "2026-10-04T17:30:00Z",
+          "priorSha256": "80c44281df689b95bc0e04bde9a3afbe55cb1638528bafe4f80d716bca77ec52",
+          "priorInboundInternalLinks": 83,
+          "currentInboundInternalLinks": 86,
+          "reason": "Supporting source and inbound pin only: Batch 1b city service pages (Sandy, Provo, Millcreek and Orem water damage; Salt Lake City siding) add breadcrumb, resource and nearby links, and the parent hubs gain one plain link sentence to their new child (no 24/7, pricing, permit or identity wording on the hubs). Title, H1, canonical, schema, identity and historical ranking/GSC observations, diagnoses and held experiments are unchanged. Not new ranking evidence or experiment authorization.",
+          "reviewRequiredBeforeMerge": true
+        },
         "batch1aCityServiceSourceAmendment": {
           "observedAt": "2026-10-04T04:50:00Z",
           "priorSha256": "5ede1bf36700ba357b26387207dc17ffda8076b623b4212c2ea2c1797979261d",
@@ -212,7 +227,7 @@
         "title": "Salt Lake City Roof Repair &amp; Replacement | Frame Restoration Utah",
         "h1": "Salt Lake City Roof Repair &amp; Replacement",
         "canonical": "https://www.framerestorationutah.com/locations/salt-lake-city",
-        "inboundInternalLinks": 83
+        "inboundInternalLinks": 86
       },
       {
         "file": "index.html",
@@ -271,7 +286,7 @@
     ],
     "integrityGate": {
       "packet": "data/authority/SLV-CITY-PUBLIC-REMEDIATION-PACKET-2026-08-12.json",
-      "packetSha256": "b1616942e2e46f33a847d75a9fc75a084585983c91f444ade1ebd84d11b69333",
+      "packetSha256": "123a0b9abdf44c39ecd0844cc3f0faea3fa25b323ce3def94cbab1e2666ab4a3",
       "holladayBlockingFindingClasses": 8,
       "holladayProvisionalWarnings": 1,
       "cleanupStatus": "awaiting-explicit-owner-approval"

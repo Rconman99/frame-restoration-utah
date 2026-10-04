@@ -112,12 +112,20 @@
     "routes": [
       {
         "file": "locations/millcreek.html",
-        "sha256": "d3171172fcd5b796b12134fc91e1bd366952a3c83e13a160a3106262197b215d",
+        "sha256": "70a6cc6796b85472880c7083af591c920e51d4f7ea6a1920192da606fddbd835",
+        "batch1bCityServiceSourceAmendment": {
+          "observedAt": "2026-10-04T17:30:00Z",
+          "priorSha256": "d3171172fcd5b796b12134fc91e1bd366952a3c83e13a160a3106262197b215d",
+          "priorInboundInternalLinks": 10,
+          "currentInboundInternalLinks": 13,
+          "reason": "Supporting source and inbound pin only: Batch 1b city service pages (Sandy, Provo, Millcreek and Orem water damage; Salt Lake City siding) add breadcrumb, resource and nearby links, and the parent hubs gain one plain link sentence to their new child (no 24/7, pricing, permit or identity wording on the hubs). Title, H1, canonical, schema, identity and historical ranking/GSC observations, diagnoses and held experiments are unchanged. Not new ranking evidence or experiment authorization.",
+          "reviewRequiredBeforeMerge": true
+        },
         "role": "commercial-city-hub",
         "title": "Premium Reroofing Millcreek UT | Frame Restoration Utah",
         "h1": "Premium Reroofing in Millcreek",
         "canonical": "https://www.framerestorationutah.com/locations/millcreek",
-        "inboundInternalLinks": 10,
+        "inboundInternalLinks": 13,
         "publishedHasMap": "https://www.google.com/maps?cid=8458659884566588108",
         "identityState": "heber-drift-blocking",
         "visibleTermCounts": {
@@ -133,11 +141,18 @@
       {
         "file": "locations/millcreek/storm-damage.html",
         "sha256": "07499b70a44b42ef40837b2e7451c4661d513316acd491ceb13daffa0810eb0c",
+        "batch1bCityServiceSourceAmendment": {
+          "observedAt": "2026-10-04T17:30:00Z",
+          "priorInboundInternalLinks": 2,
+          "currentInboundInternalLinks": 5,
+          "reason": "Supporting source and inbound pin only: Batch 1b city service pages (Sandy, Provo, Millcreek and Orem water damage; Salt Lake City siding) add breadcrumb, resource and nearby links, and the parent hubs gain one plain link sentence to their new child (no 24/7, pricing, permit or identity wording on the hubs). Title, H1, canonical, schema, identity and historical ranking/GSC observations, diagnoses and held experiments are unchanged. Not new ranking evidence or experiment authorization.",
+          "reviewRequiredBeforeMerge": true
+        },
         "role": "storm-specific-child",
         "title": "Millcreek Storm Damage Roof Repair | Frame Restoration Utah",
         "h1": "Storm Damage Roof Repair in Millcreek",
         "canonical": "https://www.framerestorationutah.com/locations/millcreek/storm-damage",
-        "inboundInternalLinks": 2,
+        "inboundInternalLinks": 5,
         "publishedHasMap": "https://www.google.com/maps?cid=8458659884566588108",
         "identityState": "heber-drift-outside-current-packet-scope"
       },
@@ -155,7 +170,7 @@
     ],
     "integrityGate": {
       "packet": "data/authority/SLV-CITY-PUBLIC-REMEDIATION-PACKET-2026-08-12.json",
-      "packetSha256": "b1616942e2e46f33a847d75a9fc75a084585983c91f444ade1ebd84d11b69333",
+      "packetSha256": "123a0b9abdf44c39ecd0844cc3f0faea3fa25b323ce3def94cbab1e2666ab4a3",
       "mainPageBlockingFindingClasses": 10,
       "mainPageProvisionalWarnings": 1,
       "cleanupStatus": "awaiting-explicit-owner-approval"
