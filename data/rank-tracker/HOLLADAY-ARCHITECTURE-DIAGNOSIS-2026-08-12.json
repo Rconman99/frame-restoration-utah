@@ -191,16 +191,30 @@
       },
       {
         "file": "locations/salt-lake-city.html",
-        "sha256": "9c247843f17ee6e2e12b118bf8c8a5b05bd291fb4d029afba59daae755f952c8",
+        "sha256": "5ede1bf36700ba357b26387207dc17ffda8076b623b4212c2ea2c1797979261d",
+        "restorationScopeSourceAmendment": {
+          "observedAt": "2026-10-03T19:20:00Z",
+          "priorSha256": "9c247843f17ee6e2e12b118bf8c8a5b05bd291fb4d029afba59daae755f952c8",
+          "priorInboundInternalLinks": 78,
+          "currentInboundInternalLinks": 81,
+          "reason": "Supporting SLC hub byte and inbound pin only: owner-confirmed scope wording (routine roofing stays on business hours; adds one scoped '24/7 for water and flood emergencies, emergency tarping, and storm response' line with links to /pages/emergency-tarping and the new /locations/salt-lake-city/water-damage child; service-area paragraph now states owner-confirmed Wasatch Front coverage with Heber Valley/Wasatch Back/Summit County handled by the Heber office). areaServed schema unchanged. The new child page adds its breadcrumb/parent links. Title, H1, canonical, schema, identity override and historical ranking/GSC observations, Holladay diagnosis and held experiment are unchanged. Not new ranking evidence or experiment authorization.",
+          "reviewRequiredBeforeMerge": true
+        },
         "role": "separate-salt-lake-city-hub-and-legacy-redirect-destination",
         "title": "Salt Lake City Roof Repair &amp; Replacement | Frame Restoration Utah",
         "h1": "Salt Lake City Roof Repair &amp; Replacement",
         "canonical": "https://www.framerestorationutah.com/locations/salt-lake-city",
-        "inboundInternalLinks": 78
+        "inboundInternalLinks": 81
       },
       {
         "file": "index.html",
-        "sha256": "a6fcea13dfbbfc0851024d66af215d894861002e53118cc37ab8b018ee8bac76",
+        "sha256": "d259617dc2b7e505e9338551eaaaf7e5c11e711a5ecba73ef49a936186be6328",
+        "restorationScopeSourceAmendment": {
+          "observedAt": "2026-10-03T19:20:00Z",
+          "priorSha256": "a6fcea13dfbbfc0851024d66af215d894861002e53118cc37ab8b018ee8bac76",
+          "reason": "Supporting homepage byte pin only: removes kitchen/bathroom remodel wording from two General Contracting schema descriptions (owner-confirmed: remodels not offered). No visible copy, links, title, H1, canonical, or other schema changed. Historical ranking/GSC observations, inbound counts, Holladay diagnosis and held experiment remain unchanged. Not new ranking evidence or experiment authorization.",
+          "reviewRequiredBeforeMerge": true
+        },
         "deploymentAssetSourceAmendment": {
           "observedAt": "2026-09-28T23:49:16.343497Z",
           "priorSha256": "98a90dda33af7aacaa708e281027bcf75b10c1cb16c6f2b25f7afa480dd864bd",

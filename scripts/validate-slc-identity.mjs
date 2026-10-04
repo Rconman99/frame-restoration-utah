@@ -114,7 +114,19 @@ const forbidden = [
   'nextdoor.com/page/frame-restoration-utah-llc-heber-city-ut',
   'Frame+Restoration+Utah/@40.5069'
 ];
-for (const value of forbidden) assert.ok(!html.includes(value), `SLC page contains forbidden identity/claim drift: ${value}`);
+// 2026-10-03: owner-confirmed 24/7 on-call response applies ONLY to water/flood
+// restoration, emergency tarping, and storm response (claims
+// operations.water_flood_emergency_24_7 and operations.storm_tarping_emergency_24_7).
+// Routine roofing stays on business hours. Only the exact approved scoped phrases are
+// removed before the forbidden scan, so any other "24/7" (e.g. "24/7 roofing", a bare
+// "24/7 storm line") on the SLC page still fails this gate.
+const APPROVED_SCOPED_247 = [
+  '24/7 for water and flood emergencies, emergency tarping, and storm response',
+  '24/7 for water and flood emergencies'
+];
+let scopedHtml = html;
+for (const phrase of APPROVED_SCOPED_247) scopedHtml = scopedHtml.split(phrase).join('');
+for (const value of forbidden) assert.ok(!scopedHtml.includes(value), `SLC page contains forbidden identity/claim drift: ${value}`);
 
 const projectAssets = [
   'images/projects/cities/salt-lake-city-residential-reroof-2026.webp',
