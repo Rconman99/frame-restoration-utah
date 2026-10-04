@@ -351,7 +351,29 @@
       ],
       "mirrors": [],
       "allowedSurfaces": ["visible-copy", "structured-data"],
-      "prohibitedVariants": ["Salt Lake City office", "Salt Lake City storefront", "West Jordan office", "South Jordan office"]
+      "prohibitedVariants": ["Salt Lake City office", "Salt Lake City storefront", "West Jordan office", "South Jordan office", "Sandy office", "Millcreek office", "Provo office", "Orem office"]
+    },
+    {
+      "id": "operations.siding_materials",
+      "label": "Siding materials and scope",
+      "value": "Siding replacement and repair covers vinyl and fiber-cement siding, storm-damaged panels, exterior trim and corners, and the kick-out and step flashing where siding meets the roof. Siding work follows published business hours; only emergency tarping and storm response are 24/7.",
+      "status": "verified",
+      "verifiedBy": "existing-public-site-reviewed-in-pr-302-and-304",
+      "verifiedOn": "2026-10-04",
+      "expiresOn": "2027-01-03",
+      "evidence": [
+        {
+          "kind": "local-html",
+          "path": "pages/siding.html"
+        },
+        {
+          "kind": "local-file",
+          "path": "data/authority/UTAH-SERVICE-SCOPE-OWNER-CONFIRMATION-2026-10-03.md"
+        }
+      ],
+      "mirrors": [],
+      "allowedSurfaces": ["visible-copy", "structured-data"],
+      "prohibitedVariants": ["24/7 siding", "siding warranty", "certified siding installer"]
     }
   ],
   "services": [

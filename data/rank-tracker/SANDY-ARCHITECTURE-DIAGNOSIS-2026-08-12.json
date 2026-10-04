@@ -109,12 +109,20 @@
     "routes": [
       {
         "file": "locations/sandy.html",
-        "sha256": "6990e62cc9fbaff508cef8d1c14a9d1775d29e111bd77f6eb870cb6256c53093",
+        "sha256": "12cbd1cc9a928695e549d886a75c5845cb0b07a202ff7ff203a755cc3570395a",
+        "batch1bCityServiceSourceAmendment": {
+          "observedAt": "2026-10-04T17:30:00Z",
+          "priorSha256": "6990e62cc9fbaff508cef8d1c14a9d1775d29e111bd77f6eb870cb6256c53093",
+          "priorInboundInternalLinks": 62,
+          "currentInboundInternalLinks": 64,
+          "reason": "Supporting source and inbound pin only: Batch 1b city service pages (Sandy, Provo, Millcreek and Orem water damage; Salt Lake City siding) add breadcrumb, resource and nearby links, and the parent hubs gain one plain link sentence to their new child (no 24/7, pricing, permit or identity wording on the hubs). Title, H1, canonical, schema, identity and historical ranking/GSC observations, diagnoses and held experiments are unchanged. Not new ranking evidence or experiment authorization.",
+          "reviewRequiredBeforeMerge": true
+        },
         "role": "commercial-city-hub",
         "title": "Premium Reroofing Sandy UT | Frame Restoration Utah",
         "h1": "Premium Reroofing in Sandy",
         "canonical": "https://www.framerestorationutah.com/locations/sandy",
-        "inboundInternalLinks": 62,
+        "inboundInternalLinks": 64,
         "visibleTermCounts": {
           "roofer": 0,
           "roofing contractor": 1,
@@ -127,11 +135,18 @@
       {
         "file": "locations/sandy/storm-damage.html",
         "sha256": "e50e0684989a6643e3d5f51792b3aae3d5c9592639685078275aa8589448c026",
+        "batch1bCityServiceSourceAmendment": {
+          "observedAt": "2026-10-04T17:30:00Z",
+          "priorInboundInternalLinks": 2,
+          "currentInboundInternalLinks": 5,
+          "reason": "Supporting source and inbound pin only: Batch 1b city service pages (Sandy, Provo, Millcreek and Orem water damage; Salt Lake City siding) add breadcrumb, resource and nearby links, and the parent hubs gain one plain link sentence to their new child (no 24/7, pricing, permit or identity wording on the hubs). Title, H1, canonical, schema, identity and historical ranking/GSC observations, diagnoses and held experiments are unchanged. Not new ranking evidence or experiment authorization.",
+          "reviewRequiredBeforeMerge": true
+        },
         "role": "storm-specific-child",
         "title": "Sandy Storm Damage Roof Repair | Frame Restoration Utah",
         "h1": "Storm Damage Roof Repair in Sandy",
         "canonical": "https://www.framerestorationutah.com/locations/sandy/storm-damage",
-        "inboundInternalLinks": 2
+        "inboundInternalLinks": 5
       },
       {
         "file": "blog/sandy/roof-leak-repair-sandy-84070.html",
@@ -156,7 +171,7 @@
     ],
     "integrityGate": {
       "packet": "data/authority/SLV-CITY-PUBLIC-REMEDIATION-PACKET-2026-08-12.json",
-      "packetSha256": "b1616942e2e46f33a847d75a9fc75a084585983c91f444ade1ebd84d11b69333",
+      "packetSha256": "123a0b9abdf44c39ecd0844cc3f0faea3fa25b323ce3def94cbab1e2666ab4a3",
       "sandyBlockingFindingClasses": 8,
       "sandyProvisionalWarnings": 1,
       "cleanupStatus": "awaiting-explicit-owner-approval"
