@@ -330,6 +330,28 @@
       "mirrors": [],
       "allowedSurfaces": ["visible-copy", "structured-data", "directory-packet"],
       "prohibitedVariants": ["kitchen remodel", "bathroom remodel", "full home renovations"]
+    },
+    {
+      "id": "coverage.slc_profile_wasatch_front",
+      "label": "Wasatch Front coverage served from the Salt Lake City service-area profile",
+      "value": "Wasatch Front cities (Salt Lake City and the Salt Lake Valley, Davis and Weber counties, and the Utah County valley floor) are served from the Salt Lake City service-area profile as a service-area business with no Salt Lake City storefront; the Heber City office at 142 S Main St serves the Heber Valley, Wasatch Back, and Summit County.",
+      "status": "verified",
+      "verifiedBy": "owner-confirmation",
+      "verifiedOn": "2026-10-03",
+      "expiresOn": "2027-01-03",
+      "evidence": [
+        {
+          "kind": "local-file",
+          "path": "data/authority/UTAH-SERVICE-SCOPE-OWNER-CONFIRMATION-2026-10-03.md"
+        },
+        {
+          "kind": "local-file",
+          "path": "locations/salt-lake-city.html"
+        }
+      ],
+      "mirrors": [],
+      "allowedSurfaces": ["visible-copy", "structured-data"],
+      "prohibitedVariants": ["Salt Lake City office", "Salt Lake City storefront", "West Jordan office", "South Jordan office"]
     }
   ],
   "services": [

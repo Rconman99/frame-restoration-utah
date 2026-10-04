@@ -88,7 +88,7 @@
     },
     "gscAttribution": {
       "file": "data/rank-tracker/SLV-GSC-URL-ATTRIBUTION-LATEST.json",
-      "sha256": "cd14e27bfc7ce7393878551f1e3e79643a77cc972ce2cc2b7f09773da7d902ee"
+      "sha256": "3db1b84e069128043af7bd4e3e0dd8adbe33d2aa87292d429d2f444b96bb3a08"
     },
     "gscSplitUrlDiagnosis": {
       "file": "data/rank-tracker/SLV-GSC-SPLIT-URL-DIAGNOSIS-2026-08-12.json",
@@ -100,15 +100,15 @@
     },
     "entityHealth": {
       "file": "data/rank-tracker/SLV-ENTITY-HEALTH-2026-08-12.json",
-      "sha256": "4f19f6f2763f71764fbea69cfa4fb5266bbc6de6c1a028fa7a9a7567f23965ec"
+      "sha256": "178c3cd770a335c6e66610161b4795b60b53abb90e90d2b6082347cdc88cdf2c"
     },
     "mapsReadiness": {
       "file": "data/rank-tracker/SLV-MAPS-READINESS-2026-08-12.json",
-      "sha256": "d4a63dcb0c5c37f08c6feaa75a45a58d35d868dca796507676181955ba039e67"
+      "sha256": "be781fe04e0b79f2c89ac3764ab828d81d5ef946d3535adf303e1d1f3865367b"
     },
     "expansionArchitecture": {
       "file": "data/rank-tracker/SLV-EXPANSION-ARCHITECTURE-2026-08-12.json",
-      "sha256": "d78275be6b663e872f79e38117ebbe66c38cf39ebbbeb8eaf94860886de9937e"
+      "sha256": "1c8f99fff79982581f2a9f97d36280b990fc7b79533b5e51a38af1032339e1ce"
     },
     "corePriority": {
       "file": "data/rank-tracker/SLV-PRIORITY-2026-08-12.json",
@@ -124,7 +124,7 @@
     },
     "expansionCleanup": {
       "file": "data/authority/SLV-EXPANSION-PUBLIC-REMEDIATION-PACKET-2026-08-12.json",
-      "sha256": "44b72b3e8ea4d2605e8cd4562fbd4f7ff3233ce07dee46a2ef3a3a8ff8e187c6"
+      "sha256": "a2996b06c9e6776a0a878ff50a3c923f0b50faf119892921d18151a8a7c86afe"
     },
     "serviceAreaRequest": {
       "file": "data/authority/SLV-SERVICE-AREA-EVIDENCE-REQUEST-2026-08-12.json",
@@ -149,7 +149,7 @@
       },
       "Holladay": {
         "file": "data/rank-tracker/HOLLADAY-ARCHITECTURE-DIAGNOSIS-2026-08-12.json",
-        "sha256": "dd81567ca75ac98c418d61c2b3a61fdf347827485c25741a1335c90e37633e28"
+        "sha256": "8474255e5602b2ec2f4a8d053c8f367491339f291e5696e38909cd19a8cddb05"
       },
       "Cottonwood Heights": {
         "file": "data/rank-tracker/COTTONWOOD-HEIGHTS-ARCHITECTURE-DIAGNOSIS-2026-08-12.json",
@@ -841,7 +841,7 @@
       "sources": {
         "diagnosis": {
           "file": "data/rank-tracker/HOLLADAY-ARCHITECTURE-DIAGNOSIS-2026-08-12.json",
-          "sha256": "dd81567ca75ac98c418d61c2b3a61fdf347827485c25741a1335c90e37633e28"
+          "sha256": "8474255e5602b2ec2f4a8d053c8f367491339f291e5696e38909cd19a8cddb05"
         },
         "panelEvidence": [
           {
@@ -1230,7 +1230,8 @@
         "architectureState": "not-evidenced-all-four-fixed-serps-select-main",
         "protectedRelatedRoutes": [
           "blog/south-jordan/roof-replacement-south-jordan-utah.html",
-          "blog/south-jordan/storm-damage-roof-repair-south-jordan-utah.html"
+          "blog/south-jordan/storm-damage-roof-repair-south-jordan-utah.html",
+          "locations/south-jordan/storm-damage.html"
         ],
         "consumerAiState": "configured-manual-unmeasured-invalid-provider-credential",
         "comparableWeeklyGooglePanels": 1,
@@ -2057,7 +2058,9 @@
         "citySpecificEditorialAsset": true,
         "architectureState": "not-evidenced-bounded-panel-selects-main-when-ranked-and-exact-gsc-unmeasured",
         "protectedRelatedRoutes": [
-          "blog/west-jordan/roof-leak-after-rainstorm.html"
+          "blog/west-jordan/roof-leak-after-rainstorm.html",
+          "locations/west-jordan/storm-damage.html",
+          "locations/west-jordan/water-damage.html"
         ],
         "consumerAiState": "configured-manual-unmeasured-invalid-provider-credential",
         "comparableWeeklyGooglePanels": 1,
