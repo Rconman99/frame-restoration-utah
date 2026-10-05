@@ -1,6 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<!-- utah-owner-recovery-20260908a -->
+<script src="/dashboard/owner-recovery.js?v=20260908a"></script>
+<link rel="stylesheet" href="/dashboard/owner-recovery.css?v=20260908a">
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
@@ -192,9 +196,9 @@ footer{text-align:center;padding:24px;color:var(--muted);font-size:.78rem;border
   <div class="login-box">
     <div class="login-lock">🔒</div>
     <h1 id="loginHeading">Frame Restoration — Leads</h1>
-    <div class="sub">Internal CRM · PIN required</div>
+    <div class="sub">Internal CRM · Secure sign in</div>
     <form id="loginForm" onsubmit="return doLogin(event)">
-      <input type="password" id="pinInput" placeholder="Enter PIN" autocomplete="off" autofocus>
+      <input type="password" id="pinInput" placeholder="Password or PIN" aria-label="Password or PIN" autocomplete="current-password" autofocus>
       <button class="login-btn" type="submit">Sign In</button>
     </form>
     <div class="login-err" id="loginErr"></div>
@@ -548,7 +552,7 @@ var sortDir=localStorage.getItem("frame.leads.sort.dir")||"desc";
 	  if(e.key!=="Tab")return;
 	  var overlay=document.getElementById("loginOverlay");
 	  if(getComputedStyle(overlay).display==="none")return;
-	  var controls=Array.from(overlay.querySelectorAll('input:not([disabled]),button:not([disabled]),a[href],[tabindex]:not([tabindex="-1"])'));
+	  var controls=Array.from(overlay.querySelectorAll('input:not([disabled]),button:not([disabled]),a[href],[tabindex]:not([tabindex="-1"])')).filter(function(el){return el.getClientRects().length>0&&!el.closest('[hidden]')});
 	  if(!controls.length)return;
 	  var first=controls[0],last=controls[controls.length-1],active=document.activeElement;
 	  if(e.shiftKey&&(active===first||!overlay.contains(active))){e.preventDefault();last.focus()}
@@ -556,15 +560,16 @@ var sortDir=localStorage.getItem("frame.leads.sort.dir")||"desc";
 	}
 	document.getElementById("loginOverlay").addEventListener("keydown",trapLoginFocus);
 
-function doLogin(e){
+function doLogin(e){var authVersion=window.FrameOwnerRecovery?window.FrameOwnerRecovery.version():0;
   e.preventDefault();
-  var p=document.getElementById("pinInput").value.trim();
-  if(!p){document.getElementById("loginErr").textContent="Please enter a PIN";return false}
+  var p=document.getElementById("pinInput").value;
+  if(!p){document.getElementById("loginErr").textContent="Please enter your password or PIN";return false}
   document.getElementById("loginErr").textContent="Checking…";
   fetch(crmUrl("login"),{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({routing_key:ROUTING_KEY,pin:p})})
     .then(async function(r){
       var d={};try{d=await r.json()}catch(_){}
-      if(!r.ok){document.getElementById("loginErr").textContent=r.status===401||r.status===403?"Invalid PIN. Try again.":(d.message||d.error||"Server error ("+r.status+"). Try again.");return}
+      if(!r.ok){document.getElementById("loginErr").textContent=r.status===401||r.status===403?"Invalid password or PIN. Try again.":(d.message||d.error||"Server error ("+r.status+"). Try again.");return}
+      if(window.FrameOwnerRecovery&&authVersion!==window.FrameOwnerRecovery.version())return;
       if(!d.token||!d.user){document.getElementById("loginErr").textContent="Login failed.";return}
       if(d.user.role!=="sales"&&d.user.role!=="admin"){
         document.getElementById("loginErr").textContent="This PIN has report-only access. A sales or admin role is required for the CRM.";return
@@ -573,6 +578,7 @@ function doLogin(e){
 	    var listResponse=await crmRequest("list");
 	    var listBody={};try{listBody=await listResponse.json()}catch(_){}
 	    if(!listResponse.ok||listBody.error){SESSION_TOKEN="";CUR_USER=null;document.getElementById("loginErr").textContent=listBody.message||listBody.error||"CRM access failed.";return}
+	    if(window.FrameOwnerRecovery&&authVersion!==window.FrameOwnerRecovery.version())return;
 	    sessionStorage.setItem(SESSION_STORAGE_KEY,SESSION_TOKEN);document.getElementById("pinInput").value="";
 	    applyListResponse(listBody);showReport();loadGrowthStates().then(function(){render();loadClicks()});
     })
@@ -596,14 +602,17 @@ function doLogout(){
   document.getElementById("loginErr").textContent="";
   document.getElementById("pinInput").focus();
 }
+window.addEventListener('frame-owner-recovery-start', doLogout);
 // Auto-login on revisit
 (function(){
+  if(window.FrameOwnerRecovery&&window.FrameOwnerRecovery.active())return;
+  var authVersion=window.FrameOwnerRecovery?window.FrameOwnerRecovery.version():0;
   var s=sessionStorage.getItem(SESSION_STORAGE_KEY);
   if(s){
 	SESSION_TOKEN=s;
 	crmRequest("list")
 	      .then(function(r){if(r.status===401||r.status===403){doLogout();return}return r.json()})
-	      .then(function(d){if(!d||d.error){doLogout();return}CUR_USER=d.user;applyListResponse(d);showReport();loadGrowthStates().then(function(){render();loadClicks()})})
+	      .then(function(d){if(!d||d.error){doLogout();return}CUR_USER=d.user;if(window.FrameOwnerRecovery&&authVersion!==window.FrameOwnerRecovery.version())return;applyListResponse(d);showReport();loadGrowthStates().then(function(){render();loadClicks()})})
       .catch(function(){doLogout()});
   }
 })();
