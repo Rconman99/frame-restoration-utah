@@ -29,6 +29,7 @@ import {
   parseReportDetail,
   PRODUCTION_REPORT_ORIGINS,
   REPORT_LOCATION_SLUGS,
+  REPORT_METRIC_DEFINITIONS,
   REPORT_RENDERING_CONTRACT,
   shapeReportRows,
   sourceTrafficFromRows,
@@ -413,19 +414,13 @@ Deno.serve(async (req: Request) => {
     (sum, lead) => sum + finiteNumber(lead.commission),
     0,
   );
-  const conversionRate = posthogTotal > 0
-    ? Number(
-      ((realLeads.length + completedCalls.length) / posthogTotal * 100)
-        .toFixed(1),
-    )
-    : 0;
-
   const rows = shapeReportRows(user.role, detail, realLeads, completedCalls);
   return jsonResponse(req, {
     generated_at: now.toISOString(),
     period_days: days,
     detail,
     rendering_contract: REPORT_RENDERING_CONTRACT,
+    metric_definitions: REPORT_METRIC_DEFINITIONS,
     provider_status: { posthog: "available" },
     user: { name: user.name, role: user.role },
     summary: {
@@ -437,7 +432,6 @@ Deno.serve(async (req: Request) => {
       total_call_minutes: Math.round(totalCallMinutes * 10) / 10,
       total_job_value: totalJobValue,
       total_commission: totalCommission,
-      conversion_rate_pct: conversionRate,
     },
     traffic_breakdown: trafficBreakdown,
     traffic_sources: Object.fromEntries(posthogSources),

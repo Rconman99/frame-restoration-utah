@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>Frame Restoration Utah — SEO & Lead Tracker</title>
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><meta name="frame-release" content="metric-truth-20260903"><title>Frame Restoration Utah — SEO & Lead Tracker</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js" integrity="sha384-bs/nf9FbdNouRbMiFcrcZfLXYPKiPaGVGplVbv7dLGECccEXDW+S3zjqSKR5ZEaD" crossorigin="anonymous"></script>
 <style>
 :root{--bg:#0d1117;--card:#161b22;--border:#30363d;--text:#e6edf3;--muted:#8b949e;--gold:#c8a951;--green:#3fb950;--blue:#58a6ff;--purple:#bc8cff;--red:#f85149;--orange:#d29922}
@@ -139,7 +139,7 @@ function ins(t,tx,a){return '<div class="ib"><h3>'+escapeHtml(t)+'</h3><p>'+esca
 function render(D){
 var S=D.summary||{},G=D.gap_summary||{locations_with_traffic:0,total_locations:59,coverage_pct:0,locations_no_traffic:59};
 var h='<div class="kg">';
-[{v:S.total_pageviews||0,l:"Pageviews",c:""},{v:S.google_organic||0,l:"Google Organic",c:"g"},{v:S.total_leads||0,l:"Form Leads",c:"b"},{v:S.total_calls||0,l:"Inbound Calls",c:"b"},{v:(S.total_call_minutes||0)+"m",l:"Call Minutes",c:"p"},{v:(S.conversion_rate_pct||0)+"%",l:"Conversion Rate",c:""},{v:(G.locations_with_traffic||0)+"/"+(G.total_locations||59),l:"Locations Active",c:"g"},{v:"$"+(S.total_job_value||0),l:"Revenue Tracked",c:""}].forEach(function(k){h+='<div class="kc '+k.c+'"><div class="v">'+escapeHtml(k.v)+'</div><div class="l">'+escapeHtml(k.l)+'</div></div>';});
+[{v:S.total_pageviews||0,l:"Pageviews",c:""},{v:S.google_organic||0,l:"Google Organic",c:"g"},{v:S.total_leads||0,l:"Lead Records",c:"b"},{v:S.total_calls||0,l:"Completed Call Events",c:"b"},{v:(S.total_call_minutes||0)+"m",l:"Call Minutes",c:"p"},{v:"\u2014",l:"Qualified Conversion (unmeasured)",c:""},{v:(G.locations_with_traffic||0)+"/"+(G.total_locations||59),l:"Locations Active",c:"g"},{v:"$"+(S.total_job_value||0),l:"Job Value Entered",c:""}].forEach(function(k){h+='<div class="kc '+k.c+'"><div class="v">'+escapeHtml(k.v)+'</div><div class="l">'+escapeHtml(k.l)+'</div></div>';});
 h+='</div>';
 h+='<div class="cg"><div class="cc"><h3>Traffic by Section</h3><canvas id="pieC"></canvas></div><div class="cc"><h3>Traffic Sources</h3><canvas id="barC"></canvas></div></div>';
 h+='<div class="sec"><div class="st">Top Pages <span class="badge bb">by pageviews</span></div><div class="cc"><table><thead><tr><th>Page</th><th class="num">Views</th><th class="num">%</th></tr></thead><tbody>';
