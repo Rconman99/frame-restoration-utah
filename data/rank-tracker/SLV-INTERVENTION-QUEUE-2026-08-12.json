@@ -80,15 +80,15 @@
   "sources": {
     "portfolio": {
       "file": "data/rank-tracker/SLV-18-CITY-GOAL-PORTFOLIO-2026-08-12.json",
-      "sha256": "cb531e68f6716175058000efe0ba234c67943eac31838491c5ee22dfc4455214"
+      "sha256": "c2318dba4159f6fed3ef114b90c827bafc6878e97f895bff4b982ec93a5818bf"
     },
     "weeklyDecisions": {
       "file": "data/rank-tracker/SLV-WEEKLY-DECISIONS-2026-08-12.json",
-      "sha256": "2809bd4633b3527a41d0f824a54d42d3e9a8a846a096ed230d7d658c13590e4a"
+      "sha256": "931f97c03a776c1a7fd27867bc43e7643b04a494c57b0647a3f19062c69a522a"
     },
     "gscAttribution": {
       "file": "data/rank-tracker/SLV-GSC-URL-ATTRIBUTION-LATEST.json",
-      "sha256": "91f739954a42ee2fa2f669ccaa2d1cbc83b9f4349347a6bbf67e444c8a0095bc"
+      "sha256": "8c201e2f0e59125449206b1ea597df8015b804a1d9d1e01f13dd1041d2983dc7"
     },
     "gscSplitUrlDiagnosis": {
       "file": "data/rank-tracker/SLV-GSC-SPLIT-URL-DIAGNOSIS-2026-08-12.json",
@@ -96,19 +96,19 @@
     },
     "displacement": {
       "file": "data/rank-tracker/SLV-COMPETITOR-DISPLACEMENT-2026-08-12.json",
-      "sha256": "9d034132b74ec445520e68bbcc3e43cdd1e706c3854df4adbf134c44da62c246"
+      "sha256": "d5849ba34f43fce7b1573d59102c13cfcf26d121eeeb40a83d71cc119558f9de"
     },
     "entityHealth": {
       "file": "data/rank-tracker/SLV-ENTITY-HEALTH-2026-08-12.json",
-      "sha256": "ef6db009b6b1b4e1395bb9af84cb7c6f84959b7a146334220a46f38bbbd0ac34"
+      "sha256": "7d0e303c1161af0f991d6e368e1885f0957128a115b35d14067be9d45a1f1741"
     },
     "mapsReadiness": {
       "file": "data/rank-tracker/SLV-MAPS-READINESS-2026-08-12.json",
-      "sha256": "f44259b0a6cfe995a3191a7dded463395a9e03c79a63b5fe470bbbccfea80481"
+      "sha256": "66e2f2fdb6a7a7c38ac658f9fd75c72085b0396199daa9e398d4a0b9aa93e461"
     },
     "expansionArchitecture": {
       "file": "data/rank-tracker/SLV-EXPANSION-ARCHITECTURE-2026-08-12.json",
-      "sha256": "a0c51263c9b12edc52965e2d8f2a7d46901215e326e374bc855afdb3cd83215c"
+      "sha256": "63e9adb7058fe174b12966ee96a2c71f5d6f51c961c69281fe7528eed9095a0c"
     },
     "corePriority": {
       "file": "data/rank-tracker/SLV-PRIORITY-2026-08-12.json",
@@ -240,15 +240,15 @@
       "lane": "observe-time-gated-slc-experiment",
       "decision": "Monitor",
       "evidenceFeatures": {
-        "observedAt": "2026-09-28T09:27:27.052Z",
+        "observedAt": "2026-10-05T09:29:33.882Z",
         "organicRanks": [
-          27,
-          21,
-          27,
+          null,
+          19,
+          null,
           null
         ],
-        "bestMeasuredOrganicRank": 21,
-        "measuredMeanOrganicRank": 25,
+        "bestMeasuredOrganicRank": 19,
+        "measuredMeanOrganicRank": 19,
         "exactCidMapsNumberOne": 0,
         "exactCidMapsReturned": 0,
         "mapsPacksPresent": 3,
@@ -283,7 +283,7 @@
         "architectureState": "not-separately-diagnosed",
         "protectedRelatedRoutes": [],
         "consumerAiState": "configured-scheduled-unmeasured-invalid-provider-credential",
-        "comparableWeeklyGooglePanels": 8,
+        "comparableWeeklyGooglePanels": 9,
         "comparableWeeklyConsumerAiPanels": 0
       },
       "scoreVector": {
@@ -343,7 +343,7 @@
       "lane": "owner-gated-verified-identity-and-integrity-cleanup",
       "decision": "Request input",
       "evidenceFeatures": {
-        "observedAt": "2026-09-28T09:27:27.052Z",
+        "observedAt": "2026-10-05T09:29:33.882Z",
         "organicRanks": [
           14,
           null,
@@ -354,19 +354,20 @@
         "measuredMeanOrganicRank": 14,
         "exactCidMapsNumberOne": 0,
         "exactCidMapsReturned": 0,
-        "mapsPacksPresent": 3,
+        "mapsPacksPresent": 4,
         "mapsReadinessLane": "owner-gated-page-identity-correction",
         "dominantMapsDisplacer": {
           "name": "Whitaker Roofing Services",
           "cid": "11316815627233980109",
           "domain": "whitakerroofing.com",
-          "appearances": 3,
+          "appearances": 4,
           "numberOneQueries": 3,
           "bestRank": 1,
           "keywords": [
             "roofing contractor millcreek",
             "roof repair millcreek",
-            "roof replacement millcreek"
+            "roof replacement millcreek",
+            "roofer millcreek"
           ]
         },
         "googleAiOverviewsPresent": 1,
@@ -386,7 +387,7 @@
         "architectureState": "not-evidenced",
         "protectedRelatedRoutes": [],
         "consumerAiState": "configured-scheduled-unmeasured-invalid-provider-credential",
-        "comparableWeeklyGooglePanels": 8,
+        "comparableWeeklyGooglePanels": 9,
         "comparableWeeklyConsumerAiPanels": 0
       },
       "scoreVector": {
@@ -658,15 +659,15 @@
       "lane": "owner-gated-core-integrity-then-single-variable-intent-test",
       "decision": "Request input",
       "evidenceFeatures": {
-        "observedAt": "2026-09-28T09:27:27.052Z",
+        "observedAt": "2026-10-05T09:29:33.882Z",
         "organicRanks": [
           null,
-          19,
-          18,
+          17,
+          17,
           null
         ],
-        "bestMeasuredOrganicRank": 18,
-        "measuredMeanOrganicRank": 18.5,
+        "bestMeasuredOrganicRank": 17,
+        "measuredMeanOrganicRank": 17,
         "exactCidMapsNumberOne": 0,
         "exactCidMapsReturned": 0,
         "mapsPacksPresent": 4,
@@ -700,7 +701,7 @@
         "architectureState": "not-evidenced",
         "protectedRelatedRoutes": [],
         "consumerAiState": "configured-manual-unmeasured-invalid-provider-credential",
-        "comparableWeeklyGooglePanels": 8,
+        "comparableWeeklyGooglePanels": 9,
         "comparableWeeklyConsumerAiPanels": 0
       },
       "scoreVector": {
@@ -763,15 +764,15 @@
       "lane": "diagnose-url-consolidation-before-intent-change",
       "decision": "Monitor",
       "evidenceFeatures": {
-        "observedAt": "2026-09-28T09:27:27.052Z",
+        "observedAt": "2026-10-05T09:29:33.882Z",
         "organicRanks": [
-          23,
-          16,
-          11,
-          17
+          null,
+          null,
+          null,
+          null
         ],
-        "bestMeasuredOrganicRank": 11,
-        "measuredMeanOrganicRank": 16.75,
+        "bestMeasuredOrganicRank": null,
+        "measuredMeanOrganicRank": null,
         "exactCidMapsNumberOne": 0,
         "exactCidMapsReturned": 0,
         "mapsPacksPresent": 4,
@@ -810,13 +811,13 @@
         "architectureState": "not-evidenced",
         "protectedRelatedRoutes": [],
         "consumerAiState": "configured-manual-unmeasured-invalid-provider-credential",
-        "comparableWeeklyGooglePanels": 8,
+        "comparableWeeklyGooglePanels": 9,
         "comparableWeeklyConsumerAiPanels": 0
       },
       "scoreVector": {
         "businessValue": 10,
         "confidence": 6,
-        "leadValue": 5,
+        "leadValue": 2,
         "authorityValue": 5,
         "learningValue": 6,
         "implementationCost": 3,
@@ -873,15 +874,15 @@
       "lane": "owner-gated-core-integrity-then-single-variable-intent-test",
       "decision": "Request input",
       "evidenceFeatures": {
-        "observedAt": "2026-09-28T09:27:27.052Z",
+        "observedAt": "2026-10-05T09:29:33.882Z",
         "organicRanks": [
-          19,
+          9,
           null,
-          15,
-          19
+          null,
+          null
         ],
-        "bestMeasuredOrganicRank": 15,
-        "measuredMeanOrganicRank": 17.67,
+        "bestMeasuredOrganicRank": 9,
+        "measuredMeanOrganicRank": 9,
         "exactCidMapsNumberOne": 0,
         "exactCidMapsReturned": 0,
         "mapsPacksPresent": 4,
@@ -900,7 +901,7 @@
             "roofer cottonwood heights"
           ]
         },
-        "googleAiOverviewsPresent": 0,
+        "googleAiOverviewsPresent": 1,
         "googleAiOverviewOwnedQueries": [],
         "protectedOrganicNumberOneQueries": [],
         "intendedPageSelectedForEveryMeasuredRank": true,
@@ -915,14 +916,14 @@
         "architectureState": "not-evidenced",
         "protectedRelatedRoutes": [],
         "consumerAiState": "configured-manual-unmeasured-invalid-provider-credential",
-        "comparableWeeklyGooglePanels": 8,
+        "comparableWeeklyGooglePanels": 9,
         "comparableWeeklyConsumerAiPanels": 0
       },
       "scoreVector": {
         "businessValue": 10,
         "confidence": 6,
-        "leadValue": 5,
-        "authorityValue": 5,
+        "leadValue": 7,
+        "authorityValue": 7,
         "learningValue": 6,
         "implementationCost": 5,
         "complianceRisk": 8,
@@ -1811,15 +1812,15 @@
       "lane": "owner-gated-core-integrity-then-single-variable-intent-test",
       "decision": "Request input",
       "evidenceFeatures": {
-        "observedAt": "2026-09-28T09:27:27.052Z",
+        "observedAt": "2026-10-05T09:29:33.882Z",
         "organicRanks": [
-          30,
-          16,
           null,
-          25
+          null,
+          null,
+          null
         ],
-        "bestMeasuredOrganicRank": 16,
-        "measuredMeanOrganicRank": 23.67,
+        "bestMeasuredOrganicRank": null,
+        "measuredMeanOrganicRank": null,
         "exactCidMapsNumberOne": 0,
         "exactCidMapsReturned": 0,
         "mapsPacksPresent": 4,
@@ -1853,13 +1854,13 @@
         "architectureState": "not-evidenced",
         "protectedRelatedRoutes": [],
         "consumerAiState": "configured-manual-unmeasured-invalid-provider-credential",
-        "comparableWeeklyGooglePanels": 8,
+        "comparableWeeklyGooglePanels": 9,
         "comparableWeeklyConsumerAiPanels": 0
       },
       "scoreVector": {
         "businessValue": 10,
         "confidence": 6,
-        "leadValue": 3,
+        "leadValue": 2,
         "authorityValue": 5,
         "learningValue": 6,
         "implementationCost": 5,

@@ -52,15 +52,15 @@
   "sources": {
     "portfolio": {
       "file": "data/rank-tracker/SLV-18-CITY-GOAL-PORTFOLIO-2026-08-12.json",
-      "sha256": "cb531e68f6716175058000efe0ba234c67943eac31838491c5ee22dfc4455214"
+      "sha256": "c2318dba4159f6fed3ef114b90c827bafc6878e97f895bff4b982ec93a5818bf"
     },
     "displacement": {
       "file": "data/rank-tracker/SLV-COMPETITOR-DISPLACEMENT-2026-08-12.json",
-      "sha256": "9d034132b74ec445520e68bbcc3e43cdd1e706c3854df4adbf134c44da62c246"
+      "sha256": "d5849ba34f43fce7b1573d59102c13cfcf26d121eeeb40a83d71cc119558f9de"
     },
     "entityHealth": {
       "file": "data/rank-tracker/SLV-ENTITY-HEALTH-2026-08-12.json",
-      "sha256": "ef6db009b6b1b4e1395bb9af84cb7c6f84959b7a146334220a46f38bbbd0ac34"
+      "sha256": "7d0e303c1161af0f991d6e368e1885f0957128a115b35d14067be9d45a1f1741"
     },
     "serviceAreaRequest": {
       "file": "data/authority/SLV-SERVICE-AREA-EVIDENCE-REQUEST-2026-08-12.json",
@@ -78,8 +78,8 @@
   "summary": {
     "cities": 18,
     "queries": 72,
-    "mapsPacksPresent": 69,
-    "mapsPacksAbsent": 3,
+    "mapsPacksPresent": 70,
+    "mapsPacksAbsent": 2,
     "exactCidReturned": 0,
     "exactCidNumberOne": 0,
     "profileVerifiedCities": 2,
@@ -174,7 +174,7 @@
           {
             "name": "ASAP Roofing & Exteriors",
             "cid": "3073507677867725755",
-            "domain": null,
+            "domain": "asaproofingpros.com",
             "appearances": 1,
             "numberOneQueries": 0,
             "bestRank": 2,
@@ -257,8 +257,8 @@
         }
       },
       "maps": {
-        "packsPresent": 3,
-        "packsAbsent": 1,
+        "packsPresent": 4,
+        "packsAbsent": 0,
         "exactCidReturned": 0,
         "exactCidNumberOne": 0,
         "exactCidRanks": [
@@ -272,13 +272,26 @@
             "name": "Whitaker Roofing Services",
             "cid": "11316815627233980109",
             "domain": "whitakerroofing.com",
-            "appearances": 3,
+            "appearances": 4,
             "numberOneQueries": 3,
             "bestRank": 1,
             "keywords": [
               "roofing contractor millcreek",
               "roof repair millcreek",
-              "roof replacement millcreek"
+              "roof replacement millcreek",
+              "roofer millcreek"
+            ]
+          },
+          {
+            "name": "RoofTek",
+            "cid": "2008385778269964311",
+            "domain": null,
+            "appearances": 2,
+            "numberOneQueries": 1,
+            "bestRank": 1,
+            "keywords": [
+              "roofing contractor millcreek",
+              "roofer millcreek"
             ]
           },
           {
@@ -290,18 +303,6 @@
             "bestRank": 2,
             "keywords": [
               "roofing contractor millcreek",
-              "roof replacement millcreek"
-            ]
-          },
-          {
-            "name": "Vault Roofing LLC",
-            "cid": "9387084358687172308",
-            "domain": "vaultroofingutah.com",
-            "appearances": 2,
-            "numberOneQueries": 0,
-            "bestRank": 3,
-            "keywords": [
-              "roof repair millcreek",
               "roof replacement millcreek"
             ]
           }
@@ -341,9 +342,12 @@
         {
           "queryId": "millcreek-roofer",
           "keyword": "roofer millcreek",
-          "packState": "local-pack-not-present",
+          "packState": "exact-cid-not-returned-in-pack",
           "exactCidRank": null,
-          "numberOneEntity": null
+          "numberOneEntity": {
+            "name": "RoofTek",
+            "cid": "2008385778269964311"
+          }
         }
       ],
       "nextAction": "Collect the exact-CID review and owner-profile baselines, then request the pinned Millcreek page-identity correction separately; preserve the owned AIO citation and do not edit GBP from this ledger.",
@@ -423,12 +427,10 @@
             "name": "Red Star Roofing",
             "cid": "16317468138973610641",
             "domain": "redstar-roofing.com",
-            "appearances": 4,
+            "appearances": 2,
             "numberOneQueries": 0,
             "bestRank": 2,
             "keywords": [
-              "roofing contractor sandy",
-              "roof repair sandy",
               "roof replacement sandy",
               "roofer sandy"
             ]
@@ -682,14 +684,15 @@
             ]
           },
           {
-            "name": "Ace Handyman Services Salt Lake City Cottonwood Heights",
-            "cid": "851631646678808589",
-            "domain": "acehandymanservices.com",
-            "appearances": 1,
+            "name": "ReRoofIt",
+            "cid": "3305979678440818523",
+            "domain": "reroofit.com",
+            "appearances": 2,
             "numberOneQueries": 0,
             "bestRank": 3,
             "keywords": [
-              "roof repair cottonwood heights"
+              "roof repair cottonwood heights",
+              "roof replacement cottonwood heights"
             ]
           }
         ]
@@ -796,26 +799,25 @@
             ]
           },
           {
-            "name": "Rocky Mountain Roofing UT, LLC",
-            "cid": "11642763325802433097",
-            "domain": "rockymountainroofingut.net",
-            "appearances": 4,
+            "name": "MAD Roofing LLC",
+            "cid": "948726251693855103",
+            "domain": "madroofers.com",
+            "appearances": 3,
             "numberOneQueries": 0,
             "bestRank": 2,
             "keywords": [
-              "roofing contractor draper",
               "roof repair draper",
               "roof replacement draper",
               "roofer draper"
             ]
           },
           {
-            "name": "Legacy Roofing",
-            "cid": "2263621246550931916",
-            "domain": "legacyroofingutah.com",
+            "name": "Rocky Mountain Roofing UT, LLC",
+            "cid": "11642763325802433097",
+            "domain": "rockymountainroofingut.net",
             "appearances": 3,
             "numberOneQueries": 0,
-            "bestRank": 3,
+            "bestRank": 2,
             "keywords": [
               "roofing contractor draper",
               "roof repair draper",
