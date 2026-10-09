@@ -13,7 +13,7 @@
         "Holladay",
         "Herriman"
       ],
-      "activeSnapshotSha256": "96ab627e9e6eae6e8680a32197c83cef693644ec08b4cd6f2bb2eff76e76c20b",
+      "activeSnapshotSha256": "a033c733a4ed6085972f47dc14766896edfa9f5311d2fe4cba5fc6721dab941d",
       "diagnosisSnapshotSha256": "a1b7d5aa2acc3a5b663da345ba6eb7242e411661807ae1296f50854702b1a7eb",
       "behavior": "Ignore the stale split-URL disposition and keep affected URL-competition cities in the diagnosis lane; do not suppress, redirect, canonicalize, noindex, delete, or rewrite a route from stale evidence.",
       "requiredAction": "Refresh the bounded Holladay/Herriman split-URL diagnosis against the current GSC attribution snapshot."
@@ -88,7 +88,7 @@
     },
     "gscAttribution": {
       "file": "data/rank-tracker/SLV-GSC-URL-ATTRIBUTION-LATEST.json",
-      "sha256": "1255ba756d7cc443d9d8cac146065478e373b6fd804753082ab20b2960de7d8c"
+      "sha256": "70cb73d9d0bcd085e9a2f23ed7e72947cdcb99251d09bb1998c7f4854379033b"
     },
     "gscSplitUrlDiagnosis": {
       "file": "data/rank-tracker/SLV-GSC-SPLIT-URL-DIAGNOSIS-2026-08-12.json",
@@ -108,7 +108,7 @@
     },
     "expansionArchitecture": {
       "file": "data/rank-tracker/SLV-EXPANSION-ARCHITECTURE-2026-08-12.json",
-      "sha256": "468388665d271c377a5c7f195be587dc84e8384c23f321ea2e8c582fc950bd68"
+      "sha256": "32e1c580982fb00ca11b4a212c3567d3cc2e319ec5dc89cd53933b5edf1b615a"
     },
     "corePriority": {
       "file": "data/rank-tracker/SLV-PRIORITY-2026-08-12.json",
@@ -1843,9 +1843,9 @@
         "googleAiOverviewOwnedQueries": [],
         "protectedOrganicNumberOneQueries": [],
         "intendedPageSelectedForEveryMeasuredRank": true,
-        "gscState": "intended-url-only-for-all-returned-rows",
+        "gscState": "complete-request-with-unreturned-rows",
         "gscRequestedQueries": 4,
-        "gscReturnedQueries": 4,
+        "gscReturnedQueries": 3,
         "gscAlternateNormalizedUrls": [],
         "gscUrlDiagnosis": null,
         "serviceAreaStatus": "pending-current-profile-service-area-verification",
