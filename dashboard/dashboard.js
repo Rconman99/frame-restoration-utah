@@ -750,11 +750,11 @@
     var psi = (CFG.dataSources && CFG.dataSources.psi) || {};
     if (psi.enabled === false) { el.innerHTML = ''; return; }
     var origin = psi.origin || ('https://' + (CFG.client && CFG.client.domain || ''));
-    var apiKey = psi.apiKey;
+    var endpoint = psi.endpoint;
 
-    if (!apiKey) {
+    if (!endpoint) {
       var html = '<div class="cc"><h3>⚡ Core Web Vitals</h3>';
-      html += '<div style="font-size:.85rem;color:var(--muted);line-height:1.5">Add a free PageSpeed Insights API key to <code style="background:var(--bg);padding:2px 6px;border-radius:4px">data/dashboard-config.json</code> → <code>dataSources.psi.apiKey</code> to enable LCP / CLS / INP tracking.</div>';
+      html += '<div style="font-size:.85rem;color:var(--muted);line-height:1.5">Set <code style="background:var(--bg);padding:2px 6px;border-radius:4px">dataSources.psi.endpoint</code> to <code>/api/pagespeed</code> and add <code>PAGESPEED_API_KEY</code> in Vercel to enable LCP / CLS / INP tracking.</div>';
       html += '<div style="font-size:.78rem;margin-top:8px"><a href="https://developers.google.com/speed/docs/insights/v5/get-started" target="_blank" style="color:var(--blue)">Get key →</a></div>';
       html += '</div>';
       el.innerHTML = html;
@@ -773,7 +773,7 @@
 
     el.innerHTML = '<div class="cc"><h3>⚡ Core Web Vitals</h3><div style="color:var(--muted);font-size:.85rem"><span class="sp"></span> Loading from PageSpeed Insights…</div></div>';
     try {
-      var url = 'https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url=' + encodeURIComponent(origin) + '&strategy=' + (psi.strategy || 'mobile') + '&key=' + apiKey;
+      var url = endpoint + '?url=' + encodeURIComponent(origin) + '&strategy=' + encodeURIComponent(psi.strategy || 'mobile');
       var r = await fetch(url);
       var d = await r.json();
       if (d.error) throw new Error(d.error.message || 'PSI error');

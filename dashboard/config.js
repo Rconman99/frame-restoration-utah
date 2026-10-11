@@ -29,7 +29,7 @@ window.DASHBOARD_CONFIG = Object.freeze({
       enabled: true,
       origin: "https://www.framerestorationutah.com",
       strategy: "mobile",
-      apiKey: "AIzaSyBcqIurJqIrnaf9V1adhN-UuSgvjcQjwgU",
+      endpoint: "/api/pagespeed",
     }),
   }),
 });
