@@ -1,8 +1,8 @@
 {
   "artifact": "frame-utah-growth-operations",
   "version": 1,
-  "generatedAt": "2026-10-10T12:52:44.447Z",
-  "snapshotDate": "2026-10-10",
+  "generatedAt": "2026-10-11T12:54:23.019Z",
+  "snapshotDate": "2026-10-11",
   "sourceAgeHours": 0,
   "state": "measurement_operational_outcomes_incomplete",
   "northStar": "qualified_organic_leads",
@@ -16,8 +16,8 @@
     "nextAction": "Reconcile existing lead source/city/page attribution with owner-confirmed CRM outcomes through the approved read-only lane; do not infer jobs from clicks or change CRM truth."
   },
   "searchWindow": {
-    "startDate": "2026-09-10",
-    "endDate": "2026-10-07"
+    "startDate": "2026-09-11",
+    "endDate": "2026-10-08"
   },
   "blockers": [],
   "crawlErrors": [],
@@ -29,8 +29,8 @@
       "state": "observed_rolling_window",
       "metrics": {
         "clicks": 1,
-        "impressions": 7052,
-        "averagePosition": 24.4
+        "impressions": 7295,
+        "averagePosition": 24.2
       }
     },
     {
@@ -39,7 +39,7 @@
       "state": "observed_rolling_window",
       "metrics": {
         "clicks": 4,
-        "impressions": 2205,
+        "impressions": 2228,
         "averagePosition": 10
       }
     },
@@ -49,8 +49,8 @@
       "state": "observed_rolling_window",
       "metrics": {
         "clicks": 0,
-        "impressions": 19,
-        "averagePosition": 6.9
+        "impressions": 20,
+        "averagePosition": 7
       }
     },
     {
@@ -59,8 +59,8 @@
       "state": "observed_rolling_window",
       "metrics": {
         "clicks": 0,
-        "impressions": 7,
-        "averagePosition": 13.6
+        "impressions": 8,
+        "averagePosition": 12.4
       }
     },
     {
@@ -87,7 +87,7 @@
       "region": "slc",
       "query": "roof inspection salt lake city",
       "clicks": 0,
-      "impressions": 44,
+      "impressions": 43,
       "averagePosition": 13.2,
       "state": "exact_query_page_diagnosis_ready",
       "nextAction": "Obtain an exact query + intended-page baseline; check current URL selection and running experiments before drafting one isolated change.",
@@ -95,10 +95,10 @@
     },
     {
       "region": "slc",
-      "query": "benefits of asphalt shingles salt lake city",
+      "query": "roof inspections salt lake city",
       "clicks": 0,
-      "impressions": 31,
-      "averagePosition": 14.7,
+      "impressions": 35,
+      "averagePosition": 11.9,
       "state": "exact_query_page_diagnosis_ready",
       "nextAction": "Obtain an exact query + intended-page baseline; check current URL selection and running experiments before drafting one isolated change.",
       "limitation": "Query-level discovery only: these metrics are not a page baseline, lead count or revenue estimate."
@@ -107,8 +107,8 @@
       "region": "heber",
       "query": "roof repair heber city ut",
       "clicks": 0,
-      "impressions": 2157,
-      "averagePosition": 7.4,
+      "impressions": 2182,
+      "averagePosition": 7.1,
       "state": "exact_query_page_diagnosis_ready",
       "nextAction": "Obtain an exact query + intended-page baseline; check current URL selection and running experiments before drafting one isolated change.",
       "limitation": "Query-level discovery only: these metrics are not a page baseline, lead count or revenue estimate."
@@ -117,8 +117,8 @@
       "region": "heber",
       "query": "roofing heber city ut",
       "clicks": 0,
-      "impressions": 1660,
-      "averagePosition": 4.7,
+      "impressions": 1661,
+      "averagePosition": 4.8,
       "state": "exact_query_page_diagnosis_ready",
       "nextAction": "Obtain an exact query + intended-page baseline; check current URL selection and running experiments before drafting one isolated change.",
       "limitation": "Query-level discovery only: these metrics are not a page baseline, lead count or revenue estimate."
@@ -127,8 +127,8 @@
       "region": "heber",
       "query": "dc biggs roof specialists, llc heber city, ut",
       "clicks": 0,
-      "impressions": 75,
-      "averagePosition": 8.8,
+      "impressions": 53,
+      "averagePosition": 9,
       "state": "exact_query_page_diagnosis_ready",
       "nextAction": "Obtain an exact query + intended-page baseline; check current URL selection and running experiments before drafting one isolated change.",
       "limitation": "Query-level discovery only: these metrics are not a page baseline, lead count or revenue estimate."
@@ -137,8 +137,8 @@
       "region": "hail-service-area",
       "query": "roofing midway ut",
       "clicks": 0,
-      "impressions": 1691,
-      "averagePosition": 4.2,
+      "impressions": 1674,
+      "averagePosition": 4.1,
       "state": "exact_query_page_diagnosis_ready",
       "nextAction": "Obtain an exact query + intended-page baseline; check current URL selection and running experiments before drafting one isolated change.",
       "limitation": "Query-level discovery only: these metrics are not a page baseline, lead count or revenue estimate."
@@ -147,8 +147,8 @@
       "region": "davis-hail",
       "query": "roof repair farmington ut",
       "clicks": 0,
-      "impressions": 1404,
-      "averagePosition": 10.1,
+      "impressions": 1428,
+      "averagePosition": 10.2,
       "state": "exact_query_page_diagnosis_ready",
       "nextAction": "Obtain an exact query + intended-page baseline; check current URL selection and running experiments before drafting one isolated change.",
       "limitation": "Query-level discovery only: these metrics are not a page baseline, lead count or revenue estimate."
@@ -157,7 +157,7 @@
       "region": "davis-hail",
       "query": "roofing farmington ut",
       "clicks": 0,
-      "impressions": 879,
+      "impressions": 875,
       "averagePosition": 11.2,
       "state": "exact_query_page_diagnosis_ready",
       "nextAction": "Obtain an exact query + intended-page baseline; check current URL selection and running experiments before drafting one isolated change.",
@@ -228,8 +228,8 @@
   },
   "sources": [
     {
-      "file": "data/seo/snapshots/2026-10-10.json",
-      "sha256": "8b35fb0c4d8f46c4f37b1bb95a22f527ab6535f7ff76cb7e4783ca77bcc050f1"
+      "file": "data/seo/snapshots/2026-10-11.json",
+      "sha256": "7fd88f4f53695e10e9d8ccce94661334597f34b2fc3f45a8567406a0f6a4c605"
     },
     {
       "file": "data/seo-experiments/utah-homepage-commercial-title-2026-08-09.json",
