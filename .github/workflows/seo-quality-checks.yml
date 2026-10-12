@@ -1,0 +1,39 @@
+name: SEO quality checks (non-blocking)
+
+# Warning-only checks on every PR (Grok Bot, via the cowork/ lane):
+#   1. Structured-data required fields: LocalBusiness/RoofingContractor need
+#      name + address, Service needs name/serviceType + provider. JSON-LD that
+#      does not parse is still caught (and blocks) in compliance-gate.yml via
+#      scripts/audit-jsonld.mjs.
+#   2. CrUX origin p75 LCP / INP / CLS for www.framerestorationutah.com, using
+#      the CRUX_API_KEY repository secret. Skips cleanly if the secret is unset.
+# Both steps use continue-on-error and the scripts exit 0, so this workflow
+# never blocks a merge. Flip to --strict once the existing gaps are fixed.
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  schema-and-crux:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Unit tests for the schema checker
+        continue-on-error: true
+        run: node --test scripts/test-audit-schema-fields.mjs
+      - name: Structured-data required fields (warnings only)
+        continue-on-error: true
+        run: node scripts/audit-schema-fields.mjs
+      - name: CrUX origin Core Web Vitals (warnings only)
+        continue-on-error: true
+        env:
+          CRUX_API_KEY: ${{ secrets.CRUX_API_KEY }}
+        run: node scripts/check-crux.mjs
