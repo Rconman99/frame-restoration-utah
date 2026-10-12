@@ -140,7 +140,15 @@ def _domain_of(url: str) -> str:
         return ""
 
 
-@with_retry(attempts=3, base_delay=1.0, max_delay=8.0)
+# SerpAPI's Google engine can take 20-60s on slow upstream fetches, and its
+# Cloudflare edge returns transient 520/522s during brief origin incidents
+# (2026-09-29: 1 read-timeout; 2026-10-06: 9/12 queries 520/522/timeouts).
+# Longer timeout + more spaced retries ride those out; a final sweep pass
+# below re-tries anything still missing after a cool-down.
+SERPAPI_TIMEOUT_SEC = 60
+
+
+@with_retry(attempts=4, base_delay=5.0, max_delay=30.0)
 def _serpapi_search_raw(query: str, api_key: str) -> dict:
     """Hit SerpAPI Google engine. Raises on transient failure (caller catches)."""
     params = {
@@ -153,7 +161,7 @@ def _serpapi_search_raw(query: str, api_key: str) -> dict:
         "api_key": api_key,
     }
     url = "https://serpapi.com/search?" + urllib.parse.urlencode(params)
-    with urllib.request.urlopen(url, timeout=20) as resp:
+    with urllib.request.urlopen(url, timeout=SERPAPI_TIMEOUT_SEC) as resp:
         return json.loads(resp.read())
 
 
@@ -471,6 +479,29 @@ def main() -> int:
             if ppl:
                 analyzed["perplexity"] = ppl
         rows.append(analyzed)
+
+    if failed_queries:
+        # Second pass after a cool-down: transient SerpAPI edge outages
+        # (520/522/timeouts) usually clear within minutes. Still fail closed
+        # below if anything is missing after this pass.
+        cooldown = int(os.environ.get("SERPAPI_RETRY_COOLDOWN_SEC", "120"))
+        print(
+            f"→ Retrying {len(failed_queries)} failed queries after {cooldown}s cool-down",
+            file=sys.stderr,
+        )
+        time.sleep(cooldown)
+        still_failed: list[str] = []
+        for q in failed_queries:
+            print(f"→ (pass 2) {q}", file=sys.stderr)
+            serp = _serpapi_search(q, serp_key)
+            if serp is None:
+                still_failed.append(q)
+                continue
+            rows.append(_analyze_serp(q, serp))
+        failed_queries = still_failed
+        # Keep report rows in panel order
+        order = {q: i for i, q in enumerate(QUERIES)}
+        rows.sort(key=lambda r: order.get(r.get("query"), len(order)))
 
     if failed_queries:
         # Fail closed: a report built on partial SERP data scores every failed
