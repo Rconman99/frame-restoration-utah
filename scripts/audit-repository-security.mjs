@@ -47,12 +47,9 @@ const referenceValuePattern = /^(?:\$[A-Za-z_][A-Za-z0-9_]*|\$\([^)]*\)|\$\{[A-Z
 const publicClientPrefix = /^(?:phc_|pk[._](?:live|test)[._]|pk\.)/;
 const assignmentPattern = /\b((?=[A-Z][A-Z0-9_]*\b)(?=[A-Z0-9_]*(?:TOKEN|SECRET|PASSWORD|PRIVATE_KEY|SERVICE_ROLE_KEY|API_KEY))[A-Z][A-Z0-9_]*)\b\s*[:=]\s*["'`]?([^\s,"'`;#}]+)/g;
 
-// These are intentionally browser-public API identifiers. Keep the exception
-// occurrence-bounded so an additional key in either file still fails the audit.
-const publicDetectorBudgets = new Map([
-  ['dashboard/config.js\0google-api-key', 1],
-  ['data/dashboard-config.json\0google-api-key', 1],
-]);
+// No browser-public Google API keys are allowed anymore: the PageSpeed key is
+// served from the PAGESPEED_API_KEY env var via /api/pagespeed.
+const publicDetectorBudgets = new Map();
 
 function looksLikeLiteralCredential(variable, value) {
   if (value.length < 20 || placeholderPattern.test(value) || referenceValuePattern.test(value)) return false;
