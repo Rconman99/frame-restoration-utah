@@ -103,10 +103,24 @@ try {
     { width: 1440, height: 900 },
   ]) {
     for (const route of ["/pages/roof-repair", "/blog/springville/storm-damage-roof-repair-springville-utah"]) {
-      const page = await browser.newPage({ viewport });
+      const page = await browser.newPage({ viewport, isMobile: viewport.width <= 600, hasTouch: true });
       await page.route("**/*", (request) => request.request().url().startsWith(origin)
         ? request.continue() : request.abort());
       await page.goto(`${origin}${route}`, { waitUntil: "domcontentloaded" });
+      await page.evaluate(() => document.fonts.ready);
+      const surface = await page.evaluate(() => {
+        const dock = document.querySelector(".sticky-call");
+        const dockVisible = dock && getComputedStyle(dock).display !== "none";
+        return {
+          width: Math.max(document.documentElement.scrollWidth, document.body.scrollWidth),
+          dock: dockVisible ? dock.getBoundingClientRect().toJSON() : null,
+        };
+      });
+      assert(surface.width <= viewport.width + 1, `${route} must not widen the ${viewport.width}px viewport: ${surface.width}px`);
+      if (surface.dock) {
+        assert(surface.dock.top >= 0 && surface.dock.bottom <= viewport.height + 1, `${route} contact dock must remain inside the ${viewport.height}px viewport`);
+        assert(surface.dock.left >= 0 && surface.dock.right <= viewport.width + 1, `${route} contact dock must fit horizontally`);
+      }
       await page.locator('a[href*="calendar.app.google"]:visible').first().click();
       await page.waitForFunction(() => document.activeElement?.id === "frModalName");
       const consent = page.locator('.fr-modal-consent input[type="checkbox"]');
