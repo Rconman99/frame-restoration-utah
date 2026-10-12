@@ -21,7 +21,7 @@
   "sources": {
     "portfolio": {
       "file": "data/rank-tracker/SLV-18-CITY-GOAL-PORTFOLIO-2026-08-12.json",
-      "sha256": "c2318dba4159f6fed3ef114b90c827bafc6878e97f895bff4b982ec93a5818bf"
+      "sha256": "73c9b2618fadf06c12e31cbb7a6bd53c999d5ca640b0fe08c5feaccbe6b05091"
     },
     "coreRegistry": {
       "file": "data/rank-tracker/panels.json",
@@ -104,6 +104,18 @@
     },
     {
       "priority": 2,
+      "city": "Draper",
+      "state": "complete-request-with-unreturned-rows",
+      "protectedFootholds": {
+        "organicNumberOneQueries": [
+          "roofing contractor draper"
+        ],
+        "googleAiOverviewCitedQueries": []
+      },
+      "action": "Protect the measured #1/AIO foothold. Do not change title, H1, canonical, route, or internal-link intent until exact owner approval and a declared isolated experiment exist."
+    },
+    {
+      "priority": 2,
       "city": "Kearns",
       "state": "complete-request-with-unreturned-rows",
       "protectedFootholds": {
@@ -141,16 +153,6 @@
     {
       "priority": 4,
       "city": "Cottonwood Heights",
-      "state": "complete-request-with-unreturned-rows",
-      "protectedFootholds": {
-        "organicNumberOneQueries": [],
-        "googleAiOverviewCitedQueries": []
-      },
-      "action": "Preserve the intended city hub and all related routes; use the next complete targeted GSC read before selecting an architecture or intent experiment."
-    },
-    {
-      "priority": 4,
-      "city": "Draper",
       "state": "complete-request-with-unreturned-rows",
       "protectedFootholds": {
         "organicNumberOneQueries": [],
@@ -859,11 +861,13 @@
         "exactRows": 3
       },
       "protectedFootholds": {
-        "organicNumberOneQueries": [],
+        "organicNumberOneQueries": [
+          "roofing contractor draper"
+        ],
         "googleAiOverviewCitedQueries": []
       },
       "alternateNormalizedUrls": [],
-      "nextEvidenceAction": "Preserve the intended city hub and all related routes; use the next complete targeted GSC read before selecting an architecture or intent experiment.",
+      "nextEvidenceAction": "Protect the measured #1/AIO foothold. Do not change title, H1, canonical, route, or internal-link intent until exact owner approval and a declared isolated experiment exist.",
       "queries": [
         {
           "queryId": "draper-roofing-contractor",
