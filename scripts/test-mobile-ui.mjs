@@ -92,6 +92,71 @@ const browser = await chromium.launch({
 let checks = 0;
 
 try {
+  // Production regression: text-field CSS stretched the consent checkbox to
+  // the form width and pushed the SMS disclosure out of the modal.
+  for (const viewport of [
+    { width: 320, height: 568 },
+    { width: 360, height: 800 },
+    { width: 393, height: 852 },
+    { width: 430, height: 932 },
+    { width: 740, height: 360 },
+    { width: 1440, height: 900 },
+  ]) {
+    for (const route of ["/pages/roof-repair", "/blog/springville/storm-damage-roof-repair-springville-utah"]) {
+      const page = await browser.newPage({ viewport });
+      await page.route("**/*", (request) => request.request().url().startsWith(origin)
+        ? request.continue() : request.abort());
+      await page.goto(`${origin}${route}`, { waitUntil: "domcontentloaded" });
+      await page.locator('a[href*="calendar.app.google"]:visible').first().click();
+      await page.waitForFunction(() => document.activeElement?.id === "frModalName");
+      const consent = page.locator('.fr-modal-consent input[type="checkbox"]');
+      const geometry = await consent.evaluate((input) => {
+        const modal = input.closest(".fr-modal");
+        const label = input.closest("label");
+        const text = label.querySelector("span");
+        const box = input.getBoundingClientRect();
+        const textBox = text.getBoundingClientRect();
+        return {
+          width: box.width, height: box.height,
+          appearance: getComputedStyle(input).appearance,
+          checked: input.checked, required: input.required,
+          labelText: text.textContent,
+          modalOverflow: modal.scrollWidth - modal.clientWidth,
+          labelOverflow: label.scrollWidth - label.clientWidth,
+          modalInsideViewport: modal.getBoundingClientRect().left >= 0 && modal.getBoundingClientRect().right <= innerWidth,
+          textBesideCheckbox: textBox.left >= box.right && textBox.width > 150,
+        };
+      });
+      assert(geometry.width >= 14 && geometry.width <= 24, `SMS checkbox width ${geometry.width}px on ${route} at ${viewport.width}px`);
+      assert(geometry.height >= 14 && geometry.height <= 24, "SMS checkbox must retain a usable native size");
+      assert.notEqual(geometry.appearance, "none", "SMS checkbox native appearance must remain visible");
+      assert.equal(geometry.checked, false, "SMS consent must start unchecked");
+      assert.equal(geometry.required, false, "SMS consent must remain optional");
+      assert(geometry.labelText.includes("Consent is not required to submit this form."));
+      assert(geometry.textBesideCheckbox, "SMS disclosure must have readable width beside the checkbox");
+      for (const key of ["modalOverflow", "labelOverflow"]) {
+        assert(geometry[key] <= 1, `${key}: ${geometry[key]}px on ${route} at ${viewport.width}px`);
+      }
+      assert(geometry.modalInsideViewport, "The modal must stay inside the viewport horizontally");
+      await page.locator(".fr-modal-optional summary").press("Tab");
+      assert.equal(await consent.evaluate((input) => input === document.activeElement), true, "Tab must reach SMS consent");
+      assert.equal(await consent.evaluate((input) => getComputedStyle(input).outlineStyle !== "none" || getComputedStyle(input).boxShadow !== "none"), true, "SMS consent keyboard focus must be visible");
+      await consent.press("Space");
+      assert.equal(await consent.isChecked(), true, "Space must toggle consent on");
+      await consent.press("Space");
+      assert.equal(await consent.isChecked(), false, "Space must toggle consent off");
+      await consent.press("Escape");
+      assert.equal(await page.locator("#frModalOverlay").isVisible(), false, "Escape must close the modal");
+      await page.locator('a[href*="calendar.app.google"]:visible').first().click();
+      await page.waitForFunction(() => document.activeElement?.id === "frModalName");
+      assert.equal(await consent.isChecked(), false, "Reopening must not opt in to SMS");
+      await page.getByRole("button", { name: "Close", exact: true }).click();
+      assert.equal(await page.locator("#frModalOverlay").isVisible(), false, "Close button must close the modal");
+      checks += 1;
+      await page.close();
+    }
+  }
+
   for (const viewport of viewports) {
     for (const route of routes) {
       const page = await browser.newPage({ viewport });
