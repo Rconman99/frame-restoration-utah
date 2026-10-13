@@ -17,6 +17,24 @@ test('nested provider and bare references are soft', () => {
   assert.equal(checkNode({ '@type': 'RoofingContractor', '@id': 'https://x/#org' }).kind, null);
 });
 
+test('business nodes without an @id are audited, not skipped as references', () => {
+  const anonymous = checkNode({ '@type': 'RoofingContractor', name: 'Frame Restoration Utah' });
+  assert.equal(anonymous.kind, 'LocalBusiness');
+  assert.ok(anonymous.errors.includes('address'));
+
+  const namedUrl = checkNode(
+    { '@type': 'RoofingContractor', name: 'Frame Restoration Utah', url: 'https://www.framerestorationutah.com' },
+    'provider',
+  );
+  assert.equal(namedUrl.kind, 'LocalBusiness');
+  assert.deepEqual(namedUrl.errors, []);
+  assert.ok(namedUrl.warnings.some((w) => w.includes('address')));
+
+  const blankId = checkNode({ '@type': 'RoofingContractor', name: 'Frame', '@id': '   ' });
+  assert.equal(blankId.kind, 'LocalBusiness');
+  assert.ok(blankId.errors.includes('address'));
+});
+
 test('Service needs name and provider (except inside OfferCatalog)', () => {
   assert.deepEqual(checkNode({ '@type': 'Service', name: 'Roof repair' }).errors, ['provider']);
   assert.deepEqual(checkNode({ '@type': 'Service', name: 'Roof repair' }, 'itemOffered').errors, []);

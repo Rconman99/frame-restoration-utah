@@ -8,7 +8,11 @@ name: SEO quality checks (non-blocking)
 #   2. CrUX origin p75 LCP / INP / CLS for www.framerestorationutah.com, using
 #      the CRUX_API_KEY repository secret. Skips cleanly if the secret is unset.
 # Both steps use continue-on-error and the scripts exit 0, so this workflow
-# never blocks a merge. Flip to --strict once the existing gaps are fixed.
+# never blocks a merge. Do not flip the schema audit to --strict until the
+# owner decides the Salt Lake City service-area profile: validate-slc-identity
+# forbids a storefront address on that RoofingContractor, and the noindex
+# preview copies the same node. Those two required-field warnings are policy,
+# not missing facts.
 
 on:
   pull_request:
