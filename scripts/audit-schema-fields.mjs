@@ -9,8 +9,10 @@
  *       required  name, address (PostalAddress with addressLocality + addressRegion)
  *       recommended telephone, url
  *   - Service: required name or serviceType, and provider
- * Bare references ({"@id": …} or {"@type","@id"} with only a name) are skipped:
- * they point at the full business node declared elsewhere.
+ * Bare references are skipped only when they carry a nonempty @id (optionally
+ * with @type, name, url, or sameAs). They point at the full business node
+ * declared elsewhere. A node with those keys and no @id is an incomplete
+ * business, not a reference, and is audited.
  *
  * Usage:
  *   node scripts/audit-schema-fields.mjs            # report, exit 0 (non-blocking)
@@ -68,8 +70,11 @@ function* nodes(v, key = null) {
 // business entity; a missing address there is a recommendation (add an @id
 // reference instead), not a hard error.
 const NESTED_KEYS = new Set(['provider', 'publisher', 'author', 'brand', 'seller', 'organizer', 'parentOrganization', 'worksFor', 'about', 'mentions', 'itemReviewed']);
-const isReference = (n) => Object.keys(n).every((k) => ['@id', '@type', 'name', 'url', 'sameAs'].includes(k)) && (n['@id'] || !n.address);
+const REFERENCE_KEYS = new Set(['@id', '@type', 'name', 'url', 'sameAs']);
 const has = (v) => v !== undefined && v !== null && !(typeof v === 'string' && !v.trim()) && !(Array.isArray(v) && !v.length);
+// @id is required. `!n.address` used to be true for every allowlisted node,
+// so {"@type","name","url"} with no @id was skipped and never audited.
+const isReference = (n) => has(n['@id']) && Object.keys(n).every((k) => REFERENCE_KEYS.has(k));
 
 export function checkNode(n, parentKey = null) {
   const errors = []; const warnings = []; const t = types(n);
