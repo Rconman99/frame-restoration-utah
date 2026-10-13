@@ -30,7 +30,9 @@ jobs:
           # a lane too, and saying so is better than an unattributable branch.
           # It is a declaration, not an authentication: CI cannot verify that a
           # human actually created the branch.
-          LANES="claude codex cowork agy human"
+          # `cursor` is the Cursor cloud-agent lane. Those branches are required
+          # to use cursor/<scope>, so they must not borrow claude/ or codex/.
+          LANES="claude codex cowork agy human cursor"
 
           # Grandfathered exceptions, scoped to THIS repository only.
           # Each is bound to both PR number and exact branch, so the entry cannot
@@ -83,7 +85,7 @@ jobs:
 
             claude/<scope>-<date>     codex/<scope>-<date>
             cowork/<scope>-<date>     agy/<scope>-<date>
-            human/<scope>
+            human/<scope>             cursor/<scope>
 
           Type goes in the scope, not the prefix:  claude/fix-idaho-hero-20260817
 
