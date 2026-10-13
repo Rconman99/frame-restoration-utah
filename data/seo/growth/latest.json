@@ -1,8 +1,8 @@
 {
   "artifact": "frame-utah-growth-operations",
   "version": 1,
-  "generatedAt": "2026-10-11T12:54:23.019Z",
-  "snapshotDate": "2026-10-11",
+  "generatedAt": "2026-10-13T12:59:32.679Z",
+  "snapshotDate": "2026-10-13",
   "sourceAgeHours": 0,
   "state": "measurement_operational_outcomes_incomplete",
   "northStar": "qualified_organic_leads",
@@ -16,8 +16,8 @@
     "nextAction": "Reconcile existing lead source/city/page attribution with owner-confirmed CRM outcomes through the approved read-only lane; do not infer jobs from clicks or change CRM truth."
   },
   "searchWindow": {
-    "startDate": "2026-09-11",
-    "endDate": "2026-10-08"
+    "startDate": "2026-09-13",
+    "endDate": "2026-10-10"
   },
   "blockers": [],
   "crawlErrors": [],
@@ -29,8 +29,8 @@
       "state": "observed_rolling_window",
       "metrics": {
         "clicks": 1,
-        "impressions": 7295,
-        "averagePosition": 24.2
+        "impressions": 6774,
+        "averagePosition": 23.7
       }
     },
     {
@@ -39,8 +39,8 @@
       "state": "observed_rolling_window",
       "metrics": {
         "clicks": 4,
-        "impressions": 2228,
-        "averagePosition": 10
+        "impressions": 2222,
+        "averagePosition": 10.2
       }
     },
     {
@@ -49,8 +49,8 @@
       "state": "observed_rolling_window",
       "metrics": {
         "clicks": 0,
-        "impressions": 20,
-        "averagePosition": 7
+        "impressions": 21,
+        "averagePosition": 6.8
       }
     },
     {
@@ -59,15 +59,19 @@
       "state": "observed_rolling_window",
       "metrics": {
         "clicks": 0,
-        "impressions": 8,
-        "averagePosition": 12.4
+        "impressions": 9,
+        "averagePosition": 11.7
       }
     },
     {
       "id": "charleston",
       "page": "https://www.framerestorationutah.com/blog/charleston/hail-roof-inspection-charleston",
-      "state": "not_measured_or_not_returned",
-      "metrics": null
+      "state": "observed_rolling_window",
+      "metrics": {
+        "clicks": 0,
+        "impressions": 1,
+        "averagePosition": 4
+      }
     },
     {
       "id": "layton",
@@ -87,8 +91,8 @@
       "region": "slc",
       "query": "roof inspection salt lake city",
       "clicks": 0,
-      "impressions": 43,
-      "averagePosition": 13.2,
+      "impressions": 41,
+      "averagePosition": 13.3,
       "state": "exact_query_page_diagnosis_ready",
       "nextAction": "Obtain an exact query + intended-page baseline; check current URL selection and running experiments before drafting one isolated change.",
       "limitation": "Query-level discovery only: these metrics are not a page baseline, lead count or revenue estimate."
@@ -97,8 +101,8 @@
       "region": "slc",
       "query": "roof inspections salt lake city",
       "clicks": 0,
-      "impressions": 35,
-      "averagePosition": 11.9,
+      "impressions": 37,
+      "averagePosition": 11.8,
       "state": "exact_query_page_diagnosis_ready",
       "nextAction": "Obtain an exact query + intended-page baseline; check current URL selection and running experiments before drafting one isolated change.",
       "limitation": "Query-level discovery only: these metrics are not a page baseline, lead count or revenue estimate."
@@ -107,8 +111,8 @@
       "region": "heber",
       "query": "roof repair heber city ut",
       "clicks": 0,
-      "impressions": 2182,
-      "averagePosition": 7.1,
+      "impressions": 2167,
+      "averagePosition": 6.7,
       "state": "exact_query_page_diagnosis_ready",
       "nextAction": "Obtain an exact query + intended-page baseline; check current URL selection and running experiments before drafting one isolated change.",
       "limitation": "Query-level discovery only: these metrics are not a page baseline, lead count or revenue estimate."
@@ -117,18 +121,8 @@
       "region": "heber",
       "query": "roofing heber city ut",
       "clicks": 0,
-      "impressions": 1661,
+      "impressions": 1660,
       "averagePosition": 4.8,
-      "state": "exact_query_page_diagnosis_ready",
-      "nextAction": "Obtain an exact query + intended-page baseline; check current URL selection and running experiments before drafting one isolated change.",
-      "limitation": "Query-level discovery only: these metrics are not a page baseline, lead count or revenue estimate."
-    },
-    {
-      "region": "heber",
-      "query": "dc biggs roof specialists, llc heber city, ut",
-      "clicks": 0,
-      "impressions": 53,
-      "averagePosition": 9,
       "state": "exact_query_page_diagnosis_ready",
       "nextAction": "Obtain an exact query + intended-page baseline; check current URL selection and running experiments before drafting one isolated change.",
       "limitation": "Query-level discovery only: these metrics are not a page baseline, lead count or revenue estimate."
@@ -137,8 +131,8 @@
       "region": "hail-service-area",
       "query": "roofing midway ut",
       "clicks": 0,
-      "impressions": 1674,
-      "averagePosition": 4.1,
+      "impressions": 1666,
+      "averagePosition": 4,
       "state": "exact_query_page_diagnosis_ready",
       "nextAction": "Obtain an exact query + intended-page baseline; check current URL selection and running experiments before drafting one isolated change.",
       "limitation": "Query-level discovery only: these metrics are not a page baseline, lead count or revenue estimate."
@@ -147,8 +141,8 @@
       "region": "davis-hail",
       "query": "roof repair farmington ut",
       "clicks": 0,
-      "impressions": 1428,
-      "averagePosition": 10.2,
+      "impressions": 1432,
+      "averagePosition": 10.3,
       "state": "exact_query_page_diagnosis_ready",
       "nextAction": "Obtain an exact query + intended-page baseline; check current URL selection and running experiments before drafting one isolated change.",
       "limitation": "Query-level discovery only: these metrics are not a page baseline, lead count or revenue estimate."
@@ -157,8 +151,8 @@
       "region": "davis-hail",
       "query": "roofing farmington ut",
       "clicks": 0,
-      "impressions": 875,
-      "averagePosition": 11.2,
+      "impressions": 866,
+      "averagePosition": 11.4,
       "state": "exact_query_page_diagnosis_ready",
       "nextAction": "Obtain an exact query + intended-page baseline; check current URL selection and running experiments before drafting one isolated change.",
       "limitation": "Query-level discovery only: these metrics are not a page baseline, lead count or revenue estimate."
@@ -167,8 +161,8 @@
       "region": "davis-hail",
       "query": "which roofing companies in farmington ut handle roof repairs and replacements?",
       "clicks": 0,
-      "impressions": 100,
-      "averagePosition": 8.2,
+      "impressions": 94,
+      "averagePosition": 8.4,
       "state": "exact_query_page_diagnosis_ready",
       "nextAction": "Obtain an exact query + intended-page baseline; check current URL selection and running experiments before drafting one isolated change.",
       "limitation": "Query-level discovery only: these metrics are not a page baseline, lead count or revenue estimate."
@@ -228,8 +222,8 @@
   },
   "sources": [
     {
-      "file": "data/seo/snapshots/2026-10-11.json",
-      "sha256": "7fd88f4f53695e10e9d8ccce94661334597f34b2fc3f45a8567406a0f6a4c605"
+      "file": "data/seo/snapshots/2026-10-13.json",
+      "sha256": "81cc969c1804eeb86eb7fabcf5c9a4bee94f288964882b3d1cc12611091e0b07"
     },
     {
       "file": "data/seo-experiments/utah-homepage-commercial-title-2026-08-09.json",
@@ -241,7 +235,7 @@
     },
     {
       "file": "data/rank-tracker/SLV-WEEKLY-DECISIONS-2026-08-12.json",
-      "sha256": "931f97c03a776c1a7fd27867bc43e7643b04a494c57b0647a3f19062c69a522a"
+      "sha256": "77f081b331c3d889a815cda7faceeeebca165f2a7b26cf83be6447b49807e4cc"
     },
     {
       "file": "data/seo/experiment-readouts/utah-homepage-commercial-title-2026-08-09.json",
