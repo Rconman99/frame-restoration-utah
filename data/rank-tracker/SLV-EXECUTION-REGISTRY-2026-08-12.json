@@ -51,7 +51,7 @@
     },
     "expansionArchitecture": {
       "file": "data/rank-tracker/SLV-EXPANSION-ARCHITECTURE-2026-08-12.json",
-      "sha256": "238a1604a8acf1da403e8b1868e1c859c17e0803b07b3693ce39773ee198cf4c"
+      "sha256": "99eacc98bba7bfc20825876dd7743ef93b20cfaaef4d1197a8d79ea4e61c4c87"
     },
     "entityHealth": {
       "file": "data/rank-tracker/SLV-ENTITY-HEALTH-2026-08-12.json",
@@ -63,7 +63,7 @@
     },
     "gscAttribution": {
       "file": "data/rank-tracker/SLV-GSC-URL-ATTRIBUTION-LATEST.json",
-      "sha256": "1ae1fcd9746f87d761d0c1dd085acc798a5973a5535b60b6ca30125f12c4cef7"
+      "sha256": "16912c35f68bea13f6cf46ddafc5176c0e89a514db039061f96a0cf0bd187289"
     },
     "consumerAi": {
       "file": "data/rank-tracker/SLV-CONSUMER-AI-LATEST.json",
@@ -71,7 +71,7 @@
     },
     "interventions": {
       "file": "data/rank-tracker/SLV-INTERVENTION-QUEUE-2026-08-12.json",
-      "sha256": "0bb6f38ce0a50ebde0813f3610e226a6e76adc68ea8b973f55865cfd81e358c8"
+      "sha256": "433d3360e522184b0c5c4cf81505077cf8512b355dbb44343bb752db2b707357"
     },
     "mapsReadiness": {
       "file": "data/rank-tracker/SLV-MAPS-READINESS-2026-08-12.json",
@@ -277,19 +277,17 @@
         "consumerAi": "configured-scheduled-unmeasured-invalid-provider-credential"
       },
       "gscAttribution": {
-        "snapshotDate": "2026-10-14",
+        "snapshotDate": "2026-10-15",
         "window": {
-          "startDate": "2026-09-14",
-          "endDate": "2026-10-11"
+          "startDate": "2026-09-15",
+          "endDate": "2026-10-12"
         },
-        "state": "url-competition-requires-diagnosis",
+        "state": "intended-url-only-for-all-returned-rows",
         "requestedQueries": 4,
         "returnedQueries": 4,
-        "exactRows": 5,
-        "alternateNormalizedUrls": [
-          "framerestorationutah.com/"
-        ],
-        "nextEvidenceAction": "Inspect the alternate URLs against redirect dates, canonicals, current live routing, and query intent. Treat this blended 28-day evidence as a diagnosis trigger, not proof of current cannibalization or permission to redirect."
+        "exactRows": 4,
+        "alternateNormalizedUrls": [],
+        "nextEvidenceAction": "Consult the current weekly experiment decision for SLC observation-review readiness; continue fixed panels and targeted GSC reads. A passed calendar gate does not authorize public edits or prove causal gains."
       },
       "lane": "observe-time-gated-slc-experiment",
       "action": "Review the mature SLC observation now: reconcile the measured Google panels and targeted GSC evidence, record missing same-window consumer-AI evidence and confounds, and retain required factual corrections. Do not claim causal ranking gains or start public edits from an expired time gate.",
@@ -373,10 +371,10 @@
         "consumerAi": "configured-scheduled-unmeasured-invalid-provider-credential"
       },
       "gscAttribution": {
-        "snapshotDate": "2026-10-14",
+        "snapshotDate": "2026-10-15",
         "window": {
-          "startDate": "2026-09-14",
-          "endDate": "2026-10-11"
+          "startDate": "2026-09-15",
+          "endDate": "2026-10-12"
         },
         "state": "url-competition-requires-diagnosis",
         "requestedQueries": 4,
@@ -475,10 +473,10 @@
         "consumerAi": "configured-manual-unmeasured-invalid-provider-credential"
       },
       "gscAttribution": {
-        "snapshotDate": "2026-10-14",
+        "snapshotDate": "2026-10-15",
         "window": {
-          "startDate": "2026-09-14",
-          "endDate": "2026-10-11"
+          "startDate": "2026-09-15",
+          "endDate": "2026-10-12"
         },
         "state": "complete-request-with-unreturned-rows",
         "requestedQueries": 4,
@@ -572,10 +570,10 @@
         "consumerAi": "configured-manual-unmeasured-invalid-provider-credential"
       },
       "gscAttribution": {
-        "snapshotDate": "2026-10-14",
+        "snapshotDate": "2026-10-15",
         "window": {
-          "startDate": "2026-09-14",
-          "endDate": "2026-10-11"
+          "startDate": "2026-09-15",
+          "endDate": "2026-10-12"
         },
         "state": "complete-request-with-unreturned-rows",
         "requestedQueries": 4,
@@ -668,15 +666,15 @@
         "consumerAi": "configured-manual-unmeasured-invalid-provider-credential"
       },
       "gscAttribution": {
-        "snapshotDate": "2026-10-14",
+        "snapshotDate": "2026-10-15",
         "window": {
-          "startDate": "2026-09-14",
-          "endDate": "2026-10-11"
+          "startDate": "2026-09-15",
+          "endDate": "2026-10-12"
         },
-        "state": "intended-url-only-for-all-returned-rows",
+        "state": "complete-request-with-unreturned-rows",
         "requestedQueries": 4,
-        "returnedQueries": 4,
-        "exactRows": 4,
+        "returnedQueries": 3,
+        "exactRows": 3,
         "alternateNormalizedUrls": [],
         "nextEvidenceAction": "Preserve the intended city hub and all related routes; use the next complete targeted GSC read before selecting an architecture or intent experiment."
       },
@@ -764,10 +762,10 @@
         "consumerAi": "configured-manual-unmeasured-invalid-provider-credential"
       },
       "gscAttribution": {
-        "snapshotDate": "2026-10-14",
+        "snapshotDate": "2026-10-15",
         "window": {
-          "startDate": "2026-09-14",
-          "endDate": "2026-10-11"
+          "startDate": "2026-09-15",
+          "endDate": "2026-10-12"
         },
         "state": "url-competition-requires-diagnosis",
         "requestedQueries": 4,
@@ -865,10 +863,10 @@
         "consumerAi": "configured-manual-unmeasured-invalid-provider-credential"
       },
       "gscAttribution": {
-        "snapshotDate": "2026-10-14",
+        "snapshotDate": "2026-10-15",
         "window": {
-          "startDate": "2026-09-14",
-          "endDate": "2026-10-11"
+          "startDate": "2026-09-15",
+          "endDate": "2026-10-12"
         },
         "state": "complete-request-with-unreturned-rows",
         "requestedQueries": 4,
@@ -961,10 +959,10 @@
         "consumerAi": "configured-manual-unmeasured-invalid-provider-credential"
       },
       "gscAttribution": {
-        "snapshotDate": "2026-10-14",
+        "snapshotDate": "2026-10-15",
         "window": {
-          "startDate": "2026-09-14",
-          "endDate": "2026-10-11"
+          "startDate": "2026-09-15",
+          "endDate": "2026-10-12"
         },
         "state": "complete-request-with-unreturned-rows",
         "requestedQueries": 4,
@@ -1057,10 +1055,10 @@
         "consumerAi": "configured-manual-unmeasured-invalid-provider-credential"
       },
       "gscAttribution": {
-        "snapshotDate": "2026-10-14",
+        "snapshotDate": "2026-10-15",
         "window": {
-          "startDate": "2026-09-14",
-          "endDate": "2026-10-11"
+          "startDate": "2026-09-15",
+          "endDate": "2026-10-12"
         },
         "state": "complete-request-with-unreturned-rows",
         "requestedQueries": 4,
@@ -1153,10 +1151,10 @@
         "consumerAi": "configured-manual-unmeasured-invalid-provider-credential"
       },
       "gscAttribution": {
-        "snapshotDate": "2026-10-14",
+        "snapshotDate": "2026-10-15",
         "window": {
-          "startDate": "2026-09-14",
-          "endDate": "2026-10-11"
+          "startDate": "2026-09-15",
+          "endDate": "2026-10-12"
         },
         "state": "complete-request-with-unreturned-rows",
         "requestedQueries": 4,
@@ -1249,10 +1247,10 @@
         "consumerAi": "configured-manual-unmeasured-invalid-provider-credential"
       },
       "gscAttribution": {
-        "snapshotDate": "2026-10-14",
+        "snapshotDate": "2026-10-15",
         "window": {
-          "startDate": "2026-09-14",
-          "endDate": "2026-10-11"
+          "startDate": "2026-09-15",
+          "endDate": "2026-10-12"
         },
         "state": "complete-request-with-unreturned-rows",
         "requestedQueries": 4,
@@ -1344,10 +1342,10 @@
         "consumerAi": "configured-manual-unmeasured-invalid-provider-credential"
       },
       "gscAttribution": {
-        "snapshotDate": "2026-10-14",
+        "snapshotDate": "2026-10-15",
         "window": {
-          "startDate": "2026-09-14",
-          "endDate": "2026-10-11"
+          "startDate": "2026-09-15",
+          "endDate": "2026-10-12"
         },
         "state": "complete-request-with-unreturned-rows",
         "requestedQueries": 4,
@@ -1440,10 +1438,10 @@
         "consumerAi": "configured-manual-unmeasured-invalid-provider-credential"
       },
       "gscAttribution": {
-        "snapshotDate": "2026-10-14",
+        "snapshotDate": "2026-10-15",
         "window": {
-          "startDate": "2026-09-14",
-          "endDate": "2026-10-11"
+          "startDate": "2026-09-15",
+          "endDate": "2026-10-12"
         },
         "state": "complete-request-with-unreturned-rows",
         "requestedQueries": 4,
@@ -1536,10 +1534,10 @@
         "consumerAi": "configured-manual-unmeasured-invalid-provider-credential"
       },
       "gscAttribution": {
-        "snapshotDate": "2026-10-14",
+        "snapshotDate": "2026-10-15",
         "window": {
-          "startDate": "2026-09-14",
-          "endDate": "2026-10-11"
+          "startDate": "2026-09-15",
+          "endDate": "2026-10-12"
         },
         "state": "complete-request-with-unreturned-rows",
         "requestedQueries": 4,
@@ -1632,10 +1630,10 @@
         "consumerAi": "configured-manual-unmeasured-invalid-provider-credential"
       },
       "gscAttribution": {
-        "snapshotDate": "2026-10-14",
+        "snapshotDate": "2026-10-15",
         "window": {
-          "startDate": "2026-09-14",
-          "endDate": "2026-10-11"
+          "startDate": "2026-09-15",
+          "endDate": "2026-10-12"
         },
         "state": "complete-request-with-unreturned-rows",
         "requestedQueries": 4,
@@ -1730,10 +1728,10 @@
         "consumerAi": "configured-manual-unmeasured-invalid-provider-credential"
       },
       "gscAttribution": {
-        "snapshotDate": "2026-10-14",
+        "snapshotDate": "2026-10-15",
         "window": {
-          "startDate": "2026-09-14",
-          "endDate": "2026-10-11"
+          "startDate": "2026-09-15",
+          "endDate": "2026-10-12"
         },
         "state": "complete-request-with-unreturned-rows",
         "requestedQueries": 4,
@@ -1826,10 +1824,10 @@
         "consumerAi": "configured-manual-unmeasured-invalid-provider-credential"
       },
       "gscAttribution": {
-        "snapshotDate": "2026-10-14",
+        "snapshotDate": "2026-10-15",
         "window": {
-          "startDate": "2026-09-14",
-          "endDate": "2026-10-11"
+          "startDate": "2026-09-15",
+          "endDate": "2026-10-12"
         },
         "state": "complete-request-with-unreturned-rows",
         "requestedQueries": 4,
@@ -1920,40 +1918,38 @@
         "consumerAi": "configured-manual-unmeasured-invalid-provider-credential"
       },
       "gscAttribution": {
-        "snapshotDate": "2026-10-14",
+        "snapshotDate": "2026-10-15",
         "window": {
-          "startDate": "2026-09-14",
-          "endDate": "2026-10-11"
+          "startDate": "2026-09-15",
+          "endDate": "2026-10-12"
         },
-        "state": "url-competition-requires-diagnosis",
+        "state": "intended-url-only-for-all-returned-rows",
         "requestedQueries": 4,
         "returnedQueries": 4,
-        "exactRows": 5,
-        "alternateNormalizedUrls": [
-          "framerestorationutah.com/"
-        ],
-        "nextEvidenceAction": "Inspect the alternate URLs against redirect dates, canonicals, current live routing, and query intent. Treat this blended 28-day evidence as a diagnosis trigger, not proof of current cannibalization or permission to redirect."
+        "exactRows": 4,
+        "alternateNormalizedUrls": [],
+        "nextEvidenceAction": "Preserve the intended city hub and all related routes; use the next complete targeted GSC read before selecting an architecture or intent experiment."
       },
-      "lane": "diagnose-url-consolidation-before-intent-change",
-      "action": "Keep West Jordan's intended page, redirects, canonicals, related routes, and visible intent unchanged while the named stale-slv-gsc-split-url-diagnosis warning is open; refresh the bounded split-URL diagnosis against the current GSC attribution snapshot before suppressing or opening a URL intervention.",
-      "actionClass": "system-monitor",
-      "gate": "current-split-url-diagnosis-required",
+      "lane": "service-area-proof-and-targeted-gsc-before-intent-change",
+      "action": "Obtain current Salt Lake Valley service-area evidence and the next exact-query GSC attribution for West Jordan; request the bounded expansion cleanup separately, but do not change identity or commercial intent until those evidence gates pass.",
+      "actionClass": "owner-or-evidence-input-needed",
+      "gate": "service-area-evidence-plus-targeted-gsc-plus-explicit-cleanup-approval",
       "publicApprovalPacket": "data/authority/SLV-EXPANSION-PUBLIC-REMEDIATION-PACKET-2026-08-12.json",
-      "ownerApprovalPhrase": null,
+      "ownerApprovalPhrase": "I explicitly approve editing and publishing the 12-page Salt Lake Valley expansion integrity cleanup defined in packet frame-utah-slv-twelve-page-expansion-public-integrity-cleanup-v1, with expansion identities, titles, H1s, canonicals, and protected related routes unchanged.",
       "intervention": {
-        "lane": "diagnose-url-consolidation-before-intent-change",
-        "decision": "Monitor",
-        "selectedAction": "Keep West Jordan's intended page, redirects, canonicals, related routes, and visible intent unchanged while the named stale-slv-gsc-split-url-diagnosis warning is open; refresh the bounded split-URL diagnosis against the current GSC attribution snapshot before suppressing or opening a URL intervention.",
-        "gate": "current-split-url-diagnosis-required",
-        "acceptanceCheck": "A refreshed diagnosis names the current GSC snapshot hash and classifies West Jordan's alternate URL evidence before any redirect, canonical, noindex, deletion, title, H1, copy, schema, or internal-link change is considered.",
+        "lane": "service-area-proof-and-targeted-gsc-before-intent-change",
+        "decision": "Request input",
+        "selectedAction": "Obtain current Salt Lake Valley service-area evidence and the next exact-query GSC attribution for West Jordan; request the bounded expansion cleanup separately, but do not change identity or commercial intent until those evidence gates pass.",
+        "gate": "service-area-evidence-plus-targeted-gsc-plus-explicit-cleanup-approval",
+        "acceptanceCheck": "A current receipt explicitly classifies West Jordan for CID 5689850818145735734, all four exact queries are requested without treating missing rows as zero, and any approved cleanup passes the full release gate.",
         "scoreVector": {
           "businessValue": 10,
           "confidence": 6,
           "leadValue": 5,
           "authorityValue": 5,
           "learningValue": 6,
-          "implementationCost": 3,
-          "complianceRisk": 1,
+          "implementationCost": 5,
+          "complianceRisk": 8,
           "customerBlockerRisk": 8,
           "maintenanceCost": 2,
           "sourceBiasRisk": 2,
