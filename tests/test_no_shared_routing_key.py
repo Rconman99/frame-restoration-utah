@@ -9,15 +9,14 @@ LEGACY = "frame-roofing-" + "2026"
 ALLOWED = {  # assertions that the key is ABSENT
     "scripts/test-dashboard-session-client.mjs",
     "supabase/functions/weekly-report/source-security.test.ts",
+    "tests/test_review_request_schedule.py",
 }
 
 
 class NoSharedRoutingKey(unittest.TestCase):
     def test_no_literal_outside_docs(self):
         out = subprocess.run(["git", "grep", "-l", LEGACY], cwd=REPO, capture_output=True, text=True).stdout.split()
-        bad = [p for p in out if not p.endswith((".md", ".html.md")) and p not in ALLOWED
-               and not p.startswith(("data/", "docs/")) or p in ("data/dashboard-config.json",)]
-        bad = [p for p in bad if p not in ALLOWED and not p.endswith(".md")]
+        bad = [p for p in out if p not in ALLOWED and not p.endswith(".md")]
         self.assertEqual(bad, [], f"legacy shared key still present in: {bad}")
 
     def test_browser_login_sends_pin_only(self):

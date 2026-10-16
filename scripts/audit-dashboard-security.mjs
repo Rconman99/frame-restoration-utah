@@ -146,7 +146,7 @@ const loginFlow = loginStart >= 0 && sessionStart > loginStart
 const reservationAt = loginFlow.indexOf('await supabase.rpc(');
 const boundedBodyReadAt = loginFlow.indexOf('await readBoundedJsonObject(');
 const deniedReservationAt = loginFlow.indexOf('if (!reservation.allowed)');
-const routingKeyCheckAt = loginFlow.indexOf('routingKey !== API_KEY');
+const routingKeyCheckAt = loginFlow.indexOf('const routingOk = routingKey');
 const credentialRpcAt = loginFlow.indexOf('"authenticate_dashboard_access"');
 if (
   reservationAt < 0 ||
