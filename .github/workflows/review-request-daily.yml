@@ -6,7 +6,7 @@ name: Utah Review Request Daily
 # atomically before sending, so overlapping runs (this job, a manual call, or any
 # other scheduler) cannot double-send.
 #
-# Secret required: REVIEW_REQUEST_KEY (the function's existing ?key= value). If
+# Secret required: REVIEW_REQUEST_KEY (must equal the function's REVIEW_REQUEST_KEY secret; sent as x-review-key header). If
 # it isn't set, the job logs a notice and exits 0, so merging is safe before
 # the secret is configured.
 #
@@ -46,10 +46,10 @@ jobs:
           fi
           RESPONSE_FILE="$(mktemp)"
           trap 'rm -f "$RESPONSE_FILE"' EXIT
-          URL="https://hdcflshhomzildwqlmwh.supabase.co/functions/v1/review-request?key=${REVIEW_REQUEST_KEY}"
-          if [ "$DRY_RUN" = "1" ]; then URL="${URL}&dry_run=1"; fi
+          URL="https://hdcflshhomzildwqlmwh.supabase.co/functions/v1/review-request"
+          if [ "$DRY_RUN" = "1" ]; then URL="${URL}?dry_run=1"; fi
           echo "::add-mask::$REVIEW_REQUEST_KEY"
-          HTTP_STATUS="$(curl --silent --show-error --output "$RESPONSE_FILE" --write-out "%{http_code}" "$URL")" || {
+          HTTP_STATUS="$(curl --silent --show-error --output "$RESPONSE_FILE" --write-out "%{http_code}" --header "x-review-key: ${REVIEW_REQUEST_KEY}" "$URL")" || {
             echo "::error::review-request call failed before an HTTP response"; exit 1; }
           # Print counts only; never echo customer names/contacts.
           python3 -c 'import json,sys; d=json.load(open(sys.argv[1])); r=d.get("results") or []; print(json.dumps({"dry_run":d.get("dry_run",False),"due":d.get("due"),"processed":len(r),"skipped":sum(1 for x in r if x.get("skipped")),"message":d.get("message")}))' "$RESPONSE_FILE" || true
