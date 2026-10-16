@@ -415,7 +415,6 @@ footer{text-align:center;padding:24px;color:var(--muted);font-size:.78rem;border
 
 <script>
 var API="https://hdcflshhomzildwqlmwh.supabase.co/functions/v1/lead-crm";
-var ROUTING_KEY="frame-roofing-2026";
 var SESSION_STORAGE_KEY="frame.dashboard.session";
 var SESSION_TOKEN="";
 var CUR_USER=null;
@@ -561,7 +560,7 @@ function doLogin(e){
   var p=document.getElementById("pinInput").value.trim();
   if(!p){document.getElementById("loginErr").textContent="Please enter a PIN";return false}
   document.getElementById("loginErr").textContent="Checking…";
-  fetch(crmUrl("login"),{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({routing_key:ROUTING_KEY,pin:p})})
+  fetch(crmUrl("login"),{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({pin:p})})
     .then(async function(r){
       var d={};try{d=await r.json()}catch(_){}
       if(!r.ok){document.getElementById("loginErr").textContent=r.status===401||r.status===403?"Invalid PIN. Try again.":(d.message||d.error||"Server error ("+r.status+"). Try again.");return}

@@ -6,7 +6,7 @@
 // signed token. Every later action requires Authorization: Bearer.
 //
 // Endpoints (single function, dispatched by ?action=...):
-//   POST ?action=login  body: { routing_key, pin }
+//   POST ?action=login  body: { pin } (routing_key optional during transition)
 //        → { token, expires_in, user }
 //   GET  ?action=list   Authorization: Bearer <token>
 //        → { user, leads: [...] }   (all leads, all columns, newest first)
@@ -61,6 +61,12 @@ const SUPABASE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
 // the PIN (+ per-IP throttle below) is the real auth. Env-driven so it can be
 // rotated without a redeploy; unset = function disabled (fail closed).
 const API_KEY = Deno.env.get("LEAD_CRM_API_KEY") ?? "";
+// Shared-key retirement (2026-10-16): browser pages no longer ship a routing
+// key. When LEAD_CRM_PIN_ONLY_LOGIN=true, a login that omits routing_key is
+// judged on the PIN (+ the existing throttle) alone. Transition fallback: a
+// supplied routing_key must still match LEAD_CRM_API_KEY, so scripts that send
+// it keep working until they are moved off it.
+const PIN_ONLY_LOGIN = Deno.env.get("LEAD_CRM_PIN_ONLY_LOGIN") === "true";
 const SESSION_SECRET = Deno.env.get("DASHBOARD_SESSION_SECRET") ?? "";
 const CREDENTIAL_PEPPER = Deno.env.get("DASHBOARD_CREDENTIAL_PEPPER") ?? "";
 const LOGIN_JSON_BODY_LIMIT_BYTES = 1024;
@@ -277,7 +283,7 @@ Deno.serve(async (req: Request) => {
     }, 400);
   }
   if (
-    !API_KEY || !dashboardSessionSecretReady(SESSION_SECRET) ||
+    (!API_KEY && !PIN_ONLY_LOGIN) || !dashboardSessionSecretReady(SESSION_SECRET) ||
     !dashboardCredentialPepperReady(CREDENTIAL_PEPPER) ||
     SESSION_SECRET === CREDENTIAL_PEPPER
   ) {
@@ -358,7 +364,10 @@ Deno.serve(async (req: Request) => {
     const body = bodyResult.value;
     const routingKey = cleanText(body.routing_key, 240);
     const pin = cleanText(body.pin, 32);
-    if (routingKey !== API_KEY || !legacyPinCandidate(pin)) {
+    const routingOk = routingKey
+      ? API_KEY !== "" && routingKey === API_KEY
+      : PIN_ONLY_LOGIN;
+    if (!routingOk || !legacyPinCandidate(pin)) {
       return jsonResp(req, { error: "invalid_credentials" }, 403);
     }
 

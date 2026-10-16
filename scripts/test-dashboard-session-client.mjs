@@ -83,7 +83,6 @@ try {
     if (action === 'login') {
       assert.equal(request.method(), 'POST');
       assert.deepEqual(JSON.parse(request.postData()), {
-        routing_key: 'frame-roofing-2026',
         pin: '654321',
       });
       await route.fulfill({

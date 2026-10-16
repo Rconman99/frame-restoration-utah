@@ -37,8 +37,8 @@ for (const relative of browserFiles) {
 
 for (const relative of ['dashboard/dashboard.js', 'seo-report.html', 'leads.html']) {
   const source = read(relative);
-  if (!/(?:\?action=login|crmUrl\(["']login["']\))/.test(source) || !/routing_key/.test(source) || !/method\s*:\s*['"]POST['"]/.test(source)) {
-    failures.push(`${relative}: login is not a POST-body routing-key flow`);
+  if (!/(?:\?action=login|crmUrl\(["']login["']\))/.test(source) || !/method\s*:\s*['"]POST['"]/.test(source)) {
+    failures.push(`${relative}: login is not a POST-body PIN flow`);
   }
   if (!/Authorization['"]?\s*:\s*['"]Bearer /.test(source)) {
     failures.push(`${relative}: authenticated requests lack a Bearer header`);

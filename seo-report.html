@@ -101,12 +101,12 @@ footer{text-align:center;padding:32px;color:var(--muted);font-size:.8rem;border-
 
 <script src="/dashboard/safe-html.js"></script>
 <script>
-var API="https://hdcflshhomzildwqlmwh.supabase.co",FAPI=API+"/functions/v1/weekly-report",ACCESS_API=API+"/functions/v1/lead-crm",ROUTING_KEY="frame-roofing-2026",SESSION_STORAGE_KEY="frame.dashboard.session",curD=30,pC=null,bC=null,SESSION_TOKEN="",CUR_USER=null;
+var API="https://hdcflshhomzildwqlmwh.supabase.co",FAPI=API+"/functions/v1/weekly-report",ACCESS_API=API+"/functions/v1/lead-crm",SESSION_STORAGE_KEY="frame.dashboard.session",curD=30,pC=null,bC=null,SESSION_TOKEN="",CUR_USER=null;
 var escapeHtml=typeof window.__dashboardEscapeHtml==='function'?window.__dashboardEscapeHtml:function(){return'';};
 
 function doLogin(e){e.preventDefault();var p=document.getElementById('pinInput').value.trim();if(!p){document.getElementById('loginErr').textContent='Please enter a PIN';return false;}
 document.getElementById('loginErr').textContent='';
-fetch(ACCESS_API+'?action=login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({routing_key:ROUTING_KEY,pin:p})}).then(function(r){if(r.status===401||r.status===403){document.getElementById('loginErr').textContent='Invalid PIN. Try again.';return;}return r.json().then(function(d){if(!r.ok)throw new Error(d.message||d.error||'Login failed');return d;});}).then(function(d){if(!d||d.error||!d.token)return;SESSION_TOKEN=d.token;CUR_USER=d.user;sessionStorage.setItem(SESSION_STORAGE_KEY,SESSION_TOKEN);document.getElementById('pinInput').value='';showReport();go(curD);}).catch(function(e){document.getElementById('loginErr').textContent=e.message||'Connection error. Try again.';});return false;}
+fetch(ACCESS_API+'?action=login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({pin:p})}).then(function(r){if(r.status===401||r.status===403){document.getElementById('loginErr').textContent='Invalid PIN. Try again.';return;}return r.json().then(function(d){if(!r.ok)throw new Error(d.message||d.error||'Login failed');return d;});}).then(function(d){if(!d||d.error||!d.token)return;SESSION_TOKEN=d.token;CUR_USER=d.user;sessionStorage.setItem(SESSION_STORAGE_KEY,SESSION_TOKEN);document.getElementById('pinInput').value='';showReport();go(curD);}).catch(function(e){document.getElementById('loginErr').textContent=e.message||'Connection error. Try again.';});return false;}
 
 function showReport(){document.getElementById('loginOverlay').style.display='none';document.getElementById('reportWrap').style.display='block';if(CUR_USER){document.getElementById('userName').textContent=CUR_USER.name;document.getElementById('userRole').textContent=CUR_USER.role;if(CUR_USER.role==='admin')document.getElementById('manageBtn').style.display='inline-block';if(CUR_USER.role==='sales'||CUR_USER.role==='admin')document.getElementById('crmBtn').style.display='inline-block';}}
 

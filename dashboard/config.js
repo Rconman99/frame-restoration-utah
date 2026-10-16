@@ -6,7 +6,6 @@ window.DASHBOARD_CONFIG = Object.freeze({
     domain: "www.framerestorationutah.com",
   }),
   supabaseUrl: "https://hdcflshhomzildwqlmwh.supabase.co",
-  campaignKey: "frame-roofing-2026",
   defaultDays: 30,
   ranges: Object.freeze([7, 30, 60, 90]),
   footerLinks: Object.freeze([Object.freeze({

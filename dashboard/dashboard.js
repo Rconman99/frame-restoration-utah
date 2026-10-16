@@ -10,7 +10,6 @@
  *     clientName: string,
  *     tagline: string,
  *     supabaseUrl: string,
- *     campaignKey: string,
  *     defaultDays: number,
  *     ranges: number[],          // e.g. [7, 14, 30, 90]
  *     footerLinks: { label: string, url: string }[],
@@ -32,7 +31,6 @@
   var API = CFG.supabaseUrl;
   var FAPI = API + '/functions/v1/weekly-report';
   var ACCESS_API = API + '/functions/v1/lead-crm';
-  var ROUTING_KEY = CFG.campaignKey;
   var SESSION_STORAGE_KEY = 'frame.dashboard.session';
   var escapeHtml = typeof window.__dashboardEscapeHtml === 'function'
     ? window.__dashboardEscapeHtml
@@ -53,7 +51,7 @@
     fetch(ACCESS_API + '?action=login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ routing_key: ROUTING_KEY, pin: p })
+      body: JSON.stringify({ pin: p })
     }).then(function (r) {
       if (r.status === 401 || r.status === 403) {
         document.getElementById('loginErr').textContent = 'Invalid PIN. Try again.';
