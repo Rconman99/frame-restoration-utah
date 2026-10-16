@@ -643,7 +643,8 @@ class WorkflowContractTests(unittest.TestCase):
         self.assertRegex(workflow, r"(?m)^  schedule:\n(?:\s*#.*\n)*\s+- cron: '[^']+'")
         self.assertIn("cron.unschedule('lead-notification-worker')", workflow)
         self.assertRegex(workflow, r"dry_run:[\s\S]*default: true")
-        self.assertIn("'health-only' || 'recover'", workflow)
+        self.assertIn("x-frame-worker-mode: recover", workflow)
+        self.assertIn("x-frame-worker-mode: health-only", workflow)
         self.assertIn("cancel-in-progress: false", workflow)
         self.assertNotIn('cat "$RESPONSE_FILE"', workflow)
 
