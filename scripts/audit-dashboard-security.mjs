@@ -37,8 +37,8 @@ for (const relative of browserFiles) {
 
 for (const relative of ['dashboard/dashboard.js', 'seo-report.html', 'leads.html']) {
   const source = read(relative);
-  if (!/(?:\?action=login|crmUrl\(["']login["']\))/.test(source) || !/routing_key/.test(source) || !/method\s*:\s*['"]POST['"]/.test(source)) {
-    failures.push(`${relative}: login is not a POST-body routing-key flow`);
+  if (!/(?:\?action=login|crmUrl\(["']login["']\))/.test(source) || !/method\s*:\s*['"]POST['"]/.test(source)) {
+    failures.push(`${relative}: login is not a POST-body PIN flow`);
   }
   if (!/Authorization['"]?\s*:\s*['"]Bearer /.test(source)) {
     failures.push(`${relative}: authenticated requests lack a Bearer header`);
@@ -146,7 +146,7 @@ const loginFlow = loginStart >= 0 && sessionStart > loginStart
 const reservationAt = loginFlow.indexOf('await supabase.rpc(');
 const boundedBodyReadAt = loginFlow.indexOf('await readBoundedJsonObject(');
 const deniedReservationAt = loginFlow.indexOf('if (!reservation.allowed)');
-const routingKeyCheckAt = loginFlow.indexOf('routingKey !== API_KEY');
+const routingKeyCheckAt = loginFlow.indexOf('const routingOk = routingKey');
 const credentialRpcAt = loginFlow.indexOf('"authenticate_dashboard_access"');
 if (
   reservationAt < 0 ||

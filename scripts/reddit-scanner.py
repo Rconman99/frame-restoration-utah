@@ -6,10 +6,15 @@ STRICT classification: roofing+Utah context gates on post TEXT only.
 Fetches via curl, POSTs to Supabase edge function.
 """
 import json
+import os
 import subprocess
 import time
 
-SUPABASE_ENDPOINT = "https://hdcflshhomzildwqlmwh.supabase.co/functions/v1/reddit-monitor?key=frame-roofing-2026"
+# Key comes from the environment (REDDIT_MONITOR_KEY); never hardcode it.
+SUPABASE_ENDPOINT_BASE = "https://hdcflshhomzildwqlmwh.supabase.co/functions/v1/reddit-monitor"
+REDDIT_MONITOR_KEY = os.environ.get("REDDIT_MONITOR_KEY", "")
+# The deployed reddit-monitor (source not in this repo) still reads ?key=.
+SUPABASE_ENDPOINT = f"{SUPABASE_ENDPOINT_BASE}?key={REDDIT_MONITOR_KEY}" if REDDIT_MONITOR_KEY else ""
 
 KEYWORDS = [
     "roofing Utah", "storm damage Salt Lake",
@@ -273,11 +278,15 @@ def post_to_supabase(signals):
     if not signals:
         print("No signals to post.")
         return None
+    if not SUPABASE_ENDPOINT:
+        print("REDDIT_MONITOR_KEY is not set; skipping post.")
+        return None
     payload = json.dumps(signals)
     # -w writes HTTP status after body; --max-time prevents cold-start hangs; retry once on fail
     r = subprocess.run(
         ["curl", "-sS", "-X", "POST", SUPABASE_ENDPOINT,
          "-H", "Content-Type: application/json",
+         "-H", f"x-monitor-key: {REDDIT_MONITOR_KEY}",
          "-w", "\n__HTTP_STATUS__:%{http_code}",
          "--max-time", "45", "--retry", "1", "--retry-delay", "3",
          "-d", payload],
