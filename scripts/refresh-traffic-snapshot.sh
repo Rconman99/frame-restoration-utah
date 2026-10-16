@@ -2,8 +2,10 @@
 # Refresh data/traffic-snapshot.json from the live weekly-report edge function.
 # Login credentials travel once in a POST body to lead-crm; the report request
 # uses the returned workday bearer token. Nothing sensitive enters a URL.
-# Reads FRAME_REPORT_ROUTING_KEY + FRAME_REPORT_PIN from the environment, with a
-# user-only ~/.config/frame-utah/.env fallback.
+# Reads FRAME_REPORT_PIN (required) and FRAME_REPORT_ROUTING_KEY (optional,
+# transition only) from the environment, with a user-only
+# ~/.config/frame-utah/.env fallback. Leave the routing key unset once lead-crm
+# runs with LEAD_CRM_PIN_ONLY_LOGIN=true; the script then sends the PIN only.
 #
 # Usage:
 #   bash scripts/refresh-traffic-snapshot.sh           # default 90 days
@@ -12,7 +14,7 @@
 # To configure once:
 #   mkdir -p ~/.config/frame-utah
 #   $EDITOR ~/.config/frame-utah/.env
-#   # FRAME_REPORT_ROUTING_KEY=<current-routing-key>
+#   # FRAME_REPORT_ROUTING_KEY=<only during the transition; omit after>
 #   # FRAME_REPORT_PIN=<your-report-pin>
 #   chmod 600 ~/.config/frame-utah/.env
 
@@ -31,12 +33,13 @@ if { [ -z "${FRAME_REPORT_ROUTING_KEY:-}" ] || [ -z "${FRAME_REPORT_PIN:-}" ]; }
   source "$CONFIG_FILE"
 fi
 
-if [ -z "${FRAME_REPORT_ROUTING_KEY:-}" ] || [ -z "${FRAME_REPORT_PIN:-}" ]; then
-  echo "ERROR: FRAME_REPORT_ROUTING_KEY and FRAME_REPORT_PIN must be set." >&2
-  echo "  Store them in the environment or a chmod-600 $CONFIG_FILE file." >&2
+if [ -z "${FRAME_REPORT_PIN:-}" ]; then
+  echo "ERROR: FRAME_REPORT_PIN must be set." >&2
+  echo "  Store it in the environment or a chmod-600 $CONFIG_FILE file." >&2
   exit 1
 fi
-if ! [[ "$FRAME_REPORT_ROUTING_KEY" =~ ^[A-Za-z0-9._:/-]{4,240}$ ]]; then
+FRAME_REPORT_ROUTING_KEY="${FRAME_REPORT_ROUTING_KEY:-}"
+if [ -n "$FRAME_REPORT_ROUTING_KEY" ] && ! [[ "$FRAME_REPORT_ROUTING_KEY" =~ ^[A-Za-z0-9._:/-]{4,240}$ ]]; then
   echo "ERROR: FRAME_REPORT_ROUTING_KEY has an invalid shape." >&2
   exit 1
 fi
@@ -62,7 +65,7 @@ login_payload="$(
   jq -cn \
     --arg routing_key "$FRAME_REPORT_ROUTING_KEY" \
     --arg pin "$FRAME_REPORT_PIN" \
-    '{routing_key:$routing_key,pin:$pin}'
+    'if $routing_key == "" then {pin:$pin} else {routing_key:$routing_key,pin:$pin} end'
 )"
 login_response="$(
   printf '%s' "$login_payload" |

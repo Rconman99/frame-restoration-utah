@@ -90,8 +90,10 @@ After the GBP review approves (max 3 days), test the click path:
 
 ```bash
 # 1. Tap "Call" on the Maps listing — Twilio should ring → forward to Landon's phone
-# 2. Check the new call_logs row:
-curl "https://hdcflshhomzildwqlmwh.supabase.co/functions/v1/lead-report?key=frame-roofing-2026" \
+# 2. Check the new call_logs row. LEAD_REPORT_KEY is the function's own secret, read
+#    from your environment; never paste a key into this doc or a URL. Header auth
+#    applies once lead-report runs the shared check in supabase/functions/_shared/function-key.ts.
+curl -H "x-report-key: $LEAD_REPORT_KEY" "https://hdcflshhomzildwqlmwh.supabase.co/functions/v1/lead-report" \
   | python3 -m json.tool | head -50
 ```
 
