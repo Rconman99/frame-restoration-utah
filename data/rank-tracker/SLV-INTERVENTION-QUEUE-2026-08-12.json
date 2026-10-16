@@ -13,7 +13,7 @@
         "Holladay",
         "Herriman"
       ],
-      "activeSnapshotSha256": "c59044ff758c8bf3ba6e9d9143460ba80c5b2f51e144d49beee3f2913e85560c",
+      "activeSnapshotSha256": "782ba4837a6b9792b82dc6f659f8512eac357905893f6d27bb144e550757b258",
       "diagnosisSnapshotSha256": "a1b7d5aa2acc3a5b663da345ba6eb7242e411661807ae1296f50854702b1a7eb",
       "behavior": "Ignore the stale split-URL disposition and keep affected URL-competition cities in the diagnosis lane; do not suppress, redirect, canonicalize, noindex, delete, or rewrite a route from stale evidence.",
       "requiredAction": "Refresh the bounded Holladay/Herriman split-URL diagnosis against the current GSC attribution snapshot."
@@ -88,7 +88,7 @@
     },
     "gscAttribution": {
       "file": "data/rank-tracker/SLV-GSC-URL-ATTRIBUTION-LATEST.json",
-      "sha256": "16912c35f68bea13f6cf46ddafc5176c0e89a514db039061f96a0cf0bd187289"
+      "sha256": "ba760c3c6e7d16986bb2f5e6046bc3cbb4501fc9b169401338c10ba71d32d80b"
     },
     "gscSplitUrlDiagnosis": {
       "file": "data/rank-tracker/SLV-GSC-SPLIT-URL-DIAGNOSIS-2026-08-12.json",
@@ -108,7 +108,7 @@
     },
     "expansionArchitecture": {
       "file": "data/rank-tracker/SLV-EXPANSION-ARCHITECTURE-2026-08-12.json",
-      "sha256": "99eacc98bba7bfc20825876dd7743ef93b20cfaaef4d1197a8d79ea4e61c4c87"
+      "sha256": "8f7f469fd2f624e0337cf5501654fac03ab9c83d37f8eaf4efc1be6f4d31b590"
     },
     "corePriority": {
       "file": "data/rank-tracker/SLV-PRIORITY-2026-08-12.json",
@@ -796,10 +796,8 @@
         "gscRequestedQueries": 4,
         "gscReturnedQueries": 3,
         "gscAlternateNormalizedUrls": [
-          "framerestorationutah.com/",
           "framerestorationutah.com/blog/holladay/roof-replacement-holladay-utah",
-          "framerestorationutah.com/pages/residential-roofing",
-          "framerestorationutah.com/salt-lake-city"
+          "framerestorationutah.com/pages/residential-roofing"
         ],
         "gscUrlDiagnosis": null,
         "serviceAreaStatus": "pending-current-profile-service-area-verification",
@@ -2046,9 +2044,9 @@
         "googleAiOverviewOwnedQueries": [],
         "protectedOrganicNumberOneQueries": [],
         "intendedPageSelectedForEveryMeasuredRank": true,
-        "gscState": "intended-url-only-for-all-returned-rows",
+        "gscState": "complete-request-with-unreturned-rows",
         "gscRequestedQueries": 4,
-        "gscReturnedQueries": 4,
+        "gscReturnedQueries": 3,
         "gscAlternateNormalizedUrls": [],
         "gscUrlDiagnosis": null,
         "serviceAreaStatus": "pending-current-profile-service-area-verification",
