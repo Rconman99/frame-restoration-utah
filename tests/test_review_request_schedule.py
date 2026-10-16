@@ -36,6 +36,19 @@ class ReviewRequestScheduleTests(unittest.TestCase):
         self.assertLess(claim, send)
         self.assertIn('skipped: "already_claimed"', loop)
 
+    def test_key_not_hardcoded_in_function(self):
+        self.assertNotIn("frame-roofing-2026", FN)
+        self.assertIn('env("REVIEW_REQUEST_KEY")', FN)
+
+    def test_new_key_wins_over_legacy(self):
+        body = FN[FN.index("export function reviewKeyOk"):]
+        self.assertLess(body.index('env("REVIEW_REQUEST_KEY")'), body.index('env("LEGACY_ROUTING_KEY")'))
+        self.assertIn("if (current) return timingSafeEqual(provided, current);", body)
+
+    def test_workflow_sends_header_not_query_key(self):
+        self.assertIn('x-review-key: ${REVIEW_REQUEST_KEY}', WF)
+        self.assertNotIn("?key=", WF)
+
 
 if __name__ == "__main__":
     unittest.main()
