@@ -182,6 +182,12 @@ for (const f of files) {
     if (re.test(html)) blockers.push({ type: 'INTERNAL-PHONE-LEAK', file: rel, detail: `internal-only number ${display} appears in published markup` });
   }
 
+  // 5. dead booking link — calendar.app.google/cR4bBSWfb9TQ28UF8 returns 404.
+  //    Inspection CTAs fall back to /#contact (modal on click). Never reintroduce.
+  if (html.includes('calendar.app.google/cR4bBSWfb9TQ28UF8')) {
+    blockers.push({ type: 'DEAD-BOOKING-LINK', file: rel, detail: 'calendar.app.google/cR4bBSWfb9TQ28UF8 (404) — use /#contact' });
+  }
+
   // per-href checks
   for (const m of html.matchAll(hrefRe)) {
     const href = m[1];
