@@ -9,6 +9,7 @@ import {
   parseReportDays,
   parseReportDetail,
   REPORT_LOCATION_SLUGS,
+  REPORT_METRIC_DEFINITIONS,
   REPORT_RENDERING_CONTRACT,
   shapeReportRows,
   sourceTrafficFromRows,
@@ -41,6 +42,33 @@ Deno.test("report detail accepts only full or summary", () => {
   assert(parseReportDetail("full") === "full", "full rejected");
   assert(parseReportDetail("summary") === "summary", "summary rejected");
   assert(parseReportDetail("private") === null, "unknown detail accepted");
+});
+
+Deno.test("report metric registry keeps unlike event grains out of conversion", () => {
+  assert(
+    REPORT_METRIC_DEFINITIONS.total_leads.grain ===
+      "reportable_lead_table_rows",
+    "lead rows lost their declared grain",
+  );
+  assert(
+    REPORT_METRIC_DEFINITIONS.total_leads.unique_qualified_opportunities ===
+      false,
+    "lead rows were mislabeled as unique qualified opportunities",
+  );
+  assert(
+    REPORT_METRIC_DEFINITIONS.total_job_value.collected_revenue === false,
+    "entered job value was mislabeled as collected revenue",
+  );
+  const conversion = REPORT_METRIC_DEFINITIONS.qualified_conversion_rate;
+  assert(
+    conversion.status === "unavailable",
+    "conversion was exposed without reconciled outcomes",
+  );
+  assert(
+    conversion.numerator === "deduplicated_qualified_opportunities" &&
+      conversion.denominator === "eligible_sessions",
+    "qualified conversion definition changed",
+  );
 });
 
 Deno.test("report test filtering uses explicit markers and operator identity", () => {
