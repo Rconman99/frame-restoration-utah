@@ -119,10 +119,21 @@
   "last_session_run": {
     "lane": "claude",
     "run": "utah-build-lane-20261017",
-    "at": "2026-10-17T15:32:45.809Z",
+    "at": "2026-10-17T15:38:30.454Z",
     "pr": "https://github.com/Rconman99/frame-restoration-utah/pull/321",
     "ci": "28/28 pass (draft, not merged)",
     "receipt": "_plan-burn-20261017/receipts/build-utah-20261017.md",
-    "note": "Build-lane session bookkeeping; the AEO monitor fields (last_run, score, threats, pending_actions, last_error) are untouched."
+    "note": "Build-lane session bookkeeping; the AEO monitor fields (last_run, score, threats, pending_actions, last_error) are untouched.",
+    "errors": "none unresolved: the local Sandy pin validator (npm run audit:slv-city-architecture) failed on a candidate 12-file edit set because the two Sandy posts are sha256-pinned; resolved by reverting both files before any commit. No error reached CI, main, owners or customers.",
+    "last_error_review": {
+      "verified_current_value": {
+        "type": "EGRESS_BLOCKED",
+        "target": "https://www.perplexity.ai/search",
+        "blocking": false,
+        "recorded_by": "AEO citation monitor run 2026-09-05"
+      },
+      "decision": "unchanged",
+      "reason": "last_error belongs to the AEO citation monitor and still describes that routine's own last run. This build-lane run produced no unresolved error, so overwriting it would erase the monitor's record and mislead its next cycle."
+    }
   }
 }

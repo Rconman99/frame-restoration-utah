@@ -14,7 +14,7 @@
 
 **Guardrails honored:** draft PR only; no merge, deploy, vercel, supabase or launchctl; no secrets read or printed; no GBP, Twilio, email or SMS; $0 spend; no content, date, claim, phone, hours, review or price change; Utah only.
 
-**Errors this run:** none unresolved. The Sandy pin validator failed once on the first 12-file edit set; resolved by reverting the two pinned posts before any commit. `last_error` left unchanged.
+**Errors this run:** none unresolved. The local Sandy pin validator (`npm run audit:slv-city-architecture`) failed once on the candidate 12-file edit set because the two Sandy posts are sha256-pinned; resolved by reverting both files before any commit, so no error reached CI, `main`, owners or customers. `last_error` in `state.json` was read in full and verified: it is the AEO citation monitor's own record from its 2026-09-05 run (`type: EGRESS_BLOCKED`, Perplexity channel, `blocking: false`). It is intentionally left unchanged because it describes that routine's last run and this run produced no unresolved error; the review is recorded under `last_session_run.last_error_review`.
 
 **Pending actions for Landon:** none (no owner question asked). `pending_actions` left unchanged; `last_run` stays the AEO citation monitor's field — this session is recorded under `last_session_run` in `state.json`.
 
