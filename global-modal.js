@@ -30,7 +30,7 @@
   function isModalTrigger(target) {
     if (!target || !target.closest) return false;
     var trigger = target.closest(
-      '.free-inspection-trigger,.nav-cta,a[href*="calendar.app.google"],a[href="#heroForm"]'
+      '.free-inspection-trigger,.nav-cta,[data-inspection-modal],a[href*="calendar.app.google"],a[href="#heroForm"]'
     );
     if (!trigger) return false;
     if (trigger.matches && trigger.matches('a[href="#heroForm"]') && document.getElementById('heroForm')) {
@@ -175,6 +175,11 @@
 
     // 2. All .nav-cta links (nav "Free Inspection" buttons)
     document.querySelectorAll('.nav-cta').forEach(function(el) {
+      el.addEventListener('click', function(e) { e.preventDefault(); openModal(); });
+    });
+
+    // 2b. Explicit inspection CTAs (href fallback is /#contact)
+    document.querySelectorAll('[data-inspection-modal]').forEach(function(el) {
       el.addEventListener('click', function(e) { e.preventDefault(); openModal(); });
     });
 
