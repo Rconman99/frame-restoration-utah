@@ -121,7 +121,7 @@ try {
         assert(surface.dock.top >= 0 && surface.dock.bottom <= viewport.height + 1, `${route} contact dock must remain inside the ${viewport.height}px viewport`);
         assert(surface.dock.left >= 0 && surface.dock.right <= viewport.width + 1, `${route} contact dock must fit horizontally`);
       }
-      await page.locator('a[href*="calendar.app.google"]:visible').first().click();
+      await page.locator('a[data-booking-trigger]:visible').first().click();
       await page.waitForFunction(() => document.activeElement?.id === "frModalName");
       const consent = page.locator('.fr-modal-consent input[type="checkbox"]');
       const geometry = await consent.evaluate((input) => {
@@ -161,7 +161,7 @@ try {
       assert.equal(await consent.isChecked(), false, "Space must toggle consent off");
       await consent.press("Escape");
       assert.equal(await page.locator("#frModalOverlay").isVisible(), false, "Escape must close the modal");
-      await page.locator('a[href*="calendar.app.google"]:visible').first().click();
+      await page.locator('a[data-booking-trigger]:visible').first().click();
       await page.waitForFunction(() => document.activeElement?.id === "frModalName");
       assert.equal(await consent.isChecked(), false, "Reopening must not opt in to SMS");
       await page.getByRole("button", { name: "Close", exact: true }).click();
