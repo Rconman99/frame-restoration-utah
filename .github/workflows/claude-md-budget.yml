@@ -1,0 +1,41 @@
+name: CLAUDE.md budget
+
+# BLOCKING (added 2026-10-17). CLAUDE.md is loaded into every Claude Code session
+# that opens this repo. It had grown to 1.79 MB (~857k tokens) of prepended
+# "Last updated" banners and SESSION LOG entries, so sessions died at startup
+# with "Prompt is too long". The slim-down moved that history byte-for-byte to
+# docs/history/ and left only the operating rules; this gate keeps it that way:
+#   - CLAUDE.md must stay <= 40,960 bytes (40 KB, ~10k tokens, ~1% of context)
+#   - the critical-rules + operating sections must still be present
+#   - no `## SESSION LOG` / `> Last updated:` banner may reappear in CLAUDE.md
+#   - the moved history files under docs/history/ must still exist
+# Wired like the compliance-gate audit scripts (pinned actions, Node 24, one
+# `node scripts/audit-*.mjs` step, fail-closed), but as its own workflow: the
+# compliance-gate source is digest-pinned by scripts/audit-client-ip-probe-contract.mjs
+# and re-blessing that manifest is out of scope for a documentation change.
+# Runs on every PR (no path filter) and on push to main, because the Auto-Refresh
+# job commits straight to main.
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  claude-md-budget:
+    name: CLAUDE.md size budget + operating sections (blocking)
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+        with:
+          node-version: '24'
+      - name: Run the gate's own fixtures
+        run: node scripts/test-audit-claude-md-budget.mjs
+      - name: Fail if CLAUDE.md exceeds 40,960 bytes or lost a required section
+        run: node scripts/audit-claude-md-budget.mjs
