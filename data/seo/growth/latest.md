@@ -1,6 +1,6 @@
 # Utah operational growth readout
 
-State: measurement_operational_outcomes_incomplete. Snapshot: 2026-10-16.
+State: measurement_operational_outcomes_incomplete. Snapshot: 2026-10-17.
 
 Qualified leads, inspections, sold jobs and collected revenue: **not measured** by this search report.
 
@@ -12,19 +12,18 @@ Qualified leads, inspections, sold jobs and collected revenue: **not measured** 
 
 ## Query discovery — exact query/page diagnosis required
 
-- slc: roof inspections salt lake city — 35 impressions, 0 clicks, position 11.7; exact_query_page_diagnosis_ready.
-- slc: roof inspection salt lake city — 33 impressions, 0 clicks, position 13.4; exact_query_page_diagnosis_ready.
-- heber: roof repair heber city ut — 2177 impressions, 0 clicks, position 6.6; exact_query_page_diagnosis_ready.
-- heber: roofing heber city ut — 1603 impressions, 0 clicks, position 4.7; exact_query_page_diagnosis_ready.
+- slc: roof inspections salt lake city — 35 impressions, 0 clicks, position 11.4; exact_query_page_diagnosis_ready.
+- heber: roof repair heber city ut — 2076 impressions, 0 clicks, position 6.3; exact_query_page_diagnosis_ready.
+- heber: roofing heber city ut — 1533 impressions, 0 clicks, position 4.8; exact_query_page_diagnosis_ready.
 - heber: heber roofers — 34 impressions, 0 clicks, position 6.9; exact_query_page_diagnosis_ready.
-- davis-hail: roof repair farmington ut — 1404 impressions, 0 clicks, position 10.4; exact_query_page_diagnosis_ready.
-- davis-hail: roofing farmington ut — 818 impressions, 0 clicks, position 11.9; exact_query_page_diagnosis_ready.
+- davis-hail: roof repair farmington ut — 1335 impressions, 0 clicks, position 10.4; exact_query_page_diagnosis_ready.
+- davis-hail: roofing farmington ut — 750 impressions, 0 clicks, position 12.1; exact_query_page_diagnosis_ready.
 - davis-hail: which roofing companies in farmington ut handle roof repairs and replacements? — 77 impressions, 0 clicks, position 8.8; exact_query_page_diagnosis_ready.
 
 ## Priority pages — rolling search window
 
-- slc: 3 clicks / 6011 impressions / position 23.2.
-- heber: 4 clicks / 2074 impressions / position 10.1.
+- slc: 3 clicks / 5984 impressions / position 23.3.
+- heber: 4 clicks / 1987 impressions / position 10.2.
 - midway: 0 clicks / 21 impressions / position 6.8.
 - hideout: 0 clicks / 9 impressions / position 11.7.
 - charleston: 0 clicks / 1 impressions / position 4.
