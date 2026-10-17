@@ -115,5 +115,14 @@
   "threats_no_longer_visible": [],
   "corrections_this_cycle": [
     "An earlier draft of the 2026-09-05 report claimed 9 new competitors. That count came from a domain-string diff against prior reports, but prior reports frequently name competitors in prose without the domain, producing 6 false positives. Re-run by company name, the true count is 3. Report corrected before final push. Standing lesson: diff competitors by NAME as well as domain."
-  ]
+  ],
+  "last_session_run": {
+    "lane": "claude",
+    "run": "utah-build-lane-20261017",
+    "at": "2026-10-17T15:32:45.809Z",
+    "pr": "https://github.com/Rconman99/frame-restoration-utah/pull/321",
+    "ci": "28/28 pass (draft, not merged)",
+    "receipt": "_plan-burn-20261017/receipts/build-utah-20261017.md",
+    "note": "Build-lane session bookkeeping; the AEO monitor fields (last_run, score, threats, pending_actions, last_error) are untouched."
+  }
 }

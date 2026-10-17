@@ -1,5 +1,27 @@
 # Activity Log
 
+## 2026-10-17 — Utah build lane (Claude Code): JSON-LD entity decode + gate guard (PR #321, draft)
+
+**Routine:** Ryan-approved Utah build lane rerun (8:09 AM PT 2026-10-17, "Yes, rerun them, draft PRs only"): one small, high-value item shipped as one draft PR. Receipt: `_plan-burn-20261017/receipts/build-utah-20261017.md` (outside this repo).
+
+**Actions this run:**
+- Read the binding rule files; listed every open PR (#320, #319, #318, #317, #314, #285, #283, #277, #275, #272, #267) with `gh pr diff --name-only`; touched none of their files.
+- Verified PR #320's follow-up note by parsing every JSON-LD block with the gate's directory set: 12 files carried HTML entities (`&amp;`, `&mdash;`) inside `name`/`headline` strings, not 7.
+- Fixed 10 of them (8 blog posts, `pages/gutters.html`, `pages/water-fire-flood-restoration.html`) so each schema string equals the rendered title/H1. Left the two Sandy posts alone: they are sha256-pinned by `data/rank-tracker/SANDY-ARCHITECTURE-DIAGNOSIS-2026-08-12.json`, `npm run audit:slv-city-architecture` fails on any byte change, and no regeneration script exists.
+- Extended `scripts/audit-jsonld.mjs` (blocking compliance-gate step) to fail on HTML character references inside JSON-LD string values, with a self-expiring `ENTITY_HOLDOUTS` list for the two pinned Sandy posts. Proven on a scratch copy outside the repo: pass on fixed files, fail on a re-inserted entity, fail on a stale hold-out.
+- Ran every HTML-scanning gate plus all `slv-city-goal-program` validators locally (all PASS); opened draft PR #321 on `claude/jsonld-entity-decode-20261017`; `gh pr checks 321 --watch` finished 28/28 pass with no fixes needed.
+- Wrote the receipt; read hub `ACTIVE-LANES.md` via the API (no row claims these files); made no hub edit (run scoped to one PR in this repo).
+
+**Guardrails honored:** draft PR only; no merge, deploy, vercel, supabase or launchctl; no secrets read or printed; no GBP, Twilio, email or SMS; $0 spend; no content, date, claim, phone, hours, review or price change; Utah only.
+
+**Errors this run:** none unresolved. The Sandy pin validator failed once on the first 12-file edit set; resolved by reverting the two pinned posts before any commit. `last_error` left unchanged.
+
+**Pending actions for Landon:** none (no owner question asked). `pending_actions` left unchanged; `last_run` stays the AEO citation monitor's field — this session is recorded under `last_session_run` in `state.json`.
+
+**Files touched:**
+- 10 HTML pages (one JSON-LD line each) and `scripts/audit-jsonld.mjs` — PR #321
+- `state.json` (`last_session_run` added) and `activity-log.md` (this entry) — bookkeeping required by the project stop hook
+
 ## 2026-09-05 — AEO Citation Monitor (flat score, improving positions, two instrumentation defects found)
 
 **Routine:** AEO citation monitor (5-query core panel: best roofer Heber City / roof replacement cost Utah 2026 / storm damage Park City / Utah roof insurance / licensed roofer Wasatch Front).
