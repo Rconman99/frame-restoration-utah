@@ -1,13 +1,23 @@
 name: Utah Lead Notification Recovery
 
 on:
-  # SCHEDULE DISABLED 2026-08-19 — replaced by pg_cron in
-  # supabase/migrations/20260819000000_pgcron_lead_notification_worker.sql.
-  # Do not leave an empty schedule mapping here: GitHub rejects the entire
-  # workflow at startup. Before rollback adds the GitHub cron entry back under
-  # schedule, first run `select cron.unschedule('lead-notification-worker');`
-  # so both schedulers cannot send duplicate owner notifications.
+  # SCHEDULE RESTORED 2026-10-16. The 2026-08-19 pg_cron replacement
+  # (supabase/migrations/20260819000000_pgcron_lead_notification_worker.sql)
+  # is NOT active in production: pg_cron/pg_net were not installed on 10/16
+  # (read-only check), so nothing was retrying missed owner notifications.
+  # Double-run safety: the worker claims each job via its claim RPC with
+  # claim_version + lease, so overlapping runs cannot send twice. Still, if
+  # pg_cron is ever enabled, remove this schedule or run
+  # `select cron.unschedule('lead-notification-worker');` so only one scheduler owns it.
+  schedule:
+    # Every 15 minutes.
+    - cron: '7,22,37,52 * * * *'
   workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Health-only check: no claims, no sends"
+        type: boolean
+        default: true
 
 permissions:
   contents: read
@@ -22,6 +32,7 @@ jobs:
     timeout-minutes: 5
     steps:
       - name: Retry pending or interrupted owner notifications
+        if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.dry_run) }}
         env:
           WORKER_TOKEN: ${{ secrets.LEAD_NOTIFICATION_WORKER_TOKEN }}
         run: |
@@ -38,8 +49,37 @@ jobs:
             echo "::error::Lead notification worker request failed before an HTTP receipt was returned"
             exit 1
           fi
-          cat "$RESPONSE_FILE"
+          # Counts only: never print lead or recipient details.
+          python3 -c 'import json,sys
+          d=json.load(open(sys.argv[1]))
+          print(json.dumps({"mode":sys.argv[2],**{k:v for k,v in d.items() if isinstance(v,(int,float,bool)) and not isinstance(v,str)}}))' "$RESPONSE_FILE" recover || echo "::warning::response was not JSON"
           if [[ "$HTTP_STATUS" -lt 200 || "$HTTP_STATUS" -ge 300 ]]; then
-            echo "::error::Lead notification worker is unhealthy (HTTP $HTTP_STATUS); inspect the persisted terminal/exhausted counts above"
+            echo "::error::Lead notification worker is unhealthy (HTTP $HTTP_STATUS); inspect the counts above"
+            exit 1
+          fi
+      - name: Dry run (health-only, no claims or sends)
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run }}
+        env:
+          WORKER_TOKEN: ${{ secrets.LEAD_NOTIFICATION_WORKER_TOKEN }}
+        run: |
+          test -n "$WORKER_TOKEN" || { echo "::error::LEAD_NOTIFICATION_WORKER_TOKEN is missing"; exit 1; }
+          RESPONSE_FILE="$(mktemp)"
+          trap 'rm -f "$RESPONSE_FILE"' EXIT
+          if ! HTTP_STATUS="$(curl --silent --show-error \
+              --output "$RESPONSE_FILE" \
+              --write-out "%{http_code}" \
+              --request POST \
+              --header "Authorization: Bearer $WORKER_TOKEN" \
+              --header "x-frame-worker-mode: health-only" \
+              https://hdcflshhomzildwqlmwh.supabase.co/functions/v1/lead-notification-worker)"; then
+            echo "::error::Lead notification worker request failed before an HTTP receipt was returned"
+            exit 1
+          fi
+          # Counts only: never print lead or recipient details.
+          python3 -c 'import json,sys
+          d=json.load(open(sys.argv[1]))
+          print(json.dumps({"mode":sys.argv[2],**{k:v for k,v in d.items() if isinstance(v,(int,float,bool)) and not isinstance(v,str)}}))' "$RESPONSE_FILE" health-only || echo "::warning::response was not JSON"
+          if [[ "$HTTP_STATUS" -lt 200 || "$HTTP_STATUS" -ge 300 ]]; then
+            echo "::error::Lead notification worker is unhealthy (HTTP $HTTP_STATUS); inspect the counts above"
             exit 1
           fi
