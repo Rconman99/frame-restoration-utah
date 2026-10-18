@@ -50,8 +50,8 @@
   <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
   <link rel="manifest" href="/manifest.json" />
 
-  <!-- Preload hero image for LCP -->
-  <link rel="preload" as="image" href="/images/projects/aerial-2026-07/utah-july-2026-finished-roof-mountain-close-1600.webp" fetchpriority="high" />
+  <!-- Preload the responsive hero so mobile fetches the 800w candidate, not the 1600w file. -->
+  <link rel="preload" as="image" href="/images/projects/aerial-2026-07/utah-july-2026-finished-roof-mountain-close-800.webp" imagesrcset="/images/projects/aerial-2026-07/utah-july-2026-finished-roof-mountain-close-800.webp 800w, /images/projects/aerial-2026-07/utah-july-2026-finished-roof-mountain-close-1200.webp 1200w, /images/projects/aerial-2026-07/utah-july-2026-finished-roof-mountain-close-1600.webp 1600w" imagesizes="100vw" fetchpriority="high" />
   <link rel="preload" as="font" type="font/woff2" href="/assets/fonts/archivo-regular.woff2" crossorigin />
   <link rel="preload" as="font" type="font/woff2" href="/assets/fonts/archivo-black.woff2" crossorigin />
 
@@ -1291,12 +1291,20 @@
     return;
   }
   var container = v.closest('.fa-feature-video') || v;
+  var mobileMedia = window.matchMedia && window.matchMedia('(max-width: 768px)').matches;
+  if (mobileMedia) {
+    var onInteract = function() {
+      container.removeEventListener('pointerdown', onInteract);
+      hydrate();
+    };
+    container.addEventListener('pointerdown', onInteract);
+  }
   var preload = new IntersectionObserver(function(entries, observer){
     if (entries.some(function(entry){ return entry.isIntersecting; })) {
       hydrate();
       observer.disconnect();
     }
-  }, { rootMargin: '300px 0px' });
+  }, { rootMargin: mobileMedia ? '0px' : '300px 0px' });
   preload.observe(container);
   var io = new IntersectionObserver(function(entries){
     entries.forEach(function(e){
@@ -1373,12 +1381,20 @@
     v.controls = true;
     return;
   }
+  var mobileMedia = window.matchMedia && window.matchMedia('(max-width: 768px)').matches;
+  if (mobileMedia) {
+    var onInteract = function() {
+      v.removeEventListener('pointerdown', onInteract);
+      hydrate();
+    };
+    v.addEventListener('pointerdown', onInteract);
+  }
   var preload = new IntersectionObserver(function(entries, observer){
     if (entries.some(function(entry){ return entry.isIntersecting; })) {
       hydrate();
       observer.disconnect();
     }
-  }, { rootMargin: '300px 0px' });
+  }, { rootMargin: mobileMedia ? '0px' : '300px 0px' });
   preload.observe(v);
   var playback = new IntersectionObserver(function(entries){
     entries.forEach(function(entry){
@@ -1601,12 +1617,20 @@
     hydrate();
     return;
   }
+  var mobileMedia = window.matchMedia && window.matchMedia('(max-width: 768px)').matches;
+  if (mobileMedia) {
+    var onInteract = function() {
+      v.removeEventListener('pointerdown', onInteract);
+      hydrate();
+    };
+    v.addEventListener('pointerdown', onInteract);
+  }
   var observer = new IntersectionObserver(function(entries, current){
     if (entries.some(function(entry){ return entry.isIntersecting; })) {
       hydrate();
       current.disconnect();
     }
-  }, { rootMargin: '300px 0px' });
+  }, { rootMargin: mobileMedia ? '0px' : '300px 0px' });
   observer.observe(v);
 })();
 </script>
@@ -2501,6 +2525,7 @@ document.addEventListener('DOMContentLoaded', function() {
     loadMapbox(initMap);
   }
 
+  var mobileMedia = window.matchMedia && window.matchMedia('(max-width: 768px)').matches;
   if ('IntersectionObserver' in window) {
     var io = new IntersectionObserver(function(entries, observer){
       entries.forEach(function(entry){
@@ -2509,19 +2534,27 @@ document.addEventListener('DOMContentLoaded', function() {
           triggerOnce();
         }
       });
-    }, { rootMargin: '400px 0px' });
+    }, { rootMargin: mobileMedia ? '0px' : '400px 0px' });
     io.observe(mapEl);
   }
 
-  // Safety net: trigger on first user scroll (once)
-  function scrollTrigger() {
-    window.removeEventListener('scroll', scrollTrigger);
-    var rect = mapEl.getBoundingClientRect();
-    if (rect.top < window.innerHeight + 800 && rect.bottom > -400) {
+  if (mobileMedia) {
+    // Phone: satellite tiles and WebGL wait until the map is on screen or tapped.
+    mapEl.addEventListener('pointerdown', function onMapInteract() {
+      mapEl.removeEventListener('pointerdown', onMapInteract);
       triggerOnce();
+    });
+  } else {
+    // Desktop safety net: trigger on first user scroll once the map is near.
+    function scrollTrigger() {
+      window.removeEventListener('scroll', scrollTrigger);
+      var rect = mapEl.getBoundingClientRect();
+      if (rect.top < window.innerHeight + 800 && rect.bottom > -400) {
+        triggerOnce();
+      }
     }
+    window.addEventListener('scroll', scrollTrigger, { passive: true });
   }
-  window.addEventListener('scroll', scrollTrigger, { passive: true });
 })();
 </script>
 
