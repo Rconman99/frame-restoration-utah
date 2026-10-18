@@ -172,6 +172,11 @@ const internalDeploySentinels = [
   '.github/workflows/compliance-gate.yml',
   '.~lock.private.xlsx#',
   'build-intelligence/customer-request-ledger.json',
+  // Owner dashboard + SEO tracker are off the public site (Ryan, 2026-10-18).
+  'dashboard/index.html',
+  'dashboard/config.js',
+  'dashboard/dashboard.js',
+  'seo-report.html',
   'deno.lock',
   'qa/receipts/private.json',
   'screenshots/mobile-audit/diagnostics.json',

@@ -1,10 +1,11 @@
 # =============================================================================
 # DO NOT ADD THESE TO THE IGNORE LIST — they are PUBLIC deliverables on the site
 # -----------------------------------------------------------------------------
-#   seo-report.html      → PIN-gated live tracker shared with Landon. Public URL
-#                          is https://www.frameroofingutah.com/seo-report
-#                          (Incident 2026-04-22a: audit sweep blocked this and
-#                          took the page down. Fix was commit 30bad68.)
+#   seo-report.html      → NO LONGER PUBLIC (owner decision, Ryan 2026-10-18):
+#                          now ignored below with dashboard/, so /seo-report,
+#                          /seo-report.html and /dashboard 404 in production.
+#                          (History: Incident 2026-04-22a took it down by
+#                          accident; this time it is deliberate.)
 #   reviews.json         → Live Google-reviews feed fetched by the homepage
 #                          carousel (see index.html: fetch('/reviews.json')).
 #                          Updated on 1st/15th by scripts/update-google-reviews.py.
@@ -77,6 +78,11 @@ data/*
 !data/blog-quality-benchmark.json
 
 # Internal-only HTML (audits, scratch redesigns, cheat sheets, trackers)
+# Owner dashboard + SEO tracker: off the public site by owner decision
+# (Ryan, 2026-10-18). Source stays in Git; audit-doc-isolation sentinels
+# fail CI if either becomes deployable again.
+dashboard/
+seo-report.html
 index-redesign.html
 hero.html
 Frame-Roofing-SEO-Audit-*.html
