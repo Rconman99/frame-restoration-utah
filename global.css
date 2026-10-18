@@ -32,6 +32,8 @@
   --navy-mid: #093552;
   --gold: #E1B969;
   --gold-light: #E8C97F;
+  /* Small text on white / #f7f3eb. #E1B969 is about 1.7:1; #8A5A12 is 5.3:1 or better. */
+  --gold-text: #8A5A12;
   --white: #FFFFFF;
   --off-white: #FAF9F5;
   --gray: #4A5464;
@@ -69,7 +71,7 @@ nav {
 
 /* ─── SECTION DEFAULTS ─── */
 section { padding: 110px 5%; }
-.section-label { font-family: 'Archivo Black', sans-serif; font-size: 12px; letter-spacing: 3px; text-transform: uppercase; color: var(--gold); margin-bottom: 12px; display: block; }
+.section-label { font-family: 'Archivo Black', sans-serif; font-size: 12px; letter-spacing: 3px; text-transform: uppercase; color: var(--gold-text); margin-bottom: 12px; display: block; }
 .section-title { font-family: 'Archivo Black', sans-serif; font-size: clamp(32px, 4vw, 52px); font-weight: 700; color: var(--navy); text-transform: uppercase; line-height: 1.08; margin-bottom: 16px; }
 .section-sub { font-size: 18px; color: var(--gray); line-height: 1.7; max-width: 600px; }
 
@@ -114,7 +116,9 @@ section { padding: 110px 5%; }
 /* ─── PAGE CTA (gold banner — subpages) ─── */
 .page-cta { background: var(--gold); padding: 60px 5%; text-align: center; }
 .page-cta h2 { font-family: 'Archivo Black', sans-serif; font-size: clamp(28px, 4vw, 48px); color: var(--navy); text-transform: uppercase; margin-bottom: 16px; }
-.page-cta p { font-size: 18px; color: rgba(11,64,96,0.7); margin-bottom: 28px; }
+.page-cta p { font-size: 18px; color: var(--navy); margin-bottom: 28px; }
+.table-scroll { overflow-x: auto; max-width: 100%; }
+.table-scroll:focus { outline: 2px solid var(--navy); outline-offset: 2px; }
 
 /* ─── NEARBY CITIES (location pages) ─── */
 .nearby-section { background: var(--navy); padding: 60px 5%; }
@@ -272,7 +276,7 @@ footer a { color: var(--gold); text-decoration: none; }
 
 /* ─── Content section uplift — gold kicker + Archivo Black H2s ─── */
 .content-section { max-width: 880px; margin: 0 auto; padding: 0 20px; }
-.content-section > .section-label { display: inline-block; font-family: 'Archivo Black', sans-serif; font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: var(--gold); padding-bottom: 8px; border-bottom: 2px solid var(--gold); margin-bottom: 28px; }
+.content-section > .section-label { display: inline-block; font-family: 'Archivo Black', sans-serif; font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: var(--gold-text); padding-bottom: 8px; border-bottom: 2px solid var(--gold); margin-bottom: 28px; }
 .content-section h2 { font-family: 'Archivo Black', sans-serif; text-transform: uppercase; letter-spacing: 0.5px; color: var(--navy); font-size: clamp(22px, 3vw, 32px); line-height: 1.2; margin-top: 44px; margin-bottom: 16px; position: relative; padding-left: 16px; border-left: 3px solid var(--gold); }
 .content-section h2:first-of-type { margin-top: 0; }
 .content-section p { font-size: 16px; color: #2a3a44; line-height: 1.75; }
@@ -299,7 +303,7 @@ footer a { color: var(--gold); text-decoration: none; }
 
 /* ─── Related blog articles — flat, sharp, tight ─── */
 .related-articles { background: var(--off-white) !important; border-radius: 0 !important; padding: 56px 5% !important; margin: 0 !important; }
-.related-articles h3 { font-family: 'Archivo Black', sans-serif !important; text-transform: uppercase !important; letter-spacing: 2px !important; font-size: 13px !important; color: var(--gold) !important; margin-bottom: 20px !important; text-align: center; padding-top: 4px; }
+.related-articles h3 { font-family: 'Archivo Black', sans-serif !important; text-transform: uppercase !important; letter-spacing: 2px !important; font-size: 13px !important; color: var(--gold-text) !important; margin-bottom: 20px !important; text-align: center; padding-top: 4px; }
 .related-articles > div { max-width: 1000px; margin: 0 auto; }
 .related-articles > div > a { background: var(--white) !important; border: 1px solid var(--light-gray) !important; border-top: 3px solid var(--gold) !important; border-radius: 0 !important; padding: 20px !important; color: var(--navy) !important; font-family: 'Archivo Black', sans-serif !important; text-transform: uppercase !important; letter-spacing: 1px !important; font-size: 13px !important; font-weight: normal !important; transition: border-color 0.2s ease, transform 0.2s ease !important; box-shadow: none !important; }
 .related-articles > div > a:hover { border-color: var(--gold) !important; border-top-color: var(--navy) !important; transform: translateY(-2px); box-shadow: 4px 4px 0 var(--navy) !important; }
