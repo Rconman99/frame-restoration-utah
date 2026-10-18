@@ -1,0 +1,41 @@
+name: Frame guards
+
+# Four Frame-wide content rules that used to live only in agent prompts, now a
+# blocking check (scripts/frame-guards.mjs, config in
+# scripts/frame-guards.config.json):
+#   no-ryan           Ryan's name / personal emails / "RC Digital" credit on a served file
+#   nap-lock          phones + JSON-LD business name / street must match the canonical NAP source
+#   market-isolation  no other Frame market's domain, phone, brand, "City, ST" or Supabase ref
+#   dead-gbp-link     no g.co/kgs/... Google share links (dead on Utah and Texas)
+#
+# Violations already on main are listed with a reviewed reason in
+# scripts/frame-guards.baseline.json; anything else fails. The self-test step
+# mutates the input and proves every guard still fires, so the gate cannot be
+# quietly neutered by a config edit.
+#
+# Standalone and BLOCKING (no continue-on-error, no path filter); it does not
+# touch compliance-gate or any other workflow. The scan is static (no network) and takes well under a second.
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  frame-guards:
+    name: Frame guards (blocking)
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+        with:
+          node-version: '24'
+      - name: Self-test (every guard must fire on a mutation)
+        run: node scripts/frame-guards.mjs --selftest
+      - name: Scan served files
+        run: node scripts/frame-guards.mjs

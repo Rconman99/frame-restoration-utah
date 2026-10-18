@@ -30,7 +30,9 @@ jobs:
           # a lane too, and saying so is better than an unattributable branch.
           # It is a declaration, not an authentication: CI cannot verify that a
           # human actually created the branch.
-          LANES="claude codex cowork agy human"
+          # `cursor` is the Cursor cloud-agent lane. Those branches are required
+          # to use the cursor/ prefix, so the declaration stays visible.
+          LANES="claude codex cowork agy human cursor"
 
           # Grandfathered exceptions, scoped to THIS repository only.
           # Each is bound to both PR number and exact branch, so the entry cannot
