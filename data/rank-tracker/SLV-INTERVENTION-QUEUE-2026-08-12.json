@@ -13,7 +13,7 @@
         "Holladay",
         "Herriman"
       ],
-      "activeSnapshotSha256": "ae7ad7e6b821b86b7ef6c1a93affc2d5c0331b297e88754252044fc29d62a9ec",
+      "activeSnapshotSha256": "aacc1b5e7947b9fc4b695253a6172d45262c1e7b44dd3949f13ca3404c84e248",
       "diagnosisSnapshotSha256": "a1b7d5aa2acc3a5b663da345ba6eb7242e411661807ae1296f50854702b1a7eb",
       "behavior": "Ignore the stale split-URL disposition and keep affected URL-competition cities in the diagnosis lane; do not suppress, redirect, canonicalize, noindex, delete, or rewrite a route from stale evidence.",
       "requiredAction": "Refresh the bounded Holladay/Herriman split-URL diagnosis against the current GSC attribution snapshot."
@@ -88,7 +88,7 @@
     },
     "gscAttribution": {
       "file": "data/rank-tracker/SLV-GSC-URL-ATTRIBUTION-LATEST.json",
-      "sha256": "76e8c9d5cbd589049be1028e19a84852bf275cfe9fb76444a6f5f6f7e2d10467"
+      "sha256": "2e286ed1dc35458e12f7dd984d873691ed3ecdfea728aaf111c8916175bc7eea"
     },
     "gscSplitUrlDiagnosis": {
       "file": "data/rank-tracker/SLV-GSC-SPLIT-URL-DIAGNOSIS-2026-08-12.json",
@@ -100,15 +100,15 @@
     },
     "entityHealth": {
       "file": "data/rank-tracker/SLV-ENTITY-HEALTH-2026-08-12.json",
-      "sha256": "4032b05da6154f9d089dba0190a9b8ac153eccc148597a785c605c29f9a6fee7"
+      "sha256": "90b3b8712b017106be0ec0ae9e8cb6ad12a82caa6c9ff5bf58b3fbe367860f86"
     },
     "mapsReadiness": {
       "file": "data/rank-tracker/SLV-MAPS-READINESS-2026-08-12.json",
-      "sha256": "95a787ce88f7626b8055adb2392c0a4b4c7e7fbda5a521b07a890c13c3d67b08"
+      "sha256": "9df0229cff9e892a8fa753cd1ccdb56212dc5b7a6cf0ba4a81c422559d781772"
     },
     "expansionArchitecture": {
       "file": "data/rank-tracker/SLV-EXPANSION-ARCHITECTURE-2026-08-12.json",
-      "sha256": "83321d00004d42352dbad5d6d3b26a900c6aed476a67b811cc56091529fd5395"
+      "sha256": "434ed6bbe8d75773593acbeca9d7cd870ed1e741fee3fe9f9176e7d0a55dbc54"
     },
     "corePriority": {
       "file": "data/rank-tracker/SLV-PRIORITY-2026-08-12.json",
@@ -116,15 +116,15 @@
     },
     "coreCleanup": {
       "file": "data/authority/SLV-CITY-PUBLIC-REMEDIATION-PACKET-2026-08-12.json",
-      "sha256": "1f5eb10e4157a6dba35ad0d4295a7744d9f9182ac1a449c7bcafe9f86f9c1e42"
+      "sha256": "c5d19fd172cda2d4d3edd50422594565411ed4a1ce52c720b404340e5ae5cd88"
     },
     "millcreekAmendment": {
       "file": "data/authority/MILLCREEK-PUBLIC-IDENTITY-SCOPE-AMENDMENT-2026-08-12.json",
-      "sha256": "beb68757f6363acf76cb4c83ebd66c787eb24d657bc08174833f56902fcc84ef"
+      "sha256": "a3ad229f37f96163405695ceab6fe8c3c6dab56bc90185735a2e3042f400b8b0"
     },
     "expansionCleanup": {
       "file": "data/authority/SLV-EXPANSION-PUBLIC-REMEDIATION-PACKET-2026-08-12.json",
-      "sha256": "6dc3cd693824c5d04de495349c12908e6c65495d4a18a8b0ba7378054d92dc19"
+      "sha256": "81dc58b7c47cee870f36ce108ed58fd1f1b65f928d1b1e247d2ebe34b58ba466"
     },
     "serviceAreaRequest": {
       "file": "data/authority/SLV-SERVICE-AREA-EVIDENCE-REQUEST-2026-08-12.json",
@@ -141,23 +141,23 @@
     "diagnoses": {
       "Millcreek": {
         "file": "data/rank-tracker/MILLCREEK-IDENTITY-ARCHITECTURE-DIAGNOSIS-2026-08-12.json",
-        "sha256": "046e287639ccdd1fdd919d0a7457dcc72107288dc10c84055d029d802e765c5b"
+        "sha256": "7f4a9367c7818a8826bda6192775edc632526bbdd2197282f3810dee84117db9"
       },
       "Sandy": {
         "file": "data/rank-tracker/SANDY-ARCHITECTURE-DIAGNOSIS-2026-08-12.json",
-        "sha256": "8ecced9e5ab930b79ad38feb7ed7f54470f9c7403cae22fed0c1a7eaecb44a82"
+        "sha256": "e548a4bbfbfa52d79ede82a5f9be10f32e3be91b5a356ed5c7b9daa546838e55"
       },
       "Holladay": {
         "file": "data/rank-tracker/HOLLADAY-ARCHITECTURE-DIAGNOSIS-2026-08-12.json",
-        "sha256": "4f0e4847da2a91a9332026b29769fe5bd909e7641ddb949ce520c57d860dba15"
+        "sha256": "47040b287ed647e67e04f9b42a3a44e6731d6fd3b8ab6fee75d07ec0f4e59608"
       },
       "Cottonwood Heights": {
         "file": "data/rank-tracker/COTTONWOOD-HEIGHTS-ARCHITECTURE-DIAGNOSIS-2026-08-12.json",
-        "sha256": "55544178dde2dc609c85e2b90066d0b20c4dcdc3d1cc6fc774e0d3b0b326bd63"
+        "sha256": "74bf119e39ca2668f31accf642dca48d39c1939d111f180be35f5c3d8a23d9a4"
       },
       "Draper": {
         "file": "data/rank-tracker/DRAPER-ARCHITECTURE-DIAGNOSIS-2026-08-12.json",
-        "sha256": "3804b1153f56b9216a1876eae5faa90e9008e50a0289ec072aedde0e1106245a"
+        "sha256": "b46d6fc8138cf5bf564faad45e1d930d7ba5f23c85697d25a6304ef952020b50"
       }
     }
   },
@@ -415,7 +415,7 @@
       "sources": {
         "diagnosis": {
           "file": "data/rank-tracker/MILLCREEK-IDENTITY-ARCHITECTURE-DIAGNOSIS-2026-08-12.json",
-          "sha256": "046e287639ccdd1fdd919d0a7457dcc72107288dc10c84055d029d802e765c5b"
+          "sha256": "7f4a9367c7818a8826bda6192775edc632526bbdd2197282f3810dee84117db9"
         },
         "panelEvidence": [
           {
@@ -729,7 +729,7 @@
       "sources": {
         "diagnosis": {
           "file": "data/rank-tracker/SANDY-ARCHITECTURE-DIAGNOSIS-2026-08-12.json",
-          "sha256": "8ecced9e5ab930b79ad38feb7ed7f54470f9c7403cae22fed0c1a7eaecb44a82"
+          "sha256": "e548a4bbfbfa52d79ede82a5f9be10f32e3be91b5a356ed5c7b9daa546838e55"
         },
         "panelEvidence": [
           {
@@ -837,7 +837,7 @@
       "sources": {
         "diagnosis": {
           "file": "data/rank-tracker/HOLLADAY-ARCHITECTURE-DIAGNOSIS-2026-08-12.json",
-          "sha256": "4f0e4847da2a91a9332026b29769fe5bd909e7641ddb949ce520c57d860dba15"
+          "sha256": "47040b287ed647e67e04f9b42a3a44e6731d6fd3b8ab6fee75d07ec0f4e59608"
         },
         "panelEvidence": [
           {
@@ -942,7 +942,7 @@
       "sources": {
         "diagnosis": {
           "file": "data/rank-tracker/COTTONWOOD-HEIGHTS-ARCHITECTURE-DIAGNOSIS-2026-08-12.json",
-          "sha256": "55544178dde2dc609c85e2b90066d0b20c4dcdc3d1cc6fc774e0d3b0b326bd63"
+          "sha256": "74bf119e39ca2668f31accf642dca48d39c1939d111f180be35f5c3d8a23d9a4"
         },
         "panelEvidence": [
           {
@@ -1882,7 +1882,7 @@
       "sources": {
         "diagnosis": {
           "file": "data/rank-tracker/DRAPER-ARCHITECTURE-DIAGNOSIS-2026-08-12.json",
-          "sha256": "3804b1153f56b9216a1876eae5faa90e9008e50a0289ec072aedde0e1106245a"
+          "sha256": "b46d6fc8138cf5bf564faad45e1d930d7ba5f23c85697d25a6304ef952020b50"
         },
         "panelEvidence": [
           {
