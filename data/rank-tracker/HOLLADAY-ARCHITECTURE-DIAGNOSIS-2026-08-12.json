@@ -198,7 +198,13 @@
       },
       {
         "file": "locations/salt-lake-city.html",
-        "sha256": "f68f51ad40a9f8a02d2f9d20702da884afa0c0f13458615832627a930103e895",
+        "sha256": "6b37bfa16af157b5b942f50f0aef3434d0d9763a6c3493891ceeae6f50172f79",
+        "qaBaselineSourceAmendment": {
+          "observedAt": "2026-10-18T20:00:00Z",
+          "priorSha256": "f68f51ad40a9f8a02d2f9d20702da884afa0c0f13458615832627a930103e895",
+          "reason": "Supporting Salt Lake City hub byte pin only: the historic-preservation and building-permits links now use the current official slc.gov pages. Link labels, title, H1, canonical, schema, NAP, and claims are unchanged. Not new ranking evidence or experiment authorization.",
+          "reviewRequiredBeforeMerge": true
+        },
         "batch1bCityServiceSourceAmendment": {
           "observedAt": "2026-10-04T17:30:00Z",
           "priorSha256": "80c44281df689b95bc0e04bde9a3afbe55cb1638528bafe4f80d716bca77ec52",
@@ -231,7 +237,13 @@
       },
       {
         "file": "index.html",
-        "sha256": "d9ad8d771a945cd93fe8597111755e7ed8ddd5496bb3729141bf75437f15ae58",
+        "sha256": "0799b36e7844784c084b4c66d9d1ff1528dd9fde6800060b9928effbec40746d",
+        "qaBaselineSourceAmendment": {
+          "observedAt": "2026-10-18T20:00:00Z",
+          "priorSha256": "d9ad8d771a945cd93fe8597111755e7ed8ddd5496bb3729141bf75437f15ae58",
+          "reason": "Supporting homepage byte pin only: the DOPL license-lookup URL now points at the current official secure.utah.gov lookup. License number, title, H1, canonical, schema, NAP, booking links, and claims are unchanged. Not new ranking evidence or experiment authorization.",
+          "reviewRequiredBeforeMerge": true
+        },
         "restorationScopeSourceAmendment": {
           "observedAt": "2026-10-03T19:20:00Z",
           "priorSha256": "a6fcea13dfbbfc0851024d66af215d894861002e53118cc37ab8b018ee8bac76",
