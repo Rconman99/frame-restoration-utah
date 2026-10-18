@@ -2,12 +2,6 @@
   "$comment": "Reviewed violations present on main when frame-guards landed. One entry per (guard, path, match). Fix the copy, then delete the entry. Do not add entries to get a PR green without a reviewed reason.",
   "entries": [
     {
-      "guard": "dead-gbp-link",
-      "path": "index.html",
-      "match": "g.co/kgs/framerestorationutah",
-      "reason": "Footer 'Google Business' icon links to a dead g.co/kgs share link (Site QA UT-3). Fix is in flight in Site QA's draft PR #327 (codex/ut-3-gbp-map-link); should point at business.json gbp.maps_listing_url. Not fixed here: no customer-copy changes in the guard PR."
-    },
-    {
       "guard": "market-isolation",
       "path": "directory-tracker.html",
       "match": "spirit lake, idaho",
