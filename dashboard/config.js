@@ -13,7 +13,6 @@ window.DASHBOARD_CONFIG = Object.freeze({
     label: "PostHog Dashboard",
     url: "https://us.posthog.com/project/333074",
   })]),
-  builderAttribution: "Built by Ryan Conwell",
   dataSources: Object.freeze({
     stormWatch: Object.freeze({ enabled: true, area: "UT" }),
     reviews: Object.freeze({
