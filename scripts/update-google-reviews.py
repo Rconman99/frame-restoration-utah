@@ -652,6 +652,12 @@ def _has_brand_leak(text: str) -> bool:
     return any(p in text and "Frame Restoration Utah" not in text for p in BRAND_LEAK_PHRASES)
 
 
+# Reviews the owner has asked to keep off the site (2026-10-18: family-member
+# review). The GBP aggregate count/rating is unchanged; only the quoted text
+# and author are kept out of /reviews.json so a weekly sync cannot re-add them.
+EXCLUDED_REVIEW_AUTHORS = frozenset({"Katie Conwell"})
+
+
 def _merge_reviews(fresh: list[dict], existing_reviews: list[dict]) -> list[dict]:
     """Filter brand-leak and fill `city` from the prior hand-curated file.
 
@@ -667,6 +673,9 @@ def _merge_reviews(fresh: list[dict], existing_reviews: list[dict]) -> list[dict
     }
     out: list[dict] = []
     for r in fresh:
+        if (r.get("author") or "").strip() in EXCLUDED_REVIEW_AUTHORS:
+            print(f"  filtered (owner-excluded): {r.get('author')}")
+            continue
         if _has_brand_leak(r.get("text", "")):
             print(f"  filtered (brand-leak): {r.get('author', 'unknown')}")
             continue
