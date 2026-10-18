@@ -231,7 +231,13 @@
       },
       {
         "file": "index.html",
-        "sha256": "d9ad8d771a945cd93fe8597111755e7ed8ddd5496bb3729141bf75437f15ae58",
+        "sha256": "26e3c29f07e3fd9d1eed0e478e10e6b0896742a71d01fe4f462f13bf7712b59d",
+        "qaBaselineSourceAmendment": {
+          "observedAt": "2026-10-18T20:00:00Z",
+          "priorSha256": "d9ad8d771a945cd93fe8597111755e7ed8ddd5496bb3729141bf75437f15ae58",
+          "reason": "Supporting homepage byte pin only: on mobile, showreel videos and the Mapbox map wait for a tap or until they are on screen, and the hero image preload matches the responsive picture. Title, H1, canonical, schema, NAP, booking links, and claims are unchanged. Not new ranking evidence or experiment authorization.",
+          "reviewRequiredBeforeMerge": true
+        },
         "restorationScopeSourceAmendment": {
           "observedAt": "2026-10-03T19:20:00Z",
           "priorSha256": "a6fcea13dfbbfc0851024d66af215d894861002e53118cc37ab8b018ee8bac76",
