@@ -1,0 +1,71 @@
+{
+  "$comment": "Reviewed violations present on main when frame-guards landed. One entry per (guard, path, match). Fix the copy, then delete the entry. Do not add entries to get a PR green without a reviewed reason.",
+  "entries": [
+    {
+      "guard": "dead-gbp-link",
+      "path": "index.html",
+      "match": "g.co/kgs/framerestorationutah",
+      "reason": "Footer 'Google Business' icon links to a dead g.co/kgs share link (Site QA UT-3). Fix is in flight in Site QA's draft PR #327 (codex/ut-3-gbp-map-link); should point at business.json gbp.maps_listing_url. Not fixed here: no customer-copy changes in the guard PR."
+    },
+    {
+      "guard": "market-isolation",
+      "path": "directory-tracker.html",
+      "match": "spirit lake, idaho",
+      "reason": "Internal directory-submission tracker page (deployed, not linked from nav) lists the business address as 'Spirit Lake, Idaho (servicing all Utah)'. Wrong market; needs Ryan/Landon to confirm the intended Utah address (business.json: 142 S Main St, Heber City) or to vercelignore the page."
+    },
+    {
+      "guard": "nap-lock",
+      "path": "blog/lehi/roof-replacement-lehi-utah-2026.html",
+      "match": "385-201-1035",
+      "reason": "Third-party number, not a NAP claim: the Lehi Building Inspection Office line cited in permit guidance. Legitimate; kept as a reviewed exception."
+    },
+    {
+      "guard": "nap-lock",
+      "path": "leads.html",
+      "match": "213-494-2372",
+      "reason": "Placeholder text in the PIN-gated CRM 'add lead' phone input. Not a NAP claim, but it is a real-format number outside the 555 range; swap for a 555-01xx placeholder when convenient."
+    },
+    {
+      "guard": "nap-lock",
+      "path": "locations/salt-lake-city.html",
+      "match": "name:frame restoration utah llc.",
+      "reason": "JSON-LD business name 'Frame Restoration Utah LLC.' (trailing period) on the Salt Lake City page, which carries the second GBP location (cid 5689850818145735734). Differs from business.json legal_entity 'Frame Restoration Utah LLC'; one-character copy fix for a follow-up PR. Ryan to confirm whether the period intentionally mirrors the second GBP listing's display name; if it does, add that name to nap.businessNames instead."
+    },
+    {
+      "guard": "nap-lock",
+      "path": "previews/city-pages/salt-lake-city.html",
+      "match": "name:frame restoration utah llc.",
+      "reason": "Preview copy of the Salt Lake City page with the same 'Frame Restoration Utah LLC.' name; same follow-up fix as locations/salt-lake-city.html. Ryan to confirm whether the period intentionally mirrors the second GBP listing's display name; if it does, add that name to nap.businessNames instead."
+    },
+    {
+      "guard": "no-ryan",
+      "path": "dashboard/config.js",
+      "match": "conwell",
+      "reason": "'Built by Ryan Conwell' builder credit on the PIN-gated owner dashboard (served at /dashboard, not linked from customer pages). Ryan must not appear on served pages; needs Ryan's call: remove the credit or keep for the internal dashboard."
+    },
+    {
+      "guard": "no-ryan",
+      "path": "dashboard/index.html",
+      "match": "conwell",
+      "reason": "'Built by Ryan Conwell' footer on the PIN-gated owner dashboard. Same decision as dashboard/config.js."
+    },
+    {
+      "guard": "no-ryan",
+      "path": "locations/payson.html",
+      "match": "conwell",
+      "reason": "Matches a Google review author surname ('Katie Conwell', Jul 2026) quoted on the Payson page, not a Ryan attribution. Flagged for Ryan: a family-member review on a customer page may be a review-policy/optics question."
+    },
+    {
+      "guard": "no-ryan",
+      "path": "reviews.json",
+      "match": "conwell",
+      "reason": "Same 'Katie Conwell' Google review in the live reviews feed (synced from Google by scripts/update-google-reviews.py). Not a Ryan attribution; flagged for Ryan with locations/payson.html."
+    },
+    {
+      "guard": "no-ryan",
+      "path": "seo-report.html",
+      "match": "conwell",
+      "reason": "'Built by Ryan Conwell' footer on the PIN-gated SEO tracker shared with Landon (/seo-report). Same decision as the dashboard credit."
+    }
+  ]
+}
