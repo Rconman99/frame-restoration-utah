@@ -1,8 +1,8 @@
 {
   "artifact": "frame-utah-growth-operations",
   "version": 1,
-  "generatedAt": "2026-10-17T12:48:13.687Z",
-  "snapshotDate": "2026-10-17",
+  "generatedAt": "2026-10-18T12:48:01.997Z",
+  "snapshotDate": "2026-10-18",
   "sourceAgeHours": 0,
   "state": "measurement_operational_outcomes_incomplete",
   "northStar": "qualified_organic_leads",
@@ -16,8 +16,8 @@
     "nextAction": "Reconcile existing lead source/city/page attribution with owner-confirmed CRM outcomes through the approved read-only lane; do not infer jobs from clicks or change CRM truth."
   },
   "searchWindow": {
-    "startDate": "2026-09-17",
-    "endDate": "2026-10-14"
+    "startDate": "2026-09-18",
+    "endDate": "2026-10-15"
   },
   "blockers": [],
   "crawlErrors": [],
@@ -29,8 +29,8 @@
       "state": "observed_rolling_window",
       "metrics": {
         "clicks": 3,
-        "impressions": 5984,
-        "averagePosition": 23.3
+        "impressions": 5995,
+        "averagePosition": 23.7
       }
     },
     {
@@ -39,7 +39,7 @@
       "state": "observed_rolling_window",
       "metrics": {
         "clicks": 4,
-        "impressions": 1987,
+        "impressions": 1966,
         "averagePosition": 10.2
       }
     },
@@ -91,8 +91,8 @@
       "region": "slc",
       "query": "roof inspections salt lake city",
       "clicks": 0,
-      "impressions": 35,
-      "averagePosition": 11.4,
+      "impressions": 36,
+      "averagePosition": 11.3,
       "state": "exact_query_page_diagnosis_ready",
       "nextAction": "Obtain an exact query + intended-page baseline; check current URL selection and running experiments before drafting one isolated change.",
       "limitation": "Query-level discovery only: these metrics are not a page baseline, lead count or revenue estimate."
@@ -101,7 +101,7 @@
       "region": "heber",
       "query": "roof repair heber city ut",
       "clicks": 0,
-      "impressions": 2076,
+      "impressions": 2082,
       "averagePosition": 6.3,
       "state": "exact_query_page_diagnosis_ready",
       "nextAction": "Obtain an exact query + intended-page baseline; check current URL selection and running experiments before drafting one isolated change.",
@@ -111,8 +111,8 @@
       "region": "heber",
       "query": "roofing heber city ut",
       "clicks": 0,
-      "impressions": 1533,
-      "averagePosition": 4.8,
+      "impressions": 1514,
+      "averagePosition": 4.7,
       "state": "exact_query_page_diagnosis_ready",
       "nextAction": "Obtain an exact query + intended-page baseline; check current URL selection and running experiments before drafting one isolated change.",
       "limitation": "Query-level discovery only: these metrics are not a page baseline, lead count or revenue estimate."
@@ -131,7 +131,7 @@
       "region": "davis-hail",
       "query": "roof repair farmington ut",
       "clicks": 0,
-      "impressions": 1335,
+      "impressions": 1326,
       "averagePosition": 10.4,
       "state": "exact_query_page_diagnosis_ready",
       "nextAction": "Obtain an exact query + intended-page baseline; check current URL selection and running experiments before drafting one isolated change.",
@@ -141,8 +141,8 @@
       "region": "davis-hail",
       "query": "roofing farmington ut",
       "clicks": 0,
-      "impressions": 750,
-      "averagePosition": 12.1,
+      "impressions": 737,
+      "averagePosition": 12.3,
       "state": "exact_query_page_diagnosis_ready",
       "nextAction": "Obtain an exact query + intended-page baseline; check current URL selection and running experiments before drafting one isolated change.",
       "limitation": "Query-level discovery only: these metrics are not a page baseline, lead count or revenue estimate."
@@ -193,7 +193,7 @@
     "firstFullDay": "2026-09-18",
     "observationWindowEnd": "2026-10-15",
     "earliestSettledReadDate": "2026-10-18",
-    "state": "dedicated_window_readout_pending",
+    "state": "dedicated_readout_due",
     "limitation": "The page metrics above are rolling discovery readings, not a fixed campaign outcome. Fetch Sep 18–Oct 15 explicitly at closeout; no pre-release baseline, causality, storm footprint, indexing or lead result is inferred."
   },
   "davisHailCampaign": {
@@ -212,8 +212,8 @@
   },
   "sources": [
     {
-      "file": "data/seo/snapshots/2026-10-17.json",
-      "sha256": "ae7ad7e6b821b86b7ef6c1a93affc2d5c0331b297e88754252044fc29d62a9ec"
+      "file": "data/seo/snapshots/2026-10-18.json",
+      "sha256": "aacc1b5e7947b9fc4b695253a6172d45262c1e7b44dd3949f13ca3404c84e248"
     },
     {
       "file": "data/seo-experiments/utah-homepage-commercial-title-2026-08-09.json",

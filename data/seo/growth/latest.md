@@ -1,6 +1,6 @@
 # Utah operational growth readout
 
-State: measurement_operational_outcomes_incomplete. Snapshot: 2026-10-17.
+State: measurement_operational_outcomes_incomplete. Snapshot: 2026-10-18.
 
 Qualified leads, inspections, sold jobs and collected revenue: **not measured** by this search report.
 
@@ -12,25 +12,25 @@ Qualified leads, inspections, sold jobs and collected revenue: **not measured** 
 
 ## Query discovery — exact query/page diagnosis required
 
-- slc: roof inspections salt lake city — 35 impressions, 0 clicks, position 11.4; exact_query_page_diagnosis_ready.
-- heber: roof repair heber city ut — 2076 impressions, 0 clicks, position 6.3; exact_query_page_diagnosis_ready.
-- heber: roofing heber city ut — 1533 impressions, 0 clicks, position 4.8; exact_query_page_diagnosis_ready.
+- slc: roof inspections salt lake city — 36 impressions, 0 clicks, position 11.3; exact_query_page_diagnosis_ready.
+- heber: roof repair heber city ut — 2082 impressions, 0 clicks, position 6.3; exact_query_page_diagnosis_ready.
+- heber: roofing heber city ut — 1514 impressions, 0 clicks, position 4.7; exact_query_page_diagnosis_ready.
 - heber: heber roofers — 34 impressions, 0 clicks, position 6.9; exact_query_page_diagnosis_ready.
-- davis-hail: roof repair farmington ut — 1335 impressions, 0 clicks, position 10.4; exact_query_page_diagnosis_ready.
-- davis-hail: roofing farmington ut — 750 impressions, 0 clicks, position 12.1; exact_query_page_diagnosis_ready.
+- davis-hail: roof repair farmington ut — 1326 impressions, 0 clicks, position 10.4; exact_query_page_diagnosis_ready.
+- davis-hail: roofing farmington ut — 737 impressions, 0 clicks, position 12.3; exact_query_page_diagnosis_ready.
 - davis-hail: which roofing companies in farmington ut handle roof repairs and replacements? — 77 impressions, 0 clicks, position 8.8; exact_query_page_diagnosis_ready.
 
 ## Priority pages — rolling search window
 
-- slc: 3 clicks / 5984 impressions / position 23.3.
-- heber: 4 clicks / 1987 impressions / position 10.2.
+- slc: 3 clicks / 5995 impressions / position 23.7.
+- heber: 4 clicks / 1966 impressions / position 10.2.
 - midway: 0 clicks / 21 impressions / position 6.8.
 - hideout: 0 clicks / 9 impressions / position 11.7.
 - charleston: 0 clicks / 1 impressions / position 4.
 - layton: not measured or not returned.
 - farmington: not measured or not returned.
 
-Hail campaign: dedicated_window_readout_pending; fixed Sep 18–Oct 15 readout no earlier than Oct 18, subject to available final data.
+Hail campaign: dedicated_readout_due; fixed Sep 18–Oct 15 readout no earlier than Oct 18, subject to available final data.
 
 Davis hail campaign: dedicated_window_readout_pending; fixed Sep 19–Oct 16 readout no earlier than Oct 19 MDT, subject to available final data. Keep Davis separate from SLC attribution.
 
