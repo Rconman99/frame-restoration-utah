@@ -71,6 +71,7 @@
     "sync:slv-expansion-architecture": "node scripts/sync-slv-expansion-architecture.mjs --write",
     "sync:slv-city-goals": "node scripts/sync-slv-city-goal-program.mjs --write",
     "sync:slv-public-remediation-packet": "node scripts/sync-slv-public-remediation-packet.mjs --write",
+    "audit:booking-links": "node scripts/audit-booking-links.mjs",
     "audit:shared-assets": "node scripts/sync-shared-asset-versions.mjs --check",
     "sync:shared-assets": "node scripts/sync-shared-asset-versions.mjs --write",
     "test:mobile-ui": "node scripts/test-mobile-ui.mjs",
