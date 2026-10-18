@@ -231,7 +231,13 @@
       },
       {
         "file": "index.html",
-        "sha256": "d9ad8d771a945cd93fe8597111755e7ed8ddd5496bb3729141bf75437f15ae58",
+        "sha256": "66b7a29e6cf44bf3e72bfb9c68efc0f144af228399ea48f4b69777aa7602362c",
+        "qaBaselineSourceAmendment": {
+          "observedAt": "2026-10-18T20:00:00Z",
+          "priorSha256": "d9ad8d771a945cd93fe8597111755e7ed8ddd5496bb3729141bf75437f15ae58",
+          "reason": "Supporting homepage byte pin only: section labels and the homepage CTA use the darker contrast color. No visible copy, title, H1, canonical, schema, NAP, booking links, or claims changed. Not new ranking evidence or experiment authorization.",
+          "reviewRequiredBeforeMerge": true
+        },
         "restorationScopeSourceAmendment": {
           "observedAt": "2026-10-03T19:20:00Z",
           "priorSha256": "a6fcea13dfbbfc0851024d66af215d894861002e53118cc37ab8b018ee8bac76",
