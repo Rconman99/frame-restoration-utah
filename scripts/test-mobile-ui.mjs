@@ -92,6 +92,69 @@ const browser = await chromium.launch({
 let checks = 0;
 
 try {
+  // UT-6/UT-7: body/default-link colors on navy and decorative gold on light
+  // backgrounds must not return. Exercise the About menu on both backgrounds.
+  const contrastRoutes = [
+    { route: "/locations/midway", selectors: ["[data-midway-hail-guide] > p", "[data-midway-hail-guide] > p a"] },
+    { route: "/locations/heber-city", selectors: ["[data-valley-hail-guide] > p", "[data-valley-hail-guide] > p a"] },
+    { route: "/pages/about", selectors: [".owner-bio .kicker", ".owner-bio h2 .accent", ".landon-quote cite", ".nav-links a.active"] },
+  ];
+  for (const viewport of [
+    { width: 320, height: 568 }, { width: 360, height: 800 },
+    { width: 393, height: 852 }, { width: 430, height: 932 },
+    { width: 740, height: 360 }, { width: 1024, height: 768 },
+    { width: 1280, height: 800 }, { width: 1440, height: 900 },
+  ]) {
+    for (const { route, selectors } of contrastRoutes) {
+      const page = await browser.newPage({ viewport, serviceWorkers: "block" });
+      await page.route("**/*", (request) => (
+        request.request().method() === "GET" && new URL(request.request().url()).origin === origin
+          ? request.continue() : request.abort()
+      ));
+      await page.goto(`${origin}${route}`, { waitUntil: "domcontentloaded" });
+      if (route === "/pages/about" && viewport.width <= 1100) {
+        await page.locator("#menuBtn").click();
+      }
+      const samples = await page.evaluate((selectors) => {
+        const rgb = (value) => value.match(/[\d.]+/g).map(Number);
+        const blend = (fg, bg) => fg.slice(0, 3).map((c, i) => c * (fg[3] ?? 1) + bg[i] * (1 - (fg[3] ?? 1)));
+        const background = (el) => {
+          if (!el) return [255, 255, 255];
+          const color = rgb(getComputedStyle(el).backgroundColor);
+          return color.length === 3 || color[3] === 1 ? color.slice(0, 3) : blend(color, background(el.parentElement));
+        };
+        const luminance = (color) => color.map((c) => c / 255)
+          .map((c) => c <= 0.04045 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4)
+          .reduce((sum, c, i) => sum + c * [0.2126, 0.7152, 0.0722][i], 0);
+        return selectors.flatMap((selector) => {
+          const elements = [...document.querySelectorAll(selector)];
+          if (!elements.length) return [{ selector, ratio: 0, visible: false }];
+          return elements.map((el) => {
+            const bg = background(el);
+            const fg = blend(rgb(getComputedStyle(el).color), bg);
+            const [light, dark] = [luminance(fg), luminance(bg)].sort((a, b) => b - a);
+            return { selector, ratio: (light + 0.05) / (dark + 0.05), visible: el.getClientRects().length > 0 };
+          });
+        });
+      }, selectors);
+      for (const { selector, ratio, visible } of samples) {
+        assert(visible, `${route} ${selector} must be displayed at ${viewport.width}px`);
+        assert(ratio >= 4.5, `${route} ${selector} has ${ratio.toFixed(2)}:1 contrast at ${viewport.width}px; requires 4.5:1`);
+      }
+      if (route === "/pages/about") {
+        for (const selector of [".about-hero .breadcrumb a", "footer p a"]) {
+          const links = page.locator(selector);
+          assert(await links.count(), `About must contain ${selector}`);
+          for (const link of await links.all()) {
+            assert(await link.evaluate((el) => getComputedStyle(el).textDecorationLine.includes("underline")), `${selector} must be distinguishable without color`);
+          }
+        }
+      }
+      checks += 1;
+      await page.close();
+    }
+  }
+
   // Production regression: text-field CSS stretched the consent checkbox to
   // the form width and pushed the SMS disclosure out of the modal.
   for (const viewport of [

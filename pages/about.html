@@ -116,8 +116,12 @@
   padding: 8px 16px; margin-bottom: 22px;
 }
 .about-hero .breadcrumb { font-size: 0.85rem; margin-bottom: 14px; opacity: 0.8; }
-.about-hero .breadcrumb a { color: var(--gold); text-decoration: none; }
+.about-hero .breadcrumb a { color: var(--gold); text-decoration: underline; }
 .about-hero .breadcrumb a:hover { text-decoration: underline; }
+footer p a { text-decoration: underline; }
+@media (min-width: 1101px) {
+  .nav-links a.active { color: var(--gold-text); }
+}
 .about-hero h1 {
   font-family: 'Archivo Black', sans-serif;
   font-size: clamp(2.2rem, 5.5vw, 3.8rem);
@@ -155,13 +159,13 @@
 }
 .owner-caption .name { font-family: 'Archivo Black', sans-serif; font-size: 1.15rem; text-transform: uppercase; letter-spacing: 0.5px; }
 .owner-caption .title { color: var(--gold); font-size: 0.78rem; letter-spacing: 2px; text-transform: uppercase; margin-top: 4px; }
-.owner-bio .kicker { color: var(--gold-dark); font-family: 'Archivo Black', sans-serif; font-size: 0.75rem; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 14px; }
+.owner-bio .kicker { color: var(--gold-text); font-family: 'Archivo Black', sans-serif; font-size: 0.75rem; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 14px; }
 .owner-bio h2 {
   font-family: 'Archivo Black', sans-serif; color: var(--navy-deep);
   font-size: clamp(1.7rem, 3vw, 2.3rem); line-height: 1.15;
   text-transform: uppercase; margin: 0 0 24px; letter-spacing: -0.3px;
 }
-.owner-bio h2 .accent { color: var(--gold-dark); }
+.owner-bio h2 .accent { color: var(--gold-text); }
 .owner-bio p { color: var(--muted); line-height: 1.75; font-size: 1.02rem; margin: 0 0 18px; }
 .owner-bio p strong { color: var(--ink); }
 .landon-quote { margin-top: 34px; padding: 28px 32px; background: var(--cream); border-left: 4px solid var(--gold); position: relative; }
@@ -172,7 +176,7 @@
   letter-spacing: 2px; padding: 4px 10px; text-transform: uppercase;
 }
 .landon-quote blockquote { font-family: 'Archivo Black', sans-serif; font-size: 1.15rem; color: var(--navy-deep); line-height: 1.5; margin: 0; font-style: italic; }
-.landon-quote cite { display: block; margin-top: 14px; font-style: normal; font-size: 0.78rem; letter-spacing: 2px; text-transform: uppercase; color: var(--gold-dark); }
+.landon-quote cite { display: block; margin-top: 14px; font-style: normal; font-size: 0.78rem; letter-spacing: 2px; text-transform: uppercase; color: var(--gold-text); }
 @media (max-width: 860px) {
   .owner-wrap { grid-template-columns: 1fr; gap: 40px; }
   .owner-photo-block { max-width: 320px; margin: 0 auto; }
