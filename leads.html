@@ -753,7 +753,7 @@ async function submitAddLead(){
 	function reopenGrowthAction(key){saveGrowthState(key,{state:"open",snoozed_until:null})}
 
 	function addGrowthAction(list,a){
-	  list.push({id:a.id||("a"+list.length),priority:a.priority||"P2",category:a.category||"Ops",title:a.title||"Untitled action",detail:a.detail||"",step:a.step||"",owner:a.owner||"Ryan / Landon",leadId:a.leadId||null,url:a.url||"",due:a.due||"next"});
+	  list.push({id:a.id||("a"+list.length),priority:a.priority||"P2",category:a.category||"Ops",title:a.title||"Untitled action",detail:a.detail||"",step:a.step||"",owner:a.owner||"Landon",leadId:a.leadId||null,url:a.url||"",due:a.due||"next"});
 	}
 	function buildGrowthData(){
 	  var clicks=(clickData.recent||[]);
@@ -1093,7 +1093,7 @@ document.getElementById("backdrop").addEventListener("click",function(){
   if(document.getElementById("addPanel").classList.contains("open")) closeAddLead();
   else closePanel();
 });
-// Commission auto-computes from margin + city per Ryan's rule (5% Heber/Midway, 10% else).
+// Commission auto-computes from margin + city per the owner's rule (5% Heber/Midway, 10% else).
 // Backend rejects writes to commission (GENERATED column); UI just displays the computed value.
 function recalcCommission(){
   var m=Number(document.getElementById("p-margin").value)||0;
