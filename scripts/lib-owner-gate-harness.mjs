@@ -64,4 +64,9 @@ export const ENCODED_PROBES = [
   '/images/%2e%2e/dashboard/config.js',
   '/assets/..//dashboard/config.js',
   '/assets/%2e%2e//dashboard/config.js',
+  // Fullwidth dot/slash/backslash that NFKC would fold into real traversal.
+  '/dashboard/%EF%BC%8E%EF%BC%8E/config.js',
+  '/dashboard/%EF%BC%8E%EF%BC%8E%EF%BC%8Fconfig.js',
+  '/dashboard%EF%BC%8F%EF%BC%8E%EF%BC%8E%EF%BC%8Fx',
+  '/dashboard/x%EF%BC%BC%EF%BC%8E%EF%BC%8E%EF%BC%BC%EF%BC%8E%EF%BC%8E%EF%BC%BCconfig.js',
 ];

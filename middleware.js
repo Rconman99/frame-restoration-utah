@@ -72,7 +72,12 @@ export function normalizePath(rawPath) {
   if (/[\u0000-\u001f\u007f]/.test(path)) return null;
   // Fold compatibility forms (fullwidth letters) and drop invisible format
   // characters so look-alike names map to the real one.
-  path = path.normalize('NFKC').replace(/[\u00ad\u200b-\u200f\u2060\ufeff]/g, '');
+  const folded = path.normalize('NFKC').replace(/[\u00ad\u200b-\u200f\u2060\ufeff]/g, '');
+  // The fold may change letters, never path syntax: a fullwidth / \\ . ; or %
+  // that folds into a real one is refused (the filesystem would not fold it).
+  const syntax = (value) => (value.match(/[\/\\.;%]/g) || []).join('');
+  if (syntax(folded) !== syntax(path)) return null;
+  path = folded;
   const segments = [];
   for (const segment of path.replace(/\\/g, '/').toLowerCase().split('/')) {
     if (!segment || segment === '.') continue;

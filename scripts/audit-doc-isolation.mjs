@@ -226,7 +226,7 @@ if (deployedDashboardFiles.length > 0) {
         continue;
       }
       const response = result.response;
-      if (!response || response.headers.get('x-middleware-next') || ![302, 401].includes(response.status)) {
+      if (!response || response.headers.get('x-middleware-next') || ![302, 401, 400].includes(response.status)) {
         ownerGateFailures.push(`${probe}: anonymous request is not refused by the default export (status ${response?.status ?? 'pass-through'})`);
       }
     }

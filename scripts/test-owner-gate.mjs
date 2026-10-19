@@ -62,8 +62,41 @@ test('anonymous assets get 401 with no file content', async () => {
 test('encoded, doubled, backslashed, traversal, .html and mixed-case variants are gated', async () => {
   for (const p of ENCODED_PROBES) {
     const response = await run(req(p));
-    assert.ok([302, 401].includes(response.status), `${p} -> ${response.status}`);
+    assert.ok([302, 401, 400].includes(response.status), `${p} -> ${response.status}`);
     assert.equal(response.headers.get('x-middleware-next'), null, p);
+  }
+});
+
+test('fullwidth path syntax that NFKC would fold into traversal is refused with 400', async () => {
+  const FW_DOT = '%EF%BC%8E', FW_SL = '%EF%BC%8F', FW_BS = '%EF%BC%BC';
+  for (const p of [
+    `/dashboard/${FW_DOT}${FW_DOT}/config.js`,
+    `/dashboard/${FW_DOT}${FW_DOT}${FW_SL}config.js`,
+    `/dashboard${FW_SL}${FW_DOT}${FW_DOT}${FW_SL}x`,
+    `/dashboard/x${FW_BS}${FW_DOT}${FW_DOT}${FW_BS}${FW_DOT}${FW_DOT}${FW_BS}config.js`,
+    `/dashboard/config${FW_DOT}js`,
+    '/dashboard%EF%B9%92html',
+  ]) {
+    assert.equal(normalizePath(new URL(`${ORIGIN}${p}`).pathname), null, p);
+    const response = await run(req(p));
+    assert.equal(response.status, 400, p);
+  }
+});
+
+test('fullwidth and invisible-character look-alike names are still gated', async () => {
+  for (const p of [
+    '/%EF%BD%84%EF%BD%81%EF%BD%93%EF%BD%88%EF%BD%82%EF%BD%8F%EF%BD%81%EF%BD%92%EF%BD%84',
+    '/%EF%BD%84ashboard/config.js',
+    '/dash%E2%80%8Bboard',
+    '/dash%C2%ADboard/config.js',
+    '/%EF%BB%BFdashboard',
+  ]) {
+    // Raw form carries % so the matcher dispatches it; call the default export.
+    const realFetch = globalThis.fetch;
+    globalThis.fetch = neverCalled;
+    let response;
+    try { response = await gateModule.default(req(p)); } finally { globalThis.fetch = realFetch; }
+    assert.ok([302, 401].includes(response.status), `${p} -> ${response.status}`);
   }
 });
 
