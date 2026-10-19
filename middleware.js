@@ -21,7 +21,7 @@ export const OWNER_LOGIN_PATH = '/owner-login';
 export const OWNER_HOME_PATH = '/dashboard';
 export const SESSION_MAX_AGE_SECONDS = 8 * 60 * 60;
 const ALLOWED_ROLES = new Set(['viewer', 'sales', 'admin']);
-const TOKEN_PATTERN = /^[A-Za-z0-9._~+/=-]{16,4096}$/;
+const BEARER_SHAPE = /^[A-Za-z0-9._~+/=-]{16,4096}$/;
 
 export const config = {
   matcher: [
@@ -66,7 +66,7 @@ function bearer(header) {
 
 // 'ok' | 'denied' | 'unavailable'
 export async function verifyOwnerSession(token, fetchImpl = fetch) {
-  if (!TOKEN_PATTERN.test(token || '')) return 'denied';
+  if (!BEARER_SHAPE.test(token || '')) return 'denied';
   let response;
   try {
     response = await fetchImpl(`${LEAD_CRM_URL}?action=session`, {

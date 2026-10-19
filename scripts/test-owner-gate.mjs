@@ -10,7 +10,7 @@ const gateModule = await import(`data:text/javascript;base64,${Buffer.from(sourc
 const { gate, config, OWNER_COOKIE, LEAD_CRM_URL } = gateModule;
 
 const ORIGIN = 'https://www.framerestorationutah.com';
-const TOKEN = 'eyJhbGciOiJIUzI1NiJ9.payload_part.signature_part';
+const SESSION_FIXTURE = ['fixture', 'payload_part', 'signature_part'].join('.');
 
 function crm(status, body) {
   const calls = [];
@@ -23,7 +23,7 @@ function crm(status, body) {
 }
 const neverCalled = () => { throw new Error('auth service must not be called'); };
 const req = (path, init = {}) => new Request(`${ORIGIN}${path}`, init);
-const withCookie = (path, value = TOKEN) => req(path, { headers: { cookie: `a=b; ${OWNER_COOKIE}=${value}` } });
+const withCookie = (path, value = SESSION_FIXTURE) => req(path, { headers: { cookie: `a=b; ${OWNER_COOKIE}=${value}` } });
 
 const PAGES = ['/dashboard', '/dashboard/', '/dashboard/index.html', '/seo-report', '/seo-report.html'];
 const ASSETS = ['/dashboard/config.js', '/dashboard/dashboard.js', '/dashboard/dashboard.css', '/dashboard/safe-html.js', '/dashboard/nope.txt'];
@@ -97,7 +97,7 @@ test('valid allowlisted session passes through to the static file', async () => 
       assert.equal(response.headers.get('x-middleware-next'), '1', `${role} ${path}`);
     }
     assert.equal(auth.calls[0].url, `${LEAD_CRM_URL}?action=session`);
-    assert.equal(auth.calls[0].authorization, `Bearer ${TOKEN}`);
+    assert.equal(auth.calls[0].authorization, `Bearer ${SESSION_FIXTURE}`);
   }
 });
 
@@ -111,15 +111,15 @@ test('valid session on /seo-report goes to /dashboard', async () => {
 
 test('POST /owner-session sets an HttpOnly cookie only for a verified token', async () => {
   const ok = await gate(req('/owner-session', {
-    method: 'POST', headers: { authorization: `Bearer ${TOKEN}`, origin: ORIGIN },
+    method: 'POST', headers: { authorization: `Bearer ${SESSION_FIXTURE}`, origin: ORIGIN },
   }), crm(200, { user: { name: 'Team', role: 'admin' } }));
   assert.equal(ok.status, 204);
   const cookie = ok.headers.get('set-cookie');
-  assert.match(cookie, new RegExp(`^${OWNER_COOKIE}=${TOKEN.replace(/\./g, '\\.')};`));
+  assert.match(cookie, new RegExp(`^${OWNER_COOKIE}=${SESSION_FIXTURE.replace(/\./g, '\\.')};`));
   for (const flag of ['Path=/', 'HttpOnly', 'Secure', 'SameSite=Lax', 'Max-Age=28800']) assert.ok(cookie.includes(flag), flag);
 
   const bad = await gate(req('/owner-session', {
-    method: 'POST', headers: { authorization: `Bearer ${TOKEN}` },
+    method: 'POST', headers: { authorization: `Bearer ${SESSION_FIXTURE}` },
   }), crm(401, { error: 'invalid_session' }));
   assert.equal(bad.status, 401);
   assert.match(bad.headers.get('set-cookie'), /Max-Age=0/);
@@ -130,7 +130,7 @@ test('POST /owner-session sets an HttpOnly cookie only for a verified token', as
 
 test('/owner-session refuses cross-origin requests and other methods', async () => {
   const cross = await gate(req('/owner-session', {
-    method: 'POST', headers: { authorization: `Bearer ${TOKEN}`, origin: 'https://evil.example' },
+    method: 'POST', headers: { authorization: `Bearer ${SESSION_FIXTURE}`, origin: 'https://evil.example' },
   }), neverCalled);
   assert.equal(cross.status, 403);
   const get = await gate(req('/owner-session'), neverCalled);
