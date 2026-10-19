@@ -13,10 +13,13 @@
 // redirect to /owner-login, anonymous asset requests get 401, malformed paths
 // get 400, and an unreachable auth service fails closed with 503.
 //
-// The matcher is deliberately broad (everything except high-volume public
-// asset/content folders with a plain path), and every matched path is decoded
-// and normalized before the protected-route decision, so encoded, doubled,
-// backslashed, mixed-case and .html variants cannot slip past the gate.
+// The matcher is narrow: it runs only on paths that contain dashboard,
+// seo-report or owner-session (case-insensitive), or any of %, a backslash,
+// //, .. or ; (the characters an encoded, doubled, backslashed or dot-segment
+// bypass needs). Ordinary public pages and assets never invoke the middleware.
+// Every matched path is decoded and normalized before the protected-route
+// decision, so encoded, doubled, backslashed, mixed-case and .html variants
+// cannot slip past the gate.
 //
 // No npm imports: package.json is excluded from the Vercel upload.
 
@@ -33,9 +36,8 @@ const MAX_DECODE_ROUNDS = 4;
 export const config = {
   runtime: 'nodejs',
   matcher: [
-    // Skip only plain paths inside public asset/content folders. Any path with
-    // %, a backslash, // or .. still runs through the gate.
-    '/((?!(?:images|assets|vendor|ingest|blog|locations|pages|projects)/(?!/|.*(?:%|\\\\|//|\\.\\.))).*)',
+    // Protected names, plus the characters any encoding/traversal bypass needs.
+    '/(.*(?:dashboard|seo-report|owner-session|%|\\\\|//|\\.\\.|;).*)',
   ],
 };
 
@@ -68,6 +70,9 @@ export function normalizePath(rawPath) {
     }
   }
   if (/[\u0000-\u001f\u007f]/.test(path)) return null;
+  // Fold compatibility forms (fullwidth letters) and drop invisible format
+  // characters so look-alike names map to the real one.
+  path = path.normalize('NFKC').replace(/[\u00ad\u200b-\u200f\u2060\ufeff]/g, '');
   const segments = [];
   for (const segment of path.replace(/\\/g, '/').toLowerCase().split('/')) {
     if (!segment || segment === '.') continue;
@@ -83,9 +88,14 @@ export function normalizePath(rawPath) {
   return normalized || '/';
 }
 
+// /dashboard or /seo-report followed by the end or by any character that
+// cannot continue the name (/, ., ;, space, ...) is protected, so near-misses
+// such as /dashboard. or /dashboard;x are refused too.
+const PROTECTED_PREFIX = /^\/(?:dashboard|seo-report)(?![a-z0-9_-])/;
+const SEO_REPORT_PREFIX = /^\/seo-report(?![a-z0-9_-])/;
+
 export function isProtectedPath(normalized) {
-  return normalized === '/dashboard' || normalized.startsWith('/dashboard/') ||
-    normalized === '/seo-report' || normalized.startsWith('/seo-report/');
+  return PROTECTED_PREFIX.test(normalized);
 }
 
 export function isOwnerPagePath(normalized) {
@@ -183,7 +193,7 @@ export async function gate(request, fetchImpl = globalThis.fetch) {
   const token = readCookie(request.headers.get('cookie'), OWNER_COOKIE);
   const verdict = token ? await verifyOwnerSession(token, fetchImpl) : 'denied';
   if (verdict === 'ok') {
-    if (normalized === '/seo-report' || normalized.startsWith('/seo-report/')) return redirect(OWNER_HOME_PATH);
+    if (SEO_REPORT_PREFIX.test(normalized)) return redirect(OWNER_HOME_PATH);
     return proceed({ 'Cache-Control': 'private, no-store', 'Vary': 'Cookie', 'X-Robots-Tag': 'noindex, nofollow' });
   }
   if (verdict === 'unavailable') return plain(503, 'Sign-in is temporarily unavailable.');

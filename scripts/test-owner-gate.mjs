@@ -80,6 +80,9 @@ test('normalizePath canonicalizes every variant', () => {
     '/SEO-Report.HTML': '/seo-report',
     '/DASHBOARD/Config.JS': '/dashboard/config.js',
     '/locations/provo': '/locations/provo',
+    '/ｄａｓｈｂｏａｒｄ/config.js': '/dashboard/config.js',
+    '/%EF%BD%84ashboard': '/dashboard',
+    '/dash\u200bboard': '/dashboard',
   };
   for (const [input, expected] of Object.entries(cases)) assert.equal(normalizePath(input), expected, input);
 });
@@ -92,15 +95,27 @@ test('malformed encoding fails closed with 400', async () => {
   }
 });
 
-test('public pages pass straight through without calling the auth service', async () => {
-  for (const p of ['/', '/leads', '/owner-login', '/owner-login.js', '/global-modal.js', '/services']) {
-    const response = await run(req(p));
-    assert.equal(response.headers.get('x-middleware-next'), '1', p);
-  }
-  // High-volume public folders are not dispatched at all (plain paths only).
-  for (const p of ['/images/logo.png', '/assets/x.css', '/locations/provo', '/ingest/e']) {
+test('public pages are not dispatched to the middleware at all', async () => {
+  for (const p of ['/', '/leads', '/owner-login', '/owner-login.js', '/global-modal.js', '/global.css', '/services', '/images/logo.png', '/assets/x.css', '/locations/provo', '/blog', '/ingest/e']) {
     const { dispatched } = await runDefault(gateModule, req(p), neverCalled);
     assert.equal(dispatched, false, p);
+  }
+  // If a public path is dispatched (it carries %, //, \\, .. or ;), it still passes through.
+  const response = await gateModule.default(req('/locations/a%20b'));
+  assert.equal(response.headers.get('x-middleware-next'), '1');
+  assert.equal(response.headers.get('vary'), null);
+  assert.equal(response.headers.get('cache-control'), null);
+});
+
+test('near-miss names after /dashboard or /seo-report are protected', async () => {
+  for (const p of ['/%e2%80%8bdashboard', '/dashboard%e2%80%8b/config.js', '/dashboard.', '/dashboard./', '/dashboard..', '/dashboard;x', '/dashboard;/config.js', '/dashboard%20', '/seo-report.', '/seo-report;a', '/DASHBOARD;JSESSIONID=1']) {
+    const response = await run(req(p));
+    assert.ok([302, 401].includes(response.status), `${p} -> ${response.status}`);
+    assert.equal(response.headers.get('x-middleware-next'), null, p);
+  }
+  // Different names that merely start with the word stay public.
+  for (const p of ['/dashboard-ideas', '/dashboards', '/seo-reporting']) {
+    assert.equal(gateModule.isProtectedPath(normalizePath(p)), false, p);
   }
 });
 
