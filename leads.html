@@ -210,7 +210,7 @@ footer{text-align:center;padding:24px;color:var(--muted);font-size:.78rem;border
         <span class="user-name" id="userName">—</span>
         <span class="user-role" id="userRole">—</span>
         <button class="sm-btn" style="background:var(--gold);color:#0d1117;font-weight:600" onclick="openAddLead()">+ Add Lead</button>
-        <a class="sm-btn" href="/seo-report">SEO Report</a>
+        <a class="sm-btn" href="/dashboard">SEO Report</a>
         <button class="sm-btn red" onclick="doLogout()">Sign out</button>
       </div>
     </div>
@@ -587,6 +587,7 @@ function showReport(){
   }
 }
 function doLogout(){
+	  try{fetch("/owner-session",{method:"DELETE",credentials:"same-origin"}).catch(function(){})}catch(e){}
 	  sessionStorage.removeItem(SESSION_STORAGE_KEY);SESSION_TOKEN="";CUR_USER=null;leads=[];selectedId=null;growthStates={};growthStateLoaded=false;growthStorageReady=false;growthActionIndex={};
   setPanelInteractive(document.getElementById("panel"),false);
   var addPanel=document.getElementById("addPanel");setPanelInteractive(addPanel,false);addPanel.style.display="none";

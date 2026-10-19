@@ -1,14 +1,19 @@
 #!/usr/bin/env bash
-# verify-deploy.sh — confirm Vercel actually deployed our latest dashboard.js.
+# verify-deploy.sh — confirm Vercel actually deployed our latest public JS.
 #
-# Compares the local dashboard.js byte size to the production-served version.
+# Compares a local public file's byte size to the production-served version.
+# The default probe is /global-modal.js (loaded by every page). /dashboard is
+# login-only since 2026-10-18 (middleware.js), so an anonymous probe of
+# /dashboard/dashboard.js now gets 401 and must not be used here.
 # Fails loud if drift detected — catches the silent-deploy-failure bug
 # discovered 2026-04-28 where PR squash-merge to main didn't trigger
 # Vercel's webhook reliably.
 #
 # Usage:
 #   scripts/verify-deploy.sh                            # default: 60s wait + production URL
-#   scripts/verify-deploy.sh https://example.com 90    # custom URL + custom wait
+#   scripts/verify-deploy.sh https://www.framerestorationutah.com/track-clicks.js 90
+#                                                       # custom public file + wait
+#   The local file is the repo file at the same path as the URL.
 #
 # Exit codes:
 #   0 — production matches local (deploy successful)
@@ -18,9 +23,17 @@
 
 set -euo pipefail
 
-PROD_URL="${1:-https://www.framerestorationutah.com/dashboard/dashboard.js}"
+PROD_URL="${1:-https://www.framerestorationutah.com/global-modal.js}"
 WAIT_SECONDS="${2:-60}"
-LOCAL_FILE="$(cd "$(dirname "$0")/.." && pwd)/dashboard/dashboard.js"
+URL_PATH="/${PROD_URL#*://*/}"
+URL_PATH="${URL_PATH%%[?#]*}"
+case "$URL_PATH" in
+  /dashboard|/dashboard/*|/seo-report*)
+    echo "❌ $URL_PATH is login-only; probe a public file instead." >&2
+    exit 2
+    ;;
+esac
+LOCAL_FILE="$(cd "$(dirname "$0")/.." && pwd)${URL_PATH}"
 
 if [[ ! -r "$LOCAL_FILE" ]]; then
   echo "❌ Local file not readable: $LOCAL_FILE" >&2

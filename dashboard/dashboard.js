@@ -103,6 +103,16 @@
     document.getElementById('pinInput').focus();
   }
 
+  // Clears the HttpOnly owner-route cookie that middleware.js checks for
+  // /dashboard. Explicit sign-out only; the next protected request then
+  // redirects to /owner-login.
+  function endOwnerSession() {
+    try {
+      fetch('/owner-session', { method: 'DELETE', credentials: 'same-origin' })
+        .catch(function () {});
+    } catch (error) { /* best effort */ }
+  }
+
   // Auto-login retains only the short-lived signed token, never a PIN/key.
   (function () {
     var s = sessionStorage.getItem(SESSION_STORAGE_KEY);
@@ -886,7 +896,10 @@
     document.getElementById('loginForm').addEventListener('submit', doLogin);
     document.getElementById('refreshBtn').addEventListener('click', function () { go(curD); });
     document.getElementById('manageBtn').addEventListener('click', openAdmin);
-    document.getElementById('logoutBtn').addEventListener('click', doLogout);
+    document.getElementById('logoutBtn').addEventListener('click', function () {
+      doLogout();
+      endOwnerSession();
+    });
     document.getElementById('closeAdminBtn').addEventListener('click', closeAdmin);
     document.getElementById('addUserBtn').addEventListener('click', addUser);
 
