@@ -198,27 +198,36 @@ if (deployedDashboardFiles.length > 0) {
   } else if (!isDeployed('middleware.js')) {
     ownerGateFailures.push('middleware.js is excluded by .vercelignore, so dashboard/ would be public');
   } else {
-    const source = fs.readFileSync(middlewarePath, 'utf8');
-    const gateModule = await import(`data:text/javascript;base64,${Buffer.from(source).toString('base64')}`);
-    const matcher = gateModule.config?.matcher || [];
-    for (const required of ['/dashboard', '/dashboard/:path*', '/seo-report', '/seo-report.html']) {
-      if (!matcher.includes(required)) ownerGateFailures.push(`middleware.js matcher does not cover ${required}`);
+    // Exercise what Vercel runs: matcher dispatch + the DEFAULT export, with a
+    // global fetch that must never be reached by an anonymous request.
+    const { ENCODED_PROBES, loadOwnerGate, runDefault } = await import(
+      new URL('./lib-owner-gate-harness.mjs', import.meta.url).href
+    );
+    const gateModule = await loadOwnerGate(repoRoot);
+    if (typeof gateModule.default !== 'function') {
+      ownerGateFailures.push('middleware.js has no default export (Vercel would not run the gate)');
     }
-    const noNetwork = () => { throw new Error('anonymous request must not reach the auth service'); };
+    const noNetwork = async () => { throw new Error('anonymous request must not reach the auth service'); };
     const probes = [
-      '/dashboard', '/dashboard/', '/seo-report', '/seo-report.html',
+      '/dashboard', '/dashboard/', '/dashboard.html', '/seo-report', '/seo-report/', '/seo-report.html',
       ...deployedDashboardFiles.map((rel) => `/${rel}`),
+      ...ENCODED_PROBES,
     ];
     for (const probe of probes) {
-      let response;
+      let result;
       try {
-        response = await gateModule.gate(new Request(`https://www.framerestorationutah.com${probe}`), noNetwork);
+        result = await runDefault(gateModule, new Request(`https://www.framerestorationutah.com${probe}`), noNetwork);
       } catch (error) {
-        ownerGateFailures.push(`${probe}: gate threw ${error.message}`);
+        ownerGateFailures.push(`${probe}: default export threw ${error.message}`);
         continue;
       }
+      if (!result.dispatched) {
+        ownerGateFailures.push(`${probe}: middleware.js matcher does not run on this path`);
+        continue;
+      }
+      const response = result.response;
       if (!response || response.headers.get('x-middleware-next') || ![302, 401].includes(response.status)) {
-        ownerGateFailures.push(`${probe}: anonymous request is not refused (status ${response?.status ?? 'pass-through'})`);
+        ownerGateFailures.push(`${probe}: anonymous request is not refused by the default export (status ${response?.status ?? 'pass-through'})`);
       }
     }
     // Full behavior suite (revoked/expired sessions, outages, cookie exchange).

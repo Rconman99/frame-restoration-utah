@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 # verify-deploy.sh — confirm Vercel actually deployed our latest public JS.
 #
-# Compares a local public file's byte size to the production-served version.
+# Compares the sha256 of a local public file with the production-served copy
+# (HTTP 200 required, redirects not followed).
 # The default probe is /global-modal.js (loaded by every page). /dashboard is
 # login-only since 2026-10-18 (middleware.js), so an anonymous probe of
 # /dashboard/dashboard.js now gets 401 and must not be used here.
@@ -19,7 +20,7 @@
 #   0 — production matches local (deploy successful)
 #   1 — drift detected (production stale)
 #   2 — local file missing or unreadable
-#   3 — production unreachable
+#   3 — production unreachable, redirected, or not HTTP 200
 
 set -euo pipefail
 
@@ -40,27 +41,41 @@ if [[ ! -r "$LOCAL_FILE" ]]; then
   exit 2
 fi
 
-LOCAL_SIZE=$(wc -c < "$LOCAL_FILE")
+hash_file() {
+  if command -v sha256sum >/dev/null 2>&1; then
+    sha256sum "$1" | cut -d' ' -f1
+  else
+    shasum -a 256 "$1" | cut -d' ' -f1
+  fi
+}
+
+LOCAL_HASH=$(hash_file "$LOCAL_FILE")
 
 echo "[verify-deploy] waiting ${WAIT_SECONDS}s for Vercel to propagate…"
 sleep "$WAIT_SECONDS"
 
-# Cache-bust with a UUID query string so we hit fresh CDN nodes
+# Cache-bust with a UUID query string so we hit fresh CDN nodes.
+# Redirects are NOT followed: a redirect (or a login page behind one) is a
+# failure, not a deploy.
 BUST=$(uuidgen 2>/dev/null || date +%s)
-PROD_BYTES=$(curl -sL --max-time 30 "${PROD_URL}?bust=${BUST}" | wc -c)
+BODY_FILE=$(mktemp)
+trap 'rm -f "$BODY_FILE"' EXIT
+STATUS=$(curl -s --max-time 30 --proto '=https' -o "$BODY_FILE" -w '%{http_code}' "${PROD_URL}?bust=${BUST}" || true)
 
-if [[ "$PROD_BYTES" -eq 0 ]]; then
-  echo "❌ Production unreachable: $PROD_URL" >&2
+if [[ "$STATUS" != "200" ]]; then
+  echo "❌ Production did not return HTTP 200 for $PROD_URL (got ${STATUS:-000}; redirects are not followed)." >&2
   exit 3
 fi
 
+PROD_HASH=$(hash_file "$BODY_FILE")
+
 echo ""
-echo "Local:      $LOCAL_SIZE bytes"
-echo "Production: $PROD_BYTES bytes"
+echo "Local:      sha256 $LOCAL_HASH"
+echo "Production: sha256 $PROD_HASH"
 echo ""
 
-if [[ "$PROD_BYTES" -ne "$LOCAL_SIZE" ]]; then
-  echo "❌ Drift detected: production is $((PROD_BYTES - LOCAL_SIZE)) bytes off." >&2
+if [[ "$PROD_HASH" != "$LOCAL_HASH" ]]; then
+  echo "❌ Drift detected: production content differs from the local file." >&2
   echo "   Vercel deploy didn't propagate. Options:" >&2
   echo "   1. Push another commit to force a fresh deploy" >&2
   echo "   2. Promote the latest preview manually via Vercel UI" >&2
@@ -68,5 +83,5 @@ if [[ "$PROD_BYTES" -ne "$LOCAL_SIZE" ]]; then
   exit 1
 fi
 
-echo "✅ Production matches local. Deploy successful."
+echo "✅ Production matches local (sha256). Deploy successful."
 exit 0

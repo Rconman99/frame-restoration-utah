@@ -10,8 +10,13 @@
 //
 // Flow: /owner-login exchanges a lead-crm token for an HttpOnly cookie via
 // POST /owner-session; DELETE /owner-session clears it. Anonymous page requests
-// redirect to /owner-login, anonymous asset requests get 401, and an
-// unreachable auth service fails closed with 503.
+// redirect to /owner-login, anonymous asset requests get 401, malformed paths
+// get 400, and an unreachable auth service fails closed with 503.
+//
+// The matcher is deliberately broad (everything except high-volume public
+// asset/content folders with a plain path), and every matched path is decoded
+// and normalized before the protected-route decision, so encoded, doubled,
+// backslashed, mixed-case and .html variants cannot slip past the gate.
 //
 // No npm imports: package.json is excluded from the Vercel upload.
 
@@ -19,34 +24,72 @@ export const LEAD_CRM_URL = 'https://hdcflshhomzildwqlmwh.supabase.co/functions/
 export const OWNER_COOKIE = '__Host-frame_owner';
 export const OWNER_LOGIN_PATH = '/owner-login';
 export const OWNER_HOME_PATH = '/dashboard';
+export const OWNER_SESSION_PATH = '/owner-session';
 export const SESSION_MAX_AGE_SECONDS = 8 * 60 * 60;
 const ALLOWED_ROLES = new Set(['viewer', 'sales', 'admin']);
 const BEARER_SHAPE = /^[A-Za-z0-9._~+/=-]{16,4096}$/;
+const MAX_DECODE_ROUNDS = 4;
 
 export const config = {
+  runtime: 'nodejs',
   matcher: [
-    '/dashboard',
-    '/dashboard/:path*',
-    '/seo-report',
-    '/seo-report.html',
-    '/owner-session',
+    // Skip only plain paths inside public asset/content folders. Any path with
+    // %, a backslash, // or .. still runs through the gate.
+    '/((?!(?:images|assets|vendor|ingest|blog|locations|pages|projects)/(?!/|.*(?:%|\\\\|//|\\.\\.))).*)',
   ],
 };
 
 const PRIVATE_HEADERS = {
   'Cache-Control': 'private, no-store',
+  'Vary': 'Cookie',
   'X-Robots-Tag': 'noindex, nofollow',
   'Referrer-Policy': 'no-referrer',
 };
 
-export function isOwnerPagePath(pathname) {
-  return /^\/(?:dashboard(?:\/(?:index(?:\.html)?)?)?|seo-report(?:\.html)?)$/i.test(pathname);
+// Returns the canonical lowercase path, or null when the encoding is
+// malformed (callers fail closed).
+export function normalizePath(rawPath) {
+  let path = String(rawPath || '/');
+  for (let round = 0; round < MAX_DECODE_ROUNDS && path.includes('%'); round += 1) {
+    let decoded;
+    try {
+      decoded = decodeURIComponent(path);
+    } catch {
+      return null;
+    }
+    if (decoded === path) break;
+    path = decoded;
+  }
+  if (path.includes('%')) {
+    try {
+      if (decodeURIComponent(path) !== path) return null; // still encoded: too deep
+    } catch {
+      return null;
+    }
+  }
+  if (/[\u0000-\u001f\u007f]/.test(path)) return null;
+  const segments = [];
+  for (const segment of path.replace(/\\/g, '/').toLowerCase().split('/')) {
+    if (!segment || segment === '.') continue;
+    if (segment === '..') {
+      segments.pop();
+      continue;
+    }
+    segments.push(segment);
+  }
+  let normalized = `/${segments.join('/')}`;
+  normalized = normalized.replace(/\.html?$/, '');
+  normalized = normalized.replace(/\/index$/, '');
+  return normalized || '/';
 }
 
-export function isProtectedPath(pathname) {
-  const lower = pathname.toLowerCase();
-  return lower === '/dashboard' || lower.startsWith('/dashboard/') ||
-    lower === '/seo-report' || lower === '/seo-report.html';
+export function isProtectedPath(normalized) {
+  return normalized === '/dashboard' || normalized.startsWith('/dashboard/') ||
+    normalized === '/seo-report' || normalized.startsWith('/seo-report/');
+}
+
+export function isOwnerPagePath(normalized) {
+  return normalized === '/dashboard' || normalized === '/seo-report';
 }
 
 export function readCookie(header, name) {
@@ -65,7 +108,7 @@ function bearer(header) {
 }
 
 // 'ok' | 'denied' | 'unavailable'
-export async function verifyOwnerSession(token, fetchImpl = fetch) {
+export async function verifyOwnerSession(token, fetchImpl = globalThis.fetch) {
   if (!BEARER_SHAPE.test(token || '')) return 'denied';
   let response;
   try {
@@ -108,17 +151,21 @@ function redirect(location, extra = {}) {
   return new Response(null, { status: 302, headers: { ...PRIVATE_HEADERS, Location: location, ...extra } });
 }
 
-function sameOrigin(request, url) {
-  const origin = request.headers.get('origin');
-  return !origin || origin === url.origin;
+// Continue to the static file. Same contract as next() in @vercel/functions;
+// the headers are applied to the final response.
+function proceed(extra) {
+  return new Response(null, { headers: { 'x-middleware-next': '1', ...(extra || {}) } });
 }
 
 async function handleOwnerSession(request, url, fetchImpl) {
-  if (!sameOrigin(request, url)) return plain(403, 'Forbidden');
+  const origin = request.headers.get('origin');
   if (request.method === 'DELETE') {
+    if (origin && origin !== url.origin) return plain(403, 'Forbidden');
     return new Response(null, { status: 204, headers: { ...PRIVATE_HEADERS, 'Set-Cookie': clearedCookie() } });
   }
   if (request.method !== 'POST') return plain(405, 'Method Not Allowed', { Allow: 'POST, DELETE' });
+  // Browsers always send Origin on a POST; a missing or foreign one is refused.
+  if (origin !== url.origin) return plain(403, 'Forbidden');
   const token = bearer(request.headers.get('authorization'));
   const verdict = await verifyOwnerSession(token, fetchImpl);
   if (verdict === 'unavailable') return plain(503, 'Sign-in is temporarily unavailable.');
@@ -126,25 +173,26 @@ async function handleOwnerSession(request, url, fetchImpl) {
   return new Response(null, { status: 204, headers: { ...PRIVATE_HEADERS, 'Set-Cookie': sessionCookie(token) } });
 }
 
-export async function gate(request, fetchImpl = fetch) {
+export async function gate(request, fetchImpl = globalThis.fetch) {
   const url = new URL(request.url);
-  const { pathname } = url;
-  if (pathname === '/owner-session') return handleOwnerSession(request, url, fetchImpl);
-  if (!isProtectedPath(pathname)) return undefined;
+  const normalized = normalizePath(url.pathname);
+  if (normalized === null) return plain(400, 'Bad Request');
+  if (normalized === OWNER_SESSION_PATH) return handleOwnerSession(request, url, fetchImpl);
+  if (!isProtectedPath(normalized)) return proceed();
 
   const token = readCookie(request.headers.get('cookie'), OWNER_COOKIE);
   const verdict = token ? await verifyOwnerSession(token, fetchImpl) : 'denied';
   if (verdict === 'ok') {
-    if (/^\/seo-report(?:\.html)?$/i.test(pathname)) return redirect(OWNER_HOME_PATH);
-    // Continue to the static file. Same contract as next() in @vercel/functions.
-    return new Response(null, { headers: { 'x-middleware-next': '1' } });
+    if (normalized === '/seo-report' || normalized.startsWith('/seo-report/')) return redirect(OWNER_HOME_PATH);
+    return proceed({ 'Cache-Control': 'private, no-store', 'Vary': 'Cookie', 'X-Robots-Tag': 'noindex, nofollow' });
   }
   if (verdict === 'unavailable') return plain(503, 'Sign-in is temporarily unavailable.');
   const clear = token ? { 'Set-Cookie': clearedCookie() } : {};
-  if (isOwnerPagePath(pathname)) return redirect(OWNER_LOGIN_PATH, clear);
+  if (isOwnerPagePath(normalized)) return redirect(OWNER_LOGIN_PATH, clear);
   return plain(401, 'Unauthorized', clear);
 }
 
+// What Vercel runs. Kept as a direct call so the audit can exercise it.
 export default function middleware(request) {
   return gate(request);
 }

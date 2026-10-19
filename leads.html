@@ -211,7 +211,8 @@ footer{text-align:center;padding:24px;color:var(--muted);font-size:.78rem;border
         <span class="user-role" id="userRole">—</span>
         <button class="sm-btn" style="background:var(--gold);color:#0d1117;font-weight:600" onclick="openAddLead()">+ Add Lead</button>
         <a class="sm-btn" href="/dashboard">SEO Report</a>
-        <button class="sm-btn red" onclick="doLogout()">Sign out</button>
+        <button class="sm-btn red" id="signOutBtn" onclick="signOut()">Sign out</button>
+        <span id="signOutErr" role="alert" style="color:var(--red);font-size:.8rem"></span>
       </div>
     </div>
   </div>
@@ -586,8 +587,17 @@ function showReport(){
     document.getElementById("userRole").textContent=CUR_USER.role;
   }
 }
+// Explicit sign-out: also clears the HttpOnly /dashboard cookie and only shows
+// the signed-out state after the server confirms with 204.
+function signOut(){
+  var btn=document.getElementById("signOutBtn"),msg=document.getElementById("signOutErr");
+  btn.disabled=true;msg.textContent="";
+  fetch("/owner-session",{method:"DELETE",credentials:"same-origin",cache:"no-store"})
+    .then(function(r){if(r.status!==204)throw new Error("HTTP "+r.status);doLogout()})
+    .catch(function(){msg.textContent="Sign-out failed. Check your connection and try again."})
+    .then(function(){btn.disabled=false});
+}
 function doLogout(){
-	  try{fetch("/owner-session",{method:"DELETE",credentials:"same-origin"}).catch(function(){})}catch(e){}
 	  sessionStorage.removeItem(SESSION_STORAGE_KEY);SESSION_TOKEN="";CUR_USER=null;leads=[];selectedId=null;growthStates={};growthStateLoaded=false;growthStorageReady=false;growthActionIndex={};
   setPanelInteractive(document.getElementById("panel"),false);
   var addPanel=document.getElementById("addPanel");setPanelInteractive(addPanel,false);addPanel.style.display="none";
