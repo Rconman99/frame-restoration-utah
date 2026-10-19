@@ -78,6 +78,7 @@
     "test:lead-form": "node scripts/test-lead-form-submit.mjs",
     "test:form-accessibility": "node scripts/test-form-accessibility.mjs",
     "test:dashboard-session-client": "node scripts/test-dashboard-session-client.mjs",
+    "test:owner-gate": "node --test scripts/test-owner-gate.mjs",
     "test:client-ip-receipt": "node scripts/test-client-ip-deploy-receipt.mjs",
     "audit:payson-storm-guide": "node scripts/validate-payson-storm-guide.mjs",
     "audit:draper-storm-guide": "node scripts/validate-draper-storm-guide.mjs"
