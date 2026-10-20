@@ -63,6 +63,11 @@
 - **🚫 NEVER auto-publish to Google Business Profile — owner-manual-publish ONLY** (Ryan directive 2026-06-08). An auto-published post that mentioned reviews/stars (a DPNB violation) is what put Frame's GBP on enforcement watch (cleared 2026-06-03 — do not earn another). **No Claude session, "Auto-Refresh" agent, scheduled job, cron, or browser automation (incl. the `:9222` bridge / Claude-in-Chrome) may publish, schedule, or submit ANY GBP post, update, offer, event, or service.** Drafting/queueing copy into `data/GBP-*.md` is allowed; *publishing* is a human (Landon) action at business.google.com only. Every queued draft must first pass `node scripts/audit-gbp-copy.mjs` (the gbp-copy gate — blocks adjusting language, "Free"/promo service names, reviews/stars solicitation, internal-phone leaks). If you are an automated/unattended run and a task implies pushing anything live to GBP, **STOP and leave it for owner review** — never click Publish/Submit on the merchant panel.
 - **Hours have changed.** Memory and any older docs may say Mon–Sat 8AM–6PM — actual hours are **Mon–Fri 8AM–7PM, Sat 8AM–6PM**. Use the corrected hours.
 
+### 2026-10-05 service-scope rule (active — do NOT violate):
+- **24/7 is valid ONLY for water/flood, emergency tarping and storm response.** Routine roofing = business hours (see Hours above). Do not put "24/7" on routine roofing copy, schema, GBP drafts or auto-reply strings. Owner-confirmed 2026-10-03 (#302 round 2 — scope was first water/flood only, then widened to emergency tarping + storm response).
+- **Remodel claims removed.** Kitchen/bath remodel was dropped from general-contracting and the homepage GC schema (#302). Do not re-add remodel as a service.
+- `scripts/validate-slc-identity.mjs` allows only the exact scoped 24/7 phrases on the Salt Lake City page — it covers that one page, not the site. Apply this rule before writing any customer-facing copy. Full record: `docs/claude-context/session-log.md` (2026-10-05 entry) and `docs/claude-context/status-history.md` (10/05 header).
+
 ## PEOPLE
 
 - **Ryan Conwell** (ryanconwell99@gmail.com) — manages site, SEO, gets 10% commission on leads. Intermediate vibe coder using Claude Code, Cowork, Antigravity, and Google models. Also an Enterprise Platform AE at his day job.
