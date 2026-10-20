@@ -1,10 +1,18 @@
 # =============================================================================
 # DO NOT ADD THESE TO THE IGNORE LIST — they are PUBLIC deliverables on the site
 # -----------------------------------------------------------------------------
-#   seo-report.html      → PIN-gated live tracker shared with Landon. Public URL
-#                          is https://www.frameroofingutah.com/seo-report
-#                          (Incident 2026-04-22a: audit sweep blocked this and
-#                          took the page down. Fix was commit 30bad68.)
+#   seo-report.html      → NO LONGER PUBLIC (owner decision, 2026-10-18):
+#                          ignored below. /seo-report and /seo-report.html are
+#                          handled by middleware.js: signed-in team members are
+#                          sent to /dashboard, everyone else to /owner-login.
+#                          (History: Incident 2026-04-22a took it down by
+#                          accident; this time it is deliberate.)
+#   dashboard/           → Deployed, but LOGIN-ONLY: middleware.js checks the
+#                          lead-crm session cookie before any /dashboard file
+#                          is served. Do NOT add dashboard/ here (the gate
+#                          needs the files) and do NOT delete middleware.js
+#                          (the files would become public). Sign-in page:
+#                          owner-login.html. CI: scripts/test-owner-gate.mjs.
 #   reviews.json         → Live Google-reviews feed fetched by the homepage
 #                          carousel (see index.html: fetch('/reviews.json')).
 #                          Updated on 1st/15th by scripts/update-google-reviews.py.
@@ -20,9 +28,9 @@
 #                          Landon was actively working through. Third time this
 #                          class of bug has shipped. If a file isn't a private
 #                          strategy doc, assume it's public until proven otherwise.)
-#   leads.html           → PIN-gated CRM at /leads. Pairs with /seo-report.
-#                          Calls the lead-crm edge function. Linked from
-#                          /seo-report header. Added 2026-05-10.
+#   leads.html           → PIN-gated CRM at /leads. Its "SEO Report" button
+#                          opens the login-only /dashboard. Calls the lead-crm
+#                          edge function. Added 2026-05-10.
 #   index.html, service pages, /locations/*, /blog/*, /projects/*
 #                        → Core site. Never ignore.
 # If you're doing an audit / cleanup pass and thinking about adding a file here,
@@ -77,6 +85,11 @@ data/*
 !data/blog-quality-benchmark.json
 
 # Internal-only HTML (audits, scratch redesigns, cheat sheets, trackers)
+# Legacy SEO tracker: superseded by the login-only /dashboard (owner decision,
+# 2026-10-18). Source stays in Git; the audit-doc-isolation sentinel fails CI
+# if it becomes deployable again. dashboard/ is intentionally NOT listed: it is
+# served only through the middleware.js login gate.
+seo-report.html
 index-redesign.html
 hero.html
 Frame-Roofing-SEO-Audit-*.html

@@ -37,6 +37,7 @@ Measurement-only mode (no site files, audit log, or GBP are changed):
 """
 
 import base64
+import hashlib
 import json
 import os
 import re
@@ -525,6 +526,11 @@ def _fetch_reviews_serpapi(limit: int = REVIEWS_FEED_LIMIT) -> list[dict]:
             "rating": int(r.get("rating") or 5),
             "date": str(date)[:10] if date else "",
             "text": text.strip(),
+            # In-memory only (stripped by _public_fields before writing):
+            # stable identifiers for the owner-exclusion match.
+            "_contributor_id": user.get("contributor_id") or "",
+            "_profile_url": user.get("link") or "",
+            "_review_id": r.get("review_id") or "",
         })
     return out
 
@@ -652,6 +658,80 @@ def _has_brand_leak(text: str) -> bool:
     return any(p in text and "Frame Restoration Utah" not in text for p in BRAND_LEAK_PHRASES)
 
 
+# Reviews the owner has asked to keep off the site (2026-10-18: family-member
+# review). The GBP aggregate count/rating is unchanged; only the quoted text
+# and author are kept out of /reviews.json so a weekly sync cannot re-add them.
+#
+# Matching order per entry:
+#   1. text_sha256: sha256 of the review text after whitespace-collapse and
+#      casefold. Catches the stored review even if the author name changes or
+#      falls back to "Google Reviewer".
+#   2. Stable ids: when the entry lists a contributor id / review id AND the
+#      fetched review carries one (SerpAPI user.contributor_id, user.link,
+#      review_id), the ids decide. A different person who shares the display
+#      name is then kept.
+#   3. Author display name: fallback only when no stable id is available on
+#      both sides. Fill contributor_ids from a sync log to retire this fallback.
+EXCLUDED_REVIEWS = (
+    {
+        "author": "Katie Conwell",
+        "contributor_ids": frozenset(),
+        "review_ids": frozenset(),
+        "text_sha256": "cd72e8c8af2b7e0315e591831575a0f125e888a656a21649ccab4175d928992f",
+    },
+)
+EXCLUDED_REVIEW_AUTHORS = frozenset(e["author"] for e in EXCLUDED_REVIEWS)
+_CONTRIB_RE = re.compile(r"/contrib/(\d+)")
+
+
+def _review_text_sha256(text: str) -> str:
+    norm = re.sub(r"\s+", " ", text or "").strip().casefold()
+    return hashlib.sha256(norm.encode("utf-8")).hexdigest()
+
+
+def _contributor_id(r: dict) -> str:
+    cid = str(r.get("_contributor_id") or "").strip()
+    if cid:
+        return cid
+    m = _CONTRIB_RE.search(str(r.get("_profile_url") or ""))
+    return m.group(1) if m else ""
+
+
+def _exclusion_reason(r: dict) -> str | None:
+    """Return why a review is owner-excluded, or None to keep it."""
+    author = (r.get("author") or "").strip()
+    text_hash = _review_text_sha256(r.get("text", ""))
+    cid = _contributor_id(r)
+    rid = str(r.get("_review_id") or "").strip()
+    for e in EXCLUDED_REVIEWS:
+        if text_hash == e["text_sha256"]:
+            return "text"
+        entry_has_ids = bool(e["contributor_ids"] or e["review_ids"])
+        if entry_has_ids and (cid or rid):
+            if (cid and cid in e["contributor_ids"]) or (rid and rid in e["review_ids"]):
+                return "id"
+            continue  # stable ids disagree: a different reviewer with the same name
+        if author == e["author"]:
+            return "name"
+    return None
+
+
+def _drop_excluded(rows: list[dict]) -> list[dict]:
+    kept = []
+    for r in rows:
+        why = _exclusion_reason(r)
+        if why:
+            print(f"  filtered (owner-excluded, {why} match): {r.get('author')}")
+            continue
+        kept.append(r)
+    return kept
+
+
+def _public_fields(r: dict) -> dict:
+    """Strip the in-memory matching fields (leading underscore) before writing."""
+    return {k: v for k, v in r.items() if not k.startswith("_")}
+
+
 def _merge_reviews(fresh: list[dict], existing_reviews: list[dict]) -> list[dict]:
     """Filter brand-leak and fill `city` from the prior hand-curated file.
 
@@ -666,12 +746,12 @@ def _merge_reviews(fresh: list[dict], existing_reviews: list[dict]) -> list[dict
         if r.get("author")
     }
     out: list[dict] = []
-    for r in fresh:
+    for r in _drop_excluded(fresh):
         if _has_brand_leak(r.get("text", "")):
             print(f"  filtered (brand-leak): {r.get('author', 'unknown')}")
             continue
         city = r.get("city") or city_map.get(r.get("author", ""), "")
-        out.append({**r, "city": city})
+        out.append(_public_fields({**r, "city": city}))
     return out
 
 
@@ -697,9 +777,11 @@ def write_reviews_json(place: dict, reviews: list[dict]) -> bool:
         # carousel. Aggregate from GBP still updates.
         if not final_reviews:
             print("WARN: all fresh reviews filtered — keeping existing feed")
-            final_reviews = existing_reviews
+            final_reviews = _drop_excluded(existing_reviews)
     else:
-        final_reviews = existing_reviews
+        # Cached fallback: the existing feed may predate an exclusion (or be
+        # restored from an older copy), so filter it the same way.
+        final_reviews = _drop_excluded(existing_reviews)
 
     payload = {
         "source": "google",

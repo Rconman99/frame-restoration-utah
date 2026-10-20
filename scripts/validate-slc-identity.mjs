@@ -46,7 +46,7 @@ const contractor = walk(blocks, (node) => {
 });
 
 assert.ok(contractor, 'SLC page must expose one primary RoofingContractor node');
-assert.equal(contractor.name, 'Frame Restoration Utah LLC.');
+assert.equal(contractor.name, 'Frame Restoration Utah LLC');
 assert.equal(contractor.telephone, EXPECTED_PHONE);
 assert.equal(contractor.hasMap, EXPECTED_MAP);
 assert.equal(contractor.address, undefined, 'SLC service-area profile must not publish a storefront address');

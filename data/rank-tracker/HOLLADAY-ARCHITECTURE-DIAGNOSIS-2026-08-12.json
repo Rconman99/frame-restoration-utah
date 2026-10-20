@@ -140,7 +140,7 @@
     },
     "routing": {
       "file": "vercel.json",
-      "sha256": "922b078362a2405fa068cfb04f34ee09fa80c36a9607b9ba59e66a86a4e97fc2",
+      "sha256": "b82cf7cb99323ac9658fe43528709021819022d2d406d9857b9b6f390d3be105",
       "legacySource": "/salt-lake-city",
       "destination": "/locations/salt-lake-city",
       "permanent": true,
@@ -156,7 +156,7 @@
     "routes": [
       {
         "file": "locations/holladay.html",
-        "sha256": "f65ade433e53d14ae01efb36f6a6d092f04a8b924d394fef59b94d119456c3fc",
+        "sha256": "a03340cd24068c62451510c4ef83dd94a8f859c125b318a6d29358a8c26bc967",
         "batch1bCityServiceSourceAmendment": {
           "observedAt": "2026-10-04T17:30:00Z",
           "priorInboundInternalLinks": 14,
@@ -179,7 +179,7 @@
       },
       {
         "file": "locations/holladay/storm-damage.html",
-        "sha256": "a8e524f5b813853c598fb5505ab1303963a36c30e09d0a5ef5ccbc9de1fb7f5a",
+        "sha256": "0ebc14ac045d3851db63e777281f948c95985fc1efe94729668062d1f0f9679a",
         "role": "storm-specific-child",
         "title": "Holladay Storm Damage Roof Repair | Frame Restoration Utah",
         "h1": "Storm Damage Roof Repair in Holladay",
@@ -188,7 +188,7 @@
       },
       {
         "file": "blog/holladay/roof-replacement-holladay-utah.html",
-        "sha256": "219194776e8bdddd4e236ad682614293d784e0c229b831427fa7efcdd1800291",
+        "sha256": "073875547f226f2436c656e4f34650519a4cb681fe8e011d2c7a0aed9b46b60b",
         "role": "informational-roof-replacement-guide",
         "title": "Holladay Roof Replacement | Frame Restoration Utah",
         "h1": "Roof Replacement in Holladay, Utah: Beat the 2026 Summer Heat",
@@ -198,7 +198,13 @@
       },
       {
         "file": "locations/salt-lake-city.html",
-        "sha256": "d36c23e1b2b8bc0c58e70d8a5e782481247c22184b4806cd444d34b2713e116f",
+        "sha256": "01b77bb4620abeca16dc8d53ad014b4a02e2221b40f0f93ac2cfb093ee375567",
+        "qaBaselineSourceAmendment": {
+          "observedAt": "2026-10-18T20:00:00Z",
+          "priorSha256": "f68f51ad40a9f8a02d2f9d20702da884afa0c0f13458615832627a930103e895",
+          "reason": "Supporting Salt Lake City hub byte pin only: the historic-preservation and building-permits links now use the current official slc.gov pages. Link labels, title, H1, canonical, schema, NAP, and claims are unchanged. Not new ranking evidence or experiment authorization.",
+          "reviewRequiredBeforeMerge": true
+        },
         "batch1bCityServiceSourceAmendment": {
           "observedAt": "2026-10-04T17:30:00Z",
           "priorSha256": "80c44281df689b95bc0e04bde9a3afbe55cb1638528bafe4f80d716bca77ec52",
@@ -231,7 +237,31 @@
       },
       {
         "file": "index.html",
-        "sha256": "7f9957a4f190e45a579b2ab100bb11e08f39ae88282dc91b26ba4e3e59db9a84",
+        "sha256": "3484a1d4c586bcedaf60c85c319276acd2b94babb569ea0a7536880ec16de674",
+        "qaBaselineOfficialLinksSourceAmendment": {
+          "observedAt": "2026-10-18T20:00:00Z",
+          "priorSha256": "38e7ab7377ea59c1e48ddfcb885a87bdb79879106f255b78aa9bd1826fe5e4a3",
+          "reason": "Supporting homepage byte pin only: the DOPL license-lookup URL now points at the current official secure.utah.gov lookup. License number, title, H1, canonical, schema, NAP, booking links, and claims are unchanged. Not new ranking evidence or experiment authorization.",
+          "reviewRequiredBeforeMerge": true
+        },
+        "qaBaselineContrastSourceAmendment": {
+          "observedAt": "2026-10-18T20:00:00Z",
+          "priorSha256": "3921408e6af3b82ddc2b4cea5910e3adc305876619923df0f34c7320d5827fa8",
+          "reason": "Supporting homepage byte pin only: section labels and the homepage CTA use the darker contrast color. No visible copy, title, H1, canonical, schema, NAP, booking links, or claims changed. Not new ranking evidence or experiment authorization.",
+          "reviewRequiredBeforeMerge": true
+        },
+        "qaBaselineMobileMediaSourceAmendment": {
+          "observedAt": "2026-10-18T20:00:00Z",
+          "priorSha256": "ec9d8cd3d7c07f9bf05818a5629f0626e50525f6199d86765013d5dceeb6bb86",
+          "reason": "Supporting homepage byte pin only: on mobile, showreel videos and the Mapbox map wait for a tap or until they are on screen, and the hero image preload matches the responsive picture. Title, H1, canonical, schema, NAP, booking links, and claims are unchanged. Not new ranking evidence or experiment authorization.",
+          "reviewRequiredBeforeMerge": true
+        },
+        "qaBaselineSourceAmendment": {
+          "observedAt": "2026-10-18T20:00:00Z",
+          "priorSha256": "d9ad8d771a945cd93fe8597111755e7ed8ddd5496bb3729141bf75437f15ae58",
+          "reason": "Supporting homepage byte pin only: the footer Google Business link now uses the maps URL for the Heber CID already embedded in the footer map. Title, H1, canonical, schema, NAP, booking links, and claims are unchanged. Not new ranking evidence or experiment authorization.",
+          "reviewRequiredBeforeMerge": true
+        },
         "restorationScopeSourceAmendment": {
           "observedAt": "2026-10-03T19:20:00Z",
           "priorSha256": "a6fcea13dfbbfc0851024d66af215d894861002e53118cc37ab8b018ee8bac76",
@@ -286,7 +316,7 @@
     ],
     "integrityGate": {
       "packet": "data/authority/SLV-CITY-PUBLIC-REMEDIATION-PACKET-2026-08-12.json",
-      "packetSha256": "c5d19fd172cda2d4d3edd50422594565411ed4a1ce52c720b404340e5ae5cd88",
+      "packetSha256": "e2d6a11c4b274764bcadeed860a5a51af3445b03ca814e9f32bfd35a285a1c1d",
       "holladayBlockingFindingClasses": 8,
       "holladayProvisionalWarnings": 1,
       "cleanupStatus": "awaiting-explicit-owner-approval"

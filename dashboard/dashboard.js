@@ -103,6 +103,27 @@
     document.getElementById('pinInput').focus();
   }
 
+  // Explicit sign-out: clear the HttpOnly owner-route cookie that middleware.js
+  // checks for /dashboard, and only show the signed-out state after the server
+  // confirms with 204. On failure the user stays signed in and sees an error.
+  // Note: this ends the browser session; lead-crm has no server-side session
+  // revocation action yet, so the bearer token itself lapses at its 8 h expiry.
+  function signOut() {
+    var btn = document.getElementById('logoutBtn');
+    var msg = document.getElementById('logoutErr');
+    btn.disabled = true;
+    msg.textContent = '';
+    fetch('/owner-session', { method: 'DELETE', credentials: 'same-origin', cache: 'no-store' })
+      .then(function (r) {
+        if (r.status !== 204) throw new Error('HTTP ' + r.status);
+        doLogout();
+      })
+      .catch(function () {
+        msg.textContent = 'Sign-out failed. Check your connection and try again.';
+      })
+      .then(function () { btn.disabled = false; });
+  }
+
   // Auto-login retains only the short-lived signed token, never a PIN/key.
   (function () {
     var s = sessionStorage.getItem(SESSION_STORAGE_KEY);
@@ -886,7 +907,7 @@
     document.getElementById('loginForm').addEventListener('submit', doLogin);
     document.getElementById('refreshBtn').addEventListener('click', function () { go(curD); });
     document.getElementById('manageBtn').addEventListener('click', openAdmin);
-    document.getElementById('logoutBtn').addEventListener('click', doLogout);
+    document.getElementById('logoutBtn').addEventListener('click', signOut);
     document.getElementById('closeAdminBtn').addEventListener('click', closeAdmin);
     document.getElementById('addUserBtn').addEventListener('click', addUser);
 
