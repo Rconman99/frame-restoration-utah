@@ -1,0 +1,39 @@
+name: Booking link guard
+
+# The Google Calendar appointment link that every "Free Inspection" / "Book
+# Online" CTA used as its href went dead (Google answers 404 "Dynamic Link Not
+# Found") and sat on 162 live pages before anyone noticed. global-modal.js
+# intercepts the click and opens the on-site lead modal, so only the no-JS /
+# open-in-new-tab fallback was broken — and nothing measured that path.
+#
+# scripts/audit-booking-links.mjs fails if ANY tracked file outside archive/,
+# docs/history/ and screenshots/ references the dead link or the calendar host
+# at all. Booking CTAs now point at the on-site lead form (/#contact) and the
+# modal keys off data-booking-trigger.
+#
+# Standalone and BLOCKING (no continue-on-error) so it cannot be ratcheted away
+# inside the larger compliance gate. No path filter: any file can reintroduce
+# the link (HTML, the blog generator, fix-locations.py, JS selectors, tests),
+# and the scan is a few hundred milliseconds.
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  booking-links:
+    name: No dead booking links (blocking)
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+        with:
+          node-version: '24'
+      - name: Scan every tracked file for the dead booking link
+        run: node scripts/audit-booking-links.mjs

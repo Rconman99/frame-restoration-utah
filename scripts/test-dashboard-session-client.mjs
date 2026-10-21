@@ -57,6 +57,33 @@ const server = http.createServer((req, res) => {
   fs.createReadStream(resolved).pipe(res);
 });
 
+
+// Sign-out must clear the /dashboard cookie (DELETE /owner-session) and only
+// show the signed-out state after a 204. Failures keep the session and show an
+// error. Exercised in the real page with the route intercepted.
+async function assertSignOutContract(page, { button, error, signedOut }) {
+  for (const failure of ['http-503', 'network']) {
+    await page.route('**/owner-session', (route) => (failure === 'network'
+      ? route.abort()
+      : route.fulfill({ status: 503, contentType: 'text/plain', body: 'down' })));
+    await page.click(button);
+    await page.waitForFunction((selector) => document.querySelector(selector).textContent.includes('Sign-out failed'), error);
+    assert.equal(await page.evaluate(() => sessionStorage.getItem('frame.dashboard.session')), sessionToken, `${button}: ${failure} sign-out dropped the session`);
+    assert.equal(await page.evaluate(signedOut), false, `${button}: ${failure} sign-out showed the signed-out UI`);
+    await page.unroute('**/owner-session');
+  }
+  const methods = [];
+  await page.route('**/owner-session', (route) => {
+    methods.push(route.request().method());
+    return route.fulfill({ status: 204, body: '' });
+  });
+  await page.click(button);
+  await page.waitForFunction(signedOut);
+  assert.deepEqual(methods, ['DELETE'], `${button}: sign-out did not DELETE /owner-session`);
+  assert.equal(await page.evaluate(() => sessionStorage.getItem('frame.dashboard.session')), null, `${button}: 204 sign-out kept the token`);
+  await page.unroute('**/owner-session');
+}
+
 await new Promise((resolve) => server.listen(0, '127.0.0.1', resolve));
 const address = server.address();
 const browser = await chromium.launch({ headless: true });
@@ -324,6 +351,11 @@ try {
   await page.fill('#pinInput', '654321');
   await page.click('button.login-btn[type="submit"]');
   await page.waitForFunction(() => document.getElementById('reportWrap').style.display === 'block');
+  await assertSignOutContract(page, {
+    button: '#logoutBtn',
+    error: '#logoutErr',
+    signedOut: () => document.getElementById('loginOverlay').style.display === 'flex',
+  });
 
   await page.evaluate(() => sessionStorage.removeItem('frame.dashboard.session'));
   await page.goto(`http://127.0.0.1:${address.port}/seo-report.html`, { waitUntil: 'domcontentloaded' });
@@ -393,6 +425,11 @@ try {
   await page.locator('#panel-close').click();
   assert.equal(await page.locator('#panel').getAttribute('aria-hidden'), 'true', 'closed lead panel remained exposed to assistive technology');
   assert.equal(await page.locator('#panel').getAttribute('inert'), '', 'closed lead panel remained keyboard-accessible');
+  await assertSignOutContract(page, {
+    button: '#signOutBtn',
+    error: '#signOutErr',
+    signedOut: () => document.getElementById('reportWrap').hasAttribute('inert'),
+  });
 
   for (const request of requests) {
     const url = new URL(request.url);

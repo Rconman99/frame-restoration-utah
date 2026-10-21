@@ -30,6 +30,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { createHash } from 'node:crypto';
+import { spawnSync } from 'node:child_process';
 
 const repoRoot = process.cwd();
 const strict = process.argv.includes('--strict');
@@ -172,12 +173,76 @@ const internalDeploySentinels = [
   '.github/workflows/compliance-gate.yml',
   '.~lock.private.xlsx#',
   'build-intelligence/customer-request-ledger.json',
+  // Legacy SEO tracker is off the public site (owner decision, 2026-10-18).
+  // dashboard/ deploys, but only behind middleware.js (owner gate below).
+  'seo-report.html',
   'deno.lock',
   'qa/receipts/private.json',
   'screenshots/mobile-audit/diagnostics.json',
   'state.json',
 ];
 const exposedInternalSentinels = internalDeploySentinels.filter(isDeployed);
+
+// Owner gate: anything deployed under dashboard/ must sit behind middleware.js.
+// Behavioral check: import the real middleware and require that an anonymous
+// request for every deployed dashboard file (plus /dashboard, /seo-report and
+// /seo-report.html) is refused without ever reaching the static file.
+const ownerGateFailures = [];
+const deployedDashboardFiles = allFiles
+  .filter((rel) => rel.startsWith('dashboard/') && isDeployed(rel))
+  .sort();
+if (deployedDashboardFiles.length > 0) {
+  const middlewarePath = path.join(repoRoot, 'middleware.js');
+  if (!fs.existsSync(middlewarePath)) {
+    ownerGateFailures.push('middleware.js is missing, so dashboard/ would be public');
+  } else if (!isDeployed('middleware.js')) {
+    ownerGateFailures.push('middleware.js is excluded by .vercelignore, so dashboard/ would be public');
+  } else {
+    // Exercise what Vercel runs: matcher dispatch + the DEFAULT export, with a
+    // global fetch that must never be reached by an anonymous request.
+    const { ENCODED_PROBES, loadOwnerGate, runDefault } = await import(
+      new URL('./lib-owner-gate-harness.mjs', import.meta.url).href
+    );
+    const gateModule = await loadOwnerGate(repoRoot);
+    if (typeof gateModule.default !== 'function') {
+      ownerGateFailures.push('middleware.js has no default export (Vercel would not run the gate)');
+    }
+    const noNetwork = async () => { throw new Error('anonymous request must not reach the auth service'); };
+    const probes = [
+      '/dashboard', '/dashboard/', '/dashboard.html', '/seo-report', '/seo-report/', '/seo-report.html',
+      ...deployedDashboardFiles.map((rel) => `/${rel}`),
+      ...ENCODED_PROBES,
+    ];
+    for (const probe of probes) {
+      let result;
+      try {
+        result = await runDefault(gateModule, new Request(`https://www.framerestorationutah.com${probe}`), noNetwork);
+      } catch (error) {
+        ownerGateFailures.push(`${probe}: default export threw ${error.message}`);
+        continue;
+      }
+      if (!result.dispatched) {
+        ownerGateFailures.push(`${probe}: middleware.js matcher does not run on this path`);
+        continue;
+      }
+      const response = result.response;
+      if (!response || response.headers.get('x-middleware-next') || ![302, 401, 400].includes(response.status)) {
+        ownerGateFailures.push(`${probe}: anonymous request is not refused by the default export (status ${response?.status ?? 'pass-through'})`);
+      }
+    }
+    // Full behavior suite (revoked/expired sessions, outages, cookie exchange).
+    const suite = spawnSync(process.execPath, ['--test', 'scripts/test-owner-gate.mjs'], {
+      cwd: repoRoot,
+      encoding: 'utf8',
+    });
+    if (suite.status !== 0) {
+      ownerGateFailures.push('scripts/test-owner-gate.mjs failed:');
+      for (const line of `${suite.stdout}${suite.stderr}`.split('\n').filter((l) => /^not ok|Error/.test(l)).slice(0, 20)) {
+        ownerGateFailures.push(`  ${line}`);
+      }
+    }
+  }
+}
 
 console.log('\n=== Internal-documentation isolation ===');
 console.log(`scanned ${mdFiles.length} markdown files · ${mdFiles.length - exposed.length} correctly excluded from deploy`);
@@ -190,9 +255,13 @@ if (
   missingPublicData.length === 0 &&
   unexpectedPublicDataReferences.length === 0 &&
   exposedInternalSentinels.length === 0 &&
+  ownerGateFailures.length === 0 &&
   reintroducedSensitiveLines.length === 0
 ) {
   console.log(`✓ no internal docs or customer reporting snapshots in the public build tree; ${deployedDataFiles.length} allowlisted aggregate data feeds`);
+  if (deployedDashboardFiles.length > 0) {
+    console.log(`✓ ${deployedDashboardFiles.length} dashboard file(s) deploy only behind the middleware.js login gate (anonymous requests refused)`);
+  }
   process.exit(0);
 }
 
@@ -231,6 +300,11 @@ if (unexpectedPublicDataReferences.length > 0) {
 if (exposedInternalSentinels.length > 0) {
   console.log(`${strict ? '🚨' : '⚠'} internal tooling/deployment path(s) are not excluded:`);
   for (const rel of exposedInternalSentinels) console.log(`    ${rel}`);
+}
+if (ownerGateFailures.length > 0) {
+  console.log(`${strict ? '🚨' : '⚠'} login-only dashboard is not gated:`);
+  for (const failure of ownerGateFailures) console.log(`    ${failure}`);
+  console.log('  Fix: keep middleware.js deployed with its matcher, or add dashboard/ back to .vercelignore.');
 }
 if (reintroducedSensitiveLines.length > 0) {
   console.log(`${strict ? '🚨' : '⚠'} previously removed customer-detail line(s) were reintroduced:`);
