@@ -1,0 +1,263 @@
+{
+  "$comment": "Config for scripts/frame-guards.mjs. Market lists are copied from each Frame market repo's own canonical data (see markets.foreign[].source). Public identifiers only; no secrets.",
+  "baseline": "scripts/frame-guards.baseline.json",
+  "served": {
+    "$comment": "Static site deployed by Vercel from the repo root: served = every git-tracked file Vercel uploads (git ls-files minus .vercelignore, which includes its data/* re-includes) with a text extension, minus records/tooling prefixes below. Internal-but-deployed pages (dashboard/, leads.html, seo-report.html) ARE served and are scanned.",
+    "vercelignore": true,
+    "excludePrefixes": [
+      "docs/",
+      "archive/",
+      "screenshots/",
+      ".github/",
+      "scripts/",
+      "tests/",
+      "qa/",
+      "supabase/",
+      "CODEOWNERS",
+      "node_modules/"
+    ]
+  },
+  "nap": {
+    "$comment": "Canonical NAP source; sourceMustContain makes the gate fail if the source changes without this config.",
+    "source": "data/route-factory/business.json",
+    "sourceMustContain": [
+      "\"brand\": \"Frame Restoration Utah\"",
+      "\"legal_entity\": \"Frame Restoration Utah LLC\"",
+      "\"public_phone_display\": \"435-292-8802\"",
+      "\"street\": \"142 S Main St\"",
+      "435-302-4422"
+    ],
+    "businessNames": [
+      "Frame Restoration Utah",
+      "Frame Restoration Utah LLC"
+    ],
+    "phones": [
+      "435-292-8802"
+    ],
+    "streetAddress": "142 S Main St",
+    "forbiddenPhones": [
+      {
+        "phone": "435-302-4422",
+        "reason": "internal forwarding line, business.json internal_phones_never_publish"
+      }
+    ],
+    "ownDomains": [
+      "framerestorationutah.com",
+      "frameroofingutah.com"
+    ]
+  },
+  "markets": {
+    "self": "utah",
+    "foreign": [
+      {
+        "key": "texas",
+        "source": "frame-restoration-texas-v2: data/route-factory/nap.json (phone), business.json (canonical_host), supabase/functions/_shared/market.ts (DFW owner line), Supabase ref used by served pages, locations/*.html (city list)",
+        "brands": [],
+        "domains": [
+          "framerestoration.com"
+        ],
+        "phones": [
+          "214-308-9227",
+          "916-990-2477"
+        ],
+        "supabaseRefs": [
+          "wroaxatalhzslxkfmpse"
+        ],
+        "cities": [
+          "Addison",
+          "Allen",
+          "Arlington",
+          "Balch Springs",
+          "Bedford",
+          "Burleson",
+          "Carrollton",
+          "Cedar Hill",
+          "Celina",
+          "Colleyville",
+          "Coppell",
+          "Corinth",
+          "Dallas",
+          "DeSoto",
+          "Denton",
+          "Duncanville",
+          "Euless",
+          "Farmers Branch",
+          "Flower Mound",
+          "Forney",
+          "Fort Worth",
+          "Frisco",
+          "Garland",
+          "Grand Prairie",
+          "Grapevine",
+          "Haltom City",
+          "Highland Park",
+          "Highland Village",
+          "Hurst",
+          "Irving",
+          "Keller",
+          "Lancaster",
+          "Lewisville",
+          "Little Elm",
+          "Mansfield",
+          "McKinney",
+          "Mesquite",
+          "Midlothian",
+          "Murphy",
+          "North Richland Hills",
+          "Plano",
+          "Prosper",
+          "Richardson",
+          "Rockwall",
+          "Rowlett",
+          "Sachse",
+          "Southlake",
+          "The Colony",
+          "Trophy Club",
+          "University Park",
+          "Waxahachie",
+          "Wylie"
+        ],
+        "stateMarkers": [
+          "TX",
+          "Texas"
+        ]
+      },
+      {
+        "key": "idaho",
+        "source": "frame-idaho-web: src/config/site.config.ts (brand, nap.phone, nap.domain), Supabase ref used by src/, src/config city lists",
+        "brands": [
+          "Frame Restoration Idaho"
+        ],
+        "domains": [
+          "framerestorationidaho.com"
+        ],
+        "phones": [
+          "208-597-7712"
+        ],
+        "supabaseRefs": [
+          "qwshunkyeadudvxdkacl"
+        ],
+        "cities": [
+          "Athol",
+          "Bayview",
+          "Bonners Ferry",
+          "Clark Fork",
+          "Cocolalla",
+          "Coeur d'Alene",
+          "Dalton Gardens",
+          "Dover",
+          "East Hope",
+          "Harrison",
+          "Hayden Lake",
+          "Hayden",
+          "Hope",
+          "Kootenai",
+          "Moyie Springs",
+          "Oldtown",
+          "Ponderay",
+          "Post Falls",
+          "Priest River",
+          "Rathdrum",
+          "Sagle",
+          "Sandpoint",
+          "Spirit Lake",
+          "Worley",
+          "Kalispell",
+          "Missoula"
+        ],
+        "stateMarkers": [
+          "ID",
+          "Idaho",
+          "MT",
+          "Montana"
+        ]
+      },
+      {
+        "key": "colorado",
+        "source": "frame-restoration-colorado: src/config/site.config.ts (brand, nap.domain; no confirmed phone), supabase/functions/_shared/market.ts (functions origin), src/config/areas.data.ts (city list)",
+        "brands": [
+          "Frame Restoration Colorado"
+        ],
+        "domains": [
+          "frameroofingcolorado.com"
+        ],
+        "phones": [],
+        "supabaseRefs": [
+          "vipupflbnrmnniwsdxas"
+        ],
+        "cities": [
+          "Arvada",
+          "Aurora",
+          "Black Forest",
+          "Boulder",
+          "Broomfield",
+          "Castle Rock",
+          "Centennial",
+          "Cimarron Hills",
+          "Colorado Springs",
+          "Denver",
+          "Falcon",
+          "Fort Collins",
+          "Fountain",
+          "Greeley",
+          "Highlands Ranch",
+          "Lakewood",
+          "Larkspur",
+          "Littleton",
+          "Longmont",
+          "Loveland",
+          "Manitou Springs",
+          "Monument",
+          "Palmer Lake",
+          "Parker",
+          "Peyton",
+          "Pueblo",
+          "Security-Widefield",
+          "Stratmoor",
+          "Thornton",
+          "Westminster",
+          "Woodland Park"
+        ],
+        "stateMarkers": [
+          "CO",
+          "Colorado"
+        ]
+      }
+    ]
+  },
+  "noRyan": {
+    "$comment": "Ryan never appears on customer pages. No personal phone is listed: no file in this repo identifies one as Ryan's, and none is invented.",
+    "patterns": [
+      {
+        "label": "Ryan surname",
+        "regex": "(?<![A-Za-z])Conwell(?![A-Za-z])",
+        "flags": "gi"
+      },
+      {
+        "label": "Ryan personal email",
+        "regex": "ryanconwell99@gmail\\.com",
+        "flags": "gi"
+      },
+      {
+        "label": "Ryan personal email",
+        "regex": "rconman99@gmail\\.com",
+        "flags": "gi"
+      },
+      {
+        "label": "RC Digital attribution",
+        "regex": "(?<![A-Za-z])RC[ -]?Digital(?![A-Za-z])",
+        "flags": "gi"
+      }
+    ]
+  },
+  "deadGbp": {
+    "$comment": "Google Business \"g.co/kgs/...\" share links: Site QA found them dead on Utah and Texas (2026-10-18). Opaque redirects with no stable target, so the whole class is denied. Use the maps?cid= listing URL from the canonical source instead. Static: no network calls.",
+    "patterns": [
+      {
+        "label": "dead g.co/kgs Google share link",
+        "regex": "g\\.co/kgs/[A-Za-z0-9_-]+",
+        "flags": "gi"
+      }
+    ]
+  }
+}

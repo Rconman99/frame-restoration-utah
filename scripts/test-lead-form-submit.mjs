@@ -122,6 +122,14 @@ try {
         trigger.remove();
       });
       await page.waitForFunction(() => Boolean(window.FrameRestorationModal));
+      // openModal() focuses the name input on a 100 ms timer. If that focus
+      // lands while fill() is typing into phone or ZIP, the text goes into the
+      // name field instead, the required field stays empty, native validation
+      // blocks the submit, and the test sees 0 POSTs (CI run 39195133592).
+      // Wait for the modal's own autofocus before filling.
+      await page.waitForFunction(() =>
+        document.activeElement?.matches('#frModalForm input[name="name"]'),
+      );
     }
     const form = page.locator(fixture.id);
     const honeypot = form.locator('input[name="company_website"]');

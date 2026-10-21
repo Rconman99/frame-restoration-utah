@@ -11,9 +11,31 @@ const SUPABASE_URL = "https://hdcflshhomzildwqlmwh.supabase.co";
 const SUPABASE_SERVICE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") || "";
 const REVIEW_URL = "https://www.framerestorationutah.com/review";
 
+// Auth key lives in the REVIEW_REQUEST_KEY function secret, not in source.
+// Transition: until that secret is set, the legacy shared key (read from the
+// LEGACY_ROUTING_KEY secret, if present) is accepted so nothing breaks between
+// deploy and secret setup. Once REVIEW_REQUEST_KEY is set, ONLY it is accepted.
+// Callers should send it in the x-review-key header (kept out of URL logs);
+// ?key= is still read for backward compatibility.
+export function reviewKeyOk(req: Request, url: URL, env: (k: string) => string | undefined = (k) => Deno.env.get(k)): boolean {
+  const provided = req.headers.get("x-review-key") || url.searchParams.get("key") || "";
+  if (!provided) return false;
+  const current = env("REVIEW_REQUEST_KEY") || "";
+  if (current) return timingSafeEqual(provided, current);
+  const legacy = env("LEGACY_ROUTING_KEY") || "";
+  return legacy !== "" && timingSafeEqual(provided, legacy);
+}
+
+function timingSafeEqual(a: string, b: string): boolean {
+  if (a.length !== b.length) return false;
+  let diff = 0;
+  for (let i = 0; i < a.length; i++) diff |= a.charCodeAt(i) ^ b.charCodeAt(i);
+  return diff === 0;
+}
+
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-review-key",
   "Access-Control-Allow-Methods": "POST, GET, OPTIONS",
 };
 
@@ -91,10 +113,11 @@ async function sendOne(lead: any, twilioConfig: any) {
 Deno.serve(async (req: Request) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
   const url = new URL(req.url);
-  if (url.searchParams.get("key") !== "frame-roofing-2026") {
+  if (!reviewKeyOk(req, url)) {
     return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } });
   }
   const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
+  const dryRun = url.searchParams.get("dry_run") === "1";
 
   if (req.method === "POST") {
     try {
@@ -136,16 +159,34 @@ Deno.serve(async (req: Request) => {
     if (!leads || leads.length === 0) {
       return new Response(JSON.stringify({ success: true, message: "No review requests due.", sent: 0 }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
+    // Dry run (scheduler preview): report how many are due, send nothing, write nothing.
+    if (dryRun) {
+      return new Response(JSON.stringify({ success: true, dry_run: true, due: leads.length, lead_ids: leads.map((l: any) => l.id) }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    }
     const twilioConfig = await getTwilioConfig(supabase);
     const results: any[] = [];
     for (const lead of leads) {
-      const { smsSent, emailSent } = await sendOne(lead, twilioConfig);
-      if (smsSent || emailSent) {
-        await supabase.from("leads").update({ review_requested_at: new Date().toISOString() }).eq("id", lead.id);
+      // Idempotency: atomically claim the lead BEFORE sending. A concurrent run
+      // (another scheduler, a manual call, a retry) sees review_requested_at set
+      // and its claim returns no row, so a customer is never asked twice.
+      const claimedAt = new Date().toISOString();
+      const { data: claimed, error: claimErr } = await supabase.from("leads")
+        .update({ review_requested_at: claimedAt })
+        .eq("id", lead.id).is("review_requested_at", null)
+        .select("id");
+      if (claimErr || !claimed || claimed.length === 0) {
+        results.push({ id: lead.id, skipped: "already_claimed" });
+        continue;
       }
-      results.push({ id: lead.id, name: lead.name, sms: smsSent, email: emailSent });
+      const { smsSent, emailSent } = await sendOne(lead, twilioConfig);
+      if (!smsSent && !emailSent) {
+        // Nothing went out: release the claim so a later run can retry.
+        await supabase.from("leads").update({ review_requested_at: null })
+          .eq("id", lead.id).eq("review_requested_at", claimedAt);
+      }
+      results.push({ id: lead.id, sms: smsSent, email: emailSent });
     }
-    return new Response(JSON.stringify({ success: true, message: `Sent ${results.length} review request(s).`, results }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    return new Response(JSON.stringify({ success: true, message: `Processed ${results.length} due review request(s).`, results }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
   } catch (err) {
     console.error("Review request error:", err);
     return new Response(JSON.stringify({ error: String(err) }), { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } });

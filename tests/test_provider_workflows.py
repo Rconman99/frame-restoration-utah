@@ -635,14 +635,18 @@ class WorkflowContractTests(unittest.TestCase):
         self.assertIn('echo "push failed after retries"; exit 1', traction)
         self.assertNotIn("continue-on-error", traction)
 
-    def test_lead_notification_recovery_has_no_empty_schedule(self) -> None:
+    def test_lead_notification_recovery_schedule_restored(self) -> None:
         workflow = (REPO / ".github/workflows/lead-notification-worker.yml").read_text(
             encoding="utf-8"
         )
         self.assertIn("workflow_dispatch:", workflow)
-        self.assertIsNone(re.search(r"(?m)^\s{2}schedule\s*:", workflow))
-        self.assertIn("SCHEDULE DISABLED", workflow)
+        self.assertRegex(workflow, r"(?m)^  schedule:\n(?:\s*#.*\n)*\s+- cron: '[^']+'")
         self.assertIn("cron.unschedule('lead-notification-worker')", workflow)
+        self.assertRegex(workflow, r"dry_run:[\s\S]*default: true")
+        self.assertIn("x-frame-worker-mode: recover", workflow)
+        self.assertIn("x-frame-worker-mode: health-only", workflow)
+        self.assertIn("cancel-in-progress: false", workflow)
+        self.assertNotIn('cat "$RESPONSE_FILE"', workflow)
 
     def test_split_url_validator_warns_instead_of_killing_refresh(self) -> None:
         validator = (REPO / "scripts/validate-slv-gsc-split-url-diagnosis.mjs").read_text(

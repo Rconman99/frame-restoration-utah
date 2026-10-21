@@ -31,7 +31,7 @@ jobs:
           # It is a declaration, not an authentication: CI cannot verify that a
           # human actually created the branch.
           # `cursor` is the Cursor cloud-agent lane. Those branches are required
-          # to use cursor/<scope>, so they must not borrow claude/ or codex/.
+          # to use the cursor/ prefix, so the declaration stays visible.
           LANES="claude codex cowork agy human cursor"
 
           # Grandfathered exceptions, scoped to THIS repository only.
@@ -85,7 +85,7 @@ jobs:
 
             claude/<scope>-<date>     codex/<scope>-<date>
             cowork/<scope>-<date>     agy/<scope>-<date>
-            human/<scope>             cursor/<scope>
+            human/<scope>
 
           Type goes in the scope, not the prefix:  claude/fix-idaho-hero-20260817
 

@@ -70,6 +70,49 @@
           "value": "public, max-age=0, must-revalidate"
         }
       ]
+    },
+    {
+      "source": "/dashboard/:path*",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "private, no-store"
+        },
+        {
+          "key": "Vary",
+          "value": "Cookie"
+        },
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow"
+        }
+      ]
+    },
+    {
+      "source": "/dashboard",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "private, no-store"
+        },
+        {
+          "key": "Vary",
+          "value": "Cookie"
+        },
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow"
+        }
+      ]
+    },
+    {
+      "source": "/owner-login",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow"
+        }
+      ]
     }
   ],
   "redirects": [
@@ -99,11 +142,6 @@
       "source": "/pages/storm-damage-restoration",
       "destination": "/pages/storm-damage",
       "permanent": true
-    },
-    {
-      "source": "/seo-report",
-      "destination": "/dashboard",
-      "permanent": false
     },
     {
       "source": "/:city/storm-damage-restoration",

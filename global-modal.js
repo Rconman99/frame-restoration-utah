@@ -30,7 +30,7 @@
   function isModalTrigger(target) {
     if (!target || !target.closest) return false;
     var trigger = target.closest(
-      '.free-inspection-trigger,.nav-cta,a[href*="calendar.app.google"],a[href="#heroForm"]'
+      '.free-inspection-trigger,.nav-cta,a[data-booking-trigger],a[href="#heroForm"]'
     );
     if (!trigger) return false;
     if (trigger.matches && trigger.matches('a[href="#heroForm"]') && document.getElementById('heroForm')) {
@@ -166,7 +166,7 @@
   });
 
   // ─── Auto-attach to ALL triggers ───
-  // Works on: .nav-cta, .free-inspection-trigger, or any link with calendar.app.google
+  // Works on: .nav-cta, .free-inspection-trigger, or any link with data-booking-trigger
   function attachTriggers() {
     // 1. All elements with .free-inspection-trigger class
     document.querySelectorAll('.free-inspection-trigger').forEach(function(el) {
@@ -178,8 +178,9 @@
       el.addEventListener('click', function(e) { e.preventDefault(); openModal(); });
     });
 
-    // 3. All calendar.app.google links (catch any remaining)
-    document.querySelectorAll('a[href*="calendar.app.google"]').forEach(function(el) {
+    // 3. All data-booking-trigger links (catch any remaining). The href behind them
+    //    is /#contact — the no-JS fallback — so the modal must take over the click.
+    document.querySelectorAll('a[data-booking-trigger]').forEach(function(el) {
       el.addEventListener('click', function(e) { e.preventDefault(); openModal(); });
     });
 

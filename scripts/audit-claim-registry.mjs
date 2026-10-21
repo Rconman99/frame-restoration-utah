@@ -46,7 +46,7 @@ function renderLlms(registry, claimsById) {
     `- Phone: ${claim("identity.public_phone")}`,
     `- Email: ${claim("identity.public_email")}`,
     `- Address: ${claim("identity.public_address")}`,
-    `- Utah DOPL contractor license: ${claim("identity.dopl_license")} (verify at https://dopl.utah.gov/license-lookup)`,
+    `- Utah DOPL contractor license: ${claim("identity.dopl_license")} (verify at https://secure.utah.gov/llv/search/index.html)`,
     "",
     "## Published roofing services",
     ...registry.services.map((service) => `- ${service.name}: ${baseUrl}${service.path}`),
