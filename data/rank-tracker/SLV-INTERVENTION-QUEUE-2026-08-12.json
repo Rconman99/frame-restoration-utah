@@ -13,7 +13,7 @@
         "Holladay",
         "Herriman"
       ],
-      "activeSnapshotSha256": "d7e9373f3b225d3537a342ac60ef6d91b1ce975a11fb9bb1b5ac9d4603cb8d85",
+      "activeSnapshotSha256": "bec8baa5ea259670c2bb26e62c7cc7e4cd10f1344f575ded8a87d59ccfea0854",
       "diagnosisSnapshotSha256": "a1b7d5aa2acc3a5b663da345ba6eb7242e411661807ae1296f50854702b1a7eb",
       "behavior": "Ignore the stale split-URL disposition and keep affected URL-competition cities in the diagnosis lane; do not suppress, redirect, canonicalize, noindex, delete, or rewrite a route from stale evidence.",
       "requiredAction": "Refresh the bounded Holladay/Herriman split-URL diagnosis against the current GSC attribution snapshot."
@@ -88,7 +88,7 @@
     },
     "gscAttribution": {
       "file": "data/rank-tracker/SLV-GSC-URL-ATTRIBUTION-LATEST.json",
-      "sha256": "053c8350395459fa2f3bdee96a4b1c3eae3459ab19995944df878ef190d2af10"
+      "sha256": "9f03e1f94b5c05efd369f63666bf1503863d967a307b1199e18ca9ecee848b08"
     },
     "gscSplitUrlDiagnosis": {
       "file": "data/rank-tracker/SLV-GSC-SPLIT-URL-DIAGNOSIS-2026-08-12.json",
@@ -108,7 +108,7 @@
     },
     "expansionArchitecture": {
       "file": "data/rank-tracker/SLV-EXPANSION-ARCHITECTURE-2026-08-12.json",
-      "sha256": "58ea454fefe33a3da8ea58f8c6876f2b10b2dc9a1375609f41362c02e8141891"
+      "sha256": "f02bf8f9c01b472ff1667f21b51e579291c9c28d1f97e050eef764075f790924"
     },
     "corePriority": {
       "file": "data/rank-tracker/SLV-PRIORITY-2026-08-12.json",
@@ -798,7 +798,7 @@
         "gscReturnedQueries": 3,
         "gscAlternateNormalizedUrls": [
           "framerestorationutah.com/blog/holladay/roof-replacement-holladay-utah",
-          "framerestorationutah.com/pages/residential-roofing"
+          "framerestorationutah.com/locations/vineyard"
         ],
         "gscUrlDiagnosis": null,
         "serviceAreaStatus": "pending-current-profile-service-area-verification",
