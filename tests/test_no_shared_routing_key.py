@@ -30,6 +30,32 @@ class NoSharedRoutingKey(unittest.TestCase):
         self.assertIn('Deno.env.get("LEAD_CRM_PIN_ONLY_LOGIN") === "true"', src)
         self.assertIn('API_KEY !== "" && routingKey === API_KEY', src)
 
+    def test_deployed_only_functions_read_key_from_env(self):
+        # reddit-monitor / lead-report are deployed-only until imported with
+        # scripts/import-deployed-functions.sh. Once in the repo they must use
+        # the env-backed shared check, not a literal.
+        for name, spec in (("reddit-monitor", "REDDIT_MONITOR_KEY"), ("lead-report", "LEAD_REPORT_KEY")):
+            fn_dir = REPO / "supabase/functions" / name
+            if not fn_dir.exists():
+                continue  # not imported yet (an owner step), which is different from imported badly
+            path = fn_dir / "index.ts"
+            # A directory without an entrypoint is a partial import that must never pass as "not yet imported".
+            self.assertTrue(path.is_file() and path.stat().st_size > 0,
+                            f"{name}: {fn_dir} exists but index.ts is missing or empty (partial import)")
+            src = path.read_text()
+            self.assertIn("../_shared/function-key.ts", src, name)
+            self.assertIn(spec, src, name)
+
+    def test_function_key_helper_fails_closed(self):
+        src = (REPO / "supabase/functions/_shared/function-key.ts").read_text()
+        self.assertIn('legacy !== "" &&', src)
+        self.assertIn("if (!provided) return false;", src)
+
+    def test_traffic_snapshot_key_is_optional(self):
+        src = (REPO / "scripts/refresh-traffic-snapshot.sh").read_text()
+        self.assertIn('echo "ERROR: FRAME_REPORT_PIN must be set."', src)
+        self.assertIn('if $routing_key == "" then {pin:$pin}', src)
+
 
 if __name__ == "__main__":
     unittest.main()

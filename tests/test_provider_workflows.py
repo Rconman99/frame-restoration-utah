@@ -55,6 +55,19 @@ cta = load_script("utah_cta_liveness", "scripts/check-cta-liveness.py")
 reviews = load_script("utah_google_reviews", "scripts/update-google-reviews.py")
 blog_publisher = load_script("utah_blog_publisher", "scripts/blog-publish.py")
 
+# The compliance workflow is security-hash-pinned, so the retired-shared-key
+# guard is registered here (this file is the gate's Python entrypoint) instead
+# of adding a workflow step. Binding the TestCase class makes unittest.main()
+# below collect it.
+NoSharedRoutingKey = load_script(
+    "utah_no_shared_routing_key", "tests/test_no_shared_routing_key.py"
+).NoSharedRoutingKey
+# Same reason: the import script's validate-existing / continue-on-failure behaviour is
+# exercised here (fake `supabase` on PATH, scratch copy of the repo layout).
+ImportDeployedFunctions = load_script(
+    "utah_import_deployed_functions", "tests/test_import_deployed_functions.py"
+).ImportDeployedFunctions
+
 
 class ComplianceWorkflowDependencyTests(unittest.TestCase):
     """Freeze clean-runner dependencies for blocking browser and Deno jobs."""

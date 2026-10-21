@@ -5,6 +5,12 @@ import {
   parseDashboardAuthRpcResult,
 } from "./dashboard-credential.ts";
 
+// The compliance workflow is security-hash-pinned, so new credential suites are
+// registered through this already-wired entrypoint (same pattern as
+// missed-call-alert-source.test.ts). function-key.ts is the env-backed shared
+// key check for reddit-monitor and lead-report.
+import "./function-key.test.ts";
+
 function assert(condition: unknown, message: string): asserts condition {
   if (!condition) throw new Error(message);
 }
