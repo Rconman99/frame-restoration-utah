@@ -116,8 +116,12 @@
   padding: 8px 16px; margin-bottom: 22px;
 }
 .about-hero .breadcrumb { font-size: 0.85rem; margin-bottom: 14px; opacity: 0.8; }
-.about-hero .breadcrumb a { color: var(--gold); text-decoration: none; }
+.about-hero .breadcrumb a { color: var(--gold); text-decoration: underline; }
 .about-hero .breadcrumb a:hover { text-decoration: underline; }
+footer p a { text-decoration: underline; }
+@media (min-width: 1101px) {
+  .nav-links a.active { color: var(--gold-text); }
+}
 .about-hero h1 {
   font-family: 'Archivo Black', sans-serif;
   font-size: clamp(2.2rem, 5.5vw, 3.8rem);
@@ -155,13 +159,13 @@
 }
 .owner-caption .name { font-family: 'Archivo Black', sans-serif; font-size: 1.15rem; text-transform: uppercase; letter-spacing: 0.5px; }
 .owner-caption .title { color: var(--gold); font-size: 0.78rem; letter-spacing: 2px; text-transform: uppercase; margin-top: 4px; }
-.owner-bio .kicker { color: var(--gold-dark); font-family: 'Archivo Black', sans-serif; font-size: 0.75rem; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 14px; }
+.owner-bio .kicker { color: var(--gold-text); font-family: 'Archivo Black', sans-serif; font-size: 0.75rem; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 14px; }
 .owner-bio h2 {
   font-family: 'Archivo Black', sans-serif; color: var(--navy-deep);
   font-size: clamp(1.7rem, 3vw, 2.3rem); line-height: 1.15;
   text-transform: uppercase; margin: 0 0 24px; letter-spacing: -0.3px;
 }
-.owner-bio h2 .accent { color: var(--gold-dark); }
+.owner-bio h2 .accent { color: var(--gold-text); }
 .owner-bio p { color: var(--muted); line-height: 1.75; font-size: 1.02rem; margin: 0 0 18px; }
 .owner-bio p strong { color: var(--ink); }
 .landon-quote { margin-top: 34px; padding: 28px 32px; background: var(--cream); border-left: 4px solid var(--gold); position: relative; }
@@ -172,7 +176,7 @@
   letter-spacing: 2px; padding: 4px 10px; text-transform: uppercase;
 }
 .landon-quote blockquote { font-family: 'Archivo Black', sans-serif; font-size: 1.15rem; color: var(--navy-deep); line-height: 1.5; margin: 0; font-style: italic; }
-.landon-quote cite { display: block; margin-top: 14px; font-style: normal; font-size: 0.78rem; letter-spacing: 2px; text-transform: uppercase; color: var(--gold-dark); }
+.landon-quote cite { display: block; margin-top: 14px; font-style: normal; font-size: 0.78rem; letter-spacing: 2px; text-transform: uppercase; color: var(--gold-text); }
 @media (max-width: 860px) {
   .owner-wrap { grid-template-columns: 1fr; gap: 40px; }
   .owner-photo-block { max-width: 320px; margin: 0 auto; }
@@ -182,13 +186,13 @@
 <style>
 .values-section { background: var(--cream); padding: 100px 5%; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
 .values-head { text-align: center; max-width: 720px; margin: 0 auto 60px; }
-.values-head .kicker { color: var(--gold-dark); font-family: 'Archivo Black', sans-serif; font-size: 0.75rem; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 14px; }
+.values-head .kicker { color: var(--gold-text); font-family: 'Archivo Black', sans-serif; font-size: 0.75rem; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 14px; }
 .values-head h2 { font-family: 'Archivo Black', sans-serif; color: var(--navy-deep); font-size: clamp(1.8rem, 4vw, 2.6rem); line-height: 1.1; text-transform: uppercase; margin: 0 0 16px; }
 .values-head p { color: var(--muted); font-size: 1.05rem; line-height: 1.65; margin: 0; }
 .values-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; max-width: 1100px; margin: 0 auto; }
 .value-card { background: #fff; padding: 32px 28px; border-radius: 2px; border-top: 3px solid var(--gold); box-shadow: 0 1px 0 var(--line); transition: transform .2s ease, box-shadow .2s ease; }
 .value-card:hover { transform: translateY(-3px); box-shadow: 0 12px 24px rgba(11,64,96,0.10); }
-.value-card .v-num { font-family: 'Archivo Black', sans-serif; color: var(--gold-dark); font-size: 0.72rem; letter-spacing: 2px; margin-bottom: 10px; }
+.value-card .v-num { font-family: 'Archivo Black', sans-serif; color: var(--gold-text); font-size: 0.72rem; letter-spacing: 2px; margin-bottom: 10px; }
 .value-card h3 { font-family: 'Archivo Black', sans-serif; color: var(--navy-deep); font-size: 1.1rem; line-height: 1.25; text-transform: uppercase; margin: 0 0 12px; letter-spacing: -0.2px; }
 .value-card p { color: var(--muted); line-height: 1.7; font-size: 0.96rem; margin: 0; }
 .trust-strip { background: var(--navy-deep); padding: 60px 5%; color: #fff; }
@@ -200,12 +204,12 @@
 @media (max-width: 760px) { .trust-pill { border-right: none; border-bottom: 2px solid rgba(225,185,105,0.3); } .trust-pill:last-child { border-bottom: none; } }
 .letter-section { background: #fff; padding: 100px 5%; }
 .letter-wrap { max-width: 820px; margin: 0 auto; background: var(--cream); padding: 60px 50px; border-left: 4px solid var(--gold); position: relative; }
-.letter-wrap .kicker { color: var(--gold-dark); font-family: 'Archivo Black', sans-serif; font-size: 0.75rem; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 18px; }
+.letter-wrap .kicker { color: var(--gold-text); font-family: 'Archivo Black', sans-serif; font-size: 0.75rem; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 18px; }
 .letter-wrap h2 { font-family: 'Archivo Black', sans-serif; color: var(--navy-deep); font-size: clamp(1.5rem, 3vw, 2rem); line-height: 1.2; text-transform: uppercase; margin: 0 0 24px; }
 .letter-wrap p { color: var(--ink); line-height: 1.8; font-size: 1.05rem; margin: 0 0 18px; }
 .letter-signature { margin-top: 30px; padding-top: 22px; border-top: 2px solid rgba(11,64,96,0.15); }
 .letter-signature .sig { font-family: 'Archivo Black', sans-serif; color: var(--navy-deep); font-size: 1.2rem; margin-bottom: 4px; letter-spacing: -0.3px; }
-.letter-signature .sig-title { color: var(--gold-dark); font-size: 0.78rem; letter-spacing: 2px; text-transform: uppercase; }
+.letter-signature .sig-title { color: var(--gold-text); font-size: 0.78rem; letter-spacing: 2px; text-transform: uppercase; }
 @media (max-width: 600px) { .letter-wrap { padding: 40px 28px; } }
 .cta-band { background: var(--gold); color: var(--navy-deep); padding: 80px 5%; text-align: center; border-top: 4px solid var(--navy-deep); border-bottom: 4px solid var(--navy-deep); }
 .cta-band .kicker { font-family: 'Archivo Black', sans-serif; font-size: 0.75rem; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 14px; color: var(--navy-deep); opacity: 0.75; }
