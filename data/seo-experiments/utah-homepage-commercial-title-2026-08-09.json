@@ -3,16 +3,16 @@
   "version": "frame-seo-experiment.v1",
   "id": "utah-homepage-commercial-title-2026-08-09",
   "market": "utah",
-  "status": "running",
+  "status": "kept",
   "page": "https://www.framerestorationutah.com/",
   "query": "roofing companies utah",
   "sourceActionId": "utah-growth-plan-p5-homepage-title",
   "baseline": {
     "sourceArtifact": "frame-seo-loop",
-    "sourceReceipt": "data/seo/snapshots/2026-08-09.json",
+    "sourceReceipt": "data/seo/snapshots/2026-08-07.json",
     "window": {
-      "start": "2026-07-10",
-      "end": "2026-08-06",
+      "start": "2026-07-08",
+      "end": "2026-08-04",
       "searchType": "web",
       "dataState": "final"
     },
@@ -20,7 +20,7 @@
       "clicks": 9,
       "impressions": 4429,
       "averagePosition": 16.8,
-      "note": "Homepage result from the measured Utah growth plan; current 2026-08-09 snapshot reports 73 clicks / 124,764 impressions sitewide."
+      "note": "Corrected 2026-09-18: 9 clicks / 4429 impressions / position 16.8 belong to the August 7 snapshot, July 8–August 4. The previously recorded August 9 snapshot and July 10–August 6 window contain 10 / 4410 / 17.2. Preserve the originally chosen numbers with their actual source; do not silently compare different windows."
     },
     "sitewide": {
       "clicks": 73,
@@ -76,16 +76,29 @@
     "startsAfterProductionDeployment": true,
     "evaluationWindowDays": 28,
     "minimumHomepageImpressions": 1000,
-    "deployedAt": null,
+    "deployedAt": "2026-08-10T06:13:14.000Z",
+    "crawlGuardBaselineReceipt": "data/seo/snapshots/2026-08-09.json",
+    "deploymentEvidence": {
+      "pullRequest": 201,
+      "mergeCommit": "2901fcaaf53c528dee1c65b004b5d4e3712e8fd6",
+      "githubDeploymentId": 5827160776,
+      "successfulProductionStatusAt": "2026-08-10T06:13:14Z",
+      "source": "https://api.github.com/repos/Rconman99/frame-restoration-utah/deployments/5827160776/statuses",
+      "verifiedAt": "2026-09-18T05:17:00Z",
+      "limitation": "Exact-SHA production status verified from GitHub; immutable historical page bytes are not claimed. Current canonical title separately matches the variant."
+    },
     "earliestEvaluationAt": "2026-09-08T00:00:00.000Z",
     "keepWhen": {
       "homepageCtrImprovesRelative": true,
       "orHomepageAveragePositionImprovement": 2,
       "andNoCrawlOrIndexRegression": true
     },
-    "decidedAt": null,
-    "result": null,
-    "decision": "pending"
+    "decidedAt": "2026-09-18T05:21:38.716Z",
+    "result": {
+      "sourceReceipt": "data/seo/experiment-readouts/utah-homepage-commercial-title-2026-08-09.json",
+      "interpretation": "Retain under the original CTR-or-position rule: CTR rose from 9/4429 to 8/3197, but clicks fell and average position worsened 16.8 to 20.2. Exact first full GSC Pacific-date window is August 10–September 6. Overlapping site changes prevent causal attribution; no lead, revenue or AI-citation win claimed."
+    },
+    "decision": "keep"
   },
   "publicSideEffects": [],
   "prohibitedSideEffects": [

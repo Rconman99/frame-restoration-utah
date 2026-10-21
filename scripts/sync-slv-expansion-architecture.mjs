@@ -223,7 +223,7 @@ const artifact = {
     gscAttribution.summary.requestedQueries === 72
       ? "The latest measured GSC snapshot requested all 72 fixed queries; unreturned rows remain withheld or absent row evidence, not zero demand."
       : `The latest measured GSC snapshot requested ${gscAttribution.summary.requestedQueries}/72 fixed queries; unrequested expansion query-to-URL attribution remains unmeasured.`,
-    "Preserve all 12 city hubs and all 11 related city-service/editorial routes; no current evidence supports redirects, canonical changes, noindex, deletion, or bulk service-page generation.",
+    "Preserve all 12 city hubs and all 14 related city-service/editorial routes; no current evidence supports redirects, canonical changes, noindex, deletion, or bulk service-page generation.",
     "Keep refreshing exact-query attribution in the daily SEO loop; diagnose any normalized alternate URL against routing and timing before a ranking-intent experiment.",
     "Integrity cleanup is a separate owner-approved variable and must precede any title/H1/architecture experiment."
   ],
@@ -232,8 +232,8 @@ const artifact = {
 
 assert.equal(artifact.summary.cities, 12);
 assert.equal(artifact.summary.fixedQueries, 48);
-assert.equal(artifact.summary.routesPinned, 23);
-assert.equal(artifact.summary.relatedRoutesProtected, 11);
+assert.equal(artifact.summary.routesPinned, 26);
+assert.equal(artifact.summary.relatedRoutesProtected, 14);
 assert.equal(artifact.summary.citiesWithCurrentCannibalizationEvidenced, 0);
 assert.ok(artifact.cities.every((city) => city.panel.intendedMainSelectedForEveryMeasuredRank));
 assert.equal(artifact.summary.targetedGscQueriesRequested, artifact.cities.reduce((sum, city) => sum + city.targetedGsc.fixedQueriesRequested, 0));

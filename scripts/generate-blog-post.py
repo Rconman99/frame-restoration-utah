@@ -85,7 +85,11 @@ PUBLIC_ADDRESS = BUSINESS_IDENTITY.get("public_address") or {
 ENTITY_LINKS = BUSINESS_IDENTITY.get("entity_links") or {}
 ORGANIZATION_ID = f"{SITE}/#organization"
 AUTHOR_ID = f"{SITE}/pages/about#landon-yokers"
-SCHEDULE_URL = "https://calendar.app.google/cR4bBSWfb9TQ28UF8"
+# On-site lead form. The old Google Calendar appointment link went dead (404) in
+# 2026-10; global-modal.js opens the lead modal from data-booking-trigger, and
+# this href is only the no-JS fallback. scripts/audit-booking-links.mjs blocks
+# any return of the calendar link.
+SCHEDULE_URL = "/#contact"
 AUTHOR_NAME = "Landon Yokers"
 AUTHOR_TITLE = "Owner"
 POSTHOG_KEY = "phc_BnECzlZ2OeDujli2dbqcgGODXlv2tYERbp40dTF7UBV"
@@ -705,7 +709,7 @@ def render_html(manifest: dict, image_url: Optional[str], image_local_path: Opti
     cta_para = (
         f'<p>{BUSINESS_NAME} serves homeowners across the Wasatch Front and Heber Valley with '
         f'free post-storm and pre-purchase inspections. Call <a href="tel:{PHONE_TEL}">{PHONE_CALL}</a> '
-        f'or <a href="{SCHEDULE_URL}" target="_blank" rel="noopener">schedule online</a>. '
+        f'or <a href="{SCHEDULE_URL}" data-booking-trigger>schedule online</a>. '
         f'Every repair is backed by our 10-year workmanship warranty.</p>'
     )
 
@@ -828,7 +832,7 @@ def render_html(manifest: dict, image_url: Optional[str], image_local_path: Opti
     <li><a href="/#faq">FAQ</a></li>
     <li><a href="/#contact">Contact</a></li>
     <li><a href="tel:{PHONE_TEL}" class="nav-phone">{PHONE_CALL}</a></li>
-    <li><a href="{SCHEDULE_URL}" target="_blank" rel="noopener" class="nav-cta">Free Inspection</a></li>
+    <li><a href="{SCHEDULE_URL}" data-booking-trigger class="nav-cta">Free Inspection</a></li>
   </ul>
   <a href="tel:{PHONE_TEL}" class="nav-call-mobile" data-cta="header-call" aria-label="Call {BUSINESS_NAME} at {PHONE_CALL}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 10.8 19.79 19.79 0 01.03 2.18 2 2 0 012 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 14.92z"/></svg></a>
   <button class="mobile-btn" id="menuBtn" aria-label="Toggle navigation" aria-expanded="false"><span></span><span></span><span></span></button>
@@ -861,7 +865,7 @@ def render_html(manifest: dict, image_url: Optional[str], image_local_path: Opti
   <h2>Free Inspection. No Pressure.</h2>
   <p>Licensed Utah roofers. BBB Accredited. 10-year workmanship warranty.</p>
   <a href="tel:{PHONE_TEL}" class="btn btn-primary">Call {PHONE_CALL}</a>
-  <a href="{SCHEDULE_URL}" target="_blank" rel="noopener" class="btn btn-secondary" style="margin-left:12px">Book Online</a>
+  <a href="{SCHEDULE_URL}" data-booking-trigger class="btn btn-secondary" style="margin-left:12px">Book Online</a>
 </section>
 </main>
 

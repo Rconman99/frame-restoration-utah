@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <meta name="frame-deployment-assets" content="20260928-brand-source-excluded" />
+  <meta name="frame-release" content="davis-hail-20260918a">
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <meta name="frame-build-marker" content="utah-form-accessibility-v1" />
@@ -48,8 +50,8 @@
   <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
   <link rel="manifest" href="/manifest.json" />
 
-  <!-- Preload hero image for LCP -->
-  <link rel="preload" as="image" href="/images/projects/aerial-2026-07/utah-july-2026-finished-roof-mountain-close-1600.webp" fetchpriority="high" />
+  <!-- Preload the responsive hero so mobile fetches the 800w candidate, not the 1600w file. -->
+  <link rel="preload" as="image" href="/images/projects/aerial-2026-07/utah-july-2026-finished-roof-mountain-close-800.webp" imagesrcset="/images/projects/aerial-2026-07/utah-july-2026-finished-roof-mountain-close-800.webp 800w, /images/projects/aerial-2026-07/utah-july-2026-finished-roof-mountain-close-1200.webp 1200w, /images/projects/aerial-2026-07/utah-july-2026-finished-roof-mountain-close-1600.webp 1600w" imagesizes="100vw" fetchpriority="high" />
   <link rel="preload" as="font" type="font/woff2" href="/assets/fonts/archivo-regular.woff2" crossorigin />
   <link rel="preload" as="font" type="font/woff2" href="/assets/fonts/archivo-black.woff2" crossorigin />
 
@@ -57,7 +59,6 @@
   <!-- Images now served locally from /images/photos/ -->
   <link rel="dns-prefetch" href="//hdcflshhomzildwqlmwh.supabase.co" />
   <link rel="dns-prefetch" href="//api.resend.com" />
-  <link rel="dns-prefetch" href="//calendar.app.google" />
 
   <!-- GTM: Add Google Tag Manager snippet here after client setup -->
 
@@ -89,7 +90,7 @@
       "@type": "PropertyValue",
       "name": "Utah DOPL contractor license",
       "value": "14256097-5501",
-      "url": "https://dopl.utah.gov/license-lookup"
+      "url": "https://secure.utah.gov/llv/search/index.html"
     },
     "hasCredential": {
       "@type": "EducationalOccupationalCredential",
@@ -164,7 +165,7 @@
         {"@type":"Offer","itemOffered":{"@type":"Service","name":"Storm Damage Restoration","description":"Utah hail and wind damage specialists. Photo-backed roof condition documentation for carrier review."}},
         {"@type":"Offer","itemOffered":{"@type":"Service","name":"Water & Fire Restoration","description":"Emergency water, fire, and flood restoration across the Wasatch Front."}},
         {"@type":"Offer","itemOffered":{"@type":"Service","name":"Solar Installation","description":"Roof-integrated solar systems maximizing Utah's 300+ annual sunny days."}},
-        {"@type":"Offer","itemOffered":{"@type":"Service","name":"General Contracting","description":"Kitchen remodels, bathroom renovations, additions, and full-home renovations."}}
+        {"@type":"Offer","itemOffered":{"@type":"Service","name":"General Contracting","description":"Home additions, siding, decks, and exterior work coordinated with the roof."}}
       ]
     },
     "contactPoint": {
@@ -184,7 +185,7 @@
       "https://www.homeadvisor.com/rated.FrameRestoration.157214032.html",
       "https://www.thumbtack.com/ut/heber-city/roofing/frame-restoration-utah/service/575757991393927176",
       "https://nextdoor.com/page/frame-restoration-utah-llc-heber-city-ut",
-      "https://www.google.com/maps/place/Frame+Restoration+Utah/@40.5069,-111.4133,17z/",
+      "https://www.google.com/maps?cid=8458659884566588108",
       "https://www.buildzoom.com/contractor/frame-restoration-utah-llc",
       "https://reviews.birdeye.com/frame-restoration-utah-177732760787552",
       "https://maps.apple/p/3.Ws8CAg~5tDio",
@@ -277,7 +278,7 @@
     "@id": "https://www.framerestorationutah.com/#service-general-contracting",
     "name": "General Contracting",
     "serviceType": "General Contracting",
-    "description": "Whole-home restoration beyond the roof including kitchen remodels, bathroom renovations, additions, and water-fire-flood damage remediation across the Wasatch Front.",
+    "description": "Work beyond the roof including home additions, siding, decks, exterior work, and water, fire, flood, and mold restoration across the Wasatch Front.",
     "provider": {"@type": "RoofingContractor", "name": "Frame Restoration Utah", "url": "https://www.framerestorationutah.com"},
     "areaServed": {"@type": "State", "name": "Utah"},
     "url": "https://www.framerestorationutah.com/pages/general-contracting",
@@ -332,7 +333,7 @@
         "name": "Is Frame Restoration Utah licensed and insured?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Yes. Frame Restoration Utah is a licensed Wasatch Front roofer. Frame Restoration Utah LLC holds Utah DOPL contractor license 14256097-5501. Verify at https://dopl.utah.gov/license-lookup. Details: https://www.framerestorationutah.com/pages/licensed-roofer-wasatch-front"
+          "text": "Yes. Frame Restoration Utah is a licensed Wasatch Front roofer. Frame Restoration Utah LLC holds Utah DOPL contractor license 14256097-5501. Verify at https://secure.utah.gov/llv/search/index.html. Details: https://www.framerestorationutah.com/pages/licensed-roofer-wasatch-front"
         }
       },
       {
@@ -400,6 +401,8 @@
   <link rel="stylesheet" href="/global-critical.css?v=20260727b">
   <link rel="stylesheet" href="/global.css?v=20260727b" media="print" onload="this.media='all'">
   <noscript><link rel="stylesheet" href="/global.css?v=20260727b"></noscript>
+  <link rel="stylesheet" href="/hail-campaign.css?v=20260917a">
+  <script src="/hail-guide-context.js?v=20260918a" defer></script>
 
   <style>
     /* ─── INDEX-SPECIFIC STYLES ─── */
@@ -511,7 +514,7 @@
       grid-template-columns: minmax(320px, 0.9fr) minmax(0, 1.1fr);
       gap: clamp(32px, 4.5vw, 60px);
       align-items: start;
-      margin-bottom: 48px;
+      margin-bottom: 0;
     }
     .qa-overview > * { min-width: 0; }
     .qa-kicker {
@@ -572,106 +575,12 @@
       font-size: 11px;
       letter-spacing: 1.3px;
     }
-    .qa-evidence-heading {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) minmax(260px, 0.72fr);
-      gap: 36px;
-      align-items: end;
-      margin-bottom: 24px;
-    }
-    .qa-evidence-heading h3 {
-      margin: 0;
-      color: var(--navy);
-      font-family: 'Archivo Black', sans-serif;
-      font-size: clamp(22px, 2.5vw, 30px);
-      letter-spacing: 0.01em;
-      line-height: 1.2;
-      text-transform: uppercase;
-    }
-    .qa-evidence-heading p {
-      margin: 0;
-      color: #52606c;
-      font-size: 14px;
-      line-height: 1.65;
-    }
-    .qa-evidence-grid {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 16px;
-      margin: 0;
-      padding: 0;
-      list-style: none;
-    }
-    .qa-evidence-item {
-      display: grid;
-      grid-template-columns: 36px minmax(0, 1fr);
-      gap: 16px;
-      align-items: start;
-      min-width: 0;
-      padding: 22px 24px 22px 20px;
-      background: var(--white);
-      border: 1px solid #d9dee2;
-      border-left: 3px solid var(--gold);
-    }
-    .qa-evidence-number {
-      display: flex;
-      width: 36px;
-      height: 36px;
-      align-items: center;
-      justify-content: center;
-      background: var(--navy);
-      color: var(--gold);
-      font-family: 'Archivo Black', sans-serif;
-      font-size: 12px;
-      letter-spacing: 0.5px;
-      line-height: 1;
-    }
-    .qa-evidence-item h4 {
-      margin: 1px 0 7px;
-      color: var(--navy);
-      font-family: 'Archivo Black', sans-serif;
-      font-size: 13px;
-      letter-spacing: 0.8px;
-      line-height: 1.35;
-      text-transform: uppercase;
-    }
-    .qa-evidence-item p {
-      margin: 0;
-      color: #374151;
-      font-size: 14px;
-      line-height: 1.65;
-    }
-    .qa-evidence-item a {
-      color: var(--navy);
-      font-weight: 700;
-      text-decoration-line: underline;
-      text-decoration-color: var(--gold);
-      text-decoration-thickness: 2px;
-      text-underline-offset: 3px;
-      overflow-wrap: anywhere;
-    }
-    .qa-evidence-item a:hover {
-      color: #082d44;
-      text-decoration-thickness: 3px;
-    }
-    .qa-evidence-item a:focus-visible {
-      outline: 3px solid var(--navy);
-      outline-offset: 3px;
-      border-radius: 1px;
-    }
     @media (max-width: 960px) {
       .quick-answer-strip { padding: 64px 5% 72px; }
       .qa-overview {
         grid-template-columns: minmax(0, 1fr);
         gap: 24px;
-        margin-bottom: 42px;
       }
-      .qa-evidence-heading {
-        grid-template-columns: 1fr;
-        gap: 12px;
-        align-items: start;
-      }
-      .qa-evidence-heading p { max-width: 62ch; }
     }
     @media (max-width: 720px) {
       .quick-answer-strip { padding: 54px 5% 60px; }
@@ -682,8 +591,6 @@
         flex-direction: column;
         gap: 7px;
       }
-      .qa-evidence-grid { grid-template-columns: 1fr; gap: 12px; }
-      .qa-evidence-item { padding: 20px 18px 20px 16px; gap: 14px; }
     }
 
     /* ─── TRUST BAR ─── */
@@ -831,7 +738,7 @@
     #fresh-aerials { background: linear-gradient(180deg, #f7f3eb 0%, #ffffff 100%); padding: 64px 5% 72px; position: relative; }
     #fresh-aerials .fa-inner { max-width: 1180px; margin: 0 auto; }
     #fresh-aerials .fa-header { text-align: center; margin-bottom: 30px; }
-    #fresh-aerials .section-label { color: var(--gold); display: inline-block; margin-bottom: 10px; }
+    #fresh-aerials .section-label { color: var(--gold-text); display: inline-block; margin-bottom: 10px; }
     #fresh-aerials .section-title { color: var(--navy); font-family: 'Archivo Black', sans-serif; font-size: clamp(28px, 4vw, 44px); text-transform: uppercase; line-height: 1.12; margin-bottom: 12px; }
     #fresh-aerials .section-title .gold { color: var(--gold); }
     #fresh-aerials .section-sub { color: #3a4a5a; max-width: 720px; margin: 0 auto; font-size: 16px; line-height: 1.6; }
@@ -923,6 +830,7 @@
 
     /* ─── AREAS — Full Wasatch Front ─── */
     #areas { background: var(--navy); }
+    #areas .section-label { color: var(--gold); }
     #areas .section-title { color: var(--white); }
     #areas .section-sub { color: rgba(255,255,255,0.6); }
     .areas-header { margin-bottom: 48px; }
@@ -1024,7 +932,7 @@
     /* ─── CTA BANNER ─── */
     #cta { background: var(--gold); padding: 80px 5%; text-align: center; }
     #cta h2 { font-family: 'Archivo Black', sans-serif; font-size: clamp(32px,5vw,60px); font-weight: 700; color: var(--navy); text-transform: uppercase; margin-bottom: 16px; }
-    #cta p { font-size: 18px; color: rgba(11,64,96,0.7); margin-bottom: 36px; }
+    #cta p { font-size: 18px; color: var(--navy); margin-bottom: 36px; }
     .btn-navy { background: var(--navy); color: var(--white); padding: 18px 40px; font-family: 'Archivo Black', sans-serif; font-size: 17px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; text-decoration: none; border-radius: 2px; display: inline-block; transition: all 0.2s; margin: 0 8px 12px; }
     .btn-navy:hover { background: var(--navy-mid); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(11,64,96,0.3); }
     .btn-outline-navy { background: transparent; color: var(--navy); padding: 18px 40px; font-family: 'Archivo Black', sans-serif; font-size: 17px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; text-decoration: none; border-radius: 2px; border: 2px solid var(--navy); display: inline-block; transition: all 0.2s; margin: 0 8px 12px; }
@@ -1138,8 +1046,9 @@
       .area-chip { padding: 14px 16px; min-height: 48px; }
     }
   </style>
-  <script src="/global-modal.js?v=20260807b" defer></script>
+  <script src="/global-modal.js?v=20261017a" defer></script>
 <script src="/posthog-loader.js" defer></script>
+<script src="/ga4-loader.js" defer></script>
   <script src="/track-attribution.js" defer></script>
   <script src="/track-clicks.js?v=2" defer></script>
 </head>
@@ -1174,7 +1083,7 @@
 </nav>
 
 <!-- ───── HERO START ───── -->
-<main id="main-content">
+<main id="main-content" data-hail-campaign="20260917a">
 <section class="hero" id="home" aria-label="Utah roofing hero">
   <div class="hero-img">
     <picture>
@@ -1205,7 +1114,7 @@
       </div>
       <div class="hero-form-card" aria-label="Request a free roof inspection">
         <h2>Get Your Free Roof Inspection</h2>
-        <p>3 fields, 30 seconds (address optional). We'll call you back within 15 minutes during business hours.</p>
+        <p>Start with your name, phone and ZIP code. Our team will contact you to discuss your roof and confirm availability.</p>
         <form id="heroForm" class="hero-form" method="post" action="https://hdcflshhomzildwqlmwh.supabase.co/functions/v1/handle-lead" accept-charset="UTF-8" data-endpoint="https://hdcflshhomzildwqlmwh.supabase.co/functions/v1/handle-lead">
           <input type="hidden" name="source_page" value="/">
           <div aria-hidden="true" style="position:absolute;left:-10000px;width:1px;height:1px;overflow:hidden;"><label>Company website<input type="text" name="company_website" tabindex="-1" autocomplete="off"></label></div>
@@ -1242,8 +1151,28 @@
 </section>
 <!-- ───── HERO END ───── -->
 
+<section class="hail-discovery" aria-labelledby="davis-guides-heading" data-davis-discovery="20260918b">
+  <h2 id="davis-guides-heading">Layton &amp; Farmington: roof checks after hail</h2>
+  <p><time datetime="2026-09-18">September 18, 2026</time> homeowner guides: what to photograph from the ground, warning signs to report and questions to ask before repairs. A storm warning does not confirm damage to your roof.</p>
+  <div class="hail-discovery-links">
+    <a href="/blog/layton/hail-roof-inspection-layton">Layton hail guide</a>
+    <a href="/blog/farmington/hail-roof-inspection-farmington">Farmington hail guide</a>
+    <a href="#contact">Request a roof inspection</a>
+  </div>
+</section>
+
+<section class="hail-discovery" aria-labelledby="hail-guides-heading">
+  <h2 id="hail-guides-heading">Roof concerns after hail in the Heber Valley?</h2>
+  <p>Start with your town’s guide: safe ground-level photos, warning signs to discuss and what to share when requesting an inspection.</p>
+  <div class="hail-discovery-links">
+    <a href="/blog/midway/hail-roof-inspection-midway">Midway hail guide</a>
+    <a href="/blog/hideout/hail-roof-inspection-hideout">Hideout hail guide</a>
+    <a href="/blog/charleston/hail-roof-inspection-charleston">Charleston hail guide</a>
+  </div>
+</section>
+
 <!-- ─── VERIFIED UTAH ROOFING STANDARDS ─── -->
-<section class="quick-answer-strip" aria-labelledby="qa-title">
+<section class="quick-answer-strip" aria-labelledby="qa-title" data-home-summary="20260928">
   <div class="qa-inner">
     <div class="qa-overview">
       <div>
@@ -1261,70 +1190,7 @@
       </div>
     </div>
 
-    <div class="qa-evidence" aria-labelledby="qa-evidence-title">
-      <div class="qa-evidence-heading">
-        <h3 id="qa-evidence-title">Utah roofing evidence checks used on every inspection</h3>
-        <p>Licensing, climate, code, and product sources remain visible so homeowners can review the standards behind the roof plan.</p>
-      </div>
-      <ol class="qa-evidence-grid" role="list">
-        <li class="qa-evidence-item">
-          <span class="qa-evidence-number" aria-hidden="true">01</span>
-          <div>
-            <h4>Business identity</h4>
-            <p>Utah <a href="https://dopl.utah.gov/" target="_blank" rel="noopener">DOPL</a> license lookup and Utah <a href="https://commerce.utah.gov/dcp/education/home-improvement/" target="_blank" rel="noopener">home-improvement guidance</a> anchor license, insurance, and written-scope checks.</p>
-          </div>
-        </li>
-        <li class="qa-evidence-item">
-          <span class="qa-evidence-number" aria-hidden="true">02</span>
-          <div>
-            <h4>Weather record</h4>
-            <p>The <a href="https://www.weather.gov/slc/climatebook" target="_blank" rel="noopener">NWS Salt Lake City Climate Book</a> anchors storm timing, freeze-thaw context, and seasonal roof-risk notes.</p>
-          </div>
-        </li>
-        <li class="qa-evidence-item">
-          <span class="qa-evidence-number" aria-hidden="true">03</span>
-          <div>
-            <h4>Snow load</h4>
-            <p>The <a href="https://www.usu.edu/utahsnowload/" target="_blank" rel="noopener">Utah Ground Snow Load Map</a> informs mountain and bench-area roof-load conversations.</p>
-          </div>
-        </li>
-        <li class="qa-evidence-item">
-          <span class="qa-evidence-number" aria-hidden="true">04</span>
-          <div>
-            <h4>Ventilation ratio</h4>
-            <p><a href="https://codes.iccsafe.org/s/IRC2021P3/chapter-8-roof-ceiling-construction/IRC2021P3-Pt03-Ch08-SecR806.2" target="_blank" rel="noopener">IRC R806.2</a> is the baseline for attic ventilation checks before a reroof is closed up.</p>
-          </div>
-        </li>
-        <li class="qa-evidence-item">
-          <span class="qa-evidence-number" aria-hidden="true">05</span>
-          <div>
-            <h4>Ice barrier</h4>
-            <p><a href="https://codes.iccsafe.org/s/IRC2021P3/chapter-9-roof-assemblies/IRC2021P3-Pt03-Ch09-SecR905.1.2" target="_blank" rel="noopener">IRC R905.1.2</a> informs eave, valley, and ice-dam protection details.</p>
-          </div>
-        </li>
-        <li class="qa-evidence-item">
-          <span class="qa-evidence-number" aria-hidden="true">06</span>
-          <div>
-            <h4>Impact rating</h4>
-            <p><a href="https://www.gaf.com/en-us/roofing-materials/residential-roofing-materials/shingles/class-4-shingles" target="_blank" rel="noopener">Class 4 shingle guidance</a> gives homeowners a measurable hail-resistance comparison.</p>
-          </div>
-        </li>
-        <li class="qa-evidence-item">
-          <span class="qa-evidence-number" aria-hidden="true">07</span>
-          <div>
-            <h4>Solar coordination</h4>
-            <p><a href="https://www.energy.gov/eere/solar/homeowners-guide-going-solar" target="_blank" rel="noopener">DOE homeowner solar guidance</a> keeps roof age, penetrations, and warranty coordination in the plan.</p>
-          </div>
-        </li>
-        <li class="qa-evidence-item">
-          <span class="qa-evidence-number" aria-hidden="true">08</span>
-          <div>
-            <h4>Restoration scope</h4>
-            <p><a href="https://www.epa.gov/indoor-air-quality-iaq/resources-flood-cleanup-and-indoor-air-quality" target="_blank" rel="noopener">EPA flood cleanup guidance</a> and <a href="https://www.cdc.gov/mold-health/about/index.html" target="_blank" rel="noopener">CDC mold guidance</a> inform water-intrusion cleanup notes.</p>
-          </div>
-        </li>
-      </ol>
-    </div>
+
   </div>
 </section>
 
@@ -1426,12 +1292,20 @@
     return;
   }
   var container = v.closest('.fa-feature-video') || v;
+  var mobileMedia = window.matchMedia && window.matchMedia('(max-width: 768px)').matches;
+  if (mobileMedia) {
+    var onInteract = function() {
+      container.removeEventListener('pointerdown', onInteract);
+      hydrate();
+    };
+    container.addEventListener('pointerdown', onInteract);
+  }
   var preload = new IntersectionObserver(function(entries, observer){
     if (entries.some(function(entry){ return entry.isIntersecting; })) {
       hydrate();
       observer.disconnect();
     }
-  }, { rootMargin: '300px 0px' });
+  }, { rootMargin: mobileMedia ? '0px' : '300px 0px' });
   preload.observe(container);
   var io = new IntersectionObserver(function(entries){
     entries.forEach(function(e){
@@ -1508,12 +1382,20 @@
     v.controls = true;
     return;
   }
+  var mobileMedia = window.matchMedia && window.matchMedia('(max-width: 768px)').matches;
+  if (mobileMedia) {
+    var onInteract = function() {
+      v.removeEventListener('pointerdown', onInteract);
+      hydrate();
+    };
+    v.addEventListener('pointerdown', onInteract);
+  }
   var preload = new IntersectionObserver(function(entries, observer){
     if (entries.some(function(entry){ return entry.isIntersecting; })) {
       hydrate();
       observer.disconnect();
     }
-  }, { rootMargin: '300px 0px' });
+  }, { rootMargin: mobileMedia ? '0px' : '300px 0px' });
   preload.observe(v);
   var playback = new IntersectionObserver(function(entries){
     entries.forEach(function(entry){
@@ -1736,12 +1618,20 @@
     hydrate();
     return;
   }
+  var mobileMedia = window.matchMedia && window.matchMedia('(max-width: 768px)').matches;
+  if (mobileMedia) {
+    var onInteract = function() {
+      v.removeEventListener('pointerdown', onInteract);
+      hydrate();
+    };
+    v.addEventListener('pointerdown', onInteract);
+  }
   var observer = new IntersectionObserver(function(entries, current){
     if (entries.some(function(entry){ return entry.isIntersecting; })) {
       hydrate();
       current.disconnect();
     }
-  }, { rootMargin: '300px 0px' });
+  }, { rootMargin: mobileMedia ? '0px' : '300px 0px' });
   observer.observe(v);
 })();
 </script>
@@ -1960,7 +1850,7 @@
   <h2 class="reveal">Get Your Free<br />Roof Inspection Today</h2>
   <p class="reveal">No pressure. No obligation. Just honest answers from Utah's roofing experts.</p>
   <div class="reveal">
-    <a href="https://calendar.app.google/cR4bBSWfb9TQ28UF8" target="_blank" rel="noopener" class="btn-navy">Schedule Online</a>
+    <a href="/#contact" data-booking-trigger class="btn-navy">Schedule Online</a>
     <a href="tel:+14352928802" class="btn-outline-navy">Call 435-292-8802</a>
   </div>
 </section>
@@ -1991,7 +1881,7 @@
     </div>
     <div class="faq-item">
       <div class="faq-q" role="button" tabindex="0" aria-expanded="false">Is Frame Restoration Utah licensed and insured?<span class="faq-toggle" aria-hidden="true">+</span></div>
-      <div class="faq-a">Yes. Frame Restoration Utah is a licensed Wasatch Front roofer. Frame Restoration Utah LLC holds Utah DOPL contractor license 14256097-5501. Verify at the <a href="https://dopl.utah.gov/license-lookup" target="_blank" rel="noopener">Utah DOPL license lookup</a>. Details: <a href="/pages/licensed-roofer-wasatch-front">licensed Wasatch Front roofer</a>. We carry general liability insurance and workers' compensation on every project.</div>
+      <div class="faq-a">Yes. Frame Restoration Utah is a licensed Wasatch Front roofer. Frame Restoration Utah LLC holds Utah DOPL contractor license 14256097-5501. Verify at the <a href="https://secure.utah.gov/llv/search/index.html" target="_blank" rel="noopener">Utah DOPL license lookup</a>. Details: <a href="/pages/licensed-roofer-wasatch-front">licensed Wasatch Front roofer</a>. We carry general liability insurance and workers' compensation on every project.</div>
     </div>
     <div class="faq-item">
       <div class="faq-q" role="button" tabindex="0" aria-expanded="false">Do you offer financing for roofing projects?<span class="faq-toggle" aria-hidden="true">+</span></div>
@@ -2039,7 +1929,7 @@
         <input type="hidden" name="source_page" value="/">
         <div aria-hidden="true" style="position:absolute;left:-10000px;width:1px;height:1px;overflow:hidden;"><label>Company website<input type="text" name="company_website" tabindex="-1" autocomplete="off"></label></div>
         <h3>Request a Free Inspection</h3>
-        <p style="font-size:14px;color:var(--gray);margin:-6px 0 18px;">3 quick fields (address optional). We'll call you back within 15 minutes during business hours.</p>
+        <p style="font-size:14px;color:var(--gray);margin:-6px 0 18px;">Start with your name, phone and ZIP code. Our team will contact you to discuss your roof and confirm availability.</p>
         <div class="form-group"><label for="fname">Full Name</label><input type="text" id="fname" name="first_name" placeholder="John Smith" required autocomplete="name" /></div>
         <div class="form-group"><label for="phone">Phone Number</label><input type="tel" id="phone" name="phone" placeholder="(435) 292-8802" required autocomplete="tel" /></div>
         <div class="form-group"><label for="address">Street Address <span style="color:var(--gray);font-weight:400;font-size:12px">(optional)</span></label><input type="text" id="address" name="address" placeholder="123 Main St, City" autocomplete="street-address" /></div>
@@ -2095,7 +1985,7 @@
         <a href="https://www.instagram.com/framerestorationutah" target="_blank" rel="noopener" aria-label="Instagram">
           <svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
         </a>
-        <a href="https://g.co/kgs/framerestorationutah" target="_blank" rel="noopener" aria-label="Google Business">
+        <a href="https://www.google.com/maps?cid=8458659884566588108" target="_blank" rel="noopener" aria-label="Google Business">
           <svg viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
         </a>
         <a href="https://www.yelp.com/biz/frame-restoration-heber-city" target="_blank" rel="noopener" aria-label="Yelp">
@@ -2312,6 +2202,7 @@ document.addEventListener('focusin', function(event) {
           }
         }
 
+        if (window.FrameHailGuideContext) window.FrameHailGuideContext.apply(payload);
         fetch(heroForm.getAttribute('data-endpoint'), {
           method: 'POST',
           body: JSON.stringify(payload),
@@ -2363,6 +2254,7 @@ document.addEventListener('focusin', function(event) {
           }
         }
 
+        if (window.FrameHailGuideContext) window.FrameHailGuideContext.apply(payload);
         fetch(leadForm.getAttribute('data-endpoint'), {
           method: 'POST',
           body: JSON.stringify(payload),
@@ -2634,6 +2526,7 @@ document.addEventListener('DOMContentLoaded', function() {
     loadMapbox(initMap);
   }
 
+  var mobileMedia = window.matchMedia && window.matchMedia('(max-width: 768px)').matches;
   if ('IntersectionObserver' in window) {
     var io = new IntersectionObserver(function(entries, observer){
       entries.forEach(function(entry){
@@ -2642,19 +2535,27 @@ document.addEventListener('DOMContentLoaded', function() {
           triggerOnce();
         }
       });
-    }, { rootMargin: '400px 0px' });
+    }, { rootMargin: mobileMedia ? '0px' : '400px 0px' });
     io.observe(mapEl);
   }
 
-  // Safety net: trigger on first user scroll (once)
-  function scrollTrigger() {
-    window.removeEventListener('scroll', scrollTrigger);
-    var rect = mapEl.getBoundingClientRect();
-    if (rect.top < window.innerHeight + 800 && rect.bottom > -400) {
+  if (mobileMedia) {
+    // Phone: satellite tiles and WebGL wait until the map is on screen or tapped.
+    mapEl.addEventListener('pointerdown', function onMapInteract() {
+      mapEl.removeEventListener('pointerdown', onMapInteract);
       triggerOnce();
+    });
+  } else {
+    // Desktop safety net: trigger on first user scroll once the map is near.
+    function scrollTrigger() {
+      window.removeEventListener('scroll', scrollTrigger);
+      var rect = mapEl.getBoundingClientRect();
+      if (rect.top < window.innerHeight + 800 && rect.bottom > -400) {
+        triggerOnce();
+      }
     }
+    window.addEventListener('scroll', scrollTrigger, { passive: true });
   }
-  window.addEventListener('scroll', scrollTrigger, { passive: true });
 })();
 </script>
 

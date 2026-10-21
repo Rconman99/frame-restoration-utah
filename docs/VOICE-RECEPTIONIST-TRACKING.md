@@ -143,3 +143,33 @@ query, or replay the baseline. This runner never deploys an edge function.
 A merge/check/deployed-source match is not an audible end-to-end call test.
 A natural or separately approved human call must confirm greeting, real voice,
 owner acceptance, voicemail, caller-ID forwarding and final private trace/CRM link.
+
+### Owner-connect latency repair (2026-09-14)
+
+The private owner decision callback uses
+`public.finalize_owner_screen_decision(text,text)` to commit the immutable digit
+and reconcile any accepted CRM lead in one synchronous database transaction
+under one absolute response deadline. That wrapper uses
+`public.commit_owner_screen_decision(text,text)` and
+`public.reconcile_screened_call_lead(text)`; reconciliation locks the `call_logs`
+row and reuses or creates and links one lead without sequential edge/database
+round trips. It explicitly writes `leads.submission_key = NULL`, because that
+field enqueues owner email notifications. On an ambiguous transport timeout the
+handler honors the signed owner digit and retries the same transaction in the
+background. A bridged `/completed` callback also reconciles synchronously and
+returns non-2xx until it succeeds, giving Twilio a durable retry path.
+
+Apply `20260914200000_reconcile_call_screenings.sql` before deploying the updated
+handler. After review, merge, and green exact-main checks, use a clean checkout
+of that main SHA and claim the Utah migration-writer window. Set `RELEASE_SHA`
+and `OWNER_CONNECT_MIGRATION_EXCLUSIVE_WRITER_ACK` to the full SHA, and set
+`SUPABASE_BIN=/opt/homebrew/bin/supabase`. The runner pins the reviewed macOS
+arm64 Supabase CLI 2.116.0 binary and exact migration bytes. Run:
+
+```sh
+node scripts/voice-screening-owner-connect-migration.mjs preflight
+node scripts/voice-screening-owner-connect-migration.mjs apply
+```
+
+Retain both private receipt directories. On any failure, stop without replaying
+historical migrations, repairing history, or substituting a raw mutation query.

@@ -12,35 +12,35 @@
     },
     "priority": {
       "file": "data/rank-tracker/SLV-EXPANSION-PRIORITY-2026-08-12.json",
-      "sha256": "670e1d4ba53fb255ecaf868f8cac46c5d321a4bf0502df997b24e30fb2bb84a6"
+      "sha256": "26070f9084485b6c50ccff5901aa9ee7fedf946a1e3421d35bf29186b71926ad"
     },
     "integrity": {
       "file": "data/authority/SLV-EXPANSION-INTEGRITY-AUDIT-2026-08-12.json",
-      "sha256": "6e710854d6c91999b57b380d1ff966aaddcd371beee1557c9e2e00be6072558c"
+      "sha256": "901d7e23188137212b5b16e8e17635dcc1e0b14684bc45ad05a7a5cdb690e94a"
     },
     "gscAttribution": {
       "file": "data/rank-tracker/SLV-GSC-URL-ATTRIBUTION-LATEST.json",
-      "sha256": "5b9939dedb82c8e07825926257831f5f967472854c64f49d81763f54fb865c92"
+      "sha256": "053c8350395459fa2f3bdee96a4b1c3eae3459ab19995944df878ef190d2af10"
     },
     "displacement": {
       "file": "data/rank-tracker/SLV-COMPETITOR-DISPLACEMENT-2026-08-12.json",
-      "sha256": "7d0f561a2781e8ece9ec40c2811c3cd3ff73981de5db236095923bcdff548414"
+      "sha256": "9b19929c9b2028000183e6c195d4f604aa4e9e41f56a0ea8810c9843bc8b64fe"
     }
   },
   "summary": {
     "cities": 12,
     "fixedQueries": 48,
-    "routesPinned": 23,
-    "relatedRoutesProtected": 11,
+    "routesPinned": 26,
+    "relatedRoutesProtected": 14,
     "targetedGscQueriesRequested": 48,
-    "targetedGscRowsReturned": 15,
+    "targetedGscRowsReturned": 13,
     "citiesWithCurrentCannibalizationEvidenced": 0,
     "publicMutations": 0
   },
   "globalDecision": [
     "All 48 expansion queries have a fixed mobile baseline; the intended main city page is selected for every measured Frame organic result.",
     "The latest measured GSC snapshot requested all 72 fixed queries; unreturned rows remain withheld or absent row evidence, not zero demand.",
-    "Preserve all 12 city hubs and all 11 related city-service/editorial routes; no current evidence supports redirects, canonical changes, noindex, deletion, or bulk service-page generation.",
+    "Preserve all 12 city hubs and all 14 related city-service/editorial routes; no current evidence supports redirects, canonical changes, noindex, deletion, or bulk service-page generation.",
     "Keep refreshing exact-query attribution in the daily SEO loop; diagnose any normalized alternate URL against routing and timing before a ranking-intent experiment.",
     "Integrity cleanup is a separate owner-approved variable and must precede any title/H1/architecture experiment."
   ],
@@ -74,10 +74,10 @@
         "aiOverviewCitations": 1
       },
       "targetedGsc": {
-        "snapshot": "data/seo/snapshots/2026-09-14.json",
+        "snapshot": "data/seo/snapshots/2026-10-20.json",
         "window": {
-          "startDate": "2026-08-15",
-          "endDate": "2026-09-11"
+          "startDate": "2026-09-20",
+          "endDate": "2026-10-17"
         },
         "fixedQueriesRequested": 4,
         "exactQueryPageRowsReturned": 0,
@@ -87,7 +87,7 @@
         "interpretation": "Unrequested or unreturned exact rows are unmeasured, not zero and not evidence of cannibalization."
       },
       "integrity": {
-        "pageSha256": "2ce55c2d10d09d2542be3a35902e24254a21e5226ae051b07429fbc2a47386cc",
+        "pageSha256": "0c98b5aac6fb36dac373139d815a126ea93f6d3f4849bc5499993f071ad0f609",
         "blockingFindingClasses": 6,
         "provisionalWarningClasses": 1,
         "identityState": "current-heber-keystone-pending-service-area-evidence",
@@ -100,7 +100,7 @@
         "routes": [
           {
             "file": "locations/magna.html",
-            "sha256": "2ce55c2d10d09d2542be3a35902e24254a21e5226ae051b07429fbc2a47386cc",
+            "sha256": "0c98b5aac6fb36dac373139d815a126ea93f6d3f4849bc5499993f071ad0f609",
             "title": "Premium Reroofing Magna UT | Frame Restoration Utah",
             "h1": "Premium Reroofing in Magna",
             "canonical": "https://www.framerestorationutah.com/locations/magna",
@@ -108,12 +108,12 @@
             "role": "commercial-city-hub",
             "aggregateGsc": {
               "window": {
-                "startDate": "2026-08-15",
-                "endDate": "2026-09-11"
+                "startDate": "2026-09-20",
+                "endDate": "2026-10-17"
               },
               "clicks": 0,
-              "impressions": 166,
-              "position": 13.7
+              "impressions": 93,
+              "position": 9.4
             },
             "decision": "Preserve as the intended commercial city hub selected by every fixed query with a measured organic rank."
           }
@@ -157,10 +157,10 @@
         "aiOverviewCitations": 0
       },
       "targetedGsc": {
-        "snapshot": "data/seo/snapshots/2026-09-14.json",
+        "snapshot": "data/seo/snapshots/2026-10-20.json",
         "window": {
-          "startDate": "2026-08-15",
-          "endDate": "2026-09-11"
+          "startDate": "2026-09-20",
+          "endDate": "2026-10-17"
         },
         "fixedQueriesRequested": 4,
         "exactQueryPageRowsReturned": 0,
@@ -170,7 +170,7 @@
         "interpretation": "Unrequested or unreturned exact rows are unmeasured, not zero and not evidence of cannibalization."
       },
       "integrity": {
-        "pageSha256": "8d86abdba0bbd055fdc841d0ba3d8535cd685c621aa79f6696fee91dcac30b0a",
+        "pageSha256": "38a02d5efd320fdd0c7009ae88876feb18269589abdc9878d7ed2d800c089d79",
         "blockingFindingClasses": 6,
         "provisionalWarningClasses": 1,
         "identityState": "current-heber-keystone-pending-service-area-evidence",
@@ -183,20 +183,20 @@
         "routes": [
           {
             "file": "locations/kearns.html",
-            "sha256": "8d86abdba0bbd055fdc841d0ba3d8535cd685c621aa79f6696fee91dcac30b0a",
+            "sha256": "38a02d5efd320fdd0c7009ae88876feb18269589abdc9878d7ed2d800c089d79",
             "title": "Premium Reroofing Kearns UT | Frame Restoration Utah",
             "h1": "Premium Reroofing in Kearns",
             "canonical": "https://www.framerestorationutah.com/locations/kearns",
-            "inboundInternalLinks": 4,
+            "inboundInternalLinks": 5,
             "role": "commercial-city-hub",
             "aggregateGsc": {
               "window": {
-                "startDate": "2026-08-15",
-                "endDate": "2026-09-11"
+                "startDate": "2026-09-20",
+                "endDate": "2026-10-17"
               },
               "clicks": 0,
-              "impressions": 418,
-              "position": 28.9
+              "impressions": 232,
+              "position": 33.7
             },
             "decision": "Preserve as the intended commercial city hub selected by every fixed query with a measured organic rank."
           }
@@ -240,10 +240,10 @@
         "aiOverviewCitations": 0
       },
       "targetedGsc": {
-        "snapshot": "data/seo/snapshots/2026-09-14.json",
+        "snapshot": "data/seo/snapshots/2026-10-20.json",
         "window": {
-          "startDate": "2026-08-15",
-          "endDate": "2026-09-11"
+          "startDate": "2026-09-20",
+          "endDate": "2026-10-17"
         },
         "fixedQueriesRequested": 4,
         "exactQueryPageRowsReturned": 3,
@@ -253,7 +253,7 @@
         "interpretation": "Unrequested or unreturned exact rows are unmeasured, not zero and not evidence of cannibalization."
       },
       "integrity": {
-        "pageSha256": "b5e044f801cb1a15bc39a8cf9e84e56ef46a583dc8a2fad2dbeea6a972c240bc",
+        "pageSha256": "7524a3ab33ce1adefbcd11f95e055bdea88e3d0a39206a9bb952e5268b20196c",
         "blockingFindingClasses": 6,
         "provisionalWarningClasses": 1,
         "identityState": "current-heber-keystone-pending-service-area-evidence",
@@ -266,26 +266,26 @@
         "routes": [
           {
             "file": "locations/murray.html",
-            "sha256": "b5e044f801cb1a15bc39a8cf9e84e56ef46a583dc8a2fad2dbeea6a972c240bc",
+            "sha256": "7524a3ab33ce1adefbcd11f95e055bdea88e3d0a39206a9bb952e5268b20196c",
             "title": "Premium Reroofing Murray UT | Frame Restoration Utah",
             "h1": "Premium Reroofing in Murray",
             "canonical": "https://www.framerestorationutah.com/locations/murray",
-            "inboundInternalLinks": 37,
+            "inboundInternalLinks": 38,
             "role": "commercial-city-hub",
             "aggregateGsc": {
               "window": {
-                "startDate": "2026-08-15",
-                "endDate": "2026-09-11"
+                "startDate": "2026-09-20",
+                "endDate": "2026-10-17"
               },
               "clicks": 0,
-              "impressions": 652,
-              "position": 16.2
+              "impressions": 429,
+              "position": 15.2
             },
             "decision": "Preserve as the intended commercial city hub selected by every fixed query with a measured organic rank."
           },
           {
             "file": "blog/murray/signs-you-need-new-roof.html",
-            "sha256": "1bbeadf9ff3ca7976f51fbb15f7661ca32476644615be81a33aa32e6103a5d63",
+            "sha256": "b54d8beecda60ef6f1665400009d55b5220c374828cf755f9b305960f21d259b",
             "title": "Signs You Need a New Roof Murray | Frame Restoration Utah",
             "h1": "Signs You Need a New Roof in Murray UT 84107",
             "canonical": "https://www.framerestorationutah.com/blog/murray/signs-you-need-new-roof",
@@ -296,18 +296,26 @@
           },
           {
             "file": "blog/murray/storm-damage-roofing-murray-utah.html",
-            "sha256": "2fd1b25bb6cd161aedf95a3421901316e373130a46fee24de4e1c9963ca864e1",
+            "sha256": "284025b9629b9383558ea98cb5c0d4fddd36c69812e2da5f5eb2e69d2bc5f420",
             "title": "How Murray's Valley-Floor Roofs Weather Utah Storms | Frame Restoration Utah",
             "h1": "How Murray's Valley-Floor Roofs Weather Utah Storms",
             "canonical": "https://www.framerestorationutah.com/blog/murray/storm-damage-roofing-murray-utah",
             "inboundInternalLinks": 5,
             "role": "city-editorial-guide",
-            "aggregateGsc": null,
+            "aggregateGsc": {
+              "window": {
+                "startDate": "2026-09-20",
+                "endDate": "2026-10-17"
+              },
+              "clicks": 0,
+              "impressions": 4,
+              "position": 7
+            },
             "decision": "Protect this route until exact query-to-URL evidence supports a bounded architecture change."
           },
           {
             "file": "locations/murray/storm-damage.html",
-            "sha256": "a70ed5a9541744fda2c6f497141cdd0d33c10b8d31fd4ab350b031c2fe377bfc",
+            "sha256": "1ed4eec62cf9667ca8fc5ed97b3422f13cda42dccd0a756614c598ec9f61a3d5",
             "title": "Murray Storm Damage Roof Repair | Frame Restoration Utah",
             "h1": "Storm Damage Roof Repair in Murray",
             "canonical": "https://www.framerestorationutah.com/locations/murray/storm-damage",
@@ -315,12 +323,12 @@
             "role": "city-service-child",
             "aggregateGsc": {
               "window": {
-                "startDate": "2026-08-15",
-                "endDate": "2026-09-11"
+                "startDate": "2026-09-20",
+                "endDate": "2026-10-17"
               },
               "clicks": 0,
-              "impressions": 9,
-              "position": 2.4
+              "impressions": 3,
+              "position": 3.7
             },
             "decision": "Protect this route until exact query-to-URL evidence supports a bounded architecture change."
           }
@@ -366,20 +374,20 @@
         "aiOverviewCitations": 0
       },
       "targetedGsc": {
-        "snapshot": "data/seo/snapshots/2026-09-14.json",
+        "snapshot": "data/seo/snapshots/2026-10-20.json",
         "window": {
-          "startDate": "2026-08-15",
-          "endDate": "2026-09-11"
+          "startDate": "2026-09-20",
+          "endDate": "2026-10-17"
         },
         "fixedQueriesRequested": 4,
-        "exactQueryPageRowsReturned": 2,
+        "exactQueryPageRowsReturned": 0,
         "status": "requested",
         "attributionState": "complete-request-with-unreturned-rows",
         "alternateNormalizedUrls": [],
         "interpretation": "Unrequested or unreturned exact rows are unmeasured, not zero and not evidence of cannibalization."
       },
       "integrity": {
-        "pageSha256": "c61f44d7d6a5f07b395d10383dd5222e75cc818de79b30e505e172a81c3736bd",
+        "pageSha256": "373b3fc7426765d33dc9b541b3c118eaac124a7dc80d7f9f235ecffdd4f6aba0",
         "blockingFindingClasses": 6,
         "provisionalWarningClasses": 1,
         "identityState": "current-heber-keystone-pending-service-area-evidence",
@@ -392,26 +400,26 @@
         "routes": [
           {
             "file": "locations/riverton.html",
-            "sha256": "c61f44d7d6a5f07b395d10383dd5222e75cc818de79b30e505e172a81c3736bd",
+            "sha256": "373b3fc7426765d33dc9b541b3c118eaac124a7dc80d7f9f235ecffdd4f6aba0",
             "title": "Premium Reroofing Riverton UT | Frame Restoration Utah",
             "h1": "Premium Reroofing in Riverton",
             "canonical": "https://www.framerestorationutah.com/locations/riverton",
-            "inboundInternalLinks": 7,
+            "inboundInternalLinks": 8,
             "role": "commercial-city-hub",
             "aggregateGsc": {
               "window": {
-                "startDate": "2026-08-15",
-                "endDate": "2026-09-11"
+                "startDate": "2026-09-20",
+                "endDate": "2026-10-17"
               },
-              "clicks": 0,
-              "impressions": 486,
-              "position": 35.9
+              "clicks": 1,
+              "impressions": 317,
+              "position": 43.5
             },
             "decision": "Preserve as the intended commercial city hub selected by every fixed query with a measured organic rank."
           },
           {
             "file": "blog/riverton/hail-damage-roof-inspection.html",
-            "sha256": "6dbaa7eab851ab483e1019efa78cd3cab7639e8a1560eee8421be79864ec4068",
+            "sha256": "861649fd1d136cf94e78c976d5a53dbf5264fa7c9346d6cf3445649ff47fe70a",
             "title": "Hail Damage Roof Inspection — Riverton | Frame Restoration",
             "h1": "Hail Damage Roof Inspection in Riverton — The South Valley Homeowner's Complete Guide",
             "canonical": "https://www.framerestorationutah.com/blog/riverton/hail-damage-roof-inspection",
@@ -419,12 +427,12 @@
             "role": "city-editorial-guide",
             "aggregateGsc": {
               "window": {
-                "startDate": "2026-08-15",
-                "endDate": "2026-09-11"
+                "startDate": "2026-09-20",
+                "endDate": "2026-10-17"
               },
               "clicks": 0,
-              "impressions": 1,
-              "position": 11
+              "impressions": 4,
+              "position": 13.3
             },
             "decision": "Protect this route until exact query-to-URL evidence supports a bounded architecture change."
           }
@@ -468,10 +476,10 @@
         "aiOverviewCitations": 0
       },
       "targetedGsc": {
-        "snapshot": "data/seo/snapshots/2026-09-14.json",
+        "snapshot": "data/seo/snapshots/2026-10-20.json",
         "window": {
-          "startDate": "2026-08-15",
-          "endDate": "2026-09-11"
+          "startDate": "2026-09-20",
+          "endDate": "2026-10-17"
         },
         "fixedQueriesRequested": 4,
         "exactQueryPageRowsReturned": 3,
@@ -481,7 +489,7 @@
         "interpretation": "Unrequested or unreturned exact rows are unmeasured, not zero and not evidence of cannibalization."
       },
       "integrity": {
-        "pageSha256": "a29dc8fd7ace5c3d316fcfc537012d87fa4c2be4a1147b06e586be658c4014ac",
+        "pageSha256": "5b86698c7c6da8a61a852920e07c7950b7e1fa1ce03869fb1349796610f08f84",
         "blockingFindingClasses": 7,
         "provisionalWarningClasses": 1,
         "identityState": "current-heber-keystone-pending-service-area-evidence",
@@ -490,30 +498,30 @@
       "architecture": {
         "currentCommercialCannibalization": "not-evidenced-all-four-fixed-serps-select-main",
         "confidence": "moderate-exact-query-request-complete",
-        "routeCount": 3,
+        "routeCount": 4,
         "routes": [
           {
             "file": "locations/south-jordan.html",
-            "sha256": "a29dc8fd7ace5c3d316fcfc537012d87fa4c2be4a1147b06e586be658c4014ac",
+            "sha256": "5b86698c7c6da8a61a852920e07c7950b7e1fa1ce03869fb1349796610f08f84",
             "title": "Premium Reroofing South Jordan UT | Frame Restoration Utah",
             "h1": "Premium Reroofing in South Jordan",
             "canonical": "https://www.framerestorationutah.com/locations/south-jordan",
-            "inboundInternalLinks": 16,
+            "inboundInternalLinks": 18,
             "role": "commercial-city-hub",
             "aggregateGsc": {
               "window": {
-                "startDate": "2026-08-15",
-                "endDate": "2026-09-11"
+                "startDate": "2026-09-20",
+                "endDate": "2026-10-17"
               },
               "clicks": 0,
-              "impressions": 603,
-              "position": 16.4
+              "impressions": 271,
+              "position": 16
             },
             "decision": "Preserve as the intended commercial city hub selected by every fixed query with a measured organic rank."
           },
           {
             "file": "blog/south-jordan/roof-replacement-south-jordan-utah.html",
-            "sha256": "2c80b29f573c3fab978a17b9b225bc53cf08466d3ab8fbe45a71fc4e6d01bee0",
+            "sha256": "280e168b54d9c9f8ae67e92b233bbd0d4d31d241679ed237146ecf8476d25f8b",
             "title": "Roof Replacement South Jordan Utah | Frame Restoration Utah",
             "h1": "Roof Replacement South Jordan Utah",
             "canonical": "https://www.framerestorationutah.com/blog/south-jordan/roof-replacement-south-jordan-utah",
@@ -521,18 +529,18 @@
             "role": "city-editorial-guide",
             "aggregateGsc": {
               "window": {
-                "startDate": "2026-08-15",
-                "endDate": "2026-09-11"
+                "startDate": "2026-09-20",
+                "endDate": "2026-10-17"
               },
               "clicks": 0,
-              "impressions": 6,
-              "position": 16.3
+              "impressions": 5,
+              "position": 12
             },
             "decision": "Protect this route until exact query-to-URL evidence supports a bounded architecture change."
           },
           {
             "file": "blog/south-jordan/storm-damage-roof-repair-south-jordan-utah.html",
-            "sha256": "4bc33bd24eb309fe8eef22d066beef2d1befd746defbbf80f77345abed41cdc8",
+            "sha256": "aefa93e9ce443d07064dbce98c8e7b6e7a2cfa9facdabb43b52d29af713de5eb",
             "title": "Preparing South Jordan Roofs for Monsoon Season (2026 Guide) | Frame Restoration Utah",
             "h1": "Preparing South Jordan Roofs for Monsoon Season (2026 Guide)",
             "canonical": "https://www.framerestorationutah.com/blog/south-jordan/storm-damage-roof-repair-south-jordan-utah",
@@ -540,13 +548,24 @@
             "role": "city-editorial-guide",
             "aggregateGsc": {
               "window": {
-                "startDate": "2026-08-15",
-                "endDate": "2026-09-11"
+                "startDate": "2026-09-20",
+                "endDate": "2026-10-17"
               },
               "clicks": 0,
-              "impressions": 23,
-              "position": 5.8
+              "impressions": 11,
+              "position": 4.7
             },
+            "decision": "Protect this route until exact query-to-URL evidence supports a bounded architecture change."
+          },
+          {
+            "file": "locations/south-jordan/storm-damage.html",
+            "sha256": "3083f57977c2b18fa18255762365cfb77a4c50be50cba060c4d7106e52f5f256",
+            "title": "South Jordan Storm &amp; Hail Roof Repair | Frame Restoration Utah",
+            "h1": "Storm and Hail Damage Roof Repair in South Jordan",
+            "canonical": "https://www.framerestorationutah.com/locations/south-jordan/storm-damage",
+            "inboundInternalLinks": 2,
+            "role": "city-service-child",
+            "aggregateGsc": null,
             "decision": "Protect this route until exact query-to-URL evidence supports a bounded architecture change."
           }
         ],
@@ -589,10 +608,10 @@
         "aiOverviewCitations": 0
       },
       "targetedGsc": {
-        "snapshot": "data/seo/snapshots/2026-09-14.json",
+        "snapshot": "data/seo/snapshots/2026-10-20.json",
         "window": {
-          "startDate": "2026-08-15",
-          "endDate": "2026-09-11"
+          "startDate": "2026-09-20",
+          "endDate": "2026-10-17"
         },
         "fixedQueriesRequested": 4,
         "exactQueryPageRowsReturned": 0,
@@ -602,7 +621,7 @@
         "interpretation": "Unrequested or unreturned exact rows are unmeasured, not zero and not evidence of cannibalization."
       },
       "integrity": {
-        "pageSha256": "74cd5f336dc43e482fc6b8b8b6352d7250261bf0a6f7262adc17254dc725bdc5",
+        "pageSha256": "2b376e1437de4af0e71549e0f10861e93c69db22790cdee587669153dbfdb103",
         "blockingFindingClasses": 6,
         "provisionalWarningClasses": 1,
         "identityState": "current-heber-keystone-pending-service-area-evidence",
@@ -615,20 +634,20 @@
         "routes": [
           {
             "file": "locations/taylorsville.html",
-            "sha256": "74cd5f336dc43e482fc6b8b8b6352d7250261bf0a6f7262adc17254dc725bdc5",
+            "sha256": "2b376e1437de4af0e71549e0f10861e93c69db22790cdee587669153dbfdb103",
             "title": "Premium Reroofing Taylorsville UT | Frame Restoration Utah",
             "h1": "Premium Reroofing in Taylorsville",
             "canonical": "https://www.framerestorationutah.com/locations/taylorsville",
-            "inboundInternalLinks": 7,
+            "inboundInternalLinks": 9,
             "role": "commercial-city-hub",
             "aggregateGsc": {
               "window": {
-                "startDate": "2026-08-15",
-                "endDate": "2026-09-11"
+                "startDate": "2026-09-20",
+                "endDate": "2026-10-17"
               },
               "clicks": 0,
-              "impressions": 147,
-              "position": 26.4
+              "impressions": 101,
+              "position": 22.9
             },
             "decision": "Preserve as the intended commercial city hub selected by every fixed query with a measured organic rank."
           }
@@ -672,10 +691,10 @@
         "aiOverviewCitations": 0
       },
       "targetedGsc": {
-        "snapshot": "data/seo/snapshots/2026-09-14.json",
+        "snapshot": "data/seo/snapshots/2026-10-20.json",
         "window": {
-          "startDate": "2026-08-15",
-          "endDate": "2026-09-11"
+          "startDate": "2026-09-20",
+          "endDate": "2026-10-17"
         },
         "fixedQueriesRequested": 4,
         "exactQueryPageRowsReturned": 0,
@@ -685,7 +704,7 @@
         "interpretation": "Unrequested or unreturned exact rows are unmeasured, not zero and not evidence of cannibalization."
       },
       "integrity": {
-        "pageSha256": "ad518bde941836b4d65384759cbb4f9fc7e47953daa71e8da8e02e49ba0a623f",
+        "pageSha256": "588fefebc1065fd6784b33e57af9839440c155ea986c682fb81f5f7a0137605d",
         "blockingFindingClasses": 7,
         "provisionalWarningClasses": 1,
         "identityState": "current-heber-keystone-pending-service-area-evidence",
@@ -698,7 +717,7 @@
         "routes": [
           {
             "file": "locations/bluffdale.html",
-            "sha256": "ad518bde941836b4d65384759cbb4f9fc7e47953daa71e8da8e02e49ba0a623f",
+            "sha256": "588fefebc1065fd6784b33e57af9839440c155ea986c682fb81f5f7a0137605d",
             "title": "Premium Reroofing Bluffdale UT | Frame Restoration Utah",
             "h1": "Premium Reroofing in Bluffdale",
             "canonical": "https://www.framerestorationutah.com/locations/bluffdale",
@@ -706,18 +725,18 @@
             "role": "commercial-city-hub",
             "aggregateGsc": {
               "window": {
-                "startDate": "2026-08-15",
-                "endDate": "2026-09-11"
+                "startDate": "2026-09-20",
+                "endDate": "2026-10-17"
               },
               "clicks": 0,
-              "impressions": 305,
-              "position": 27.8
+              "impressions": 168,
+              "position": 20.6
             },
             "decision": "Preserve as the intended commercial city hub selected by every fixed query with a measured organic rank."
           },
           {
             "file": "blog/bluffdale/storm-damage-roof-repair-bluffdale.html",
-            "sha256": "f757a9629583fbfe1c354ba034afb2ee05289e9053c5c2eea009ea1263b0cb80",
+            "sha256": "754e2110c071c38e27b4bac05d295b430d0608b1ead3113816aa295aafe4cddf",
             "title": "Bluffdale Summer Thunderstorm Roof Guide (2026) | Frame Restoration Utah",
             "h1": "Bluffdale Summer Thunderstorm Roof Guide (2026)",
             "canonical": "https://www.framerestorationutah.com/blog/bluffdale/storm-damage-roof-repair-bluffdale",
@@ -725,12 +744,12 @@
             "role": "city-editorial-guide",
             "aggregateGsc": {
               "window": {
-                "startDate": "2026-08-15",
-                "endDate": "2026-09-11"
+                "startDate": "2026-09-20",
+                "endDate": "2026-10-17"
               },
               "clicks": 0,
-              "impressions": 22,
-              "position": 11.6
+              "impressions": 20,
+              "position": 8.1
             },
             "decision": "Protect this route until exact query-to-URL evidence supports a bounded architecture change."
           }
@@ -774,10 +793,10 @@
         "aiOverviewCitations": 0
       },
       "targetedGsc": {
-        "snapshot": "data/seo/snapshots/2026-09-14.json",
+        "snapshot": "data/seo/snapshots/2026-10-20.json",
         "window": {
-          "startDate": "2026-08-15",
-          "endDate": "2026-09-11"
+          "startDate": "2026-09-20",
+          "endDate": "2026-10-17"
         },
         "fixedQueriesRequested": 4,
         "exactQueryPageRowsReturned": 0,
@@ -787,7 +806,7 @@
         "interpretation": "Unrequested or unreturned exact rows are unmeasured, not zero and not evidence of cannibalization."
       },
       "integrity": {
-        "pageSha256": "f167334131f14dcefb928ce0fd325ae144ec0e169b6cbfd9fb9655e8aad3d230",
+        "pageSha256": "17e1bbf6cbac328b2c5cb80b89e41f3d568c8ec78e0e23901459c4eef1ccc5f8",
         "blockingFindingClasses": 5,
         "provisionalWarningClasses": 1,
         "identityState": "current-heber-keystone-pending-service-area-evidence",
@@ -800,40 +819,32 @@
         "routes": [
           {
             "file": "locations/midvale.html",
-            "sha256": "f167334131f14dcefb928ce0fd325ae144ec0e169b6cbfd9fb9655e8aad3d230",
+            "sha256": "17e1bbf6cbac328b2c5cb80b89e41f3d568c8ec78e0e23901459c4eef1ccc5f8",
             "title": "Premium Reroofing Midvale UT | Frame Restoration Utah",
             "h1": "Premium Reroofing in Midvale",
             "canonical": "https://www.framerestorationutah.com/locations/midvale",
-            "inboundInternalLinks": 23,
+            "inboundInternalLinks": 24,
             "role": "commercial-city-hub",
             "aggregateGsc": {
               "window": {
-                "startDate": "2026-08-15",
-                "endDate": "2026-09-11"
+                "startDate": "2026-09-20",
+                "endDate": "2026-10-17"
               },
-              "clicks": 0,
-              "impressions": 472,
-              "position": 32.8
+              "clicks": 1,
+              "impressions": 235,
+              "position": 38.9
             },
             "decision": "Preserve as the intended commercial city hub selected by every fixed query with a measured organic rank."
           },
           {
             "file": "locations/midvale/storm-damage.html",
-            "sha256": "b0e6cc3579f6a0946ef2c0f3c9bfe2ed36c2623c2a5a3ff8272923a4835c3e95",
+            "sha256": "3196274ba076399b7681a689673c0ce78a958b8d283f78b358d1b6a77985dd73",
             "title": "Midvale Storm Damage Roof Repair | Frame Restoration Utah",
             "h1": "Storm Damage Roof Repair in Midvale",
             "canonical": "https://www.framerestorationutah.com/locations/midvale/storm-damage",
             "inboundInternalLinks": 1,
             "role": "city-service-child",
-            "aggregateGsc": {
-              "window": {
-                "startDate": "2026-08-15",
-                "endDate": "2026-09-11"
-              },
-              "clicks": 0,
-              "impressions": 8,
-              "position": 9.6
-            },
+            "aggregateGsc": null,
             "decision": "Protect this route until exact query-to-URL evidence supports a bounded architecture change."
           }
         ],
@@ -876,20 +887,20 @@
         "aiOverviewCitations": 0
       },
       "targetedGsc": {
-        "snapshot": "data/seo/snapshots/2026-09-14.json",
+        "snapshot": "data/seo/snapshots/2026-10-20.json",
         "window": {
-          "startDate": "2026-08-15",
-          "endDate": "2026-09-11"
+          "startDate": "2026-09-20",
+          "endDate": "2026-10-17"
         },
         "fixedQueriesRequested": 4,
-        "exactQueryPageRowsReturned": 2,
+        "exactQueryPageRowsReturned": 3,
         "status": "requested",
         "attributionState": "complete-request-with-unreturned-rows",
         "alternateNormalizedUrls": [],
         "interpretation": "Unrequested or unreturned exact rows are unmeasured, not zero and not evidence of cannibalization."
       },
       "integrity": {
-        "pageSha256": "3a129b1f55c71b604da9b284c7b671652e47ba555ba4e0e31340b086bda9dcd4",
+        "pageSha256": "839a74e8b4907542e4242daebd45d6200c3046d0ff0ed43bdf4837540379064a",
         "blockingFindingClasses": 6,
         "provisionalWarningClasses": 1,
         "identityState": "current-heber-keystone-pending-service-area-evidence",
@@ -902,26 +913,26 @@
         "routes": [
           {
             "file": "locations/herriman.html",
-            "sha256": "3a129b1f55c71b604da9b284c7b671652e47ba555ba4e0e31340b086bda9dcd4",
+            "sha256": "839a74e8b4907542e4242daebd45d6200c3046d0ff0ed43bdf4837540379064a",
             "title": "Premium Reroofing Herriman UT | Frame Restoration Utah",
             "h1": "Premium Reroofing in Herriman",
             "canonical": "https://www.framerestorationutah.com/locations/herriman",
-            "inboundInternalLinks": 10,
+            "inboundInternalLinks": 11,
             "role": "commercial-city-hub",
             "aggregateGsc": {
               "window": {
-                "startDate": "2026-08-15",
-                "endDate": "2026-09-11"
+                "startDate": "2026-09-20",
+                "endDate": "2026-10-17"
               },
               "clicks": 0,
-              "impressions": 681,
-              "position": 18.8
+              "impressions": 391,
+              "position": 17.2
             },
             "decision": "Preserve as the intended commercial city hub selected by every fixed query with a measured organic rank."
           },
           {
             "file": "blog/herriman/hail-damage-new-homes.html",
-            "sha256": "a491cb20c48b5ebcb3ce6ff95579fb61e1bc3e0bcaa254360b6ce1693d60b2c5",
+            "sha256": "40a71706e908b5ee73766c9862825600e1b5602dcb0676ea94e27bbc3a7c5199",
             "title": "Protecting Your Roof Investment in Herriman, | Hail Damage Guide",
             "h1": "Hail Damage on Newer Roofs in Herriman &mdash; Why New Doesn't Mean Protected",
             "canonical": "https://www.framerestorationutah.com/blog/herriman/hail-damage-new-homes",
@@ -929,12 +940,12 @@
             "role": "city-editorial-guide",
             "aggregateGsc": {
               "window": {
-                "startDate": "2026-08-15",
-                "endDate": "2026-09-11"
+                "startDate": "2026-09-20",
+                "endDate": "2026-10-17"
               },
-              "clicks": 1,
-              "impressions": 55,
-              "position": 15
+              "clicks": 0,
+              "impressions": 80,
+              "position": 12.6
             },
             "decision": "Protect this route until exact query-to-URL evidence supports a bounded architecture change."
           }
@@ -978,10 +989,10 @@
         "aiOverviewCitations": 0
       },
       "targetedGsc": {
-        "snapshot": "data/seo/snapshots/2026-09-14.json",
+        "snapshot": "data/seo/snapshots/2026-10-20.json",
         "window": {
-          "startDate": "2026-08-15",
-          "endDate": "2026-09-11"
+          "startDate": "2026-09-20",
+          "endDate": "2026-10-17"
         },
         "fixedQueriesRequested": 4,
         "exactQueryPageRowsReturned": 1,
@@ -991,7 +1002,7 @@
         "interpretation": "Unrequested or unreturned exact rows are unmeasured, not zero and not evidence of cannibalization."
       },
       "integrity": {
-        "pageSha256": "126868d83610322d56959b645931962629450a7ba8fb3af3077d7c59216916c8",
+        "pageSha256": "58fc7d4d72d0e044e9b4749c268f1e08bf77bdbe4ece8bf265adbae1b231f427",
         "blockingFindingClasses": 6,
         "provisionalWarningClasses": 1,
         "identityState": "current-heber-keystone-pending-service-area-evidence",
@@ -1004,26 +1015,26 @@
         "routes": [
           {
             "file": "locations/west-valley-city.html",
-            "sha256": "126868d83610322d56959b645931962629450a7ba8fb3af3077d7c59216916c8",
+            "sha256": "58fc7d4d72d0e044e9b4749c268f1e08bf77bdbe4ece8bf265adbae1b231f427",
             "title": "Premium Reroofing West Valley City UT | Frame Restoration Utah",
             "h1": "Premium Reroofing in West Valley City",
             "canonical": "https://www.framerestorationutah.com/locations/west-valley-city",
-            "inboundInternalLinks": 9,
+            "inboundInternalLinks": 10,
             "role": "commercial-city-hub",
             "aggregateGsc": {
               "window": {
-                "startDate": "2026-08-15",
-                "endDate": "2026-09-11"
+                "startDate": "2026-09-20",
+                "endDate": "2026-10-17"
               },
               "clicks": 0,
-              "impressions": 901,
-              "position": 27.4
+              "impressions": 432,
+              "position": 17.8
             },
             "decision": "Preserve as the intended commercial city hub selected by every fixed query with a measured organic rank."
           },
           {
             "file": "blog/west-valley-city/roof-replacement-cost.html",
-            "sha256": "8d5ad32fdd70e45b13d7fc7be0b30d9ae66dcb373775f3551028023b5f2369fb",
+            "sha256": "8ce746ddddaf971874add4946bfabcd9d0becb6b1c773a9b8b33b5097ab8612a",
             "title": "Roof Replacement Cost in West Valley City, UT (2026)",
             "h1": "What Does a Roof Replacement Cost in West Valley City ?",
             "canonical": "https://www.framerestorationutah.com/blog/west-valley-city/roof-replacement-cost",
@@ -1075,10 +1086,10 @@
         "aiOverviewCitations": 0
       },
       "targetedGsc": {
-        "snapshot": "data/seo/snapshots/2026-09-14.json",
+        "snapshot": "data/seo/snapshots/2026-10-20.json",
         "window": {
-          "startDate": "2026-08-15",
-          "endDate": "2026-09-11"
+          "startDate": "2026-09-20",
+          "endDate": "2026-10-17"
         },
         "fixedQueriesRequested": 4,
         "exactQueryPageRowsReturned": 0,
@@ -1088,7 +1099,7 @@
         "interpretation": "Unrequested or unreturned exact rows are unmeasured, not zero and not evidence of cannibalization."
       },
       "integrity": {
-        "pageSha256": "cfb33ad06993d745b797ffff42807621862921e9bcd5311a012a8b9fa46b8ee7",
+        "pageSha256": "25871aacc7a3c7bfd4fbec21db67ed7b559a6bf306c187b068f1470b2ca5017b",
         "blockingFindingClasses": 6,
         "provisionalWarningClasses": 1,
         "identityState": "current-heber-keystone-pending-service-area-evidence",
@@ -1101,7 +1112,7 @@
         "routes": [
           {
             "file": "locations/south-salt-lake.html",
-            "sha256": "cfb33ad06993d745b797ffff42807621862921e9bcd5311a012a8b9fa46b8ee7",
+            "sha256": "25871aacc7a3c7bfd4fbec21db67ed7b559a6bf306c187b068f1470b2ca5017b",
             "title": "Premium Reroofing South Salt Lake UT | Frame Restoration Utah",
             "h1": "Premium Reroofing in South Salt Lake",
             "canonical": "https://www.framerestorationutah.com/locations/south-salt-lake",
@@ -1109,12 +1120,12 @@
             "role": "commercial-city-hub",
             "aggregateGsc": {
               "window": {
-                "startDate": "2026-08-15",
-                "endDate": "2026-09-11"
+                "startDate": "2026-09-20",
+                "endDate": "2026-10-17"
               },
-              "clicks": 0,
-              "impressions": 167,
-              "position": 54.9
+              "clicks": 1,
+              "impressions": 55,
+              "position": 44.5
             },
             "decision": "Preserve as the intended commercial city hub selected by every fixed query with a measured organic rank."
           }
@@ -1161,20 +1172,20 @@
         "aiOverviewCitations": 0
       },
       "targetedGsc": {
-        "snapshot": "data/seo/snapshots/2026-09-14.json",
+        "snapshot": "data/seo/snapshots/2026-10-20.json",
         "window": {
-          "startDate": "2026-08-15",
-          "endDate": "2026-09-11"
+          "startDate": "2026-09-20",
+          "endDate": "2026-10-17"
         },
         "fixedQueriesRequested": 4,
-        "exactQueryPageRowsReturned": 4,
+        "exactQueryPageRowsReturned": 3,
         "status": "requested",
-        "attributionState": "intended-url-only-for-all-returned-rows",
+        "attributionState": "complete-request-with-unreturned-rows",
         "alternateNormalizedUrls": [],
         "interpretation": "Unrequested or unreturned exact rows are unmeasured, not zero and not evidence of cannibalization."
       },
       "integrity": {
-        "pageSha256": "c1f036b88ee1be3392c5578c590757548dceed64b7ef166c5c8bb57619c916de",
+        "pageSha256": "93f0bd6f998fcf2b4a0f42f589fc86837c95b7d90bbbdae66f50dedf5bbe287e",
         "blockingFindingClasses": 6,
         "provisionalWarningClasses": 1,
         "identityState": "current-heber-keystone-pending-service-area-evidence",
@@ -1183,35 +1194,57 @@
       "architecture": {
         "currentCommercialCannibalization": "not-evidenced-bounded-panel-selects-main-when-ranked-and-exact-gsc-unmeasured",
         "confidence": "low-until-targeted-gsc",
-        "routeCount": 2,
+        "routeCount": 4,
         "routes": [
           {
             "file": "locations/west-jordan.html",
-            "sha256": "c1f036b88ee1be3392c5578c590757548dceed64b7ef166c5c8bb57619c916de",
+            "sha256": "93f0bd6f998fcf2b4a0f42f589fc86837c95b7d90bbbdae66f50dedf5bbe287e",
             "title": "Premium Reroofing West Jordan UT | Frame Restoration Utah",
             "h1": "Premium Reroofing in West Jordan",
             "canonical": "https://www.framerestorationutah.com/locations/west-jordan",
-            "inboundInternalLinks": 19,
+            "inboundInternalLinks": 23,
             "role": "commercial-city-hub",
             "aggregateGsc": {
               "window": {
-                "startDate": "2026-08-15",
-                "endDate": "2026-09-11"
+                "startDate": "2026-09-20",
+                "endDate": "2026-10-17"
               },
-              "clicks": 0,
-              "impressions": 3551,
-              "position": 17
+              "clicks": 1,
+              "impressions": 1060,
+              "position": 14.9
             },
             "decision": "Preserve as the intended commercial city hub selected by every fixed query with a measured organic rank."
           },
           {
             "file": "blog/west-jordan/roof-leak-after-rainstorm.html",
-            "sha256": "d8af892f1157abb02db95f3295950b6f90c8369ac089ce7bbce0fd17b32c3ba5",
+            "sha256": "93a02ba5dea478de33c9e36ed6f246d9b4f765d4366236969a2631586be97363",
             "title": "Why West Jordan Roofs Leak After Rain | Frame Restoration",
             "h1": "Why West Jordan Roofs Leak After Rainstorms &mdash; Causes by Home Age &amp; What to Do About It",
             "canonical": "https://www.framerestorationutah.com/blog/west-jordan/roof-leak-after-rainstorm",
             "inboundInternalLinks": 6,
             "role": "city-editorial-guide",
+            "aggregateGsc": null,
+            "decision": "Protect this route until exact query-to-URL evidence supports a bounded architecture change."
+          },
+          {
+            "file": "locations/west-jordan/storm-damage.html",
+            "sha256": "7a2e054cd4dbbd810610ac04a3c51766bf65b0b981c8970fdaac9e70cc205061",
+            "title": "West Jordan Storm &amp; Hail Roof Repair | Frame Restoration Utah",
+            "h1": "Storm and Hail Damage Roof Repair in West Jordan",
+            "canonical": "https://www.framerestorationutah.com/locations/west-jordan/storm-damage",
+            "inboundInternalLinks": 5,
+            "role": "city-service-child",
+            "aggregateGsc": null,
+            "decision": "Protect this route until exact query-to-URL evidence supports a bounded architecture change."
+          },
+          {
+            "file": "locations/west-jordan/water-damage.html",
+            "sha256": "e2e59d968aba6e29df2f9821911f376c4137170e8f8882bd7ecc9afd74caedfe",
+            "title": "West Jordan Water Damage Restoration, 24/7 | Frame Restoration Utah",
+            "h1": "Water Damage Restoration in West Jordan",
+            "canonical": "https://www.framerestorationutah.com/locations/west-jordan/water-damage",
+            "inboundInternalLinks": 2,
+            "role": "city-service-child",
             "aggregateGsc": null,
             "decision": "Protect this route until exact query-to-URL evidence supports a bounded architecture change."
           }

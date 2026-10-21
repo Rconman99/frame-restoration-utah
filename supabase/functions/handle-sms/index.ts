@@ -181,6 +181,43 @@ function forwardInboundTwiml(message: string, mediaProxyUrls: string[] = []) {
   return new Response(twiml, { headers: { "Content-Type": "text/xml" } });
 }
 
+// Analytics must never hold up a customer SMS/MMS relay. waitUntil keeps the
+// best-effort task alive after the TwiML response; the deadline bounds its work.
+// CRM writes and webhook deduplication deliberately remain in the awaited path.
+function queueSmsAnalytics(payload: Record<string, unknown>): void {
+  const runtime = (globalThis as typeof globalThis & {
+    EdgeRuntime?: { waitUntil(task: Promise<void>): unknown };
+  }).EdgeRuntime;
+  if (!runtime) return;
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), 2000);
+  const task = (async () => {
+    try {
+      const response = await fetch("https://us.i.posthog.com/capture/", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+        signal: controller.signal,
+      });
+      if (!response.ok) {
+        console.warn("[handle-sms] analytics HTTP failure", response.status);
+      }
+      await response.body?.cancel();
+    } catch (_) {
+      // Do not log the payload or provider error (it may contain customer data).
+      console.warn("[handle-sms] analytics unavailable or timed out");
+    } finally {
+      clearTimeout(timer);
+    }
+  })();
+  try {
+    runtime.waitUntil(task);
+  } catch (_) {
+    controller.abort();
+    console.warn("[handle-sms] analytics background registration failed");
+  }
+}
+
 Deno.serve(async (req: Request) => {
   try {
     const formData = await req.formData();
@@ -514,24 +551,18 @@ Deno.serve(async (req: Request) => {
       lead_id: leadId,
     });
 
-    try {
-      await fetch("https://us.i.posthog.com/capture/", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          api_key: POSTHOG_KEY,
-          event: "inbound_sms",
-          distinct_id: from,
-          properties: {
-            from_number: from,
-            to_number: to,
-            message_preview: body?.substring(0, 50),
-            source: "twilio_sms",
-            lead_id: leadId,
-          },
-        }),
-      });
-    } catch (_) {}
+    queueSmsAnalytics({
+      api_key: POSTHOG_KEY,
+      event: "inbound_sms",
+      distinct_id: from,
+      properties: {
+        from_number: from,
+        to_number: to,
+        message_preview: body?.substring(0, 50),
+        source: "twilio_sms",
+        lead_id: leadId,
+      },
+    });
     const attachmentLabel = mediaProxyUrls.length
       ? "[" + mediaProxyUrls.length + " photo attachment" + (mediaProxyUrls.length === 1 ? "" : "s") + " included]"
       : inboundMedia.length

@@ -140,7 +140,7 @@
     },
     "routing": {
       "file": "vercel.json",
-      "sha256": "9decfe30c03f5eb0014e3bc3ae9600781e00d7ab374b62e2e2b1c0a3a82b8ff7",
+      "sha256": "b82cf7cb99323ac9658fe43528709021819022d2d406d9857b9b6f390d3be105",
       "legacySource": "/salt-lake-city",
       "destination": "/locations/salt-lake-city",
       "permanent": true,
@@ -156,12 +156,19 @@
     "routes": [
       {
         "file": "locations/holladay.html",
-        "sha256": "791bd58c2a8c1bb9c42d65b4687863fae05126b9eaea0f053eca76a0ca0de0e0",
+        "sha256": "a03340cd24068c62451510c4ef83dd94a8f859c125b318a6d29358a8c26bc967",
+        "batch1bCityServiceSourceAmendment": {
+          "observedAt": "2026-10-04T17:30:00Z",
+          "priorInboundInternalLinks": 14,
+          "currentInboundInternalLinks": 15,
+          "reason": "Supporting source and inbound pin only: Batch 1b city service pages (Sandy, Provo, Millcreek and Orem water damage; Salt Lake City siding) add breadcrumb, resource and nearby links, and the parent hubs gain one plain link sentence to their new child (no 24/7, pricing, permit or identity wording on the hubs). Title, H1, canonical, schema, identity and historical ranking/GSC observations, diagnoses and held experiments are unchanged. Not new ranking evidence or experiment authorization.",
+          "reviewRequiredBeforeMerge": true
+        },
         "role": "commercial-city-hub",
         "title": "Premium Reroofing Holladay UT | Frame Restoration Utah",
         "h1": "Premium Reroofing in Holladay",
         "canonical": "https://www.framerestorationutah.com/locations/holladay",
-        "inboundInternalLinks": 14,
+        "inboundInternalLinks": 15,
         "visibleTermCounts": {
           "roofer": 0,
           "roofing contractor": 0,
@@ -172,7 +179,7 @@
       },
       {
         "file": "locations/holladay/storm-damage.html",
-        "sha256": "2ba5e6a1e4c1931eb073c6c2547410704e1aafe199dbcf1b8fd7180a0356b260",
+        "sha256": "0ebc14ac045d3851db63e777281f948c95985fc1efe94729668062d1f0f9679a",
         "role": "storm-specific-child",
         "title": "Holladay Storm Damage Roof Repair | Frame Restoration Utah",
         "h1": "Storm Damage Roof Repair in Holladay",
@@ -181,7 +188,7 @@
       },
       {
         "file": "blog/holladay/roof-replacement-holladay-utah.html",
-        "sha256": "76000b31c134ef7c96e381305c7768cea305aed7030fa0a848bfb1faa9bf19c6",
+        "sha256": "073875547f226f2436c656e4f34650519a4cb681fe8e011d2c7a0aed9b46b60b",
         "role": "informational-roof-replacement-guide",
         "title": "Holladay Roof Replacement | Frame Restoration Utah",
         "h1": "Roof Replacement in Holladay, Utah: Beat the 2026 Summer Heat",
@@ -191,16 +198,109 @@
       },
       {
         "file": "locations/salt-lake-city.html",
-        "sha256": "9c247843f17ee6e2e12b118bf8c8a5b05bd291fb4d029afba59daae755f952c8",
+        "sha256": "01b77bb4620abeca16dc8d53ad014b4a02e2221b40f0f93ac2cfb093ee375567",
+        "qaBaselineSourceAmendment": {
+          "observedAt": "2026-10-18T20:00:00Z",
+          "priorSha256": "f68f51ad40a9f8a02d2f9d20702da884afa0c0f13458615832627a930103e895",
+          "reason": "Supporting Salt Lake City hub byte pin only: the historic-preservation and building-permits links now use the current official slc.gov pages. Link labels, title, H1, canonical, schema, NAP, and claims are unchanged. Not new ranking evidence or experiment authorization.",
+          "reviewRequiredBeforeMerge": true
+        },
+        "batch1bCityServiceSourceAmendment": {
+          "observedAt": "2026-10-04T17:30:00Z",
+          "priorSha256": "80c44281df689b95bc0e04bde9a3afbe55cb1638528bafe4f80d716bca77ec52",
+          "priorInboundInternalLinks": 83,
+          "currentInboundInternalLinks": 86,
+          "reason": "Supporting source and inbound pin only: Batch 1b city service pages (Sandy, Provo, Millcreek and Orem water damage; Salt Lake City siding) add breadcrumb, resource and nearby links, and the parent hubs gain one plain link sentence to their new child (no 24/7, pricing, permit or identity wording on the hubs). Title, H1, canonical, schema, identity and historical ranking/GSC observations, diagnoses and held experiments are unchanged. Not new ranking evidence or experiment authorization.",
+          "reviewRequiredBeforeMerge": true
+        },
+        "batch1aCityServiceSourceAmendment": {
+          "observedAt": "2026-10-04T04:50:00Z",
+          "priorSha256": "5ede1bf36700ba357b26387207dc17ffda8076b623b4212c2ea2c1797979261d",
+          "priorInboundInternalLinks": 81,
+          "currentInboundInternalLinks": 83,
+          "reason": "Supporting SLC hub byte and inbound pin only: the existing 24/7 scope sentence gains one link to the new /locations/salt-lake-city/storm-damage child (no new 24/7 wording). New Batch 1a child pages (Salt Lake City, West Jordan, South Jordan storm damage; West Jordan water damage) add breadcrumb/resource links to the SLC hub. Title, H1, canonical, schema, identity override and historical ranking/GSC observations, Holladay diagnosis and held experiment are unchanged. Not new ranking evidence or experiment authorization.",
+          "reviewRequiredBeforeMerge": true
+        },
+        "restorationScopeSourceAmendment": {
+          "observedAt": "2026-10-03T19:20:00Z",
+          "priorSha256": "9c247843f17ee6e2e12b118bf8c8a5b05bd291fb4d029afba59daae755f952c8",
+          "priorInboundInternalLinks": 78,
+          "currentInboundInternalLinks": 81,
+          "reason": "Supporting SLC hub byte and inbound pin only: owner-confirmed scope wording (routine roofing stays on business hours; adds one scoped '24/7 for water and flood emergencies, emergency tarping, and storm response' line with links to /pages/emergency-tarping and the new /locations/salt-lake-city/water-damage child; service-area paragraph now states owner-confirmed Wasatch Front coverage with Heber Valley/Wasatch Back/Summit County handled by the Heber office). areaServed schema unchanged. The new child page adds its breadcrumb/parent links. Title, H1, canonical, schema, identity override and historical ranking/GSC observations, Holladay diagnosis and held experiment are unchanged. Not new ranking evidence or experiment authorization.",
+          "reviewRequiredBeforeMerge": true
+        },
         "role": "separate-salt-lake-city-hub-and-legacy-redirect-destination",
         "title": "Salt Lake City Roof Repair &amp; Replacement | Frame Restoration Utah",
         "h1": "Salt Lake City Roof Repair &amp; Replacement",
         "canonical": "https://www.framerestorationutah.com/locations/salt-lake-city",
-        "inboundInternalLinks": 78
+        "inboundInternalLinks": 86
       },
       {
         "file": "index.html",
-        "sha256": "48f364d68fa57cb50258d0a5b41ceb59013f64f6dfaa83e0cc3819b477469eb9",
+        "sha256": "3484a1d4c586bcedaf60c85c319276acd2b94babb569ea0a7536880ec16de674",
+        "qaBaselineOfficialLinksSourceAmendment": {
+          "observedAt": "2026-10-18T20:00:00Z",
+          "priorSha256": "38e7ab7377ea59c1e48ddfcb885a87bdb79879106f255b78aa9bd1826fe5e4a3",
+          "reason": "Supporting homepage byte pin only: the DOPL license-lookup URL now points at the current official secure.utah.gov lookup. License number, title, H1, canonical, schema, NAP, booking links, and claims are unchanged. Not new ranking evidence or experiment authorization.",
+          "reviewRequiredBeforeMerge": true
+        },
+        "qaBaselineContrastSourceAmendment": {
+          "observedAt": "2026-10-18T20:00:00Z",
+          "priorSha256": "3921408e6af3b82ddc2b4cea5910e3adc305876619923df0f34c7320d5827fa8",
+          "reason": "Supporting homepage byte pin only: section labels and the homepage CTA use the darker contrast color. No visible copy, title, H1, canonical, schema, NAP, booking links, or claims changed. Not new ranking evidence or experiment authorization.",
+          "reviewRequiredBeforeMerge": true
+        },
+        "qaBaselineMobileMediaSourceAmendment": {
+          "observedAt": "2026-10-18T20:00:00Z",
+          "priorSha256": "ec9d8cd3d7c07f9bf05818a5629f0626e50525f6199d86765013d5dceeb6bb86",
+          "reason": "Supporting homepage byte pin only: on mobile, showreel videos and the Mapbox map wait for a tap or until they are on screen, and the hero image preload matches the responsive picture. Title, H1, canonical, schema, NAP, booking links, and claims are unchanged. Not new ranking evidence or experiment authorization.",
+          "reviewRequiredBeforeMerge": true
+        },
+        "qaBaselineSourceAmendment": {
+          "observedAt": "2026-10-18T20:00:00Z",
+          "priorSha256": "d9ad8d771a945cd93fe8597111755e7ed8ddd5496bb3729141bf75437f15ae58",
+          "reason": "Supporting homepage byte pin only: the footer Google Business link now uses the maps URL for the Heber CID already embedded in the footer map. Title, H1, canonical, schema, NAP, booking links, and claims are unchanged. Not new ranking evidence or experiment authorization.",
+          "reviewRequiredBeforeMerge": true
+        },
+        "restorationScopeSourceAmendment": {
+          "observedAt": "2026-10-03T19:20:00Z",
+          "priorSha256": "a6fcea13dfbbfc0851024d66af215d894861002e53118cc37ab8b018ee8bac76",
+          "reason": "Supporting homepage byte pin only: removes kitchen/bathroom remodel wording from two General Contracting schema descriptions (owner-confirmed: remodels not offered). No visible copy, links, title, H1, canonical, or other schema changed. Historical ranking/GSC observations, inbound counts, Holladay diagnosis and held experiment remain unchanged. Not new ranking evidence or experiment authorization.",
+          "reviewRequiredBeforeMerge": true
+        },
+        "deploymentAssetSourceAmendment": {
+          "observedAt": "2026-09-28T23:49:16.343497Z",
+          "priorSha256": "98a90dda33af7aacaa708e281027bcf75b10c1cb16c6f2b25f7afa480dd864bd",
+          "reason": "Supporting homepage byte pin only: adds a nonvisual deployment-asset freshness meta tag for the brand-source exclusion. No visible copy, links, media, title, H1, canonical, schema, historical ranking/GSC observations or experiment authorization changed.",
+          "reviewRequiredBeforeMerge": true
+        },
+      "ownerCleanupSourceAmendment": {
+        "observedAt": "2026-09-28T16:42:26.498141+00:00",
+        "priorSha256": "8afca2ace1bc40372e0d6936fd655146a0d96b6d1b08afa17b7a074ea8b4aa9e",
+        "reason": "Supporting homepage byte pin only: removes the eight technical evidence cards and their unused CSS at the owner request. Title, H1, canonical, schema, business summary, hail guide links and project media are unchanged. Historical ranking/GSC observations, inbound counts, Holladay diagnosis and held experiment remain dated and unchanged. This is not new ranking evidence or experiment authorization.",
+        "reviewRequiredBeforeMerge": true
+      },
+        "davisDiscoverySourceAmendment": {
+          "observedAt": "2026-09-18T22:55:00Z",
+          "priorSha256": "d3931904e8e918cf22a5ea66bd8abddd083c1f3de71b378a0907f7568f5cf57f",
+          "reason": "Supporting homepage byte pin only: dated Davis hail guide links and an inspection anchor. Title, H1, canonical, schema and existing Heber discovery unchanged. Historical inbound counts, ranking/GSC observations and held Holladay experiment remain unchanged. Not new performance evidence or experiment authorization.",
+          "reviewRequiredBeforeMerge": true
+        },
+        "davisHailSourceAmendment": {
+          "observedAt": "2026-09-18T22:04:28Z",
+          "priorSha256": "a5256f5bc91a03db509070f68a908a09af7d3dcd54648f5d922336b9afad2cd6",
+          "reason": "Supporting homepage byte pin only: adds the Davis hail release marker and versions the guide-context script for Layton/Farmington. Homepage title, H1, canonical, schema and existing discovery are unchanged. Additional guide pages increase corpus inbound links; historical inbound counts, ranking/GSC observations and Holladay experiment prerequisites remain unchanged. This is not new ranking evidence or authorization to launch a held experiment.",
+          "reviewRequiredBeforeMerge": true
+        },
+        "hailCampaignSourceAmendment": {
+          "observedAt": "2026-09-18T04:02:00Z",
+          "sourceCommit": "00a332e0f72c0659476a5121392a316928624ebe",
+          "priorSha256": "48f364d68fa57cb50258d0a5b41ceb59013f64f6dfaa83e0cc3819b477469eb9",
+          "priorInboundInternalLinks": 1057,
+          "currentInboundInternalLinks": 1078,
+          "reason": "Supersedes the homepage byte pin only. Adds three Heber Valley guide links, scoped assets and allowlisted contact context; replaces unverified 15-minute callback promises. Current corpus has 1078 homepage inbound links. Homepage title, H1, canonical and schema are unchanged; Holladay routes, historical panel/GSC observations, diagnosis and held title experiment are unchanged. This is not fresh ranking evidence or permission to apply the Holladay experiment.",
+          "reviewRequiredBeforeMerge": true
+        },
         "sourceAmendment": {
           "observedAt": "2026-09-10T17:40:43Z",
           "priorSha256": "74d1c5e3e1a5b9ce6d9bb3d8c353a69ea6ab4849c36775b2d9d2aa45408b5984",
@@ -216,7 +316,7 @@
     ],
     "integrityGate": {
       "packet": "data/authority/SLV-CITY-PUBLIC-REMEDIATION-PACKET-2026-08-12.json",
-      "packetSha256": "b1616942e2e46f33a847d75a9fc75a084585983c91f444ade1ebd84d11b69333",
+      "packetSha256": "e2d6a11c4b274764bcadeed860a5a51af3445b03ca814e9f32bfd35a285a1c1d",
       "holladayBlockingFindingClasses": 8,
       "holladayProvisionalWarnings": 1,
       "cleanupStatus": "awaiting-explicit-owner-approval"

@@ -14,6 +14,7 @@ import {
   interventionLane,
   measuredMeanRank,
   scoreVector,
+  slcObservationAction,
   splitUrlDiagnosisFreshness,
 } from "./lib/slv-intervention-queue.mjs";
 
@@ -96,13 +97,7 @@ const interventionOrder = [
 const interventionPriorityByCity = new Map(interventionOrder.map((city, index) => [city, index]));
 
 function selectedAction(goal, lane, diagnosis, protectedFootholds, gscUrlDiagnosis) {
-  if (goal.city === "Salt Lake City") return {
-    decision: "Monitor",
-    action: "Keep the Salt Lake City page frozen and collect the scheduled fixed Google, targeted GSC, exact-CID review, and consumer-AI readings until the existing experiment's evaluation gate opens.",
-    gate: "time-gated-until-2026-09-09T04:40:58Z",
-    ownerApprovalPhrase: null,
-    acceptanceCheck: "No SLC title, H1, copy, schema, canonical, route, or internal-link intent change occurs before the time gate; every weekly panel is retained without converting missing results to zero.",
-  };
+  if (goal.city === "Salt Lake City") return slcObservationAction(decisionsByCity.get(goal.city)?.decisions?.ranking);
   if (goal.city === "Millcreek") return {
     decision: "Request input",
     action: "Request the exact combined core-cleanup and Millcreek storm-child approval; if approved, apply only the pinned integrity and Salt Lake Valley identity correction while preserving title, H1, canonical, visible intent, and the roof-repair AIO foothold.",
@@ -327,7 +322,7 @@ const queue = {
     evalHarness: {
       tests: [
         "Every portfolio city appears exactly once with four fixed query evidence rows.",
-        "Salt Lake City remains time-frozen; Millcreek uses the verified identity lane; Magna and Kearns use protected-foothold lanes.",
+        "Salt Lake City advances to observation review only from measured calendar and panel-count evidence; public edits remain gated. Millcreek uses the verified identity lane; Magna and Kearns retain protected footholds.",
         "Every pending service-area city requires current evidence before exact-CID identity planning.",
         "A negligible pre-redirect alternate trace cannot create an architecture intervention; a pre-redirect tie remains monitor-only until a fully post-redirect window exists.",
         "Every score component is an integer from 0 through 10.",
@@ -351,7 +346,7 @@ const queue = {
     laneCounts,
   },
   systemNextActions: [
-    "Keep the SLC page frozen and run the next core Google panel on 2026-08-17.",
+    slcObservationAction(decisionsByCity.get("Salt Lake City")?.decisions?.ranking).action,
     "Refresh all 72 exact-query GSC URL attributions after this queue lands; preserve unreturned rows as unmeasured.",
     "Import only complete nine-row consumer-AI panels after a valid provider credential produces a committed reading.",
     "Run the exact-CID Salt Lake Valley review baseline after this branch lands; never mix in the Heber review export.",

@@ -9,6 +9,7 @@ import {
   interventionLane,
   measuredMeanRank,
   scoreVector,
+  slcObservationAction,
   splitUrlDiagnosisFreshness,
 } from "./slv-intervention-queue.mjs";
 
@@ -17,6 +18,18 @@ const gatedAction = {
   gate: "Owner approval required", ownerApprovalPhrase: "Approve the exact scope",
   acceptanceCheck: "Protect existing footholds",
 };
+
+test("SLC calendar expiry opens evidence review, never publication or a ranking win", () => {
+  const ready = { calendarGatePassedAtLatestPanel: true, postDeploymentGooglePanels: 6, requiredGooglePanels: 4 };
+  const result = slcObservationAction(ready);
+  assert.match(result.gate, /^observation-review-due/);
+  assert.equal(result.decision, "Monitor");
+  assert.equal(result.ownerApprovalPhrase, null);
+  assert.match(result.action, /missing same-window consumer-AI/);
+  for (const input of [undefined, {}, { ...ready, calendarGatePassedAtLatestPanel: false }, { ...ready, postDeploymentGooglePanels: 3 }, { ...ready, requiredGooglePanels: 0 }]) {
+    assert.equal(slcObservationAction(input).gate, "recorded-experiment-calendar-and-panel-count-required");
+  }
+});
 
 test("weekly results survive alternate selected URLs, but optimization is held", () => {
   for (const url of ["https://www.framerestorationutah.com/", "https://other.example/locations/salt-lake-city", "malformed", "javascript:alert(1)"]) {

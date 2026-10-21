@@ -61,3 +61,43 @@ before a human approves. To see what is waiting on you:
 ```bash
 ~/scripts/lane-review-queue.sh <your-lane>
 ```
+
+<!-- CODEX_ENV_CONTEXT_START (added 2026-10-11) -->
+
+## Codex cloud environment: full-system context (read first)
+
+Every new Codex or agent session on this repo starts here. You are one lane in a multi-agent system that Ryan Conwell runs.
+
+**1. Read the hub before touching code.** It lives at private repo `Rconman99/agentic-context-hub` on `main`. Read these, in this order:
+- `projects/_shared-systems/SHARED-DECISIONS.md`: cross-agent decisions log and open questions. It is current truth and outranks chat memory. Receipts (merged PRs, live checks) outrank both.
+- `ACTIVE-LANES.md`: claim your scope there before you start.
+- `projects/frame-utah/` (`PROJECT.md`, `CONTEXT.json`, `DECISIONS.md`, `HANDOFF.md`, `RISKS.md`).
+- `projects/_shared-systems/BOT-ROSTER-FRAME-RC-2026-09-15.md` and `AGENTS.md`.
+If you can't reach the hub, say so in your PR and keep to read-only work.
+
+**2. Bots and their roles.** Ryan is the human at the core. Bots propose, Ryan approves, then they act.
+- **Chief of Staff:** Ryan's orchestrator. It reviews bot PRs and merges only once Ryan has approved.
+- **Grok Bot:** the agent platform the bots run on. It hosts Chief of Staff and runs the scheduled routines and loops.
+- **AEO Growth:** SEO/AEO, map-pack presence, and owner message drafts. It never sends.
+- **Command Engineer:** Frame OS, Command Center hygiene, CI and launchd job fixes, enhance loops.
+- **Owner Support:** docs, email drafts, phone/NAP, franchisee packets.
+- **Model Monitor:** model and CLI freshness and evals. Discovery-only, $0 by default.
+- **ChatGPT "dot":** Ryan's ChatGPT agent. It shares `SHARED-DECISIONS.md` with Chief of Staff and must log every send and decision there.
+- **Lanes:** Claude Code (`claude/`), Codex (`codex/`), Cowork (`cowork/`), agy (`agy/`), a human by hand (`human/`).
+
+**3. Loops and routines.** The scheduled routines are the morning owner list, context ingest, DataForSEO watch, watchdog, and CI-failure alerts. They are joined by GitHub Actions in this repo (SEO loop, rank tracker, AEO citation monitor, blog autopost, compliance and lane guards) and Mac launchd jobs. The rule for all of them is research, then audit, then fix in a draft PR, then human review, then re-audit and measure (see `build-intelligence/`).
+
+**4. Hard market isolation.** Frame Utah, Texas, Idaho, and Colorado never share secrets, accounts, NAP, copy, or production resources (Supabase, Twilio, GBP, Vercel). The same goes for TCE, Katie CRM, and RC Digital. Only lessons and patterns cross between Frame and RC Digital, and only sanitized.
+
+**5. What you may and may not do.**
+- You may open **draft PRs only**, from a branch prefixed **`codex/`**. The Lane guard CI fails any branch without a `claude/`, `codex/`, `cowork/`, `agy/`, or `human/` prefix.
+- **Never merge, deploy, or touch secrets.** `main` auto-deploys production (framerestorationutah.com). Never read, print, commit, or invent secret values, and refer to env vars by name only.
+- Never send texts or emails to owners or customers, never change GBP or Twilio, and never spend money. Ryan approves the exact body or change first.
+- Never touch another lane's open PR.
+- Use only facts already in the repo or hub. Never invent NAP details, licenses, reviews, or claims.
+
+**6. Utah owner:** Landon Yokers (owner/operator). Ryan is the manager. Ryan never appears on customer surfaces.
+
+**7. Log every decision.** When Ryan decides something or you ship a PR, add an entry to the top of the "Decisions log" in hub `projects/_shared-systems/SHARED-DECISIONS.md`, as a draft PR to the hub, using the format `date (PT) | lane | decision | decided by | status | link`. Leave out secrets and customer PII. Then sync `projects/frame-utah/CONTEXT.json` and release your `ACTIVE-LANES.md` claim.
+
+<!-- CODEX_ENV_CONTEXT_END -->

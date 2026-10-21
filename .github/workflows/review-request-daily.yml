@@ -1,0 +1,58 @@
+name: Utah Review Request Daily
+
+# Daily trigger for the existing review-request edge function. It sends one Google
+# review ask (SMS/email) to each lead that is status=won with job_completed_at
+# 3+ days ago and review_requested_at still empty. The function claims each lead
+# atomically before sending, so overlapping runs (this job, a manual call, or any
+# other scheduler) cannot double-send.
+#
+# Secret required: REVIEW_REQUEST_KEY (must equal the function's REVIEW_REQUEST_KEY secret; sent as x-review-key header). If
+# it isn't set, the job logs a notice and exits 0, so merging is safe before
+# the secret is configured.
+#
+# Manual runs default to dry_run=true: they report how many are due and send nothing.
+
+on:
+  schedule:
+    # Daily ~10:05am Denver (16:05 UTC).
+    - cron: '5 16 * * *'
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Preview only (report due count, send nothing)"
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+
+concurrency:
+  group: utah-review-request-daily
+  cancel-in-progress: false
+
+jobs:
+  trigger:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Call review-request
+        env:
+          REVIEW_REQUEST_KEY: ${{ secrets.REVIEW_REQUEST_KEY }}
+          DRY_RUN: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run && '1' || '0' }}
+        run: |
+          if [ -z "$REVIEW_REQUEST_KEY" ]; then
+            echo "::notice::REVIEW_REQUEST_KEY is not set; skipping."
+            exit 0
+          fi
+          RESPONSE_FILE="$(mktemp)"
+          trap 'rm -f "$RESPONSE_FILE"' EXIT
+          URL="https://hdcflshhomzildwqlmwh.supabase.co/functions/v1/review-request"
+          if [ "$DRY_RUN" = "1" ]; then URL="${URL}?dry_run=1"; fi
+          echo "::add-mask::$REVIEW_REQUEST_KEY"
+          HTTP_STATUS="$(curl --silent --show-error --output "$RESPONSE_FILE" --write-out "%{http_code}" --header "x-review-key: ${REVIEW_REQUEST_KEY}" "$URL")" || {
+            echo "::error::review-request call failed before an HTTP response"; exit 1; }
+          # Print counts only; never echo customer names/contacts.
+          python3 -c 'import json,sys; d=json.load(open(sys.argv[1])); r=d.get("results") or []; print(json.dumps({"dry_run":d.get("dry_run",False),"due":d.get("due"),"processed":len(r),"skipped":sum(1 for x in r if x.get("skipped")),"message":d.get("message")}))' "$RESPONSE_FILE" || true
+          if [[ "$HTTP_STATUS" -lt 200 || "$HTTP_STATUS" -ge 300 ]]; then
+            echo "::error::review-request returned HTTP $HTTP_STATUS"; exit 1
+          fi

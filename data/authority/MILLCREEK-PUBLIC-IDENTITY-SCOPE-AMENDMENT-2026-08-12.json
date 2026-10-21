@@ -8,7 +8,13 @@
   "publicMutationPerformed": false,
   "parentPacket": {
     "file": "data/authority/SLV-CITY-PUBLIC-REMEDIATION-PACKET-2026-08-12.json",
-    "sha256": "b1616942e2e46f33a847d75a9fc75a084585983c91f444ade1ebd84d11b69333",
+    "sha256": "e2d6a11c4b274764bcadeed860a5a51af3445b03ca814e9f32bfd35a285a1c1d",
+    "batch1bParentPacketRepin": {
+      "observedAt": "2026-10-04T17:30:00Z",
+      "priorSha256": "b1616942e2e46f33a847d75a9fc75a084585983c91f444ade1ebd84d11b69333",
+      "reason": "Parent packet re-synced with npm run sync:slv-public-remediation-packet after Batch 1b added one plain link sentence to the Sandy and Millcreek hubs. Findings count, nested-route scope, identity evidence and owner gate are unchanged.",
+      "reviewRequiredBeforeMerge": true
+    },
     "scopeChange": "Add one nested Millcreek route for identity-only correction; do not expand the five city-page claim-cleanup scope."
   },
   "reason": "The verified Salt Lake Valley identity correction in the parent packet covers locations/millcreek.html and data/route-factory/business.json. A read-only nested-route audit found that locations/millcreek/storm-damage.html separately embeds the same Heber CID and Heber-oriented sameAs set. Leaving it unchanged would publish contradictory entity graphs within the Millcreek route family.",
@@ -30,7 +36,7 @@
   },
   "source": {
     "file": "locations/millcreek/storm-damage.html",
-    "sha256": "07499b70a44b42ef40837b2e7451c4661d513316acd491ceb13daffa0810eb0c",
+    "sha256": "9d27bbaaa57dcdd78dc3053284acc55f144d55784fdc954b07d2a95b8831922f",
     "canonical": "https://www.framerestorationutah.com/locations/millcreek/storm-damage",
     "currentHasMap": "https://www.google.com/maps?cid=8458659884566588108",
     "currentSameAs": [
@@ -43,7 +49,7 @@
       "https://www.homeadvisor.com/rated.FrameRestoration.157214032.html",
       "https://www.thumbtack.com/ut/heber-city/roofing/frame-restoration-utah/service/575757991393927176",
       "https://nextdoor.com/page/frame-restoration-utah-llc-heber-city-ut",
-      "https://www.google.com/maps/place/Frame+Restoration+Utah/@40.5069,-111.4133,17z/",
+      "https://www.google.com/maps?cid=8458659884566588108",
       "https://www.buildzoom.com/contractor/frame-restoration-utah-llc",
       "https://reviews.birdeye.com/frame-restoration-utah-177732760787552",
       "https://maps.apple/p/3.Ws8CAg~5tDio"

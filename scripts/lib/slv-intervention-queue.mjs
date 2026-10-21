@@ -2,6 +2,25 @@ import assert from "node:assert/strict";
 
 export const SPLIT_URL_DIAGNOSIS_STALE_WARNING = "stale-slv-gsc-split-url-diagnosis";
 
+// Consume the existing measured weekly decision, not wall-clock optimism or a
+// permanently hard-coded date. Expiring a calendar hold never authorizes edits.
+export function slcObservationAction(ranking = {}) {
+  const due = ranking.calendarGatePassedAtLatestPanel === true
+    && Number.isInteger(ranking.postDeploymentGooglePanels)
+    && Number.isInteger(ranking.requiredGooglePanels)
+    && ranking.requiredGooglePanels > 0
+    && ranking.postDeploymentGooglePanels >= ranking.requiredGooglePanels;
+  return {
+    decision: "Monitor",
+    action: due
+      ? "Review the mature SLC observation now: reconcile the measured Google panels and targeted GSC evidence, record missing same-window consumer-AI evidence and confounds, and retain required factual corrections. Do not claim causal ranking gains or start public edits from an expired time gate."
+      : "Preserve the SLC page while collecting the existing fixed panels until the recorded experiment calendar and panel-count gates pass; missing evidence remains unmeasured.",
+    gate: due ? "observation-review-due-evidence-and-public-approval-still-required" : "recorded-experiment-calendar-and-panel-count-required",
+    ownerApprovalPhrase: null,
+    acceptanceCheck: "Record a reviewed observation against the existing experiment, retain all evidence gaps and confounds, never restore unsupported claims, and require separate approval and release checks for public changes.",
+  };
+}
+
 // SERP selection is an observation, not a structural invariant. An alternate
 // URL must block optimization, not prevent the weekly observations being saved.
 export function guardSelectedOrganicUrls({ page, urls, action }) {

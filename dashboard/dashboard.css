@@ -203,3 +203,5 @@ footer a { color: var(--blue); text-decoration: none; }
 .toggle-btn { padding: 4px 12px; border: 1px solid var(--border); border-radius: 6px; background: transparent; cursor: pointer; font-size: 0.8rem; }
 .toggle-btn.on { color: var(--green); border-color: var(--green); }
 .toggle-btn.off { color: var(--red); border-color: var(--red); }
+.logout-err{color:#f85149;font-size:.8rem;margin-left:6px}
+.logout-err:empty{display:none}

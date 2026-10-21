@@ -109,12 +109,20 @@
     "routes": [
       {
         "file": "locations/sandy.html",
-        "sha256": "6990e62cc9fbaff508cef8d1c14a9d1775d29e111bd77f6eb870cb6256c53093",
+        "sha256": "6a821cf0eba5b2b5d3569666dbd334de1720b4f0d9ede44bb843a033361cbf6a",
+        "batch1bCityServiceSourceAmendment": {
+          "observedAt": "2026-10-04T17:30:00Z",
+          "priorSha256": "6990e62cc9fbaff508cef8d1c14a9d1775d29e111bd77f6eb870cb6256c53093",
+          "priorInboundInternalLinks": 62,
+          "currentInboundInternalLinks": 64,
+          "reason": "Supporting source and inbound pin only: Batch 1b city service pages (Sandy, Provo, Millcreek and Orem water damage; Salt Lake City siding) add breadcrumb, resource and nearby links, and the parent hubs gain one plain link sentence to their new child (no 24/7, pricing, permit or identity wording on the hubs). Title, H1, canonical, schema, identity and historical ranking/GSC observations, diagnoses and held experiments are unchanged. Not new ranking evidence or experiment authorization.",
+          "reviewRequiredBeforeMerge": true
+        },
         "role": "commercial-city-hub",
         "title": "Premium Reroofing Sandy UT | Frame Restoration Utah",
         "h1": "Premium Reroofing in Sandy",
         "canonical": "https://www.framerestorationutah.com/locations/sandy",
-        "inboundInternalLinks": 62,
+        "inboundInternalLinks": 64,
         "visibleTermCounts": {
           "roofer": 0,
           "roofing contractor": 1,
@@ -126,37 +134,52 @@
       },
       {
         "file": "locations/sandy/storm-damage.html",
-        "sha256": "e50e0684989a6643e3d5f51792b3aae3d5c9592639685078275aa8589448c026",
+        "sha256": "802ec892f5638465f8d2fea97e056835445e1161a115123cb212d40ce0f6bcbf",
+        "batch1bCityServiceSourceAmendment": {
+          "observedAt": "2026-10-04T17:30:00Z",
+          "priorInboundInternalLinks": 2,
+          "currentInboundInternalLinks": 5,
+          "reason": "Supporting source and inbound pin only: Batch 1b city service pages (Sandy, Provo, Millcreek and Orem water damage; Salt Lake City siding) add breadcrumb, resource and nearby links, and the parent hubs gain one plain link sentence to their new child (no 24/7, pricing, permit or identity wording on the hubs). Title, H1, canonical, schema, identity and historical ranking/GSC observations, diagnoses and held experiments are unchanged. Not new ranking evidence or experiment authorization.",
+          "reviewRequiredBeforeMerge": true
+        },
         "role": "storm-specific-child",
         "title": "Sandy Storm Damage Roof Repair | Frame Restoration Utah",
         "h1": "Storm Damage Roof Repair in Sandy",
         "canonical": "https://www.framerestorationutah.com/locations/sandy/storm-damage",
-        "inboundInternalLinks": 2
+        "inboundInternalLinks": 5
       },
       {
         "file": "blog/sandy/roof-leak-repair-sandy-84070.html",
-        "sha256": "f3a900ea7e5a950b3a438f6c14d4189290d6a3f98de3343f52245a841da515b9",
+        "sha256": "f0b01ca116796e8f41e6e537bbf5943d53a9fb82e55a15f0386174237daba6ae",
         "role": "informational-roof-leak-guide",
         "title": "Roof Leak Repair in Sandy | Frame Restoration Utah",
         "h1": "Understanding Roof Leaks in Sandy &mdash; Causes, Prevention &amp; Professional Repair",
         "canonical": "https://www.framerestorationutah.com/blog/sandy/roof-leak-repair-sandy-84070",
         "inboundInternalLinks": 5,
-        "risk": "watch-only; no fixed commercial query row currently selects this guide"
+        "risk": "watch-only; no fixed commercial query row currently selects this guide",
+        "schemaProviderPin": {
+          "updated": "2026-10-13",
+          "reason": "JSON-LD Service provider @id added. Title, H1, canonical, and visible copy unchanged."
+        }
       },
       {
         "file": "blog/sandy/spring-hail-damage-roof.html",
-        "sha256": "8e264875f211af360586acb3c700d0e8b04c2de405fbfeb0a18c2a93a2be0698",
+        "sha256": "e4a5882e22f60e74923d2e698ec6a5f0e40cb8460bcfe829ed7a99d17e8689c6",
         "role": "informational-hail-guide",
         "title": "Spring Hail Season in Sandy, — Roof Protection & Resilience Guide",
         "h1": "Spring Hail Storms in Sandy &mdash; How to Protect Your Roof and What to Do After a Hit",
         "canonical": "https://www.framerestorationutah.com/blog/sandy/spring-hail-damage-roof",
         "inboundInternalLinks": 12,
-        "risk": "watch-only; no fixed commercial query row currently selects this guide"
+        "risk": "watch-only; no fixed commercial query row currently selects this guide",
+        "schemaProviderPin": {
+          "updated": "2026-10-13",
+          "reason": "JSON-LD Service provider @id added. Title, H1, canonical, and visible copy unchanged."
+        }
       }
     ],
     "integrityGate": {
       "packet": "data/authority/SLV-CITY-PUBLIC-REMEDIATION-PACKET-2026-08-12.json",
-      "packetSha256": "b1616942e2e46f33a847d75a9fc75a084585983c91f444ade1ebd84d11b69333",
+      "packetSha256": "e2d6a11c4b274764bcadeed860a5a51af3445b03ca814e9f32bfd35a285a1c1d",
       "sandyBlockingFindingClasses": 8,
       "sandyProvisionalWarnings": 1,
       "cleanupStatus": "awaiting-explicit-owner-approval"

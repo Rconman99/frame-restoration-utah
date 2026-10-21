@@ -53,7 +53,32 @@ the pinned CLI hash, two unchanged catalog probes immediately before apply, and
 an exact postflight. Existing suppression rows are never read or printed; only
 their aggregate count is compared before and after.
 
-## Virtual receptionist Phase 1
+## September 17: single-prompt direct connection (supersedes new-call interviews)
+
+Ryan's caller test found the multi-turn assistant too slow. New unknown callers
+hear exactly: "Hey, this is Frame Restoration's virtual assistant. Press one to
+connect." A single DTMF digit submits immediately; there is no speech recognition,
+name/purpose interview, connecting announcement, or owner-whisper acceptance on
+this path. Pressing one directly dials the existing approved Landon destination.
+The short gate uses the existing deterministic Polly Joanna Neural option.
+
+Blocked callers remain declined; trusted recent customers still ring directly.
+No input/other keys go to voicemail, without creating a lead. New caller-one
+leads retain original dialed-number attribution and webhook deduplication.
+Existing recording/no-answer/status behavior is unchanged. Old interview and
+owner-decision endpoints remain only for in-flight callback compatibility.
+The older owner-acceptance-only lead rule below applies to those legacy calls,
+not the newly authorized caller-one path.
+
+This is a handle-call-only code release, with no migration, number rerouting,
+SMS change, or other-market change. Follow the existing exact-main, green-CI,
+manual deploy workflow below. Verify deployed source/dependencies and the new
+prompt/connection branch after release. Signed mocked request tests are not a
+handset audio/latency test; have Ryan retry naturally from an untrusted number.
+Caller-ID enrichment and DB/network cold-start latency are separate from the
+removed interview; this patch does not claim zero network delay.
+
+## Historical virtual receptionist Phase 1
 
 The 2026-09-04 owner request authorizes screening unknown inbound callers to
 reduce spam reaching the owner's phone. This release changes `handle-call`

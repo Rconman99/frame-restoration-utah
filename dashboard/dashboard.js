@@ -103,6 +103,27 @@
     document.getElementById('pinInput').focus();
   }
 
+  // Explicit sign-out: clear the HttpOnly owner-route cookie that middleware.js
+  // checks for /dashboard, and only show the signed-out state after the server
+  // confirms with 204. On failure the user stays signed in and sees an error.
+  // Note: this ends the browser session; lead-crm has no server-side session
+  // revocation action yet, so the bearer token itself lapses at its 8 h expiry.
+  function signOut() {
+    var btn = document.getElementById('logoutBtn');
+    var msg = document.getElementById('logoutErr');
+    btn.disabled = true;
+    msg.textContent = '';
+    fetch('/owner-session', { method: 'DELETE', credentials: 'same-origin', cache: 'no-store' })
+      .then(function (r) {
+        if (r.status !== 204) throw new Error('HTTP ' + r.status);
+        doLogout();
+      })
+      .catch(function () {
+        msg.textContent = 'Sign-out failed. Check your connection and try again.';
+      })
+      .then(function () { btn.disabled = false; });
+  }
+
   // Auto-login retains only the short-lived signed token, never a PIN/key.
   (function () {
     var s = sessionStorage.getItem(SESSION_STORAGE_KEY);
@@ -750,11 +771,11 @@
     var psi = (CFG.dataSources && CFG.dataSources.psi) || {};
     if (psi.enabled === false) { el.innerHTML = ''; return; }
     var origin = psi.origin || ('https://' + (CFG.client && CFG.client.domain || ''));
-    var apiKey = psi.apiKey;
+    var endpoint = psi.endpoint;
 
-    if (!apiKey) {
+    if (!endpoint) {
       var html = '<div class="cc"><h3>⚡ Core Web Vitals</h3>';
-      html += '<div style="font-size:.85rem;color:var(--muted);line-height:1.5">Add a free PageSpeed Insights API key to <code style="background:var(--bg);padding:2px 6px;border-radius:4px">data/dashboard-config.json</code> → <code>dataSources.psi.apiKey</code> to enable LCP / CLS / INP tracking.</div>';
+      html += '<div style="font-size:.85rem;color:var(--muted);line-height:1.5">Set <code style="background:var(--bg);padding:2px 6px;border-radius:4px">dataSources.psi.endpoint</code> to <code>/api/pagespeed</code> and add <code>PAGESPEED_API_KEY</code> in Vercel to enable LCP / CLS / INP tracking.</div>';
       html += '<div style="font-size:.78rem;margin-top:8px"><a href="https://developers.google.com/speed/docs/insights/v5/get-started" target="_blank" style="color:var(--blue)">Get key →</a></div>';
       html += '</div>';
       el.innerHTML = html;
@@ -773,7 +794,7 @@
 
     el.innerHTML = '<div class="cc"><h3>⚡ Core Web Vitals</h3><div style="color:var(--muted);font-size:.85rem"><span class="sp"></span> Loading from PageSpeed Insights…</div></div>';
     try {
-      var url = 'https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url=' + encodeURIComponent(origin) + '&strategy=' + (psi.strategy || 'mobile') + '&key=' + apiKey;
+      var url = endpoint + '?url=' + encodeURIComponent(origin) + '&strategy=' + encodeURIComponent(psi.strategy || 'mobile');
       var r = await fetch(url);
       var d = await r.json();
       if (d.error) throw new Error(d.error.message || 'PSI error');
@@ -886,7 +907,7 @@
     document.getElementById('loginForm').addEventListener('submit', doLogin);
     document.getElementById('refreshBtn').addEventListener('click', function () { go(curD); });
     document.getElementById('manageBtn').addEventListener('click', openAdmin);
-    document.getElementById('logoutBtn').addEventListener('click', doLogout);
+    document.getElementById('logoutBtn').addEventListener('click', signOut);
     document.getElementById('closeAdminBtn').addEventListener('click', closeAdmin);
     document.getElementById('addUserBtn').addEventListener('click', addUser);
 

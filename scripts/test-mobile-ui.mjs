@@ -92,6 +92,85 @@ const browser = await chromium.launch({
 let checks = 0;
 
 try {
+  // Production regression: text-field CSS stretched the consent checkbox to
+  // the form width and pushed the SMS disclosure out of the modal.
+  for (const viewport of [
+    { width: 320, height: 568 },
+    { width: 360, height: 800 },
+    { width: 393, height: 852 },
+    { width: 430, height: 932 },
+    { width: 740, height: 360 },
+    { width: 1440, height: 900 },
+  ]) {
+    for (const route of ["/pages/roof-repair", "/blog/springville/storm-damage-roof-repair-springville-utah"]) {
+      const page = await browser.newPage({ viewport, isMobile: viewport.width <= 600, hasTouch: true });
+      await page.route("**/*", (request) => request.request().url().startsWith(origin)
+        ? request.continue() : request.abort());
+      await page.goto(`${origin}${route}`, { waitUntil: "domcontentloaded" });
+      await page.evaluate(() => document.fonts.ready);
+      const surface = await page.evaluate(() => {
+        const dock = document.querySelector(".sticky-call");
+        const dockVisible = dock && getComputedStyle(dock).display !== "none";
+        return {
+          width: Math.max(document.documentElement.scrollWidth, document.body.scrollWidth),
+          dock: dockVisible ? dock.getBoundingClientRect().toJSON() : null,
+        };
+      });
+      assert(surface.width <= viewport.width + 1, `${route} must not widen the ${viewport.width}px viewport: ${surface.width}px`);
+      if (surface.dock) {
+        assert(surface.dock.top >= 0 && surface.dock.bottom <= viewport.height + 1, `${route} contact dock must remain inside the ${viewport.height}px viewport`);
+        assert(surface.dock.left >= 0 && surface.dock.right <= viewport.width + 1, `${route} contact dock must fit horizontally`);
+      }
+      await page.locator('a[data-booking-trigger]:visible').first().click();
+      await page.waitForFunction(() => document.activeElement?.id === "frModalName");
+      const consent = page.locator('.fr-modal-consent input[type="checkbox"]');
+      const geometry = await consent.evaluate((input) => {
+        const modal = input.closest(".fr-modal");
+        const label = input.closest("label");
+        const text = label.querySelector("span");
+        const box = input.getBoundingClientRect();
+        const textBox = text.getBoundingClientRect();
+        return {
+          width: box.width, height: box.height,
+          appearance: getComputedStyle(input).appearance,
+          checked: input.checked, required: input.required,
+          labelText: text.textContent,
+          modalOverflow: modal.scrollWidth - modal.clientWidth,
+          labelOverflow: label.scrollWidth - label.clientWidth,
+          modalInsideViewport: modal.getBoundingClientRect().left >= 0 && modal.getBoundingClientRect().right <= innerWidth,
+          textBesideCheckbox: textBox.left >= box.right && textBox.width > 150,
+        };
+      });
+      assert(geometry.width >= 14 && geometry.width <= 24, `SMS checkbox width ${geometry.width}px on ${route} at ${viewport.width}px`);
+      assert(geometry.height >= 14 && geometry.height <= 24, "SMS checkbox must retain a usable native size");
+      assert.notEqual(geometry.appearance, "none", "SMS checkbox native appearance must remain visible");
+      assert.equal(geometry.checked, false, "SMS consent must start unchecked");
+      assert.equal(geometry.required, false, "SMS consent must remain optional");
+      assert(geometry.labelText.includes("Consent is not required to submit this form."));
+      assert(geometry.textBesideCheckbox, "SMS disclosure must have readable width beside the checkbox");
+      for (const key of ["modalOverflow", "labelOverflow"]) {
+        assert(geometry[key] <= 1, `${key}: ${geometry[key]}px on ${route} at ${viewport.width}px`);
+      }
+      assert(geometry.modalInsideViewport, "The modal must stay inside the viewport horizontally");
+      await page.locator(".fr-modal-optional summary").press("Tab");
+      assert.equal(await consent.evaluate((input) => input === document.activeElement), true, "Tab must reach SMS consent");
+      assert.equal(await consent.evaluate((input) => getComputedStyle(input).outlineStyle !== "none" || getComputedStyle(input).boxShadow !== "none"), true, "SMS consent keyboard focus must be visible");
+      await consent.press("Space");
+      assert.equal(await consent.isChecked(), true, "Space must toggle consent on");
+      await consent.press("Space");
+      assert.equal(await consent.isChecked(), false, "Space must toggle consent off");
+      await consent.press("Escape");
+      assert.equal(await page.locator("#frModalOverlay").isVisible(), false, "Escape must close the modal");
+      await page.locator('a[data-booking-trigger]:visible').first().click();
+      await page.waitForFunction(() => document.activeElement?.id === "frModalName");
+      assert.equal(await consent.isChecked(), false, "Reopening must not opt in to SMS");
+      await page.getByRole("button", { name: "Close", exact: true }).click();
+      assert.equal(await page.locator("#frModalOverlay").isVisible(), false, "Close button must close the modal");
+      checks += 1;
+      await page.close();
+    }
+  }
+
   for (const viewport of viewports) {
     for (const route of routes) {
       const page = await browser.newPage({ viewport });
@@ -129,41 +208,14 @@ try {
       assert(initial.horizontalOverflow <= 1, `${route} has horizontal mobile overflow`);
 
       if (route === "/") {
-        const evidence = await page.evaluate(() => {
-          const grid = document.querySelector(".qa-evidence-grid");
-          const items = [...document.querySelectorAll(".qa-evidence-item")];
-          const links = [...document.querySelectorAll(".qa-evidence-item a")];
-          const firstLinkStyle = links[0] ? getComputedStyle(links[0]) : null;
-          return {
-            gridColumns: grid ? getComputedStyle(grid).gridTemplateColumns : "",
-            items: items.length,
-            links: links.length,
-            externalLinksSafe: links.every(
-              (link) => link.target === "_blank" && link.relList.contains("noopener"),
-            ),
-            linkColor: firstLinkStyle?.color || "",
-            linkDecorationColor: firstLinkStyle?.textDecorationColor || "",
-            linkDecorationLine: firstLinkStyle?.textDecorationLine || "",
-          };
-        });
-        assert.equal(evidence.items, 8, "homepage must render all eight evidence cards");
-        assert(evidence.links >= 8, "homepage evidence sources must remain linked");
-        assert.equal(evidence.externalLinksSafe, true, "evidence links must open safely");
-        assert.equal(
-          evidence.gridColumns.split(" ").length,
-          1,
-          `homepage evidence grid must be one column at ${viewport.width}px`,
-        );
-        assert.equal(evidence.linkColor, "rgb(11, 64, 96)", "evidence links must use Frame navy");
-        assert.equal(
-          evidence.linkDecorationColor,
-          "rgb(225, 185, 105)",
-          "evidence links must use the Frame gold underline",
-        );
-        assert(
-          evidence.linkDecorationLine.includes("underline"),
-          "evidence links must remain visibly identifiable",
-        );
+        const summary = await page.evaluate(() => ({
+          visibleTechnicalCards: document.querySelectorAll(".qa-evidence, .qa-evidence-grid, .qa-evidence-item").length,
+          businessSummary: document.querySelector(".qa-lead")?.textContent.trim() || "",
+          completedProjectMedia: document.querySelectorAll("#fresh-aerials img").length,
+        }));
+        assert.equal(summary.visibleTechnicalCards, 0, "homepage must not bring back Landon's removed technical list");
+        assert(summary.businessSummary.length > 0, "homepage must retain its business summary");
+        assert(summary.completedProjectMedia > 0, "homepage must retain completed project photos");
       }
 
       await page.evaluate(() => window.scrollTo(0, Math.min(1_600, document.documentElement.scrollHeight / 2)));

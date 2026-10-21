@@ -95,9 +95,9 @@ function actionFor(city) {
   if (city === "Salt Lake City") {
     return {
       lane: "observe-time-gated-experiment",
-      action: "Keep the page frozen, run the weekly fixed Google panel, and evaluate the existing trust correction no earlier than 2026-09-09T04:40:58Z.",
+      action: interventionByCity.get(city).selectedAction,
       actionClass: "system-fixable-when-scheduled",
-      gate: "time-gated-until-2026-09-09T04:40:58Z",
+      gate: interventionByCity.get(city).gate,
       publicApprovalPacket: null,
     };
   }

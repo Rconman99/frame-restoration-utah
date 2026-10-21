@@ -1,0 +1,257 @@
+{
+  "artifact": "frame-utah-growth-operations",
+  "version": 1,
+  "generatedAt": "2026-10-20T12:54:21.875Z",
+  "snapshotDate": "2026-10-20",
+  "sourceAgeHours": 0,
+  "state": "measurement_operational_outcomes_incomplete",
+  "northStar": "qualified_organic_leads",
+  "publicMutationAuthorized": false,
+  "businessOutcomes": {
+    "qualifiedLeads": null,
+    "bookedInspections": null,
+    "soldJobs": null,
+    "collectedRevenue": null,
+    "state": "not_measured",
+    "nextAction": "Reconcile existing lead source/city/page attribution with owner-confirmed CRM outcomes through the approved read-only lane; do not infer jobs from clicks or change CRM truth."
+  },
+  "searchWindow": {
+    "startDate": "2026-09-20",
+    "endDate": "2026-10-17"
+  },
+  "blockers": [],
+  "crawlErrors": [],
+  "priorityPolicy": "Fix regressions first; SLC is the owner's commercial priority, then Heber and the hail-service towns. No inferred profit weighting.",
+  "pages": [
+    {
+      "id": "slc",
+      "page": "https://www.framerestorationutah.com/locations/salt-lake-city",
+      "state": "observed_rolling_window",
+      "metrics": {
+        "clicks": 3,
+        "impressions": 6126,
+        "averagePosition": 24.4
+      }
+    },
+    {
+      "id": "heber",
+      "page": "https://www.framerestorationutah.com/locations/heber-city",
+      "state": "observed_rolling_window",
+      "metrics": {
+        "clicks": 2,
+        "impressions": 1625,
+        "averagePosition": 10.5
+      }
+    },
+    {
+      "id": "midway",
+      "page": "https://www.framerestorationutah.com/blog/midway/hail-roof-inspection-midway",
+      "state": "observed_rolling_window",
+      "metrics": {
+        "clicks": 0,
+        "impressions": 19,
+        "averagePosition": 6.6
+      }
+    },
+    {
+      "id": "hideout",
+      "page": "https://www.framerestorationutah.com/blog/hideout/hail-roof-inspection-hideout",
+      "state": "observed_rolling_window",
+      "metrics": {
+        "clicks": 0,
+        "impressions": 10,
+        "averagePosition": 9.4
+      }
+    },
+    {
+      "id": "charleston",
+      "page": "https://www.framerestorationutah.com/blog/charleston/hail-roof-inspection-charleston",
+      "state": "observed_rolling_window",
+      "metrics": {
+        "clicks": 0,
+        "impressions": 1,
+        "averagePosition": 4
+      }
+    },
+    {
+      "id": "layton",
+      "page": "https://www.framerestorationutah.com/blog/layton/hail-roof-inspection-layton",
+      "state": "not_measured_or_not_returned",
+      "metrics": null
+    },
+    {
+      "id": "farmington",
+      "page": "https://www.framerestorationutah.com/blog/farmington/hail-roof-inspection-farmington",
+      "state": "not_measured_or_not_returned",
+      "metrics": null
+    }
+  ],
+  "opportunities": [
+    {
+      "region": "slc",
+      "query": "composite slate roofing salt lake city",
+      "clicks": 0,
+      "impressions": 42,
+      "averagePosition": 12.5,
+      "state": "exact_query_page_diagnosis_ready",
+      "nextAction": "Obtain an exact query + intended-page baseline; check current URL selection and running experiments before drafting one isolated change.",
+      "limitation": "Query-level discovery only: these metrics are not a page baseline, lead count or revenue estimate."
+    },
+    {
+      "region": "slc",
+      "query": "roof inspections salt lake city",
+      "clicks": 0,
+      "impressions": 38,
+      "averagePosition": 10.9,
+      "state": "exact_query_page_diagnosis_ready",
+      "nextAction": "Obtain an exact query + intended-page baseline; check current URL selection and running experiments before drafting one isolated change.",
+      "limitation": "Query-level discovery only: these metrics are not a page baseline, lead count or revenue estimate."
+    },
+    {
+      "region": "heber",
+      "query": "roof repair heber city ut",
+      "clicks": 0,
+      "impressions": 1776,
+      "averagePosition": 6.4,
+      "state": "exact_query_page_diagnosis_ready",
+      "nextAction": "Obtain an exact query + intended-page baseline; check current URL selection and running experiments before drafting one isolated change.",
+      "limitation": "Query-level discovery only: these metrics are not a page baseline, lead count or revenue estimate."
+    },
+    {
+      "region": "heber",
+      "query": "roofing heber city ut",
+      "clicks": 0,
+      "impressions": 1368,
+      "averagePosition": 4.6,
+      "state": "exact_query_page_diagnosis_ready",
+      "nextAction": "Obtain an exact query + intended-page baseline; check current URL selection and running experiments before drafting one isolated change.",
+      "limitation": "Query-level discovery only: these metrics are not a page baseline, lead count or revenue estimate."
+    },
+    {
+      "region": "heber",
+      "query": "which roofing companies in heber city ut provide roof repair and replacement services?",
+      "clicks": 0,
+      "impressions": 68,
+      "averagePosition": 4.2,
+      "state": "exact_query_page_diagnosis_ready",
+      "nextAction": "Obtain an exact query + intended-page baseline; check current URL selection and running experiments before drafting one isolated change.",
+      "limitation": "Query-level discovery only: these metrics are not a page baseline, lead count or revenue estimate."
+    },
+    {
+      "region": "davis-hail",
+      "query": "roof repair farmington ut",
+      "clicks": 0,
+      "impressions": 1068,
+      "averagePosition": 10.7,
+      "state": "exact_query_page_diagnosis_ready",
+      "nextAction": "Obtain an exact query + intended-page baseline; check current URL selection and running experiments before drafting one isolated change.",
+      "limitation": "Query-level discovery only: these metrics are not a page baseline, lead count or revenue estimate."
+    },
+    {
+      "region": "davis-hail",
+      "query": "roofing farmington ut",
+      "clicks": 0,
+      "impressions": 634,
+      "averagePosition": 12.8,
+      "state": "exact_query_page_diagnosis_ready",
+      "nextAction": "Obtain an exact query + intended-page baseline; check current URL selection and running experiments before drafting one isolated change.",
+      "limitation": "Query-level discovery only: these metrics are not a page baseline, lead count or revenue estimate."
+    },
+    {
+      "region": "davis-hail",
+      "query": "which roofing companies in farmington ut handle roof repairs and replacements?",
+      "clicks": 0,
+      "impressions": 59,
+      "averagePosition": 9,
+      "state": "exact_query_page_diagnosis_ready",
+      "nextAction": "Obtain an exact query + intended-page baseline; check current URL selection and running experiments before drafting one isolated change.",
+      "limitation": "Query-level discovery only: these metrics are not a page baseline, lead count or revenue estimate."
+    }
+  ],
+  "experimentReviews": [
+    {
+      "id": "utah-homepage-commercial-title-2026-08-09",
+      "page": "https://www.framerestorationutah.com/",
+      "state": "decision_recorded_review_source",
+      "earliestEvaluationAt": "2026-09-08T00:00:00.000Z",
+      "decision": "keep",
+      "integrityCorrection": false,
+      "nextReviewAt": null,
+      "publicMutationAuthorized": false
+    },
+    {
+      "id": "utah-slc-entity-trust-correction-2026-08-12",
+      "page": "https://www.framerestorationutah.com/locations/salt-lake-city",
+      "state": "observation_review_due",
+      "earliestEvaluationAt": "2026-09-09T04:40:58.000Z",
+      "decision": "pending-observation",
+      "integrityCorrection": true,
+      "nextReviewAt": null,
+      "publicMutationAuthorized": false
+    }
+  ],
+  "slcNextAction": {
+    "decision": "Monitor",
+    "action": "Review the mature SLC observation now: reconcile the measured Google panels and targeted GSC evidence, record missing same-window consumer-AI evidence and confounds, and retain required factual corrections. Do not claim causal ranking gains or start public edits from an expired time gate.",
+    "gate": "observation-review-due-evidence-and-public-approval-still-required",
+    "ownerApprovalPhrase": null,
+    "acceptanceCheck": "Record a reviewed observation against the existing experiment, retain all evidence gaps and confounds, never restore unsupported claims, and require separate approval and release checks for public changes."
+  },
+  "hailCampaign": {
+    "releaseCommit": "259446f5dd85849061bd136f22b0227087768b3b",
+    "releasePullRequest": "https://github.com/Rconman99/frame-restoration-utah/pull/295",
+    "firstFullDay": "2026-09-18",
+    "observationWindowEnd": "2026-10-15",
+    "earliestSettledReadDate": "2026-10-18",
+    "state": "dedicated_readout_due",
+    "limitation": "The page metrics above are rolling discovery readings, not a fixed campaign outcome. Fetch Sep 18–Oct 15 explicitly at closeout; no pre-release baseline, causality, storm footprint, indexing or lead result is inferred."
+  },
+  "davisHailCampaign": {
+    "releaseCommit": "69b2295d0fab798a01903482f3c13f3f0d6f7411",
+    "releasePullRequest": "https://github.com/Rconman99/frame-restoration-utah/pull/298",
+    "firstFullDay": "2026-09-19",
+    "observationWindowEnd": "2026-10-16",
+    "earliestSettledReadDate": "2026-10-19",
+    "state": "dedicated_readout_due",
+    "limitation": "Rolling discovery is not a campaign result. Fetch Sep 19–Oct 16 explicitly no earlier than Oct 19 MDT with final data. No baseline, causality, indexing, citation, lead or revenue result inferred. Davis activity is not SLC attribution."
+  },
+  "aiVisibility": {
+    "state": "not_measured_by_this_report",
+    "namedCitationRate": null,
+    "nextAction": "Use existing provider-specific fixed-panel receipts. GSC Web is not a separate AI citation measurement; do not buy new panels or reconnect credentials from this report."
+  },
+  "sources": [
+    {
+      "file": "data/seo/snapshots/2026-10-20.json",
+      "sha256": "d7e9373f3b225d3537a342ac60ef6d91b1ce975a11fb9bb1b5ac9d4603cb8d85"
+    },
+    {
+      "file": "data/seo-experiments/utah-homepage-commercial-title-2026-08-09.json",
+      "sha256": "4b74e75d84b28960f3223cbdf0a7f67c9201e05183213b0e913ccc2b9fcbe9e8"
+    },
+    {
+      "file": "data/seo-experiments/utah-slc-entity-trust-correction-2026-08-12.json",
+      "sha256": "c1cf5ef1b300f281c99abc027c1c392ac97601593251418d1e84fa27b0dbd992"
+    },
+    {
+      "file": "data/rank-tracker/SLV-WEEKLY-DECISIONS-2026-08-12.json",
+      "sha256": "5b6683c7419615779ed08cb964c90d99f74aa0c7301eb0fe56ce62a0d8f8e48c"
+    },
+    {
+      "file": "data/seo/experiment-readouts/utah-homepage-commercial-title-2026-08-09.json",
+      "sha256": "acfbb0ec0d63db51596559114c09fcdbf167b04f0530cfc5d9c6f61743677dc6"
+    },
+    {
+      "file": "data/seo/experiment-readouts/utah-slc-observation-2026-09-18.json",
+      "sha256": "45711b068e5cc5621c4acc1090f8ae4286501d55cb67369bde017e0f531f6efa"
+    },
+    {
+      "file": "data/rank-tracker/2026-08-12.json",
+      "sha256": "c950426c484a8e0eed6920e5c5a3b584acca30b981159f70d4074a2ee7c6b18e"
+    },
+    {
+      "file": "data/rank-tracker/2026-09-14.json",
+      "sha256": "76acf3eadc318a6b70b77cefbff8a4f273121ee13d9dfff4b3117d7ad2245135"
+    }
+  ]
+}

@@ -94,7 +94,7 @@ const cities = portfolio.cityGoals.map((goal) => {
   if (state === "url-competition-requires-diagnosis") {
     nextEvidenceAction = "Inspect the alternate URLs against redirect dates, canonicals, current live routing, and query intent. Treat this blended 28-day evidence as a diagnosis trigger, not proof of current cannibalization or permission to redirect.";
   } else if (goal.city === "Salt Lake City") {
-    nextEvidenceAction = "Keep the Salt Lake City page frozen under its active experiment until the 2026-09-09 evaluation gate; continue weekly fixed panels and targeted GSC reads.";
+    nextEvidenceAction = "Consult the current weekly experiment decision for SLC observation-review readiness; continue fixed panels and targeted GSC reads. A passed calendar gate does not authorize public edits or prove causal gains.";
   } else if (protectedOrganicNumberOne.length || protectedAioCitations.length) {
     nextEvidenceAction = "Protect the measured #1/AIO foothold. Do not change title, H1, canonical, route, or internal-link intent until exact owner approval and a declared isolated experiment exist.";
   }
