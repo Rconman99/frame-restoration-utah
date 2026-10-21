@@ -35,9 +35,13 @@ class NoSharedRoutingKey(unittest.TestCase):
         # scripts/import-deployed-functions.sh. Once in the repo they must use
         # the env-backed shared check, not a literal.
         for name, spec in (("reddit-monitor", "REDDIT_MONITOR_KEY"), ("lead-report", "LEAD_REPORT_KEY")):
-            path = REPO / "supabase/functions" / name / "index.ts"
-            if not path.exists():
-                continue
+            fn_dir = REPO / "supabase/functions" / name
+            if not fn_dir.exists():
+                continue  # not imported yet (an owner step), which is different from imported badly
+            path = fn_dir / "index.ts"
+            # A directory without an entrypoint is a partial import that must never pass as "not yet imported".
+            self.assertTrue(path.is_file() and path.stat().st_size > 0,
+                            f"{name}: {fn_dir} exists but index.ts is missing or empty (partial import)")
             src = path.read_text()
             self.assertIn("../_shared/function-key.ts", src, name)
             self.assertIn(spec, src, name)

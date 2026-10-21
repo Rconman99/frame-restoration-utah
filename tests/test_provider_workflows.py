@@ -62,6 +62,11 @@ blog_publisher = load_script("utah_blog_publisher", "scripts/blog-publish.py")
 NoSharedRoutingKey = load_script(
     "utah_no_shared_routing_key", "tests/test_no_shared_routing_key.py"
 ).NoSharedRoutingKey
+# Same reason: the import script's validate-existing / continue-on-failure behaviour is
+# exercised here (fake `supabase` on PATH, scratch copy of the repo layout).
+ImportDeployedFunctions = load_script(
+    "utah_import_deployed_functions", "tests/test_import_deployed_functions.py"
+).ImportDeployedFunctions
 
 
 class ComplianceWorkflowDependencyTests(unittest.TestCase):

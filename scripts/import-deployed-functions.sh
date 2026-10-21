@@ -10,6 +10,10 @@
 #   bash scripts/import-deployed-functions.sh            # both functions
 #   bash scripts/import-deployed-functions.sh lead-report
 #
+# A function directory that already exists is not downloaded again, but it IS validated (index.ts
+# present and non-empty) and scanned, so a rerun over an interrupted download cannot report success.
+# Exit: 0 clean · 1 a download failed or an import is partial · 3 a hardcoded key was found (3 wins).
+#
 # Next step after a clean download: replace the hardcoded check with
 #   import { functionKeyOk, REDDIT_MONITOR_KEY } from "../_shared/function-key.ts";
 #   if (!functionKeyOk(req, REDDIT_MONITOR_KEY)) return new Response("Unauthorized", { status: 401 });
@@ -27,25 +31,40 @@ done
 
 command -v supabase >/dev/null 2>&1 || { echo "ERROR: supabase CLI not found." >&2; exit 1; }
 
-status=0
+failed=0
+keyfound=0
 for f in "${FUNCS[@]}"; do
   dir="supabase/functions/$f"
   if [ -e "$dir" ]; then
-    echo "SKIP $f: $dir already exists (remove it first to re-import)."
-    continue
+    # Never trust what is already there: an interrupted download can leave a directory without index.ts,
+    # and a rerun must validate and scan it rather than skip it and exit 0 over a partial import.
+    echo "SKIP download for $f: $dir already exists (remove it first to re-download); validating it instead."
+  else
+    echo "Downloading $f from $PROJECT_REF ..."
+    # Guarded so one failed download is reported and the next function still runs (set -e would abort here).
+    if ! supabase functions download "$f" --project-ref "$PROJECT_REF" >/dev/null; then
+      echo "ERROR: download failed for $f." >&2; failed=1; continue
+    fi
+    [ -d "$dir" ] || { echo "ERROR: $dir not created." >&2; failed=1; continue; }
   fi
-  echo "Downloading $f from $PROJECT_REF ..."
-  supabase functions download "$f" --project-ref "$PROJECT_REF" >/dev/null
-  [ -d "$dir" ] || { echo "ERROR: $dir not created." >&2; status=1; continue; }
+  if [ ! -s "$dir/index.ts" ]; then
+    echo "ERROR: $dir/index.ts is missing or empty (partial import). Remove $dir and re-run." >&2
+    failed=1; continue
+  fi
 
   # Report locations only. -n prints line numbers; cut drops the matched text.
   legacy="frame-roofing-""2026"
-  if grep -rnF "$legacy" "$dir" | cut -d: -f1,2 | sed 's/^/  HARDCODED legacy key at /'; then status=3; fi
+  hit=0
+  if grep -rnF "$legacy" "$dir" | cut -d: -f1,2 | sed 's/^/  HARDCODED legacy key at /'; then hit=1; fi
   if grep -rnE '(key|KEY|secret|SECRET|token|TOKEN)[A-Za-z_]*[[:space:]]*(=|===|!==|:)[[:space:]]*["'"'"'][A-Za-z0-9_-]{8,}["'"'"']' "$dir" \
-       | cut -d: -f1,2 | sed 's/^/  POSSIBLE hardcoded secret at /'; then status=3; fi
+       | cut -d: -f1,2 | sed 's/^/  POSSIBLE hardcoded secret at /'; then hit=1; fi
+  if [ "$hit" -eq 1 ]; then keyfound=1; else echo "OK $f: $dir/index.ts present, no hardcoded key found."; fi
 done
 
-if [ "$status" -eq 3 ]; then
+status=0
+[ "$failed" -eq 0 ] || status=1
+if [ "$keyfound" -eq 1 ]; then
+  status=3
   echo "Hardcoded key(s) found. Do NOT commit until they read from env via _shared/function-key.ts." >&2
 fi
 exit "$status"
