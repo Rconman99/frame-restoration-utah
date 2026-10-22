@@ -1103,8 +1103,8 @@ def main():
         s = traffic["summary"]
         source = traffic.get("source_path", "data/traffic-snapshot.json")
         print(f"# PostHog ({source}): {s.get('total_pageviews', 0)} pageviews · "
-              f"{s.get('total_leads', 0)} leads · {s.get('total_calls', 0)} calls · "
-              f"{s.get('conversion_rate_pct', 0)}% conv", file=sys.stderr)
+              f"{s.get('total_leads', 0)} lead records · "
+              f"{s.get('total_calls', 0)} completed call events", file=sys.stderr)
     else:
         print(f"# PostHog snapshot missing — run scripts/refresh-traffic-snapshot.sh", file=sys.stderr)
     if reddit:
