@@ -13,7 +13,7 @@
         "Holladay",
         "Herriman"
       ],
-      "activeSnapshotSha256": "bec8baa5ea259670c2bb26e62c7cc7e4cd10f1344f575ded8a87d59ccfea0854",
+      "activeSnapshotSha256": "88163140fa054162400f7ced61b4e9c3a31991bc564e9a092b012ee809bf5505",
       "diagnosisSnapshotSha256": "a1b7d5aa2acc3a5b663da345ba6eb7242e411661807ae1296f50854702b1a7eb",
       "behavior": "Ignore the stale split-URL disposition and keep affected URL-competition cities in the diagnosis lane; do not suppress, redirect, canonicalize, noindex, delete, or rewrite a route from stale evidence.",
       "requiredAction": "Refresh the bounded Holladay/Herriman split-URL diagnosis against the current GSC attribution snapshot."
@@ -88,7 +88,7 @@
     },
     "gscAttribution": {
       "file": "data/rank-tracker/SLV-GSC-URL-ATTRIBUTION-LATEST.json",
-      "sha256": "9f03e1f94b5c05efd369f63666bf1503863d967a307b1199e18ca9ecee848b08"
+      "sha256": "fc972b7ae5e3f8b3606cfcee7de20629527d7316a138f1938a393df2653d7ae2"
     },
     "gscSplitUrlDiagnosis": {
       "file": "data/rank-tracker/SLV-GSC-SPLIT-URL-DIAGNOSIS-2026-08-12.json",
@@ -108,7 +108,7 @@
     },
     "expansionArchitecture": {
       "file": "data/rank-tracker/SLV-EXPANSION-ARCHITECTURE-2026-08-12.json",
-      "sha256": "f02bf8f9c01b472ff1667f21b51e579291c9c28d1f97e050eef764075f790924"
+      "sha256": "a16a25426531890aa5a69e9c5559ce3bf0dd30bd9255d07674f6a6e5ce63eb8d"
     },
     "corePriority": {
       "file": "data/rank-tracker/SLV-PRIORITY-2026-08-12.json",
@@ -372,12 +372,10 @@
         "googleAiOverviewOwnedQueries": [],
         "protectedOrganicNumberOneQueries": [],
         "intendedPageSelectedForEveryMeasuredRank": true,
-        "gscState": "url-competition-requires-diagnosis",
+        "gscState": "complete-request-with-unreturned-rows",
         "gscRequestedQueries": 4,
         "gscReturnedQueries": 1,
-        "gscAlternateNormalizedUrls": [
-          "framerestorationutah.com/salt-lake-city"
-        ],
+        "gscAlternateNormalizedUrls": [],
         "gscUrlDiagnosis": null,
         "serviceAreaStatus": "saved-service-area-observed",
         "identityProfile": "heber-keystone-cid",
@@ -903,7 +901,7 @@
         "intendedPageSelectedForEveryMeasuredRank": true,
         "gscState": "complete-request-with-unreturned-rows",
         "gscRequestedQueries": 4,
-        "gscReturnedQueries": 1,
+        "gscReturnedQueries": 2,
         "gscAlternateNormalizedUrls": [],
         "gscUrlDiagnosis": null,
         "serviceAreaStatus": "pending-current-profile-service-area-verification",
