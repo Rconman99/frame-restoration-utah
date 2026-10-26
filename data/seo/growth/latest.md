@@ -1,6 +1,6 @@
 # Utah operational growth readout
 
-State: measurement_operational_outcomes_incomplete. Snapshot: 2026-10-25.
+State: measurement_operational_outcomes_incomplete. Snapshot: 2026-10-26.
 
 Qualified leads, inspections, sold jobs and collected revenue: **not measured** by this search report.
 
@@ -12,21 +12,21 @@ Qualified leads, inspections, sold jobs and collected revenue: **not measured** 
 
 ## Query discovery — exact query/page diagnosis required
 
-- slc: composite slate roofing salt lake city — 41 impressions, 0 clicks, position 9.8; exact_query_page_diagnosis_ready.
-- slc: roof inspections salt lake city — 33 impressions, 0 clicks, position 10.7; exact_query_page_diagnosis_ready.
-- heber: roof repair heber city ut — 1687 impressions, 0 clicks, position 6.8; exact_query_page_diagnosis_ready.
-- heber: roofing heber city ut — 1195 impressions, 0 clicks, position 4.3; exact_query_page_diagnosis_ready.
+- slc: composite slate roofing salt lake city — 42 impressions, 0 clicks, position 9.5; exact_query_page_diagnosis_ready.
+- heber: roof repair heber city ut — 1722 impressions, 0 clicks, position 7.1; exact_query_page_diagnosis_ready.
+- heber: roofing heber city ut — 1178 impressions, 0 clicks, position 4.4; exact_query_page_diagnosis_ready.
 - heber: which roofing companies in heber city ut provide roof repair and replacement services? — 45 impressions, 0 clicks, position 5.4; exact_query_page_diagnosis_ready.
-- hail-service-area: roof repair midway ut — 1370 impressions, 0 clicks, position 4.4; exact_query_page_diagnosis_ready.
-- davis-hail: roof repair farmington ut — 825 impressions, 0 clicks, position 11; exact_query_page_diagnosis_ready.
-- davis-hail: roofing farmington ut — 591 impressions, 0 clicks, position 13.4; exact_query_page_diagnosis_ready.
+- hail-service-area: roof repair midway ut — 1392 impressions, 0 clicks, position 4.5; exact_query_page_diagnosis_ready.
+- hail-service-area: roofing midway ut — 1312 impressions, 0 clicks, position 4; exact_query_page_diagnosis_ready.
+- davis-hail: roof repair farmington ut — 841 impressions, 0 clicks, position 11.1; exact_query_page_diagnosis_ready.
+- davis-hail: roofing farmington ut — 623 impressions, 0 clicks, position 13.5; exact_query_page_diagnosis_ready.
 
 ## Priority pages — rolling search window
 
-- slc: 2 clicks / 6736 impressions / position 25.7.
-- heber: 2 clicks / 1381 impressions / position 10.5.
+- slc: 2 clicks / 7006 impressions / position 26.
+- heber: 2 clicks / 1399 impressions / position 10.6.
 - midway: 0 clicks / 5 impressions / position 21.6.
-- hideout: 0 clicks / 9 impressions / position 6.4.
+- hideout: 0 clicks / 7 impressions / position 5.7.
 - charleston: 0 clicks / 1 impressions / position 4.
 - layton: not measured or not returned.
 - farmington: not measured or not returned.
