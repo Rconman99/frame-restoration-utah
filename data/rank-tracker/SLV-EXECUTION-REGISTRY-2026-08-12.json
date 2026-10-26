@@ -16,14 +16,14 @@
     "exactCidMapsTargetsMeasured": 72,
     "exactCidMapsNumberOne": 0,
     "googleAiOverviewCitations": 1,
-    "googleAiOverviewsPresent": 4,
+    "googleAiOverviewsPresent": 3,
     "consumerAiCompleteCityPanels": 0,
     "citiesAtSustainedGoal": 0
   },
   "sources": {
     "portfolio": {
       "file": "data/rank-tracker/SLV-18-CITY-GOAL-PORTFOLIO-2026-08-12.json",
-      "sha256": "8fa3bba6dba52b8a72ff13d34cba84202ffbe02c0d2f9514df9741194f4298a3"
+      "sha256": "8f2273f2e60ae7a0d3c0c8174a3daf9ec5448413bfd0768093893d762b1e710c"
     },
     "corePriority": {
       "file": "data/rank-tracker/SLV-PRIORITY-2026-08-12.json",
@@ -35,7 +35,7 @@
     },
     "displacement": {
       "file": "data/rank-tracker/SLV-COMPETITOR-DISPLACEMENT-2026-08-12.json",
-      "sha256": "9b19929c9b2028000183e6c195d4f604aa4e9e41f56a0ea8810c9843bc8b64fe"
+      "sha256": "ef056e38180074512fe4dfa243f85f566a59334f64c66a3216be359a7d546df4"
     },
     "coreCleanupPacket": {
       "file": "data/authority/SLV-CITY-PUBLIC-REMEDIATION-PACKET-2026-08-12.json",
@@ -51,19 +51,19 @@
     },
     "expansionArchitecture": {
       "file": "data/rank-tracker/SLV-EXPANSION-ARCHITECTURE-2026-08-12.json",
-      "sha256": "f2d8133f2fbab59ea4baec84a90b75ced2e97b748a14fbae554378fd0c584ac0"
+      "sha256": "4e1bdaa93e40001a8cd4b3f887233d91d9ccfa900f7ca2e66913035aef4ecb6a"
     },
     "entityHealth": {
       "file": "data/rank-tracker/SLV-ENTITY-HEALTH-2026-08-12.json",
-      "sha256": "47858d23f64cba73f43d07ed04cd38bd7c4405ccacf01ee9d8893ca5d195e121"
+      "sha256": "12f42f0a18abc3a24ae9f4b8f1348f4f93bb9b28dec5bab3c8ee2b4c55252521"
     },
     "weeklyDecisions": {
       "file": "data/rank-tracker/SLV-WEEKLY-DECISIONS-2026-08-12.json",
-      "sha256": "5b6683c7419615779ed08cb964c90d99f74aa0c7301eb0fe56ce62a0d8f8e48c"
+      "sha256": "b90c76443ca9eab9434cecc6ed5fbf62f2f5d6c2a4424a2aac4a026c85dca747"
     },
     "gscAttribution": {
       "file": "data/rank-tracker/SLV-GSC-URL-ATTRIBUTION-LATEST.json",
-      "sha256": "5fbacc9edff79f95cc062d24b4f94bc4f01265a5982816620257e2e3bcfaf7c5"
+      "sha256": "502cb95c653e5b3af02b99df63395aba47bcc23af4a777db111c48a72501d908"
     },
     "consumerAi": {
       "file": "data/rank-tracker/SLV-CONSUMER-AI-LATEST.json",
@@ -71,11 +71,11 @@
     },
     "interventions": {
       "file": "data/rank-tracker/SLV-INTERVENTION-QUEUE-2026-08-12.json",
-      "sha256": "f6af2e186b23b397bee02a6a3c68543965a576ae284c14443c6fa521afa3da3d"
+      "sha256": "1e79ee5b1769cc510de8adbd1f9ee9cf71462af242a33918b32c1199571b28fd"
     },
     "mapsReadiness": {
       "file": "data/rank-tracker/SLV-MAPS-READINESS-2026-08-12.json",
-      "sha256": "9ae6b0e6396dbe419c61c9d48d1e0f0db7042a251111f32a4e2ea641bb7ba0dc"
+      "sha256": "ee13fa26227423bd18ad29cca33456dd5ac7107915fb2b9ed8ca9cc424780282"
     },
     "ownerProfileAuditRequest": {
       "file": "data/authority/SLV-GBP-OWNER-AUDIT-REQUEST-2026-08-12.json",
@@ -264,10 +264,10 @@
       "page": "locations/salt-lake-city.html",
       "panelId": "utah-salt-lake-city-google-v1",
       "measurement": {
-        "observedAt": "2026-10-19T09:24:50.715Z",
+        "observedAt": "2026-10-26T09:26:40.115Z",
         "organicRanks": [
           null,
-          20,
+          null,
           null,
           null
         ],
@@ -304,8 +304,8 @@
         "scoreVector": {
           "businessValue": 10,
           "confidence": 8,
-          "leadValue": 3,
-          "authorityValue": 7,
+          "leadValue": 2,
+          "authorityValue": 5,
           "learningValue": 6,
           "implementationCost": 1,
           "complianceRisk": 1,
@@ -325,17 +325,18 @@
       },
       "mapsReadiness": {
         "lane": "exact-cid-review-and-owner-profile-audit",
-        "packsPresent": 3,
+        "packsPresent": 4,
         "exactCidReturned": 0,
         "exactCidNumberOne": 0,
         "dominantDisplacer": {
           "name": "Whitaker Roofing Services",
           "cid": "11316815627233980109",
           "domain": "whitakerroofing.com",
-          "appearances": 3,
+          "appearances": 4,
           "numberOneQueries": 2,
           "bestRank": 1,
           "keywords": [
+            "roofing contractor salt lake city",
             "roof repair salt lake city",
             "roof replacement salt lake city",
             "roofer salt lake city"
@@ -359,9 +360,9 @@
       "page": "locations/millcreek.html",
       "panelId": "utah-millcreek-google-v1",
       "measurement": {
-        "observedAt": "2026-10-19T09:24:50.715Z",
+        "observedAt": "2026-10-26T09:26:40.115Z",
         "organicRanks": [
-          14,
+          null,
           null,
           null,
           15
@@ -400,7 +401,7 @@
           "businessValue": 10,
           "confidence": 8,
           "leadValue": 5,
-          "authorityValue": 5,
+          "authorityValue": 7,
           "learningValue": 6,
           "implementationCost": 5,
           "complianceRisk": 8,
@@ -424,11 +425,11 @@
         "exactCidReturned": 0,
         "exactCidNumberOne": 0,
         "dominantDisplacer": {
-          "name": "Whitaker Roofing Services",
-          "cid": "11316815627233980109",
-          "domain": "whitakerroofing.com",
+          "name": "RoofTek",
+          "cid": "2008385778269964311",
+          "domain": null,
           "appearances": 4,
-          "numberOneQueries": 3,
+          "numberOneQueries": 2,
           "bestRank": 1,
           "keywords": [
             "roofing contractor millcreek",
@@ -652,11 +653,11 @@
       "page": "locations/sandy.html",
       "panelId": "utah-sandy-google-v1",
       "measurement": {
-        "observedAt": "2026-10-19T09:24:50.715Z",
+        "observedAt": "2026-10-26T09:26:40.115Z",
         "organicRanks": [
           null,
           null,
-          null,
+          18,
           null
         ],
         "organicNumberOne": [],
@@ -692,7 +693,7 @@
         "scoreVector": {
           "businessValue": 10,
           "confidence": 6,
-          "leadValue": 2,
+          "leadValue": 3,
           "authorityValue": 5,
           "learningValue": 6,
           "implementationCost": 5,
@@ -748,12 +749,12 @@
       "page": "locations/holladay.html",
       "panelId": "utah-holladay-google-v1",
       "measurement": {
-        "observedAt": "2026-10-19T09:24:50.715Z",
+        "observedAt": "2026-10-26T09:26:40.115Z",
         "organicRanks": [
-          24,
           null,
-          28,
-          25
+          null,
+          21,
+          null
         ],
         "organicNumberOne": [],
         "exactCidMapsNumberOne": 0,
@@ -792,7 +793,7 @@
           "businessValue": 10,
           "confidence": 6,
           "leadValue": 3,
-          "authorityValue": 7,
+          "authorityValue": 5,
           "learningValue": 6,
           "implementationCost": 3,
           "complianceRisk": 1,
@@ -816,11 +817,11 @@
         "exactCidReturned": 0,
         "exactCidNumberOne": 0,
         "dominantDisplacer": {
-          "name": "Utah Roofing Pros",
-          "cid": "4118570990011609504",
-          "domain": "utahroofingpros.com",
+          "name": "True North Roofing",
+          "cid": "5387650211366766810",
+          "domain": "truenorthroof.com",
           "appearances": 4,
-          "numberOneQueries": 3,
+          "numberOneQueries": 2,
           "bestRank": 1,
           "keywords": [
             "roofing contractor holladay",
@@ -847,7 +848,7 @@
       "page": "locations/cottonwood-heights.html",
       "panelId": "utah-cottonwood-heights-google-v1",
       "measurement": {
-        "observedAt": "2026-10-19T09:24:50.715Z",
+        "observedAt": "2026-10-26T09:26:40.115Z",
         "organicRanks": [
           null,
           null,
@@ -1710,11 +1711,11 @@
       "page": "locations/draper.html",
       "panelId": "utah-draper-google-v1",
       "measurement": {
-        "observedAt": "2026-10-19T09:24:50.715Z",
+        "observedAt": "2026-10-26T09:26:40.115Z",
         "organicRanks": [
+          6,
           null,
-          21,
-          null,
+          25,
           null
         ],
         "organicNumberOne": [],
@@ -1750,7 +1751,7 @@
         "scoreVector": {
           "businessValue": 10,
           "confidence": 6,
-          "leadValue": 3,
+          "leadValue": 7,
           "authorityValue": 5,
           "learningValue": 6,
           "implementationCost": 5,

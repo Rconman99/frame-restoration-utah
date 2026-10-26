@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "decisionId": "frame-utah-slv-weekly-keep-revert-v1",
   "market": "utah-salt-lake-valley",
-  "asOf": "2026-10-19T09:24:50.715Z",
+  "asOf": "2026-10-26T09:26:40.115Z",
   "status": "active-insufficient-four-week-history",
   "publicMutationPerformed": false,
   "policy": {
@@ -15,7 +15,7 @@
   "sources": {
     "portfolio": {
       "file": "data/rank-tracker/SLV-18-CITY-GOAL-PORTFOLIO-2026-08-12.json",
-      "sha256": "8fa3bba6dba52b8a72ff13d34cba84202ffbe02c0d2f9514df9741194f4298a3"
+      "sha256": "8f2273f2e60ae7a0d3c0c8174a3daf9ec5448413bfd0768093893d762b1e710c"
     },
     "saltLakeCityExperiment": {
       "file": "data/seo-experiments/utah-slc-entity-trust-correction-2026-08-12.json",
@@ -74,6 +74,10 @@
         {
           "file": "data/rank-tracker/2026-10-19.json",
           "sha256": "83938d1875e8baadcca5d092666780758982d50cb777034f38671642aab16925"
+        },
+        {
+          "file": "data/rank-tracker/2026-10-26.json",
+          "sha256": "d462444b950ebc4bde200a58f20c2fb0102d62b0cbf3367fb28cb54b2f9e1bfa"
         }
       ],
       "millcreek": [
@@ -120,6 +124,10 @@
         {
           "file": "data/rank-tracker/panels/millcreek/2026-10-19.json",
           "sha256": "d53e588faacd661f5f13886535476a8653626f88bf86876b19c530affc526f96"
+        },
+        {
+          "file": "data/rank-tracker/panels/millcreek/2026-10-26.json",
+          "sha256": "e9727e06a01a5069e904c4cd8bebb32f6fd2c5e6b956d2e83d8c0e33392bbf92"
         }
       ],
       "sandy": [
@@ -166,6 +174,10 @@
         {
           "file": "data/rank-tracker/panels/sandy/2026-10-19.json",
           "sha256": "6665d3992ddd097d06f222223edd01d9a8768fbd8a0fefb53051d0b48de93706"
+        },
+        {
+          "file": "data/rank-tracker/panels/sandy/2026-10-26.json",
+          "sha256": "6f0ea3341aabb53a013a34ae65f73077619182d30e40f1fa2b6d20dcff14f313"
         }
       ],
       "holladay": [
@@ -212,6 +224,10 @@
         {
           "file": "data/rank-tracker/panels/holladay/2026-10-19.json",
           "sha256": "ce6a0e1585eab51607438150594ce309be64f7b69f31ef6a9d5fc3a9693205f6"
+        },
+        {
+          "file": "data/rank-tracker/panels/holladay/2026-10-26.json",
+          "sha256": "328d1711e8368a217392a168acb76d9d956fce67dce9e3746b79387cb7004d63"
         }
       ],
       "cottonwood-heights": [
@@ -258,6 +274,10 @@
         {
           "file": "data/rank-tracker/panels/cottonwood-heights/2026-10-19.json",
           "sha256": "f3b1fcd22bfd1d58aca5cfc176d1062bc46bd477a55048bf13ebd5e84c5244b6"
+        },
+        {
+          "file": "data/rank-tracker/panels/cottonwood-heights/2026-10-26.json",
+          "sha256": "cff0f4a90f8d920eca30bcaa5d821c1f844ad16ae3910fc4e4a53d016c89a82d"
         }
       ],
       "draper": [
@@ -304,6 +324,10 @@
         {
           "file": "data/rank-tracker/panels/draper/2026-10-19.json",
           "sha256": "003bbd89c7bac4eef8770868c0ae2b87f23c54e08d7877f472165b008de5169b"
+        },
+        {
+          "file": "data/rank-tracker/panels/draper/2026-10-26.json",
+          "sha256": "61cfb0e730061677d81645c778903410a327441725d4aa7a82d231f6e20540d7"
         }
       ],
       "bluffdale": [
@@ -391,8 +415,8 @@
     "protectedGoogleAiOverviewCitations": 1,
     "citiesAtSustainedGoal": 0
   },
-  "nextDecisionDate": "2026-10-26",
-  "nextAction": "Run the scheduled six-city core Google panel on 2026-10-26. Do not admit the 12 expansion cities to recurring paid measurement without explicit spend approval, and do not call a ranking keep/revert before comparable evidence exists.",
+  "nextDecisionDate": "2026-11-02",
+  "nextAction": "Run the scheduled six-city core Google panel on 2026-11-02. Do not admit the 12 expansion cities to recurring paid measurement without explicit spend approval, and do not call a ranking keep/revert before comparable evidence exists.",
   "cities": [
     {
       "city": "Salt Lake City",
@@ -400,9 +424,9 @@
       "cohort": "core-measured",
       "panelId": "utah-salt-lake-city-google-v1",
       "page": "locations/salt-lake-city.html",
-      "latestObservedAt": "2026-10-19T09:24:50.715Z",
-      "rawDatedGoogleReports": 12,
-      "comparableWeeklyGooglePanels": 11,
+      "latestObservedAt": "2026-10-26T09:26:40.115Z",
+      "rawDatedGoogleReports": 13,
+      "comparableWeeklyGooglePanels": 12,
       "consumerAiState": "configured-scheduled-unmeasured-invalid-provider-credential",
       "consumerAi": {
         "comparableWeeklyPanels": 0,
@@ -418,8 +442,8 @@
         "requiredConsecutiveWeeklyPanels": 4,
         "allFourOrganicNumberOneStreak": 0,
         "allFourExactCidMapsNumberOneStreak": 0,
-        "allObservedAiOverviewsCitedStreak": 0,
-        "intendedPageSelectionStreak": 11,
+        "allObservedAiOverviewsCitedStreak": 1,
+        "intendedPageSelectionStreak": 12,
         "consumerAiCompleteStreak": 0,
         "sameWindowCompleteStreak": 0,
         "integrityGreen": true,
@@ -435,7 +459,7 @@
           "verdict": "hold",
           "reason": "The calendar and panel-count gates have passed, but the running contract remains confounded and requires a fresh same-window consumer-AI reading before attribution.",
           "activeExperiment": "utah-slc-entity-trust-correction-2026-08-12",
-          "postDeploymentGooglePanels": 11,
+          "postDeploymentGooglePanels": 12,
           "requiredGooglePanels": 4,
           "earliestEvaluationAt": "2026-09-09T04:40:58.000Z",
           "calendarGatePassedAtLatestPanel": true,
@@ -453,7 +477,7 @@
           "current": {
             "organicRank": null,
             "exactCidMapRank": null,
-            "aiOverviewPresent": true,
+            "aiOverviewPresent": false,
             "aiOverviewCited": false,
             "rankingUrl": null
           },
@@ -465,11 +489,11 @@
           "queryId": "slc-roof-repair",
           "keyword": "roof repair salt lake city",
           "current": {
-            "organicRank": 20,
+            "organicRank": null,
             "exactCidMapRank": null,
             "aiOverviewPresent": false,
             "aiOverviewCited": false,
-            "rankingUrl": "https://www.framerestorationutah.com/locations/salt-lake-city"
+            "rankingUrl": null
           },
           "consecutiveOrganicNumberOnePanels": 0,
           "consecutiveExactCidMapsNumberOnePanels": 0,
@@ -511,9 +535,9 @@
       "cohort": "core-measured",
       "panelId": "utah-millcreek-google-v1",
       "page": "locations/millcreek.html",
-      "latestObservedAt": "2026-10-19T09:24:50.715Z",
-      "rawDatedGoogleReports": 11,
-      "comparableWeeklyGooglePanels": 11,
+      "latestObservedAt": "2026-10-26T09:26:40.115Z",
+      "rawDatedGoogleReports": 12,
+      "comparableWeeklyGooglePanels": 12,
       "consumerAiState": "configured-scheduled-unmeasured-invalid-provider-credential",
       "consumerAi": {
         "comparableWeeklyPanels": 0,
@@ -529,8 +553,8 @@
         "requiredConsecutiveWeeklyPanels": 4,
         "allFourOrganicNumberOneStreak": 0,
         "allFourExactCidMapsNumberOneStreak": 0,
-        "allObservedAiOverviewsCitedStreak": 2,
-        "intendedPageSelectionStreak": 11,
+        "allObservedAiOverviewsCitedStreak": 0,
+        "intendedPageSelectionStreak": 12,
         "consumerAiCompleteStreak": 0,
         "sameWindowCompleteStreak": 0,
         "integrityGreen": false,
@@ -546,7 +570,7 @@
           "verdict": "hold",
           "reason": "No isolated ranking experiment is running; additional observations do not create a keep/revert decision by themselves.",
           "activeExperiment": null,
-          "observedGooglePanels": 11,
+          "observedGooglePanels": 12,
           "requiredGooglePanels": 4
         }
       },
@@ -555,11 +579,11 @@
           "queryId": "millcreek-roofing-contractor",
           "keyword": "roofing contractor millcreek",
           "current": {
-            "organicRank": 14,
+            "organicRank": null,
             "exactCidMapRank": null,
             "aiOverviewPresent": false,
             "aiOverviewCited": false,
-            "rankingUrl": "https://www.framerestorationutah.com/locations/millcreek"
+            "rankingUrl": null
           },
           "consecutiveOrganicNumberOnePanels": 0,
           "consecutiveExactCidMapsNumberOnePanels": 0,
@@ -599,7 +623,7 @@
           "current": {
             "organicRank": 15,
             "exactCidMapRank": null,
-            "aiOverviewPresent": false,
+            "aiOverviewPresent": true,
             "aiOverviewCited": false,
             "rankingUrl": "https://www.framerestorationutah.com/locations/millcreek"
           },
@@ -615,9 +639,9 @@
       "cohort": "core-measured",
       "panelId": "utah-sandy-google-v1",
       "page": "locations/sandy.html",
-      "latestObservedAt": "2026-10-19T09:24:50.715Z",
-      "rawDatedGoogleReports": 11,
-      "comparableWeeklyGooglePanels": 11,
+      "latestObservedAt": "2026-10-26T09:26:40.115Z",
+      "rawDatedGoogleReports": 12,
+      "comparableWeeklyGooglePanels": 12,
       "consumerAiState": "configured-manual-unmeasured-invalid-provider-credential",
       "consumerAi": {
         "comparableWeeklyPanels": 0,
@@ -633,8 +657,8 @@
         "requiredConsecutiveWeeklyPanels": 4,
         "allFourOrganicNumberOneStreak": 0,
         "allFourExactCidMapsNumberOneStreak": 0,
-        "allObservedAiOverviewsCitedStreak": 11,
-        "intendedPageSelectionStreak": 11,
+        "allObservedAiOverviewsCitedStreak": 12,
+        "intendedPageSelectionStreak": 12,
         "consumerAiCompleteStreak": 0,
         "sameWindowCompleteStreak": 0,
         "integrityGreen": false,
@@ -650,7 +674,7 @@
           "verdict": "hold",
           "reason": "No isolated ranking experiment is running; additional observations do not create a keep/revert decision by themselves.",
           "activeExperiment": null,
-          "observedGooglePanels": 11,
+          "observedGooglePanels": 12,
           "requiredGooglePanels": 4
         }
       },
@@ -687,11 +711,11 @@
           "queryId": "sandy-roof-replacement",
           "keyword": "roof replacement sandy",
           "current": {
-            "organicRank": null,
+            "organicRank": 18,
             "exactCidMapRank": null,
             "aiOverviewPresent": false,
             "aiOverviewCited": false,
-            "rankingUrl": null
+            "rankingUrl": "https://www.framerestorationutah.com/locations/sandy"
           },
           "consecutiveOrganicNumberOnePanels": 0,
           "consecutiveExactCidMapsNumberOnePanels": 0,
@@ -719,9 +743,9 @@
       "cohort": "core-measured",
       "panelId": "utah-holladay-google-v1",
       "page": "locations/holladay.html",
-      "latestObservedAt": "2026-10-19T09:24:50.715Z",
-      "rawDatedGoogleReports": 11,
-      "comparableWeeklyGooglePanels": 11,
+      "latestObservedAt": "2026-10-26T09:26:40.115Z",
+      "rawDatedGoogleReports": 12,
+      "comparableWeeklyGooglePanels": 12,
       "consumerAiState": "configured-manual-unmeasured-invalid-provider-credential",
       "consumerAi": {
         "comparableWeeklyPanels": 0,
@@ -737,7 +761,7 @@
         "requiredConsecutiveWeeklyPanels": 4,
         "allFourOrganicNumberOneStreak": 0,
         "allFourExactCidMapsNumberOneStreak": 0,
-        "allObservedAiOverviewsCitedStreak": 0,
+        "allObservedAiOverviewsCitedStreak": 1,
         "intendedPageSelectionStreak": 0,
         "consumerAiCompleteStreak": 0,
         "sameWindowCompleteStreak": 0,
@@ -754,7 +778,7 @@
           "verdict": "hold",
           "reason": "No isolated ranking experiment is running; additional observations do not create a keep/revert decision by themselves.",
           "activeExperiment": null,
-          "observedGooglePanels": 11,
+          "observedGooglePanels": 12,
           "requiredGooglePanels": 4
         }
       },
@@ -763,11 +787,11 @@
           "queryId": "holladay-roofing-contractor",
           "keyword": "roofing contractor holladay",
           "current": {
-            "organicRank": 24,
+            "organicRank": null,
             "exactCidMapRank": null,
             "aiOverviewPresent": false,
             "aiOverviewCited": false,
-            "rankingUrl": "https://www.framerestorationutah.com/locations/holladay"
+            "rankingUrl": null
           },
           "consecutiveOrganicNumberOnePanels": 0,
           "consecutiveExactCidMapsNumberOnePanels": 0,
@@ -779,7 +803,7 @@
           "current": {
             "organicRank": null,
             "exactCidMapRank": null,
-            "aiOverviewPresent": true,
+            "aiOverviewPresent": false,
             "aiOverviewCited": false,
             "rankingUrl": null
           },
@@ -791,7 +815,7 @@
           "queryId": "holladay-roof-replacement",
           "keyword": "roof replacement holladay",
           "current": {
-            "organicRank": 28,
+            "organicRank": 21,
             "exactCidMapRank": null,
             "aiOverviewPresent": false,
             "aiOverviewCited": false,
@@ -805,11 +829,11 @@
           "queryId": "holladay-roofer",
           "keyword": "roofer holladay",
           "current": {
-            "organicRank": 25,
+            "organicRank": null,
             "exactCidMapRank": null,
             "aiOverviewPresent": false,
             "aiOverviewCited": false,
-            "rankingUrl": "https://www.framerestorationutah.com/locations/holladay"
+            "rankingUrl": null
           },
           "consecutiveOrganicNumberOnePanels": 0,
           "consecutiveExactCidMapsNumberOnePanels": 0,
@@ -823,9 +847,9 @@
       "cohort": "core-measured",
       "panelId": "utah-cottonwood-heights-google-v1",
       "page": "locations/cottonwood-heights.html",
-      "latestObservedAt": "2026-10-19T09:24:50.715Z",
-      "rawDatedGoogleReports": 11,
-      "comparableWeeklyGooglePanels": 11,
+      "latestObservedAt": "2026-10-26T09:26:40.115Z",
+      "rawDatedGoogleReports": 12,
+      "comparableWeeklyGooglePanels": 12,
       "consumerAiState": "configured-manual-unmeasured-invalid-provider-credential",
       "consumerAi": {
         "comparableWeeklyPanels": 0,
@@ -841,8 +865,8 @@
         "requiredConsecutiveWeeklyPanels": 4,
         "allFourOrganicNumberOneStreak": 0,
         "allFourExactCidMapsNumberOneStreak": 0,
-        "allObservedAiOverviewsCitedStreak": 2,
-        "intendedPageSelectionStreak": 11,
+        "allObservedAiOverviewsCitedStreak": 3,
+        "intendedPageSelectionStreak": 12,
         "consumerAiCompleteStreak": 0,
         "sameWindowCompleteStreak": 0,
         "integrityGreen": false,
@@ -858,7 +882,7 @@
           "verdict": "hold",
           "reason": "No isolated ranking experiment is running; additional observations do not create a keep/revert decision by themselves.",
           "activeExperiment": null,
-          "observedGooglePanels": 11,
+          "observedGooglePanels": 12,
           "requiredGooglePanels": 4
         }
       },
@@ -927,9 +951,9 @@
       "cohort": "core-measured",
       "panelId": "utah-draper-google-v1",
       "page": "locations/draper.html",
-      "latestObservedAt": "2026-10-19T09:24:50.715Z",
-      "rawDatedGoogleReports": 11,
-      "comparableWeeklyGooglePanels": 11,
+      "latestObservedAt": "2026-10-26T09:26:40.115Z",
+      "rawDatedGoogleReports": 12,
+      "comparableWeeklyGooglePanels": 12,
       "consumerAiState": "configured-manual-unmeasured-invalid-provider-credential",
       "consumerAi": {
         "comparableWeeklyPanels": 0,
@@ -945,8 +969,8 @@
         "requiredConsecutiveWeeklyPanels": 4,
         "allFourOrganicNumberOneStreak": 0,
         "allFourExactCidMapsNumberOneStreak": 0,
-        "allObservedAiOverviewsCitedStreak": 11,
-        "intendedPageSelectionStreak": 11,
+        "allObservedAiOverviewsCitedStreak": 12,
+        "intendedPageSelectionStreak": 12,
         "consumerAiCompleteStreak": 0,
         "sameWindowCompleteStreak": 0,
         "integrityGreen": false,
@@ -962,7 +986,7 @@
           "verdict": "hold",
           "reason": "No isolated ranking experiment is running; additional observations do not create a keep/revert decision by themselves.",
           "activeExperiment": null,
-          "observedGooglePanels": 11,
+          "observedGooglePanels": 12,
           "requiredGooglePanels": 4
         }
       },
@@ -971,21 +995,7 @@
           "queryId": "draper-roofing-contractor",
           "keyword": "roofing contractor draper",
           "current": {
-            "organicRank": null,
-            "exactCidMapRank": null,
-            "aiOverviewPresent": false,
-            "aiOverviewCited": false,
-            "rankingUrl": null
-          },
-          "consecutiveOrganicNumberOnePanels": 0,
-          "consecutiveExactCidMapsNumberOnePanels": 0,
-          "intendedPageSelected": true
-        },
-        {
-          "queryId": "draper-roof-repair",
-          "keyword": "roof repair draper",
-          "current": {
-            "organicRank": 21,
+            "organicRank": 6,
             "exactCidMapRank": null,
             "aiOverviewPresent": false,
             "aiOverviewCited": false,
@@ -996,14 +1006,28 @@
           "intendedPageSelected": true
         },
         {
-          "queryId": "draper-roof-replacement",
-          "keyword": "roof replacement draper",
+          "queryId": "draper-roof-repair",
+          "keyword": "roof repair draper",
           "current": {
             "organicRank": null,
             "exactCidMapRank": null,
             "aiOverviewPresent": false,
             "aiOverviewCited": false,
             "rankingUrl": null
+          },
+          "consecutiveOrganicNumberOnePanels": 0,
+          "consecutiveExactCidMapsNumberOnePanels": 0,
+          "intendedPageSelected": true
+        },
+        {
+          "queryId": "draper-roof-replacement",
+          "keyword": "roof replacement draper",
+          "current": {
+            "organicRank": 25,
+            "exactCidMapRank": null,
+            "aiOverviewPresent": false,
+            "aiOverviewCited": false,
+            "rankingUrl": "https://www.framerestorationutah.com/locations/draper"
           },
           "consecutiveOrganicNumberOnePanels": 0,
           "consecutiveExactCidMapsNumberOnePanels": 0,
