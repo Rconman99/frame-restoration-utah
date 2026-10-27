@@ -57,13 +57,13 @@ import {
   normalizeAlertPhone,
   shouldAlertMissedCall,
 } from "../_shared/missed-call-alert.ts";
+import { answeredFromDial } from "../_shared/call-outcome.ts";
 
 // Twilio FromZip is the calling number's exchange ZIP. Keep only a clean 5-digit value.
 function twilioZip(value: string | undefined): string | null {
   const zip = String(value || "").trim().slice(0, 5);
   return /^\d{5}$/.test(zip) ? zip : null;
 }
-
 
 declare const EdgeRuntime: {
   waitUntil(promise: Promise<unknown>): void;
@@ -967,6 +967,16 @@ export async function handleCallRequest(req: Request): Promise<Response> {
       const updateData: Record<string, unknown> = { status: callStatus };
       if (duration > 0) updateData.duration_seconds = duration;
       if (recordingUrl) updateData.recording_url = recordingUrl;
+      // Explicit answered/missed, decided only by the Dial action (child-leg
+      // /status events cannot tell a declined whisper from a real bridge).
+      if (path === "completed") {
+        const answered = answeredFromDial(
+          data.DialBridged,
+          data.DialCallStatus,
+          Number.isFinite(duration) ? duration : 0,
+        );
+        if (answered !== null) updateData.answered = answered;
+      }
 
       let update = supabase.from("call_logs").update(updateData).eq(
         "call_sid",
