@@ -1,8 +1,8 @@
 {
   "artifact": "frame-utah-growth-operations",
   "version": 1,
-  "generatedAt": "2026-10-26T14:18:35.485Z",
-  "snapshotDate": "2026-10-26",
+  "generatedAt": "2026-10-27T12:57:23.307Z",
+  "snapshotDate": "2026-10-27",
   "sourceAgeHours": 0,
   "state": "measurement_operational_outcomes_incomplete",
   "northStar": "qualified_organic_leads",
@@ -16,8 +16,8 @@
     "nextAction": "Reconcile existing lead source/city/page attribution with owner-confirmed CRM outcomes through the approved read-only lane; do not infer jobs from clicks or change CRM truth."
   },
   "searchWindow": {
-    "startDate": "2026-09-26",
-    "endDate": "2026-10-23"
+    "startDate": "2026-09-27",
+    "endDate": "2026-10-24"
   },
   "blockers": [],
   "crawlErrors": [],
@@ -29,8 +29,8 @@
       "state": "observed_rolling_window",
       "metrics": {
         "clicks": 2,
-        "impressions": 7006,
-        "averagePosition": 26
+        "impressions": 7246,
+        "averagePosition": 26.3
       }
     },
     {
@@ -39,7 +39,7 @@
       "state": "observed_rolling_window",
       "metrics": {
         "clicks": 2,
-        "impressions": 1399,
+        "impressions": 1430,
         "averagePosition": 10.6
       }
     },
@@ -91,7 +91,7 @@
       "region": "slc",
       "query": "composite slate roofing salt lake city",
       "clicks": 0,
-      "impressions": 42,
+      "impressions": 41,
       "averagePosition": 9.5,
       "state": "exact_query_page_diagnosis_ready",
       "nextAction": "Obtain an exact query + intended-page baseline; check current URL selection and running experiments before drafting one isolated change.",
@@ -101,8 +101,8 @@
       "region": "heber",
       "query": "roof repair heber city ut",
       "clicks": 0,
-      "impressions": 1722,
-      "averagePosition": 7.1,
+      "impressions": 1741,
+      "averagePosition": 7.4,
       "state": "exact_query_page_diagnosis_ready",
       "nextAction": "Obtain an exact query + intended-page baseline; check current URL selection and running experiments before drafting one isolated change.",
       "limitation": "Query-level discovery only: these metrics are not a page baseline, lead count or revenue estimate."
@@ -111,8 +111,8 @@
       "region": "heber",
       "query": "roofing heber city ut",
       "clicks": 0,
-      "impressions": 1178,
-      "averagePosition": 4.4,
+      "impressions": 1174,
+      "averagePosition": 4.7,
       "state": "exact_query_page_diagnosis_ready",
       "nextAction": "Obtain an exact query + intended-page baseline; check current URL selection and running experiments before drafting one isolated change.",
       "limitation": "Query-level discovery only: these metrics are not a page baseline, lead count or revenue estimate."
@@ -121,8 +121,8 @@
       "region": "heber",
       "query": "which roofing companies in heber city ut provide roof repair and replacement services?",
       "clicks": 0,
-      "impressions": 45,
-      "averagePosition": 5.4,
+      "impressions": 75,
+      "averagePosition": 6.5,
       "state": "exact_query_page_diagnosis_ready",
       "nextAction": "Obtain an exact query + intended-page baseline; check current URL selection and running experiments before drafting one isolated change.",
       "limitation": "Query-level discovery only: these metrics are not a page baseline, lead count or revenue estimate."
@@ -131,8 +131,8 @@
       "region": "hail-service-area",
       "query": "roof repair midway ut",
       "clicks": 0,
-      "impressions": 1392,
-      "averagePosition": 4.5,
+      "impressions": 1375,
+      "averagePosition": 4.7,
       "state": "exact_query_page_diagnosis_ready",
       "nextAction": "Obtain an exact query + intended-page baseline; check current URL selection and running experiments before drafting one isolated change.",
       "limitation": "Query-level discovery only: these metrics are not a page baseline, lead count or revenue estimate."
@@ -141,8 +141,8 @@
       "region": "hail-service-area",
       "query": "roofing midway ut",
       "clicks": 0,
-      "impressions": 1312,
-      "averagePosition": 4,
+      "impressions": 1299,
+      "averagePosition": 4.1,
       "state": "exact_query_page_diagnosis_ready",
       "nextAction": "Obtain an exact query + intended-page baseline; check current URL selection and running experiments before drafting one isolated change.",
       "limitation": "Query-level discovery only: these metrics are not a page baseline, lead count or revenue estimate."
@@ -151,7 +151,7 @@
       "region": "davis-hail",
       "query": "roof repair farmington ut",
       "clicks": 0,
-      "impressions": 841,
+      "impressions": 857,
       "averagePosition": 11.1,
       "state": "exact_query_page_diagnosis_ready",
       "nextAction": "Obtain an exact query + intended-page baseline; check current URL selection and running experiments before drafting one isolated change.",
@@ -161,8 +161,18 @@
       "region": "davis-hail",
       "query": "roofing farmington ut",
       "clicks": 0,
-      "impressions": 623,
-      "averagePosition": 13.5,
+      "impressions": 657,
+      "averagePosition": 13.6,
+      "state": "exact_query_page_diagnosis_ready",
+      "nextAction": "Obtain an exact query + intended-page baseline; check current URL selection and running experiments before drafting one isolated change.",
+      "limitation": "Query-level discovery only: these metrics are not a page baseline, lead count or revenue estimate."
+    },
+    {
+      "region": "davis-hail",
+      "query": "which roofing companies in farmington ut handle roof repairs and replacements?",
+      "clicks": 0,
+      "impressions": 36,
+      "averagePosition": 8.1,
       "state": "exact_query_page_diagnosis_ready",
       "nextAction": "Obtain an exact query + intended-page baseline; check current URL selection and running experiments before drafting one isolated change.",
       "limitation": "Query-level discovery only: these metrics are not a page baseline, lead count or revenue estimate."
@@ -222,8 +232,8 @@
   },
   "sources": [
     {
-      "file": "data/seo/snapshots/2026-10-26.json",
-      "sha256": "8c8d9bf0580e80ddd51abb12b4e5cab797734235bca2bfe6da2a486e4661d14b"
+      "file": "data/seo/snapshots/2026-10-27.json",
+      "sha256": "ec2dfd8af6afe29fe7d2e2c52b30d47d8e3bbe35ee7a4ff0fea27b9c3471f494"
     },
     {
       "file": "data/seo-experiments/utah-homepage-commercial-title-2026-08-09.json",
