@@ -1,0 +1,17 @@
+name: hook-guards
+on:
+  pull_request:
+    paths: [".claude/**", ".cursor/**", "scripts/test/hooks.test.mjs", ".github/workflows/hook-guards.yml"]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  hook-fixtures:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm run test:hooks
