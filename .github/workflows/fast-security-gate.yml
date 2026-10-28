@@ -1,0 +1,115 @@
+name: Fast Security Gate
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+concurrency:
+  group: fast-security-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  fast-security:
+    name: Gitleaks + OSV-Scanner
+    runs-on: ${{ fromJSON(vars.FRAME_CI_RUNNER || '["ubuntu-latest"]') }}
+    timeout-minutes: 5
+
+    steps:
+      - name: Checkout full history
+        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Setup Node
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: 24
+
+      - name: Install pinned scanners (GitHub-hosted Linux)
+        if: runner.os == 'Linux'
+        shell: bash
+        run: |
+          set -euo pipefail
+          tool_dir="${RUNNER_TEMP}/fast-security-tools"
+          mkdir -p "${tool_dir}"
+
+          case "${RUNNER_ARCH}" in
+            X64)
+              gitleaks_platform="linux_x64"
+              gitleaks_sha="551f6fc83ea457d62a0d98237cbad105af8d557003051f41f3e7ca7b3f2470eb"
+              osv_platform="linux_amd64"
+              osv_sha="15314940c10d26af9c6649f150b8a47c1262e8fc7e17b1d1029b0e479e8ed8a0"
+              ;;
+            ARM64)
+              gitleaks_platform="linux_arm64"
+              gitleaks_sha="e4a487ee7ccd7d3a7f7ec08657610aa3606637dab924210b3aee62570fb4b080"
+              osv_platform="linux_arm64"
+              osv_sha="44e580752910f0ff36ec99aff59af20f65df1e859aa31e5605a8f0d055b496e9"
+              ;;
+            *)
+              echo "Unsupported Linux security runtime: ${RUNNER_ARCH}" >&2
+              exit 1
+              ;;
+          esac
+
+          curl --proto '=https' --tlsv1.2 --fail --silent --show-error --location \
+            --output "${RUNNER_TEMP}/gitleaks.tar.gz" \
+            "https://github.com/gitleaks/gitleaks/releases/download/v8.30.1/gitleaks_8.30.1_${gitleaks_platform}.tar.gz"
+          echo "${gitleaks_sha}  ${RUNNER_TEMP}/gitleaks.tar.gz" \
+            | sha256sum --check
+          tar -xzf "${RUNNER_TEMP}/gitleaks.tar.gz" -C "${tool_dir}" gitleaks
+
+          curl --proto '=https' --tlsv1.2 --fail --silent --show-error --location \
+            --output "${tool_dir}/osv-scanner" \
+            "https://github.com/google/osv-scanner/releases/download/v2.4.0/osv-scanner_${osv_platform}"
+          echo "${osv_sha}  ${tool_dir}/osv-scanner" \
+            | sha256sum --check
+          chmod 0755 "${tool_dir}/gitleaks" "${tool_dir}/osv-scanner"
+          echo "${tool_dir}" >> "${GITHUB_PATH}"
+
+      - name: Install pinned scanners (self-hosted macOS arm64)
+        if: runner.os == 'macOS' && runner.arch == 'ARM64'
+        shell: bash
+        run: |
+          set -euo pipefail
+          tool_dir="${RUNNER_TEMP}/fast-security-tools"
+          mkdir -p "${tool_dir}"
+
+          curl --proto '=https' --tlsv1.2 --fail --silent --show-error --location \
+            --output "${RUNNER_TEMP}/gitleaks.tar.gz" \
+            "https://github.com/gitleaks/gitleaks/releases/download/v8.30.1/gitleaks_8.30.1_darwin_arm64.tar.gz"
+          echo "b40ab0ae55c505963e365f271a8d3846efbc170aa17f2607f13df610a9aeb6a5  ${RUNNER_TEMP}/gitleaks.tar.gz" \
+            | shasum -a 256 --check
+          tar -xzf "${RUNNER_TEMP}/gitleaks.tar.gz" -C "${tool_dir}" gitleaks
+
+          curl --proto '=https' --tlsv1.2 --fail --silent --show-error --location \
+            --output "${tool_dir}/osv-scanner" \
+            "https://github.com/google/osv-scanner/releases/download/v2.4.0/osv-scanner_darwin_arm64"
+          echo "9ca3185ad63e9ab54f7cb90f46a7362be02d80e37f0123d095a54355ea202f5d  ${tool_dir}/osv-scanner" \
+            | shasum -a 256 --check
+          chmod 0755 "${tool_dir}/gitleaks" "${tool_dir}/osv-scanner"
+          echo "${tool_dir}" >> "${GITHUB_PATH}"
+
+      - name: Run blocking fast security gate
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before || '' }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          zero_sha="0000000000000000000000000000000000000000"
+          if [[ ! "${BASE_SHA}" =~ ^[0-9a-f]{40}$ || ! "${HEAD_SHA}" =~ ^[0-9a-f]{40}$ || "${BASE_SHA}" == "${zero_sha}" ]]; then
+            echo "Fast security gate requires immutable non-zero base and head SHAs." >&2
+            exit 2
+          fi
+          node scripts/run-fast-security-gate.mjs \
+            --mode changed \
+            --base "${BASE_SHA}" \
+            --head "${HEAD_SHA}" \
+            --lockfiles changed
