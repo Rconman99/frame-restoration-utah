@@ -1,14 +1,16 @@
--- Utah port of Texas 20260807170000_lead_spam_classification.sql (same columns,
--- same classifier contract). MIGRATION FILE ONLY — not applied.
+-- Utah copy of Frame's shared lead_spam_classification migration (same columns,
+-- same classifier contract in every market). MIGRATION FILE ONLY — not applied.
 --
 -- Machine-owned spam classification for leads.
 --
 -- Why new columns instead of reusing `status`: `status` is owner-maintained and
--- is not kept current. Measured 2026-08-07 over 72 days of production data, the
--- weekly marked-spam rate ran 0%, 0%, 0%, 23%, 54%, 52%, 44%, 0%, 2.7%, 54%, 0%
--- — a manual sweep cadence, not a spam signal. The zero weeks are unprocessed,
--- not clean. A 10-minute regex over the 57 message-bearing leads found 18 spam
--- rows the sweep had missed, and only 2 of those 57 showed real roofing intent.
+-- is not kept current. Measured 2026-08-07 in the first Frame market to run the
+-- classifier (72 days of production data; Utah is unmeasured until its first
+-- classified month), the weekly marked-spam rate ran
+-- 0%, 0%, 0%, 23%, 54%, 52%, 44%, 0%, 2.7%, 54%, 0% — a manual sweep cadence,
+-- not a spam signal. The zero weeks are unprocessed, not clean. A 10-minute regex
+-- over that market's 57 message-bearing leads found 18 spam rows the sweep had
+-- missed, and only 2 of those 57 showed real roofing intent.
 --
 -- These columns are written ONLY by scripts/classify-lead-spam.py (local Ollama,
 -- $0). Nothing here is owner-editable, so the signal cannot rot when nobody
