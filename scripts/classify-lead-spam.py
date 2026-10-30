@@ -5,16 +5,18 @@ Separate real roofing leads from spam, using the local Ollama model ($0/run).
 WHY THIS EXISTS
 ---------------
 `leads.status` is owner-maintained and is not kept current. Measured 2026-08-07
-across 72 days of production data, the weekly marked-spam rate ran
+in the first Frame market to run this classifier (72 days of production data;
+Utah is unmeasured until its first classified month — re-run these numbers
+then), the weekly marked-spam rate ran
 0%, 0%, 0%, 23%, 54%, 52%, 44%, 0%, 2.7%, 54%, 0% — that is a manual sweep
 cadence, not a spam signal; the zero weeks are simply unprocessed. A throwaway
-regex over the 57 message-bearing leads flagged 18 spam rows the sweep missed,
-and only 2 of those 57 showed real roofing intent.
+regex over that market's 57 message-bearing leads flagged 18 spam rows the
+sweep missed, and only 2 of those 57 showed real roofing intent.
 
 The `leads` table is also not a lead table — it is an inbound communication log.
-Of 238 rows: 166 are raw inbound calls (no content at all), 48 are inbound SMS,
-and only 24 are website form fills. Spam separation therefore needs a different
-tactic per channel, which is what CHANNEL HANDLING below implements.
+In that market's 238 rows: 166 were raw inbound calls (no content at all), 48
+inbound SMS, and only 24 website form fills. Spam separation therefore needs a
+different tactic per channel, which is what CHANNEL HANDLING below implements.
 
 WHY A BATCH JOB AND NOT AN INSERT-TIME HOOK
 -------------------------------------------
@@ -34,8 +36,8 @@ HONESTY RULES (same discipline as the SEO loop)
 - A model call that fails or returns unparseable output leaves the row
   unclassified for the next run. It is never defaulted to a label.
 
-USAGE
-    export SUPABASE_URL=https://<ref>.supabase.co
+USAGE (Utah project only; any other SUPABASE_URL is refused)
+    export SUPABASE_URL=https://hdcflshhomzildwqlmwh.supabase.co
     export SUPABASE_SERVICE_ROLE_KEY=<service-role-key>
     python3 scripts/classify-lead-spam.py --dry-run        # classify, print, write nothing
     python3 scripts/classify-lead-spam.py                  # classify unclassified rows
@@ -65,16 +67,25 @@ PROMPT_VERSION = "v2"
 CLASSIFIER_ID = f"ollama/{OLLAMA_MODEL}@{PROMPT_VERSION}"
 
 # Answered-call talk time, in seconds. Recording starts on answer
-# (record-from-answer-dual), so this is conversation length. A robocall or
-# telemarketer that gets picked up and hung up on runs seconds; a homeowner
-# describing a roof runs minutes. Rows between the bounds stay 'uncertain'.
+# (record-from-answer-dual), so this is conversation length: a homeowner
+# describing a roof runs minutes. Talk time alone never yields 'spam' here.
+# Utah's handle-call creates a call lead only after the caller presses one at
+# the screening prompt (/connect); robo-dialers and abandons go to voicemail
+# with no lead. A short call-only lead is therefore a person who passed the
+# gate, not a robocall, so anything under CALL_REAL_MIN_SEC stays 'uncertain'
+# (older unscreened rows too: the conservative direction).
 CALL_REAL_MIN_SEC = int(os.environ.get("FRAME_SPAM_CALL_REAL_SEC", "45"))
-CALL_SPAM_MAX_SEC = int(os.environ.get("FRAME_SPAM_CALL_SPAM_SEC", "15"))
+
+# The prompt and the talk-time rule are Utah's. Every Supabase request is
+# refused unless SUPABASE_URL is this project over https, so a stray
+# environment can never read another market's leads or label them with Utah
+# wording, and the service-role key never goes out in cleartext.
+UTAH_PROJECT_REF = "hdcflshhomzildwqlmwh"
 
 # Market identity is parameterised. A 4-market survey (2026-08-07) found the
-# hardcoded "Texas ... Dallas-Fort Worth" wording would mislabel Utah, Idaho and
-# Colorado leads — a homeowner in Provo is not out-of-market, but the prompt
-# implied they were. Set FRAME_MARKET_DESC per market before running.
+# first market's hardcoded city wording would mislabel leads in the other three
+# — a homeowner in Provo is not out-of-market, but the prompt implied they were.
+# Set FRAME_MARKET_DESC per market before running.
 MARKET_DESC = os.environ.get(
     "FRAME_MARKET_DESC", "a Utah residential ROOFING contractor "
     "(Frame Roofing Utah, Salt Lake Valley)"
@@ -133,9 +144,19 @@ def _req(url, method="GET", body=None, headers=None, timeout=60):
     return json.loads(raw) if raw.strip() else None
 
 
+def require_utah_project(url):
+    parts = urllib.parse.urlsplit(url)
+    host = parts.hostname or ""
+    if parts.scheme != "https" or host != f"{UTAH_PROJECT_REF}.supabase.co":
+        sys.exit(f"ERROR: SUPABASE_URL must be https://{UTAH_PROJECT_REF}"
+                 f".supabase.co (the Utah project); refusing host "
+                 f"{host or '(none)'!r}")
+
+
 def sb(path, method="GET", body=None, prefer=None):
     if not SUPABASE_URL or not SERVICE_KEY:
         sys.exit("ERROR: set SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY")
+    require_utah_project(SUPABASE_URL)
     headers = {
         "apikey": SERVICE_KEY,
         "Authorization": f"Bearer {SERVICE_KEY}",
@@ -253,16 +274,14 @@ def classify(lead, duration):
             return got
         return None  # model failed -> leave unclassified, retry next run
 
-    # No text at all: a raw inbound call. Talk time is the only signal.
+    # No text at all: a raw inbound call. Talk time is the only signal, and it
+    # can only argue for 'real' (see CALL_REAL_MIN_SEC).
     if duration is not None:
         if duration >= CALL_REAL_MIN_SEC:
             return ("real", 0.15,
                     f"answered call, {duration}s talk time")
-        if duration <= CALL_SPAM_MAX_SEC:
-            return ("spam", 0.80,
-                    f"answered then dropped after {duration}s")
         return ("uncertain", 0.50,
-                f"{duration}s talk time, between thresholds")
+                f"{duration}s talk time; caller passed press-one screening")
 
     return ("uncertain", 0.50, "inbound call, no talk time recorded yet")
 
