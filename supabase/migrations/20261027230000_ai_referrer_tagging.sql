@@ -7,18 +7,25 @@
 -- the tag on every insert regardless of which code path wrote the row, so no
 -- edge-function deploy is required. The trailing UPDATEs backfill history.
 
+-- Both functions pin search_path = '' like Utah's other public helpers (e.g.
+-- resend_notification_status_rank in 20260807000100); every name they use is
+-- built in or schema-qualified.
 create or replace function public.frame_ai_referrer(ref text, utm text)
 returns text
 language sql
 immutable
+set search_path = ''
 as $$
   select case
-    when s ~ '(chatgpt\.com|chat\.openai\.com)' or s ~ '(^|\s)chatgpt' then 'chatgpt'
-    when s ~ 'perplexity(\.ai)?'                                    then 'perplexity'
-    when s ~ '(gemini\.google\.com|bard\.google\.com|(^|\s)gemini)' then 'gemini'
-    when s ~ '(copilot\.microsoft\.com|(^|\s)copilot|bing\.com/chat)' then 'copilot'
-    when s ~ '(claude\.ai|(^|\s)claude)'                            then 'claude'
-    when s ~ '(you\.com|phind\.com|kagi\.com/assistant|meta\.ai|grok\.com|x\.com/i/grok|deepseek\.com|chat\.mistral\.ai)' then 'other_ai'
+    -- Hosts must start at a host/value boundary (start, space, '/', '.', '=') so
+    -- thankyou.com or bayou.com never read as you.com; bare product words only
+    -- count as a whole utm_source token (preceded by the separating space).
+    when s ~ '(^|[\s/.=])(chatgpt\.com|chat\.openai\.com)' or s ~ '(^|\s)chatgpt' then 'chatgpt'
+    when s ~ '(^|[\s/.=])perplexity\.ai' or s ~ '(^|\s)perplexity'     then 'perplexity'
+    when s ~ '(^|[\s/.=])(gemini|bard)\.google\.com' or s ~ '(^|\s)gemini' then 'gemini'
+    when s ~ '(^|[\s/.=])(copilot\.microsoft\.com|copilot\.cloud\.microsoft|bing\.com/chat)' or s ~ '(^|\s)copilot' then 'copilot'
+    when s ~ '(^|[\s/.=])claude\.ai' or s ~ '(^|\s)claude'             then 'claude'
+    when s ~ '(^|[\s/.=])(you\.com|phind\.com|kagi\.com/assistant|meta\.ai|grok\.com|x\.com/i/grok|deepseek\.com|chat\.mistral\.ai)' then 'other_ai'
     else null
   end
   from (select lower(coalesce(ref, '') || ' ' || coalesce(utm, '')) as s) t
@@ -30,6 +37,7 @@ comment on function public.frame_ai_referrer(text, text) is
 create or replace function public.frame_set_ai_referrer()
 returns trigger
 language plpgsql
+set search_path = ''
 as $$
 declare j jsonb := to_jsonb(new);
 begin
@@ -41,6 +49,16 @@ begin
   return new;
 end
 $$;
+
+-- Same pair as every other Utah function migration. The 2026-08-07 containment
+-- (20260807000095) revokes EXECUTE through per-schema default privileges, which
+-- cannot remove PostgreSQL's global PUBLIC EXECUTE on new functions, so without
+-- this both functions are callable by anon/authenticated. Keep the grant: the
+-- trigger calls the classifier as the inserting role (service_role on every
+-- Utah write path), and a revoke without it makes every lead insert fail.
+revoke all on function public.frame_ai_referrer(text, text) from public, anon, authenticated;
+revoke all on function public.frame_set_ai_referrer() from public, anon, authenticated;
+grant execute on function public.frame_ai_referrer(text, text) to service_role;
 
 alter table public.leads add column if not exists ai_referrer text;
 comment on column public.leads.ai_referrer is

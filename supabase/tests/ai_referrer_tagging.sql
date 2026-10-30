@@ -48,11 +48,19 @@ do $$ begin
   assert public.frame_ai_referrer('https://l.facebook.com/', null::text) is null, 'facebook tagged';
   assert public.frame_ai_referrer('/?gclid=abc', 'google') is null, 'google cpc tagged';
   assert public.frame_ai_referrer(null::text, 'yelp') is null, 'yelp utm tagged';
+  -- host and token boundaries: look-alike hosts, own page slugs and campaign names stay NULL
+  assert public.frame_ai_referrer('https://www.thankyou.com/ ', null::text) is null, 'thankyou.com read as you.com';
+  assert public.frame_ai_referrer('https://www.bayou.com/ ', null::text) is null, 'bayou.com read as you.com';
+  assert public.frame_ai_referrer('https://www.notperplexity.ai/ ', null::text) is null, 'notperplexity.ai read as perplexity';
+  assert public.frame_ai_referrer(' /blog/perplexity-vs-google-for-roofers', null::text) is null, 'perplexity inside a page slug tagged';
+  assert public.frame_ai_referrer(' /?utm_source=google&utm_campaign=perplexity-q4', 'google') is null, 'perplexity utm_campaign on paid google tagged';
+  assert public.frame_ai_referrer('https://copilot.cloud.microsoft/', null::text) = 'copilot', 'Microsoft 365 Copilot host';
 end $$;
 
 -- 2. Shape after a double apply: one text column per table, exactly one
 --    BEFORE INSERT row trigger per table bound to frame_set_ai_referrer(),
---    an IMMUTABLE classifier, and neither function SECURITY DEFINER.
+--    an IMMUTABLE classifier, neither function SECURITY DEFINER, both with a
+--    pinned empty search_path, and Utah's browser-free EXECUTE posture.
 do $$ begin
   assert (select count(*) from information_schema.columns
            where table_schema = 'public' and table_name = 'leads'
@@ -73,6 +81,15 @@ do $$ begin
   assert (select provolatile from pg_proc where oid = 'public.frame_ai_referrer(text,text)'::regprocedure) = 'i', 'classifier is not IMMUTABLE';
   assert not (select prosecdef from pg_proc where oid = 'public.frame_ai_referrer(text,text)'::regprocedure), 'classifier is SECURITY DEFINER';
   assert not (select prosecdef from pg_proc where oid = 'public.frame_set_ai_referrer()'::regprocedure), 'trigger function is SECURITY DEFINER';
+  assert (select proconfig from pg_proc where oid = 'public.frame_ai_referrer(text,text)'::regprocedure) = array['search_path=""'], 'classifier search_path is not pinned to empty';
+  assert (select proconfig from pg_proc where oid = 'public.frame_set_ai_referrer()'::regprocedure) = array['search_path=""'], 'trigger function search_path is not pinned to empty';
+  -- Utah containment (20260807000095): no public function is browser-executable,
+  -- and service_role keeps EXECUTE because the trigger runs as the inserting role.
+  assert not has_function_privilege('anon', 'public.frame_ai_referrer(text,text)', 'execute'), 'anon can execute the classifier';
+  assert not has_function_privilege('authenticated', 'public.frame_ai_referrer(text,text)', 'execute'), 'authenticated can execute the classifier';
+  assert not has_function_privilege('anon', 'public.frame_set_ai_referrer()', 'execute'), 'anon can execute the trigger function';
+  assert not has_function_privilege('authenticated', 'public.frame_set_ai_referrer()', 'execute'), 'authenticated can execute the trigger function';
+  assert has_function_privilege('service_role', 'public.frame_ai_referrer(text,text)', 'execute'), 'service_role cannot execute the classifier: every lead insert would fail';
   assert col_description('public.leads'::regclass, (select attnum from pg_attribute where attrelid = 'public.leads'::regclass and attname = 'ai_referrer')) is not null, 'leads.ai_referrer comment missing';
   assert col_description('public.phone_clicks'::regclass, (select attnum from pg_attribute where attrelid = 'public.phone_clicks'::regclass and attname = 'ai_referrer')) is not null, 'phone_clicks.ai_referrer comment missing';
 end $$;
@@ -129,6 +146,11 @@ insert into public.phone_clicks(click_type, phone, source_page, page_title, refe
 insert into public.phone_clicks(click_type, phone, source_page, page_title, referrer, utm_source) values ('sms', '+14352928802', '/', 'I-perplexity-utm', '', 'perplexity');
 insert into public.phone_clicks(click_type, phone, source_page, page_title, referrer, ai_referrer) values ('call', '+14352928802', '/', 'I-preset', 'https://claude.ai/', 'manual');
 insert into public.phone_clicks(click_type, phone, source_page, page_title, referrer) values ('call', '+14352928802', '/', 'I-direct', '');
+-- The role every Utah edge function writes as: the trigger must still tag.
+set local role service_role;
+insert into public.leads(name, phone, source_page, referrer) values ('I-service-role', '+18015550126', 'test', 'https://chatgpt.com/');
+insert into public.phone_clicks(click_type, phone, source_page, page_title, referrer) values ('call', '+14352928802', '/', 'I-service-role', 'https://www.perplexity.ai/');
+reset role;
 do $$ begin
   assert (select ai_referrer from public.leads where name = 'I-perplexity-ref') = 'perplexity', 'insert: referrer not tagged';
   assert (select ai_referrer from public.leads where name = 'I-chatgpt-landing') = 'chatgpt', 'insert: landing_page utm host not tagged';
@@ -139,11 +161,8 @@ do $$ begin
   assert (select ai_referrer from public.phone_clicks where page_title = 'I-perplexity-utm') = 'perplexity', 'insert: click utm_source not tagged';
   assert (select ai_referrer from public.phone_clicks where page_title = 'I-preset') = 'manual', 'insert: click preset tag overwritten';
   assert (select ai_referrer from public.phone_clicks where page_title = 'I-direct') is null, 'insert: non-AI click tagged';
+  assert (select ai_referrer from public.leads where name = 'I-service-role') = 'chatgpt', 'insert as service_role: lead not tagged';
+  assert (select ai_referrer from public.phone_clicks where page_title = 'I-service-role') = 'perplexity', 'insert as service_role: click not tagged';
   assert (select count(*) from public.ai_referrer_update_log) = 12, 'inserts produced UPDATEs';
 end $$;
-
--- Informational, not asserted: the migration grants nothing, so the classifier
--- keeps PostgreSQL's default PUBLIC EXECUTE and is PostgREST-callable as an RPC.
-select has_function_privilege('anon', 'public.frame_ai_referrer(text,text)', 'execute') as anon_can_execute_classifier,
-       has_function_privilege('authenticated', 'public.frame_ai_referrer(text,text)', 'execute') as authenticated_can_execute_classifier;
 rollback;
