@@ -990,7 +990,16 @@ export async function handleCallRequest(req: Request): Promise<Response> {
           '("screened-awaiting-owner","screened-owner-accepted","screened-owner-rejected")',
         );
       }
-      const { error } = ownerDeclined ? { error: null } : await update;
+      // A declined whisper keeps its private screened-* status (the owner
+      // decision is immutable), but for the caller it is still a missed call.
+      // Write a literal false: the whisper leg's own talk time would read as
+      // answered if DialBridged were ever absent.
+      const { error } = ownerDeclined
+        ? await supabase.from("call_logs").update({ answered: false }).eq(
+          "call_sid",
+          callSid,
+        )
+        : await update;
       if (error) console.error("Update error:", error);
 
       if (duration > 0) {

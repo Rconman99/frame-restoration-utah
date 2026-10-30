@@ -1,10 +1,10 @@
 name: Voice screening contracts
 on:
   pull_request:
-    paths: ['supabase/functions/handle-call/**', 'supabase/functions/_shared/**', 'supabase/migrations/*call_screenings.sql', 'supabase/tests/call_screenings*.sql', 'scripts/voice-screening-*', '.github/workflows/voice-screening.yml']
+    paths: ['supabase/functions/handle-call/**', 'supabase/functions/_shared/**', 'supabase/migrations/*call_screenings.sql', 'supabase/tests/call_screenings*.sql', 'supabase/migrations/*call_logs_answered.sql', 'supabase/tests/call_logs_answered*.sql', 'scripts/voice-screening-*', '.github/workflows/voice-screening.yml']
   push:
     branches: [main]
-    paths: ['supabase/functions/handle-call/**', 'supabase/functions/_shared/**', 'supabase/migrations/*call_screenings.sql', 'supabase/tests/call_screenings*.sql', 'scripts/voice-screening-*', '.github/workflows/voice-screening.yml']
+    paths: ['supabase/functions/handle-call/**', 'supabase/functions/_shared/**', 'supabase/migrations/*call_screenings.sql', 'supabase/tests/call_screenings*.sql', 'supabase/migrations/*call_logs_answered.sql', 'supabase/tests/call_logs_answered*.sql', 'scripts/voice-screening-*', '.github/workflows/voice-screening.yml']
 permissions:
   contents: read
 jobs:
@@ -27,7 +27,7 @@ jobs:
         with:
           node-version: '24'
       - name: Signed in-process handler, state machine and persistence contracts (no provider calls)
-        run: deno test --node-modules-dir=auto --allow-read --allow-env supabase/functions/handle-call/receptionist-handler.test.ts supabase/functions/handle-call/caller-id-handler.test.ts supabase/functions/_shared/call-screening-source.test.ts supabase/functions/_shared/receptionist.test.ts supabase/functions/_shared/receptionist-store.test.ts
+        run: deno test --node-modules-dir=auto --allow-read --allow-env supabase/functions/handle-call/receptionist-handler.test.ts supabase/functions/handle-call/caller-id-handler.test.ts supabase/functions/_shared/call-screening-source.test.ts supabase/functions/_shared/receptionist.test.ts supabase/functions/_shared/receptionist-store.test.ts supabase/functions/_shared/call-outcome.test.ts
       - name: Private readout, exact migration and deployment scope contracts
         run: node --test scripts/voice-screening-*.test.mjs
       - name: Isolated PostgreSQL migration, privilege and outcome contracts
@@ -38,3 +38,8 @@ jobs:
           psql -h localhost -U postgres -v ON_ERROR_STOP=1 -f supabase/migrations/20260910200000_call_screenings.sql
           psql -h localhost -U postgres -v ON_ERROR_STOP=1 -f supabase/migrations/20260914200000_reconcile_call_screenings.sql
           psql -h localhost -U postgres -v ON_ERROR_STOP=1 -f supabase/tests/call_screenings.sql
+          psql -h localhost -U postgres -v ON_ERROR_STOP=1 -f supabase/tests/call_logs_answered_fixture.sql
+          psql -h localhost -U postgres -v ON_ERROR_STOP=1 -f supabase/migrations/20261027220000_call_logs_answered.sql
+          psql -h localhost -U postgres -v ON_ERROR_STOP=1 -f supabase/tests/call_logs_answered.sql
+          psql -h localhost -U postgres -v ON_ERROR_STOP=1 -f supabase/migrations/20261027220000_call_logs_answered.sql
+          psql -h localhost -U postgres -v ON_ERROR_STOP=1 -f supabase/tests/call_logs_answered.sql
