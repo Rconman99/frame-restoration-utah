@@ -93,7 +93,7 @@ jobs:
 
       - name: Upload gated needs-review draft
         if: ${{ always() && steps.target.outputs.count != '0' && steps.draft.outcome == 'success' && steps.quarantine.outcome == 'success' }}
-        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
         with:
           name: utah-blog-draft-${{ github.run_id }}-${{ github.run_attempt }}
           path: |

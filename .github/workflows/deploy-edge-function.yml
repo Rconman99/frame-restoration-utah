@@ -119,7 +119,7 @@ jobs:
             exit 1
           }
       # supabase/setup-cli v1, immutable official commit; CLI stays exact below.
-      - uses: supabase/setup-cli@45a513f8c64c0bc8e0e3dfe572b5c95be85f6359
+      - uses: supabase/setup-cli@ab058987d8d6c725971f6cf9d0b5c98467e30bd1
         with:
           version: 2.113.0
       - name: Verify function source exists
@@ -342,7 +342,7 @@ jobs:
           ref: ${{ github.sha }}
           fetch-depth: 0
           persist-credentials: false
-      - uses: supabase/setup-cli@45a513f8c64c0bc8e0e3dfe572b5c95be85f6359
+      - uses: supabase/setup-cli@ab058987d8d6c725971f6cf9d0b5c98467e30bd1
         with:
           version: 2.113.0
       - name: Verify function source exists in fresh deploy job
