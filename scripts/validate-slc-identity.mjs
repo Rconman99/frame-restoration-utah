@@ -55,13 +55,7 @@ assert.equal(contractor.geo, undefined, 'SLC service-area profile must not publi
 const expectedHours = [
   {
     '@type': 'OpeningHoursSpecification',
-    dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
-    opens: '08:00',
-    closes: '19:00'
-  },
-  {
-    '@type': 'OpeningHoursSpecification',
-    dayOfWeek: 'Saturday',
+    dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
     opens: '08:00',
     closes: '18:00'
   }
@@ -79,7 +73,7 @@ assert.ok(contractor.areaServed?.some?.((place) => place?.name === 'Millcreek'))
 const required = [
   MARKER,
   '(435) 292-8802',
-  'Mon&ndash;Fri 8am&ndash;7pm, Sat 8am&ndash;6pm, Sun closed',
+  'Mon&ndash;Sun 8am&ndash;6pm',
   'Home services only; the Google Business Profile does not publish a customer storefront address.',
   'Headquarters: 142 S Main St, Heber City, UT 84032',
   'Salt Lake City Building Services',
