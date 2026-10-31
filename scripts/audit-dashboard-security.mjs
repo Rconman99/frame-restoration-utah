@@ -52,6 +52,14 @@ for (const relative of ['dashboard/dashboard.js', 'seo-report.html', 'leads.html
 
 for (const relative of ['dashboard/dashboard.js', 'seo-report.html']) {
   const source = read(relative);
+  for (const retiredMetric of ['conversion_rate_pct', 'Conversion Rate', 'Form Leads', 'Revenue Tracked']) {
+    if (source.includes(retiredMetric)) {
+      failures.push(`${relative}: renders retired or misleading metric ${retiredMetric}`);
+    }
+  }
+  if (!source.includes('Qualified Conversion (unmeasured)')) {
+    failures.push(`${relative}: does not disclose unavailable qualified conversion`);
+  }
   const start = source.indexOf('async function loadUsers');
   const end = source.indexOf('async function toggleUser', start);
   if (start < 0 || end < 0) {
