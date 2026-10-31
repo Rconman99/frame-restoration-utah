@@ -199,6 +199,9 @@ try {
     });
 
     await page.goto(origin, { waitUntil: "domcontentloaded" });
+    // Field focus can start CSS smooth scrolling while JavaScript is disabled.
+    // Keep the native-submit check deterministic without bypassing click checks.
+    await page.evaluate(() => { document.documentElement.style.scrollBehavior = "auto"; });
     const form = page.locator(fixture.id);
     const honeypot = form.locator('input[name="company_website"]');
     assert.equal(await honeypot.count(), 1, `${fixture.id} fallback honeypot is missing`);
