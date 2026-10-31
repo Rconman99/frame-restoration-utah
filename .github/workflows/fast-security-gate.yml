@@ -17,7 +17,7 @@ jobs:
   fast-security:
     name: Gitleaks + OSV-Scanner
     runs-on: ${{ fromJSON(vars.FRAME_CI_RUNNER || '["ubuntu-latest"]') }}
-    timeout-minutes: 5
+    timeout-minutes: 15
 
     steps:
       - name: Checkout full history
@@ -31,70 +31,44 @@ jobs:
         with:
           node-version: 24
 
-      - name: Install pinned scanners (GitHub-hosted Linux)
-        if: runner.os == 'Linux'
+      # Runs before the scanners are built: the suite replaces gitleaks and
+      # osv-scanner with fakes on an isolated PATH and proves the runner fails
+      # closed (missing scanner, scanner finding, bad arguments) before the real
+      # gate below is trusted with the PR.
+      - name: Unit-test the gate runner (fake scanners, throwaway repositories)
+        run: node --test scripts/run-fast-security-gate.test.mjs
+
+      - name: Setup Go (scanners are built from source, no prebuilt binaries)
+        uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version: '1.26.4'
+          cache: false
+
+      - name: Cache Go module and build caches
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: |
+            ~/go/pkg/mod
+            ~/.cache/go-build
+          key: fast-security-go-${{ runner.os }}-${{ runner.arch }}-gitleaks-v8.30.1-osv-v2.4.0
+
+      - name: Build pinned scanners from source (module proxy + checksum database verified)
+        env:
+          CGO_ENABLED: '0'
+          GOFLAGS: -trimpath
+          GOTOOLCHAIN: local
+          GOPROXY: https://proxy.golang.org,direct
+          GOSUMDB: sum.golang.org
+          GOBIN: ${{ runner.temp }}/fast-security-tools
         shell: bash
         run: |
           set -euo pipefail
-          tool_dir="${RUNNER_TEMP}/fast-security-tools"
-          mkdir -p "${tool_dir}"
-
-          case "${RUNNER_ARCH}" in
-            X64)
-              gitleaks_platform="linux_x64"
-              gitleaks_sha="551f6fc83ea457d62a0d98237cbad105af8d557003051f41f3e7ca7b3f2470eb"
-              osv_platform="linux_amd64"
-              osv_sha="15314940c10d26af9c6649f150b8a47c1262e8fc7e17b1d1029b0e479e8ed8a0"
-              ;;
-            ARM64)
-              gitleaks_platform="linux_arm64"
-              gitleaks_sha="e4a487ee7ccd7d3a7f7ec08657610aa3606637dab924210b3aee62570fb4b080"
-              osv_platform="linux_arm64"
-              osv_sha="44e580752910f0ff36ec99aff59af20f65df1e859aa31e5605a8f0d055b496e9"
-              ;;
-            *)
-              echo "Unsupported Linux security runtime: ${RUNNER_ARCH}" >&2
-              exit 1
-              ;;
-          esac
-
-          curl --proto '=https' --tlsv1.2 --fail --silent --show-error --location \
-            --output "${RUNNER_TEMP}/gitleaks.tar.gz" \
-            "https://github.com/gitleaks/gitleaks/releases/download/v8.30.1/gitleaks_8.30.1_${gitleaks_platform}.tar.gz"
-          echo "${gitleaks_sha}  ${RUNNER_TEMP}/gitleaks.tar.gz" \
-            | sha256sum --check
-          tar -xzf "${RUNNER_TEMP}/gitleaks.tar.gz" -C "${tool_dir}" gitleaks
-
-          curl --proto '=https' --tlsv1.2 --fail --silent --show-error --location \
-            --output "${tool_dir}/osv-scanner" \
-            "https://github.com/google/osv-scanner/releases/download/v2.4.0/osv-scanner_${osv_platform}"
-          echo "${osv_sha}  ${tool_dir}/osv-scanner" \
-            | sha256sum --check
-          chmod 0755 "${tool_dir}/gitleaks" "${tool_dir}/osv-scanner"
-          echo "${tool_dir}" >> "${GITHUB_PATH}"
-
-      - name: Install pinned scanners (self-hosted macOS arm64)
-        if: runner.os == 'macOS' && runner.arch == 'ARM64'
-        shell: bash
-        run: |
-          set -euo pipefail
-          tool_dir="${RUNNER_TEMP}/fast-security-tools"
-          mkdir -p "${tool_dir}"
-
-          curl --proto '=https' --tlsv1.2 --fail --silent --show-error --location \
-            --output "${RUNNER_TEMP}/gitleaks.tar.gz" \
-            "https://github.com/gitleaks/gitleaks/releases/download/v8.30.1/gitleaks_8.30.1_darwin_arm64.tar.gz"
-          echo "b40ab0ae55c505963e365f271a8d3846efbc170aa17f2607f13df610a9aeb6a5  ${RUNNER_TEMP}/gitleaks.tar.gz" \
-            | shasum -a 256 --check
-          tar -xzf "${RUNNER_TEMP}/gitleaks.tar.gz" -C "${tool_dir}" gitleaks
-
-          curl --proto '=https' --tlsv1.2 --fail --silent --show-error --location \
-            --output "${tool_dir}/osv-scanner" \
-            "https://github.com/google/osv-scanner/releases/download/v2.4.0/osv-scanner_darwin_arm64"
-          echo "9ca3185ad63e9ab54f7cb90f46a7362be02d80e37f0123d095a54355ea202f5d  ${tool_dir}/osv-scanner" \
-            | shasum -a 256 --check
-          chmod 0755 "${tool_dir}/gitleaks" "${tool_dir}/osv-scanner"
-          echo "${tool_dir}" >> "${GITHUB_PATH}"
+          mkdir -p "${GOBIN}"
+          go install github.com/zricethezav/gitleaks/v8@v8.30.1
+          go install github.com/google/osv-scanner/v2/cmd/osv-scanner@v2.4.0
+          "${GOBIN}/gitleaks" version
+          "${GOBIN}/osv-scanner" --version
+          echo "${GOBIN}" >> "${GITHUB_PATH}"
 
       - name: Run blocking fast security gate
         env:
