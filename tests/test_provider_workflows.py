@@ -635,6 +635,17 @@ class WorkflowContractTests(unittest.TestCase):
         self.assertIn('echo "push failed after retries"; exit 1', traction)
         self.assertNotIn("continue-on-error", traction)
 
+    def test_blog_draft_uses_claude_plan_without_metered_keys(self) -> None:
+        autopost = (REPO / ".github/workflows/blog-autopost.yml").read_text(encoding="utf-8")
+        drafter = (REPO / "scripts/blog-draft-openrouter.py").read_text(encoding="utf-8")
+        self.assertIn("secrets.CLAUDE_CODE_OAUTH_TOKEN", autopost)
+        self.assertIn("--provider claude-plan", autopost)
+        self.assertIn("--model claude-sonnet-5-5", autopost)
+        self.assertNotIn("secrets.OPENROUTER_API_KEY", autopost)
+        self.assertNotIn("secrets.ANTHROPIC_API_KEY", autopost)
+        self.assertIn('"ANTHROPIC_API_KEY"', drafter)  # stripped from the CLI env
+        self.assertIn('DEFAULT_PROVIDER = os.getenv("FRAME_BLOG_PROVIDER", "claude-plan")', drafter)
+
     def test_lead_notification_recovery_schedule_restored(self) -> None:
         workflow = (REPO / ".github/workflows/lead-notification-worker.yml").read_text(
             encoding="utf-8"
