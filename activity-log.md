@@ -1,5 +1,36 @@
 # Activity Log
 
+## 2026-11-01 — Google Review Updater (FAILED — no data; serpapi.com blocked by container egress policy)
+
+**Routine:** `frame-roofing-google-reviews` (trigger `trig_01NZuRWGiWRybBqCYgrG5zcC`), scheduled 13:17 UTC, fired 13:19:35 UTC.
+
+**Outcome:** **Exit 1 — no live count retrieved.** No review count or rating verified this cycle.
+
+**Actions this run:**
+- Confirmed clean working tree on designated lane branch `claude/keen-hopper-8xw6e4`.
+- Ran `scripts/update-google-reviews.py` with `SERPAPI_KEY` exported. Failed: `urllib.error.URLError: <urlopen error Tunnel connection failed: 403 Forbidden>` from `_fetch_place_serpapi()` at `scripts/update-google-reviews.py:436`.
+- Queried the agent proxy status endpoint to distinguish a policy denial from a transient SerpAPI error. It logged two `connect_rejected` entries for `serpapi.com:443`: *"gateway answered 403 to CONNECT (policy denial or upstream failure)"*.
+- Retried once (the task's limit is two attempts). **Identical failure — not transient.**
+- Did **not** commit: the task rule is never commit on exit 1, and no review data existed to commit.
+- Sent PushNotification to owner: the block, the untouched state of the site, the network-policy fix, and the exposed key.
+- Updated `state.json` and this log.
+
+**Findings:**
+1. 🔴 **`serpapi.com` is not reachable from this remote container.** The denial is the environment's network egress policy, not SerpAPI. Note the script's own quota preflight was blocked by the *same* 403 and then printed `PROVIDER: serpapi (prepaid quota healthy)` — a misleading health line, since it never reached the quota endpoint. Worth hardening: a preflight that cannot connect should report unknown, not healthy.
+2. 🟡 **Exit 1 ≠ exit 2.** The site's displayed review count is **unverified**, not confirmed-correct. Recorded as unmeasured, consistent with the 2026-09-05 standing lesson against publishing a blocked channel as a zero or a non-change.
+3. 🔴 **The stored routine prompt carries the SerpAPI key inline in plaintext**, and the `export SERPAPI_KEY='…` line is missing its closing quote — a literal copy-paste would hang the shell. The key should be an environment secret referenced by name. Treat it as exposed and rotate.
+4. 🟡 **Second routine blocked by egress policy** after perplexity.ai on 2026-09-05. Same defect class; argues for a one-time audit of every routine's data source against the allowed-host list.
+
+**Guardrails honored:** no commit on exit 1; review surfaces (`index.html`, `pages/about.html`, `data/google-reviews.json`) untouched and unstaged; no GBP publish; no push to `main`; bookkeeping committed to the lane-prefixed branch with explicitly staged paths; no secret value written to any file, commit message or notification.
+
+**Errors this run:** `EGRESS_BLOCKED` on `serpapi.com:443`, ×2, blocking — recorded in `state.json.last_error`.
+
+**Files touched:**
+- `state.json` (updated — `last_run` replaced with this run, `last_error` set to the serpapi block, three `pending_actions` prepended; the AEO monitor's `score`, `cited_this_cycle`, `still_failing`, `threats_*` and `corrections_this_cycle` blocks left intact, since that routine owns them)
+- `activity-log.md` (this entry prepended)
+
+---
+
 ## 2026-09-05 — AEO Citation Monitor (flat score, improving positions, two instrumentation defects found)
 
 **Routine:** AEO citation monitor (5-query core panel: best roofer Heber City / roof replacement cost Utah 2026 / storm damage Park City / Utah roof insurance / licensed roofer Wasatch Front).

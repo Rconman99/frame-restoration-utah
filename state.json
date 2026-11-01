@@ -1,16 +1,16 @@
 {
   "last_run": {
-    "timestamp": "2026-09-05T14:40:00Z",
-    "date": "2026-09-05",
-    "routine": "aeo-citation-monitor",
-    "outcome": "success_with_errors",
-    "summary": "AEO citation monitor: 2/5 — FLAT vs 2026-08-05 on the same 5-query WebSearch panel, with both cited positions improving by one (Park City 3→2, insurance 4→3). Same two queries cited, same three flat-failing. Both citations are extractive: Google's answer text reproduces Frame's copy nearly verbatim, and both cited URLs are blog posts, not service or location pages. Two instrumentation defects surfaced: the stored task prompt still matches the retired frameroofingutah.com host (both of today's citations would score as misses under a literal reading), and the Perplexity check is egress-blocked in the remote environment and returned no data — logged as unmeasured, not as not-cited.",
-    "report_path": "data/aeo-citations/2026-09-05.md",
-    "commit": "f6bf616",
-    "pushed": true,
-    "instrument": "WebSearch proxy, 5-query core panel, US-general, no geolocation, no local-pack channel",
-    "environment": "remote cloud container (Claude Code on the web); perplexity.ai blocked by network egress proxy",
-    "note": "This 2/5 is NOT comparable to the 5/12 recorded 2026-09-01 by the 12-query geolocated SerpAPI cloud workflow. Different panel, tool, geography and depth. _trend.json tracks that series; this state.json tracks the 5-query panel."
+    "timestamp": "2026-11-01T13:25:00Z",
+    "date": "2026-11-01",
+    "routine": "frame-roofing-google-reviews",
+    "outcome": "failed_no_data",
+    "summary": "Google review updater could not fetch a live count. scripts/update-google-reviews.py exited 1 on both attempts with urllib URLError 'Tunnel connection failed: 403 Forbidden' for serpapi.com:443. The agent proxy's own status endpoint logged both as connect_rejected / 'gateway answered 403 to CONNECT (policy denial or upstream failure)' — a network-policy denial in the remote container, NOT a SerpAPI quota problem, rate limit or key fault (the script's own preflight reported 'prepaid quota healthy'). No live count obtained, so no review count or rating was verified this cycle. Nothing was committed to the review surfaces: index.html, pages/about.html and data/google-reviews.json are untouched and the site still displays the last known count. Recorded as unmeasured rather than as a zero or an unchanged count.",
+    "report_path": null,
+    "commit": null,
+    "pushed": false,
+    "instrument": "scripts/update-google-reviews.py via SerpAPI google_maps place lookup",
+    "environment": "remote cloud container (Claude Code on the web); serpapi.com:443 denied by the network egress policy",
+    "note": "Exit 1 means no data, which is not the same as exit 2 (live count matches site). The site's displayed count is simply stale-unverified, not confirmed correct. Same defect class as the 2026-09-05 Perplexity block: a routine whose data source is unreachable from this container. Guardrails honored — no commit on exit 1, no file touched other than this bookkeeping pair."
   },
   "score": {
     "current": 2,
@@ -55,12 +55,36 @@
   ],
   "last_error": {
     "type": "EGRESS_BLOCKED",
-    "target": "https://www.perplexity.ai/search",
-    "detail": "All Perplexity citation checks blocked by the remote environment's network egress proxy. Zero queries measured on that channel. Recorded as unmeasured rather than not-cited, to avoid repeating the 2026-08-05 incident where 12 swallowed SerpAPI 429s were published as a false 0/12 and overwrote a real 2/5 report.",
-    "blocking": false,
-    "impact": "Perplexity channel produced no data this cycle. Google-proxy channel unaffected."
+    "date": "2026-11-01",
+    "routine": "frame-roofing-google-reviews",
+    "target": "serpapi.com:443",
+    "detail": "scripts/update-google-reviews.py exited 1 on both attempts: urllib.error.URLError 'Tunnel connection failed: 403 Forbidden'. The agent proxy status endpoint recorded both as kind 'connect_rejected', detail 'gateway answered 403 to CONNECT (policy denial or upstream failure)'. This is the container's network egress policy refusing the host, not a SerpAPI fault — the script's quota preflight was itself blocked (same 403) and then fell through to 'prepaid quota healthy'. Retried once per the task's two-attempt limit; identical failure, so not transient.",
+    "blocking": true,
+    "impact": "No live Google review count or rating retrieved. Review surfaces left untouched (no commit, per the exit-1 rule), so index.html, pages/about.html and data/google-reviews.json still carry the last verified count. The displayed count is unverified this cycle, not confirmed.",
+    "prior_error_superseded": "2026-09-05 EGRESS_BLOCKED on https://www.perplexity.ai/search (AEO citation monitor, non-blocking). Retained in activity-log.md and data/aeo-citations/2026-09-05.md; still unresolved as pending_action."
   },
   "pending_actions": [
+    {
+      "priority": "high",
+      "action": "Allow serpapi.com in the remote environment's network policy, or the Google review updater cannot run at all. The 2026-11-01 run failed twice with a 403 CONNECT denial for serpapi.com:443 and fetched no count. Settings → environment → network access for the Claude Code on the web environment. Until then every fire of frame-roofing-google-reviews will exit 1 and the site's review count will silently go unverified — it will not be wrong, but nothing is checking it.",
+      "owner": "Ryan",
+      "opened": "2026-11-01",
+      "routine": "frame-roofing-google-reviews"
+    },
+    {
+      "priority": "high",
+      "action": "Rotate the SerpAPI key and move it out of the stored routine prompt. The frame-roofing-google-reviews scheduled prompt currently carries the key inline in plaintext in an `export SERPAPI_KEY=...` line (and the stored line is also malformed — the opening quote is never closed, so a literal copy-paste of the prompt would hang the shell rather than run). It should be an environment secret referenced by name only. Treat the current key as exposed.",
+      "owner": "Ryan",
+      "opened": "2026-11-01",
+      "routine": "frame-roofing-google-reviews"
+    },
+    {
+      "priority": "medium",
+      "action": "Two routines have now failed on container egress policy (perplexity.ai 2026-09-05, serpapi.com 2026-11-01). Worth auditing every scheduled routine's data source against the remote environment's allowed-host list once, rather than discovering each block one fire at a time.",
+      "owner": "Ryan",
+      "opened": "2026-11-01",
+      "routine": "cross-routine"
+    },
     {
       "priority": "high",
       "action": "Fix the stored scheduled-task prompt's domain match. It still instructs a check for frameroofingutah.com, which has 301'd to www.framerestorationutah.com since the 2026-06-17 canonical migration (0ef10e6). BOTH of today's citations landed on the canonical host and would score as misses under a literal reading. Same defect class as the stale TARGET_DOMAIN that produced a false 0/5 before 331dc22 fixed it in the scripts — fixed in code, still live in this prompt.",
