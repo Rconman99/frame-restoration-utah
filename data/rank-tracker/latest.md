@@ -1,41 +1,41 @@
-# Salt Lake City Google rank tracker — 2026-10-26
+# Salt Lake City Google rank tracker — 2026-11-02
 
 - Panel: `utah-salt-lake-city-google-v1`
 - Provider: DataForSEO task-queue
 - Location: Salt Lake City,Utah,United States
 - Device/depth: mobile / top 30
-- Observed: 2026-10-26T09:26:40.115Z
+- Observed: 2026-11-02T09:15:21.639Z
 - Estimated panel cost: $0.0192
 
 | Query | Organic | Exact-CID map pack | AI Overview | Frame cited in AI Overview |
 |---|---:|---:|---:|---:|
-| roofing contractor salt lake city | Not found in top 30 | Not found in top 30 | No | No |
-| roof repair salt lake city | Not found in top 30 | Not found in top 30 | No | No |
+| roofing contractor salt lake city | Not found in top 30 | Not found in top 30 | Yes | No |
+| roof repair salt lake city | Not found in top 30 | Not found in top 30 | Yes | No |
 | roof replacement salt lake city | Not found in top 30 | Not found in top 30 | No | No |
 | roofer salt lake city | Not found in top 30 | Not found in top 30 | No | No |
 
 ## Displacement targets
 
 ### roofing contractor salt lake city
-- Organic top 3: #1 utahroofingcompany.com; #2 bartlettroofs.com; #3 houzz.com.
-- Map-pack top 3: #1 Shingle Pro Roofing [CID 9926634112120129216]; #2 Nelson Roofing Salt Lake City [CID 8441891659230110129]; #3 Whitaker Roofing Services [CID 11316815627233980109].
+- Organic top 3: #1 google.com; #2 google.com; #3 google.com.
+- Map-pack top 3: no local pack.
 - Paid local placements (excluded from Maps rank): none.
-- AI Overview sources: no AI Overview.
+- AI Overview sources: premierroofingutah.com; reddit.com; rooval-roofing.com.
 
 ### roof repair salt lake city
-- Organic top 3: #1 premierroofingutah.com; #2 bartlettroofs.com; #3 facebook.com.
-- Map-pack top 3: #1 Whitaker Roofing Services [CID 11316815627233980109]; #2 The Roof Doctor [CID 16329927680093228178]; #3 Nelson Roofing Salt Lake City [CID 8441891659230110129].
+- Organic top 3: #1 bartlettroofs.com; #2 google.com; #3 facebook.com.
+- Map-pack top 3: #1 Whitaker Roofing Services [CID 11316815627233980109]; #2 The Roof Doctor [CID 16329927680093228178]; #3 Shingle Pro Roofing [CID 9926634112120129216].
 - Paid local placements (excluded from Maps rank): none.
-- AI Overview sources: no AI Overview.
+- AI Overview sources: saltlakecityroofs.com; roofdoctorutah.com; whitakerroofing.com; restoremastersllc.com; shingleproroofing.com; youtube.com.
 
 ### roof replacement salt lake city
-- Organic top 3: #1 premierroofingutah.com; #2 bartlettroofs.com; #3 infinityroofer.com.
-- Map-pack top 3: #1 Whitaker Roofing Services [CID 11316815627233980109]; #2 The Roof Doctor [CID 16329927680093228178]; #3 Shingle Pro Roofing [CID 9926634112120129216].
+- Organic top 3: #1 google.com; #2 reddit.com; #3 google.com.
+- Map-pack top 3: #1 Shingle Pro Roofing [CID 9926634112120129216]; #2 Whitaker Roofing Services [CID 11316815627233980109]; #3 Nelson Roofing Salt Lake City [CID 8441891659230110129].
 - Paid local placements (excluded from Maps rank): none.
 - AI Overview sources: no AI Overview.
 
 ### roofer salt lake city
-- Organic top 3: #1 premierroofingutah.com; #2 saltlakecityroofs.com; #3 diamondcertified.org.
+- Organic top 3: #1 roofutah.net; #2 google.com; #3 google.com.
 - Map-pack top 3: #1 Shingle Pro Roofing [CID 9926634112120129216]; #2 Whitaker Roofing Services [CID 11316815627233980109]; #3 The Roof Doctor [CID 16329927680093228178].
 - Paid local placements (excluded from Maps rank): none.
 - AI Overview sources: no AI Overview.
