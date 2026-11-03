@@ -295,7 +295,7 @@ Deno.serve(async (req: Request) => {
       supabase
         .from("leads")
         .select(
-          "id, name, phone, service, source_page, status, job_value, commission, created_at, is_test, call_source, utm_source",
+          "id, name, phone, service, source_page, status, job_value, commission, created_at, is_test, call_source, utm_source, commission_eligible",
         )
         .gte("created_at", sinceIso)
         .lt("created_at", untilIso)
@@ -449,7 +449,7 @@ Deno.serve(async (req: Request) => {
       conversion_rate_pct: conversionRate,
     },
     // Separate bucket: never added to total_leads / job value / commission.
-    landon_direct: {
+    not_seo_aeo: {
       label: LANDON_DIRECT_LABEL,
       leads: landonDirectLeads.length,
       counted_in_totals: false,

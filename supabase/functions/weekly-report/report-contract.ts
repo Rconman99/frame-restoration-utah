@@ -1,4 +1,5 @@
 import type { AccessRole } from "../_shared/crm-access.ts";
+import { leadPaysCommission } from "../_shared/tracking-numbers.ts";
 import { isOperator, normalizePhone } from "../_shared/classify-inbound.ts";
 
 export type ReportDetail = "full" | "summary";
@@ -119,38 +120,21 @@ export function isReportableLead(row: LeadRow): boolean {
   return row.is_test !== true;
 }
 
-// ── Lead owner bucket (Ryan vs Landon direct) ───────────────────────────────
-// Landon intentionally keeps his personal cell (the handle-call forward target)
-// on Yelp, Birdeye and other directories. Ryan is not paid on those leads, so
-// they must never count as Ryan's leads. Any lead that comes in on a directory
-// tracking line, or whose first-touch source is a directory, goes to a separate,
-// clearly labeled bucket. Calls dialed straight to Landon's cell never reach
-// Twilio, so they never enter the CRM at all; this bucket catches the ones that
-// do (directory tracking lines, Yelp/Birdeye "visit website" form leads).
-export const LANDON_DIRECT_BUCKET = "landon_direct_directory" as const;
+// ── Lead owner bucket (SEO/AEO = Ryan's commission vs Not SEO/AEO) ─────────
+// Only Twilio numbers placed on SEO/AEO surfaces (website + GBPs) pay Ryan.
+// Placement lives in ../_shared/tracking-numbers.ts; handle-call stamps
+// commission_eligible on each call lead. Directory/other placements, unmapped
+// numbers and directory-sourced forms land in the separate Not SEO/AEO bucket.
+// (Calls straight to Landon's personal cell never reach Twilio or the CRM.)
+export const NOT_SEO_AEO_REPORT_BUCKET = "not_seo_aeo" as const;
+export const LANDON_DIRECT_BUCKET = NOT_SEO_AEO_REPORT_BUCKET;
 export const LANDON_DIRECT_LABEL =
-  "Landon direct - Yelp/Birdeye/directories (not Ryan's, not RC)" as const;
-export const DIRECTORY_SOURCES: ReadonlySet<string> = new Set([
-  "yelp",
-  "birdeye",
-  "bbb",
-  "homeadvisor",
-  "angi",
-  "angies_list",
-  "thumbtack",
-  "nextdoor",
-  "directory",
-]);
+  "Not SEO/AEO - directory/other placement or Landon direct (no commission)" as const;
 
 export function leadOwnerBucket(
   row: LeadRow,
-): "ryan" | typeof LANDON_DIRECT_BUCKET {
-  const callSource = String(row.call_source ?? "").trim().toLowerCase();
-  if (callSource === "directory") return LANDON_DIRECT_BUCKET;
-  const utm = String(row.utm_source ?? "").trim().toLowerCase()
-    .replace(/[\s.-]+/g, "_").replace(/_com$/, "");
-  if (DIRECTORY_SOURCES.has(utm)) return LANDON_DIRECT_BUCKET;
-  return "ryan";
+): "ryan" | typeof NOT_SEO_AEO_REPORT_BUCKET {
+  return leadPaysCommission(row) ? "ryan" : NOT_SEO_AEO_REPORT_BUCKET;
 }
 
 export function isRyanLead(row: LeadRow): boolean {
