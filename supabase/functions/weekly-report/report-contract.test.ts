@@ -283,12 +283,28 @@ Deno.test("summary detail never returns row-level lead or call data", () => {
 Deno.test("only commission-eligible (SEO/AEO) leads count as Ryan's", async () => {
   const m = await import("./report-contract.ts");
   const B = m.NOT_SEO_AEO_REPORT_BUCKET;
-  assert(m.leadOwnerBucket({ call_source: "google_website", commission_eligible: true }) === "ryan", "google call");
-  assert(m.leadOwnerBucket({ call_source: "not_seo_aeo:yelp", commission_eligible: false }) === B, "moved number");
-  assert(m.leadOwnerBucket({ call_source: "unknown", commission_eligible: false }) === B, "unmapped");
-  assert(m.leadOwnerBucket({ source_page: "inbound-call" }) === B, "call w/o flag");
-  assert(m.leadOwnerBucket({ source_page: "/contact", utm_source: "google" }) === m.WEBSITE_FORM_BUCKET, "site form: lead, no commission");
-  assert(m.leadOwnerBucket({ source_page: "/contact", utm_source: "Yelp" }) === B, "yelp form");
-  assert(!m.isRyanLead({ commission_eligible: true, is_test: true }), "test excluded");
+  assert(m.leadOwnerBucket({ created_at: "2026-11-03T19:30:00Z", call_source: "google_website", commission_eligible: true }) === "ryan", "google call");
+  assert(m.leadOwnerBucket({ created_at: "2026-11-03T19:30:00Z", call_source: "not_seo_aeo:yelp", commission_eligible: false }) === B, "moved number");
+  assert(m.leadOwnerBucket({ created_at: "2026-11-03T19:30:00Z", call_source: "unknown", commission_eligible: false }) === B, "unmapped");
+  assert(m.leadOwnerBucket({ created_at: "2026-11-03T19:30:00Z", source_page: "inbound-call" }) === B, "call w/o flag");
+  assert(m.leadOwnerBucket({ created_at: "2026-11-03T19:30:00Z", source_page: "/contact", utm_source: "google" }) === m.WEBSITE_FORM_BUCKET, "site form: lead, no commission");
+  assert(m.leadOwnerBucket({ created_at: "2026-11-03T19:30:00Z", source_page: "/contact", utm_source: "Yelp" }) === B, "yelp form");
+  assert(!m.isRyanLead({ created_at: "2026-11-03T19:30:00Z", commission_eligible: true, is_test: true }), "test excluded");
   assert(/Not SEO\/AEO/.test(m.LANDON_DIRECT_LABEL), "label");
+});
+
+Deno.test("pre-cutoff leads are grandfathered as Ryan's SEO/AEO leads (pre-#362 totals)", async () => {
+  const m = await import("./report-contract.ts");
+  const old = "2026-11-03T19:09:59Z";
+  for (const row of [
+    { created_at: old, source_page: "inbound-call" },
+    { created_at: old, call_source: "unknown", commission_eligible: false },
+    { created_at: old, source_page: "/contact", utm_source: "Yelp" },
+    { created_at: "2026-10-01T12:00:00Z", source_page: "/contact", utm_source: "google" },
+    { source_page: "inbound-call" },
+  ]) {
+    assert(m.leadOwnerBucket(row) === "ryan", JSON.stringify(row));
+    assert(m.isRyanLead(row), "counted " + JSON.stringify(row));
+  }
+  assert(m.leadOwnerBucket({ created_at: "2026-11-03T19:10:00Z", commission_eligible: false, call_source: "not_seo_aeo:yelp" }) === m.NOT_SEO_AEO_REPORT_BUCKET, "cutoff is inclusive for net new");
 });

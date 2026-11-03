@@ -96,11 +96,26 @@ const DIRECTORY_UTM = new Set([
  * unmapped numbers and rows with no flag never pay.
  */
 export function leadPaysCommission(row: Record<string, unknown>): boolean {
+  if (isLegacyLead(row)) return true;
   return row.commission_eligible === true;
+}
+
+/**
+ * Grandfathering (Ryan, 2026-11-03: "only net new"). The commission split went
+ * live with handle-call v58 at 2026-11-03 19:10 UTC. Every lead created before
+ * that (or with no parseable created_at) was SEO/AEO and keeps the pre-#362
+ * rule: it counts as Ryan's lead and pays commission. Never reclassified.
+ */
+export const COMMISSION_SPLIT_CUTOFF_ISO = "2026-11-03T19:10:00Z" as const;
+const COMMISSION_SPLIT_CUTOFF_MS = Date.parse(COMMISSION_SPLIT_CUTOFF_ISO);
+export function isLegacyLead(row: Record<string, unknown>): boolean {
+  const t = Date.parse(String(row.created_at ?? ""));
+  return !Number.isFinite(t) || t < COMMISSION_SPLIT_CUTOFF_MS;
 }
 
 /** Non-commission lead that is still a real lead: a website form (not directory-sourced). */
 export function isWebsiteFormLead(row: Record<string, unknown>): boolean {
+  if (isLegacyLead(row)) return false;
   if (row.commission_eligible === true || row.commission_eligible === false) return false;
   const callSource = String(row.call_source ?? "").trim();
   const page = String(row.source_page ?? "").trim().toLowerCase();

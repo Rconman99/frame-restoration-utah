@@ -35,23 +35,23 @@ Deno.test("a Twilio number moved to Yelp stops paying commission and lands in No
   assertEquals(after.commission, false);
   assertEquals(after.source, `${NOT_SEO_AEO_BUCKET}:yelp`);
   // The lead row handle-call would write:
-  const row = { call_source: after.source, commission_eligible: after.commission, source_page: "inbound-call" };
+  const row = { created_at: "2026-11-03T19:30:00Z", call_source: after.source, commission_eligible: after.commission, source_page: "inbound-call" };
   assertEquals(leadPaysCommission(row), false);
   assertEquals(sourceWhisperLabel("+14356108978", moved), "Yelp lead, not SEO");
 });
 
 Deno.test("leadPaysCommission: only Twilio seo_aeo calls (commission_eligible === true) pay", async () => {
   const { isWebsiteFormLead } = await import("./tracking-numbers.ts");
-  assertEquals(leadPaysCommission({ commission_eligible: true }), true);
-  assertEquals(leadPaysCommission({ commission_eligible: false, utm_source: "google" }), false);
-  assertEquals(leadPaysCommission({ source_page: "inbound-call" }), false);
-  assertEquals(leadPaysCommission({ call_source: "unknown" }), false);
+  assertEquals(leadPaysCommission({ created_at: "2026-11-03T19:30:00Z", commission_eligible: true }), true);
+  assertEquals(leadPaysCommission({ created_at: "2026-11-03T19:30:00Z", commission_eligible: false, utm_source: "google" }), false);
+  assertEquals(leadPaysCommission({ created_at: "2026-11-03T19:30:00Z", source_page: "inbound-call" }), false);
+  assertEquals(leadPaysCommission({ created_at: "2026-11-03T19:30:00Z", call_source: "unknown" }), false);
   // Website forms never pay commission, but are still real leads.
-  assertEquals(leadPaysCommission({ source_page: "/contact", utm_source: "google" }), false);
-  assertEquals(leadPaysCommission({ source_page: "/contact" }), false);
-  assertEquals(isWebsiteFormLead({ source_page: "/contact", utm_source: "google" }), true);
-  assertEquals(isWebsiteFormLead({ source_page: "/contact", utm_source: "Birdeye.com" }), false);
-  assertEquals(isWebsiteFormLead({ commission_eligible: true }), false);
+  assertEquals(leadPaysCommission({ created_at: "2026-11-03T19:30:00Z", source_page: "/contact", utm_source: "google" }), false);
+  assertEquals(leadPaysCommission({ created_at: "2026-11-03T19:30:00Z", source_page: "/contact" }), false);
+  assertEquals(isWebsiteFormLead({ created_at: "2026-11-03T19:30:00Z", source_page: "/contact", utm_source: "google" }), true);
+  assertEquals(isWebsiteFormLead({ created_at: "2026-11-03T19:30:00Z", source_page: "/contact", utm_source: "Birdeye.com" }), false);
+  assertEquals(isWebsiteFormLead({ created_at: "2026-11-03T19:30:00Z", commission_eligible: true }), false);
 });
 
 Deno.test("whisper label per source", () => {
@@ -101,4 +101,19 @@ Deno.test("existing missed-call SMS carries the source label", async () => {
   const t = missedCallAlertText({ fromNumber: "+12145550123", sourceLabel: "Yelp lead, not SEO" });
   assertStringIncludes(t, "Missed call (Yelp lead, not SEO)");
   assert(missedCallAlertText({ fromNumber: "+12145550123" }).startsWith("Missed call: "), "unchanged without label");
+});
+
+Deno.test("pre-cutoff / undated leads are grandfathered: always pay, never form or not_seo_aeo", async () => {
+  const m = await import("./tracking-numbers.ts");
+  for (const row of [
+    { created_at: "2026-11-03T19:09:59Z", source_page: "inbound-call" },
+    { created_at: "2026-10-01T00:00:00Z", commission_eligible: false, call_source: "unknown" },
+    { created_at: "2026-09-01T00:00:00Z", source_page: "/contact", utm_source: "google" },
+    { source_page: "inbound-call" },
+  ]) {
+    assertEquals(m.isLegacyLead(row), true);
+    assertEquals(m.leadPaysCommission(row), true);
+    assertEquals(m.isWebsiteFormLead(row), false);
+  }
+  assertEquals(m.isLegacyLead({ created_at: m.COMMISSION_SPLIT_CUTOFF_ISO }), false);
 });

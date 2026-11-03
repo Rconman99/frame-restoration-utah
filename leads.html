@@ -927,7 +927,11 @@ function renderClicks(d){
 // directory/other numbers never pay. Mirrors
 // supabase/functions/_shared/tracking-numbers.ts leadPaysCommission().
 var DIRECTORY_UTM=["yelp","birdeye","bbb","homeadvisor","angi","angies_list","thumbtack","nextdoor","directory"];
-function paysCommission(r){return r.commission_eligible===true}
+// Grandfathered (Ryan 2026-11-03 "only net new"): leads created before the
+// 2026-11-03 19:10 UTC cutoff, or rows without the commission_eligible field,
+// keep the pre-#362 rule (all count). Only net-new flagged rows are filtered.
+var COMMISSION_SPLIT_CUTOFF_MS=Date.parse("2026-11-03T19:10:00Z");
+function paysCommission(r){if(!r||!("commission_eligible" in r)||r.commission_eligible==null)return true;var t=Date.parse(r.created_at||"");if(!isFinite(t)||t<COMMISSION_SPLIT_CUTOFF_MS)return true;return r.commission_eligible===true}
 function computeKpis(rows){
   var ms=new Date();ms.setDate(1);ms.setHours(0,0,0,0);
   var thirty=new Date(Date.now()-30*86400000);
