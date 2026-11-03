@@ -922,6 +922,12 @@ function renderClicks(d){
   document.getElementById("clicks-recent").innerHTML=recentHtml;
 }
 
+// Ryan's commission is paid ONLY on Twilio calls to seo_aeo-placed numbers
+// (commission_eligible === true, stamped by handle-call). Website forms and
+// directory/other numbers never pay. Mirrors
+// supabase/functions/_shared/tracking-numbers.ts leadPaysCommission().
+var DIRECTORY_UTM=["yelp","birdeye","bbb","homeadvisor","angi","angies_list","thumbtack","nextdoor","directory"];
+function paysCommission(r){return r.commission_eligible===true}
 function computeKpis(rows){
   var ms=new Date();ms.setDate(1);ms.setHours(0,0,0,0);
   var thirty=new Date(Date.now()-30*86400000);
@@ -932,7 +938,7 @@ function computeKpis(rows){
   // Commission rollup uses ONLY the DB-computed commission (margin × city-aware rate).
   // No fallback to flat 10% on job_value — that produced wrong-shape numbers under the new rule.
   // If margin isn't filled in yet on a won lead, commMtd just shows that contribution as $0.
-  var commMtd=rows.filter(function(r){return statusOrNew(r.status)==="won"&&new Date(r.won_at||r.job_completed_at||r.created_at)>=ms}).reduce(function(s,r){return s+(Number(r.commission)||0)},0);
+  var commMtd=rows.filter(function(r){return paysCommission(r)&&statusOrNew(r.status)==="won"&&new Date(r.won_at||r.job_completed_at||r.created_at)>=ms}).reduce(function(s,r){return s+(Number(r.commission)||0)},0);
   document.getElementById("k-new").textContent=nNew;
   document.getElementById("k-30d").textContent=n30;
 	  document.getElementById("k-pipeline").textContent=fmtMoney(pipe);
@@ -1049,6 +1055,7 @@ function openPanel(id){
   document.getElementById("p-status").value=statusOrNew(lead.status);
   document.getElementById("p-jobvalue").value=lead.job_value||"";
   document.getElementById("p-margin").value=lead.margin||"";
+  currentLeadPays=paysCommission(lead);
   document.getElementById("p-city").value=lead.city||"";
   recalcCommission();
   document.getElementById("p-notes").value=lead.notes||"";
@@ -1106,7 +1113,9 @@ document.getElementById("backdrop").addEventListener("click",function(){
 });
 // Commission auto-computes from margin + city per the owner's rule (5% Heber/Midway, 10% else).
 // Backend rejects writes to commission (GENERATED column); UI just displays the computed value.
+var currentLeadPays=true;
 function recalcCommission(){
+  if(!currentLeadPays){document.getElementById("p-commission").textContent="No commission (only Twilio calls on SEO/AEO numbers pay)";return}
   var m=Number(document.getElementById("p-margin").value)||0;
   var c=(document.getElementById("p-city").value||"").trim().toLowerCase();
   var isHeberMidway=["heber","heber city","midway"].indexOf(c)>=0;

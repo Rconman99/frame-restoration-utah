@@ -1,4 +1,5 @@
 import type { AccessRole } from "../_shared/crm-access.ts";
+import { isWebsiteFormLead, leadPaysCommission } from "../_shared/tracking-numbers.ts";
 import { isOperator, normalizePhone } from "../_shared/classify-inbound.ts";
 
 export type ReportDetail = "full" | "summary";
@@ -117,6 +118,36 @@ export function parseReportDetail(value: string | null): ReportDetail | null {
 // "Contest Winner" contain the same substring.
 export function isReportableLead(row: LeadRow): boolean {
   return row.is_test !== true;
+}
+
+// ── Lead owner bucket (SEO/AEO = Ryan's commission vs Not SEO/AEO) ─────────
+// Only Twilio numbers placed on SEO/AEO surfaces (website + GBPs) pay Ryan.
+// Placement lives in ../_shared/tracking-numbers.ts; handle-call stamps
+// commission_eligible on each call lead. Directory/other placements, unmapped
+// numbers and directory-sourced forms land in the separate Not SEO/AEO bucket.
+// (Calls straight to Landon's personal cell never reach Twilio or the CRM.)
+export const NOT_SEO_AEO_REPORT_BUCKET = "not_seo_aeo" as const;
+export const LANDON_DIRECT_BUCKET = NOT_SEO_AEO_REPORT_BUCKET;
+export const LANDON_DIRECT_LABEL =
+  "Not SEO/AEO - directory/other placement or Landon direct (no commission)" as const;
+
+export const WEBSITE_FORM_BUCKET = "website_form_no_commission" as const;
+export const WEBSITE_FORM_LABEL =
+  "Website form leads - counted as leads, no commission" as const;
+
+export function leadOwnerBucket(
+  row: LeadRow,
+):
+  | "ryan"
+  | typeof WEBSITE_FORM_BUCKET
+  | typeof NOT_SEO_AEO_REPORT_BUCKET {
+  if (leadPaysCommission(row)) return "ryan";
+  if (isWebsiteFormLead(row)) return WEBSITE_FORM_BUCKET;
+  return NOT_SEO_AEO_REPORT_BUCKET;
+}
+
+export function isRyanLead(row: LeadRow): boolean {
+  return isReportableLead(row) && leadOwnerBucket(row) === "ryan";
 }
 
 export function isReportableCall(row: CallRow): boolean {

@@ -279,3 +279,16 @@ Deno.test("summary detail never returns row-level lead or call data", () => {
   assert(shaped.leads.length === 0, "summary leaked lead rows");
   assert(shaped.calls.length === 0, "summary leaked call rows");
 });
+
+Deno.test("only commission-eligible (SEO/AEO) leads count as Ryan's", async () => {
+  const m = await import("./report-contract.ts");
+  const B = m.NOT_SEO_AEO_REPORT_BUCKET;
+  assert(m.leadOwnerBucket({ call_source: "google_website", commission_eligible: true }) === "ryan", "google call");
+  assert(m.leadOwnerBucket({ call_source: "not_seo_aeo:yelp", commission_eligible: false }) === B, "moved number");
+  assert(m.leadOwnerBucket({ call_source: "unknown", commission_eligible: false }) === B, "unmapped");
+  assert(m.leadOwnerBucket({ source_page: "inbound-call" }) === B, "call w/o flag");
+  assert(m.leadOwnerBucket({ source_page: "/contact", utm_source: "google" }) === m.WEBSITE_FORM_BUCKET, "site form: lead, no commission");
+  assert(m.leadOwnerBucket({ source_page: "/contact", utm_source: "Yelp" }) === B, "yelp form");
+  assert(!m.isRyanLead({ commission_eligible: true, is_test: true }), "test excluded");
+  assert(/Not SEO\/AEO/.test(m.LANDON_DIRECT_LABEL), "label");
+});
