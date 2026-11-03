@@ -279,3 +279,20 @@ Deno.test("summary detail never returns row-level lead or call data", () => {
   assert(shaped.leads.length === 0, "summary leaked lead rows");
   assert(shaped.calls.length === 0, "summary leaked call rows");
 });
+
+Deno.test("Landon-direct directory leads are bucketed apart from Ryan's leads", async () => {
+  const m = await import("./report-contract.ts");
+  const B = m.LANDON_DIRECT_BUCKET;
+  assert(m.leadOwnerBucket({ call_source: "google_website" }) === "ryan", "google call");
+  assert(m.leadOwnerBucket({ call_source: "slc_gbp" }) === "ryan", "slc gbp call");
+  assert(m.leadOwnerBucket({ utm_source: "google" }) === "ryan", "google form");
+  assert(m.leadOwnerBucket({}) === "ryan", "no source stays ryan");
+  assert(m.leadOwnerBucket({ call_source: "directory" }) === B, "directory line");
+  assert(m.leadOwnerBucket({ utm_source: "Yelp" }) === B, "yelp form");
+  assert(m.leadOwnerBucket({ utm_source: "birdeye.com" }) === B, "birdeye form");
+  assert(m.leadOwnerBucket({ utm_source: " BBB " }) === B, "bbb form");
+  assert(!m.isRyanLead({ utm_source: "yelp" }), "yelp not ryan");
+  assert(!m.isRyanLead({ utm_source: "google", is_test: true }), "test lead excluded");
+  assert(m.isRyanLead({ utm_source: "google" }), "google is ryan");
+  assert(/not Ryan's/.test(m.LANDON_DIRECT_LABEL), "label says not Ryan's");
+});

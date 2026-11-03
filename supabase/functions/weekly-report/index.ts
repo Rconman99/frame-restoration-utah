@@ -22,6 +22,10 @@ import {
   configuredPreviewOrigins,
   isReportableCall,
   isReportableLead,
+  isRyanLead,
+  LANDON_DIRECT_BUCKET,
+  LANDON_DIRECT_LABEL,
+  leadOwnerBucket,
   locationTrafficFromPageRows,
   parsePostHogAggregateCount,
   parsePostHogSourceSummary,
@@ -291,7 +295,7 @@ Deno.serve(async (req: Request) => {
       supabase
         .from("leads")
         .select(
-          "id, name, phone, service, source_page, status, job_value, commission, created_at, is_test",
+          "id, name, phone, service, source_page, status, job_value, commission, created_at, is_test, call_source, utm_source",
         )
         .gte("created_at", sinceIso)
         .lt("created_at", untilIso)
@@ -397,7 +401,12 @@ Deno.serve(async (req: Request) => {
 
   const leads = leadResult.data;
   const calls = callResult.data;
-  const realLeads = leads.filter(isReportableLead);
+  const reportableLeads = leads.filter(isReportableLead);
+  // Ryan's numbers exclude Landon-direct directory leads (separate bucket below).
+  const realLeads = reportableLeads.filter(isRyanLead);
+  const landonDirectLeads = reportableLeads.filter((lead) =>
+    leadOwnerBucket(lead) === LANDON_DIRECT_BUCKET
+  );
   const completedCalls = calls.filter((call) =>
     call.status === "completed" && isReportableCall(call)
   );
@@ -438,6 +447,12 @@ Deno.serve(async (req: Request) => {
       total_job_value: totalJobValue,
       total_commission: totalCommission,
       conversion_rate_pct: conversionRate,
+    },
+    // Separate bucket: never added to total_leads / job value / commission.
+    landon_direct: {
+      label: LANDON_DIRECT_LABEL,
+      leads: landonDirectLeads.length,
+      counted_in_totals: false,
     },
     traffic_breakdown: trafficBreakdown,
     traffic_sources: Object.fromEntries(posthogSources),

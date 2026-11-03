@@ -119,6 +119,44 @@ export function isReportableLead(row: LeadRow): boolean {
   return row.is_test !== true;
 }
 
+// ── Lead owner bucket (Ryan vs Landon direct) ───────────────────────────────
+// Landon intentionally keeps his personal cell (the handle-call forward target)
+// on Yelp, Birdeye and other directories. Ryan is not paid on those leads, so
+// they must never count as Ryan's leads. Any lead that comes in on a directory
+// tracking line, or whose first-touch source is a directory, goes to a separate,
+// clearly labeled bucket. Calls dialed straight to Landon's cell never reach
+// Twilio, so they never enter the CRM at all; this bucket catches the ones that
+// do (directory tracking lines, Yelp/Birdeye "visit website" form leads).
+export const LANDON_DIRECT_BUCKET = "landon_direct_directory" as const;
+export const LANDON_DIRECT_LABEL =
+  "Landon direct - Yelp/Birdeye/directories (not Ryan's, not RC)" as const;
+export const DIRECTORY_SOURCES: ReadonlySet<string> = new Set([
+  "yelp",
+  "birdeye",
+  "bbb",
+  "homeadvisor",
+  "angi",
+  "angies_list",
+  "thumbtack",
+  "nextdoor",
+  "directory",
+]);
+
+export function leadOwnerBucket(
+  row: LeadRow,
+): "ryan" | typeof LANDON_DIRECT_BUCKET {
+  const callSource = String(row.call_source ?? "").trim().toLowerCase();
+  if (callSource === "directory") return LANDON_DIRECT_BUCKET;
+  const utm = String(row.utm_source ?? "").trim().toLowerCase()
+    .replace(/[\s.-]+/g, "_").replace(/_com$/, "");
+  if (DIRECTORY_SOURCES.has(utm)) return LANDON_DIRECT_BUCKET;
+  return "ryan";
+}
+
+export function isRyanLead(row: LeadRow): boolean {
+  return isReportableLead(row) && leadOwnerBucket(row) === "ryan";
+}
+
 export function isReportableCall(row: CallRow): boolean {
   if (row.is_test === true) return false;
   return !isOperator(normalizePhone(boundedReportText(row.from_number, 64)));
