@@ -287,7 +287,7 @@ Deno.test("only commission-eligible (SEO/AEO) leads count as Ryan's", async () =
   assert(m.leadOwnerBucket({ call_source: "not_seo_aeo:yelp", commission_eligible: false }) === B, "moved number");
   assert(m.leadOwnerBucket({ call_source: "unknown", commission_eligible: false }) === B, "unmapped");
   assert(m.leadOwnerBucket({ source_page: "inbound-call" }) === B, "call w/o flag");
-  assert(m.leadOwnerBucket({ source_page: "/contact", utm_source: "google" }) === "ryan", "site form");
+  assert(m.leadOwnerBucket({ source_page: "/contact", utm_source: "google" }) === m.WEBSITE_FORM_BUCKET, "site form: lead, no commission");
   assert(m.leadOwnerBucket({ source_page: "/contact", utm_source: "Yelp" }) === B, "yelp form");
   assert(!m.isRyanLead({ commission_eligible: true, is_test: true }), "test excluded");
   assert(/Not SEO\/AEO/.test(m.LANDON_DIRECT_LABEL), "label");

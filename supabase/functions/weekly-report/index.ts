@@ -26,6 +26,8 @@ import {
   LANDON_DIRECT_BUCKET,
   LANDON_DIRECT_LABEL,
   leadOwnerBucket,
+  WEBSITE_FORM_BUCKET,
+  WEBSITE_FORM_LABEL,
   locationTrafficFromPageRows,
   parsePostHogAggregateCount,
   parsePostHogSourceSummary,
@@ -402,8 +404,11 @@ Deno.serve(async (req: Request) => {
   const leads = leadResult.data;
   const calls = callResult.data;
   const reportableLeads = leads.filter(isReportableLead);
-  // Ryan's numbers exclude Landon-direct directory leads (separate bucket below).
+  // Ryan's commission leads = Twilio calls on seo_aeo numbers only.
   const realLeads = reportableLeads.filter(isRyanLead);
+  const websiteFormLeads = reportableLeads.filter((lead) =>
+    leadOwnerBucket(lead) === WEBSITE_FORM_BUCKET
+  );
   const landonDirectLeads = reportableLeads.filter((lead) =>
     leadOwnerBucket(lead) === LANDON_DIRECT_BUCKET
   );
@@ -447,6 +452,12 @@ Deno.serve(async (req: Request) => {
       total_job_value: totalJobValue,
       total_commission: totalCommission,
       conversion_rate_pct: conversionRate,
+    },
+    // Website forms: real leads, never commission.
+    website_form_no_commission: {
+      label: WEBSITE_FORM_LABEL,
+      leads: websiteFormLeads.length,
+      counted_in_commission: false,
     },
     // Separate bucket: never added to total_leads / job value / commission.
     not_seo_aeo: {

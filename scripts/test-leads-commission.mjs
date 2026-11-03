@@ -11,7 +11,7 @@ const cases = [
   [{ commission_eligible: false, call_source: "not_seo_aeo:yelp", source_page: "inbound-call" }, false],
   [{ call_source: "unknown" }, false],
   [{ source_page: "inbound-call" }, false],
-  [{ source_page: "/contact", utm_source: "google" }, true],
+  [{ source_page: "/contact", utm_source: "google" }, false],
   [{ source_page: "/contact", utm_source: "Yelp" }, false],
 ];
 for (const [row, want] of cases) assert.equal(paysCommission(row), want, JSON.stringify(row));

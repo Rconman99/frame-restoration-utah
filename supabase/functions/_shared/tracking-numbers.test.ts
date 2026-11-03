@@ -40,14 +40,18 @@ Deno.test("a Twilio number moved to Yelp stops paying commission and lands in No
   assertEquals(sourceWhisperLabel("+14356108978", moved), "Yelp lead, not SEO");
 });
 
-Deno.test("leadPaysCommission: stored flag wins; calls without flag never pay; forms pay unless directory utm", () => {
+Deno.test("leadPaysCommission: only Twilio seo_aeo calls (commission_eligible === true) pay", async () => {
+  const { isWebsiteFormLead } = await import("./tracking-numbers.ts");
   assertEquals(leadPaysCommission({ commission_eligible: true }), true);
   assertEquals(leadPaysCommission({ commission_eligible: false, utm_source: "google" }), false);
   assertEquals(leadPaysCommission({ source_page: "inbound-call" }), false);
   assertEquals(leadPaysCommission({ call_source: "unknown" }), false);
-  assertEquals(leadPaysCommission({ source_page: "/contact", utm_source: "google" }), true);
-  assertEquals(leadPaysCommission({ source_page: "/contact" }), true);
-  assertEquals(leadPaysCommission({ source_page: "/contact", utm_source: "Birdeye.com" }), false);
+  // Website forms never pay commission, but are still real leads.
+  assertEquals(leadPaysCommission({ source_page: "/contact", utm_source: "google" }), false);
+  assertEquals(leadPaysCommission({ source_page: "/contact" }), false);
+  assertEquals(isWebsiteFormLead({ source_page: "/contact", utm_source: "google" }), true);
+  assertEquals(isWebsiteFormLead({ source_page: "/contact", utm_source: "Birdeye.com" }), false);
+  assertEquals(isWebsiteFormLead({ commission_eligible: true }), false);
 });
 
 Deno.test("whisper label per source", () => {

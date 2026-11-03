@@ -90,14 +90,18 @@ const DIRECTORY_UTM = new Set([
 ]);
 
 /**
- * Does this lead row pay Ryan commission?
- * - commission_eligible stored on the row wins (set by handle-call from placement).
- * - Calls/SMS with no stored flag: NOT eligible (unknown placement).
- * - Website form leads (no call_source): eligible unless first-touch utm is a directory.
+ * Does this lead row pay Ryan commission? (Ryan, 2026-11-03)
+ * ONLY Twilio calls on seo_aeo-placed numbers, i.e. commission_eligible === true
+ * as stamped by handle-call. Website forms, directory/other placements,
+ * unmapped numbers and rows with no flag never pay.
  */
 export function leadPaysCommission(row: Record<string, unknown>): boolean {
-  if (row.commission_eligible === true) return true;
-  if (row.commission_eligible === false) return false;
+  return row.commission_eligible === true;
+}
+
+/** Non-commission lead that is still a real lead: a website form (not directory-sourced). */
+export function isWebsiteFormLead(row: Record<string, unknown>): boolean {
+  if (row.commission_eligible === true || row.commission_eligible === false) return false;
   const callSource = String(row.call_source ?? "").trim();
   const page = String(row.source_page ?? "").trim().toLowerCase();
   if (callSource || page.startsWith("inbound-")) return false;

@@ -1,5 +1,5 @@
 import type { AccessRole } from "../_shared/crm-access.ts";
-import { leadPaysCommission } from "../_shared/tracking-numbers.ts";
+import { isWebsiteFormLead, leadPaysCommission } from "../_shared/tracking-numbers.ts";
 import { isOperator, normalizePhone } from "../_shared/classify-inbound.ts";
 
 export type ReportDetail = "full" | "summary";
@@ -131,10 +131,19 @@ export const LANDON_DIRECT_BUCKET = NOT_SEO_AEO_REPORT_BUCKET;
 export const LANDON_DIRECT_LABEL =
   "Not SEO/AEO - directory/other placement or Landon direct (no commission)" as const;
 
+export const WEBSITE_FORM_BUCKET = "website_form_no_commission" as const;
+export const WEBSITE_FORM_LABEL =
+  "Website form leads - counted as leads, no commission" as const;
+
 export function leadOwnerBucket(
   row: LeadRow,
-): "ryan" | typeof NOT_SEO_AEO_REPORT_BUCKET {
-  return leadPaysCommission(row) ? "ryan" : NOT_SEO_AEO_REPORT_BUCKET;
+):
+  | "ryan"
+  | typeof WEBSITE_FORM_BUCKET
+  | typeof NOT_SEO_AEO_REPORT_BUCKET {
+  if (leadPaysCommission(row)) return "ryan";
+  if (isWebsiteFormLead(row)) return WEBSITE_FORM_BUCKET;
+  return NOT_SEO_AEO_REPORT_BUCKET;
 }
 
 export function isRyanLead(row: LeadRow): boolean {
