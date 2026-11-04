@@ -99,7 +99,8 @@ const LEAD_SELECT_BASE = `
   job_completed_at, balance_due, contract_url, warranty_doc_url, product,
   review_requested_at, review_link_clicked,
   won_at,
-  tier, tier_reason, tier_confidence, tier_classifier
+  tier, tier_reason, tier_confidence, tier_classifier,
+  call_source, commission_eligible, utm_source
 `;
 
 const LEAD_SELECT_PARITY = `

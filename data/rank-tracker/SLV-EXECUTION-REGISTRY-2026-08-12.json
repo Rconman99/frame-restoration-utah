@@ -16,14 +16,14 @@
     "exactCidMapsTargetsMeasured": 72,
     "exactCidMapsNumberOne": 0,
     "googleAiOverviewCitations": 1,
-    "googleAiOverviewsPresent": 3,
+    "googleAiOverviewsPresent": 8,
     "consumerAiCompleteCityPanels": 0,
     "citiesAtSustainedGoal": 0
   },
   "sources": {
     "portfolio": {
       "file": "data/rank-tracker/SLV-18-CITY-GOAL-PORTFOLIO-2026-08-12.json",
-      "sha256": "8f2273f2e60ae7a0d3c0c8174a3daf9ec5448413bfd0768093893d762b1e710c"
+      "sha256": "fe2a49a0dd237af6edf61488e8869f1a8c97b97ec8e4842a3a0017482c83db69"
     },
     "corePriority": {
       "file": "data/rank-tracker/SLV-PRIORITY-2026-08-12.json",
@@ -35,7 +35,7 @@
     },
     "displacement": {
       "file": "data/rank-tracker/SLV-COMPETITOR-DISPLACEMENT-2026-08-12.json",
-      "sha256": "ef056e38180074512fe4dfa243f85f566a59334f64c66a3216be359a7d546df4"
+      "sha256": "97abdb02f40530295a6752416e58c8bc953afade4b2f5354897607dd311481aa"
     },
     "coreCleanupPacket": {
       "file": "data/authority/SLV-CITY-PUBLIC-REMEDIATION-PACKET-2026-08-12.json",
@@ -51,19 +51,19 @@
     },
     "expansionArchitecture": {
       "file": "data/rank-tracker/SLV-EXPANSION-ARCHITECTURE-2026-08-12.json",
-      "sha256": "175549fbd3f5b85a113772a00957749753815b8b2aef20d5927d55e6f3a977ee"
+      "sha256": "aad462236ad77c932765175053b5ee4cb621f85560a4ee466072ef6088b93bdd"
     },
     "entityHealth": {
       "file": "data/rank-tracker/SLV-ENTITY-HEALTH-2026-08-12.json",
-      "sha256": "7b718c3514bc8189cc1983ecb1b5a5dbfc3a967796fd209afc9d6a123bc82c6d"
+      "sha256": "3b26e14a66d9757bbca115e6bc50e2fe14616a2fbf208ea7d51635a1b4e1bb0b"
     },
     "weeklyDecisions": {
       "file": "data/rank-tracker/SLV-WEEKLY-DECISIONS-2026-08-12.json",
-      "sha256": "b90c76443ca9eab9434cecc6ed5fbf62f2f5d6c2a4424a2aac4a026c85dca747"
+      "sha256": "07c2890721d7525a16fb9ef28973cafe719e577027aae2f4c955af6ab851ddfe"
     },
     "gscAttribution": {
       "file": "data/rank-tracker/SLV-GSC-URL-ATTRIBUTION-LATEST.json",
-      "sha256": "3d15939daa2f8bab55cbf5ecde4e97ba0b9eeb0af291fd2de7353843b20fd0f7"
+      "sha256": "f33938878675bb4a32c5d8a6114a47b074479329b7a82b0497a52f82c20f891f"
     },
     "consumerAi": {
       "file": "data/rank-tracker/SLV-CONSUMER-AI-LATEST.json",
@@ -71,11 +71,11 @@
     },
     "interventions": {
       "file": "data/rank-tracker/SLV-INTERVENTION-QUEUE-2026-08-12.json",
-      "sha256": "c1f035ad4b0b343dd33ec57e75d2752b75d7072700238ffc40eafea2c8ba4a36"
+      "sha256": "f79cd0ccafd450e6e87752f5460ee6eff9fef148d2db831b09afdf9c294fee03"
     },
     "mapsReadiness": {
       "file": "data/rank-tracker/SLV-MAPS-READINESS-2026-08-12.json",
-      "sha256": "9c57943a42e1dcd97c558698c250ddf6e2b7e47026712cc8bd9c4e8f32ecea22"
+      "sha256": "db2d488a42c98641ab5ba932a54ffcaf9f28f1ee89c73d3a0822e14ddd1681c0"
     },
     "ownerProfileAuditRequest": {
       "file": "data/authority/SLV-GBP-OWNER-AUDIT-REQUEST-2026-08-12.json",
@@ -264,7 +264,7 @@
       "page": "locations/salt-lake-city.html",
       "panelId": "utah-salt-lake-city-google-v1",
       "measurement": {
-        "observedAt": "2026-10-26T09:26:40.115Z",
+        "observedAt": "2026-11-02T09:15:21.639Z",
         "organicRanks": [
           null,
           null,
@@ -277,10 +277,10 @@
         "consumerAi": "configured-scheduled-unmeasured-invalid-provider-credential"
       },
       "gscAttribution": {
-        "snapshotDate": "2026-10-30",
+        "snapshotDate": "2026-11-03",
         "window": {
-          "startDate": "2026-09-30",
-          "endDate": "2026-10-27"
+          "startDate": "2026-10-04",
+          "endDate": "2026-10-31"
         },
         "state": "intended-url-only-for-all-returned-rows",
         "requestedQueries": 4,
@@ -305,7 +305,7 @@
           "businessValue": 10,
           "confidence": 8,
           "leadValue": 2,
-          "authorityValue": 5,
+          "authorityValue": 7,
           "learningValue": 6,
           "implementationCost": 1,
           "complianceRisk": 1,
@@ -325,18 +325,17 @@
       },
       "mapsReadiness": {
         "lane": "exact-cid-review-and-owner-profile-audit",
-        "packsPresent": 4,
+        "packsPresent": 3,
         "exactCidReturned": 0,
         "exactCidNumberOne": 0,
         "dominantDisplacer": {
-          "name": "Whitaker Roofing Services",
-          "cid": "11316815627233980109",
-          "domain": "whitakerroofing.com",
-          "appearances": 4,
+          "name": "Shingle Pro Roofing",
+          "cid": "9926634112120129216",
+          "domain": "shingleproroofing.com",
+          "appearances": 3,
           "numberOneQueries": 2,
           "bestRank": 1,
           "keywords": [
-            "roofing contractor salt lake city",
             "roof repair salt lake city",
             "roof replacement salt lake city",
             "roofer salt lake city"
@@ -360,7 +359,7 @@
       "page": "locations/millcreek.html",
       "panelId": "utah-millcreek-google-v1",
       "measurement": {
-        "observedAt": "2026-10-26T09:26:40.115Z",
+        "observedAt": "2026-11-02T09:15:21.639Z",
         "organicRanks": [
           null,
           null,
@@ -373,10 +372,10 @@
         "consumerAi": "configured-scheduled-unmeasured-invalid-provider-credential"
       },
       "gscAttribution": {
-        "snapshotDate": "2026-10-30",
+        "snapshotDate": "2026-11-03",
         "window": {
-          "startDate": "2026-09-30",
-          "endDate": "2026-10-27"
+          "startDate": "2026-10-04",
+          "endDate": "2026-10-31"
         },
         "state": "complete-request-with-unreturned-rows",
         "requestedQueries": 4,
@@ -401,7 +400,7 @@
           "businessValue": 10,
           "confidence": 8,
           "leadValue": 5,
-          "authorityValue": 7,
+          "authorityValue": 5,
           "learningValue": 6,
           "implementationCost": 5,
           "complianceRisk": 8,
@@ -473,10 +472,10 @@
         "consumerAi": "configured-manual-unmeasured-invalid-provider-credential"
       },
       "gscAttribution": {
-        "snapshotDate": "2026-10-30",
+        "snapshotDate": "2026-11-03",
         "window": {
-          "startDate": "2026-09-30",
-          "endDate": "2026-10-27"
+          "startDate": "2026-10-04",
+          "endDate": "2026-10-31"
         },
         "state": "complete-request-with-unreturned-rows",
         "requestedQueries": 4,
@@ -570,10 +569,10 @@
         "consumerAi": "configured-manual-unmeasured-invalid-provider-credential"
       },
       "gscAttribution": {
-        "snapshotDate": "2026-10-30",
+        "snapshotDate": "2026-11-03",
         "window": {
-          "startDate": "2026-09-30",
-          "endDate": "2026-10-27"
+          "startDate": "2026-10-04",
+          "endDate": "2026-10-31"
         },
         "state": "complete-request-with-unreturned-rows",
         "requestedQueries": 4,
@@ -653,11 +652,11 @@
       "page": "locations/sandy.html",
       "panelId": "utah-sandy-google-v1",
       "measurement": {
-        "observedAt": "2026-10-26T09:26:40.115Z",
+        "observedAt": "2026-11-02T09:15:21.639Z",
         "organicRanks": [
           null,
           null,
-          18,
+          null,
           null
         ],
         "organicNumberOne": [],
@@ -666,10 +665,10 @@
         "consumerAi": "configured-manual-unmeasured-invalid-provider-credential"
       },
       "gscAttribution": {
-        "snapshotDate": "2026-10-30",
+        "snapshotDate": "2026-11-03",
         "window": {
-          "startDate": "2026-09-30",
-          "endDate": "2026-10-27"
+          "startDate": "2026-10-04",
+          "endDate": "2026-10-31"
         },
         "state": "complete-request-with-unreturned-rows",
         "requestedQueries": 4,
@@ -693,7 +692,7 @@
         "scoreVector": {
           "businessValue": 10,
           "confidence": 6,
-          "leadValue": 3,
+          "leadValue": 2,
           "authorityValue": 5,
           "learningValue": 6,
           "implementationCost": 5,
@@ -749,11 +748,11 @@
       "page": "locations/holladay.html",
       "panelId": "utah-holladay-google-v1",
       "measurement": {
-        "observedAt": "2026-10-26T09:26:40.115Z",
+        "observedAt": "2026-11-02T09:15:21.639Z",
         "organicRanks": [
           null,
           null,
-          21,
+          null,
           null
         ],
         "organicNumberOne": [],
@@ -762,10 +761,10 @@
         "consumerAi": "configured-manual-unmeasured-invalid-provider-credential"
       },
       "gscAttribution": {
-        "snapshotDate": "2026-10-30",
+        "snapshotDate": "2026-11-03",
         "window": {
-          "startDate": "2026-09-30",
-          "endDate": "2026-10-27"
+          "startDate": "2026-10-04",
+          "endDate": "2026-10-31"
         },
         "state": "url-competition-requires-diagnosis",
         "requestedQueries": 4,
@@ -778,22 +777,22 @@
         "nextEvidenceAction": "Inspect the alternate URLs against redirect dates, canonicals, current live routing, and query intent. Treat this blended 28-day evidence as a diagnosis trigger, not proof of current cannibalization or permission to redirect."
       },
       "lane": "diagnose-url-consolidation-before-intent-change",
-      "action": "Diagnose unexpected organic URL selection against the dated fixed panel and exact-query GSC rows before any intent or architecture change. Preserve all existing experiment, foothold, identity, and owner gates. Previously gated action: Complete a full post-August-10 GSC consolidation window while preserving the city hub, redirected legacy route, homepage, and editorial guide; obtain current Salt Lake Valley service-area evidence for the separate Maps lane, request the core cleanup separately, and do not activate the drafted title test until its prerequisites pass.",
+      "action": "Complete a full post-August-10 GSC consolidation window while preserving the city hub, redirected legacy route, homepage, and editorial guide; obtain current Salt Lake Valley service-area evidence for the separate Maps lane, request the core cleanup separately, and do not activate the drafted title test until its prerequisites pass.",
       "actionClass": "system-monitor",
-      "gate": "Unexpected organic URL selection requires read-only diagnosis; no public mutation. Existing gate: complete-post-redirect-gsc-window-plus-service-area-evidence-plus-owner-gated-cleanup",
+      "gate": "complete-post-redirect-gsc-window-plus-service-area-evidence-plus-owner-gated-cleanup",
       "publicApprovalPacket": "data/authority/SLV-CITY-PUBLIC-REMEDIATION-PACKET-2026-08-12.json",
       "ownerApprovalPhrase": "I explicitly approve editing and publishing the five-page integrity cleanup defined in PR #242 and the Millcreek storm-child identity correction defined in the pinned Millcreek scope amendment.",
       "intervention": {
         "lane": "diagnose-url-consolidation-before-intent-change",
         "decision": "Monitor",
-        "selectedAction": "Diagnose unexpected organic URL selection against the dated fixed panel and exact-query GSC rows before any intent or architecture change. Preserve all existing experiment, foothold, identity, and owner gates. Previously gated action: Complete a full post-August-10 GSC consolidation window while preserving the city hub, redirected legacy route, homepage, and editorial guide; obtain current Salt Lake Valley service-area evidence for the separate Maps lane, request the core cleanup separately, and do not activate the drafted title test until its prerequisites pass.",
-        "gate": "Unexpected organic URL selection requires read-only diagnosis; no public mutation. Existing gate: complete-post-redirect-gsc-window-plus-service-area-evidence-plus-owner-gated-cleanup",
-        "acceptanceCheck": "Reconcile every unexpected selected URL with fresh evidence; do not automatically redirect, delete, canonicalize, or rewrite a page. Existing acceptance: Current query-to-URL evidence no longer depends on the pre-redirect window; the position-4 roof-replacement foothold and all protected routes remain intact; a current receipt separately classifies Holladay for CID 5689850818145735734.",
+        "selectedAction": "Complete a full post-August-10 GSC consolidation window while preserving the city hub, redirected legacy route, homepage, and editorial guide; obtain current Salt Lake Valley service-area evidence for the separate Maps lane, request the core cleanup separately, and do not activate the drafted title test until its prerequisites pass.",
+        "gate": "complete-post-redirect-gsc-window-plus-service-area-evidence-plus-owner-gated-cleanup",
+        "acceptanceCheck": "Current query-to-URL evidence no longer depends on the pre-redirect window; the position-4 roof-replacement foothold and all protected routes remain intact; a current receipt separately classifies Holladay for CID 5689850818145735734.",
         "scoreVector": {
           "businessValue": 10,
           "confidence": 6,
-          "leadValue": 3,
-          "authorityValue": 5,
+          "leadValue": 2,
+          "authorityValue": 7,
           "learningValue": 6,
           "implementationCost": 3,
           "complianceRisk": 1,
@@ -848,9 +847,9 @@
       "page": "locations/cottonwood-heights.html",
       "panelId": "utah-cottonwood-heights-google-v1",
       "measurement": {
-        "observedAt": "2026-10-26T09:26:40.115Z",
+        "observedAt": "2026-11-02T09:15:21.639Z",
         "organicRanks": [
-          null,
+          21,
           null,
           null,
           null
@@ -861,10 +860,10 @@
         "consumerAi": "configured-manual-unmeasured-invalid-provider-credential"
       },
       "gscAttribution": {
-        "snapshotDate": "2026-10-30",
+        "snapshotDate": "2026-11-03",
         "window": {
-          "startDate": "2026-09-30",
-          "endDate": "2026-10-27"
+          "startDate": "2026-10-04",
+          "endDate": "2026-10-31"
         },
         "state": "complete-request-with-unreturned-rows",
         "requestedQueries": 4,
@@ -888,8 +887,8 @@
         "scoreVector": {
           "businessValue": 10,
           "confidence": 6,
-          "leadValue": 2,
-          "authorityValue": 5,
+          "leadValue": 3,
+          "authorityValue": 7,
           "learningValue": 6,
           "implementationCost": 5,
           "complianceRisk": 8,
@@ -957,10 +956,10 @@
         "consumerAi": "configured-manual-unmeasured-invalid-provider-credential"
       },
       "gscAttribution": {
-        "snapshotDate": "2026-10-30",
+        "snapshotDate": "2026-11-03",
         "window": {
-          "startDate": "2026-09-30",
-          "endDate": "2026-10-27"
+          "startDate": "2026-10-04",
+          "endDate": "2026-10-31"
         },
         "state": "complete-request-with-unreturned-rows",
         "requestedQueries": 4,
@@ -1053,10 +1052,10 @@
         "consumerAi": "configured-manual-unmeasured-invalid-provider-credential"
       },
       "gscAttribution": {
-        "snapshotDate": "2026-10-30",
+        "snapshotDate": "2026-11-03",
         "window": {
-          "startDate": "2026-09-30",
-          "endDate": "2026-10-27"
+          "startDate": "2026-10-04",
+          "endDate": "2026-10-31"
         },
         "state": "complete-request-with-unreturned-rows",
         "requestedQueries": 4,
@@ -1149,10 +1148,10 @@
         "consumerAi": "configured-manual-unmeasured-invalid-provider-credential"
       },
       "gscAttribution": {
-        "snapshotDate": "2026-10-30",
+        "snapshotDate": "2026-11-03",
         "window": {
-          "startDate": "2026-09-30",
-          "endDate": "2026-10-27"
+          "startDate": "2026-10-04",
+          "endDate": "2026-10-31"
         },
         "state": "complete-request-with-unreturned-rows",
         "requestedQueries": 4,
@@ -1245,10 +1244,10 @@
         "consumerAi": "configured-manual-unmeasured-invalid-provider-credential"
       },
       "gscAttribution": {
-        "snapshotDate": "2026-10-30",
+        "snapshotDate": "2026-11-03",
         "window": {
-          "startDate": "2026-09-30",
-          "endDate": "2026-10-27"
+          "startDate": "2026-10-04",
+          "endDate": "2026-10-31"
         },
         "state": "complete-request-with-unreturned-rows",
         "requestedQueries": 4,
@@ -1340,10 +1339,10 @@
         "consumerAi": "configured-manual-unmeasured-invalid-provider-credential"
       },
       "gscAttribution": {
-        "snapshotDate": "2026-10-30",
+        "snapshotDate": "2026-11-03",
         "window": {
-          "startDate": "2026-09-30",
-          "endDate": "2026-10-27"
+          "startDate": "2026-10-04",
+          "endDate": "2026-10-31"
         },
         "state": "complete-request-with-unreturned-rows",
         "requestedQueries": 4,
@@ -1436,10 +1435,10 @@
         "consumerAi": "configured-manual-unmeasured-invalid-provider-credential"
       },
       "gscAttribution": {
-        "snapshotDate": "2026-10-30",
+        "snapshotDate": "2026-11-03",
         "window": {
-          "startDate": "2026-09-30",
-          "endDate": "2026-10-27"
+          "startDate": "2026-10-04",
+          "endDate": "2026-10-31"
         },
         "state": "complete-request-with-unreturned-rows",
         "requestedQueries": 4,
@@ -1532,10 +1531,10 @@
         "consumerAi": "configured-manual-unmeasured-invalid-provider-credential"
       },
       "gscAttribution": {
-        "snapshotDate": "2026-10-30",
+        "snapshotDate": "2026-11-03",
         "window": {
-          "startDate": "2026-09-30",
-          "endDate": "2026-10-27"
+          "startDate": "2026-10-04",
+          "endDate": "2026-10-31"
         },
         "state": "complete-request-with-unreturned-rows",
         "requestedQueries": 4,
@@ -1628,10 +1627,10 @@
         "consumerAi": "configured-manual-unmeasured-invalid-provider-credential"
       },
       "gscAttribution": {
-        "snapshotDate": "2026-10-30",
+        "snapshotDate": "2026-11-03",
         "window": {
-          "startDate": "2026-09-30",
-          "endDate": "2026-10-27"
+          "startDate": "2026-10-04",
+          "endDate": "2026-10-31"
         },
         "state": "complete-request-with-unreturned-rows",
         "requestedQueries": 4,
@@ -1711,11 +1710,11 @@
       "page": "locations/draper.html",
       "panelId": "utah-draper-google-v1",
       "measurement": {
-        "observedAt": "2026-10-26T09:26:40.115Z",
+        "observedAt": "2026-11-02T09:15:21.639Z",
         "organicRanks": [
-          6,
           null,
-          25,
+          null,
+          17,
           null
         ],
         "organicNumberOne": [],
@@ -1724,10 +1723,10 @@
         "consumerAi": "configured-manual-unmeasured-invalid-provider-credential"
       },
       "gscAttribution": {
-        "snapshotDate": "2026-10-30",
+        "snapshotDate": "2026-11-03",
         "window": {
-          "startDate": "2026-09-30",
-          "endDate": "2026-10-27"
+          "startDate": "2026-10-04",
+          "endDate": "2026-10-31"
         },
         "state": "complete-request-with-unreturned-rows",
         "requestedQueries": 4,
@@ -1751,8 +1750,8 @@
         "scoreVector": {
           "businessValue": 10,
           "confidence": 6,
-          "leadValue": 7,
-          "authorityValue": 5,
+          "leadValue": 3,
+          "authorityValue": 7,
           "learningValue": 6,
           "implementationCost": 5,
           "complianceRisk": 8,
@@ -1820,10 +1819,10 @@
         "consumerAi": "configured-manual-unmeasured-invalid-provider-credential"
       },
       "gscAttribution": {
-        "snapshotDate": "2026-10-30",
+        "snapshotDate": "2026-11-03",
         "window": {
-          "startDate": "2026-09-30",
-          "endDate": "2026-10-27"
+          "startDate": "2026-10-04",
+          "endDate": "2026-10-31"
         },
         "state": "complete-request-with-unreturned-rows",
         "requestedQueries": 4,
@@ -1914,10 +1913,10 @@
         "consumerAi": "configured-manual-unmeasured-invalid-provider-credential"
       },
       "gscAttribution": {
-        "snapshotDate": "2026-10-30",
+        "snapshotDate": "2026-11-03",
         "window": {
-          "startDate": "2026-09-30",
-          "endDate": "2026-10-27"
+          "startDate": "2026-10-04",
+          "endDate": "2026-10-31"
         },
         "state": "complete-request-with-unreturned-rows",
         "requestedQueries": 4,
