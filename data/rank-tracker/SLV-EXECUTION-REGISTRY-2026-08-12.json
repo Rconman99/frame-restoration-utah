@@ -51,7 +51,7 @@
     },
     "expansionArchitecture": {
       "file": "data/rank-tracker/SLV-EXPANSION-ARCHITECTURE-2026-08-12.json",
-      "sha256": "aad462236ad77c932765175053b5ee4cb621f85560a4ee466072ef6088b93bdd"
+      "sha256": "4235bbb2ff4af40e6a32c2da68ae73c4b677ee2e7da116df44205fc18497040e"
     },
     "entityHealth": {
       "file": "data/rank-tracker/SLV-ENTITY-HEALTH-2026-08-12.json",
@@ -63,7 +63,7 @@
     },
     "gscAttribution": {
       "file": "data/rank-tracker/SLV-GSC-URL-ATTRIBUTION-LATEST.json",
-      "sha256": "f33938878675bb4a32c5d8a6114a47b074479329b7a82b0497a52f82c20f891f"
+      "sha256": "98a9fe7cdde30a398249e3e2c885a7513636cb68d20c6f76a982b0c4f2866e42"
     },
     "consumerAi": {
       "file": "data/rank-tracker/SLV-CONSUMER-AI-LATEST.json",
@@ -71,7 +71,7 @@
     },
     "interventions": {
       "file": "data/rank-tracker/SLV-INTERVENTION-QUEUE-2026-08-12.json",
-      "sha256": "f79cd0ccafd450e6e87752f5460ee6eff9fef148d2db831b09afdf9c294fee03"
+      "sha256": "5ca9d8f1338c1d3ab0488d166d27c33985ad84f90cd5b009d7d4f3ec0ebf3ac0"
     },
     "mapsReadiness": {
       "file": "data/rank-tracker/SLV-MAPS-READINESS-2026-08-12.json",
@@ -277,10 +277,10 @@
         "consumerAi": "configured-scheduled-unmeasured-invalid-provider-credential"
       },
       "gscAttribution": {
-        "snapshotDate": "2026-11-03",
+        "snapshotDate": "2026-11-04",
         "window": {
-          "startDate": "2026-10-04",
-          "endDate": "2026-10-31"
+          "startDate": "2026-10-05",
+          "endDate": "2026-11-01"
         },
         "state": "intended-url-only-for-all-returned-rows",
         "requestedQueries": 4,
@@ -372,10 +372,10 @@
         "consumerAi": "configured-scheduled-unmeasured-invalid-provider-credential"
       },
       "gscAttribution": {
-        "snapshotDate": "2026-11-03",
+        "snapshotDate": "2026-11-04",
         "window": {
-          "startDate": "2026-10-04",
-          "endDate": "2026-10-31"
+          "startDate": "2026-10-05",
+          "endDate": "2026-11-01"
         },
         "state": "complete-request-with-unreturned-rows",
         "requestedQueries": 4,
@@ -472,10 +472,10 @@
         "consumerAi": "configured-manual-unmeasured-invalid-provider-credential"
       },
       "gscAttribution": {
-        "snapshotDate": "2026-11-03",
+        "snapshotDate": "2026-11-04",
         "window": {
-          "startDate": "2026-10-04",
-          "endDate": "2026-10-31"
+          "startDate": "2026-10-05",
+          "endDate": "2026-11-01"
         },
         "state": "complete-request-with-unreturned-rows",
         "requestedQueries": 4,
@@ -569,10 +569,10 @@
         "consumerAi": "configured-manual-unmeasured-invalid-provider-credential"
       },
       "gscAttribution": {
-        "snapshotDate": "2026-11-03",
+        "snapshotDate": "2026-11-04",
         "window": {
-          "startDate": "2026-10-04",
-          "endDate": "2026-10-31"
+          "startDate": "2026-10-05",
+          "endDate": "2026-11-01"
         },
         "state": "complete-request-with-unreturned-rows",
         "requestedQueries": 4,
@@ -665,10 +665,10 @@
         "consumerAi": "configured-manual-unmeasured-invalid-provider-credential"
       },
       "gscAttribution": {
-        "snapshotDate": "2026-11-03",
+        "snapshotDate": "2026-11-04",
         "window": {
-          "startDate": "2026-10-04",
-          "endDate": "2026-10-31"
+          "startDate": "2026-10-05",
+          "endDate": "2026-11-01"
         },
         "state": "complete-request-with-unreturned-rows",
         "requestedQueries": 4,
@@ -761,18 +761,19 @@
         "consumerAi": "configured-manual-unmeasured-invalid-provider-credential"
       },
       "gscAttribution": {
-        "snapshotDate": "2026-11-03",
+        "snapshotDate": "2026-11-04",
         "window": {
-          "startDate": "2026-10-04",
-          "endDate": "2026-10-31"
+          "startDate": "2026-10-05",
+          "endDate": "2026-11-01"
         },
         "state": "url-competition-requires-diagnosis",
         "requestedQueries": 4,
         "returnedQueries": 3,
-        "exactRows": 5,
+        "exactRows": 6,
         "alternateNormalizedUrls": [
           "framerestorationutah.com/blog/holladay/roof-replacement-holladay-utah",
-          "framerestorationutah.com/locations/vineyard"
+          "framerestorationutah.com/locations/vineyard",
+          "framerestorationutah.com/pages/residential-roofing"
         ],
         "nextEvidenceAction": "Inspect the alternate URLs against redirect dates, canonicals, current live routing, and query intent. Treat this blended 28-day evidence as a diagnosis trigger, not proof of current cannibalization or permission to redirect."
       },
@@ -860,10 +861,10 @@
         "consumerAi": "configured-manual-unmeasured-invalid-provider-credential"
       },
       "gscAttribution": {
-        "snapshotDate": "2026-11-03",
+        "snapshotDate": "2026-11-04",
         "window": {
-          "startDate": "2026-10-04",
-          "endDate": "2026-10-31"
+          "startDate": "2026-10-05",
+          "endDate": "2026-11-01"
         },
         "state": "complete-request-with-unreturned-rows",
         "requestedQueries": 4,
@@ -956,10 +957,10 @@
         "consumerAi": "configured-manual-unmeasured-invalid-provider-credential"
       },
       "gscAttribution": {
-        "snapshotDate": "2026-11-03",
+        "snapshotDate": "2026-11-04",
         "window": {
-          "startDate": "2026-10-04",
-          "endDate": "2026-10-31"
+          "startDate": "2026-10-05",
+          "endDate": "2026-11-01"
         },
         "state": "complete-request-with-unreturned-rows",
         "requestedQueries": 4,
@@ -1052,10 +1053,10 @@
         "consumerAi": "configured-manual-unmeasured-invalid-provider-credential"
       },
       "gscAttribution": {
-        "snapshotDate": "2026-11-03",
+        "snapshotDate": "2026-11-04",
         "window": {
-          "startDate": "2026-10-04",
-          "endDate": "2026-10-31"
+          "startDate": "2026-10-05",
+          "endDate": "2026-11-01"
         },
         "state": "complete-request-with-unreturned-rows",
         "requestedQueries": 4,
@@ -1148,10 +1149,10 @@
         "consumerAi": "configured-manual-unmeasured-invalid-provider-credential"
       },
       "gscAttribution": {
-        "snapshotDate": "2026-11-03",
+        "snapshotDate": "2026-11-04",
         "window": {
-          "startDate": "2026-10-04",
-          "endDate": "2026-10-31"
+          "startDate": "2026-10-05",
+          "endDate": "2026-11-01"
         },
         "state": "complete-request-with-unreturned-rows",
         "requestedQueries": 4,
@@ -1244,10 +1245,10 @@
         "consumerAi": "configured-manual-unmeasured-invalid-provider-credential"
       },
       "gscAttribution": {
-        "snapshotDate": "2026-11-03",
+        "snapshotDate": "2026-11-04",
         "window": {
-          "startDate": "2026-10-04",
-          "endDate": "2026-10-31"
+          "startDate": "2026-10-05",
+          "endDate": "2026-11-01"
         },
         "state": "complete-request-with-unreturned-rows",
         "requestedQueries": 4,
@@ -1339,10 +1340,10 @@
         "consumerAi": "configured-manual-unmeasured-invalid-provider-credential"
       },
       "gscAttribution": {
-        "snapshotDate": "2026-11-03",
+        "snapshotDate": "2026-11-04",
         "window": {
-          "startDate": "2026-10-04",
-          "endDate": "2026-10-31"
+          "startDate": "2026-10-05",
+          "endDate": "2026-11-01"
         },
         "state": "complete-request-with-unreturned-rows",
         "requestedQueries": 4,
@@ -1435,10 +1436,10 @@
         "consumerAi": "configured-manual-unmeasured-invalid-provider-credential"
       },
       "gscAttribution": {
-        "snapshotDate": "2026-11-03",
+        "snapshotDate": "2026-11-04",
         "window": {
-          "startDate": "2026-10-04",
-          "endDate": "2026-10-31"
+          "startDate": "2026-10-05",
+          "endDate": "2026-11-01"
         },
         "state": "complete-request-with-unreturned-rows",
         "requestedQueries": 4,
@@ -1531,10 +1532,10 @@
         "consumerAi": "configured-manual-unmeasured-invalid-provider-credential"
       },
       "gscAttribution": {
-        "snapshotDate": "2026-11-03",
+        "snapshotDate": "2026-11-04",
         "window": {
-          "startDate": "2026-10-04",
-          "endDate": "2026-10-31"
+          "startDate": "2026-10-05",
+          "endDate": "2026-11-01"
         },
         "state": "complete-request-with-unreturned-rows",
         "requestedQueries": 4,
@@ -1627,10 +1628,10 @@
         "consumerAi": "configured-manual-unmeasured-invalid-provider-credential"
       },
       "gscAttribution": {
-        "snapshotDate": "2026-11-03",
+        "snapshotDate": "2026-11-04",
         "window": {
-          "startDate": "2026-10-04",
-          "endDate": "2026-10-31"
+          "startDate": "2026-10-05",
+          "endDate": "2026-11-01"
         },
         "state": "complete-request-with-unreturned-rows",
         "requestedQueries": 4,
@@ -1723,10 +1724,10 @@
         "consumerAi": "configured-manual-unmeasured-invalid-provider-credential"
       },
       "gscAttribution": {
-        "snapshotDate": "2026-11-03",
+        "snapshotDate": "2026-11-04",
         "window": {
-          "startDate": "2026-10-04",
-          "endDate": "2026-10-31"
+          "startDate": "2026-10-05",
+          "endDate": "2026-11-01"
         },
         "state": "complete-request-with-unreturned-rows",
         "requestedQueries": 4,
@@ -1819,10 +1820,10 @@
         "consumerAi": "configured-manual-unmeasured-invalid-provider-credential"
       },
       "gscAttribution": {
-        "snapshotDate": "2026-11-03",
+        "snapshotDate": "2026-11-04",
         "window": {
-          "startDate": "2026-10-04",
-          "endDate": "2026-10-31"
+          "startDate": "2026-10-05",
+          "endDate": "2026-11-01"
         },
         "state": "complete-request-with-unreturned-rows",
         "requestedQueries": 4,
@@ -1913,10 +1914,10 @@
         "consumerAi": "configured-manual-unmeasured-invalid-provider-credential"
       },
       "gscAttribution": {
-        "snapshotDate": "2026-11-03",
+        "snapshotDate": "2026-11-04",
         "window": {
-          "startDate": "2026-10-04",
-          "endDate": "2026-10-31"
+          "startDate": "2026-10-05",
+          "endDate": "2026-11-01"
         },
         "state": "complete-request-with-unreturned-rows",
         "requestedQueries": 4,
