@@ -6,8 +6,11 @@ name: Blog draft (Utah)
 # fence in no-push mode, quarantine the manifest as needs-review, and upload it
 # as an artifact. This workflow cannot push a branch, promote main, or deploy.
 #
-# Only secret needed: OPENROUTER_API_KEY (drafting). Repository access is
-# read-only. OpenRouter billing/auth failures remain blocking and visible.
+# Drafting runs on Claude sonnet-5-5 via the flat-rate Claude plan (Claude Code
+# CLI + plan OAuth), $0 marginal. Only secret needed: CLAUDE_CODE_OAUTH_TOKEN.
+# No ANTHROPIC_API_KEY / OpenRouter key is passed, so there is no metered path;
+# a missing/expired plan token fails the run visibly. Repository access is
+# read-only. Shadow: SHADOW-utah-blog-sonnet55-2026-10-30.md (Model Monitor).
 
 on:
   schedule:
@@ -52,14 +55,24 @@ jobs:
             echo "No new target this run (top cities all drafted within the exclusion window) — skipping."
           fi
 
-      - name: Draft via OpenRouter
+      - name: Install Claude Code CLI
+        if: steps.target.outputs.count != '0'
+        run: npm install -g @anthropic-ai/claude-code
+
+      - name: Draft via Claude plan (sonnet-5-5)
         id: draft
         if: steps.target.outputs.count != '0'
         env:
-          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
         run: |
+          if [ -z "$CLAUDE_CODE_OAUTH_TOKEN" ]; then
+            echo "::error::CLAUDE_CODE_OAUTH_TOKEN secret missing; refusing to draft (no metered fallback)."
+            exit 1
+          fi
           python3 scripts/blog-autobrief.py --from-prioritizer /tmp/target.json --out /tmp/brief.json
           python3 scripts/blog-draft-openrouter.py \
+            --provider claude-plan \
+            --model claude-sonnet-5-5 \
             --brief /tmp/brief.json \
             --out "$DRAFT_PATH" \
             --status drafted

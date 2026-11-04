@@ -23,11 +23,24 @@ import json
 import os
 import pathlib
 import re
+import shutil
+import subprocess
 import sys
 import urllib.request
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 DEFAULT_MODEL = os.getenv("FRAME_BLOG_OPENROUTER_MODEL", "google/gemini-2.5-flash")
+# 2026-10-30: default drafter is Claude sonnet-5-5 on the flat-rate Claude plan
+# (Claude Code CLI, plan OAuth). Shadow PASS:
+# model-monitor/evals/onboard-shadow/SHADOW-utah-blog-sonnet55-2026-10-30.md.
+# OpenRouter stays available only as an explicit opt-in (--provider openrouter);
+# there is NO automatic fallback, so a plan failure never silently spends.
+DEFAULT_PROVIDER = os.getenv("FRAME_BLOG_PROVIDER", "claude-plan")
+CLAUDE_MODEL = os.getenv("FRAME_BLOG_CLAUDE_MODEL", "claude-sonnet-5-5")
+# Env vars that would route the Claude CLI to metered API billing. Stripped
+# from the child env so the CLI can only authenticate via the plan.
+METERED_ENV = ("ANTHROPIC_API_KEY", "ANTHROPIC_AUTH_TOKEN", "ANTHROPIC_BASE_URL",
+               "CLAUDE_CODE_USE_BEDROCK", "CLAUDE_CODE_USE_VERTEX", "OPENROUTER_API_KEY")
 PENDING = ROOT / "data" / "blog-pending"
 
 # Compliance contract baked into the system prompt. Mirrors the hard-fence in
@@ -95,6 +108,33 @@ def call_openrouter(key: str, model: str, user: str,
     with urllib.request.urlopen(req, timeout=240) as resp:
         data = json.loads(resp.read().decode("utf-8"))
     return (data["choices"][0]["message"]["content"] or "").strip()
+
+
+def claude_plan_env() -> dict:
+    """Child env for the Claude CLI: metered-billing vars removed (fail-safe $0).
+
+    In CI the plan token must come from CLAUDE_CODE_OAUTH_TOKEN; if it is
+    missing we exit instead of falling back to any metered provider. On the
+    Mac the CLI's existing plan login is used.
+    """
+    env = {k: v for k, v in os.environ.items() if k not in METERED_ENV}
+    if os.getenv("CI") and not env.get("CLAUDE_CODE_OAUTH_TOKEN"):
+        sys.exit("CLAUDE_CODE_OAUTH_TOKEN not set in CI; refusing to draft "
+                 "(no metered fallback). Ryan-only: add the plan token secret.")
+    if not shutil.which("claude"):
+        sys.exit("claude CLI not found; install @anthropic-ai/claude-code")
+    return env
+
+
+def call_claude_plan(model: str, user: str, env: dict, timeout: int = 600) -> str:
+    cmd = ["claude", "-p", "--model", model, "--output-format", "text",
+           "--safe-mode", "--strict-mcp-config", "--tools", "",
+           "--system-prompt", SYSTEM]
+    proc = subprocess.run(cmd, input=user, capture_output=True, text=True,
+                          env=env, timeout=timeout)
+    if proc.returncode != 0:
+        raise RuntimeError(f"claude CLI exit {proc.returncode}: {proc.stderr.strip()[:300]}")
+    return proc.stdout.strip()
 
 
 def extract_json(text: str) -> dict:
@@ -170,7 +210,11 @@ def visible_blob(m: dict) -> str:
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--brief", required=True)
-    ap.add_argument("--model", default=DEFAULT_MODEL)
+    ap.add_argument("--provider", default=DEFAULT_PROVIDER,
+                    choices=["claude-plan", "openrouter"],
+                    help="claude-plan (default, $0 flat-rate plan) or openrouter (explicit opt-in).")
+    ap.add_argument("--model", default=None,
+                    help="Model id; defaults to claude-sonnet-5-5 (claude-plan) or the OpenRouter default.")
     ap.add_argument("--out")
     ap.add_argument("--retries", type=int, default=3)
     ap.add_argument("--status", default="needs-review",
@@ -181,13 +225,21 @@ def main() -> None:
     args = ap.parse_args()
 
     brief = json.loads(pathlib.Path(args.brief).read_text())
-    key = load_key()
+    use_claude = args.provider == "claude-plan"
+    if args.model is None:
+        args.model = CLAUDE_MODEL if use_claude else DEFAULT_MODEL
+    if use_claude:
+        env = claude_plan_env()
+    else:
+        key = load_key()
+    label = "Claude plan" if use_claude else "OpenRouter"
     user = build_user_prompt(brief)
 
     manifest = None
     for attempt in range(1, args.retries + 1):
         try:
-            raw = call_openrouter(key, args.model, user)
+            raw = (call_claude_plan(args.model, user, env) if use_claude
+                   else call_openrouter(key, args.model, user))
             if not raw:
                 print(f"[attempt {attempt}] empty response; retrying", file=sys.stderr)
                 continue
@@ -196,10 +248,11 @@ def main() -> None:
                 break
             print(f"[attempt {attempt}] thin/incomplete manifest; retrying", file=sys.stderr)
             manifest = None
-        except (json.JSONDecodeError, KeyError, urllib.error.URLError) as e:
+        except (json.JSONDecodeError, KeyError, urllib.error.URLError,
+                RuntimeError, subprocess.TimeoutExpired) as e:
             print(f"[attempt {attempt}] {type(e).__name__}: {e}; retrying", file=sys.stderr)
     if manifest is None:
-        sys.exit(f"OpenRouter drafting failed after {args.retries} attempts")
+        sys.exit(f"{label} drafting failed after {args.retries} attempts")
 
     # Force the non-negotiable fields regardless of model output.
     manifest["city_slug"] = brief["city_slug"]
@@ -210,7 +263,7 @@ def main() -> None:
     review_note = ("auto-publish path — HARD compliance fence + gates are the backstop"
                    if args.status == "drafted" else "Human compliance review required")
     manifest.setdefault("edit_log", []).append(
-        f"OpenRouter draft ({args.model}); target {brief['keyword']}; "
+        f"{label} draft ({args.model}); target {brief['keyword']}; "
         f"weather hook: {brief.get('weather_hook','')}. {review_note}."
     )
 
@@ -218,7 +271,7 @@ def main() -> None:
     blob = visible_blob(manifest).lower()
     hits = [p for p in FORBIDDEN if p in blob]
     ins = blob.count("insurance claim")
-    print("── OpenRouter draft compliance pre-scan ──", file=sys.stderr)
+    print(f"── {label} draft compliance pre-scan ──", file=sys.stderr)
     print(f"  forbidden-phrase hits: {hits or 'NONE'}", file=sys.stderr)
     print(f"  'insurance claim' bigrams: {ins} (cap 3)", file=sys.stderr)
     print(f"  brand 'Frame Restoration Utah': {blob.count('frame restoration utah')}", file=sys.stderr)
