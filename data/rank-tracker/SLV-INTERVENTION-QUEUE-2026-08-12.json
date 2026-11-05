@@ -13,7 +13,7 @@
         "Holladay",
         "Herriman"
       ],
-      "activeSnapshotSha256": "14563a029e033f695b2bbce4f5d6b142b3ae1982ded5817b8a670ac1829f4a85",
+      "activeSnapshotSha256": "ed4336cc94947a175590837e118c3fcacdbef78d94abc750c9ee7403c5d0c872",
       "diagnosisSnapshotSha256": "a1b7d5aa2acc3a5b663da345ba6eb7242e411661807ae1296f50854702b1a7eb",
       "behavior": "Ignore the stale split-URL disposition and keep affected URL-competition cities in the diagnosis lane; do not suppress, redirect, canonicalize, noindex, delete, or rewrite a route from stale evidence.",
       "requiredAction": "Refresh the bounded Holladay/Herriman split-URL diagnosis against the current GSC attribution snapshot."
@@ -88,7 +88,7 @@
     },
     "gscAttribution": {
       "file": "data/rank-tracker/SLV-GSC-URL-ATTRIBUTION-LATEST.json",
-      "sha256": "98a9fe7cdde30a398249e3e2c885a7513636cb68d20c6f76a982b0c4f2866e42"
+      "sha256": "b3f2486ae34a52a1c0f090e2aa4ae0c01f0aaf63a5561b3978456cdb43bfa7f7"
     },
     "gscSplitUrlDiagnosis": {
       "file": "data/rank-tracker/SLV-GSC-SPLIT-URL-DIAGNOSIS-2026-08-12.json",
@@ -108,7 +108,7 @@
     },
     "expansionArchitecture": {
       "file": "data/rank-tracker/SLV-EXPANSION-ARCHITECTURE-2026-08-12.json",
-      "sha256": "4235bbb2ff4af40e6a32c2da68ae73c4b677ee2e7da116df44205fc18497040e"
+      "sha256": "41073ccad104bc3090825c71bf9b6c2f79b85499ed69645acf219114bf453f93"
     },
     "corePriority": {
       "file": "data/rank-tracker/SLV-PRIORITY-2026-08-12.json",
@@ -374,7 +374,7 @@
         "intendedPageSelectedForEveryMeasuredRank": true,
         "gscState": "complete-request-with-unreturned-rows",
         "gscRequestedQueries": 4,
-        "gscReturnedQueries": 1,
+        "gscReturnedQueries": 3,
         "gscAlternateNormalizedUrls": [],
         "gscUrlDiagnosis": null,
         "serviceAreaStatus": "saved-service-area-observed",
