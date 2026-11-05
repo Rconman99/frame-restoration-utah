@@ -1,119 +1,177 @@
 {
   "last_run": {
-    "timestamp": "2026-09-05T14:40:00Z",
-    "date": "2026-09-05",
+    "timestamp": "2026-11-05T00:00:00Z",
+    "date": "2026-11-05",
     "routine": "aeo-citation-monitor",
     "outcome": "success_with_errors",
-    "summary": "AEO citation monitor: 2/5 — FLAT vs 2026-08-05 on the same 5-query WebSearch panel, with both cited positions improving by one (Park City 3→2, insurance 4→3). Same two queries cited, same three flat-failing. Both citations are extractive: Google's answer text reproduces Frame's copy nearly verbatim, and both cited URLs are blog posts, not service or location pages. Two instrumentation defects surfaced: the stored task prompt still matches the retired frameroofingutah.com host (both of today's citations would score as misses under a literal reading), and the Perplexity check is egress-blocked in the remote environment and returned no data — logged as unmeasured, not as not-cited.",
-    "report_path": "data/aeo-citations/2026-09-05.md",
-    "commit": "f6bf616",
+    "summary": "AEO citation monitor: 0/5 — REGRESSION of 2 vs 2026-09-05 on the same 5-query WebSearch panel. Both September citations were lost: Park City storm (#2) and Utah insurance (#3), both blog URLs, both source files still present in the repo. Brand surfaced on exactly one query (Heber City) and only through a thumbtack.com profile, not an owned URL. The zero is flagged as NEEDS CONFIRMATION, not published as a clean regression: every tracked persistent competitor disappeared simultaneously (Crown Roofing Park City had held #1 above Frame on every run since 07-05) and the result set was parasite-dominated, which is the signature of a degraded or differently-geolocated query rather than genuine displacement. A control query proved the site is not deindexed. That control query also surfaced a NEW and more serious finding: the retired frameroofingutah.com host is still serving its own titled result at position 2, ABOVE the canonical framerestorationutah.com at position 5 — the 301 from the 2026-06-17 migration may not be firing, which would split authority on exactly the storm query that lost its citation.",
+    "report_path": "data/aeo-citations/2026-11-05.md",
+    "commit": "pending_amend",
     "pushed": true,
+    "branch": "claude/aeo-citation-2026-11-05",
     "instrument": "WebSearch proxy, 5-query core panel, US-general, no geolocation, no local-pack channel",
-    "environment": "remote cloud container (Claude Code on the web); perplexity.ai blocked by network egress proxy",
-    "note": "This 2/5 is NOT comparable to the 5/12 recorded 2026-09-01 by the 12-query geolocated SerpAPI cloud workflow. Different panel, tool, geography and depth. _trend.json tracks that series; this state.json tracks the 5-query panel."
+    "environment": "remote cloud container (Claude Code on the web); perplexity.ai unresolvable via network policy; frameroofingutah.com outside egress allowlist (CONNECT 403)",
+    "note": "This 0/5 is NOT comparable to the 1/12 recorded 2026-11-03 by the 12-query geolocated SerpAPI cloud workflow. Different panel, tool, geography and depth. _trend.json tracks that series and was deliberately left untouched; this state.json tracks the 5-query panel.",
+    "deviations_from_stored_prompt": [
+      "Committed to branch claude/aeo-citation-2026-11-05 instead of pushing main. The stored prompt's bare 'git push' would have hit main, which auto-deploys to Vercel; CLAUDE.md forbids direct main pushes and requires a lane-prefixed branch. No PR opened (not requested).",
+      "Perplexity leg skipped — host unresolvable, see last_error.",
+      "No PR opened; report is on the branch awaiting review."
+    ]
   },
   "score": {
-    "current": 2,
+    "current": 0,
     "max": 5,
     "prior": 2,
-    "prior_date": "2026-08-05",
-    "delta": 0,
-    "trend": "flat_score_improving_positions",
+    "prior_date": "2026-09-05",
+    "delta": -2,
+    "trend": "regression_pending_instrument_confirmation",
+    "confidence": "low — see last_run.summary; re-read on SerpAPI before accepting",
     "history": [
       { "date": "2026-05-06", "score": 1 },
       { "date": "2026-07-05", "score": 0 },
       { "date": "2026-08-05", "score": 2 },
-      { "date": "2026-09-05", "score": 2 }
+      { "date": "2026-09-05", "score": 2 },
+      { "date": "2026-11-05", "score": 0 }
     ]
   },
-  "cited_this_cycle": [
+  "cited_this_cycle": [],
+  "lost_this_cycle": [
     {
       "query": "storm damage roofing Park City",
       "url": "https://www.framerestorationutah.com/blog/park-city/storm-damage-roof-repair-park-city",
-      "position": 2,
-      "prior_position": 3,
-      "delta": 1,
-      "extractive": true,
-      "quoted_in_answer": "Park City sits at 7,000 feet ... lake-effect snow loads (typically 80 to 100 pounds per square foot), wind gusts through the I-80 corridor, and freeze-thaw cycles that can swing 40 degrees in a single April day.",
-      "provenance": "auto-published 2026-06-10 via blog-autopost.yml cron (commit 356a716)"
+      "prior_position": 2,
+      "prior_date": "2026-09-05",
+      "source_file_still_present": true,
+      "candidate_cause": "retired-host duplicate ranking above canonical on the same topic — see open_findings"
     },
     {
       "query": "Utah roof insurance claim help",
       "url": "https://www.framerestorationutah.com/blog/utah/utah-roof-insurance-claims-guide",
-      "position": 3,
-      "prior_position": 4,
-      "delta": 1,
-      "extractive": true,
-      "quoted_in_answer": "In Utah, insurers must acknowledge your claim within 15 days and begin investigation within 30 days. If they miss these timelines, the Utah Insurance Department can intervene on your behalf.",
-      "provenance": "existing statewide insurance guide"
+      "prior_position": 3,
+      "prior_date": "2026-09-05",
+      "source_file_still_present": true,
+      "candidate_cause": "bobharveyroofing.com knowledge-center page now occupies the explainer slot"
+    }
+  ],
+  "open_findings": [
+    {
+      "severity": "high",
+      "finding": "Retired host www.frameroofingutah.com returned its own titled result ('Storm Damage Roofing Utah', /pages/storm-damage) at position 2 on a control query, ABOVE canonical www.framerestorationutah.com/locations/park-city at position 5. state.json has recorded this host as 301'd since the 2026-06-17 migration (0ef10e6).",
+      "status": "UNVERIFIED — curl to that host fails with CONNECT tunnel 403; the retired domain is outside this container's egress allowlist. Needs a check from an unrestricted network.",
+      "why_it_matters": "If the redirect is not firing, the two hosts split authority on exactly the storm query that lost its citation this cycle."
     }
   ],
   "still_failing": [
-    "best roofer Heber City Utah — NOT scoreable on this instrument (held Local Pack #1 on the 09-01 SerpAPI run; this panel has no local-pack channel and returns ~7 links). Logged as instrument gap, not regression.",
-    "roof replacement cost Utah 2026 — not found; SERP now 5-of-9 calculators/aggregators, so the slot is increasingly not allocated to contractor pages at all (was organic #5 on the 09-01 SerpAPI run)",
-    "licensed roofer Wasatch Front — 0-for-every-run since 2026-05-06; roofingscout.com aggregator ranks four competitors by name, Frame absent"
+    "best roofer Heber City Utah — brand named in the AI answer but credited to thumbtack.com, not an owned URL. Not scoreable for Local Pack on this instrument (held Pack #1 on the 09-01 SerpAPI run).",
+    "roof replacement cost Utah 2026 — uncited on every run of this panel; SERP now overwhelmingly calculators/aggregators, continuing the 09-05 finding that the slot is increasingly not allocated to contractor pages at all",
+    "licensed roofer Wasatch Front — 0-for-every-run since 2026-05-06 (six months). pages/licensed-roofer-wasatch-front.html (#276, shipped 09-04) still uncited."
   ],
   "last_error": {
     "type": "EGRESS_BLOCKED",
-    "target": "https://www.perplexity.ai/search",
-    "detail": "All Perplexity citation checks blocked by the remote environment's network egress proxy. Zero queries measured on that channel. Recorded as unmeasured rather than not-cited, to avoid repeating the 2026-08-05 incident where 12 swallowed SerpAPI 429s were published as a false 0/12 and overwrote a real 2/5 report.",
+    "targets": [
+      {
+        "target": "https://www.perplexity.ai/search",
+        "detail": "getaddrinfo ENOTFOUND — host does not resolve under this session's network policy. All 5 Perplexity citation checks unmeasured. Third consecutive blind cycle (09-05, 11-03 series, 11-05). Recorded as unmeasured rather than not-cited, per the 2026-08-05 incident where 12 swallowed SerpAPI 429s were published as a false 0/12 and overwrote a real 2/5 report."
+      },
+      {
+        "target": "https://www.frameroofingutah.com/pages/storm-damage",
+        "detail": "curl CONNECT tunnel failed, response 403 — retired domain outside the egress allowlist, so the 301 could not be verified from this container. Blocks confirmation of the highest-severity finding this cycle."
+      }
+    ],
+    "secondary": {
+      "type": "MISSING_CREDENTIAL",
+      "detail": "No SERPAPI_API_KEY in this environment, so scripts/aeo-citation-monitor.py could not be run and no local-pack or true AI-Overview payload was available. The panel fell back to the WebSearch proxy."
+    },
     "blocking": false,
-    "impact": "Perplexity channel produced no data this cycle. Google-proxy channel unaffected."
+    "impact": "Perplexity channel produced no data. The retired-host finding is unconfirmable here. The 0/5 score carries low confidence as a result."
   },
   "pending_actions": [
     {
       "priority": "high",
-      "action": "Fix the stored scheduled-task prompt's domain match. It still instructs a check for frameroofingutah.com, which has 301'd to www.framerestorationutah.com since the 2026-06-17 canonical migration (0ef10e6). BOTH of today's citations landed on the canonical host and would score as misses under a literal reading. Same defect class as the stale TARGET_DOMAIN that produced a false 0/5 before 331dc22 fixed it in the scripts — fixed in code, still live in this prompt.",
+      "action": "Verify the www.frameroofingutah.com 301 from an unrestricted network. It returned a titled result ABOVE the canonical host on a storm-damage control query. This is the most plausible mechanism for this cycle's two-citation loss and cannot be checked from the cloud container.",
       "owner": "Ryan"
     },
     {
       "priority": "high",
-      "action": "Restore or retire the Perplexity channel in this task. perplexity.ai is egress-blocked from the remote cloud container, so the check has produced no data. Either route it through the SerpAPI/OpenRouter path the cloud monitor already uses, or drop it from the prompt so no future run is tempted to log a zero.",
+      "action": "Re-read the 5-query panel on the geolocated SerpAPI instrument before accepting 0/5 as a real regression. Every tracked persistent competitor vanished at once, including Crown Roofing Park City which had held #1 above Frame on every run since 07-05. That pattern says instrument, not ranking.",
+      "owner": "Ryan"
+    },
+    {
+      "priority": "high",
+      "action": "Claim a Lantern (lantern.llc) profile. AI-first directory, cited on 2 of 5 queries, which openly states some profiles are published for the benefit of AI chatbots. Frame has no profile. Owner-approval item — do not auto-submit.",
+      "owner": "Ryan"
+    },
+    {
+      "priority": "high",
+      "action": "Fix the stored scheduled-task prompt's domain match — still names frameroofingutah.com, which is the retired host. CARRIED OVER, open since 2026-09-05, now two cycles old.",
+      "owner": "Ryan"
+    },
+    {
+      "priority": "high",
+      "action": "Restore or retire the Perplexity channel in the stored prompt. Egress-blocked for a third consecutive cycle with zero data produced. Either route it through the SerpAPI/OpenRouter path the cloud monitor already uses, or drop it so no future run logs a zero from it. CARRIED OVER, open since 2026-09-05.",
       "owner": "Ryan"
     },
     {
       "priority": "medium",
-      "action": "The 09-01 open action on 'storm damage roofing Park City' has met its outcome condition — the query is now cited. Note precisely: the win is the blog spoke (/blog/park-city/storm-damage-roof-repair-park-city), NOT the hub pages/storm-damage.html the internal-link action targeted. If the goal was hub visibility the work is still open; if it was the query, close by outcome.",
+      "action": "Publish Frame's Utah DOPL license number in crawlable text on the licensing/about surface. The query-5 AI answer routes readers to DOPL for verification; 'Licensed & Insured in Utah' is an approved claim and the number makes it machine-verifiable. No new certification claim implied.",
       "owner": "Ryan"
     },
     {
       "priority": "medium",
-      "action": "Decide whether blog/utah/roof-replacement-cost-utah-2026.html keeps chasing the cost SERP. Five of nine slots are now calculators/aggregators (thisoldhouse, instantroofer, homeyou + two new tools), which reframes why the 2026-05-20 rewrite (cdee7de) never earned its citation — it competed for a slot increasingly not allocated to contractors.",
+      "action": "Review volume is the explicit ranking lever on the Heber City query — the AI answer ordered contractors by Porch/Thumbtack review counts (RoofTek 1,347 vs Frame's thin set). Continued review acquisition is the only thing that moves it.",
       "owner": "Ryan"
     },
     {
       "priority": "medium",
-      "action": "crownroofingparkcity.com has outranked Frame at #1 on the Park City query on every run since 07-05. Exact-match domain. Frame now sits #2 behind it.",
+      "action": "Decide whether blog/utah/roof-replacement-cost-utah-2026.html keeps chasing the cost SERP. The calculator/aggregator takeover has continued since 09-05, reinforcing that the 2026-05-20 rewrite (cdee7de) competed for a slot increasingly not allocated to contractors. CARRIED OVER from 09-05.",
+      "owner": "Ryan"
+    },
+    {
+      "priority": "medium",
+      "action": "Get SERPAPI_API_KEY into this scheduled environment, or retarget the monthly routine at the existing cloud workflow, so the monthly pass reports real local-pack and AI-Overview data instead of a WebSearch approximation that cannot be trusted at low scores.",
+      "owner": "Ryan"
+    },
+    {
+      "priority": "medium",
+      "action": "The 09-05 note on the Park City storm win is now moot — the citation is lost. The underlying question stands: the September win was the blog spoke, NOT the hub pages/storm-damage.html that the internal-link action targeted. Hub visibility was never achieved. CARRIED OVER from 09-05.",
       "owner": "Ryan"
     },
     {
       "priority": "low",
-      "action": "licensed roofer Wasatch Front has returned zero citations on every run since 2026-05-06 — four months. roofingscout.com (aggregator) ranks Legacy / Shingle Pro / A1 / Vertex by name. Either accept it as an aggregator-owned SERP or target the aggregator listing itself. pages/licensed-roofer-wasatch-front.html (#276, shipped 09-04) is the live test; the 09-09 AIO sweep is the read.",
+      "action": "Crown Roofing Park City (exact-match domain) had outranked Frame at #1 on the Park City query on every run since 07-05 but did not appear this cycle. Do not record as resolved — most likely an instrument artifact. Re-check on the next SerpAPI read. CARRIED OVER from 09-05.",
       "owner": "Ryan"
     },
     {
       "priority": "standing",
-      "action": "Every AI citation Frame earns comes from the blog. Both cited URLs this cycle are blog posts. The 60 location pages and 15 service pages remain absent from AI answers on every instrument — corroborating the 09-02 sweep finding (13 of 13 AIO citations informational, zero local_commercial) and the 09-04 finding that Frame wins AI surfaces where the blog corpus is strong.",
+      "action": "Every AI citation Frame has ever earned came from the blog, and this cycle it earned none. The 60 location pages and 15 service pages remain absent from AI answers on every instrument — corroborating the 09-02 sweep (13 of 13 AIO citations informational, zero local_commercial). The one brand mention this cycle came from a third-party profile, which sharpens the point: third-party surfaces are doing the AEO work the owned site is not.",
       "owner": "Ryan"
     }
   ],
   "threats_new_this_cycle": [
-    "Lloyd's Quality Roofing (lloydsqualityroofing.com — 'Roof Replacement Cost in Utah (2026 Guide)', same title pattern as Homer's cited page and Frame's own rewritten post)",
-    "Vanderflip Home (vanderfliphome.com — calculator tool, not a contractor)",
-    "smartroofingcalculator.com (calculator tool, not a contractor)"
+    "Lantern (lantern.llc — AI-first directory, cited on 2 of 5 queries, states some profiles are 'published by Lantern for the benefit of AI chatbots'; purpose-built AEO intermediary, Frame absent)",
+    "Bob Harvey Roofing (bobharveyroofing.com — knowledge-center page now owns the insurance query Frame held in September)",
+    "On Top Roofing (ontoproofing.com — per-city Heber and Park City pages, hit both local queries)",
+    "Porch (porch.com — drove the entire competitor ranking on the Heber City query, ordered by review count)",
+    "I Know A Roofer (iknowaroofer.com — state-level roofer directory on the Wasatch Front query)",
+    "SERVPRO (servpro.com — national restoration brand on the Park City storm query)",
+    "Parasite-SEO wave: templated near-duplicate roofing pages on *.pages.dev, *.vercel.app, *.netlify.app, *.manus.space. Diluting the SERP without winning citations; both AI answers flagged them as untrustworthy. Monitor only, do not emulate."
   ],
   "threats_persistent": [
-    "Crown Roofing Park City (crownroofingparkcity.com — exact-match domain, ranks #1 ABOVE Frame on the Park City query, every run since 07-05)",
-    "Homer Roofing (still owns cost + insurance queries, two URLs on insurance)",
-    "M.W. Roofing (still exact-match 'Wasatch Front #1' anchor, two URLs)",
-    "roofingutah.com (cited on Park City + insurance + Wasatch Front)",
-    "utahroofing.com / Utah Roofing Experts (distinct business from roofingutah.com; on Heber + Park City this cycle)",
-    "BigHorn Roofing (gobighorn.com — still on Heber City)",
-    "Sky Ridge, Claim Warriors, Utah Roof Replacement (insurance query)",
-    "roofingscout.com aggregator (ranks four competitors by name on Wasatch Front; Frame absent — citation-surface acquisition target)"
+    "Crown Roofing Park City (crownroofingparkcity.com — exact-match domain, #1 above Frame every run since 07-05; ABSENT this cycle, presumed instrument artifact)",
+    "Homer Roofing (cost + insurance queries; absent this cycle, presumed instrument artifact)",
+    "M.W. Roofing (exact-match 'Wasatch Front #1' anchor; absent this cycle)",
+    "roofingutah.com (absent this cycle)",
+    "utahroofing.com / Utah Roofing Experts (distinct business from roofingutah.com; absent this cycle)",
+    "BigHorn Roofing (gobighorn.com — absent this cycle)",
+    "roofingscout.com aggregator (ranks four competitors by name on Wasatch Front; absent this cycle)",
+    "GAF directory (gaf.com/gaf.ca — structural moat on 'licensed roofer' queries; Frame makes NO GAF Master Elite claim, so this is a note, not an action)"
   ],
-  "threats_no_longer_visible": [],
+  "threats_no_longer_visible": [
+    "NOTE: the entire tracked persistent field was absent this cycle. This is recorded as an instrument anomaly, NOT as competitors genuinely losing ground. Do not treat any of the above as resolved."
+  ],
   "corrections_this_cycle": [
-    "An earlier draft of the 2026-09-05 report claimed 9 new competitors. That count came from a domain-string diff against prior reports, but prior reports frequently name competitors in prose without the domain, producing 6 false positives. Re-run by company name, the true count is 3. Report corrected before final push. Standing lesson: diff competitors by NAME as well as domain."
+    "The first draft of this report claimed 'no prior manual-method report exists — this is the first 5-query WebSearch pass.' That was wrong: four prior runs exist on this exact panel (2026-05-06, 07-05, 08-05, 09-05). The draft therefore reported a flat 'never cited' baseline and MISSED a 2-point regression and the loss of two specific blog citations. Root cause: the run read only the most recent file in data/aeo-citations/ (2026-11-03, the 12-query SerpAPI series) and never read state.json or activity-log.md, so the panel's own history was invisible. Corrected before final push.",
+    "The first draft's 'NEW competitors' table was built from a domain-string diff only — the exact error the 09-05 standing lesson warns about. Re-diffed by company NAME as well as domain; in this instance all six survived, but the check was added, not assumed.",
+    "STANDING LESSON REINFORCED: read state.json and activity-log.md BEFORE writing the report, not after. The panel history, the carried-over pending actions, and the prior cycle's cited URLs all live there and none of them are recoverable from the report directory alone."
   ]
 }

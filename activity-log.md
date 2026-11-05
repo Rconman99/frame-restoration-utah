@@ -1,5 +1,48 @@
 # Activity Log
 
+## 2026-11-05 — AEO Citation Monitor (0/5 regression, low confidence; retired host found ranking above canonical)
+
+**Routine:** AEO citation monitor (5-query core panel: best roofer Heber City / roof replacement cost Utah 2026 / storm damage Park City / Utah roof insurance / licensed roofer Wasatch Front).
+
+**Score:** 0/5 — **regression of 2 vs 2026-09-05**, flagged **NEEDS CONFIRMATION**. Series on this panel: 1/5 → 0/5 → 2/5 → 2/5 → 0/5.
+
+**Actions this run:**
+- Ran WebSearch across all 5 tracked queries; recorded competitors, authority sites, and answer-text snippets per query.
+- Attempted Perplexity verification via WebFetch — `getaddrinfo ENOTFOUND`, host unresolvable under this session's network policy. All 5 checks **unmeasured**, not not-cited. Third consecutive blind cycle.
+- Found no `SERPAPI_API_KEY`, so `scripts/aeo-citation-monitor.py` could not be run; fell back to the WebSearch proxy with no local-pack channel.
+- Ran a longer-tail control query to test whether the site was deindexed. It was not — and the control surfaced the retired-host finding below.
+- Diffed competitors by **name and domain** both, per the 09-05 standing lesson.
+- Wrote `data/aeo-citations/2026-11-05.md` (~170 lines). Committed as `AEO Monitor` on branch `claude/aeo-citation-2026-11-05` and pushed. **No PR opened** (not requested).
+- Left `_trend.json` and `_actions.json` untouched so the weekly 12-query SerpAPI series is not corrupted by this panel's score.
+- Sent PushNotification to owner.
+
+**Headline findings:**
+1. 🚨 **Both September citations lost.** Park City storm (`blog/park-city/storm-damage-roof-repair-park-city`, was #2) and Utah insurance (`blog/utah/utah-roof-insurance-claims-guide`, was #3). Both source files still present in the repo — not a deletion.
+2. ⚠️ **The zero is low-confidence and must not be actioned alone.** Every tracked persistent competitor vanished simultaneously — including Crown Roofing Park City, which had held #1 above Frame on *every* run since 07-05 — and the result set was parasite-dominated. That is the signature of a degraded or differently-geolocated query, not of genuine displacement. Per the 2026-08-05 false-zero incident, recorded as panel-measured pending a SerpAPI re-read.
+3. 🔴 **NEW, highest severity: the retired `www.frameroofingutah.com` host returned its own titled result** (`/pages/storm-damage`, "Storm Damage Roofing Utah") at position **2** on the control query, **above** canonical `www.framerestorationutah.com/locations/park-city` at position 5. `state.json` has recorded this host as 301'd since the 2026-06-17 migration (`0ef10e6`). If the redirect is not firing, the two hosts are splitting authority on exactly the storm query that lost its citation. **UNVERIFIED** — `curl` to that host returns `CONNECT tunnel 403`; the retired domain is outside this container's egress allowlist.
+4. 🟡 **Brand surfaced once, via a third party.** The Heber City answer described Frame accurately but credited `thumbtack.com`, not an owned URL — sharpening the standing finding that third-party surfaces are doing the AEO work the owned site is not.
+5. 🟡 **`lantern.llc` is the notable new threat** — an AI-first directory cited on 2 of 5 queries that openly states some profiles are "published by Lantern for the benefit of AI chatbots." Frame has no profile.
+
+**New threats this cycle:** Lantern (lantern.llc), Bob Harvey Roofing, On Top Roofing, Porch, I Know A Roofer, SERVPRO, plus a parasite-SEO wave on `*.pages.dev` / `*.vercel.app` / `*.netlify.app` / `*.manus.space`.
+
+**Corrections this cycle:**
+- The first draft claimed "no prior manual-method report exists — this is the first 5-query WebSearch pass." **Wrong.** Four prior runs exist on this exact panel. The draft reported a flat "never cited" baseline and **missed the 2-point regression and both lost citations entirely.** Root cause: the run read only the newest file in `data/aeo-citations/` (`2026-11-03`, the 12-query SerpAPI series) and **never read `state.json` or `activity-log.md`**, so the panel's own history was invisible. Caught by the stop hook and corrected before final push.
+- The first draft's new-competitor table was a domain-string diff only — the exact error the 09-05 lesson warns against. Re-diffed by company name as well; all six survived, but the check was performed rather than assumed.
+- **Standing lesson reinforced:** read `state.json` and `activity-log.md` *before* writing the report. Panel history, carried-over pending actions and the prior cycle's cited URLs live only there and are not recoverable from the report directory.
+
+**Deviation from stored prompt:** the prompt's bare `git push` would have pushed `main`, which auto-deploys to Vercel. CLAUDE.md forbids direct `main` pushes and requires a lane-prefixed branch, so the report went to `claude/aeo-citation-2026-11-05`. Carried-over defect: the stored prompt still names the retired `frameroofingutah.com` as the target domain (open since 09-05).
+
+**Guardrails honored:** monitoring-only — no site HTML/schema/copy changes; no GBP publish; no edge-function deploy; no owner-facing outreach beyond the notification; no PR opened; `main` untouched.
+
+**Errors this run:** two `EGRESS_BLOCKED` (perplexity.ai unresolvable; frameroofingutah.com CONNECT 403) and one `MISSING_CREDENTIAL` (no `SERPAPI_API_KEY`). All recorded in `state.json.last_error`.
+
+**Files touched:**
+- `data/aeo-citations/2026-11-05.md` (created, then rewritten after the stop-hook catch)
+- `state.json` (updated — score 2 → 0, `lost_this_cycle` and `open_findings` added, pending_actions rebuilt to 12 with carry-overs marked)
+- `activity-log.md` (this entry prepended)
+
+---
+
 ## 2026-09-05 — AEO Citation Monitor (flat score, improving positions, two instrumentation defects found)
 
 **Routine:** AEO citation monitor (5-query core panel: best roofer Heber City / roof replacement cost Utah 2026 / storm damage Park City / Utah roof insurance / licensed roofer Wasatch Front).
