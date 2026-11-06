@@ -1,5 +1,32 @@
 # Activity Log
 
+## 2026-11-06 — Utah sweep (links, redirects, JSON-LD NAP/hours, Mapbox CSP) → draft PR #365
+
+**Routine:** Utah sweep brief, same 4 steps as Texas. Branch `claude/utah-sweep-frame-restoration-xyjeod`, commit `a91ccb3`, draft PR https://github.com/Rconman99/frame-restoration-utah/pull/365.
+
+**Actions this run:**
+- Checked open PRs #360 and #361 first; touched none of their files.
+- Ran the existing gates (audit-links --strict, audit-jsonld, audit-cta-integrity, audit-entity-consistency, audit-csp-contract, audit-booking-links, frame-guards, audit:public-seo, provider tests): all PASS on main before and after.
+- Scanned every served page for internal links that pass through a Vercel 308: 0 `.html` suffixes, 9 trailing-slash hits. Fixed: canonical + og:url on `blog/draper/insurance-claims-storm-damage.html` and `blog/layton/emergency-roof-tarping.html`; `href="/blog/"` → `/blog` on 5 blog posts.
+- Normalized `"telephone": "+1-435-292-8802"` → `+14352928802` (business.json `public_phone_e164`) on 3 blog posts (murray, lehi, provo). 140/140 schema telephones now identical; no 4422/0526/8978 on any served surface.
+- Re-pinned receipts for the edited files only: DRAPER-ARCHITECTURE-DIAGNOSIS (hash + canonical string, by hand), SLV-EXPANSION-ARCHITECTURE, SLV-INTERVENTION-QUEUE, SLV-EXECUTION-REGISTRY via their sync scripts. Full SLV receipt chain PASS.
+- Playwright check serving the repo with the production CSP header: homepage `#areas` map and `/pages/contact`, 0 CSP violations, 0 console errors, canvas + 20 markers rendered, blob worker OK. Mapbox GL JS stubbed (api.mapbox.com egress-blocked) with the same origin classes the real v3.10.0 library uses.
+- CLAUDE.md hours line updated from stale Mon–Fri 8–7 / Sat 8–6 to the merged #359 rule (Mon–Sun 8–6; 24/7 emergency line separate).
+
+**Headline findings:**
+1. Site was already clean on the big items: 0 internal 404s, 172/172 sitemap URLs resolve, 462 JSON-LD blocks parse, all 3 openingHoursSpecification nodes Mon–Sun 08:00–18:00, 0 pages with the old hours text.
+2. The Mapbox map lives on the homepage, not the contact page (contact has only the GBP hasMap link). Brief's "map on contact page" check reinterpreted accordingly and reported.
+3. No booking URL exists by design: 411 booking CTAs → `/#contact` lead modal → Supabase handle-lead. Dead calendar link exists only in `archive/`.
+4. vercel.json redirect `/:city/storm-damage-restoration → /:city/storm-damage` is dormant (single-segment match, 404 target, nothing links to it, no page ever lived there). Left alone; vercel.json is hash-pinned.
+
+**Guardrails honored:** draft PR only; no merge/deploy; no vercel.json, NAP, phone, copy, GBP, Twilio, Supabase or secret changes; no spend; one repo only; no other lane's PR touched.
+
+**Errors this run:** EGRESS_BLOCKED — sandbox proxy refused the production hosts (live redirect hops verified from vercel.json, not HTTP) and Mapbox origins (CSP verified with a stub). Pre-existing, unchanged: audit:slv-city-integrity (strict), audit:slv-leader-features, audit:city-page-drafts fail identically on clean main. Hub sync / ACTIVE-LANES claim not done (one-repo brief).
+
+**Files touched:** 10 blog HTML files, 4 `data/rank-tracker/*.json` receipts, `CLAUDE.md`, `state.json` (last_run replaced; prior AEO run kept under `previous_run`), `activity-log.md` (this entry).
+
+---
+
 ## 2026-09-05 — AEO Citation Monitor (flat score, improving positions, two instrumentation defects found)
 
 **Routine:** AEO citation monitor (5-query core panel: best roofer Heber City / roof replacement cost Utah 2026 / storm damage Park City / Utah roof insurance / licensed roofer Wasatch Front).

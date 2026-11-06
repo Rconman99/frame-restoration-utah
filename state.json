@@ -1,16 +1,15 @@
 {
   "last_run": {
-    "timestamp": "2026-09-05T14:40:00Z",
-    "date": "2026-09-05",
-    "routine": "aeo-citation-monitor",
+    "timestamp": "2026-11-06T18:22:41Z",
+    "date": "2026-11-06",
+    "routine": "utah-sweep",
     "outcome": "success_with_errors",
-    "summary": "AEO citation monitor: 2/5 — FLAT vs 2026-08-05 on the same 5-query WebSearch panel, with both cited positions improving by one (Park City 3→2, insurance 4→3). Same two queries cited, same three flat-failing. Both citations are extractive: Google's answer text reproduces Frame's copy nearly verbatim, and both cited URLs are blog posts, not service or location pages. Two instrumentation defects surfaced: the stored task prompt still matches the retired frameroofingutah.com host (both of today's citations would score as misses under a literal reading), and the Perplexity check is egress-blocked in the remote environment and returned no data — logged as unmeasured, not as not-cited.",
-    "report_path": "data/aeo-citations/2026-09-05.md",
-    "commit": "f6bf616",
+    "summary": "Utah sweep (4 steps: internal 404s, single-hop redirects, JSON-LD NAP + 8-6 daily hours, Mapbox/CSP). 0 internal 404s; 9 internal links/canonicals that hit a trailing-slash 308 fixed; 3 blog JSON-LD phones normalized to +14352928802; 4 receipts re-pinned (sha256 only); CLAUDE.md hours line aligned to merged #359. Mapbox map is on the homepage, not the contact page; Playwright check under the production CSP: 0 violations, 0 console errors on / and /pages/contact. No booking URL exists; all 411 booking CTAs go to /#contact -> handle-lead. Draft PR #365. The 2026-09-05 AEO citation-monitor run this replaced is preserved under previous_run; score/cited/threat fields below are still that monitor's.",
+    "report_path": "https://github.com/Rconman99/frame-restoration-utah/pull/365",
+    "commit": "a91ccb3",
+    "branch": "claude/utah-sweep-frame-restoration-xyjeod",
     "pushed": true,
-    "instrument": "WebSearch proxy, 5-query core panel, US-general, no geolocation, no local-pack channel",
-    "environment": "remote cloud container (Claude Code on the web); perplexity.ai blocked by network egress proxy",
-    "note": "This 2/5 is NOT comparable to the 5/12 recorded 2026-09-01 by the 12-query geolocated SerpAPI cloud workflow. Different panel, tool, geography and depth. _trend.json tracks that series; this state.json tracks the 5-query panel."
+    "environment": "remote cloud container (Claude Code on the web); production hosts and api.mapbox.com egress-blocked by the network proxy"
   },
   "score": {
     "current": 2,
@@ -20,10 +19,22 @@
     "delta": 0,
     "trend": "flat_score_improving_positions",
     "history": [
-      { "date": "2026-05-06", "score": 1 },
-      { "date": "2026-07-05", "score": 0 },
-      { "date": "2026-08-05", "score": 2 },
-      { "date": "2026-09-05", "score": 2 }
+      {
+        "date": "2026-05-06",
+        "score": 1
+      },
+      {
+        "date": "2026-07-05",
+        "score": 0
+      },
+      {
+        "date": "2026-08-05",
+        "score": 2
+      },
+      {
+        "date": "2026-09-05",
+        "score": 2
+      }
     ]
   },
   "cited_this_cycle": [
@@ -55,10 +66,10 @@
   ],
   "last_error": {
     "type": "EGRESS_BLOCKED",
-    "target": "https://www.perplexity.ai/search",
-    "detail": "All Perplexity citation checks blocked by the remote environment's network egress proxy. Zero queries measured on that channel. Recorded as unmeasured rather than not-cited, to avoid repeating the 2026-08-05 incident where 12 swallowed SerpAPI 429s were published as a false 0/12 and overwrote a real 2/5 report.",
+    "target": "https://www.framerestorationutah.com, https://frameroofingutah.com, https://api.mapbox.com",
+    "detail": "Sandbox proxy refused CONNECT (403) to the production hosts and to Mapbox origins. Live redirect hop counts could not be measured over HTTP (verified from vercel.json semantics instead), and the Mapbox GL JS library could not be fetched (CSP verified with a stub exercising the same origins). Three pre-existing check failures (audit:slv-city-integrity strict, audit:slv-leader-features, audit:city-page-drafts) fail identically on a clean main and were not caused by this run.",
     "blocking": false,
-    "impact": "Perplexity channel produced no data this cycle. Google-proxy channel unaffected."
+    "impact": "Two acceptance checks verified statically rather than live; noted in PR #365. No data lost."
   },
   "pending_actions": [
     {
@@ -115,5 +126,18 @@
   "threats_no_longer_visible": [],
   "corrections_this_cycle": [
     "An earlier draft of the 2026-09-05 report claimed 9 new competitors. That count came from a domain-string diff against prior reports, but prior reports frequently name competitors in prose without the domain, producing 6 false positives. Re-run by company name, the true count is 3. Report corrected before final push. Standing lesson: diff competitors by NAME as well as domain."
-  ]
+  ],
+  "previous_run": {
+    "timestamp": "2026-09-05T14:40:00Z",
+    "date": "2026-09-05",
+    "routine": "aeo-citation-monitor",
+    "outcome": "success_with_errors",
+    "summary": "AEO citation monitor: 2/5 — FLAT vs 2026-08-05 on the same 5-query WebSearch panel, with both cited positions improving by one (Park City 3→2, insurance 4→3). Same two queries cited, same three flat-failing. Both citations are extractive: Google's answer text reproduces Frame's copy nearly verbatim, and both cited URLs are blog posts, not service or location pages. Two instrumentation defects surfaced: the stored task prompt still matches the retired frameroofingutah.com host (both of today's citations would score as misses under a literal reading), and the Perplexity check is egress-blocked in the remote environment and returned no data — logged as unmeasured, not as not-cited.",
+    "report_path": "data/aeo-citations/2026-09-05.md",
+    "commit": "f6bf616",
+    "pushed": true,
+    "instrument": "WebSearch proxy, 5-query core panel, US-general, no geolocation, no local-pack channel",
+    "environment": "remote cloud container (Claude Code on the web); perplexity.ai blocked by network egress proxy",
+    "note": "This 2/5 is NOT comparable to the 5/12 recorded 2026-09-01 by the 12-query geolocated SerpAPI cloud workflow. Different panel, tool, geography and depth. _trend.json tracks that series; this state.json tracks the 5-query panel."
+  }
 }
