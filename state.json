@@ -1,9 +1,9 @@
 {
   "last_run": {
-    "timestamp": "2026-11-06T00:00:00Z",
+    "timestamp": "2026-11-06T18:22:42Z",
     "date": "2026-11-06",
     "routine": "mac-broken-link-loop",
-    "outcome": "success",
+    "outcome": "success_with_errors",
     "summary": "Brief #6 (Mac broken-link loop): diagnosed from code why the launchd job dies (audit-links.mjs took the repo root from cwd, launchd starts at / and hits EPERM; launchd PATH has no Homebrew node). Hardened scripts/audit-links.mjs (root from script location, unreadable folders warn, zero files = exit 2, --json, Utah header). Added scripts/check-broken-links.mjs (live checker over the public sitemap/URL list, hard own-market guard: refuses non-Utah --site, never fetches other hosts, off-origin redirects not followed, --dry-run read-only), scripts/broken-link-cron.sh (report-only Mac entrypoint, no git), 8 loopback tests wired into compliance-gate, runbook docs/seo/BROKEN-LINK-LOOP.md with launchd plist template.",
     "report_path": "docs/seo/BROKEN-LINK-LOOP.md",
     "commit": "f56e514",
@@ -68,10 +68,11 @@
   ],
   "last_error": {
     "type": "EGRESS_BLOCKED",
-    "target": "https://www.perplexity.ai/search",
-    "detail": "All Perplexity citation checks blocked by the remote environment's network egress proxy. Zero queries measured on that channel. Recorded as unmeasured rather than not-cited, to avoid repeating the 2026-08-05 incident where 12 swallowed SerpAPI 429s were published as a false 0/12 and overwrote a real 2/5 report.",
+    "target": "https://www.framerestorationutah.com/",
+    "detail": "The cloud container network proxy refused the tunnel (CONNECT 403) for www.framerestorationutah.com, so the live broken-link dry-run could not run against production from this session. The acceptance dry-run ran instead on a loopback fixture serving this checkout with the real sitemap.xml. Production link status is UNMEASURED by this run, not clean.",
     "blocking": false,
-    "impact": "Perplexity channel produced no data this cycle. Google-proxy channel unaffected."
+    "impact": "Code, tests and the static gate are verified; the first real production link check must run on the Mac: bash scripts/broken-link-cron.sh --dry-run.",
+    "run": "2026-11-06 mac-broken-link-loop"
   },
   "pending_actions": [
     {
@@ -146,5 +147,12 @@
     "instrument": "WebSearch proxy, 5-query core panel, US-general, no geolocation, no local-pack channel",
     "environment": "remote cloud container (Claude Code on the web); perplexity.ai blocked by network egress proxy",
     "note": "This 2/5 is NOT comparable to the 5/12 recorded 2026-09-01 by the 12-query geolocated SerpAPI cloud workflow. Different panel, tool, geography and depth. _trend.json tracks that series; this state.json tracks the 5-query panel."
+  },
+  "previous_last_error": {
+    "type": "EGRESS_BLOCKED",
+    "target": "https://www.perplexity.ai/search",
+    "detail": "All Perplexity citation checks blocked by the remote environment's network egress proxy. Zero queries measured on that channel. Recorded as unmeasured rather than not-cited, to avoid repeating the 2026-08-05 incident where 12 swallowed SerpAPI 429s were published as a false 0/12 and overwrote a real 2/5 report.",
+    "blocking": false,
+    "impact": "Perplexity channel produced no data this cycle. Google-proxy channel unaffected."
   }
 }

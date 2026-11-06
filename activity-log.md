@@ -16,7 +16,7 @@
 
 **Skipped:** live run against production (cloud egress blocked; first real run is on the Mac), plist install (owner), `fru-indexnow` (other repo), hub claim/decisions entry (hub out of session scope).
 
-**Errors:** none unresolved. Two test-file bugs during development (external host keyed by hostname; spawnSync blocked the in-process fixture server) were fixed before commit.
+**Errors:** `EGRESS_BLOCKED` — the cloud container proxy refused www.framerestorationutah.com (CONNECT 403), so the live dry-run could not reach production; recorded in `state.json` `last_error`, production link status is unmeasured by this run. Two test-file bugs during development (external host keyed by hostname; spawnSync blocked the in-process fixture server) were fixed before commit.
 
 **Guardrails honored:** draft PR only; no merge, deploy, GBP/Twilio/Vercel/DNS change, migration, secret or spend; one repo touched; no cross-market content.
 
