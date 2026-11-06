@@ -1,0 +1,63 @@
+name: AI referrer tagging contract
+
+# Isolated-PostgreSQL contract for supabase/migrations/20261027230000_ai_referrer_tagging.sql
+# (a 6-way regex classifier, BEFORE INSERT triggers on leads + phone_clicks and a one-time
+# backfill), which otherwise ships with hand spot-checks only. Same pattern as
+# voice-screening.yml, and standalone for the same reason: compliance-gate.yml is a
+# digest-pinned reviewed source (scripts/audit-client-ip-probe-contract.mjs pins its bytes
+# and its exact action counts), so new contracts sit next to it rather than inside it.
+#
+# The REAL Utah baselines (leads, phone_clicks, the 20260510 attribution columns) go onto an
+# empty postgres:16-alpine, synthetic history rows plus an UPDATE log trigger go in
+# (supabase/tests/ai_referrer_tagging_fixture.sql), the migration is applied TWICE
+# (idempotency is part of the contract), then supabase/tests/ai_referrer_tagging.sql asserts
+# the classifier table, the trigger/function shape, the backfill scope (only resolving rows,
+# never an overwrite, no second-pass UPDATE) and the insert path. No market project is
+# touched; the synthetic database is discarded with the job.
+on:
+  pull_request:
+    paths:
+      - 'supabase/migrations/20261027230000_ai_referrer_tagging.sql'
+      - 'supabase/migrations/20260401000003_baseline_leads.sql'
+      - 'supabase/migrations/20260401000004_baseline_phone_clicks.sql'
+      - 'supabase/migrations/20260510_add_attribution_columns.sql'
+      - 'supabase/tests/ai_referrer_tagging*.sql'
+      - '.github/workflows/ai-referrer-tagging.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'supabase/migrations/20261027230000_ai_referrer_tagging.sql'
+      - 'supabase/migrations/20260401000003_baseline_leads.sql'
+      - 'supabase/migrations/20260401000004_baseline_phone_clicks.sql'
+      - 'supabase/migrations/20260510_add_attribution_columns.sql'
+      - 'supabase/tests/ai_referrer_tagging*.sql'
+      - '.github/workflows/ai-referrer-tagging.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  contract:
+    name: AI referrer tagging SQL trigger + backfill contract (blocking)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_PASSWORD: synthetic-ci-only
+        ports: ['5432:5432']
+        options: --health-cmd pg_isready --health-interval 5s --health-timeout 5s --health-retries 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      - name: Real baselines, synthetic history, migration applied twice, assertions
+        env:
+          PGPASSWORD: synthetic-ci-only
+        run: |
+          psql -h localhost -U postgres -v ON_ERROR_STOP=1 -f supabase/migrations/20260401000003_baseline_leads.sql
+          psql -h localhost -U postgres -v ON_ERROR_STOP=1 -f supabase/migrations/20260401000004_baseline_phone_clicks.sql
+          psql -h localhost -U postgres -v ON_ERROR_STOP=1 -f supabase/migrations/20260510_add_attribution_columns.sql
+          psql -h localhost -U postgres -v ON_ERROR_STOP=1 -f supabase/tests/ai_referrer_tagging_fixture.sql
+          psql -h localhost -U postgres -v ON_ERROR_STOP=1 -f supabase/migrations/20261027230000_ai_referrer_tagging.sql
+          psql -h localhost -U postgres -v ON_ERROR_STOP=1 -f supabase/migrations/20261027230000_ai_referrer_tagging.sql
+          psql -h localhost -U postgres -v ON_ERROR_STOP=1 -f supabase/tests/ai_referrer_tagging.sql
