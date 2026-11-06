@@ -21,7 +21,8 @@ AGENTS.md is canonical for commands, lanes and protected paths. The full prior C
 - Heber Valley is one market (Heber City, Midway, Wallsburg, Charleston, Daniel); don't fragment.
 - "The valley" = Salt Lake Valley premium ZIPs, not Heber Valley.
 - Every GBP post needs a photo. NEVER auto-publish to Google Business Profile: owner-manual only.
-- Hours: Mon–Fri 8AM–7PM, Sat 8AM–6PM.
+- Hours: Mon–Sun 8AM–6PM (PR #359, 2026-10-30; schema Mo–Su 08:00–18:00). The 24/7 water/flood/tarping/storm
+  emergency line is separate and unchanged.
 
 ## Git
 - Draft PRs only; push to `main` auto-deploys to Vercel, so never push to main directly.
