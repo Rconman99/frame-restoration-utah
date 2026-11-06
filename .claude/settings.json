@@ -19,6 +19,39 @@
             "prompt": "Before stopping, verify: 1) Was state.json updated with the current timestamp? 2) Was activity-log.md appended with this run's actions? 3) If there were errors, was last_error set in state.json? 4) If you asked Landon a follow-up question, did you add it to pending_actions? If any of these are missing, complete them now before stopping."
           }
         ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cd \"$CLAUDE_PROJECT_DIR\" && (npm run test:lead-form) >/dev/null 2>&1 || { echo 'Stop gate failed: npm run test:lead-form (report only)' >&2; exit 1; }",
+            "timeout": 300
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/guard-bash.sh\"",
+            "timeout": 10,
+            "onFailure": "block"
+          }
+        ]
+      },
+      {
+        "matcher": "Edit|Write|MultiEdit|NotebookEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/guard-paths.sh\"",
+            "timeout": 10,
+            "onFailure": "block"
+          }
+        ]
       }
     ]
   },

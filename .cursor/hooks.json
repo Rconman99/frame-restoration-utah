@@ -1,0 +1,7 @@
+{
+  "version": 1,
+  "hooks": {
+    "beforeShellExecution": [{ "command": "bash .claude/hooks/guard-bash.sh" }],
+    "preToolUse": [{ "command": "bash .claude/hooks/guard-paths.sh", "matcher": "Write|Edit|MultiEdit" }]
+  }
+}
