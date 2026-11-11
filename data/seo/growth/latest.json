@@ -1,8 +1,8 @@
 {
   "artifact": "frame-utah-growth-operations",
   "version": 1,
-  "generatedAt": "2026-11-10T12:40:53.234Z",
-  "snapshotDate": "2026-11-10",
+  "generatedAt": "2026-11-11T12:40:45.094Z",
+  "snapshotDate": "2026-11-11",
   "sourceAgeHours": 0,
   "state": "measurement_operational_outcomes_incomplete",
   "northStar": "qualified_organic_leads",
@@ -16,8 +16,8 @@
     "nextAction": "Reconcile existing lead source/city/page attribution with owner-confirmed CRM outcomes through the approved read-only lane; do not infer jobs from clicks or change CRM truth."
   },
   "searchWindow": {
-    "startDate": "2026-10-11",
-    "endDate": "2026-11-07"
+    "startDate": "2026-10-12",
+    "endDate": "2026-11-08"
   },
   "blockers": [],
   "crawlErrors": [],
@@ -28,9 +28,9 @@
       "page": "https://www.framerestorationutah.com/locations/salt-lake-city",
       "state": "observed_rolling_window",
       "metrics": {
-        "clicks": 3,
-        "impressions": 6566,
-        "averagePosition": 24.8
+        "clicks": 2,
+        "impressions": 6541,
+        "averagePosition": 24.6
       }
     },
     {
@@ -39,8 +39,8 @@
       "state": "observed_rolling_window",
       "metrics": {
         "clicks": 1,
-        "impressions": 1315,
-        "averagePosition": 10.4
+        "impressions": 1295,
+        "averagePosition": 10.3
       }
     },
     {
@@ -97,7 +97,7 @@
       "region": "heber",
       "query": "roof repair heber city ut",
       "clicks": 0,
-      "impressions": 2170,
+      "impressions": 2186,
       "averagePosition": 9.3,
       "state": "exact_query_page_diagnosis_ready",
       "nextAction": "Obtain an exact query + intended-page baseline; check current URL selection and running experiments before drafting one isolated change.",
@@ -107,8 +107,8 @@
       "region": "heber",
       "query": "roofing heber city ut",
       "clicks": 0,
-      "impressions": 1439,
-      "averagePosition": 5.4,
+      "impressions": 1473,
+      "averagePosition": 5.5,
       "state": "exact_query_page_diagnosis_ready",
       "nextAction": "Obtain an exact query + intended-page baseline; check current URL selection and running experiments before drafting one isolated change.",
       "limitation": "Query-level discovery only: these metrics are not a page baseline, lead count or revenue estimate."
@@ -117,7 +117,7 @@
       "region": "heber",
       "query": "which roofing companies in heber city ut provide roof repair and replacement services?",
       "clicks": 0,
-      "impressions": 93,
+      "impressions": 91,
       "averagePosition": 4.9,
       "state": "exact_query_page_diagnosis_ready",
       "nextAction": "Obtain an exact query + intended-page baseline; check current URL selection and running experiments before drafting one isolated change.",
@@ -127,7 +127,7 @@
       "region": "hail-service-area",
       "query": "roof repair midway ut",
       "clicks": 0,
-      "impressions": 1706,
+      "impressions": 1751,
       "averagePosition": 6.9,
       "state": "exact_query_page_diagnosis_ready",
       "nextAction": "Obtain an exact query + intended-page baseline; check current URL selection and running experiments before drafting one isolated change.",
@@ -137,7 +137,7 @@
       "region": "hail-service-area",
       "query": "roofing midway ut",
       "clicks": 0,
-      "impressions": 1322,
+      "impressions": 1334,
       "averagePosition": 4.7,
       "state": "exact_query_page_diagnosis_ready",
       "nextAction": "Obtain an exact query + intended-page baseline; check current URL selection and running experiments before drafting one isolated change.",
@@ -147,18 +147,8 @@
       "region": "davis-hail",
       "query": "roof repair farmington ut",
       "clicks": 0,
-      "impressions": 769,
-      "averagePosition": 10.9,
-      "state": "exact_query_page_diagnosis_ready",
-      "nextAction": "Obtain an exact query + intended-page baseline; check current URL selection and running experiments before drafting one isolated change.",
-      "limitation": "Query-level discovery only: these metrics are not a page baseline, lead count or revenue estimate."
-    },
-    {
-      "region": "davis-hail",
-      "query": "which roofing companies in farmington ut handle roof repairs and replacements?",
-      "clicks": 0,
-      "impressions": 41,
-      "averagePosition": 8.1,
+      "impressions": 741,
+      "averagePosition": 11,
       "state": "exact_query_page_diagnosis_ready",
       "nextAction": "Obtain an exact query + intended-page baseline; check current URL selection and running experiments before drafting one isolated change.",
       "limitation": "Query-level discovery only: these metrics are not a page baseline, lead count or revenue estimate."
@@ -218,8 +208,8 @@
   },
   "sources": [
     {
-      "file": "data/seo/snapshots/2026-11-10.json",
-      "sha256": "a0a7fde76dcaa9df472ad169f072d5ed9830b033797c6a803ec63aa0f1c15d96"
+      "file": "data/seo/snapshots/2026-11-11.json",
+      "sha256": "58b0d53ac72b92c50c85a23f7f6cdce8dad0c405e43b994aa0f7d54b6bf5408f"
     },
     {
       "file": "data/seo-experiments/utah-homepage-commercial-title-2026-08-09.json",
