@@ -198,7 +198,15 @@
       },
       {
         "file": "locations/salt-lake-city.html",
-        "sha256": "fbfe166c92d3c44e7fe854f1ee9ef4b257ecab459d4fac4ebc34e96461d9dd82",
+        "sha256": "4122a985d58b4a7968a7476716fb3bf00a7ce858c144f1676215077081af5126",
+        "slcConversionSourceAmendment": {
+          "observedAt": "2026-11-11T17:45:00Z",
+          "priorSha256": "fbfe166c92d3c44e7fe854f1ee9ef4b257ecab459d4fac4ebc34e96461d9dd82",
+          "priorInboundInternalLinks": 86,
+          "currentInboundInternalLinks": 100,
+          "reason": "Supporting Salt Lake City hub byte and inbound pin only: owner-approved PR 369 adds a click-to-load Google Maps service-area embed, refreshes the visible and schema dateModified to 2026-11-11, and the new SLC roof-repair, roof-replacement and hail-damage child pages add breadcrumb and parent links to the hub. Title, H1, canonical, NAP, identity override and historical ranking/GSC observations, diagnoses and held experiments are unchanged. Not new ranking evidence or experiment authorization.",
+          "reviewRequiredBeforeMerge": true
+        },
         "qaBaselineSourceAmendment": {
           "observedAt": "2026-10-18T20:00:00Z",
           "priorSha256": "f68f51ad40a9f8a02d2f9d20702da884afa0c0f13458615832627a930103e895",
@@ -233,7 +241,7 @@
         "title": "Salt Lake City Roof Repair &amp; Replacement | Frame Restoration Utah",
         "h1": "Salt Lake City Roof Repair &amp; Replacement",
         "canonical": "https://www.framerestorationutah.com/locations/salt-lake-city",
-        "inboundInternalLinks": 86
+        "inboundInternalLinks": 100
       },
       {
         "file": "index.html",
@@ -274,12 +282,12 @@
           "reason": "Supporting homepage byte pin only: adds a nonvisual deployment-asset freshness meta tag for the brand-source exclusion. No visible copy, links, media, title, H1, canonical, schema, historical ranking/GSC observations or experiment authorization changed.",
           "reviewRequiredBeforeMerge": true
         },
-      "ownerCleanupSourceAmendment": {
-        "observedAt": "2026-09-28T16:42:26.498141+00:00",
-        "priorSha256": "8afca2ace1bc40372e0d6936fd655146a0d96b6d1b08afa17b7a074ea8b4aa9e",
-        "reason": "Supporting homepage byte pin only: removes the eight technical evidence cards and their unused CSS at the owner request. Title, H1, canonical, schema, business summary, hail guide links and project media are unchanged. Historical ranking/GSC observations, inbound counts, Holladay diagnosis and held experiment remain dated and unchanged. This is not new ranking evidence or experiment authorization.",
-        "reviewRequiredBeforeMerge": true
-      },
+        "ownerCleanupSourceAmendment": {
+          "observedAt": "2026-09-28T16:42:26.498141+00:00",
+          "priorSha256": "8afca2ace1bc40372e0d6936fd655146a0d96b6d1b08afa17b7a074ea8b4aa9e",
+          "reason": "Supporting homepage byte pin only: removes the eight technical evidence cards and their unused CSS at the owner request. Title, H1, canonical, schema, business summary, hail guide links and project media are unchanged. Historical ranking/GSC observations, inbound counts, Holladay diagnosis and held experiment remain dated and unchanged. This is not new ranking evidence or experiment authorization.",
+          "reviewRequiredBeforeMerge": true
+        },
         "davisDiscoverySourceAmendment": {
           "observedAt": "2026-09-18T22:55:00Z",
           "priorSha256": "d3931904e8e918cf22a5ea66bd8abddd083c1f3de71b378a0907f7568f5cf57f",
