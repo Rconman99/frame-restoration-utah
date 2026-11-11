@@ -9,8 +9,9 @@ name: Blog draft (Utah)
 # Drafting runs on Claude sonnet-5-5 via the flat-rate Claude plan (Claude Code
 # CLI + plan OAuth), $0 marginal. Only secret needed: CLAUDE_CODE_OAUTH_TOKEN.
 # No ANTHROPIC_API_KEY / OpenRouter key is passed, so there is no metered path;
-# a missing/expired plan token fails the run visibly. Repository access is
-# read-only. Shadow: SHADOW-utah-blog-sonnet55-2026-10-30.md (Model Monitor).
+# a missing/expired plan token fails the run visibly. The close-to-page-one
+# queue is printed for review and is not drafted into a new post from here.
+# Repository access is read-only. Shadow: SHADOW-utah-blog-sonnet55-2026-10-30.md (Model Monitor).
 
 on:
   schedule:
@@ -41,6 +42,9 @@ jobs:
       - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
         with:
           python-version: '3.12'
+
+      - name: Show close-to-page-one review queue
+        run: node scripts/close-to-page-one.mjs --print-queue
 
       - name: Pick weather + tracking target
         id: target
