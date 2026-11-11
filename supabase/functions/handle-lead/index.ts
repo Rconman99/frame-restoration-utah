@@ -39,6 +39,10 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { ipHashSecretReady } from "../_shared/client-ip.ts";
 import { applySender } from "../_shared/twilio-sender.ts";
 import {
+  readSmsSuppression,
+  smsSendAllowed,
+} from "../_shared/sms-suppression.ts";
+import {
   LEAD_INTAKE_RATE_LIMIT_RPC,
   leadIntakeThrottleKey,
   nativeLeadSubmissionKey,
@@ -853,7 +857,17 @@ Deno.serve(async (req: Request) => {
           sms_consent,
           customerPhone,
         );
-        if (consentGate.send && config.TWILIO_ACCOUNT_SID) {
+        // TCPA / FCC 26-67: an opted-out number never gets the auto-text.
+        // Fail closed if the suppression state can't be read.
+        const suppression = consentGate.send && config.TWILIO_ACCOUNT_SID
+          ? await readSmsSuppression(supabase, customerPhone!)
+          : null;
+        if (suppression && !smsSendAllowed(suppression)) {
+          console.log(
+            "Auto-text skipped:",
+            suppression.ok ? "opted_out" : suppression.error,
+          );
+        } else if (consentGate.send && config.TWILIO_ACCOUNT_SID) {
           const autoReplyBody = customerAutoReply(effectiveTier, firstName);
           smsPromises.push(
             sendTwilioSMS(config, customerPhone!, autoReplyBody)
