@@ -191,7 +191,7 @@ jobs:
 
   lead-form-single-submit:
     name: Lead form single-submit contract (blocking)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 25
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
@@ -465,10 +465,14 @@ jobs:
           node-version: '24'
       - name: Fail on stale public SEO signals
         run: npm run audit:public-seo
+      - name: Fail when the newest published page is missing from sitemap.xml
+        run: |
+          git fetch --unshallow origin
+          node scripts/check-published-sitemap.mjs
 
   mobile-ui-quality:
     name: Mobile conversion UI quality (blocking)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 25
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
@@ -553,20 +557,3 @@ jobs:
           node-version: '24'
       - name: Fail if any internal doc would deploy publicly
         run: node scripts/audit-doc-isolation.mjs --strict
-
-  published-sitemap:
-    name: Newest published page is in the sitemap (blocking)
-    runs-on: ubuntu-latest
-    timeout-minutes: 15
-    # BLOCKING. A page can ship in git and still be invisible if sitemap.xml
-    # never listed it. Full history is required: a shallow clone cannot tell
-    # which HTML file was published last, and this job fails rather than skip.
-    steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
-        with:
-          fetch-depth: 0
-      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
-        with:
-          node-version: '24'
-      - name: Fail when the newest published page is missing from sitemap.xml
-        run: node scripts/check-published-sitemap.mjs
