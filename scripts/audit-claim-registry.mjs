@@ -28,6 +28,22 @@ function isIsoDate(value) {
   return typeof value === "string" && /^\d{4}-\d{2}-\d{2}$/.test(value);
 }
 
+function renderFeaturedPages(registry, baseUrl) {
+  const lines = [];
+  const sections = [];
+  for (const page of registry.featuredPages || []) {
+    if (!sections.includes(page.section)) sections.push(page.section);
+  }
+  for (const section of sections) {
+    lines.push(`## ${section}`);
+    for (const page of registry.featuredPages.filter((entry) => entry.section === section)) {
+      lines.push(`- ${page.name}: ${baseUrl}${page.path}`);
+    }
+    lines.push("");
+  }
+  return lines;
+}
+
 function renderLlms(registry, claimsById) {
   const claim = (id) => claimsById.get(id)?.value ?? "";
   const baseUrl = claim("identity.canonical_url").replace(/\/+$/, "");
@@ -51,6 +67,7 @@ function renderLlms(registry, claimsById) {
     "## Published roofing services",
     ...registry.services.map((service) => `- ${service.name}: ${baseUrl}${service.path}`),
     "",
+    ...renderFeaturedPages(registry, baseUrl),
     "## Published local coverage",
     `- ${locationPages} top-level Utah location pages are present in the published repository and sitemap.`,
     `- Canonical sitemap: ${baseUrl}/sitemap.xml`,
@@ -176,6 +193,19 @@ for (const service of registry.services || []) {
   }
 }
 
+if (registry.featuredPages !== undefined && !Array.isArray(registry.featuredPages)) {
+  errors.push("featuredPages must be an array when present");
+}
+for (const page of Array.isArray(registry.featuredPages) ? registry.featuredPages : []) {
+  if (!page.section || !page.name || !page.path || !page.sourceFile) {
+    errors.push("each featured page requires section, name, path, and sourceFile");
+    continue;
+  }
+  if (!fs.existsSync(path.join(repoRoot, page.sourceFile))) {
+    errors.push(`featured page source missing: ${page.sourceFile}`);
+  }
+}
+
 const canonicalUrl = claimsById.get("identity.canonical_url")?.value?.replace(/\/+$/, "");
 const sitemapPath = path.join(repoRoot, "sitemap.xml");
 if (canonicalUrl && fs.existsSync(sitemapPath)) {
@@ -183,6 +213,11 @@ if (canonicalUrl && fs.existsSync(sitemapPath)) {
   for (const service of registry.services || []) {
     const expectedUrl = `<loc>${canonicalUrl}${service.path}</loc>`;
     if (!sitemap.includes(expectedUrl)) errors.push(`service route missing from sitemap: ${service.path}`);
+  }
+  for (const page of Array.isArray(registry.featuredPages) ? registry.featuredPages : []) {
+    if (!page.path) continue;
+    const expectedUrl = `<loc>${canonicalUrl}${page.path}</loc>`;
+    if (!sitemap.includes(expectedUrl)) errors.push(`featured page missing from sitemap: ${page.path}`);
   }
   const locationEntries = fs
     .readdirSync(path.join(repoRoot, "locations"), { withFileTypes: true })
