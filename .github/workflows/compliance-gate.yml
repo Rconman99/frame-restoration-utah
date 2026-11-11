@@ -164,7 +164,7 @@ jobs:
         with:
           python-version: '3.12'
       - name: Exercise provider outages, atomic snapshots, and workflow contracts
-        run: python3 tests/test_provider_workflows.py
+        run: python3 tests/test_provider_workflows.py && python3 tests/test_close_to_page_one_queue.py
 
   edge-function-compile:
     name: Supabase Edge entrypoint typecheck (blocking)
@@ -553,3 +553,20 @@ jobs:
           node-version: '24'
       - name: Fail if any internal doc would deploy publicly
         run: node scripts/audit-doc-isolation.mjs --strict
+
+  published-sitemap:
+    name: Newest published page is in the sitemap (blocking)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    # BLOCKING. A page can ship in git and still be invisible if sitemap.xml
+    # never listed it. Full history is required: a shallow clone cannot tell
+    # which HTML file was published last, and this job fails rather than skip.
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+        with:
+          node-version: '24'
+      - name: Fail when the newest published page is missing from sitemap.xml
+        run: node scripts/check-published-sitemap.mjs

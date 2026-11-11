@@ -617,6 +617,7 @@ class WorkflowContractTests(unittest.TestCase):
         self.assertIn("steps.draft.outcome == 'success'", autopost)
         self.assertIn('GATE_OUTCOME: ${{ steps.gate.outcome }}', autopost)
         self.assertIn("steps.quarantine.outcome == 'success'", autopost)
+        self.assertIn("node scripts/close-to-page-one.mjs --print-queue", autopost)
         self.assertIn('tee "$GATE_LOG"', autopost)
         self.assertNotIn("--push", autopost)
         self.assertNotIn("git push", autopost)
@@ -628,6 +629,8 @@ class WorkflowContractTests(unittest.TestCase):
         self.assertNotIn('git("push", "origin", "HEAD:main")', publisher)
         self.assertIn('(\"public-seo-and-mobile\", [\"npm\", \"run\", \"audit:public-seo\"])', publisher)
         self.assertIn('(\"links\", [\"node\", \"scripts/audit-links.mjs\", \"--strict\"])', publisher)
+        self.assertIn("check-published-sitemap.mjs", publisher)
+        self.assertIn("SITEMAP MISSING PUBLISHED PAGE", publisher)
         self.assertNotIn("workflow_run:", traction)
         self.assertNotIn("Blog auto-post (Utah)", traction)
         self.assertIn("workflow_dispatch:", traction)
@@ -645,6 +648,24 @@ class WorkflowContractTests(unittest.TestCase):
         self.assertNotIn("secrets.ANTHROPIC_API_KEY", autopost)
         self.assertIn('"ANTHROPIC_API_KEY"', drafter)  # stripped from the CLI env
         self.assertIn('DEFAULT_PROVIDER = os.getenv("FRAME_BLOG_PROVIDER", "claude-plan")', drafter)
+
+    def test_close_to_page_one_is_a_draft_review_and_skips_without_gsc(self) -> None:
+        workflow = (REPO / ".github/workflows/close-to-page-one.yml").read_text(encoding="utf-8")
+        self.assertIn("cron: '47 14 * * 1'", workflow)
+        self.assertIn("secrets.GSC_SERVICE_ACCOUNT_JSON", workflow)
+        self.assertIn("vars.GSC_SITE_URL", workflow)
+        self.assertIn("secrets.CLAUDE_CODE_OAUTH_TOKEN", workflow)
+        self.assertIn("node scripts/check-published-sitemap.mjs", workflow)
+        self.assertIn("node scripts/close-to-page-one.mjs", workflow)
+        self.assertIn("--skip-if-unconfigured", workflow)
+        self.assertIn('BRANCH="cursor/close-to-page-one-weekly"', workflow)
+        self.assertRegex(workflow, r"gh pr create \\\s+--draft")
+        self.assertIn("github.event_name != 'pull_request'", workflow)
+        self.assertNotIn("openrouter", workflow.lower())
+        self.assertNotIn("secrets.OPENROUTER_API_KEY", workflow)
+        self.assertNotIn("secrets.ANTHROPIC_API_KEY", workflow)
+        self.assertNotIn("git push origin HEAD:main", workflow)
+        self.assertNotIn("continue-on-error", workflow)
 
     def test_lead_notification_recovery_schedule_restored(self) -> None:
         workflow = (REPO / ".github/workflows/lead-notification-worker.yml").read_text(
