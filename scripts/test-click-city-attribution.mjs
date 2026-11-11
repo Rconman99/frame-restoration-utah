@@ -21,6 +21,18 @@ test('SLC calls and texts retain city on production clean URLs and legacy forms'
   }
 });
 
+test('city service sub-pages keep their city', () => {
+  for (const path of [
+    '/locations/salt-lake-city/storm-damage',
+    '/locations/salt-lake-city/water-damage.html',
+    '/locations/salt-lake-city/roof-repair/',
+    '/locations/salt-lake-city/hail-damage',
+  ]) {
+    assert.equal(cityFor(path), 'salt lake city', path);
+  }
+  assert.equal(cityFor('/locations/millcreek/storm-damage'), 'millcreek');
+});
+
 test('other supported routes remain compatible and unrelated paths stay unknown', () => {
   assert.equal(cityFor('/locations/millcreek'), 'millcreek');
   assert.equal(cityFor('/salt-lake-city'), 'salt lake city');
