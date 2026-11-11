@@ -1,5 +1,5 @@
 # Frame Restoration Utah — robots.txt
-# Last updated: 2026-03-30
+# Last updated: 2026-11-11
 
 User-agent: *
 Allow: /
@@ -10,6 +10,9 @@ Disallow: /hero
 Disallow: /archive
 
 # AI Crawlers — Allow (GEO/AI search visibility)
+User-agent: OAI-SearchBot
+Allow: /
+
 User-agent: GPTBot
 Allow: /
 
@@ -20,6 +23,12 @@ User-agent: ClaudeBot
 Allow: /
 
 User-agent: PerplexityBot
+Allow: /
+
+User-agent: Perplexity-User
+Allow: /
+
+User-agent: Claude-SearchBot
 Allow: /
 
 User-agent: Google-Extended

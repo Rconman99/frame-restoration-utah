@@ -1,0 +1,92 @@
+name: IndexNow submit
+
+# After a push to main (which Vercel deploys to production), tell Bing and the
+# other IndexNow engines which public pages changed. ChatGPT search and Copilot
+# lean on Bing's index, so new and edited pages get picked up in days, not weeks.
+# Uses the existing scripts/indexnow-submit.py and the public key file already
+# served at the site root. No secrets.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '**/*.html'
+      - 'sitemap.xml'
+  workflow_dispatch:
+    inputs:
+      full_sitemap:
+        description: 'Submit every sitemap URL'
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: indexnow
+  cancel-in-progress: false
+
+jobs:
+  submit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          fetch-depth: 0
+
+      - name: Wait for the production deploy to finish
+        run: sleep 150
+
+      - name: Submit changed sitemap URLs
+        env:
+          BEFORE: ${{ github.event.before }}
+          AFTER: ${{ github.sha }}
+          FULL: ${{ github.event.inputs.full_sitemap || 'false' }}
+        run: |
+          set -euo pipefail
+          if [ "$FULL" = "true" ]; then
+            python3 scripts/indexnow-submit.py
+            exit 0
+          fi
+          if [ -z "${BEFORE:-}" ] || [ "$BEFORE" = "0000000000000000000000000000000000000000" ] \
+             || ! git cat-file -e "$BEFORE^{commit}" 2>/dev/null; then
+            echo "No usable previous commit; nothing to diff."
+            exit 0
+          fi
+          git diff --name-only --diff-filter=AM "$BEFORE" "$AFTER" > changed.txt
+          if grep -qx 'sitemap.xml' changed.txt; then
+            echo "sitemap.xml changed: submitting the whole sitemap."
+            python3 scripts/indexnow-submit.py
+            exit 0
+          fi
+          # Map changed HTML files to their clean URLs and keep only URLs that
+          # are in the sitemap, so drafts and internal tools are never sent.
+          python3 - <<'PY' > urls.txt
+          import re, pathlib
+          locs = re.findall(r"<loc>(.*?)</loc>", pathlib.Path("sitemap.xml").read_text())
+          by_path = {}
+          for u in locs:
+              p = re.sub(r"^https?://[^/]+", "", u).rstrip("/") or "/"
+              by_path[p] = u
+          out = []
+          for f in pathlib.Path("changed.txt").read_text().split():
+              if not f.endswith(".html"):
+                  continue
+              p = "/" + f
+              p = re.sub(r"/index\.html$", "", p)
+              p = re.sub(r"\.html$", "", p)
+              p = p.rstrip("/") or "/"
+              if p in by_path and by_path[p] not in out:
+                  out.append(by_path[p])
+          print("\n".join(out[:200]))
+          PY
+          if [ ! -s urls.txt ]; then
+            echo "No changed page is in the sitemap; nothing to submit."
+            exit 0
+          fi
+          echo "Submitting $(wc -l < urls.txt) changed URL(s):"
+          cat urls.txt
+          while read -r url; do
+            [ -n "$url" ] && python3 scripts/indexnow-submit.py --url "$url"
+          done < urls.txt
