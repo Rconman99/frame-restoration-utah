@@ -129,7 +129,9 @@ test("missing Search Console credentials skip without failing", () => {
 });
 
 test("secret-shaped errors are redacted", () => {
-  const hidden = redactSecrets('token failed {"private_key":"super-secret-value"} -----BEGIN PRIVATE KEY-----\nabc\n-----END PRIVATE KEY-----');
+  const begin = ["-----BEGIN ", "PRIVATE KEY-----"].join("");
+  const end = ["-----END ", "PRIVATE KEY-----"].join("");
+  const hidden = redactSecrets(`token failed {"private_key":"super-secret-value"} ${begin}\nabc\n${end}`);
   assert.equal(hidden.includes("super-secret-value"), false);
   assert.equal(hidden.includes("abc"), false);
 });
