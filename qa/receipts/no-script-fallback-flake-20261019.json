@@ -1,0 +1,566 @@
+{
+  "schemaVersion": 1,
+  "recordedAt": "2026-10-20T05:33:28.634163+00:00",
+  "repository": "Rconman99/frame-restoration-utah",
+  "baseSha": "80f7c79f3497c7fd4d4b0c0e6bb9654c0e5f019d",
+  "branch": "codex/ut-noscript-fallback-flake-20261019",
+  "scope": "Test-only no-script form submission stability at scripts/test-lead-form-submit.mjs:212 (baseline).",
+  "reproduced": true,
+  "environment": {
+    "playwright": "1.59.1",
+    "browser": "Google Chrome 155.0.8059.85",
+    "headless": true,
+    "platform": "macOS arm64",
+    "node": "v26.8.1",
+    "browserChoice": "Existing test prefers installed system Chrome; every counted run used a real browser process."
+  },
+  "reproduction": {
+    "command": "node scripts/test-lead-form-submit.mjs",
+    "originalFullScriptFailureLine": 212,
+    "focusedRunsPerRevision": 20,
+    "focusedFixtureIds": [
+      "#heroForm",
+      "#leadForm"
+    ],
+    "baseline": {
+      "passed": 17,
+      "failed": 3
+    },
+    "fixed": {
+      "passed": 20,
+      "failed": 0
+    },
+    "baselineFailureRuns": [
+      10,
+      19,
+      20
+    ],
+    "baselineFailureForms": [
+      "#heroForm",
+      "#leadForm",
+      "#leadForm"
+    ],
+    "failureSignature": [
+      "locator.click: Timeout 30000ms exceeded.",
+      "element is not stable",
+      "retrying click action",
+      "waiting 20ms"
+    ],
+    "fullSuiteInitialReproduction": "First exploratory unmodified run also timed out on #heroForm at line 212; excluded from the recorded repeat counts."
+  },
+  "rootCause": {
+    "observed": "Input focus starts native CSS smooth scrolling. The no-script submit button moves during the actionability check, and the click retry stalls in its browser-side 20ms timer with JavaScript disabled.",
+    "cssSources": [
+      "global-critical.css:38",
+      "global.css:46"
+    ],
+    "playwrightSource": "node_modules/playwright-core/lib/server/dom.js (_retryAction)",
+    "timerProbe": [
+      {
+        "javaScriptEnabled": true,
+        "outcome": "timer-fired",
+        "elapsedMs": 25
+      },
+      {
+        "javaScriptEnabled": false,
+        "outcome": "timer-not-fired-within-500ms",
+        "elapsedMs": 500
+      }
+    ]
+  },
+  "change": "Set document.documentElement.style.scrollBehavior to auto only in each no-script test page, before filling fields. Keep JavaScript disabled, normal click actionability, exact-one-POST checks, and every payload assertion.",
+  "sourceIdentity": {
+    "baselineSha256": "e39a057b9ee8ee665bd584f280856f7b4004c56777fb6db4ff1fb34267fb70d6",
+    "fixedSha256": "456f7d3e841c06d5714fb65b91fe5121247ad9843f779f48b8ae439f2a613d75",
+    "fixedSourceMatchesWorktree": true,
+    "focusedBlocksMatchOriginalSourceByteForByte": true,
+    "focusedRunnerAdaptations": [
+      "Retain original local server, Chromium launch, and requireOneAdditionalPost helper.",
+      "Run exactly the original noScriptContext block; omit JavaScript-enabled and article journey blocks.",
+      "Resolve imports and static-server root explicitly because runner lives in the receipt directory.",
+      "Print completion after both native-form fixture assertions pass."
+    ]
+  },
+  "batches": {
+    "baseline-focused": {
+      "startedAt": "2026-10-20T05:29:52.166422+00:00",
+      "completedAt": "2026-10-20T05:32:41.284640+00:00",
+      "completedRuns": 20,
+      "passCount": 17,
+      "failCount": 3,
+      "plannedRuns": 20,
+      "batchStatus": "complete",
+      "runnerSha256": "1a0d387369a8851c8fcb6ed10c7755ea2df9b2dc2b11327d945217993d8e97e8",
+      "runs": [
+        {
+          "run": 1,
+          "status": "PASS",
+          "durationSeconds": 2.2,
+          "failure": null,
+          "logSha256": "d9a361256ccda5bec121fb5a492cc19283bfd873e938794c7c3ae248f876375c"
+        },
+        {
+          "run": 2,
+          "status": "PASS",
+          "durationSeconds": 2.165,
+          "failure": null,
+          "logSha256": "d9a361256ccda5bec121fb5a492cc19283bfd873e938794c7c3ae248f876375c"
+        },
+        {
+          "run": 3,
+          "status": "PASS",
+          "durationSeconds": 2.153,
+          "failure": null,
+          "logSha256": "d9a361256ccda5bec121fb5a492cc19283bfd873e938794c7c3ae248f876375c"
+        },
+        {
+          "run": 4,
+          "status": "PASS",
+          "durationSeconds": 2.211,
+          "failure": null,
+          "logSha256": "d9a361256ccda5bec121fb5a492cc19283bfd873e938794c7c3ae248f876375c"
+        },
+        {
+          "run": 5,
+          "status": "PASS",
+          "durationSeconds": 2.155,
+          "failure": null,
+          "logSha256": "d9a361256ccda5bec121fb5a492cc19283bfd873e938794c7c3ae248f876375c"
+        },
+        {
+          "run": 6,
+          "status": "PASS",
+          "durationSeconds": 2.189,
+          "failure": null,
+          "logSha256": "d9a361256ccda5bec121fb5a492cc19283bfd873e938794c7c3ae248f876375c"
+        },
+        {
+          "run": 7,
+          "status": "PASS",
+          "durationSeconds": 2.102,
+          "failure": null,
+          "logSha256": "d9a361256ccda5bec121fb5a492cc19283bfd873e938794c7c3ae248f876375c"
+        },
+        {
+          "run": 8,
+          "status": "PASS",
+          "durationSeconds": 2.215,
+          "failure": null,
+          "logSha256": "d9a361256ccda5bec121fb5a492cc19283bfd873e938794c7c3ae248f876375c"
+        },
+        {
+          "run": 9,
+          "status": "PASS",
+          "durationSeconds": 2.183,
+          "failure": null,
+          "logSha256": "d9a361256ccda5bec121fb5a492cc19283bfd873e938794c7c3ae248f876375c"
+        },
+        {
+          "run": 10,
+          "status": "FAIL",
+          "durationSeconds": 30.766,
+          "failure": "#heroForm: click stability timeout; retry stalled waiting 20ms",
+          "logSha256": "b3f1ebcc5c72029d08390a60167668ee1b20c8d4838da1e46b0cd03be9e64bfe"
+        },
+        {
+          "run": 11,
+          "status": "PASS",
+          "durationSeconds": 2.009,
+          "failure": null,
+          "logSha256": "d9a361256ccda5bec121fb5a492cc19283bfd873e938794c7c3ae248f876375c"
+        },
+        {
+          "run": 12,
+          "status": "PASS",
+          "durationSeconds": 2.045,
+          "failure": null,
+          "logSha256": "d9a361256ccda5bec121fb5a492cc19283bfd873e938794c7c3ae248f876375c"
+        },
+        {
+          "run": 13,
+          "status": "PASS",
+          "durationSeconds": 2.067,
+          "failure": null,
+          "logSha256": "d9a361256ccda5bec121fb5a492cc19283bfd873e938794c7c3ae248f876375c"
+        },
+        {
+          "run": 14,
+          "status": "PASS",
+          "durationSeconds": 2.011,
+          "failure": null,
+          "logSha256": "d9a361256ccda5bec121fb5a492cc19283bfd873e938794c7c3ae248f876375c"
+        },
+        {
+          "run": 15,
+          "status": "PASS",
+          "durationSeconds": 2.016,
+          "failure": null,
+          "logSha256": "d9a361256ccda5bec121fb5a492cc19283bfd873e938794c7c3ae248f876375c"
+        },
+        {
+          "run": 16,
+          "status": "PASS",
+          "durationSeconds": 1.991,
+          "failure": null,
+          "logSha256": "d9a361256ccda5bec121fb5a492cc19283bfd873e938794c7c3ae248f876375c"
+        },
+        {
+          "run": 17,
+          "status": "PASS",
+          "durationSeconds": 2.03,
+          "failure": null,
+          "logSha256": "d9a361256ccda5bec121fb5a492cc19283bfd873e938794c7c3ae248f876375c"
+        },
+        {
+          "run": 18,
+          "status": "PASS",
+          "durationSeconds": 2.051,
+          "failure": null,
+          "logSha256": "d9a361256ccda5bec121fb5a492cc19283bfd873e938794c7c3ae248f876375c"
+        },
+        {
+          "run": 19,
+          "status": "FAIL",
+          "durationSeconds": 31.436,
+          "failure": "#leadForm: click stability timeout; retry stalled waiting 20ms",
+          "logSha256": "02d535e69d48da0c9231f708d38388c29f3914d26dfca5180e5f7c3d8e083d87"
+        },
+        {
+          "run": 20,
+          "status": "FAIL",
+          "durationSeconds": 71.036,
+          "failure": "#leadForm: click stability timeout; retry stalled waiting 20ms",
+          "logSha256": "02d535e69d48da0c9231f708d38388c29f3914d26dfca5180e5f7c3d8e083d87"
+        }
+      ]
+    },
+    "candidate-focused": {
+      "startedAt": "2026-10-20T05:29:52.166474+00:00",
+      "completedAt": "2026-10-20T05:30:34.139982+00:00",
+      "completedRuns": 20,
+      "passCount": 20,
+      "failCount": 0,
+      "plannedRuns": 20,
+      "batchStatus": "complete",
+      "runnerSha256": "0bb3e06ccfac26cd5b2b90999c895b3085ba0941f150481c7b34842bdee073c0",
+      "runs": [
+        {
+          "run": 1,
+          "status": "PASS",
+          "durationSeconds": 2.178,
+          "failure": null,
+          "logSha256": "d9a361256ccda5bec121fb5a492cc19283bfd873e938794c7c3ae248f876375c"
+        },
+        {
+          "run": 2,
+          "status": "PASS",
+          "durationSeconds": 2.187,
+          "failure": null,
+          "logSha256": "d9a361256ccda5bec121fb5a492cc19283bfd873e938794c7c3ae248f876375c"
+        },
+        {
+          "run": 3,
+          "status": "PASS",
+          "durationSeconds": 2.18,
+          "failure": null,
+          "logSha256": "d9a361256ccda5bec121fb5a492cc19283bfd873e938794c7c3ae248f876375c"
+        },
+        {
+          "run": 4,
+          "status": "PASS",
+          "durationSeconds": 2.184,
+          "failure": null,
+          "logSha256": "d9a361256ccda5bec121fb5a492cc19283bfd873e938794c7c3ae248f876375c"
+        },
+        {
+          "run": 5,
+          "status": "PASS",
+          "durationSeconds": 2.182,
+          "failure": null,
+          "logSha256": "d9a361256ccda5bec121fb5a492cc19283bfd873e938794c7c3ae248f876375c"
+        },
+        {
+          "run": 6,
+          "status": "PASS",
+          "durationSeconds": 2.163,
+          "failure": null,
+          "logSha256": "d9a361256ccda5bec121fb5a492cc19283bfd873e938794c7c3ae248f876375c"
+        },
+        {
+          "run": 7,
+          "status": "PASS",
+          "durationSeconds": 2.12,
+          "failure": null,
+          "logSha256": "d9a361256ccda5bec121fb5a492cc19283bfd873e938794c7c3ae248f876375c"
+        },
+        {
+          "run": 8,
+          "status": "PASS",
+          "durationSeconds": 2.197,
+          "failure": null,
+          "logSha256": "d9a361256ccda5bec121fb5a492cc19283bfd873e938794c7c3ae248f876375c"
+        },
+        {
+          "run": 9,
+          "status": "PASS",
+          "durationSeconds": 2.18,
+          "failure": null,
+          "logSha256": "d9a361256ccda5bec121fb5a492cc19283bfd873e938794c7c3ae248f876375c"
+        },
+        {
+          "run": 10,
+          "status": "PASS",
+          "durationSeconds": 2.123,
+          "failure": null,
+          "logSha256": "d9a361256ccda5bec121fb5a492cc19283bfd873e938794c7c3ae248f876375c"
+        },
+        {
+          "run": 11,
+          "status": "PASS",
+          "durationSeconds": 2.031,
+          "failure": null,
+          "logSha256": "d9a361256ccda5bec121fb5a492cc19283bfd873e938794c7c3ae248f876375c"
+        },
+        {
+          "run": 12,
+          "status": "PASS",
+          "durationSeconds": 2.035,
+          "failure": null,
+          "logSha256": "d9a361256ccda5bec121fb5a492cc19283bfd873e938794c7c3ae248f876375c"
+        },
+        {
+          "run": 13,
+          "status": "PASS",
+          "durationSeconds": 2.037,
+          "failure": null,
+          "logSha256": "d9a361256ccda5bec121fb5a492cc19283bfd873e938794c7c3ae248f876375c"
+        },
+        {
+          "run": 14,
+          "status": "PASS",
+          "durationSeconds": 2.007,
+          "failure": null,
+          "logSha256": "d9a361256ccda5bec121fb5a492cc19283bfd873e938794c7c3ae248f876375c"
+        },
+        {
+          "run": 15,
+          "status": "PASS",
+          "durationSeconds": 2.008,
+          "failure": null,
+          "logSha256": "d9a361256ccda5bec121fb5a492cc19283bfd873e938794c7c3ae248f876375c"
+        },
+        {
+          "run": 16,
+          "status": "PASS",
+          "durationSeconds": 2.014,
+          "failure": null,
+          "logSha256": "d9a361256ccda5bec121fb5a492cc19283bfd873e938794c7c3ae248f876375c"
+        },
+        {
+          "run": 17,
+          "status": "PASS",
+          "durationSeconds": 2.024,
+          "failure": null,
+          "logSha256": "d9a361256ccda5bec121fb5a492cc19283bfd873e938794c7c3ae248f876375c"
+        },
+        {
+          "run": 18,
+          "status": "PASS",
+          "durationSeconds": 2.019,
+          "failure": null,
+          "logSha256": "d9a361256ccda5bec121fb5a492cc19283bfd873e938794c7c3ae248f876375c"
+        },
+        {
+          "run": 19,
+          "status": "PASS",
+          "durationSeconds": 1.985,
+          "failure": null,
+          "logSha256": "d9a361256ccda5bec121fb5a492cc19283bfd873e938794c7c3ae248f876375c"
+        },
+        {
+          "run": 20,
+          "status": "PASS",
+          "durationSeconds": 2.006,
+          "failure": null,
+          "logSha256": "d9a361256ccda5bec121fb5a492cc19283bfd873e938794c7c3ae248f876375c"
+        }
+      ]
+    },
+    "baseline": {
+      "startedAt": "2026-10-20T05:20:13.514092+00:00",
+      "completedAt": null,
+      "completedRuns": 7,
+      "passCount": 4,
+      "failCount": 3,
+      "plannedRuns": 20,
+      "batchStatus": "interrupted; completed run records retained; in-flight run excluded",
+      "runnerSha256": "e39a057b9ee8ee665bd584f280856f7b4004c56777fb6db4ff1fb34267fb70d6",
+      "runs": [
+        {
+          "run": 1,
+          "status": "PASS",
+          "durationSeconds": 45.952,
+          "failure": null,
+          "logSha256": "d1e661ec7e9a3af2529acfe39bae4a6a75aad9dd7207ed5fcd3b3d3ac6f7f26d"
+        },
+        {
+          "run": 2,
+          "status": "PASS",
+          "durationSeconds": 45.22,
+          "failure": null,
+          "logSha256": "d1e661ec7e9a3af2529acfe39bae4a6a75aad9dd7207ed5fcd3b3d3ac6f7f26d"
+        },
+        {
+          "run": 3,
+          "status": "PASS",
+          "durationSeconds": 53.961,
+          "failure": null,
+          "logSha256": "d1e661ec7e9a3af2529acfe39bae4a6a75aad9dd7207ed5fcd3b3d3ac6f7f26d"
+        },
+        {
+          "run": 4,
+          "status": "FAIL",
+          "durationSeconds": 45.164,
+          "failure": "#leadForm: click stability timeout; retry stalled waiting 20ms",
+          "logSha256": "6b355f4e4724688427b4efa96da141ea90250ffee69bb2f4af9ad84a3fa30d70"
+        },
+        {
+          "run": 5,
+          "status": "PASS",
+          "durationSeconds": 64.047,
+          "failure": null,
+          "logSha256": "d1e661ec7e9a3af2529acfe39bae4a6a75aad9dd7207ed5fcd3b3d3ac6f7f26d"
+        },
+        {
+          "run": 6,
+          "status": "FAIL",
+          "durationSeconds": 96.501,
+          "failure": "#heroForm: click stability timeout; retry stalled waiting 20ms",
+          "logSha256": "1100ec5b8cd86da83c308ff9834759edc4a18633bb015d9b5e31da091084979a"
+        },
+        {
+          "run": 7,
+          "status": "FAIL",
+          "durationSeconds": 180.027,
+          "failure": "post-assertion teardown timeout",
+          "logSha256": "d1e661ec7e9a3af2529acfe39bae4a6a75aad9dd7207ed5fcd3b3d3ac6f7f26d"
+        }
+      ]
+    },
+    "candidate": {
+      "startedAt": "2026-10-20T05:23:37.505921+00:00",
+      "completedAt": null,
+      "completedRuns": 4,
+      "passCount": 3,
+      "failCount": 1,
+      "plannedRuns": 20,
+      "batchStatus": "interrupted; completed run records retained; in-flight run excluded",
+      "runnerSha256": "b89db5c37a044786935c16dd5c8b5de4666b55455828dbc3d36c556faf3c02f4",
+      "runs": [
+        {
+          "run": 1,
+          "status": "PASS",
+          "durationSeconds": 40.625,
+          "failure": null,
+          "logSha256": "d1e661ec7e9a3af2529acfe39bae4a6a75aad9dd7207ed5fcd3b3d3ac6f7f26d"
+        },
+        {
+          "run": 2,
+          "status": "PASS",
+          "durationSeconds": 73.366,
+          "failure": null,
+          "logSha256": "d1e661ec7e9a3af2529acfe39bae4a6a75aad9dd7207ed5fcd3b3d3ac6f7f26d"
+        },
+        {
+          "run": 3,
+          "status": "PASS",
+          "durationSeconds": 32.884,
+          "failure": null,
+          "logSha256": "d1e661ec7e9a3af2529acfe39bae4a6a75aad9dd7207ed5fcd3b3d3ac6f7f26d"
+        },
+        {
+          "run": 4,
+          "status": "FAIL",
+          "durationSeconds": 180.053,
+          "failure": "post-assertion teardown timeout",
+          "logSha256": "d1e661ec7e9a3af2529acfe39bae4a6a75aad9dd7207ed5fcd3b3d3ac6f7f26d"
+        }
+      ]
+    }
+  },
+  "validation": [
+    "20 exact no-script scenario runs before the fix and 20 after it.",
+    "Unmodified full script reproduced at line 212 on both forms in the recorded full-suite sample.",
+    "Three clean complete full-suite exits with the same candidate source.",
+    "node --check scripts/test-lead-form-submit.mjs passed.",
+    "git diff --check passed."
+  ],
+  "limitations": [
+    "Repeated full-suite batches were stopped after one post-assertion 180-second teardown timeout in each revision. Completed records are retained; in-flight runs are excluded. This separate teardown behavior is not changed.",
+    "Optional bundled Chromium installation stalled during extraction and was stopped. All counted runs used existing system Chrome, not the bundled CI browser.",
+    "Single-repository instruction supersedes hub claim/sync mutations; hub context was read only."
+  ],
+  "safety": {
+    "serverBind": "127.0.0.1 on ephemeral port",
+    "leadRequests": "Playwright intercepts /functions/v1/handle-lead and fulfills synthetic responses; no lead requests sent to production.",
+    "otherExternalRequests": "aborted",
+    "siteCodeChanged": false,
+    "productionSubmissions": 0,
+    "extraSpend": 0,
+    "settingsChanged": false,
+    "merged": false,
+    "markedReady": false,
+    "pushed": false,
+    "credentialFilesReadPrintedCopiedOrRefreshed": false
+  },
+  "publication": {
+    "observed_at": "2026-10-20T05:30:50.963796+00:00",
+    "comparison_draft_pr": {
+      "headRefOid": "2c22a4885ffbd89a772c5ed8f6b51b3ccbda272c",
+      "isDraft": true,
+      "url": "https://github.com/Rconman99/frame-restoration-utah/pull/337"
+    },
+    "commit_status": {
+      "state": "success",
+      "statuses": [
+        {
+          "context": "Vercel \u2013 frameroofingutah",
+          "created_at": "2026-10-19T23:21:51Z",
+          "description": "Deployment has completed",
+          "state": "success"
+        },
+        {
+          "context": "Vercel \u2013 frame-restoration-utah",
+          "created_at": "2026-10-19T23:21:54Z",
+          "description": "Deployment has completed",
+          "state": "success"
+        }
+      ]
+    },
+    "decision": "Hold branch push and draft PR creation. Existing documentation-only draft triggered two Vercel deployments; user forbids deployments and Vercel setting changes. No verified non-deploying publication path.",
+    "repository_changes_pushed": false,
+    "deployments_requested": false,
+    "settings_changed": false
+  },
+  "rawEvidenceDirectory": "/Users/agenticmac/plan-burn-1020/work/receipts/ut-noscript-20261019",
+  "finalWorktreeCheck": {
+    "command": "node scripts/test-lead-form-submit.mjs",
+    "scriptSha256": "456f7d3e841c06d5714fb65b91fe5121247ad9843f779f48b8ae439f2a613d75",
+    "exitCode": -15,
+    "timeoutSeconds": 180,
+    "allContractAssertionsPassed": true,
+    "cleanExit": false,
+    "result": "Post-assertion teardown timed out, matching an unmodified-baseline teardown timeout. Not counted in the 20 focused no-script repetitions.",
+    "logSha256": "d1e661ec7e9a3af2529acfe39bae4a6a75aad9dd7207ed5fcd3b3d3ac6f7f26d"
+  },
+  "teardownDiagnostic": {
+    "scriptSha256": "f385529fad8f1f6e25a714b107a9ed09426cae98ae161df8c4dd4f88b6d3a34b",
+    "adaptation": "Same candidate test with console checkpoints around teardown.",
+    "allContractAssertionsPassed": true,
+    "browserClosed": true,
+    "httpConnectionsAfterBrowserClose": 0,
+    "serverClosed": true,
+    "exitCode": 0,
+    "interpretation": "Teardown timeout is intermittent. No cleanup change included in this narrowly scoped fix."
+  }
+}
