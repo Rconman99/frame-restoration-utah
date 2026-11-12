@@ -67,6 +67,13 @@ import {
   shouldAlertMissedCall,
 } from "../_shared/missed-call-alert.ts";
 
+// Twilio FromZip is the calling number's exchange ZIP. Keep only a clean 5-digit value.
+function twilioZip(value: string | undefined): string | null {
+  const zip = String(value || "").trim().slice(0, 5);
+  return /^\d{5}$/.test(zip) ? zip : null;
+}
+
+
 declare const EdgeRuntime: {
   waitUntil(promise: Promise<unknown>): void;
 };
@@ -667,6 +674,7 @@ export async function handleCallRequest(req: Request): Promise<Response> {
         forwarded_to: LANDON_PHONE,
         status: logStatus,
         city: cityLabel,
+        from_zip: twilioZip(data.FromZip),
         source_page: attribution.source,
         lead_id: leadId,
       });
