@@ -1,16 +1,17 @@
 {
   "last_run": {
-    "timestamp": "2026-09-05T14:40:00Z",
-    "date": "2026-09-05",
-    "routine": "aeo-citation-monitor",
+    "timestamp": "2026-11-06T18:22:42Z",
+    "date": "2026-11-06",
+    "routine": "mac-broken-link-loop",
     "outcome": "success_with_errors",
-    "summary": "AEO citation monitor: 2/5 — FLAT vs 2026-08-05 on the same 5-query WebSearch panel, with both cited positions improving by one (Park City 3→2, insurance 4→3). Same two queries cited, same three flat-failing. Both citations are extractive: Google's answer text reproduces Frame's copy nearly verbatim, and both cited URLs are blog posts, not service or location pages. Two instrumentation defects surfaced: the stored task prompt still matches the retired frameroofingutah.com host (both of today's citations would score as misses under a literal reading), and the Perplexity check is egress-blocked in the remote environment and returned no data — logged as unmeasured, not as not-cited.",
-    "report_path": "data/aeo-citations/2026-09-05.md",
-    "commit": "f6bf616",
+    "summary": "Brief #6 (Mac broken-link loop): diagnosed from code why the launchd job dies (audit-links.mjs took the repo root from cwd, launchd starts at / and hits EPERM; launchd PATH has no Homebrew node). Hardened scripts/audit-links.mjs (root from script location, unreadable folders warn, zero files = exit 2, --json, Utah header). Added scripts/check-broken-links.mjs (live checker over the public sitemap/URL list, hard own-market guard: refuses non-Utah --site, never fetches other hosts, off-origin redirects not followed, --dry-run read-only), scripts/broken-link-cron.sh (report-only Mac entrypoint, no git), 8 loopback tests wired into compliance-gate, runbook docs/seo/BROKEN-LINK-LOOP.md with launchd plist template.",
+    "report_path": "docs/seo/BROKEN-LINK-LOOP.md",
+    "commit": "f56e514",
+    "branch": "claude/mac-broken-link-loop-fu76gw",
+    "pr": "https://github.com/Rconman99/frame-restoration-utah/pull/364",
     "pushed": true,
-    "instrument": "WebSearch proxy, 5-query core panel, US-general, no geolocation, no local-pack channel",
-    "environment": "remote cloud container (Claude Code on the web); perplexity.ai blocked by network egress proxy",
-    "note": "This 2/5 is NOT comparable to the 5/12 recorded 2026-09-01 by the 12-query geolocated SerpAPI cloud workflow. Different panel, tool, geography and depth. _trend.json tracks that series; this state.json tracks the 5-query panel."
+    "environment": "remote cloud container (Claude Code on the web); www.framerestorationutah.com egress-blocked, so the acceptance dry-run ran on a loopback fixture serving this checkout with the real sitemap.xml (172 URLs, 288 internal targets, 0 broken, 1299 external links on 132 hosts not fetched, no other Frame market host)",
+    "note": "Draft PR only, no merge/deploy. state.json score/cited/threat sections below still describe the AEO citation monitor and were not touched by this run."
   },
   "score": {
     "current": 2,
@@ -20,10 +21,22 @@
     "delta": 0,
     "trend": "flat_score_improving_positions",
     "history": [
-      { "date": "2026-05-06", "score": 1 },
-      { "date": "2026-07-05", "score": 0 },
-      { "date": "2026-08-05", "score": 2 },
-      { "date": "2026-09-05", "score": 2 }
+      {
+        "date": "2026-05-06",
+        "score": 1
+      },
+      {
+        "date": "2026-07-05",
+        "score": 0
+      },
+      {
+        "date": "2026-08-05",
+        "score": 2
+      },
+      {
+        "date": "2026-09-05",
+        "score": 2
+      }
     ]
   },
   "cited_this_cycle": [
@@ -55,12 +68,18 @@
   ],
   "last_error": {
     "type": "EGRESS_BLOCKED",
-    "target": "https://www.perplexity.ai/search",
-    "detail": "All Perplexity citation checks blocked by the remote environment's network egress proxy. Zero queries measured on that channel. Recorded as unmeasured rather than not-cited, to avoid repeating the 2026-08-05 incident where 12 swallowed SerpAPI 429s were published as a false 0/12 and overwrote a real 2/5 report.",
+    "target": "https://www.framerestorationutah.com/",
+    "detail": "The cloud container network proxy refused the tunnel (CONNECT 403) for www.framerestorationutah.com, so the live broken-link dry-run could not run against production from this session. The acceptance dry-run ran instead on a loopback fixture serving this checkout with the real sitemap.xml. Production link status is UNMEASURED by this run, not clean.",
     "blocking": false,
-    "impact": "Perplexity channel produced no data this cycle. Google-proxy channel unaffected."
+    "impact": "Code, tests and the static gate are verified; the first real production link check must run on the Mac: bash scripts/broken-link-cron.sh --dry-run.",
+    "run": "2026-11-06 mac-broken-link-loop"
   },
   "pending_actions": [
+    {
+      "priority": "medium",
+      "action": "Broken-link loop (PR #364): run `bash scripts/broken-link-cron.sh --dry-run` on the Mac against production (blocked from the cloud container), then install the launchd plist from docs/seo/BROKEN-LINK-LOOP.md. If fru-indexnow chains off the link check, point it at ~/.cache/frame-roofing-links/<date>.json. Hub lane claim/release + SHARED-DECISIONS.md entry still need a manual step (hub repo out of this session scope).",
+      "owner": "Ryan"
+    },
     {
       "priority": "high",
       "action": "Fix the stored scheduled-task prompt's domain match. It still instructs a check for frameroofingutah.com, which has 301'd to www.framerestorationutah.com since the 2026-06-17 canonical migration (0ef10e6). BOTH of today's citations landed on the canonical host and would score as misses under a literal reading. Same defect class as the stale TARGET_DOMAIN that produced a false 0/5 before 331dc22 fixed it in the scripts — fixed in code, still live in this prompt.",
@@ -115,5 +134,25 @@
   "threats_no_longer_visible": [],
   "corrections_this_cycle": [
     "An earlier draft of the 2026-09-05 report claimed 9 new competitors. That count came from a domain-string diff against prior reports, but prior reports frequently name competitors in prose without the domain, producing 6 false positives. Re-run by company name, the true count is 3. Report corrected before final push. Standing lesson: diff competitors by NAME as well as domain."
-  ]
+  ],
+  "previous_run": {
+    "timestamp": "2026-09-05T14:40:00Z",
+    "date": "2026-09-05",
+    "routine": "aeo-citation-monitor",
+    "outcome": "success_with_errors",
+    "summary": "AEO citation monitor: 2/5 — FLAT vs 2026-08-05 on the same 5-query WebSearch panel, with both cited positions improving by one (Park City 3→2, insurance 4→3). Same two queries cited, same three flat-failing. Both citations are extractive: Google's answer text reproduces Frame's copy nearly verbatim, and both cited URLs are blog posts, not service or location pages. Two instrumentation defects surfaced: the stored task prompt still matches the retired frameroofingutah.com host (both of today's citations would score as misses under a literal reading), and the Perplexity check is egress-blocked in the remote environment and returned no data — logged as unmeasured, not as not-cited.",
+    "report_path": "data/aeo-citations/2026-09-05.md",
+    "commit": "f6bf616",
+    "pushed": true,
+    "instrument": "WebSearch proxy, 5-query core panel, US-general, no geolocation, no local-pack channel",
+    "environment": "remote cloud container (Claude Code on the web); perplexity.ai blocked by network egress proxy",
+    "note": "This 2/5 is NOT comparable to the 5/12 recorded 2026-09-01 by the 12-query geolocated SerpAPI cloud workflow. Different panel, tool, geography and depth. _trend.json tracks that series; this state.json tracks the 5-query panel."
+  },
+  "previous_last_error": {
+    "type": "EGRESS_BLOCKED",
+    "target": "https://www.perplexity.ai/search",
+    "detail": "All Perplexity citation checks blocked by the remote environment's network egress proxy. Zero queries measured on that channel. Recorded as unmeasured rather than not-cited, to avoid repeating the 2026-08-05 incident where 12 swallowed SerpAPI 429s were published as a false 0/12 and overwrote a real 2/5 report.",
+    "blocking": false,
+    "impact": "Perplexity channel produced no data this cycle. Google-proxy channel unaffected."
+  }
 }

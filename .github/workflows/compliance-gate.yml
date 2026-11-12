@@ -40,6 +40,8 @@ on:
       - 'scripts/validate-aeo-topic-portfolio.mjs'
       - 'scripts/audit-compliance-words.mjs'
       - 'scripts/audit-links.mjs'
+      - 'scripts/check-broken-links.mjs'
+      - 'scripts/check-broken-links.test.mjs'
       - 'scripts/audit-jsonld.mjs'
       - 'scripts/repair-faq-visibility.mjs'
       - 'scripts/audit-city-quality.mjs'
@@ -395,6 +397,11 @@ jobs:
       - name: Fail on broken internal links
         # vercel.json redirects/rewrites are resolved, so routed links pass.
         run: node scripts/audit-links.mjs --strict
+      - name: Live link checker unit tests (loopback fixtures only, no network)
+        # The live half of the broken-link loop (docs/seo/BROKEN-LINK-LOOP.md)
+        # runs on the Mac, not here; this proves its market guard + dry-run
+        # contract still hold. Nothing is fetched from the internet.
+        run: node --test scripts/check-broken-links.test.mjs
 
   cta-integrity:
     name: CTA & external-link integrity (blocking)
