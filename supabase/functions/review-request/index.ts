@@ -1,6 +1,16 @@
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { applySender } from "../_shared/twilio-sender.ts";
+import { shouldSendCustomerAutoText, smsDeliveryEnabled } from "../_shared/lead-sms.ts";
+import { readSmsSuppression, smsSendAllowed } from "../_shared/sms-suppression.ts";
+
+// TCPA / FCC 26-67 (2026-11-25): the review-ask text is business-initiated, so
+// it needs the form's SMS consent, the market-wide SMS gate, the opt-out line,
+// and a clean suppression lookup. Email review asks are unchanged.
+export const REVIEW_STOP_LINE = "Reply STOP to opt out.";
+export function reviewSmsBody(firstName: string): string {
+  return `Hi ${firstName}! Thanks for choosing Frame Roofing Utah ⭐ Would you take 30 sec to leave us a review? It means a lot! ${REVIEW_URL} - Landon\n${REVIEW_STOP_LINE}`;
+}
 
 // review-request v2 (2026-05-16) — bugfix: filter on status='won' + job_completed_at,
 // not status='completed' (which never gets set anywhere). The dashboard sets status='won'
@@ -98,13 +108,20 @@ function normalizePhone(p: string): string {
   return phone;
 }
 
-async function sendOne(lead: any, twilioConfig: any) {
+async function sendOne(lead: any, twilioConfig: any, supabase: any) {
   const firstName = (lead.name || "there").split(" ")[0];
   let smsSent = false, emailSent = false;
-  if (lead.phone && twilioConfig) {
-    const phone = normalizePhone(lead.phone);
-    const smsBody = `Hi ${firstName}! Thanks for choosing Frame Roofing Utah ⭐ Would you take 30 sec to leave us a review? It means a lot! ${REVIEW_URL} - Landon`;
-    smsSent = await sendTwilioSMS(twilioConfig, phone, smsBody);
+  const phone = lead.phone ? normalizePhone(lead.phone) : null;
+  const consent = shouldSendCustomerAutoText(lead.sms_consent, phone);
+  if (phone && twilioConfig && consent.send && smsDeliveryEnabled(Deno.env.get("UTAH_LEAD_SMS_ENABLED"))) {
+    const suppression = await readSmsSuppression(supabase, phone);
+    if (smsSendAllowed(suppression)) {
+      smsSent = await sendTwilioSMS(twilioConfig, phone, reviewSmsBody(firstName));
+    } else {
+      console.log("Review SMS skipped:", suppression.ok ? "opted_out" : suppression.error);
+    }
+  } else if (lead.phone) {
+    console.log("Review SMS skipped:", consent.send ? "sms_disabled" : consent.reason);
   }
   if (lead.email) emailSent = await sendReviewEmail(lead.email, lead.name || "there");
   return { smsSent, emailSent };
@@ -126,7 +143,7 @@ Deno.serve(async (req: Request) => {
       if (!leadId) return new Response(JSON.stringify({ error: "lead_id required" }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
       const sendNow = body.send_now === true;
       const { data: lead, error: fetchErr } = await supabase.from("leads")
-        .select("id, name, email, phone, review_requested_at, job_completed_at, status")
+        .select("id, name, email, phone, sms_consent, review_requested_at, job_completed_at, status")
         .eq("id", leadId).single();
       if (fetchErr || !lead) return new Response(JSON.stringify({ error: fetchErr?.message || "Lead not found" }), { status: 404, headers: { ...corsHeaders, "Content-Type": "application/json" } });
       if (!lead.job_completed_at) {
@@ -134,7 +151,7 @@ Deno.serve(async (req: Request) => {
       }
       if (sendNow && !lead.review_requested_at) {
         const twilioConfig = await getTwilioConfig(supabase);
-        const { smsSent, emailSent } = await sendOne(lead, twilioConfig);
+        const { smsSent, emailSent } = await sendOne(lead, twilioConfig, supabase);
         if (smsSent || emailSent) {
           await supabase.from("leads").update({ review_requested_at: new Date().toISOString() }).eq("id", leadId);
         }
@@ -150,7 +167,7 @@ Deno.serve(async (req: Request) => {
     const threeDaysAgo = new Date(Date.now() - 3 * 86400000).toISOString();
     const { data: leads, error } = await supabase
       .from("leads")
-      .select("id, name, email, phone")
+      .select("id, name, email, phone, sms_consent")
       .eq("status", "won")
       .not("job_completed_at", "is", null)
       .is("review_requested_at", null)
@@ -178,7 +195,7 @@ Deno.serve(async (req: Request) => {
         results.push({ id: lead.id, skipped: "already_claimed" });
         continue;
       }
-      const { smsSent, emailSent } = await sendOne(lead, twilioConfig);
+      const { smsSent, emailSent } = await sendOne(lead, twilioConfig, supabase);
       if (!smsSent && !emailSent) {
         // Nothing went out: release the claim so a later run can retry.
         await supabase.from("leads").update({ review_requested_at: null })

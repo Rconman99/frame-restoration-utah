@@ -67,6 +67,8 @@ export function parseCallCommand(body: string): string | null {
   return m ? normalizePhone(m[1]) : null;
 }
 
+import { isOptOutKeyword } from "./sms-suppression.ts";
+
 export type CustomerRoute = "optout" | "internal" | "normal";
 
 // Order matters and mirrors the handler: A2P opt-out wins, internal automation
@@ -77,7 +79,12 @@ export function classifyCustomerInbound(input: {
   optOutType?: string;
   internalSenders: Iterable<string>;
 }): CustomerRoute {
-  if ((input.optOutType || "").trim()) return "optout";
+  // FCC 26-67: a standalone stop/quit/end/revoke/opt out/cancel/unsubscribe
+  // is an opt-out even when Twilio sent no OptOutType (e.g. "OPT OUT", which
+  // Twilio's filter never matches, or Advanced Opt-Out missing REVOKE/OPTOUT).
+  if ((input.optOutType || "").trim() || isOptOutKeyword(input.body)) {
+    return "optout";
+  }
   if (isInternalRelay(input.from, input.body, input.internalSenders)) {
     return "internal";
   }
