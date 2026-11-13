@@ -1,8 +1,8 @@
 {
   "artifact": "frame-utah-growth-operations",
   "version": 1,
-  "generatedAt": "2026-11-12T12:41:17.255Z",
-  "snapshotDate": "2026-11-12",
+  "generatedAt": "2026-11-13T12:40:55.947Z",
+  "snapshotDate": "2026-11-13",
   "sourceAgeHours": 0,
   "state": "measurement_operational_outcomes_incomplete",
   "northStar": "qualified_organic_leads",
@@ -16,8 +16,8 @@
     "nextAction": "Reconcile existing lead source/city/page attribution with owner-confirmed CRM outcomes through the approved read-only lane; do not infer jobs from clicks or change CRM truth."
   },
   "searchWindow": {
-    "startDate": "2026-10-13",
-    "endDate": "2026-11-09"
+    "startDate": "2026-10-14",
+    "endDate": "2026-11-10"
   },
   "blockers": [],
   "crawlErrors": [],
@@ -28,9 +28,9 @@
       "page": "https://www.framerestorationutah.com/locations/salt-lake-city",
       "state": "observed_rolling_window",
       "metrics": {
-        "clicks": 2,
-        "impressions": 6569,
-        "averagePosition": 24.5
+        "clicks": 1,
+        "impressions": 6360,
+        "averagePosition": 24.2
       }
     },
     {
@@ -39,8 +39,8 @@
       "state": "observed_rolling_window",
       "metrics": {
         "clicks": 1,
-        "impressions": 1315,
-        "averagePosition": 10.2
+        "impressions": 1347,
+        "averagePosition": 10
       }
     },
     {
@@ -49,8 +49,8 @@
       "state": "observed_rolling_window",
       "metrics": {
         "clicks": 0,
-        "impressions": 3,
-        "averagePosition": 32.3
+        "impressions": 4,
+        "averagePosition": 42.5
       }
     },
     {
@@ -88,7 +88,7 @@
       "query": "wood roof salt lake city",
       "clicks": 0,
       "impressions": 44,
-      "averagePosition": 11.3,
+      "averagePosition": 11,
       "state": "exact_query_page_diagnosis_ready",
       "nextAction": "Obtain an exact query + intended-page baseline; check current URL selection and running experiments before drafting one isolated change.",
       "limitation": "Query-level discovery only: these metrics are not a page baseline, lead count or revenue estimate."
@@ -97,7 +97,7 @@
       "region": "heber",
       "query": "roof repair heber city ut",
       "clicks": 0,
-      "impressions": 2229,
+      "impressions": 2245,
       "averagePosition": 9.3,
       "state": "exact_query_page_diagnosis_ready",
       "nextAction": "Obtain an exact query + intended-page baseline; check current URL selection and running experiments before drafting one isolated change.",
@@ -107,8 +107,8 @@
       "region": "heber",
       "query": "roofing heber city ut",
       "clicks": 0,
-      "impressions": 1513,
-      "averagePosition": 5.5,
+      "impressions": 1555,
+      "averagePosition": 5.6,
       "state": "exact_query_page_diagnosis_ready",
       "nextAction": "Obtain an exact query + intended-page baseline; check current URL selection and running experiments before drafting one isolated change.",
       "limitation": "Query-level discovery only: these metrics are not a page baseline, lead count or revenue estimate."
@@ -117,8 +117,8 @@
       "region": "heber",
       "query": "which roofing companies in heber city ut provide roof repair and replacement services?",
       "clicks": 0,
-      "impressions": 143,
-      "averagePosition": 4.7,
+      "impressions": 226,
+      "averagePosition": 5,
       "state": "exact_query_page_diagnosis_ready",
       "nextAction": "Obtain an exact query + intended-page baseline; check current URL selection and running experiments before drafting one isolated change.",
       "limitation": "Query-level discovery only: these metrics are not a page baseline, lead count or revenue estimate."
@@ -127,8 +127,8 @@
       "region": "hail-service-area",
       "query": "roof repair midway ut",
       "clicks": 0,
-      "impressions": 1795,
-      "averagePosition": 6.8,
+      "impressions": 1812,
+      "averagePosition": 6.7,
       "state": "exact_query_page_diagnosis_ready",
       "nextAction": "Obtain an exact query + intended-page baseline; check current URL selection and running experiments before drafting one isolated change.",
       "limitation": "Query-level discovery only: these metrics are not a page baseline, lead count or revenue estimate."
@@ -137,7 +137,7 @@
       "region": "hail-service-area",
       "query": "roofing midway ut",
       "clicks": 0,
-      "impressions": 1368,
+      "impressions": 1377,
       "averagePosition": 4.8,
       "state": "exact_query_page_diagnosis_ready",
       "nextAction": "Obtain an exact query + intended-page baseline; check current URL selection and running experiments before drafting one isolated change.",
@@ -147,8 +147,8 @@
       "region": "davis-hail",
       "query": "roof repair farmington ut",
       "clicks": 0,
-      "impressions": 749,
-      "averagePosition": 11.3,
+      "impressions": 733,
+      "averagePosition": 11.5,
       "state": "exact_query_page_diagnosis_ready",
       "nextAction": "Obtain an exact query + intended-page baseline; check current URL selection and running experiments before drafting one isolated change.",
       "limitation": "Query-level discovery only: these metrics are not a page baseline, lead count or revenue estimate."
@@ -157,8 +157,8 @@
       "region": "davis-hail",
       "query": "which roofing companies in farmington ut handle roof repairs and replacements?",
       "clicks": 0,
-      "impressions": 74,
-      "averagePosition": 8.6,
+      "impressions": 94,
+      "averagePosition": 8.8,
       "state": "exact_query_page_diagnosis_ready",
       "nextAction": "Obtain an exact query + intended-page baseline; check current URL selection and running experiments before drafting one isolated change.",
       "limitation": "Query-level discovery only: these metrics are not a page baseline, lead count or revenue estimate."
@@ -218,8 +218,8 @@
   },
   "sources": [
     {
-      "file": "data/seo/snapshots/2026-11-12.json",
-      "sha256": "5f16c358fa854e37ee046880720189c905cca6117f054208838c5e56555a64e7"
+      "file": "data/seo/snapshots/2026-11-13.json",
+      "sha256": "b10d8d4bf18655b8979e208cc43913b94e3748d4867b941f4e6ee32a08db107d"
     },
     {
       "file": "data/seo-experiments/utah-homepage-commercial-title-2026-08-09.json",

@@ -13,7 +13,7 @@
         "Holladay",
         "Herriman"
       ],
-      "activeSnapshotSha256": "5f16c358fa854e37ee046880720189c905cca6117f054208838c5e56555a64e7",
+      "activeSnapshotSha256": "b10d8d4bf18655b8979e208cc43913b94e3748d4867b941f4e6ee32a08db107d",
       "diagnosisSnapshotSha256": "a1b7d5aa2acc3a5b663da345ba6eb7242e411661807ae1296f50854702b1a7eb",
       "behavior": "Ignore the stale split-URL disposition and keep affected URL-competition cities in the diagnosis lane; do not suppress, redirect, canonicalize, noindex, delete, or rewrite a route from stale evidence.",
       "requiredAction": "Refresh the bounded Holladay/Herriman split-URL diagnosis against the current GSC attribution snapshot."
@@ -88,7 +88,7 @@
     },
     "gscAttribution": {
       "file": "data/rank-tracker/SLV-GSC-URL-ATTRIBUTION-LATEST.json",
-      "sha256": "980edc45a83c7c1862aab93baa53dfcbd9d4a6ec3c4b920b423230e66a6b38b0"
+      "sha256": "a828afded33240d56d14c615695846c6e341234cb13f52b267a4f8cbc77e425c"
     },
     "gscSplitUrlDiagnosis": {
       "file": "data/rank-tracker/SLV-GSC-SPLIT-URL-DIAGNOSIS-2026-08-12.json",
@@ -108,7 +108,7 @@
     },
     "expansionArchitecture": {
       "file": "data/rank-tracker/SLV-EXPANSION-ARCHITECTURE-2026-08-12.json",
-      "sha256": "7c12af9ae2bdd8c5151e1809351f56d9fe74bf9d2f413f0055b05a47a119a6a7"
+      "sha256": "44dd8b8c0df2d85ce3890e368f05be593846c37010c5a4054a9d176e406c4c44"
     },
     "corePriority": {
       "file": "data/rank-tracker/SLV-PRIORITY-2026-08-12.json",
@@ -797,7 +797,8 @@
         "gscAlternateNormalizedUrls": [
           "framerestorationutah.com/blog/holladay/roof-replacement-holladay-utah",
           "framerestorationutah.com/locations/vineyard",
-          "framerestorationutah.com/pages/residential-roofing"
+          "framerestorationutah.com/pages/residential-roofing",
+          "framerestorationutah.com/salt-lake-city"
         ],
         "gscUrlDiagnosis": null,
         "serviceAreaStatus": "pending-current-profile-service-area-verification",
