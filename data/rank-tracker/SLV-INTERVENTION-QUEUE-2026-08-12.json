@@ -80,15 +80,15 @@
   "sources": {
     "portfolio": {
       "file": "data/rank-tracker/SLV-18-CITY-GOAL-PORTFOLIO-2026-08-12.json",
-      "sha256": "3ea99610d287d631f40d53a80a077f363c560f72452870aabd2945b710a8a61d"
+      "sha256": "cb489a9d8105579db8db2897e50fe6a5747d6bc62989fa9ce306b2c8047ce4be"
     },
     "weeklyDecisions": {
       "file": "data/rank-tracker/SLV-WEEKLY-DECISIONS-2026-08-12.json",
-      "sha256": "ef22e684d9e5586101165a1da6c29221295ba91106429c8d0cca0234966ae95d"
+      "sha256": "98a0dfa119ec87ceaf6c4f7dbbb9b955fe42a6b1395e019d3d599c45fad4e924"
     },
     "gscAttribution": {
       "file": "data/rank-tracker/SLV-GSC-URL-ATTRIBUTION-LATEST.json",
-      "sha256": "f32af261550485dd417df9fad0b67d21fb3eee6968ae5326810af52e113a984b"
+      "sha256": "7fd046337ffa7d975a1df0bcaf2b4ff7718dde88040711be284dd657f7f4bcaa"
     },
     "gscSplitUrlDiagnosis": {
       "file": "data/rank-tracker/SLV-GSC-SPLIT-URL-DIAGNOSIS-2026-08-12.json",
@@ -96,19 +96,19 @@
     },
     "displacement": {
       "file": "data/rank-tracker/SLV-COMPETITOR-DISPLACEMENT-2026-08-12.json",
-      "sha256": "a58a2d5987a57873d54b285f4c50857d3943036da7ce04fa9fefc07fcc7bca5d"
+      "sha256": "88d38e1ce8c7f3fbfe331f53cd132a87050cfa4a4a5880cf03dd15ef5c460876"
     },
     "entityHealth": {
       "file": "data/rank-tracker/SLV-ENTITY-HEALTH-2026-08-12.json",
-      "sha256": "09fff7d68ead8b0bf109b6616c368562c265c374ed7c729fe5237eb9697bbd62"
+      "sha256": "47055a270b41c93317d84e144d52852edf0f553ebbaaf8151fd0bcfa43551b61"
     },
     "mapsReadiness": {
       "file": "data/rank-tracker/SLV-MAPS-READINESS-2026-08-12.json",
-      "sha256": "5a9f925b90a465bd2cad7664151c1c95539fac1330dc76cd3bb9f86c0a7c70d7"
+      "sha256": "f03eade5c588f811ac19cf12d8bd631e1b0cc98c5ed8e1c666a6900856abb81c"
     },
     "expansionArchitecture": {
       "file": "data/rank-tracker/SLV-EXPANSION-ARCHITECTURE-2026-08-12.json",
-      "sha256": "2fb1a9ed8e924819a3768d28a740b1b5ca6fd2348d9199792930976d5e935718"
+      "sha256": "5a07cc98fd7862888e4d73c7412869d21bc4fbfd59962c5b006a1275e7ec6992"
     },
     "corePriority": {
       "file": "data/rank-tracker/SLV-PRIORITY-2026-08-12.json",
@@ -240,7 +240,7 @@
       "lane": "observe-time-gated-slc-experiment",
       "decision": "Monitor",
       "evidenceFeatures": {
-        "observedAt": "2026-11-09T09:14:59.702Z",
+        "observedAt": "2026-11-16T09:16:41.673Z",
         "organicRanks": [
           null,
           null,
@@ -254,9 +254,9 @@
         "mapsPacksPresent": 3,
         "mapsReadinessLane": "exact-cid-review-and-owner-profile-audit",
         "dominantMapsDisplacer": {
-          "name": "Shingle Pro Roofing",
-          "cid": "9926634112120129216",
-          "domain": "shingleproroofing.com",
+          "name": "Whitaker Roofing Services",
+          "cid": "11316815627233980109",
+          "domain": "whitakerroofing.com",
           "appearances": 3,
           "numberOneQueries": 2,
           "bestRank": 1,
@@ -281,7 +281,7 @@
         "architectureState": "not-separately-diagnosed",
         "protectedRelatedRoutes": [],
         "consumerAiState": "configured-scheduled-unmeasured-invalid-provider-credential",
-        "comparableWeeklyGooglePanels": 14,
+        "comparableWeeklyGooglePanels": 15,
         "comparableWeeklyConsumerAiPanels": 0
       },
       "scoreVector": {
@@ -341,7 +341,7 @@
       "lane": "owner-gated-verified-identity-and-integrity-cleanup",
       "decision": "Request input",
       "evidenceFeatures": {
-        "observedAt": "2026-11-09T09:14:59.702Z",
+        "observedAt": "2026-11-16T09:16:41.673Z",
         "organicRanks": [
           null,
           null,
@@ -368,7 +368,7 @@
             "roofer millcreek"
           ]
         },
-        "googleAiOverviewsPresent": 1,
+        "googleAiOverviewsPresent": 0,
         "googleAiOverviewOwnedQueries": [],
         "protectedOrganicNumberOneQueries": [],
         "intendedPageSelectedForEveryMeasuredRank": true,
@@ -383,14 +383,14 @@
         "architectureState": "not-evidenced",
         "protectedRelatedRoutes": [],
         "consumerAiState": "configured-scheduled-unmeasured-invalid-provider-credential",
-        "comparableWeeklyGooglePanels": 14,
+        "comparableWeeklyGooglePanels": 15,
         "comparableWeeklyConsumerAiPanels": 0
       },
       "scoreVector": {
         "businessValue": 10,
         "confidence": 8,
         "leadValue": 2,
-        "authorityValue": 7,
+        "authorityValue": 5,
         "learningValue": 6,
         "implementationCost": 5,
         "complianceRisk": 8,
@@ -655,7 +655,7 @@
       "lane": "owner-gated-core-integrity-then-single-variable-intent-test",
       "decision": "Request input",
       "evidenceFeatures": {
-        "observedAt": "2026-11-09T09:14:59.702Z",
+        "observedAt": "2026-11-16T09:16:41.673Z",
         "organicRanks": [
           null,
           null,
@@ -682,7 +682,7 @@
             "roofer sandy"
           ]
         },
-        "googleAiOverviewsPresent": 1,
+        "googleAiOverviewsPresent": 0,
         "googleAiOverviewOwnedQueries": [],
         "protectedOrganicNumberOneQueries": [],
         "intendedPageSelectedForEveryMeasuredRank": true,
@@ -697,14 +697,14 @@
         "architectureState": "not-evidenced",
         "protectedRelatedRoutes": [],
         "consumerAiState": "configured-manual-unmeasured-invalid-provider-credential",
-        "comparableWeeklyGooglePanels": 14,
+        "comparableWeeklyGooglePanels": 15,
         "comparableWeeklyConsumerAiPanels": 0
       },
       "scoreVector": {
         "businessValue": 10,
         "confidence": 6,
         "leadValue": 2,
-        "authorityValue": 7,
+        "authorityValue": 5,
         "learningValue": 6,
         "implementationCost": 5,
         "complianceRisk": 8,
@@ -760,7 +760,7 @@
       "lane": "diagnose-url-consolidation-before-intent-change",
       "decision": "Monitor",
       "evidenceFeatures": {
-        "observedAt": "2026-11-09T09:14:59.702Z",
+        "observedAt": "2026-11-16T09:16:41.673Z",
         "organicRanks": [
           null,
           null,
@@ -774,11 +774,11 @@
         "mapsPacksPresent": 4,
         "mapsReadinessLane": "service-area-proof-before-exact-cid-planning",
         "dominantMapsDisplacer": {
-          "name": "True North Roofing",
-          "cid": "5387650211366766810",
-          "domain": "truenorthroof.com",
+          "name": "Utah Roofing Pros",
+          "cid": "4118570990011609504",
+          "domain": "utahroofingpros.com",
           "appearances": 4,
-          "numberOneQueries": 2,
+          "numberOneQueries": 3,
           "bestRank": 1,
           "keywords": [
             "roofing contractor holladay",
@@ -787,7 +787,7 @@
             "roofer holladay"
           ]
         },
-        "googleAiOverviewsPresent": 1,
+        "googleAiOverviewsPresent": 0,
         "googleAiOverviewOwnedQueries": [],
         "protectedOrganicNumberOneQueries": [],
         "intendedPageSelectedForEveryMeasuredRank": true,
@@ -807,14 +807,14 @@
         "architectureState": "not-evidenced",
         "protectedRelatedRoutes": [],
         "consumerAiState": "configured-manual-unmeasured-invalid-provider-credential",
-        "comparableWeeklyGooglePanels": 14,
+        "comparableWeeklyGooglePanels": 15,
         "comparableWeeklyConsumerAiPanels": 0
       },
       "scoreVector": {
         "businessValue": 10,
         "confidence": 6,
         "leadValue": 2,
-        "authorityValue": 7,
+        "authorityValue": 5,
         "learningValue": 6,
         "implementationCost": 3,
         "complianceRisk": 1,
@@ -870,7 +870,7 @@
       "lane": "owner-gated-core-integrity-then-single-variable-intent-test",
       "decision": "Request input",
       "evidenceFeatures": {
-        "observedAt": "2026-11-09T09:14:59.702Z",
+        "observedAt": "2026-11-16T09:16:41.673Z",
         "organicRanks": [
           null,
           null,
@@ -912,7 +912,7 @@
         "architectureState": "not-evidenced",
         "protectedRelatedRoutes": [],
         "consumerAiState": "configured-manual-unmeasured-invalid-provider-credential",
-        "comparableWeeklyGooglePanels": 14,
+        "comparableWeeklyGooglePanels": 15,
         "comparableWeeklyConsumerAiPanels": 0
       },
       "scoreVector": {
@@ -1808,7 +1808,7 @@
       "lane": "owner-gated-core-integrity-then-single-variable-intent-test",
       "decision": "Request input",
       "evidenceFeatures": {
-        "observedAt": "2026-11-09T09:14:59.702Z",
+        "observedAt": "2026-11-16T09:16:41.673Z",
         "organicRanks": [
           null,
           null,
@@ -1850,7 +1850,7 @@
         "architectureState": "not-evidenced",
         "protectedRelatedRoutes": [],
         "consumerAiState": "configured-manual-unmeasured-invalid-provider-credential",
-        "comparableWeeklyGooglePanels": 14,
+        "comparableWeeklyGooglePanels": 15,
         "comparableWeeklyConsumerAiPanels": 0
       },
       "scoreVector": {

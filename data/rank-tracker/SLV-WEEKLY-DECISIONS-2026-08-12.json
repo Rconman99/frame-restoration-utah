@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "decisionId": "frame-utah-slv-weekly-keep-revert-v1",
   "market": "utah-salt-lake-valley",
-  "asOf": "2026-11-09T09:14:59.702Z",
+  "asOf": "2026-11-16T09:16:41.673Z",
   "status": "active-insufficient-four-week-history",
   "publicMutationPerformed": false,
   "policy": {
@@ -15,7 +15,7 @@
   "sources": {
     "portfolio": {
       "file": "data/rank-tracker/SLV-18-CITY-GOAL-PORTFOLIO-2026-08-12.json",
-      "sha256": "3ea99610d287d631f40d53a80a077f363c560f72452870aabd2945b710a8a61d"
+      "sha256": "cb489a9d8105579db8db2897e50fe6a5747d6bc62989fa9ce306b2c8047ce4be"
     },
     "saltLakeCityExperiment": {
       "file": "data/seo-experiments/utah-slc-entity-trust-correction-2026-08-12.json",
@@ -86,6 +86,10 @@
         {
           "file": "data/rank-tracker/2026-11-09.json",
           "sha256": "d0702d60e5d5d96565398b578906fb8d63d6a60447e13ed868623083a89285d0"
+        },
+        {
+          "file": "data/rank-tracker/2026-11-16.json",
+          "sha256": "268fe681065bfe5bb7ab781268aa2acdaab6f1ddc6076371b39e237c1c91ebb7"
         }
       ],
       "millcreek": [
@@ -144,6 +148,10 @@
         {
           "file": "data/rank-tracker/panels/millcreek/2026-11-09.json",
           "sha256": "cc437a46416e6909e3c2a114cb94c8931316f56061ef5e73347334c93bfd4355"
+        },
+        {
+          "file": "data/rank-tracker/panels/millcreek/2026-11-16.json",
+          "sha256": "e76b36b823d9b379fbad66d323a9709e95f37ac1feefda9ab4d2e35b93c7fde0"
         }
       ],
       "sandy": [
@@ -202,6 +210,10 @@
         {
           "file": "data/rank-tracker/panels/sandy/2026-11-09.json",
           "sha256": "ae1dbeaa3ed1ce454f55c65d1542a39ceca3c505354cc445f16b6f580a8bfb60"
+        },
+        {
+          "file": "data/rank-tracker/panels/sandy/2026-11-16.json",
+          "sha256": "1eadf274b76e4ffcf6adc05937f0bbc68a83976f799084035a11a74aba53708f"
         }
       ],
       "holladay": [
@@ -260,6 +272,10 @@
         {
           "file": "data/rank-tracker/panels/holladay/2026-11-09.json",
           "sha256": "e1f0feb2d8ab70b8bfe270893a9003f2f2eb25ee3711abc71a3593a3fd66c2a4"
+        },
+        {
+          "file": "data/rank-tracker/panels/holladay/2026-11-16.json",
+          "sha256": "0358349bc80a18bffcf9ea1ad29db3d873d6d922bef951b47e3a088cb3413ef0"
         }
       ],
       "cottonwood-heights": [
@@ -318,6 +334,10 @@
         {
           "file": "data/rank-tracker/panels/cottonwood-heights/2026-11-09.json",
           "sha256": "d6e76c0cae9aae49cf8c03e7b37054842af83cc64dd0b0752a47318b189e5be9"
+        },
+        {
+          "file": "data/rank-tracker/panels/cottonwood-heights/2026-11-16.json",
+          "sha256": "68fb7a31cd06d2da8f41df901ccb486ef3c8a6cb6657ae7206de8961350bf0c2"
         }
       ],
       "draper": [
@@ -376,6 +396,10 @@
         {
           "file": "data/rank-tracker/panels/draper/2026-11-09.json",
           "sha256": "4bef770f6ac9145e9af6a99b430ead6d501d04edaa8300372a403e9844a0fb37"
+        },
+        {
+          "file": "data/rank-tracker/panels/draper/2026-11-16.json",
+          "sha256": "7416db97620f58c217abda6501aad5a26bceb31f01edc17f1122858521dfaeac"
         }
       ],
       "bluffdale": [
@@ -463,8 +487,8 @@
     "protectedGoogleAiOverviewCitations": 1,
     "citiesAtSustainedGoal": 0
   },
-  "nextDecisionDate": "2026-11-16",
-  "nextAction": "Run the scheduled six-city core Google panel on 2026-11-16. Do not admit the 12 expansion cities to recurring paid measurement without explicit spend approval, and do not call a ranking keep/revert before comparable evidence exists.",
+  "nextDecisionDate": "2026-11-23",
+  "nextAction": "Run the scheduled six-city core Google panel on 2026-11-23. Do not admit the 12 expansion cities to recurring paid measurement without explicit spend approval, and do not call a ranking keep/revert before comparable evidence exists.",
   "cities": [
     {
       "city": "Salt Lake City",
@@ -472,9 +496,9 @@
       "cohort": "core-measured",
       "panelId": "utah-salt-lake-city-google-v1",
       "page": "locations/salt-lake-city.html",
-      "latestObservedAt": "2026-11-09T09:14:59.702Z",
-      "rawDatedGoogleReports": 15,
-      "comparableWeeklyGooglePanels": 14,
+      "latestObservedAt": "2026-11-16T09:16:41.673Z",
+      "rawDatedGoogleReports": 16,
+      "comparableWeeklyGooglePanels": 15,
       "consumerAiState": "configured-scheduled-unmeasured-invalid-provider-credential",
       "consumerAi": {
         "comparableWeeklyPanels": 0,
@@ -491,7 +515,7 @@
         "allFourOrganicNumberOneStreak": 0,
         "allFourExactCidMapsNumberOneStreak": 0,
         "allObservedAiOverviewsCitedStreak": 0,
-        "intendedPageSelectionStreak": 14,
+        "intendedPageSelectionStreak": 15,
         "consumerAiCompleteStreak": 0,
         "sameWindowCompleteStreak": 0,
         "integrityGreen": true,
@@ -507,7 +531,7 @@
           "verdict": "hold",
           "reason": "The calendar and panel-count gates have passed, but the running contract remains confounded and requires a fresh same-window consumer-AI reading before attribution.",
           "activeExperiment": "utah-slc-entity-trust-correction-2026-08-12",
-          "postDeploymentGooglePanels": 14,
+          "postDeploymentGooglePanels": 15,
           "requiredGooglePanels": 4,
           "earliestEvaluationAt": "2026-09-09T04:40:58.000Z",
           "calendarGatePassedAtLatestPanel": true,
@@ -583,9 +607,9 @@
       "cohort": "core-measured",
       "panelId": "utah-millcreek-google-v1",
       "page": "locations/millcreek.html",
-      "latestObservedAt": "2026-11-09T09:14:59.702Z",
-      "rawDatedGoogleReports": 14,
-      "comparableWeeklyGooglePanels": 14,
+      "latestObservedAt": "2026-11-16T09:16:41.673Z",
+      "rawDatedGoogleReports": 15,
+      "comparableWeeklyGooglePanels": 15,
       "consumerAiState": "configured-scheduled-unmeasured-invalid-provider-credential",
       "consumerAi": {
         "comparableWeeklyPanels": 0,
@@ -601,8 +625,8 @@
         "requiredConsecutiveWeeklyPanels": 4,
         "allFourOrganicNumberOneStreak": 0,
         "allFourExactCidMapsNumberOneStreak": 0,
-        "allObservedAiOverviewsCitedStreak": 0,
-        "intendedPageSelectionStreak": 14,
+        "allObservedAiOverviewsCitedStreak": 1,
+        "intendedPageSelectionStreak": 15,
         "consumerAiCompleteStreak": 0,
         "sameWindowCompleteStreak": 0,
         "integrityGreen": false,
@@ -618,7 +642,7 @@
           "verdict": "hold",
           "reason": "No isolated ranking experiment is running; additional observations do not create a keep/revert decision by themselves.",
           "activeExperiment": null,
-          "observedGooglePanels": 14,
+          "observedGooglePanels": 15,
           "requiredGooglePanels": 4
         }
       },
@@ -643,7 +667,7 @@
           "current": {
             "organicRank": null,
             "exactCidMapRank": null,
-            "aiOverviewPresent": true,
+            "aiOverviewPresent": false,
             "aiOverviewCited": false,
             "rankingUrl": null
           },
@@ -687,9 +711,9 @@
       "cohort": "core-measured",
       "panelId": "utah-sandy-google-v1",
       "page": "locations/sandy.html",
-      "latestObservedAt": "2026-11-09T09:14:59.702Z",
-      "rawDatedGoogleReports": 14,
-      "comparableWeeklyGooglePanels": 14,
+      "latestObservedAt": "2026-11-16T09:16:41.673Z",
+      "rawDatedGoogleReports": 15,
+      "comparableWeeklyGooglePanels": 15,
       "consumerAiState": "configured-manual-unmeasured-invalid-provider-credential",
       "consumerAi": {
         "comparableWeeklyPanels": 0,
@@ -705,8 +729,8 @@
         "requiredConsecutiveWeeklyPanels": 4,
         "allFourOrganicNumberOneStreak": 0,
         "allFourExactCidMapsNumberOneStreak": 0,
-        "allObservedAiOverviewsCitedStreak": 0,
-        "intendedPageSelectionStreak": 14,
+        "allObservedAiOverviewsCitedStreak": 1,
+        "intendedPageSelectionStreak": 15,
         "consumerAiCompleteStreak": 0,
         "sameWindowCompleteStreak": 0,
         "integrityGreen": false,
@@ -722,7 +746,7 @@
           "verdict": "hold",
           "reason": "No isolated ranking experiment is running; additional observations do not create a keep/revert decision by themselves.",
           "activeExperiment": null,
-          "observedGooglePanels": 14,
+          "observedGooglePanels": 15,
           "requiredGooglePanels": 4
         }
       },
@@ -747,7 +771,7 @@
           "current": {
             "organicRank": null,
             "exactCidMapRank": null,
-            "aiOverviewPresent": true,
+            "aiOverviewPresent": false,
             "aiOverviewCited": false,
             "rankingUrl": null
           },
@@ -791,9 +815,9 @@
       "cohort": "core-measured",
       "panelId": "utah-holladay-google-v1",
       "page": "locations/holladay.html",
-      "latestObservedAt": "2026-11-09T09:14:59.702Z",
-      "rawDatedGoogleReports": 14,
-      "comparableWeeklyGooglePanels": 14,
+      "latestObservedAt": "2026-11-16T09:16:41.673Z",
+      "rawDatedGoogleReports": 15,
+      "comparableWeeklyGooglePanels": 15,
       "consumerAiState": "configured-manual-unmeasured-invalid-provider-credential",
       "consumerAi": {
         "comparableWeeklyPanels": 0,
@@ -809,8 +833,8 @@
         "requiredConsecutiveWeeklyPanels": 4,
         "allFourOrganicNumberOneStreak": 0,
         "allFourExactCidMapsNumberOneStreak": 0,
-        "allObservedAiOverviewsCitedStreak": 0,
-        "intendedPageSelectionStreak": 2,
+        "allObservedAiOverviewsCitedStreak": 1,
+        "intendedPageSelectionStreak": 3,
         "consumerAiCompleteStreak": 0,
         "sameWindowCompleteStreak": 0,
         "integrityGreen": false,
@@ -826,7 +850,7 @@
           "verdict": "hold",
           "reason": "No isolated ranking experiment is running; additional observations do not create a keep/revert decision by themselves.",
           "activeExperiment": null,
-          "observedGooglePanels": 14,
+          "observedGooglePanels": 15,
           "requiredGooglePanels": 4
         }
       },
@@ -879,7 +903,7 @@
           "current": {
             "organicRank": null,
             "exactCidMapRank": null,
-            "aiOverviewPresent": true,
+            "aiOverviewPresent": false,
             "aiOverviewCited": false,
             "rankingUrl": null
           },
@@ -895,9 +919,9 @@
       "cohort": "core-measured",
       "panelId": "utah-cottonwood-heights-google-v1",
       "page": "locations/cottonwood-heights.html",
-      "latestObservedAt": "2026-11-09T09:14:59.702Z",
-      "rawDatedGoogleReports": 14,
-      "comparableWeeklyGooglePanels": 14,
+      "latestObservedAt": "2026-11-16T09:16:41.673Z",
+      "rawDatedGoogleReports": 15,
+      "comparableWeeklyGooglePanels": 15,
       "consumerAiState": "configured-manual-unmeasured-invalid-provider-credential",
       "consumerAi": {
         "comparableWeeklyPanels": 0,
@@ -913,8 +937,8 @@
         "requiredConsecutiveWeeklyPanels": 4,
         "allFourOrganicNumberOneStreak": 0,
         "allFourExactCidMapsNumberOneStreak": 0,
-        "allObservedAiOverviewsCitedStreak": 1,
-        "intendedPageSelectionStreak": 14,
+        "allObservedAiOverviewsCitedStreak": 2,
+        "intendedPageSelectionStreak": 15,
         "consumerAiCompleteStreak": 0,
         "sameWindowCompleteStreak": 0,
         "integrityGreen": false,
@@ -930,7 +954,7 @@
           "verdict": "hold",
           "reason": "No isolated ranking experiment is running; additional observations do not create a keep/revert decision by themselves.",
           "activeExperiment": null,
-          "observedGooglePanels": 14,
+          "observedGooglePanels": 15,
           "requiredGooglePanels": 4
         }
       },
@@ -999,9 +1023,9 @@
       "cohort": "core-measured",
       "panelId": "utah-draper-google-v1",
       "page": "locations/draper.html",
-      "latestObservedAt": "2026-11-09T09:14:59.702Z",
-      "rawDatedGoogleReports": 14,
-      "comparableWeeklyGooglePanels": 14,
+      "latestObservedAt": "2026-11-16T09:16:41.673Z",
+      "rawDatedGoogleReports": 15,
+      "comparableWeeklyGooglePanels": 15,
       "consumerAiState": "configured-manual-unmeasured-invalid-provider-credential",
       "consumerAi": {
         "comparableWeeklyPanels": 0,
@@ -1017,8 +1041,8 @@
         "requiredConsecutiveWeeklyPanels": 4,
         "allFourOrganicNumberOneStreak": 0,
         "allFourExactCidMapsNumberOneStreak": 0,
-        "allObservedAiOverviewsCitedStreak": 1,
-        "intendedPageSelectionStreak": 14,
+        "allObservedAiOverviewsCitedStreak": 2,
+        "intendedPageSelectionStreak": 15,
         "consumerAiCompleteStreak": 0,
         "sameWindowCompleteStreak": 0,
         "integrityGreen": false,
@@ -1034,7 +1058,7 @@
           "verdict": "hold",
           "reason": "No isolated ranking experiment is running; additional observations do not create a keep/revert decision by themselves.",
           "activeExperiment": null,
-          "observedGooglePanels": 14,
+          "observedGooglePanels": 15,
           "requiredGooglePanels": 4
         }
       },
