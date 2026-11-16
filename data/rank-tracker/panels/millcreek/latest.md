@@ -1,16 +1,16 @@
-# Millcreek Google rank tracker — 2026-11-09
+# Millcreek Google rank tracker — 2026-11-16
 
 - Panel: `utah-millcreek-google-v1`
 - Provider: DataForSEO task-queue
 - Location: Millcreek,Utah,United States
 - Device/depth: mobile / top 30
-- Observed: 2026-11-09T09:14:59.702Z
+- Observed: 2026-11-16T09:16:41.673Z
 - Estimated panel cost: $0.0192
 
 | Query | Organic | Exact-CID map pack | AI Overview | Frame cited in AI Overview |
 |---|---:|---:|---:|---:|
 | roofing contractor millcreek | Not found in top 30 | Not found in top 30 | No | No |
-| roof repair millcreek | Not found in top 30 | Not found in top 30 | Yes | No |
+| roof repair millcreek | Not found in top 30 | Not found in top 30 | No | No |
 | roof replacement millcreek | Not found in top 30 | Not found in top 30 | No | No |
 | roofer millcreek | Not found in top 30 | Not found in top 30 | No | No |
 
@@ -26,7 +26,7 @@
 - Organic top 3: #1 google.com; #2 google.com; #3 google.com.
 - Map-pack top 3: #1 Whitaker Roofing Services [CID 11316815627233980109]; #2 RoofTek [CID 2008385778269964311]; #3 Stone Ranch Roofing [CID 7284969079979382065].
 - Paid local placements (excluded from Maps rank): none.
-- AI Overview sources: google.com; google.com; google.com; google.com; google.com; google.com; google.com; google.com; google.com; google.com.
+- AI Overview sources: no AI Overview.
 
 ### roof replacement millcreek
 - Organic top 3: #1 google.com; #2 google.com; #3 google.com.

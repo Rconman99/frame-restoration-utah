@@ -1,10 +1,10 @@
-# Cottonwood Heights Google rank tracker — 2026-11-09
+# Cottonwood Heights Google rank tracker — 2026-11-16
 
 - Panel: `utah-cottonwood-heights-google-v1`
 - Provider: DataForSEO task-queue
 - Location: Cottonwood Heights,Utah,United States
 - Device/depth: mobile / top 30
-- Observed: 2026-11-09T09:14:59.702Z
+- Observed: 2026-11-16T09:16:41.673Z
 - Estimated panel cost: $0.0192
 
 | Query | Organic | Exact-CID map pack | AI Overview | Frame cited in AI Overview |
