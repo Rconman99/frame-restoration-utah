@@ -1,8 +1,8 @@
 {
   "artifact": "frame-utah-growth-operations",
   "version": 1,
-  "generatedAt": "2026-11-16T12:54:43.777Z",
-  "snapshotDate": "2026-11-16",
+  "generatedAt": "2026-11-17T12:41:29.142Z",
+  "snapshotDate": "2026-11-17",
   "sourceAgeHours": 0,
   "state": "measurement_operational_outcomes_incomplete",
   "northStar": "qualified_organic_leads",
@@ -16,8 +16,8 @@
     "nextAction": "Reconcile existing lead source/city/page attribution with owner-confirmed CRM outcomes through the approved read-only lane; do not infer jobs from clicks or change CRM truth."
   },
   "searchWindow": {
-    "startDate": "2026-10-17",
-    "endDate": "2026-11-13"
+    "startDate": "2026-10-18",
+    "endDate": "2026-11-14"
   },
   "blockers": [],
   "crawlErrors": [],
@@ -29,8 +29,8 @@
       "state": "observed_rolling_window",
       "metrics": {
         "clicks": 1,
-        "impressions": 5585,
-        "averagePosition": 23.3
+        "impressions": 5319,
+        "averagePosition": 23
       }
     },
     {
@@ -39,8 +39,8 @@
       "state": "observed_rolling_window",
       "metrics": {
         "clicks": 1,
-        "impressions": 1415,
-        "averagePosition": 9.8
+        "impressions": 1459,
+        "averagePosition": 9.7
       }
     },
     {
@@ -87,8 +87,8 @@
       "region": "slc",
       "query": "wood roof salt lake city",
       "clicks": 0,
-      "impressions": 40,
-      "averagePosition": 9.9,
+      "impressions": 39,
+      "averagePosition": 9.7,
       "state": "exact_query_page_diagnosis_ready",
       "nextAction": "Obtain an exact query + intended-page baseline; check current URL selection and running experiments before drafting one isolated change.",
       "limitation": "Query-level discovery only: these metrics are not a page baseline, lead count or revenue estimate."
@@ -97,8 +97,8 @@
       "region": "heber",
       "query": "roof repair heber city ut",
       "clicks": 0,
-      "impressions": 2327,
-      "averagePosition": 9.3,
+      "impressions": 2402,
+      "averagePosition": 9.5,
       "state": "exact_query_page_diagnosis_ready",
       "nextAction": "Obtain an exact query + intended-page baseline; check current URL selection and running experiments before drafting one isolated change.",
       "limitation": "Query-level discovery only: these metrics are not a page baseline, lead count or revenue estimate."
@@ -107,8 +107,8 @@
       "region": "heber",
       "query": "roofing heber city ut",
       "clicks": 0,
-      "impressions": 1667,
-      "averagePosition": 5.7,
+      "impressions": 1750,
+      "averagePosition": 6,
       "state": "exact_query_page_diagnosis_ready",
       "nextAction": "Obtain an exact query + intended-page baseline; check current URL selection and running experiments before drafting one isolated change.",
       "limitation": "Query-level discovery only: these metrics are not a page baseline, lead count or revenue estimate."
@@ -117,8 +117,8 @@
       "region": "heber",
       "query": "which roofing companies in heber city ut provide roof repair and replacement services?",
       "clicks": 0,
-      "impressions": 411,
-      "averagePosition": 4.6,
+      "impressions": 462,
+      "averagePosition": 4.8,
       "state": "exact_query_page_diagnosis_ready",
       "nextAction": "Obtain an exact query + intended-page baseline; check current URL selection and running experiments before drafting one isolated change.",
       "limitation": "Query-level discovery only: these metrics are not a page baseline, lead count or revenue estimate."
@@ -127,7 +127,7 @@
       "region": "hail-service-area",
       "query": "roof repair midway ut",
       "clicks": 0,
-      "impressions": 1857,
+      "impressions": 1913,
       "averagePosition": 6.7,
       "state": "exact_query_page_diagnosis_ready",
       "nextAction": "Obtain an exact query + intended-page baseline; check current URL selection and running experiments before drafting one isolated change.",
@@ -137,8 +137,8 @@
       "region": "hail-service-area",
       "query": "roofing midway ut",
       "clicks": 0,
-      "impressions": 1396,
-      "averagePosition": 4.9,
+      "impressions": 1449,
+      "averagePosition": 5,
       "state": "exact_query_page_diagnosis_ready",
       "nextAction": "Obtain an exact query + intended-page baseline; check current URL selection and running experiments before drafting one isolated change.",
       "limitation": "Query-level discovery only: these metrics are not a page baseline, lead count or revenue estimate."
@@ -147,8 +147,8 @@
       "region": "davis-hail",
       "query": "roof repair farmington ut",
       "clicks": 0,
-      "impressions": 689,
-      "averagePosition": 12.1,
+      "impressions": 709,
+      "averagePosition": 12.4,
       "state": "exact_query_page_diagnosis_ready",
       "nextAction": "Obtain an exact query + intended-page baseline; check current URL selection and running experiments before drafting one isolated change.",
       "limitation": "Query-level discovery only: these metrics are not a page baseline, lead count or revenue estimate."
@@ -157,8 +157,8 @@
       "region": "davis-hail",
       "query": "which roofing companies in farmington ut handle roof repairs and replacements?",
       "clicks": 0,
-      "impressions": 144,
-      "averagePosition": 8.3,
+      "impressions": 172,
+      "averagePosition": 8.1,
       "state": "exact_query_page_diagnosis_ready",
       "nextAction": "Obtain an exact query + intended-page baseline; check current URL selection and running experiments before drafting one isolated change.",
       "limitation": "Query-level discovery only: these metrics are not a page baseline, lead count or revenue estimate."
@@ -218,8 +218,8 @@
   },
   "sources": [
     {
-      "file": "data/seo/snapshots/2026-11-16.json",
-      "sha256": "0b1b186d86a874887564dc9ce9db7faaf792a5c6a364ee03370577ea17d75de9"
+      "file": "data/seo/snapshots/2026-11-17.json",
+      "sha256": "e703d3127411d09a164477d5d59d812ed347c22658b2432caf280d377e047d8f"
     },
     {
       "file": "data/seo-experiments/utah-homepage-commercial-title-2026-08-09.json",
