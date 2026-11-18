@@ -22,6 +22,10 @@ name: SEO loop (Utah)
 #      compliance gate.
 #   3. Commits both. The readout also lands in the job summary.
 #
+# The weekly close-to-page-one step lives in close-to-page-one.yml. It uses
+# this same Search Console secret and writes a needs-review topic queue.
+# It does not run inside the daily measure job.
+#
 # Deadman: the diff opens with a missed-run warning (+ a ::warning::
 # annotation) when the previous snapshot is >48h old, so a silently-dead
 # schedule surfaces in the next run's readout instead of never.
@@ -41,6 +45,11 @@ on:
       - 'scripts/evaluate-homepage-title-experiment.mjs'
       - 'scripts/lib/gsc.mjs'
       - 'scripts/lib/gsc.test.mjs'
+      - 'scripts/lib/close-to-page-one.mjs'
+      - 'scripts/lib/close-to-page-one.test.mjs'
+      - 'scripts/close-to-page-one.mjs'
+      - 'scripts/check-published-sitemap.mjs'
+      - 'scripts/check-published-sitemap.test.mjs'
       - 'scripts/lib/slv-intervention-queue*.mjs'
       - 'scripts/sync-slv-*.mjs'
       - 'data/seo-experiments/*.json'
@@ -65,7 +74,7 @@ jobs:
         with:
           node-version: '22'
       - name: Unit tests
-        run: node --test scripts/seo-diff.test.mjs scripts/seo-crawl.test.mjs scripts/lib/gsc.test.mjs scripts/lib/slv-gsc-attribution.test.mjs scripts/seo-snapshot.test.mjs scripts/seo-growth-operations.test.mjs scripts/lib/slv-intervention-queue.test.mjs scripts/seo-experiment-review.test.mjs
+        run: node --test scripts/seo-diff.test.mjs scripts/seo-crawl.test.mjs scripts/lib/gsc.test.mjs scripts/lib/close-to-page-one.test.mjs scripts/check-published-sitemap.test.mjs scripts/lib/slv-gsc-attribution.test.mjs scripts/seo-snapshot.test.mjs scripts/seo-growth-operations.test.mjs scripts/lib/slv-intervention-queue.test.mjs scripts/seo-experiment-review.test.mjs
       - name: Verify retained homepage experiment decision
         run: node scripts/evaluate-homepage-title-experiment.mjs --check
 

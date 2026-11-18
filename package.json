@@ -65,7 +65,7 @@
     "audit:slv-consumer-ai": "node --test scripts/lib/slv-consumer-ai.test.mjs scripts/test-import-slv-consumer-ai.mjs && node scripts/sync-slv-consumer-ai.mjs --check",
     "sync:slv-consumer-ai": "node scripts/sync-slv-consumer-ai.mjs --write",
     "import:slv-consumer-ai": "node scripts/import-slv-consumer-ai.mjs",
-    "test:review-targeting": "python3 scripts/test-update-google-reviews-targeting.py",
+    "test:review-targeting": "python3 scripts/test-update-google-reviews-targeting.py && python3 scripts/test-update-google-reviews-pool-merge.py",
     "audit:slv-leader-features": "node scripts/validate-slv-leader-features.mjs",
     "audit:slv-expansion-architecture": "node scripts/sync-slv-expansion-architecture.mjs --check",
     "sync:slv-expansion-architecture": "node scripts/sync-slv-expansion-architecture.mjs --write",

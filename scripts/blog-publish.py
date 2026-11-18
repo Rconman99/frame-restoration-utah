@@ -648,6 +648,19 @@ def main() -> None:
         fail_closed(state, manifest_path, manifest, f"integration failed: {exc}", args.push, args.push_ref)
     log(f"✓ Sitemap: {'inserted' if sitemap_added else 'already present (skipped)'}")
     log(f"✓ Blog index card: {'inserted' if card_added else 'already present (skipped)'}")
+    sitemap_check = run([
+        "node", str(ROOT / "scripts" / "check-published-sitemap.mjs"),
+        "--url", post_url,
+        "--sitemap", str(SITEMAP),
+    ])
+    if sitemap_check.returncode != 0:
+        detail = (sitemap_check.stderr or sitemap_check.stdout or "").strip()
+        fail_closed(
+            state, manifest_path, manifest,
+            f"SITEMAP MISSING PUBLISHED PAGE: {post_url}\n{detail[:500]}",
+            args.push, args.push_ref,
+        )
+    log(f"✓ Sitemap contains the published URL {post_url}")
 
     # 7. Gates (fail closed; compliance-words advisory in manual-review)
     ok, gate_reason = run_gates(manual_review=args.manual_review)

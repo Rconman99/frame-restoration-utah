@@ -1,8 +1,8 @@
 {
   "artifact": "frame-utah-growth-operations",
   "version": 1,
-  "generatedAt": "2026-10-28T12:44:00.389Z",
-  "snapshotDate": "2026-10-28",
+  "generatedAt": "2026-11-17T12:41:29.142Z",
+  "snapshotDate": "2026-11-17",
   "sourceAgeHours": 0,
   "state": "measurement_operational_outcomes_incomplete",
   "northStar": "qualified_organic_leads",
@@ -16,8 +16,8 @@
     "nextAction": "Reconcile existing lead source/city/page attribution with owner-confirmed CRM outcomes through the approved read-only lane; do not infer jobs from clicks or change CRM truth."
   },
   "searchWindow": {
-    "startDate": "2026-09-28",
-    "endDate": "2026-10-25"
+    "startDate": "2026-10-18",
+    "endDate": "2026-11-14"
   },
   "blockers": [],
   "crawlErrors": [],
@@ -28,9 +28,9 @@
       "page": "https://www.framerestorationutah.com/locations/salt-lake-city",
       "state": "observed_rolling_window",
       "metrics": {
-        "clicks": 2,
-        "impressions": 7499,
-        "averagePosition": 26.4
+        "clicks": 1,
+        "impressions": 5319,
+        "averagePosition": 23
       }
     },
     {
@@ -38,9 +38,9 @@
       "page": "https://www.framerestorationutah.com/locations/heber-city",
       "state": "observed_rolling_window",
       "metrics": {
-        "clicks": 2,
-        "impressions": 1454,
-        "averagePosition": 10.5
+        "clicks": 1,
+        "impressions": 1459,
+        "averagePosition": 9.7
       }
     },
     {
@@ -49,8 +49,8 @@
       "state": "observed_rolling_window",
       "metrics": {
         "clicks": 0,
-        "impressions": 5,
-        "averagePosition": 21.6
+        "impressions": 4,
+        "averagePosition": 42.5
       }
     },
     {
@@ -59,19 +59,15 @@
       "state": "observed_rolling_window",
       "metrics": {
         "clicks": 0,
-        "impressions": 6,
-        "averagePosition": 6
+        "impressions": 4,
+        "averagePosition": 4.8
       }
     },
     {
       "id": "charleston",
       "page": "https://www.framerestorationutah.com/blog/charleston/hail-roof-inspection-charleston",
-      "state": "observed_rolling_window",
-      "metrics": {
-        "clicks": 0,
-        "impressions": 1,
-        "averagePosition": 4
-      }
+      "state": "not_measured_or_not_returned",
+      "metrics": null
     },
     {
       "id": "layton",
@@ -89,10 +85,10 @@
   "opportunities": [
     {
       "region": "slc",
-      "query": "composite slate roofing salt lake city",
+      "query": "wood roof salt lake city",
       "clicks": 0,
-      "impressions": 42,
-      "averagePosition": 9.4,
+      "impressions": 39,
+      "averagePosition": 9.7,
       "state": "exact_query_page_diagnosis_ready",
       "nextAction": "Obtain an exact query + intended-page baseline; check current URL selection and running experiments before drafting one isolated change.",
       "limitation": "Query-level discovery only: these metrics are not a page baseline, lead count or revenue estimate."
@@ -101,8 +97,8 @@
       "region": "heber",
       "query": "roof repair heber city ut",
       "clicks": 0,
-      "impressions": 1773,
-      "averagePosition": 7.7,
+      "impressions": 2402,
+      "averagePosition": 9.5,
       "state": "exact_query_page_diagnosis_ready",
       "nextAction": "Obtain an exact query + intended-page baseline; check current URL selection and running experiments before drafting one isolated change.",
       "limitation": "Query-level discovery only: these metrics are not a page baseline, lead count or revenue estimate."
@@ -111,8 +107,8 @@
       "region": "heber",
       "query": "roofing heber city ut",
       "clicks": 0,
-      "impressions": 1179,
-      "averagePosition": 4.9,
+      "impressions": 1750,
+      "averagePosition": 6,
       "state": "exact_query_page_diagnosis_ready",
       "nextAction": "Obtain an exact query + intended-page baseline; check current URL selection and running experiments before drafting one isolated change.",
       "limitation": "Query-level discovery only: these metrics are not a page baseline, lead count or revenue estimate."
@@ -121,8 +117,8 @@
       "region": "heber",
       "query": "which roofing companies in heber city ut provide roof repair and replacement services?",
       "clicks": 0,
-      "impressions": 73,
-      "averagePosition": 6.6,
+      "impressions": 462,
+      "averagePosition": 4.8,
       "state": "exact_query_page_diagnosis_ready",
       "nextAction": "Obtain an exact query + intended-page baseline; check current URL selection and running experiments before drafting one isolated change.",
       "limitation": "Query-level discovery only: these metrics are not a page baseline, lead count or revenue estimate."
@@ -131,8 +127,8 @@
       "region": "hail-service-area",
       "query": "roof repair midway ut",
       "clicks": 0,
-      "impressions": 1372,
-      "averagePosition": 4.9,
+      "impressions": 1913,
+      "averagePosition": 6.7,
       "state": "exact_query_page_diagnosis_ready",
       "nextAction": "Obtain an exact query + intended-page baseline; check current URL selection and running experiments before drafting one isolated change.",
       "limitation": "Query-level discovery only: these metrics are not a page baseline, lead count or revenue estimate."
@@ -141,8 +137,8 @@
       "region": "hail-service-area",
       "query": "roofing midway ut",
       "clicks": 0,
-      "impressions": 1308,
-      "averagePosition": 4.2,
+      "impressions": 1449,
+      "averagePosition": 5,
       "state": "exact_query_page_diagnosis_ready",
       "nextAction": "Obtain an exact query + intended-page baseline; check current URL selection and running experiments before drafting one isolated change.",
       "limitation": "Query-level discovery only: these metrics are not a page baseline, lead count or revenue estimate."
@@ -151,18 +147,8 @@
       "region": "davis-hail",
       "query": "roof repair farmington ut",
       "clicks": 0,
-      "impressions": 879,
-      "averagePosition": 11.1,
-      "state": "exact_query_page_diagnosis_ready",
-      "nextAction": "Obtain an exact query + intended-page baseline; check current URL selection and running experiments before drafting one isolated change.",
-      "limitation": "Query-level discovery only: these metrics are not a page baseline, lead count or revenue estimate."
-    },
-    {
-      "region": "davis-hail",
-      "query": "roofing farmington ut",
-      "clicks": 0,
-      "impressions": 693,
-      "averagePosition": 13.7,
+      "impressions": 709,
+      "averagePosition": 12.4,
       "state": "exact_query_page_diagnosis_ready",
       "nextAction": "Obtain an exact query + intended-page baseline; check current URL selection and running experiments before drafting one isolated change.",
       "limitation": "Query-level discovery only: these metrics are not a page baseline, lead count or revenue estimate."
@@ -171,7 +157,7 @@
       "region": "davis-hail",
       "query": "which roofing companies in farmington ut handle roof repairs and replacements?",
       "clicks": 0,
-      "impressions": 36,
+      "impressions": 172,
       "averagePosition": 8.1,
       "state": "exact_query_page_diagnosis_ready",
       "nextAction": "Obtain an exact query + intended-page baseline; check current URL selection and running experiments before drafting one isolated change.",
@@ -232,8 +218,8 @@
   },
   "sources": [
     {
-      "file": "data/seo/snapshots/2026-10-28.json",
-      "sha256": "a8e63dab928755efa1c4d2ebde211dfc4680f73cf74caefe987e083fc9f34d2f"
+      "file": "data/seo/snapshots/2026-11-17.json",
+      "sha256": "e703d3127411d09a164477d5d59d812ed347c22658b2432caf280d377e047d8f"
     },
     {
       "file": "data/seo-experiments/utah-homepage-commercial-title-2026-08-09.json",
@@ -245,7 +231,7 @@
     },
     {
       "file": "data/rank-tracker/SLV-WEEKLY-DECISIONS-2026-08-12.json",
-      "sha256": "b90c76443ca9eab9434cecc6ed5fbf62f2f5d6c2a4424a2aac4a026c85dca747"
+      "sha256": "98a0dfa119ec87ceaf6c4f7dbbb9b955fe42a6b1395e019d3d599c45fad4e924"
     },
     {
       "file": "data/seo/experiment-readouts/utah-homepage-commercial-title-2026-08-09.json",

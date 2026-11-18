@@ -1,0 +1,155 @@
+name: Close to page one (Utah)
+
+# Weekly half of the SEO/blog loop. The daily SEO loop
+# (.github/workflows/seo-loop.yml) keeps crawling and diffing. This job pulls
+# the same Search Console property, keeps queries whose average position is
+# 5–15, and opens a DRAFT PR of page-refresh tasks for Ryan to review.
+#
+# It does not publish or deploy. Proposal prose, when the blog lane's Claude
+# plan token is present, uses that token only. A metered model API is not a
+# fallback. Missing Search Console credentials skip this job's measure step
+# with a notice.
+#
+# PR #509 (an SEO workflow pilot) is not in this repository, so the approval
+# surface is this draft PR plus the needs-review queue the blog prioritizer
+# reads after the draft is merged. Page-refresh tasks are not new posts.
+#
+# Secret: GSC_SERVICE_ACCOUNT_JSON (same JSON the daily SEO loop uses).
+# Optional variable: GSC_SITE_URL (default https://www.framerestorationutah.com/).
+# Optional secret for proposal prose: CLAUDE_CODE_OAUTH_TOKEN (same as Blog draft).
+# None of those values are printed.
+
+on:
+  schedule:
+    # Monday ~08:47 Denver (14:47 UTC in MDT), after the morning rank tracker
+    # and the daily SEO loop.
+    - cron: '47 14 * * 1'
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - 'scripts/close-to-page-one.mjs'
+      - 'scripts/close-to-page-one-draft.py'
+      - 'scripts/lib/close-to-page-one.mjs'
+      - 'scripts/lib/close-to-page-one.test.mjs'
+      - 'scripts/check-published-sitemap.mjs'
+      - 'scripts/check-published-sitemap.test.mjs'
+      - 'scripts/fixtures/close-to-page-one/**'
+      - 'scripts/fixtures/published-sitemap/**'
+      - 'tests/test_close_to_page_one_queue.py'
+      - '.github/workflows/close-to-page-one.yml'
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: close-to-page-one-utah-${{ github.event.pull_request.number || 'main' }}
+  cancel-in-progress: false
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+        with:
+          node-version: '22'
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: '3.12'
+      - name: Unit tests
+        run: |
+          node --test scripts/lib/close-to-page-one.test.mjs scripts/check-published-sitemap.test.mjs scripts/lib/gsc.test.mjs
+          python3 tests/test_close_to_page_one_queue.py
+      - name: Newest published page is in the sitemap
+        run: node scripts/check-published-sitemap.mjs
+
+  queue:
+    needs: test
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+        with:
+          node-version: '22'
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: '3.12'
+
+      - name: Fail if the newest published page is missing from the sitemap
+        run: node scripts/check-published-sitemap.mjs
+
+      - name: Build the close-to-page-one queue
+        id: queue
+        env:
+          GSC_SERVICE_ACCOUNT_JSON: ${{ secrets.GSC_SERVICE_ACCOUNT_JSON }}
+          GSC_SITE_URL: ${{ vars.GSC_SITE_URL }}
+        run: node scripts/close-to-page-one.mjs
+
+      - name: Draft proposal notes with the Claude plan
+        if: steps.queue.outputs.wrote == 'true'
+        env:
+          CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+        run: |
+          if [ -z "${CLAUDE_CODE_OAUTH_TOKEN:-}" ]; then
+            python3 scripts/close-to-page-one-draft.py --skip-if-unconfigured
+            exit 0
+          fi
+          npm install -g @anthropic-ai/claude-code
+          python3 scripts/close-to-page-one-draft.py --skip-if-unconfigured
+
+      - name: Open or update the review draft
+        if: steps.queue.outputs.wrote == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          if [ -z "$(git status --porcelain -- data/seo/topic-queue)" ]; then
+            echo "No queue changes."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          BRANCH="cursor/close-to-page-one-weekly"
+          git switch -c "$BRANCH"
+          git add data/seo/topic-queue/close-to-page-one.json data/seo/topic-queue/close-to-page-one.md
+          git commit -m "chore(seo): close-to-page-one review queue"
+          if git ls-remote --exit-code --heads origin "$BRANCH" >/dev/null 2>&1; then
+            git fetch origin "$BRANCH"
+            git push --force-with-lease="refs/heads/$BRANCH:refs/remotes/origin/$BRANCH" origin "HEAD:refs/heads/$BRANCH"
+          else
+            git push -u origin "HEAD:refs/heads/$BRANCH"
+          fi
+          OPEN_PR_NUMBER="$(
+            gh pr list \
+              --head "$BRANCH" \
+              --base main \
+              --state open \
+              --json number \
+              --jq '.[0].number // empty'
+          )"
+          BODY="$(cat <<'EOF'
+          Weekly close-to-page-one queue from Search Console (last 28 days, lagged). Queries at average position 5–15 are grouped by the ranking page. The top 3 pages by those impressions, skipping any file git shows edited in the last 60 days, are page-refresh tasks.
+
+          This draft does not publish. If a query already ranks on a page, the task is to improve that page, not to add a post.
+
+          Merge to put the queue on main for the blog prioritizer. Page-refresh rows stay out of the new-post ranking unless a candidate topic is explicitly approved, draftable, and has no ranking page.
+          EOF
+          )"
+          if [ -n "$OPEN_PR_NUMBER" ]; then
+            gh pr edit "$OPEN_PR_NUMBER" \
+              --title "chore(seo): close-to-page-one review queue" \
+              --body "$BODY"
+          else
+            gh pr create \
+              --draft \
+              --base main \
+              --head "$BRANCH" \
+              --title "chore(seo): close-to-page-one review queue" \
+              --body "$BODY"
+          fi
