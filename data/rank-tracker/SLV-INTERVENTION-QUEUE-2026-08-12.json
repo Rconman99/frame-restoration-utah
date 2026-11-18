@@ -13,7 +13,7 @@
         "Holladay",
         "Herriman"
       ],
-      "activeSnapshotSha256": "d7e9373f3b225d3537a342ac60ef6d91b1ce975a11fb9bb1b5ac9d4603cb8d85",
+      "activeSnapshotSha256": "e703d3127411d09a164477d5d59d812ed347c22658b2432caf280d377e047d8f",
       "diagnosisSnapshotSha256": "a1b7d5aa2acc3a5b663da345ba6eb7242e411661807ae1296f50854702b1a7eb",
       "behavior": "Ignore the stale split-URL disposition and keep affected URL-competition cities in the diagnosis lane; do not suppress, redirect, canonicalize, noindex, delete, or rewrite a route from stale evidence.",
       "requiredAction": "Refresh the bounded Holladay/Herriman split-URL diagnosis against the current GSC attribution snapshot."
@@ -80,35 +80,35 @@
   "sources": {
     "portfolio": {
       "file": "data/rank-tracker/SLV-18-CITY-GOAL-PORTFOLIO-2026-08-12.json",
-      "sha256": "8fa3bba6dba52b8a72ff13d34cba84202ffbe02c0d2f9514df9741194f4298a3"
+      "sha256": "cb489a9d8105579db8db2897e50fe6a5747d6bc62989fa9ce306b2c8047ce4be"
     },
     "weeklyDecisions": {
       "file": "data/rank-tracker/SLV-WEEKLY-DECISIONS-2026-08-12.json",
-      "sha256": "5b6683c7419615779ed08cb964c90d99f74aa0c7301eb0fe56ce62a0d8f8e48c"
+      "sha256": "98a0dfa119ec87ceaf6c4f7dbbb9b955fe42a6b1395e019d3d599c45fad4e924"
     },
     "gscAttribution": {
       "file": "data/rank-tracker/SLV-GSC-URL-ATTRIBUTION-LATEST.json",
-      "sha256": "053c8350395459fa2f3bdee96a4b1c3eae3459ab19995944df878ef190d2af10"
+      "sha256": "98c9580e5c7bee73548c85501b07ed630ef040be839451afb5415f2cbacfbd20"
     },
     "gscSplitUrlDiagnosis": {
       "file": "data/rank-tracker/SLV-GSC-SPLIT-URL-DIAGNOSIS-2026-08-12.json",
-      "sha256": "c6bbb445c604ebaf995709395b6ca2aa79a590bde7bc21513c5a01b5d824a60c"
+      "sha256": "dcc0db00e2553cc993d7cffb73b1812346679ec0c50c08fd42ff1b6a4dc84534"
     },
     "displacement": {
       "file": "data/rank-tracker/SLV-COMPETITOR-DISPLACEMENT-2026-08-12.json",
-      "sha256": "9b19929c9b2028000183e6c195d4f604aa4e9e41f56a0ea8810c9843bc8b64fe"
+      "sha256": "88d38e1ce8c7f3fbfe331f53cd132a87050cfa4a4a5880cf03dd15ef5c460876"
     },
     "entityHealth": {
       "file": "data/rank-tracker/SLV-ENTITY-HEALTH-2026-08-12.json",
-      "sha256": "47858d23f64cba73f43d07ed04cd38bd7c4405ccacf01ee9d8893ca5d195e121"
+      "sha256": "af1b35255f2390bfd2857fcb298c9d25396278ccb6db6da14d76558a0c8726da"
     },
     "mapsReadiness": {
       "file": "data/rank-tracker/SLV-MAPS-READINESS-2026-08-12.json",
-      "sha256": "9ae6b0e6396dbe419c61c9d48d1e0f0db7042a251111f32a4e2ea641bb7ba0dc"
+      "sha256": "e818ade2a107453a27105d1acd8520e1d147afea317cf91c2cabc5913a94710a"
     },
     "expansionArchitecture": {
       "file": "data/rank-tracker/SLV-EXPANSION-ARCHITECTURE-2026-08-12.json",
-      "sha256": "58ea454fefe33a3da8ea58f8c6876f2b10b2dc9a1375609f41362c02e8141891"
+      "sha256": "7d239373e9a9d3f6230880ece5315182c223270c82dd2b2a1122ad3e408340bc"
     },
     "corePriority": {
       "file": "data/rank-tracker/SLV-PRIORITY-2026-08-12.json",
@@ -149,7 +149,7 @@
       },
       "Holladay": {
         "file": "data/rank-tracker/HOLLADAY-ARCHITECTURE-DIAGNOSIS-2026-08-12.json",
-        "sha256": "6a9be0e80548734eb6ca0b26e4bbe7ba9031e4ac4612c1773a717453b399f294"
+        "sha256": "56b8610314e1f665f87ae08676ab727e6dc96c173e9cef2fbcf22e2d04dce572"
       },
       "Cottonwood Heights": {
         "file": "data/rank-tracker/COTTONWOOD-HEIGHTS-ARCHITECTURE-DIAGNOSIS-2026-08-12.json",
@@ -240,15 +240,15 @@
       "lane": "observe-time-gated-slc-experiment",
       "decision": "Monitor",
       "evidenceFeatures": {
-        "observedAt": "2026-10-19T09:24:50.715Z",
+        "observedAt": "2026-11-16T09:16:41.673Z",
         "organicRanks": [
           null,
-          20,
+          null,
           null,
           null
         ],
-        "bestMeasuredOrganicRank": 20,
-        "measuredMeanOrganicRank": 20,
+        "bestMeasuredOrganicRank": null,
+        "measuredMeanOrganicRank": null,
         "exactCidMapsNumberOne": 0,
         "exactCidMapsReturned": 0,
         "mapsPacksPresent": 3,
@@ -266,7 +266,7 @@
             "roofer salt lake city"
           ]
         },
-        "googleAiOverviewsPresent": 1,
+        "googleAiOverviewsPresent": 3,
         "googleAiOverviewOwnedQueries": [],
         "protectedOrganicNumberOneQueries": [],
         "intendedPageSelectedForEveryMeasuredRank": true,
@@ -281,13 +281,13 @@
         "architectureState": "not-separately-diagnosed",
         "protectedRelatedRoutes": [],
         "consumerAiState": "configured-scheduled-unmeasured-invalid-provider-credential",
-        "comparableWeeklyGooglePanels": 11,
+        "comparableWeeklyGooglePanels": 15,
         "comparableWeeklyConsumerAiPanels": 0
       },
       "scoreVector": {
         "businessValue": 10,
         "confidence": 8,
-        "leadValue": 3,
+        "leadValue": 2,
         "authorityValue": 7,
         "learningValue": 6,
         "implementationCost": 1,
@@ -341,15 +341,15 @@
       "lane": "owner-gated-verified-identity-and-integrity-cleanup",
       "decision": "Request input",
       "evidenceFeatures": {
-        "observedAt": "2026-10-19T09:24:50.715Z",
+        "observedAt": "2026-11-16T09:16:41.673Z",
         "organicRanks": [
-          14,
           null,
           null,
-          15
+          null,
+          null
         ],
-        "bestMeasuredOrganicRank": 14,
-        "measuredMeanOrganicRank": 14.5,
+        "bestMeasuredOrganicRank": null,
+        "measuredMeanOrganicRank": null,
         "exactCidMapsNumberOne": 0,
         "exactCidMapsReturned": 0,
         "mapsPacksPresent": 4,
@@ -372,12 +372,10 @@
         "googleAiOverviewOwnedQueries": [],
         "protectedOrganicNumberOneQueries": [],
         "intendedPageSelectedForEveryMeasuredRank": true,
-        "gscState": "url-competition-requires-diagnosis",
+        "gscState": "intended-url-only-for-all-returned-rows",
         "gscRequestedQueries": 4,
-        "gscReturnedQueries": 1,
-        "gscAlternateNormalizedUrls": [
-          "framerestorationutah.com/salt-lake-city"
-        ],
+        "gscReturnedQueries": 4,
+        "gscAlternateNormalizedUrls": [],
         "gscUrlDiagnosis": null,
         "serviceAreaStatus": "saved-service-area-observed",
         "identityProfile": "heber-keystone-cid",
@@ -385,13 +383,13 @@
         "architectureState": "not-evidenced",
         "protectedRelatedRoutes": [],
         "consumerAiState": "configured-scheduled-unmeasured-invalid-provider-credential",
-        "comparableWeeklyGooglePanels": 11,
+        "comparableWeeklyGooglePanels": 15,
         "comparableWeeklyConsumerAiPanels": 0
       },
       "scoreVector": {
         "businessValue": 10,
         "confidence": 8,
-        "leadValue": 5,
+        "leadValue": 2,
         "authorityValue": 5,
         "learningValue": 6,
         "implementationCost": 5,
@@ -657,7 +655,7 @@
       "lane": "owner-gated-core-integrity-then-single-variable-intent-test",
       "decision": "Request input",
       "evidenceFeatures": {
-        "observedAt": "2026-10-19T09:24:50.715Z",
+        "observedAt": "2026-11-16T09:16:41.673Z",
         "organicRanks": [
           null,
           null,
@@ -699,7 +697,7 @@
         "architectureState": "not-evidenced",
         "protectedRelatedRoutes": [],
         "consumerAiState": "configured-manual-unmeasured-invalid-provider-credential",
-        "comparableWeeklyGooglePanels": 11,
+        "comparableWeeklyGooglePanels": 15,
         "comparableWeeklyConsumerAiPanels": 0
       },
       "scoreVector": {
@@ -762,15 +760,15 @@
       "lane": "diagnose-url-consolidation-before-intent-change",
       "decision": "Monitor",
       "evidenceFeatures": {
-        "observedAt": "2026-10-19T09:24:50.715Z",
+        "observedAt": "2026-11-16T09:16:41.673Z",
         "organicRanks": [
-          24,
           null,
-          28,
-          25
+          null,
+          null,
+          null
         ],
-        "bestMeasuredOrganicRank": 24,
-        "measuredMeanOrganicRank": 25.67,
+        "bestMeasuredOrganicRank": null,
+        "measuredMeanOrganicRank": null,
         "exactCidMapsNumberOne": 0,
         "exactCidMapsReturned": 0,
         "mapsPacksPresent": 4,
@@ -789,16 +787,18 @@
             "roofer holladay"
           ]
         },
-        "googleAiOverviewsPresent": 1,
+        "googleAiOverviewsPresent": 0,
         "googleAiOverviewOwnedQueries": [],
         "protectedOrganicNumberOneQueries": [],
-        "intendedPageSelectedForEveryMeasuredRank": false,
+        "intendedPageSelectedForEveryMeasuredRank": true,
         "gscState": "url-competition-requires-diagnosis",
         "gscRequestedQueries": 4,
-        "gscReturnedQueries": 3,
+        "gscReturnedQueries": 4,
         "gscAlternateNormalizedUrls": [
           "framerestorationutah.com/blog/holladay/roof-replacement-holladay-utah",
-          "framerestorationutah.com/pages/residential-roofing"
+          "framerestorationutah.com/locations/vineyard",
+          "framerestorationutah.com/pages/residential-roofing",
+          "framerestorationutah.com/salt-lake-city"
         ],
         "gscUrlDiagnosis": null,
         "serviceAreaStatus": "pending-current-profile-service-area-verification",
@@ -807,14 +807,14 @@
         "architectureState": "not-evidenced",
         "protectedRelatedRoutes": [],
         "consumerAiState": "configured-manual-unmeasured-invalid-provider-credential",
-        "comparableWeeklyGooglePanels": 11,
+        "comparableWeeklyGooglePanels": 15,
         "comparableWeeklyConsumerAiPanels": 0
       },
       "scoreVector": {
         "businessValue": 10,
         "confidence": 6,
-        "leadValue": 3,
-        "authorityValue": 7,
+        "leadValue": 2,
+        "authorityValue": 5,
         "learningValue": 6,
         "implementationCost": 3,
         "complianceRisk": 1,
@@ -823,10 +823,10 @@
         "sourceBiasRisk": 2,
         "recencyBiasRisk": 1
       },
-      "selectedAction": "Diagnose unexpected organic URL selection against the dated fixed panel and exact-query GSC rows before any intent or architecture change. Preserve all existing experiment, foothold, identity, and owner gates. Previously gated action: Complete a full post-August-10 GSC consolidation window while preserving the city hub, redirected legacy route, homepage, and editorial guide; obtain current Salt Lake Valley service-area evidence for the separate Maps lane, request the core cleanup separately, and do not activate the drafted title test until its prerequisites pass.",
-      "gate": "Unexpected organic URL selection requires read-only diagnosis; no public mutation. Existing gate: complete-post-redirect-gsc-window-plus-service-area-evidence-plus-owner-gated-cleanup",
+      "selectedAction": "Complete a full post-August-10 GSC consolidation window while preserving the city hub, redirected legacy route, homepage, and editorial guide; obtain current Salt Lake Valley service-area evidence for the separate Maps lane, request the core cleanup separately, and do not activate the drafted title test until its prerequisites pass.",
+      "gate": "complete-post-redirect-gsc-window-plus-service-area-evidence-plus-owner-gated-cleanup",
       "ownerApprovalPhrase": "I explicitly approve editing and publishing the five-page integrity cleanup defined in PR #242 and the Millcreek storm-child identity correction defined in the pinned Millcreek scope amendment.",
-      "acceptanceCheck": "Reconcile every unexpected selected URL with fresh evidence; do not automatically redirect, delete, canonicalize, or rewrite a page. Existing acceptance: Current query-to-URL evidence no longer depends on the pre-redirect window; the position-4 roof-replacement foothold and all protected routes remain intact; a current receipt separately classifies Holladay for CID 5689850818145735734.",
+      "acceptanceCheck": "Current query-to-URL evidence no longer depends on the pre-redirect window; the position-4 roof-replacement foothold and all protected routes remain intact; a current receipt separately classifies Holladay for CID 5689850818145735734.",
       "feedback": {
         "cadence": "weekly",
         "requiredComparablePanels": 4,
@@ -838,7 +838,7 @@
       "sources": {
         "diagnosis": {
           "file": "data/rank-tracker/HOLLADAY-ARCHITECTURE-DIAGNOSIS-2026-08-12.json",
-          "sha256": "6a9be0e80548734eb6ca0b26e4bbe7ba9031e4ac4612c1773a717453b399f294"
+          "sha256": "56b8610314e1f665f87ae08676ab727e6dc96c173e9cef2fbcf22e2d04dce572"
         },
         "panelEvidence": [
           {
@@ -870,7 +870,7 @@
       "lane": "owner-gated-core-integrity-then-single-variable-intent-test",
       "decision": "Request input",
       "evidenceFeatures": {
-        "observedAt": "2026-10-19T09:24:50.715Z",
+        "observedAt": "2026-11-16T09:16:41.673Z",
         "organicRanks": [
           null,
           null,
@@ -901,9 +901,9 @@
         "googleAiOverviewOwnedQueries": [],
         "protectedOrganicNumberOneQueries": [],
         "intendedPageSelectedForEveryMeasuredRank": true,
-        "gscState": "complete-request-with-unreturned-rows",
+        "gscState": "intended-url-only-for-all-returned-rows",
         "gscRequestedQueries": 4,
-        "gscReturnedQueries": 1,
+        "gscReturnedQueries": 4,
         "gscAlternateNormalizedUrls": [],
         "gscUrlDiagnosis": null,
         "serviceAreaStatus": "pending-current-profile-service-area-verification",
@@ -912,7 +912,7 @@
         "architectureState": "not-evidenced",
         "protectedRelatedRoutes": [],
         "consumerAiState": "configured-manual-unmeasured-invalid-provider-credential",
-        "comparableWeeklyGooglePanels": 11,
+        "comparableWeeklyGooglePanels": 15,
         "comparableWeeklyConsumerAiPanels": 0
       },
       "scoreVector": {
@@ -1808,15 +1808,15 @@
       "lane": "owner-gated-core-integrity-then-single-variable-intent-test",
       "decision": "Request input",
       "evidenceFeatures": {
-        "observedAt": "2026-10-19T09:24:50.715Z",
+        "observedAt": "2026-11-16T09:16:41.673Z",
         "organicRanks": [
           null,
-          21,
+          null,
           null,
           null
         ],
-        "bestMeasuredOrganicRank": 21,
-        "measuredMeanOrganicRank": 21,
+        "bestMeasuredOrganicRank": null,
+        "measuredMeanOrganicRank": null,
         "exactCidMapsNumberOne": 0,
         "exactCidMapsReturned": 0,
         "mapsPacksPresent": 4,
@@ -1826,7 +1826,7 @@
           "cid": "15206834657984643450",
           "domain": "prideroofing.net",
           "appearances": 4,
-          "numberOneQueries": 3,
+          "numberOneQueries": 4,
           "bestRank": 1,
           "keywords": [
             "roofing contractor draper",
@@ -1850,13 +1850,13 @@
         "architectureState": "not-evidenced",
         "protectedRelatedRoutes": [],
         "consumerAiState": "configured-manual-unmeasured-invalid-provider-credential",
-        "comparableWeeklyGooglePanels": 11,
+        "comparableWeeklyGooglePanels": 15,
         "comparableWeeklyConsumerAiPanels": 0
       },
       "scoreVector": {
         "businessValue": 10,
         "confidence": 6,
-        "leadValue": 3,
+        "leadValue": 2,
         "authorityValue": 5,
         "learningValue": 6,
         "implementationCost": 5,

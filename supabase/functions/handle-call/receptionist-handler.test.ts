@@ -54,8 +54,13 @@ Deno.test("caller one dials Landon without another prompt and retains each sourc
       assertStringIncludes(body, '<Dial callerId="+12145550123"');
       assertStringIncludes(body, "+14353024422");
       assertEquals(
-        /<Say|<Gather|whisper|screened=1|answerOnBridge/.test(body),
+        /<Say|<Gather|\/whisper\?|screened=1|answerOnBridge/.test(body),
         false,
+      );
+      // Callee-only source whisper; caller ID stays the real caller.
+      assertStringIncludes(
+        body,
+        `handle-call/source-whisper?to=${encodeURIComponent(to)}`,
       );
     }
     assertEquals(fakeDb.leadRows.length, 1);
@@ -446,6 +451,9 @@ async function startLegacyCall(): Promise<Response> {
   await handleCallRequest(
     await signedRequest("handle-call", receptionParams()),
   );
+  // Drain the ring-time source SMS so later steps assert only their own work.
+  await Promise.all(backgroundTasks);
+  backgroundTasks = [];
   const body = await startReceptionist(
     {
       supabaseUrl: "https://supabase.test",
@@ -516,6 +524,7 @@ class FakeSupabaseRest {
   };
   failNextTwilioCallGet = false;
   lookupCount = 0;
+  smsSent: URLSearchParams[] = [];
   leadRows: Record<string, unknown>[] = [];
   reconcileRpcCount = 0;
   finalizeRpcCount = 0;
@@ -583,6 +592,10 @@ class FakeSupabaseRest {
     }
 
     if (url.origin === "https://api.twilio.com") {
+      if (request.method === "POST" && url.pathname.endsWith("/Messages.json")) {
+        this.smsSent.push(new URLSearchParams(await request.text()));
+        return jsonResponse({ sid: "SM" + "0".repeat(32) });
+      }
       if (request.method !== "GET") {
         throw new Error(
           `Unexpected Twilio mutation in test: ${request.method}`,
@@ -942,3 +955,19 @@ function baseParams(
 ): Record<string, string> {
   return { AccountSid: ACCOUNT_SID, CallSid: CALL_SID, ...extra };
 }
+
+Deno.test("ring-time source SMS goes to Landon from the dialed tracking number", async () => {
+  fakeDb = new FakeSupabaseRest();
+  backgroundTasks = [];
+  const response = await handleCallRequest(
+    await signedRequest("handle-call", receptionParams({ To: "+18014620526" })),
+  );
+  assertEquals(response.status, 200);
+  await Promise.all(backgroundTasks);
+  backgroundTasks = [];
+  assertEquals(fakeDb.smsSent.length, 1);
+  const sms = fakeDb.smsSent[0];
+  assertEquals(sms.get("To"), "+14353024422");
+  assertEquals(sms.get("From"), "+18014620526");
+  assertStringIncludes(sms.get("Body") || "", "Google lead calling from +12145550123");
+});

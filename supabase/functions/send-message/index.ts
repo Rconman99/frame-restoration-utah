@@ -23,6 +23,10 @@
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { createClient } from "jsr:@supabase/supabase-js@2";
 import { applySender } from "../_shared/twilio-sender.ts";
+import {
+  readSmsSuppression,
+  smsSendAllowed,
+} from "../_shared/sms-suppression.ts";
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
@@ -149,6 +153,20 @@ Deno.serve(async (req) => {
       status: 400,
       headers: { "Content-Type": "application/json", ...corsHeaders() },
     });
+  }
+
+  // TCPA / FCC 26-67: never text a number that opted out (fail closed).
+  const suppression = await readSmsSuppression(supabase, to);
+  if (!smsSendAllowed(suppression)) {
+    return new Response(
+      JSON.stringify({
+        error: suppression.ok ? "recipient-opted-out" : suppression.error,
+      }),
+      {
+        status: 409,
+        headers: { "Content-Type": "application/json", ...corsHeaders() },
+      },
+    );
   }
 
   const config = await getConfig([

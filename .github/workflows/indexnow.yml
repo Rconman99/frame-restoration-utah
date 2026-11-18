@@ -1,0 +1,91 @@
+name: IndexNow submit
+
+# After a push to main (which Vercel deploys to production), tell Bing and the
+# other IndexNow engines which public pages changed. ChatGPT search and Copilot
+# lean on Bing's index, so new and edited pages get picked up in days, not weeks.
+# Uses the existing scripts/indexnow-submit.py and the public key file already
+# served at the site root. No secrets.
+#
+# The test job never sends a live IndexNow request. The submit job runs only on
+# push to main and workflow_dispatch, never on pull_request.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '**/*.html'
+      - 'sitemap.xml'
+      - 'scripts/indexnow-submit.py'
+      - 'scripts/indexnow-submit.sh'
+      - 'scripts/indexnow-map-changed-urls.py'
+      - 'scripts/test-indexnow-submit.sh'
+      - '.github/workflows/indexnow.yml'
+  pull_request:
+    paths:
+      - 'scripts/indexnow-submit.py'
+      - 'scripts/indexnow-submit.sh'
+      - 'scripts/indexnow-map-changed-urls.py'
+      - 'scripts/test-indexnow-submit.sh'
+      - '.github/workflows/indexnow.yml'
+  workflow_dispatch:
+    inputs:
+      full_sitemap:
+        description: 'Submit every sitemap URL'
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: indexnow-${{ github.event_name }}
+  cancel-in-progress: false
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      - name: Check submit script handles empty and real URL lists
+        run: bash scripts/test-indexnow-submit.sh
+
+  submit:
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          fetch-depth: 0
+
+      - name: Wait for the production deploy to finish
+        run: sleep 150
+
+      - name: Submit changed sitemap URLs
+        env:
+          BEFORE: ${{ github.event.before }}
+          AFTER: ${{ github.sha }}
+          FULL: ${{ github.event.inputs.full_sitemap || 'false' }}
+        run: |
+          set -euo pipefail
+          if [ "$FULL" = "true" ]; then
+            python3 scripts/indexnow-submit.py
+            exit 0
+          fi
+          if [ -z "${BEFORE:-}" ] || [ "$BEFORE" = "0000000000000000000000000000000000000000" ] \
+             || ! git cat-file -e "$BEFORE^{commit}" 2>/dev/null; then
+            echo "No usable previous commit; nothing to diff."
+            exit 0
+          fi
+          git diff --name-only --diff-filter=AM "$BEFORE" "$AFTER" > changed.txt
+          if grep -qx 'sitemap.xml' changed.txt; then
+            echo "sitemap.xml changed: submitting the whole sitemap."
+            python3 scripts/indexnow-submit.py
+            exit 0
+          fi
+          # Map changed HTML files to their clean URLs and keep only URLs that
+          # are in the sitemap, so drafts and internal tools are never sent.
+          # The mapper writes a 0-byte file when nothing matches (not a newline).
+          python3 scripts/indexnow-map-changed-urls.py --changed-file changed.txt --sitemap sitemap.xml > urls.txt
+          scripts/indexnow-submit.sh --urls-file urls.txt
