@@ -54,6 +54,8 @@ class JsonResponse:
 cta = load_script("utah_cta_liveness", "scripts/check-cta-liveness.py")
 reviews = load_script("utah_google_reviews", "scripts/update-google-reviews.py")
 blog_publisher = load_script("utah_blog_publisher", "scripts/blog-publish.py")
+blog_drafter = load_script("utah_blog_drafter", "scripts/blog-draft-openrouter.py")
+blog_renderer = load_script("utah_blog_renderer", "scripts/generate-blog-post.py")
 
 
 class ComplianceWorkflowDependencyTests(unittest.TestCase):
@@ -692,6 +694,102 @@ class WorkflowContractTests(unittest.TestCase):
         )
         sync = (REPO / "scripts/sync-slv-intervention-queue.mjs").read_text(encoding="utf-8")
         self.assertIn("gscStateWithStaleSplitUrlFallback", sync)
+
+
+def _highland_insurance_manifest(title: str) -> dict:
+    """Shape of the 11-04/11-12 Highland insurance drafts that passed the old
+    pre-scan at 3 but failed the fence at 5 (title rendered 3x)."""
+    para = ("Frame Restoration Utah documents the observed roof conditions and prepares a "
+            "written scope your carrier can review. Call 435-292-8802. ")
+    sections = []
+    for i in range(8):
+        sections.append({"type": "h2", "text": f"Highland Roof Step {i + 1}"})
+        sections.append({"type": "p", "text": para * 3})
+    sections[1]["text"] = "A Highland insurance claim starts with you filing. " + para
+    sections[3]["text"] = "Read about {{link:/pages/insurance-claims|insurance claim documentation}}. " + para
+    return {
+        "title": title,
+        "slug": "highland-utah-roof-claim-documentation-guide",
+        "excerpt": "Highland roof documentation guide. Call 435-292-8802.",
+        "category": "Storm Response",
+        "tldr": "Document storm damage first. Call 435-292-8802.",
+        "sections": sections,
+        "faqs": [{"q": f"Question {i}?", "a": "You file with your insurer."} for i in range(5)],
+        "howto": {"name": "Document roof damage", "total_time": "PT48H",
+                  "steps": [{"name": f"Step {i}", "text": "Photograph the roof."} for i in range(5)]},
+        "sources": [{"label": "NWS", "url": "https://www.weather.gov/slc/"}],
+        "image_alt": "Illustration of a Highland home",
+        "image_caption": "Illustration — not a photograph of a Frame Restoration Utah project",
+        "city_slug": "highland",
+        "style": "storm",
+        "keyword": "Highland roof insurance claim",
+    }
+
+
+class BlogDraftFenceParityTests(unittest.TestCase):
+    """2026-11-17 Highland keyword-counter fix: drafter pre-scan == publish fence."""
+
+    TITLE_WITH_BIGRAM = "Highland Roof Insurance Claim Guide 2026: Storm Damage Documentation"
+
+    def rendered_fence_count(self, manifest: dict) -> int:
+        html = blog_renderer.render_html(manifest, None, "/images/blog/x.webp")
+        return blog_publisher.visible_text(html).lower().count(blog_publisher.INSURANCE_BIGRAM)
+
+    def test_old_field_count_understates_the_rendered_fence(self) -> None:
+        manifest = _highland_insurance_manifest(self.TITLE_WITH_BIGRAM)
+        field_count = blog_drafter.visible_blob(manifest).lower().count("insurance claim")
+        self.assertEqual(field_count, 3)  # the old pre-scan said "3 (cap 3)": looked fine
+        self.assertEqual(self.rendered_fence_count(manifest), 5)  # the fence saw 5 > 4
+
+    def test_prescan_matches_publish_fence_exactly(self) -> None:
+        manifest = _highland_insurance_manifest(self.TITLE_WITH_BIGRAM)
+        scan = blog_drafter.fence_prescan(manifest)
+        self.assertEqual(scan["count"], self.rendered_fence_count(manifest))
+        self.assertEqual(scan["cap"], blog_publisher.INSURANCE_MAX_STORM)
+        self.assertTrue(any("5x" in r for r in scan["reasons"]), scan["reasons"])
+
+    def test_prescan_clean_when_bigram_kept_out_of_title(self) -> None:
+        manifest = _highland_insurance_manifest("Highland Roof Claim Guide 2026: Storm Documentation")
+        scan = blog_drafter.fence_prescan(manifest)
+        self.assertEqual(scan["count"], 2)
+        self.assertEqual(scan["reasons"], [])
+
+    def test_fence_limits_are_unchanged(self) -> None:
+        self.assertEqual(blog_publisher.INSURANCE_MAX, 3)
+        self.assertEqual(blog_publisher.INSURANCE_MAX_STORM, 4)
+
+    def test_drafter_redrafts_when_prescan_would_fail_closed(self) -> None:
+        bad = _highland_insurance_manifest(self.TITLE_WITH_BIGRAM)
+        good = _highland_insurance_manifest("Highland Roof Claim Guide 2026: Storm Documentation")
+        replies = [json.dumps(bad), json.dumps(good)]
+        prompts = []
+
+        def fake_call(model, user, env):
+            prompts.append(user)
+            return replies.pop(0)
+
+        brief = {"city_slug": "highland", "city_name": "Highland", "service_slug": "storm-damage",
+                 "service_name": "Storm Damage", "style": "storm",
+                 "keyword": "Highland roof insurance claim", "facts": [], "internal_links": []}
+        with tempfile.TemporaryDirectory() as tmp:
+            brief_path = Path(tmp) / "brief.json"
+            out_path = Path(tmp) / "draft.json"
+            brief_path.write_text(json.dumps(brief), encoding="utf-8")
+            argv = ["blog-draft-openrouter.py", "--brief", str(brief_path), "--out", str(out_path),
+                    "--provider", "claude-plan", "--model", "claude-sonnet-5-5", "--status", "drafted"]
+            with (
+                mock.patch.object(sys, "argv", argv),
+                mock.patch.object(blog_drafter, "claude_plan_env", return_value={}),
+                mock.patch.object(blog_drafter, "call_claude_plan", side_effect=fake_call),
+                contextlib.redirect_stderr(io.StringIO()) as err,
+                contextlib.redirect_stdout(io.StringIO()),
+            ):
+                blog_drafter.main()
+            written = json.loads(out_path.read_text(encoding="utf-8"))
+        self.assertEqual(len(prompts), 2)
+        self.assertIn("REJECTED by the legal compliance fence", prompts[1])
+        self.assertNotIn("insurance claim", written["title"].lower())
+        self.assertIn("fence clean", err.getvalue())
 
 
 if __name__ == "__main__":
