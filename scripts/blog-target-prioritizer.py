@@ -1049,6 +1049,93 @@ def score_target(
     }
 
 
+def load_close_to_page_one_queue(path: Path | None = None) -> Optional[dict]:
+    """Read the weekly close-to-page-one queue. Missing file = not on this branch."""
+    queue_path = path or (ROOT / "data" / "seo" / "topic-queue" / "close-to-page-one.json")
+    if not queue_path.exists():
+        return None
+    try:
+        payload = json.loads(queue_path.read_text())
+    except json.JSONDecodeError:
+        return None
+    if payload.get("artifact") != "frame-utah-close-to-page-one":
+        return None
+    return payload
+
+
+def promotable_topic_targets(queue: Optional[dict]) -> list[dict]:
+    """Approved candidate topics that cleared cannibalization.
+
+    Page-refresh tasks are never turned into new posts. A topic with a ranking
+    page, or one still needs-review, stays out of the draft ranking. The score
+    is not a search-volume estimate.
+    """
+    if not queue:
+        return []
+    promoted = []
+    for topic in queue.get("candidateTopics") or []:
+        if topic.get("kind") != "candidate-topic":
+            continue
+        if topic.get("status") != "approved" or topic.get("draftable") is not True:
+            continue
+        if topic.get("newTopicBlocked"):
+            continue
+        if topic.get("rankingPages"):
+            continue
+        keyword = str(topic.get("keyword") or topic.get("query") or "").strip()
+        city_slug = str(topic.get("city_slug") or "").strip()
+        if not keyword or not city_slug:
+            continue
+        promoted.append({
+            "city_slug": city_slug,
+            "city_name": topic.get("city_name") or city_slug.replace("-", " ").title(),
+            "service_slug": topic.get("service_slug") or "residential-roofing",
+            "service_name": topic.get("service_name") or "Close to page one",
+            "keyword": keyword,
+            "tier": topic.get("tier") or 1,
+            "blog_spokes_in_city": 0,
+            "storm_override": False,
+            "lsa_allocation": 0,
+            "score": 0.0,
+            "score_basis": "owner-approved close-to-page-one candidate; not a volume estimate",
+            "breakdown": {},
+            "existing_post": None,
+            "source": "close-to-page-one",
+            "autoPublish": False,
+            "loc_page_age_days": None,
+            "posthog_views_90d": None,
+            "reddit_demand": None,
+            "weather_event": None,
+            "gsc": None,
+        })
+    return promoted
+
+
+def close_to_page_one_summary(queue: Optional[dict], promoted: list[dict]) -> dict:
+    if not queue:
+        return {"available": False, "reason": "not_on_branch"}
+    return {
+        "available": True,
+        "generatedAt": queue.get("generatedAt"),
+        "approval": queue.get("approval"),
+        "autoPublish": False,
+        "pageRefreshes": [
+            {
+                "page": task.get("page"),
+                "repoPath": task.get("repoPath"),
+                "status": task.get("status"),
+                "qualifyingImpressions": task.get("qualifyingImpressions"),
+                "qualifyingClicks": task.get("qualifyingClicks"),
+                "queries": [row.get("query") for row in task.get("queries") or []],
+            }
+            for task in queue.get("tasks") or []
+            if task.get("kind") == "page-refresh"
+        ],
+        "candidateTopics": queue.get("candidateTopics") or [],
+        "promotedKeywords": [row["keyword"] for row in promoted],
+    }
+
+
 def keyword_for(service_slug: str, city_slug: str, city_name: str, weather_signal: Optional[dict] = None) -> str:
     hazard = (weather_signal or {}).get("hazard")
     weather_template = WEATHER_KEYWORD_TEMPLATES.get(hazard or "", {}).get(service_slug)
@@ -1247,10 +1334,32 @@ def main():
         targets.extend(sw)
         targets.sort(key=lambda t: t["score"], reverse=True)
 
+    queue = load_close_to_page_one_queue()
+    promoted = promotable_topic_targets(queue)
+    if promoted:
+        promoted_keywords = {row["keyword"] for row in promoted}
+        print(
+            f"# Close-to-page-one: {len(promoted)} approved candidate topic(s) with no ranking page "
+            "placed ahead of the scored list. Page refreshes are not new posts.",
+            file=sys.stderr,
+        )
+        targets = promoted + [row for row in targets if row.get("keyword") not in promoted_keywords]
+    elif queue and queue.get("tasks"):
+        print(
+            f"# Close-to-page-one: {len(queue.get('tasks') or [])} page-refresh task(s) "
+            "are needs-review and were not added as new posts.",
+            file=sys.stderr,
+        )
+
     top = targets[: args.top]
 
     if args.json:
-        print(json.dumps({"generated_at": date.today().isoformat(), "top": top, "total_targets": len(targets)}, indent=2))
+        print(json.dumps({
+            "generated_at": date.today().isoformat(),
+            "top": top,
+            "total_targets": len(targets),
+            "close_to_page_one": close_to_page_one_summary(queue, promoted),
+        }, indent=2))
         return
 
     if args.feed_blog_draft:

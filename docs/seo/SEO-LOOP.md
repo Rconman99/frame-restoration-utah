@@ -143,3 +143,49 @@ sections as **not measured**, not as zero.
 **Two porting slips fixed here at the same time:** the workflow's concurrency group read
 `seo-loop-texas`, and CI never ran the unit tests in this repo either — so a green PR said
 nothing about whether the loop still worked.
+
+## Weekly close-to-page-one queue
+
+`.github/workflows/close-to-page-one.yml` runs Monday ~08:47 Denver. It is the
+review half of this loop, not a second crawl.
+
+What it measures, and only this:
+
+- The lagged 28-day Search Console window already defined in `scripts/lib/gsc.mjs`.
+- Query + page rows whose average position is from 5 through 15, inclusive.
+- Clicks, impressions, and the ranking page from those rows. Missing metrics are
+  dropped. Nothing in the report is an estimated search volume or an estimated position.
+
+What it writes:
+
+- The top 3 pages by the sum of those qualifying impressions, after dropping any
+  file whose latest git commit is less than 60 days old, and any URL that is not
+  a file in this repo.
+- `data/seo/topic-queue/close-to-page-one.json` and a matching markdown file, on a
+  **draft** PR (`cursor/close-to-page-one-weekly`). The daily loop does not commit
+  this queue to `main`.
+- Page-refresh tasks with `status: needs-review`. If one query ranks on more than
+  one page, the note says to improve the stronger page and not to add a post.
+- A candidate topic only when the measured rows contain no ranking page for that
+  query. The blog prioritizer will not draft it until `status` is `approved`,
+  `draftable` is true, `city_slug` is set, and `rankingPages` is empty.
+
+Proposal sentences can be added with the blog lane's Claude plan
+(`CLAUDE_CODE_OAUTH_TOKEN`, model `claude-sonnet-5-5`). If that secret is absent
+the measured-query instructions stay as they are. There is no OpenRouter call.
+
+Search Console credentials are the existing daily-loop secret
+`GSC_SERVICE_ACCOUNT_JSON`. Optional repository variable: `GSC_SITE_URL`
+(default `https://www.framerestorationutah.com/`). If the secret is unset, the
+measure step prints a skip notice and exits 0. It does not print the secret and
+it does not invent a query list.
+
+PR #509 is not a pull request in this repository. The approval path is the draft
+PR above, then the needs-review queue the blog prioritizer reads after merge.
+
+`scripts/check-published-sitemap.mjs` fails the weekly job, the blog publish
+step, and Compliance Gate when the newest indexable page added under `blog/`,
+`locations/`, `pages/`, or `index.html` is absent from `sitemap.xml`. A shallow
+clone fails that check instead of skipping it. `blog-publish.py` also refuses
+to finish if the URL it just inserted is not in the sitemap.
+
