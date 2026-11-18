@@ -605,14 +605,23 @@ class WorkflowContractTests(unittest.TestCase):
         self.assertNotIn('gh pr view "$BRANCH"', workflow)
         self.assertNotIn("1st & 15th", workflow)
 
-    def test_blog_workflow_is_gated_draft_only(self) -> None:
+    def test_blog_workflow_is_gated_approval_pr_only(self) -> None:
+        # Since 2026-11-18 (Ryan's approval) the Utah lane stages each gated
+        # draft on a claude/blog-approval-* branch and opens an "Approve to
+        # publish" PR. It must still never push main, never deploy, and keep
+        # quarantining drafts that fail the gates.
         autopost = (REPO / ".github/workflows/blog-autopost.yml").read_text(encoding="utf-8")
         traction = (REPO / ".github/workflows/blog-traction.yml").read_text(encoding="utf-8")
         publisher = (REPO / "scripts/blog-publish.py").read_text(encoding="utf-8")
-        self.assertIn("contents: read", autopost)
-        self.assertNotIn("contents: write", autopost)
+        self.assertIn("contents: write", autopost)
+        self.assertIn("pull-requests: write", autopost)
         self.assertNotIn("actions: write", autopost)
+        self.assertIn("APPROVAL_BRANCH: claude/blog-approval-${{ github.run_id }}", autopost)
         self.assertIn('python3 scripts/blog-publish.py --manifest "$DRAFT_PATH"', autopost)
+        self.assertEqual(autopost.count("--push "), 1)
+        self.assertIn('--push --push-ref "$APPROVAL_BRANCH"', autopost)
+        self.assertIn('--base main --head "$APPROVAL_BRANCH"', autopost)
+        self.assertIn("if: steps.gate.outcome == 'success'", autopost)
         self.assertIn('manifest["status"] = "needs-review"', autopost)
         self.assertIn("actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a", autopost)
         self.assertIn("always() && steps.target.outputs.count != '0'", autopost)
@@ -621,8 +630,10 @@ class WorkflowContractTests(unittest.TestCase):
         self.assertIn("steps.quarantine.outcome == 'success'", autopost)
         self.assertIn("node scripts/close-to-page-one.mjs --print-queue", autopost)
         self.assertIn('tee "$GATE_LOG"', autopost)
-        self.assertNotIn("--push", autopost)
         self.assertNotIn("git push", autopost)
+        self.assertNotIn("HEAD:main", autopost)
+        self.assertNotIn("--push-ref main", autopost)
+        self.assertNotIn("gh pr merge", autopost)
         self.assertNotIn("gh workflow run", autopost)
         self.assertNotIn("FRAME_TX_VERCEL_DEPLOY_HOOK_URL", autopost)
         self.assertNotIn("vercel deploy", autopost.lower())
