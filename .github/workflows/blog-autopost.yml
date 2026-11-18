@@ -1,17 +1,20 @@
 name: Blog draft (Utah)
 
-# Cloud-native, Mac-independent DRAFT-ONLY blog lane. The standing public-side-
-# effect gate requires separate approval before publishing. Runs that produce a
-# draft exercise the complete local publish
-# fence in no-push mode, quarantine the manifest as needs-review, and upload it
-# as an artifact. This workflow cannot push a branch, promote main, or deploy.
+# Cloud-native, Mac-independent Utah blog lane. Each run drafts ONE post and
+# opens an "Approve to publish: <slug>" PR from a claude/blog-approval-* branch,
+# the same approval flow Texas uses. Nothing publishes until a human merges the
+# PR: only pushes to main deploy, and this workflow never pushes main.
+#
+# Topic choice (scripts/blog-editorial-pick.py): an active NWS alert for a
+# Wasatch Front city first, otherwise the next sourced topic in
+# data/blog-editorial-queue.json, otherwise skip. Queue briefs carry verbatim
+# sourced quotes and forbid any other local claim.
 #
 # Drafting runs on Claude sonnet-5-5 via the flat-rate Claude plan (Claude Code
 # CLI + plan OAuth), $0 marginal. Only secret needed: CLAUDE_CODE_OAUTH_TOKEN.
-# No ANTHROPIC_API_KEY / OpenRouter key is passed, so there is no metered path;
-# a missing/expired plan token fails the run visibly. The close-to-page-one
-# queue is printed for review and is not drafted into a new post from here.
-# Repository access is read-only. Shadow: SHADOW-utah-blog-sonnet55-2026-10-30.md (Model Monitor).
+# A draft that fails the local gates is quarantined as needs-review and
+# uploaded as an artifact instead of opening a PR.
+# Ryan approved switching this lane to approval PRs on 2026-11-18.
 
 on:
   schedule:
@@ -20,7 +23,8 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
+  pull-requests: write
 
 concurrency:
   group: blog-autopost-utah
@@ -32,6 +36,7 @@ jobs:
     env:
       DRAFT_PATH: data/blog-pending/ci-draft-${{ github.run_id }}-${{ github.run_attempt }}.json
       GATE_LOG: /tmp/utah-blog-draft-gate.log
+      APPROVAL_BRANCH: claude/blog-approval-${{ github.run_id }}-${{ github.run_attempt }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
 
@@ -46,18 +51,22 @@ jobs:
       - name: Show close-to-page-one review queue
         run: node scripts/close-to-page-one.mjs --print-queue
 
-      - name: Pick weather + tracking target
+      - name: List open PRs (skip topics already waiting for approval)
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh pr list --repo "$GITHUB_REPOSITORY" --state open --limit 100 \
+            --json title,body,headRefName > /tmp/open-prs.json || echo '[]' > /tmp/open-prs.json
+
+      - name: Pick NWS-alert target or next sourced topic
         id: target
         run: |
-          python3 scripts/blog-target-prioritizer.py --json --top 1 \
+          python3 scripts/blog-target-prioritizer.py --json --top 10 \
             --exclude-recent-city-days 21 > /tmp/target.json || echo '{"top":[]}' > /tmp/target.json
-          COUNT=$(python3 -c 'import json;print(len(json.load(open("/tmp/target.json")).get("top",[])))')
-          echo "count=$COUNT" >> "$GITHUB_OUTPUT"
-          if [ "$COUNT" -gt 0 ]; then
-            python3 -c 'import json;t=json.load(open("/tmp/target.json"))["top"][0];print("target:",t.get("city_name"),"x",t.get("service_name"),"score",t.get("score"))'
-          else
-            echo "No new target this run (top cities all drafted within the exclusion window) — skipping."
-          fi
+          rm -f /tmp/brief.json
+          python3 scripts/blog-editorial-pick.py --prioritizer /tmp/target.json \
+            --open-prs /tmp/open-prs.json --out /tmp/brief.json
+          if [ -s /tmp/brief.json ]; then echo "count=1" >> "$GITHUB_OUTPUT"; else echo "count=0" >> "$GITHUB_OUTPUT"; fi
 
       - name: Install Claude Code CLI
         if: steps.target.outputs.count != '0'
@@ -73,7 +82,6 @@ jobs:
             echo "::error::CLAUDE_CODE_OAUTH_TOKEN secret missing; refusing to draft (no metered fallback)."
             exit 1
           fi
-          python3 scripts/blog-autobrief.py --from-prioritizer /tmp/target.json --out /tmp/brief.json
           python3 scripts/blog-draft-openrouter.py \
             --provider claude-plan \
             --model claude-sonnet-5-5 \
@@ -81,40 +89,91 @@ jobs:
             --out "$DRAFT_PATH" \
             --status drafted
 
-      - name: Run HARD compliance fence and complete local gates (no push)
+      - name: Pin queue slug and sources
+        id: pin
+        if: steps.target.outputs.count != '0' && steps.draft.outcome == 'success'
+        run: |
+          python3 - "$DRAFT_PATH" <<'PY'
+          import json, os, pathlib, sys
+          path = pathlib.Path(sys.argv[1])
+          m = json.loads(path.read_text(encoding="utf-8"))
+          brief = json.loads(pathlib.Path("/tmp/brief.json").read_text(encoding="utf-8"))
+          if brief.get("slug"):
+              m["slug"] = brief["slug"]
+          have = {s.get("url") for s in m.get("sources", []) if isinstance(s, dict)}
+          for s in brief.get("sources", []):
+              if s["url"] not in have:
+                  m.setdefault("sources", []).append(s)
+          path.write_text(json.dumps(m, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+          with open(os.environ["GITHUB_OUTPUT"], "a") as out:
+              out.write(f"slug={m['slug']}\ncity={m['city_slug']}\npick={brief.get('pick','')}\n")
+          PY
+
+      - name: Run gates and stage on an approval branch (never main)
         id: gate
-        if: steps.target.outputs.count != '0'
-        run: python3 scripts/blog-publish.py --manifest "$DRAFT_PATH" 2>&1 | tee "$GATE_LOG"
+        if: steps.target.outputs.count != '0' && steps.pin.outcome == 'success'
+        run: |
+          git config user.name "Blog Bot"
+          git config user.email "blog-bot@users.noreply.github.com"
+          git checkout -B "$APPROVAL_BRANCH"
+          python3 scripts/blog-publish.py --manifest "$DRAFT_PATH" \
+            --push --push-ref "$APPROVAL_BRANCH" 2>&1 | tee "$GATE_LOG"
+          exit "${PIPESTATUS[0]}"
+
+      - name: Open "Approve to publish" PR
+        if: steps.gate.outcome == 'success'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SLUG: ${{ steps.pin.outputs.slug }}
+          CITY: ${{ steps.pin.outputs.city }}
+          PICK: ${{ steps.pin.outputs.pick }}
+        run: |
+          {
+            echo "Approval gate: merging this PR publishes the post. Closing it leaves the site unchanged."
+            echo
+            echo "Post: https://www.framerestorationutah.com/blog/${CITY}/${SLUG}"
+            echo "slug: ${SLUG}"
+            echo "Topic source: ${PICK} (nws-alert = active National Weather Service alert; editorial-queue = sourced topic in data/blog-editorial-queue.json)"
+            echo
+            echo "Before: the post does not exist."
+            echo "After: /blog/${CITY}/${SLUG} is live with its sitemap and blog index entries once merged."
+            echo
+            echo "Local gates passed on the approval branch. Read the post, check its sources, then merge or close."
+            echo
+            echo "🤖 Generated with [Claude Code](https://claude.com/claude-code)"
+          } > /tmp/pr-body.md
+          gh pr create --repo "$GITHUB_REPOSITORY" --base main --head "$APPROVAL_BRANCH" \
+            --title "Approve to publish: ${SLUG}" --body-file /tmp/pr-body.md
 
       - name: Quarantine gated draft for human review
         id: quarantine
-        if: ${{ always() && steps.target.outputs.count != '0' && steps.draft.outcome == 'success' }}
+        if: ${{ always() && steps.target.outputs.count != '0' && steps.draft.outcome == 'success' && steps.gate.outcome != 'success' }}
         env:
           GATE_OUTCOME: ${{ steps.gate.outcome }}
         run: |
           python3 - "$DRAFT_PATH" <<'PY'
           import json
-          import os
           import pathlib
           import sys
 
           path = pathlib.Path(sys.argv[1])
+          if not path.is_file():
+              sys.exit(0)
           manifest = json.loads(path.read_text(encoding="utf-8"))
           manifest["status"] = "needs-review"
-          outcome = "passed" if os.environ.get("GATE_OUTCOME") == "success" else "failed"
           manifest.setdefault("edit_log", []).append(
-              f"CI draft-only lane: local gates {outcome}; explicit approval still required"
+              "CI approval lane: local gates failed; no approval PR opened"
           )
           path.write_text(json.dumps(manifest, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
           PY
 
       - name: Upload gated needs-review draft
-        if: ${{ always() && steps.target.outputs.count != '0' && steps.draft.outcome == 'success' && steps.quarantine.outcome == 'success' }}
+        if: ${{ always() && steps.target.outputs.count != '0' && steps.draft.outcome == 'success' && steps.gate.outcome != 'success' }}
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
         with:
           name: utah-blog-draft-${{ github.run_id }}-${{ github.run_attempt }}
           path: |
             ${{ env.DRAFT_PATH }}
             ${{ env.GATE_LOG }}
-          if-no-files-found: error
+          if-no-files-found: warn
           retention-days: 14
