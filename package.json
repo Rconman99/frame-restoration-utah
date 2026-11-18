@@ -81,7 +81,8 @@
     "test:owner-gate": "node --test scripts/test-owner-gate.mjs",
     "test:client-ip-receipt": "node scripts/test-client-ip-deploy-receipt.mjs",
     "audit:payson-storm-guide": "node scripts/validate-payson-storm-guide.mjs",
-    "audit:draper-storm-guide": "node scripts/validate-draper-storm-guide.mjs"
+    "audit:draper-storm-guide": "node scripts/validate-draper-storm-guide.mjs",
+    "test:hooks": "node --test scripts/test/hooks.test.mjs"
   },
   "dependencies": {
     "playwright": "^1.59.1"
