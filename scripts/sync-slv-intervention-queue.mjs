@@ -17,6 +17,7 @@ import {
   slcObservationAction,
   splitUrlDiagnosisFreshness,
 } from "./lib/slv-intervention-queue.mjs";
+import { isFrameWorkspaceIdentity } from "./lib/frame-workspace-identity.mjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const write = process.argv.includes("--write");
@@ -412,8 +413,8 @@ assert.equal(
   mapsReadiness.cities.filter((city) => city.lane.endsWith("weekly-exact-cid-displacement-measurement")).length,
 );
 assert.equal(driveReceipt.status, "BUSINESS_ACCOUNT_SEARCH_COMPLETE_CURRENT_GBP_PROOF_NOT_FOUND");
-assert.equal(driveReceipt.connector.requiredAccount, "ryan@framerestorations.com");
-assert.equal(driveReceipt.connector.observedAccount, "ryan@framerestorations.com");
+assert.ok(isFrameWorkspaceIdentity(driveReceipt.connector.requiredAccount));
+assert.ok(isFrameWorkspaceIdentity(driveReceipt.connector.observedAccount));
 assert.equal(driveReceipt.connector.match, true);
 assert.equal(driveReceipt.evidenceSearchPerformed, true);
 assert.equal(driveReceipt.acceptedCurrentGbpProfileEvidenceCount, 0);

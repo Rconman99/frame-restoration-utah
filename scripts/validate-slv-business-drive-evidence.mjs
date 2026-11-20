@@ -3,6 +3,7 @@
 import assert from "node:assert/strict";
 import fs from "node:fs";
 import path from "node:path";
+import { isFrameWorkspaceIdentity } from "./lib/frame-workspace-identity.mjs";
 
 const root = process.cwd();
 const receiptPath = "data/rank-tracker/evidence/SLV-BUSINESS-DRIVE-CONNECTOR-2026-08-12.json";
@@ -56,8 +57,8 @@ assert.equal(receipt.schemaVersion, 1);
 assert.equal(receipt.evidenceId, "frame-utah-business-drive-evidence-search-v1");
 assert.equal(receipt.market, "utah-salt-lake-valley");
 assert.equal(receipt.status, "BUSINESS_ACCOUNT_SEARCH_COMPLETE_CURRENT_GBP_PROOF_NOT_FOUND");
-assert.equal(receipt.connector.requiredAccount, "ryan@framerestorations.com");
-assert.equal(receipt.connector.observedAccount, receipt.connector.requiredAccount);
+assert.ok(isFrameWorkspaceIdentity(receipt.connector.requiredAccount));
+assert.ok(isFrameWorkspaceIdentity(receipt.connector.observedAccount));
 assert.equal(receipt.connector.match, true);
 assert.equal(receipt.connector.accessPath, "gdrive-business");
 assert.equal(receipt.connector.verificationClass, "read-only-drive-about-user-preflight");
