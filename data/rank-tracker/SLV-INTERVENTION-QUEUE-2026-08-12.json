@@ -13,7 +13,7 @@
         "Holladay",
         "Herriman"
       ],
-      "activeSnapshotSha256": "4ae9746087c4cad15a66dd5a6468430950c77a02dddeb52e2f1430bbdced9331",
+      "activeSnapshotSha256": "d2e8e625d8cf03f3786a9224614e05dad1953a521a00820a18f07f81a0851197",
       "diagnosisSnapshotSha256": "a1b7d5aa2acc3a5b663da345ba6eb7242e411661807ae1296f50854702b1a7eb",
       "behavior": "Ignore the stale split-URL disposition and keep affected URL-competition cities in the diagnosis lane; do not suppress, redirect, canonicalize, noindex, delete, or rewrite a route from stale evidence.",
       "requiredAction": "Refresh the bounded Holladay/Herriman split-URL diagnosis against the current GSC attribution snapshot."
@@ -88,7 +88,7 @@
     },
     "gscAttribution": {
       "file": "data/rank-tracker/SLV-GSC-URL-ATTRIBUTION-LATEST.json",
-      "sha256": "b27b9357e0bc326ba0d97c395413cd25d6a85f01026fe203582d4fae8c629e5f"
+      "sha256": "2fe93e69aeaf16abccb3233b931b218766ac905cd0a60b69b2cee3e85d4e5ccf"
     },
     "gscSplitUrlDiagnosis": {
       "file": "data/rank-tracker/SLV-GSC-SPLIT-URL-DIAGNOSIS-2026-08-12.json",
@@ -108,7 +108,7 @@
     },
     "expansionArchitecture": {
       "file": "data/rank-tracker/SLV-EXPANSION-ARCHITECTURE-2026-08-12.json",
-      "sha256": "46a25af10acc216003790f8091fde2b3abffb7c10c22c62ff64c28e30c019073"
+      "sha256": "d478940374f9d90e7788f0580d5df95cf0ea737b1cccd845da785e0ba1c34793"
     },
     "corePriority": {
       "file": "data/rank-tracker/SLV-PRIORITY-2026-08-12.json",
@@ -270,10 +270,13 @@
         "googleAiOverviewOwnedQueries": [],
         "protectedOrganicNumberOneQueries": [],
         "intendedPageSelectedForEveryMeasuredRank": true,
-        "gscState": "intended-url-only-for-all-returned-rows",
+        "gscState": "url-competition-requires-diagnosis",
         "gscRequestedQueries": 4,
         "gscReturnedQueries": 4,
-        "gscAlternateNormalizedUrls": [],
+        "gscAlternateNormalizedUrls": [
+          "framerestorationutah.com/locations/salt-lake-city/roof-repair",
+          "framerestorationutah.com/locations/salt-lake-city/roof-replacement"
+        ],
         "gscUrlDiagnosis": null,
         "serviceAreaStatus": "verified-profile-identity-city",
         "identityProfile": "salt-lake-valley-exact-cid",

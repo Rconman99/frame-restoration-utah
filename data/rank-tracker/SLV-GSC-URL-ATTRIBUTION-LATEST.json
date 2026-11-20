@@ -2,14 +2,14 @@
   "schemaVersion": 1,
   "ledgerId": "frame-utah-slv-18-city-gsc-url-attribution-v1",
   "market": "utah-salt-lake-valley",
-  "asOfSnapshotDate": "2026-11-19",
-  "latestSeoSnapshotDate": "2026-11-19",
+  "asOfSnapshotDate": "2026-11-20",
+  "latestSeoSnapshotDate": "2026-11-20",
   "measurementFreshness": "latest-snapshot-measured",
   "status": "complete-targeted-request-evidence",
   "publicMutationPerformed": false,
   "evidenceWindow": {
-    "startDate": "2026-10-20",
-    "endDate": "2026-11-16"
+    "startDate": "2026-10-21",
+    "endDate": "2026-11-17"
   },
   "measurementContract": {
     "workflowTargetQueries": 72,
@@ -32,12 +32,12 @@
       "sha256": "272b73505c7100ba3002fbc2f47bd04463f37759966ad689d76e334871576195"
     },
     "gscSnapshot": {
-      "file": "data/seo/snapshots/2026-11-19.json",
-      "sha256": "4ae9746087c4cad15a66dd5a6468430950c77a02dddeb52e2f1430bbdced9331"
+      "file": "data/seo/snapshots/2026-11-20.json",
+      "sha256": "d2e8e625d8cf03f3786a9224614e05dad1953a521a00820a18f07f81a0851197"
     },
     "latestSeoSnapshot": {
-      "file": "data/seo/snapshots/2026-11-19.json",
-      "sha256": "4ae9746087c4cad15a66dd5a6468430950c77a02dddeb52e2f1430bbdced9331"
+      "file": "data/seo/snapshots/2026-11-20.json",
+      "sha256": "d2e8e625d8cf03f3786a9224614e05dad1953a521a00820a18f07f81a0851197"
     }
   },
   "policy": {
@@ -51,13 +51,13 @@
     "fixedQueries": 72,
     "requestedQueries": 72,
     "queriesWithRows": 34,
-    "exactRows": 38,
-    "intendedUrlOnlyQueries": 32,
-    "multiUrlIncludingIntendedQueries": 2,
+    "exactRows": 42,
+    "intendedUrlOnlyQueries": 30,
+    "multiUrlIncludingIntendedQueries": 4,
     "alternateUrlOnlyQueries": 0,
     "requestedNoRowQueries": 38,
     "unrequestedQueries": 0,
-    "citiesWithUrlCompetitionEvidence": 1,
+    "citiesWithUrlCompetitionEvidence": 2,
     "citiesWithAllFourQueriesRequested": 18,
     "publicMutations": 0
   },
@@ -65,12 +65,12 @@
     {
       "priority": 0,
       "city": "Salt Lake City",
-      "state": "intended-url-only-for-all-returned-rows",
+      "state": "url-competition-requires-diagnosis",
       "protectedFootholds": {
         "organicNumberOneQueries": [],
         "googleAiOverviewCitedQueries": []
       },
-      "action": "Consult the current weekly experiment decision for SLC observation-review readiness; continue fixed panels and targeted GSC reads. A passed calendar gate does not authorize public edits or prove causal gains."
+      "action": "Inspect the alternate URLs against redirect dates, canonicals, current live routing, and query intent. Treat this blended 28-day evidence as a diagnosis trigger, not proof of current cannibalization or permission to redirect."
     },
     {
       "priority": 1,
@@ -264,19 +264,22 @@
       "page": "locations/salt-lake-city.html",
       "intendedCanonical": "https://www.framerestorationutah.com/locations/salt-lake-city",
       "intendedPageSha256": "a5b7e74aad370bb2bf2eafbc64beba0b8f13c06226b0bb9c01375a3d7d8b3a52",
-      "state": "intended-url-only-for-all-returned-rows",
+      "state": "url-competition-requires-diagnosis",
       "coverage": {
         "fixedQueries": 4,
         "requestedQueries": 4,
         "returnedQueries": 4,
-        "exactRows": 4
+        "exactRows": 8
       },
       "protectedFootholds": {
         "organicNumberOneQueries": [],
         "googleAiOverviewCitedQueries": []
       },
-      "alternateNormalizedUrls": [],
-      "nextEvidenceAction": "Consult the current weekly experiment decision for SLC observation-review readiness; continue fixed panels and targeted GSC reads. A passed calendar gate does not authorize public edits or prove causal gains.",
+      "alternateNormalizedUrls": [
+        "framerestorationutah.com/locations/salt-lake-city/roof-repair",
+        "framerestorationutah.com/locations/salt-lake-city/roof-replacement"
+      ],
+      "nextEvidenceAction": "Inspect the alternate URLs against redirect dates, canonicals, current live routing, and query intent. Treat this blended 28-day evidence as a diagnosis trigger, not proof of current cannibalization or permission to redirect.",
       "queries": [
         {
           "queryId": "slc-roofing-contractor",
@@ -294,8 +297,8 @@
                 "https://www.framerestorationutah.com/locations/salt-lake-city"
               ],
               "clicks": 0,
-              "impressions": 43,
-              "position": 36.9,
+              "impressions": 36,
+              "position": 36.1,
               "intended": true
             }
           ],
@@ -305,7 +308,7 @@
           "queryId": "slc-roof-repair",
           "keyword": "roof repair salt lake city",
           "requested": true,
-          "state": "intended-url-only",
+          "state": "multi-url-including-intended",
           "intendedCanonical": "https://www.framerestorationutah.com/locations/salt-lake-city",
           "intendedPageObserved": true,
           "highestImpressionUrl": "framerestorationutah.com/locations/salt-lake-city",
@@ -317,18 +320,38 @@
                 "https://www.framerestorationutah.com/locations/salt-lake-city"
               ],
               "clicks": 0,
-              "impressions": 863,
-              "position": 21.7,
+              "impressions": 841,
+              "position": 21.6,
               "intended": true
+            },
+            {
+              "normalizedUrl": "framerestorationutah.com/locations/salt-lake-city/roof-replacement",
+              "urlVariants": [
+                "https://www.framerestorationutah.com/locations/salt-lake-city/roof-replacement"
+              ],
+              "clicks": 0,
+              "impressions": 5,
+              "position": 24.8,
+              "intended": false
+            },
+            {
+              "normalizedUrl": "framerestorationutah.com/locations/salt-lake-city/roof-repair",
+              "urlVariants": [
+                "https://www.framerestorationutah.com/locations/salt-lake-city/roof-repair"
+              ],
+              "clicks": 0,
+              "impressions": 4,
+              "position": 38.8,
+              "intended": false
             }
           ],
-          "interpretation": "Only the intended city hub appears in the exact query-to-page rows; preserve that route and canonical."
+          "interpretation": "The intended hub and at least one other Frame URL appear in the 28-day window; diagnose timing, redirects, canonicals, and intent before any architecture change."
         },
         {
           "queryId": "slc-roof-replacement",
           "keyword": "roof replacement salt lake city",
           "requested": true,
-          "state": "intended-url-only",
+          "state": "multi-url-including-intended",
           "intendedCanonical": "https://www.framerestorationutah.com/locations/salt-lake-city",
           "intendedPageObserved": true,
           "highestImpressionUrl": "framerestorationutah.com/locations/salt-lake-city",
@@ -340,12 +363,32 @@
                 "https://www.framerestorationutah.com/locations/salt-lake-city"
               ],
               "clicks": 0,
-              "impressions": 224,
-              "position": 19.1,
+              "impressions": 218,
+              "position": 18.9,
               "intended": true
+            },
+            {
+              "normalizedUrl": "framerestorationutah.com/locations/salt-lake-city/roof-replacement",
+              "urlVariants": [
+                "https://www.framerestorationutah.com/locations/salt-lake-city/roof-replacement"
+              ],
+              "clicks": 0,
+              "impressions": 3,
+              "position": 20.7,
+              "intended": false
+            },
+            {
+              "normalizedUrl": "framerestorationutah.com/locations/salt-lake-city/roof-repair",
+              "urlVariants": [
+                "https://www.framerestorationutah.com/locations/salt-lake-city/roof-repair"
+              ],
+              "clicks": 0,
+              "impressions": 2,
+              "position": 17,
+              "intended": false
             }
           ],
-          "interpretation": "Only the intended city hub appears in the exact query-to-page rows; preserve that route and canonical."
+          "interpretation": "The intended hub and at least one other Frame URL appear in the 28-day window; diagnose timing, redirects, canonicals, and intent before any architecture change."
         },
         {
           "queryId": "slc-roofer",
@@ -363,8 +406,8 @@
                 "https://www.framerestorationutah.com/locations/salt-lake-city"
               ],
               "clicks": 0,
-              "impressions": 21,
-              "position": 30.3,
+              "impressions": 17,
+              "position": 33,
               "intended": true
             }
           ],
@@ -695,8 +738,8 @@
                 "https://www.framerestorationutah.com/blog/holladay/roof-replacement-holladay-utah"
               ],
               "clicks": 0,
-              "impressions": 13,
-              "position": 7.9,
+              "impressions": 11,
+              "position": 8,
               "intended": false
             },
             {
@@ -925,8 +968,8 @@
                 "https://www.framerestorationutah.com/locations/draper"
               ],
               "clicks": 0,
-              "impressions": 31,
-              "position": 19.7,
+              "impressions": 32,
+              "position": 19.6,
               "intended": true
             }
           ],
@@ -948,7 +991,7 @@
                 "https://www.framerestorationutah.com/locations/draper"
               ],
               "clicks": 0,
-              "impressions": 53,
+              "impressions": 52,
               "position": 17.1,
               "intended": true
             }
@@ -1104,8 +1147,8 @@
                 "https://www.framerestorationutah.com/locations/herriman"
               ],
               "clicks": 0,
-              "impressions": 29,
-              "position": 24.7,
+              "impressions": 30,
+              "position": 24.5,
               "intended": true
             }
           ],
@@ -1412,8 +1455,8 @@
                 "https://www.framerestorationutah.com/locations/murray"
               ],
               "clicks": 0,
-              "impressions": 9,
-              "position": 18.1,
+              "impressions": 8,
+              "position": 17.9,
               "intended": true
             }
           ],
@@ -1458,8 +1501,8 @@
                 "https://www.framerestorationutah.com/locations/murray"
               ],
               "clicks": 0,
-              "impressions": 24,
-              "position": 6.8,
+              "impressions": 25,
+              "position": 7.2,
               "intended": true
             }
           ],
@@ -1591,7 +1634,7 @@
                 "https://www.framerestorationutah.com/locations/south-jordan"
               ],
               "clicks": 0,
-              "impressions": 26,
+              "impressions": 25,
               "position": 25.5,
               "intended": true
             }
@@ -1637,7 +1680,7 @@
                 "https://www.framerestorationutah.com/locations/south-jordan"
               ],
               "clicks": 0,
-              "impressions": 11,
+              "impressions": 10,
               "position": 11.5,
               "intended": true
             }
@@ -1843,8 +1886,8 @@
                 "https://www.framerestorationutah.com/locations/west-jordan"
               ],
               "clicks": 0,
-              "impressions": 97,
-              "position": 21.2,
+              "impressions": 93,
+              "position": 21,
               "intended": true
             }
           ],
@@ -1889,8 +1932,8 @@
                 "https://www.framerestorationutah.com/locations/west-jordan"
               ],
               "clicks": 0,
-              "impressions": 46,
-              "position": 18.9,
+              "impressions": 45,
+              "position": 19,
               "intended": true
             }
           ],
