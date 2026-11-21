@@ -25,6 +25,7 @@ on:
 permissions:
   contents: write
   pull-requests: write
+  issues: write
 
 concurrency:
   group: blog-autopost-utah
@@ -71,6 +72,31 @@ jobs:
       - name: Install Claude Code CLI
         if: steps.target.outputs.count != '0'
         run: npm install -g @anthropic-ai/claude-code
+
+      # Fails loudly when the plan sign-in is missing or rejected, before any
+      # drafting starts, so an expired token turns the run red with a clear reason.
+      - name: Check the Claude sign-in works
+        id: signin
+        if: steps.target.outputs.count != '0'
+        timeout-minutes: 3
+        env:
+          CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+        run: |
+          if [ -z "$CLAUDE_CODE_OAUTH_TOKEN" ]; then
+            echo "::error title=Claude sign-in missing::The CLAUDE_CODE_OAUTH_TOKEN secret is empty. Save a fresh token from claude setup-token as the repo secret."
+            exit 1
+          fi
+          set +e
+          OUT=$(printf 'Reply with the single word OK.' | claude -p --model claude-sonnet-5-5 \
+            --output-format text --safe-mode --strict-mcp-config --tools "" 2>&1)
+          RC=$?
+          set -e
+          if [ "$RC" -ne 0 ] || ! printf '%s' "$OUT" | grep -q 'OK'; then
+            echo "::error title=Claude sign-in rejected::claude CLI exit $RC. Renew CLAUDE_CODE_OAUTH_TOKEN with claude setup-token and save it as the repo secret."
+            printf '%s\n' "$OUT" | head -5
+            exit 1
+          fi
+          echo "Claude sign-in OK"
 
       - name: Draft via Claude plan (sonnet-5-5)
         id: draft
@@ -121,6 +147,7 @@ jobs:
           exit "${PIPESTATUS[0]}"
 
       - name: Open "Approve to publish" PR
+        id: openpr
         if: steps.gate.outcome == 'success'
         env:
           GH_TOKEN: ${{ github.token }}
@@ -177,3 +204,31 @@ jobs:
             ${{ env.GATE_LOG }}
           if-no-files-found: warn
           retention-days: 14
+
+      # A run that ends without an approval PR is a failed run, whatever the
+      # reason (no topic, sign-in, draft, photo or gates). Nothing passes silently.
+      - name: Fail the run when no approval PR was opened
+        if: ${{ always() && steps.openpr.outcome != 'success' }}
+        run: |
+          echo "::error title=No Utah blog post this run::This run opened no approval PR, so nothing is waiting to publish. See the first failed or skipped step above."
+          exit 1
+
+      # GitHub's failed-run email only reaches whoever last edited the schedule,
+      # so the run also opens (or comments on) one issue assigned to the repo owner.
+      - name: Alert the owner with an issue
+        if: ${{ failure() }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          OWNER: ${{ github.repository_owner }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          TITLE="Blog job failed (Utah)"
+          BODY="The Utah blog run failed or opened no approval PR, so no post is waiting to publish. Run: $RUN_URL"
+          N=$(gh issue list --repo "$GITHUB_REPOSITORY" --state open --search "in:title $TITLE" \
+            --json number,title --jq "map(select(.title == \"$TITLE\")) | .[0].number // empty")
+          if [ -n "$N" ]; then
+            gh issue comment "$N" --repo "$GITHUB_REPOSITORY" --body "$BODY"
+          else
+            gh issue create --repo "$GITHUB_REPOSITORY" --title "$TITLE" --body "$BODY" --assignee "$OWNER" \
+              || gh issue create --repo "$GITHUB_REPOSITORY" --title "$TITLE" --body "$BODY"
+          fi
