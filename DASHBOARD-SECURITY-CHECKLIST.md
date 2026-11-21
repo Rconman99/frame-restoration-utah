@@ -62,6 +62,11 @@ unsupported roles, missing core tables, or an unsafe reporting view remain.
       never echoes the PIN, routing key, hash, or pepper.
 - [ ] Subsequent requests use `Authorization: Bearer <short-lived-token>`.
 - [ ] Requests containing `?pin=` or `?key=` are rejected with HTTP 400.
+- [ ] Sign-in refuses any PIN that is not 6-12 digits with HTTP 403 before the
+      credential lookup, so older short or alphanumeric PINs (including any
+      that appeared in repository history) no longer work even if their HMAC
+      was stored by the earlier transition path. Before deploying that change,
+      the owner issues every active user a new 6-12 digit PIN.
 - [ ] Missing, malformed, tampered, expired, or wrong-secret tokens return 401.
 - [ ] Disabling a user invalidates their next request because the function
       reloads `report_access.active`.
