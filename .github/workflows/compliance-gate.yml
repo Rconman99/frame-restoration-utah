@@ -340,6 +340,9 @@ jobs:
         # exits 1 on any forbidden-word blocker; saturation stays a warning
         # unless --strict is added later.
         run: node scripts/audit-compliance-words.mjs
+      - name: Roof cost calculator guards
+        # blocks any published price range without an owner sign-off
+        run: node --test scripts/roof-cost-calculator.test.mjs
 
   claim-registry:
     name: Verified claim registry + llms.txt parity (blocking)
