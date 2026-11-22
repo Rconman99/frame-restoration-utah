@@ -19,11 +19,14 @@ Usage:
   # optional: --model <openrouter-slug>  --out data/blog-pending/<slug>.json
 """
 import argparse
+import copy
+import importlib.util
 import json
 import os
 import pathlib
 import re
 import shutil
+import signal
 import subprocess
 import sys
 import urllib.request
@@ -42,6 +45,20 @@ CLAUDE_MODEL = os.getenv("FRAME_BLOG_CLAUDE_MODEL", "claude-sonnet-5-5")
 METERED_ENV = ("ANTHROPIC_API_KEY", "ANTHROPIC_AUTH_TOKEN", "ANTHROPIC_BASE_URL",
                "CLAUDE_CODE_USE_BEDROCK", "CLAUDE_CODE_USE_VERTEX", "OPENROUTER_API_KEY")
 PENDING = ROOT / "data" / "blog-pending"
+# Last ~4KB of each CLI stream, logged on non-zero exit (bytes, not chars).
+CLI_LOG_TAIL_BYTES = 4096
+_MIN_SECRET_LEN = 8
+_SK_ANT_RE = re.compile(r"sk-ant-[A-Za-z0-9_-]+")
+_BEARER_RE = re.compile(r"(?i)Bearer\s+[A-Za-z0-9._\-]+")
+_JWT_RE = re.compile(r"eyJ[A-Za-z0-9_-]{20,}\.[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}")
+# Long base64-looking strings: 40+ chars with + / or padding, or 64+ alnum.
+_B64_RE = re.compile(
+    r"(?<![A-Za-z0-9+/=])(?:"
+    r"[A-Za-z0-9+/]{40,}={1,2}"
+    r"|[A-Za-z0-9+/]*[+\/][A-Za-z0-9+/=]{39,}={0,2}"
+    r"|[A-Za-z0-9+/]{64,}={0,2}"
+    r")(?![A-Za-z0-9+/=])"
+)
 
 # Compliance contract baked into the system prompt. Mirrors the hard-fence in
 # blog-publish.py (FORBIDDEN_PHRASES) + the Utah §31A-26-201 rules.
@@ -52,7 +69,7 @@ HARD COMPLIANCE RULES (a legal fence rejects the post if you break these):
 - Public phone is exactly 435-292-8802. Never any other number.
 - Utah §31A-26-201 forbids a roofer from acting as an insurance adjuster. You are describing DOCUMENTATION, never adjusting/advocacy. NEVER use any of these exact phrases (case-insensitive): "public adjuster", "negotiate", "settlement", "maximize payout", "maximize your payout", "claim navigation", "advocate on your behalf", "advocates on your behalf", "handle the claim", "handle your claim", "handles the claim", "work directly with your adjuster", "we file your claim", "file the claim for you".
 - When you mention insurance, use this exact framing: "Frame Restoration Utah documents the observed roof conditions and prepares a written scope your carrier can review. The carrier determines coverage. We document, we don't adjust — regulated adjusting work stays with properly authorized professionals." Put filing on the homeowner ("you file with your insurer").
-- Use the exact bigram "insurance claim" at MOST 3 times across the whole post. Prefer "your claim", "your carrier", "coverage".
+- Use the exact bigram "insurance claim" at MOST 3 times across the whole post, and NEVER in the title: the title is shown three times on the page (browser tab, breadcrumb, H1) and the legal fence counts every one. Prefer "your claim", "your carrier", "coverage".
 - Only claim credentials that are true: Licensed & Insured in Utah, BBB Accredited, 24/7 storm response, 10-year workmanship warranty, Utah DOPL contractor license. Do NOT invent certifications, review counts, years in business, awards, or specific prices/cost ranges you were not given.
 - Internal links use the token form {{link:/path|anchor text}} and ONLY the paths provided in internal_links.
 
@@ -110,6 +127,99 @@ def call_openrouter(key: str, model: str, user: str,
     return (data["choices"][0]["message"]["content"] or "").strip()
 
 
+def _is_secret_env_name(name: str) -> bool:
+    return name == "CLAUDE_CODE_OAUTH_TOKEN" or name.startswith("ANTHROPIC_")
+
+
+def _secret_env_values(*envs: dict) -> list[str]:
+    """Exact secret values to redact, longest first. Never returns the names alone."""
+    seen: set[str] = set()
+    values: list[str] = []
+    for mapping in envs:
+        if not mapping:
+            continue
+        for key, val in mapping.items():
+            if not _is_secret_env_name(key) or not isinstance(val, str):
+                continue
+            if len(val) < _MIN_SECRET_LEN or val in seen:
+                continue
+            seen.add(val)
+            values.append(val)
+    values.sort(key=len, reverse=True)
+    return values
+
+
+def mask_secrets(text: str | None, env: dict | None = None) -> str:
+    """Redact plan/API secrets and token-like strings. Never returns raw secrets."""
+    if not text:
+        return ""
+    out = text
+    for value in _secret_env_values(env or {}, os.environ):
+        out = out.replace(value, "[REDACTED]")
+    out = _SK_ANT_RE.sub("sk-ant-[REDACTED]", out)
+    out = _BEARER_RE.sub("Bearer [REDACTED]", out)
+    out = _JWT_RE.sub("[JWT-REDACTED]", out)
+    out = _B64_RE.sub("[B64-REDACTED]", out)
+    return out
+
+
+def tail_text(text: str | None, limit: int = CLI_LOG_TAIL_BYTES) -> str:
+    """Return the last `limit` bytes of text (UTF-8), or empty string."""
+    if not text:
+        return ""
+    raw = text.encode("utf-8", errors="replace")
+    if len(raw) <= limit:
+        return text
+    return raw[-limit:].decode("utf-8", errors="replace")
+
+
+def token_sanity_report(env: dict | None = None) -> str:
+    """Presence / non-empty only. Never the value, never a network auth call."""
+    src = env if env is not None else os.environ
+    present = "CLAUDE_CODE_OAUTH_TOKEN" in src
+    length_gt0 = bool(src.get("CLAUDE_CODE_OAUTH_TOKEN"))
+    return (f"token sanity: CLAUDE_CODE_OAUTH_TOKEN present: "
+            f"{'yes' if present else 'no'}; length>0: "
+            f"{'yes' if length_gt0 else 'no'}")
+
+
+def _signal_label(returncode: int | None) -> str:
+    if returncode is None or returncode >= 0:
+        return "none"
+    sig = -returncode
+    try:
+        name = signal.Signals(sig).name
+    except ValueError:
+        name = f"SIG{sig}"
+    return f"{name} ({sig})"
+
+
+def format_claude_cli_failure(proc, env: dict | None = None) -> str:
+    """Exit code, signal, and last ~4KB of stdout/stderr, with secrets masked."""
+    code = proc.returncode
+    sig = _signal_label(code)
+    stdout = mask_secrets(tail_text(proc.stdout), env)
+    stderr = mask_secrets(tail_text(proc.stderr), env)
+    return "\n".join([
+        f"claude CLI failed: exit_code={code} signal={sig}",
+        "--- stdout (last 4096 bytes, secrets masked) ---",
+        stdout if stdout else "(empty)",
+        "--- stderr (last 4096 bytes, secrets masked) ---",
+        stderr if stderr else "(empty)",
+    ])
+
+
+def claude_cli_error_summary(proc, env: dict | None = None) -> str:
+    """Short masked line for the existing retry logger (includes stdout)."""
+    code = proc.returncode
+    sig = _signal_label(code)
+    err = mask_secrets((proc.stderr or "").strip(), env)[:300]
+    out = mask_secrets((proc.stdout or "").strip(), env)[:300]
+    err = err or "(empty)"
+    out = out or "(empty)"
+    return f"claude CLI exit {code}, signal {sig}: stderr={err}; stdout={out}"
+
+
 def claude_plan_env() -> dict:
     """Child env for the Claude CLI: metered-billing vars removed (fail-safe $0).
 
@@ -118,6 +228,8 @@ def claude_plan_env() -> dict:
     Mac the CLI's existing plan login is used.
     """
     env = {k: v for k, v in os.environ.items() if k not in METERED_ENV}
+    # Presence/non-empty only — never the value, never a refresh/auth call.
+    print(token_sanity_report(env), file=sys.stderr)
     if os.getenv("CI") and not env.get("CLAUDE_CODE_OAUTH_TOKEN"):
         sys.exit("CLAUDE_CODE_OAUTH_TOKEN not set in CI; refusing to draft "
                  "(no metered fallback). Ryan-only: add the plan token secret.")
@@ -133,7 +245,8 @@ def call_claude_plan(model: str, user: str, env: dict, timeout: int = 600) -> st
     proc = subprocess.run(cmd, input=user, capture_output=True, text=True,
                           env=env, timeout=timeout)
     if proc.returncode != 0:
-        raise RuntimeError(f"claude CLI exit {proc.returncode}: {proc.stderr.strip()[:300]}")
+        print(format_claude_cli_failure(proc, env), file=sys.stderr)
+        raise RuntimeError(claude_cli_error_summary(proc, env))
     return proc.stdout.strip()
 
 
@@ -207,6 +320,58 @@ def visible_blob(m: dict) -> str:
     return " ".join(parts)
 
 
+def _load_sibling(module_name: str, filename: str):
+    spec = importlib.util.spec_from_file_location(module_name, ROOT / "scripts" / filename)
+    if spec is None or spec.loader is None:
+        raise RuntimeError(f"could not import scripts/{filename}")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+def fence_prescan(manifest: dict) -> dict:
+    """Count "insurance claim" exactly the way blog-publish.py's HARD fence does.
+
+    2026-11-17 Highland keyword-counter fix: the old pre-scan counted the
+    manifest fields once (title x1, cap always 3), but the fence counts the
+    RENDERED page's visible text, where the title appears three times (<title>,
+    breadcrumb, H1) and storm posts get cap 4. Highland insurance drafts passed
+    the pre-scan at 3 and then failed the fence at 5 (11-04 sonnet, 11-12
+    fable). This renders the manifest with the real renderer (in memory, no
+    file written), applies the same deterministic title polish the publisher
+    applies, and runs the publisher's own compliance_fence, so the two counts
+    cannot drift apart again. The fence itself is unchanged.
+    """
+    publisher = _load_sibling("utah_blog_publish_for_prescan", "blog-publish.py")
+    renderer = _load_sibling("utah_blog_renderer_for_prescan", "generate-blog-post.py")
+    m = copy.deepcopy(manifest)
+    new_title = publisher.polish_title(m)
+    if new_title:
+        m["title"] = new_title
+    image = publisher.find_hero_image(m.get("city_slug", "utah"))
+    rendered = renderer.render_html(m, None, image)
+    style = m.get("style", "")
+    count = publisher.visible_text(rendered).lower().count(publisher.INSURANCE_BIGRAM)
+    cap = publisher.INSURANCE_MAX_STORM if style == "storm" else publisher.INSURANCE_MAX
+    return {"count": count, "cap": cap,
+            "reasons": publisher.compliance_fence(rendered, style=style)}
+
+
+def fence_retry_prompt(user: str, reasons: list[str]) -> str:
+    joined = "; ".join(reasons)
+    return (f"{user}\n\nYOUR PREVIOUS DRAFT WAS REJECTED by the legal compliance fence: "
+            f"{joined}. Rewrite the whole post so it passes. Remove every forbidden phrase. "
+            "Keep the exact bigram \"insurance claim\" out of the title entirely and use it "
+            "at most 3 times in the rest of the post (prefer \"your claim\", \"your carrier\", "
+            "\"coverage\"). Return the JSON manifest now.")
+
+
+def apply_forced_fields(manifest: dict, brief: dict) -> None:
+    manifest["city_slug"] = brief["city_slug"]
+    manifest["style"] = brief.get("style", "atmospheric")
+    manifest["keyword"] = brief["keyword"]
+
+
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--brief", required=True)
@@ -236,28 +401,47 @@ def main() -> None:
     user = build_user_prompt(brief)
 
     manifest = None
+    fence_failed = None  # last complete draft the fence would reject (kept as a fallback)
+    prompt = user
     for attempt in range(1, args.retries + 1):
         try:
-            raw = (call_claude_plan(args.model, user, env) if use_claude
-                   else call_openrouter(key, args.model, user))
+            raw = (call_claude_plan(args.model, prompt, env) if use_claude
+                   else call_openrouter(key, args.model, prompt))
             if not raw:
                 print(f"[attempt {attempt}] empty response; retrying", file=sys.stderr)
                 continue
             manifest = extract_json(raw)
-            if manifest.get("sections") and manifest.get("faqs"):
+            if not (manifest.get("sections") and manifest.get("faqs")):
+                print(f"[attempt {attempt}] thin/incomplete manifest; retrying", file=sys.stderr)
+                manifest = None
+                continue
+            apply_forced_fields(manifest, brief)
+            try:
+                scan = fence_prescan(manifest)
+            except Exception as e:  # pre-scan is advisory; blog-publish.py's fence is the backstop
+                print(f"[attempt {attempt}] fence pre-scan unavailable ({type(e).__name__}: {e}); "
+                      "blog-publish.py fence still applies", file=sys.stderr)
                 break
-            print(f"[attempt {attempt}] thin/incomplete manifest; retrying", file=sys.stderr)
-            manifest = None
+            if not scan["reasons"]:
+                break
+            print(f"[attempt {attempt}] fence pre-scan would FAIL-CLOSED: "
+                  f"{'; '.join(scan['reasons'])}; retrying", file=sys.stderr)
+            fence_failed, manifest = manifest, None
+            prompt = fence_retry_prompt(user, scan["reasons"])
         except (json.JSONDecodeError, KeyError, urllib.error.URLError,
                 RuntimeError, subprocess.TimeoutExpired) as e:
             print(f"[attempt {attempt}] {type(e).__name__}: {e}; retrying", file=sys.stderr)
+    if manifest is None and fence_failed is not None:
+        # Keep the old behaviour of handing a complete draft to blog-publish.py,
+        # whose HARD fence fails it closed (status needs-review) — never published.
+        print("fence pre-scan still failing after retries; writing draft for the "
+              "blog-publish.py fence to quarantine", file=sys.stderr)
+        manifest = fence_failed
     if manifest is None:
         sys.exit(f"{label} drafting failed after {args.retries} attempts")
 
     # Force the non-negotiable fields regardless of model output.
-    manifest["city_slug"] = brief["city_slug"]
-    manifest["style"] = brief.get("style", "atmospheric")
-    manifest["keyword"] = brief["keyword"]
+    apply_forced_fields(manifest, brief)
     manifest["status"] = args.status
     manifest.setdefault("draft_date", "")
     review_note = ("auto-publish path — HARD compliance fence + gates are the backstop"
@@ -271,9 +455,17 @@ def main() -> None:
     blob = visible_blob(manifest).lower()
     hits = [p for p in FORBIDDEN if p in blob]
     ins = blob.count("insurance claim")
+    try:
+        scan = fence_prescan(manifest)
+        fence_line = (f"  'insurance claim' in rendered visible text (fence counter): "
+                      f"{scan['count']} (cap {scan['cap']}) -> "
+                      f"{'WOULD FAIL-CLOSED: ' + '; '.join(scan['reasons']) if scan['reasons'] else 'fence clean'}")
+    except Exception as e:
+        fence_line = f"  fence counter unavailable ({type(e).__name__}); blog-publish.py fence still applies"
     print(f"── {label} draft compliance pre-scan ──", file=sys.stderr)
     print(f"  forbidden-phrase hits: {hits or 'NONE'}", file=sys.stderr)
-    print(f"  'insurance claim' bigrams: {ins} (cap 3)", file=sys.stderr)
+    print(f"  'insurance claim' bigrams in manifest fields: {ins}", file=sys.stderr)
+    print(fence_line, file=sys.stderr)
     print(f"  brand 'Frame Restoration Utah': {blob.count('frame restoration utah')}", file=sys.stderr)
     print(f"  phone 435-292-8802 present: {'435-292-8802' in blob}", file=sys.stderr)
 
