@@ -43,7 +43,9 @@
   function getCityFromPath() {
     var path = (window.location.pathname || '').toLowerCase();
     // Production uses clean URLs; retain legacy .html and trailing-slash forms.
-    var m = path.match(/^\/locations\/([a-z-]+)(?:\.html)?\/?$/);
+    // City service sub-pages (/locations/salt-lake-city/storm-damage) count
+    // for their city; any other nested path stays unknown.
+    var m = path.match(/^\/locations\/([a-z-]+)(?:\.html)?(?:\/(?:storm-damage|water-damage|hail-damage|roof-repair|roof-replacement|siding)(?:\.html)?)?\/?$/);
     if (m) return m[1].replace(/-/g, ' ');
     m = path.match(/\/blog\/([a-z-]+)\//);
     if (m && m[1] !== 'utah') return m[1].replace(/-/g, ' ');

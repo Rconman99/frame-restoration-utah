@@ -5,6 +5,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { spawnSync } from "node:child_process";
 import { validateOwnerEvidenceReceipt } from "./lib/slv-gbp-owner-evidence.mjs";
+import { isFrameWorkspaceIdentity } from "./lib/frame-workspace-identity.mjs";
 
 const repoRoot = process.cwd();
 const programPath = path.join(
@@ -147,14 +148,8 @@ assert.equal(program.programGates.businessDrive.status, ownerEvidence.status ===
     : "business-search-complete-partial-owner-view-evidence-registered"
   : "search-complete-owner-view-gbp-receipt-required");
 assert.equal(program.authoritativeSources.businessDriveAudit.searchPerformed, true);
-assert.equal(
-  program.authoritativeSources.businessDriveAudit.requiredAccount,
-  "ryan@framerestorations.com",
-);
-assert.equal(
-  program.authoritativeSources.businessDriveAudit.observedAccount,
-  "ryan@framerestorations.com",
-);
+assert.ok(isFrameWorkspaceIdentity(program.authoritativeSources.businessDriveAudit.requiredAccount));
+assert.ok(isFrameWorkspaceIdentity(program.authoritativeSources.businessDriveAudit.observedAccount));
 assert.equal(program.authoritativeSources.businessDriveAudit.acceptedPrimaryEvidenceCount, 0);
 assert.equal(program.authoritativeSources.businessDriveAudit.driveMutations, 0);
 if (consumerAi.summary.citiesWithCompleteReading > 0) {

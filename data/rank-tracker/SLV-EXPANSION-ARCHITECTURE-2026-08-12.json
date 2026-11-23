@@ -20,11 +20,11 @@
     },
     "gscAttribution": {
       "file": "data/rank-tracker/SLV-GSC-URL-ATTRIBUTION-LATEST.json",
-      "sha256": "0b61f205c24d36b537146374661f5e68002fc5ab58d8977ba581bc3167ba20aa"
+      "sha256": "c811d3956ba1384c2b56e0ee538ca3263b555afe30410d5cae60813e9580ceaa"
     },
     "displacement": {
       "file": "data/rank-tracker/SLV-COMPETITOR-DISPLACEMENT-2026-08-12.json",
-      "sha256": "ef056e38180074512fe4dfa243f85f566a59334f64c66a3216be359a7d546df4"
+      "sha256": "88d38e1ce8c7f3fbfe331f53cd132a87050cfa4a4a5880cf03dd15ef5c460876"
     }
   },
   "summary": {
@@ -33,7 +33,7 @@
     "routesPinned": 26,
     "relatedRoutesProtected": 14,
     "targetedGscQueriesRequested": 48,
-    "targetedGscRowsReturned": 12,
+    "targetedGscRowsReturned": 13,
     "citiesWithCurrentCannibalizationEvidenced": 0,
     "publicMutations": 0
   },
@@ -74,10 +74,10 @@
         "aiOverviewCitations": 1
       },
       "targetedGsc": {
-        "snapshot": "data/seo/snapshots/2026-10-27.json",
+        "snapshot": "data/seo/snapshots/2026-11-22.json",
         "window": {
-          "startDate": "2026-09-27",
-          "endDate": "2026-10-24"
+          "startDate": "2026-10-23",
+          "endDate": "2026-11-19"
         },
         "fixedQueriesRequested": 4,
         "exactQueryPageRowsReturned": 0,
@@ -108,12 +108,12 @@
             "role": "commercial-city-hub",
             "aggregateGsc": {
               "window": {
-                "startDate": "2026-09-27",
-                "endDate": "2026-10-24"
+                "startDate": "2026-10-23",
+                "endDate": "2026-11-19"
               },
               "clicks": 0,
-              "impressions": 102,
-              "position": 11.1
+              "impressions": 77,
+              "position": 10.8
             },
             "decision": "Preserve as the intended commercial city hub selected by every fixed query with a measured organic rank."
           }
@@ -157,10 +157,10 @@
         "aiOverviewCitations": 0
       },
       "targetedGsc": {
-        "snapshot": "data/seo/snapshots/2026-10-27.json",
+        "snapshot": "data/seo/snapshots/2026-11-22.json",
         "window": {
-          "startDate": "2026-09-27",
-          "endDate": "2026-10-24"
+          "startDate": "2026-10-23",
+          "endDate": "2026-11-19"
         },
         "fixedQueriesRequested": 4,
         "exactQueryPageRowsReturned": 0,
@@ -191,12 +191,12 @@
             "role": "commercial-city-hub",
             "aggregateGsc": {
               "window": {
-                "startDate": "2026-09-27",
-                "endDate": "2026-10-24"
+                "startDate": "2026-10-23",
+                "endDate": "2026-11-19"
               },
               "clicks": 0,
-              "impressions": 264,
-              "position": 39.5
+              "impressions": 277,
+              "position": 37.6
             },
             "decision": "Preserve as the intended commercial city hub selected by every fixed query with a measured organic rank."
           }
@@ -240,10 +240,10 @@
         "aiOverviewCitations": 0
       },
       "targetedGsc": {
-        "snapshot": "data/seo/snapshots/2026-10-27.json",
+        "snapshot": "data/seo/snapshots/2026-11-22.json",
         "window": {
-          "startDate": "2026-09-27",
-          "endDate": "2026-10-24"
+          "startDate": "2026-10-23",
+          "endDate": "2026-11-19"
         },
         "fixedQueriesRequested": 4,
         "exactQueryPageRowsReturned": 3,
@@ -274,12 +274,12 @@
             "role": "commercial-city-hub",
             "aggregateGsc": {
               "window": {
-                "startDate": "2026-09-27",
-                "endDate": "2026-10-24"
+                "startDate": "2026-10-23",
+                "endDate": "2026-11-19"
               },
               "clicks": 0,
-              "impressions": 435,
-              "position": 15.6
+              "impressions": 470,
+              "position": 17.9
             },
             "decision": "Preserve as the intended commercial city hub selected by every fixed query with a measured organic rank."
           },
@@ -291,7 +291,15 @@
             "canonical": "https://www.framerestorationutah.com/blog/murray/signs-you-need-new-roof",
             "inboundInternalLinks": 2,
             "role": "city-editorial-guide",
-            "aggregateGsc": null,
+            "aggregateGsc": {
+              "window": {
+                "startDate": "2026-10-23",
+                "endDate": "2026-11-19"
+              },
+              "clicks": 0,
+              "impressions": 4,
+              "position": 22.5
+            },
             "decision": "Protect this route until exact query-to-URL evidence supports a bounded architecture change."
           },
           {
@@ -304,12 +312,12 @@
             "role": "city-editorial-guide",
             "aggregateGsc": {
               "window": {
-                "startDate": "2026-09-27",
-                "endDate": "2026-10-24"
+                "startDate": "2026-10-23",
+                "endDate": "2026-11-19"
               },
               "clicks": 0,
-              "impressions": 3,
-              "position": 7.7
+              "impressions": 2,
+              "position": 6
             },
             "decision": "Protect this route until exact query-to-URL evidence supports a bounded architecture change."
           },
@@ -323,12 +331,12 @@
             "role": "city-service-child",
             "aggregateGsc": {
               "window": {
-                "startDate": "2026-09-27",
-                "endDate": "2026-10-24"
+                "startDate": "2026-10-23",
+                "endDate": "2026-11-19"
               },
               "clicks": 0,
-              "impressions": 4,
-              "position": 19.5
+              "impressions": 1,
+              "position": 66
             },
             "decision": "Protect this route until exact query-to-URL evidence supports a bounded architecture change."
           }
@@ -374,10 +382,10 @@
         "aiOverviewCitations": 0
       },
       "targetedGsc": {
-        "snapshot": "data/seo/snapshots/2026-10-27.json",
+        "snapshot": "data/seo/snapshots/2026-11-22.json",
         "window": {
-          "startDate": "2026-09-27",
-          "endDate": "2026-10-24"
+          "startDate": "2026-10-23",
+          "endDate": "2026-11-19"
         },
         "fixedQueriesRequested": 4,
         "exactQueryPageRowsReturned": 0,
@@ -408,12 +416,12 @@
             "role": "commercial-city-hub",
             "aggregateGsc": {
               "window": {
-                "startDate": "2026-09-27",
-                "endDate": "2026-10-24"
+                "startDate": "2026-10-23",
+                "endDate": "2026-11-19"
               },
-              "clicks": 1,
-              "impressions": 369,
-              "position": 46.9
+              "clicks": 0,
+              "impressions": 302,
+              "position": 36.4
             },
             "decision": "Preserve as the intended commercial city hub selected by every fixed query with a measured organic rank."
           },
@@ -427,12 +435,12 @@
             "role": "city-editorial-guide",
             "aggregateGsc": {
               "window": {
-                "startDate": "2026-09-27",
-                "endDate": "2026-10-24"
+                "startDate": "2026-10-23",
+                "endDate": "2026-11-19"
               },
               "clicks": 0,
               "impressions": 3,
-              "position": 10.7
+              "position": 10
             },
             "decision": "Protect this route until exact query-to-URL evidence supports a bounded architecture change."
           }
@@ -476,10 +484,10 @@
         "aiOverviewCitations": 0
       },
       "targetedGsc": {
-        "snapshot": "data/seo/snapshots/2026-10-27.json",
+        "snapshot": "data/seo/snapshots/2026-11-22.json",
         "window": {
-          "startDate": "2026-09-27",
-          "endDate": "2026-10-24"
+          "startDate": "2026-10-23",
+          "endDate": "2026-11-19"
         },
         "fixedQueriesRequested": 4,
         "exactQueryPageRowsReturned": 3,
@@ -510,12 +518,12 @@
             "role": "commercial-city-hub",
             "aggregateGsc": {
               "window": {
-                "startDate": "2026-09-27",
-                "endDate": "2026-10-24"
+                "startDate": "2026-10-23",
+                "endDate": "2026-11-19"
               },
               "clicks": 0,
-              "impressions": 235,
-              "position": 16.8
+              "impressions": 171,
+              "position": 15.7
             },
             "decision": "Preserve as the intended commercial city hub selected by every fixed query with a measured organic rank."
           },
@@ -529,12 +537,12 @@
             "role": "city-editorial-guide",
             "aggregateGsc": {
               "window": {
-                "startDate": "2026-09-27",
-                "endDate": "2026-10-24"
+                "startDate": "2026-10-23",
+                "endDate": "2026-11-19"
               },
               "clicks": 0,
-              "impressions": 5,
-              "position": 12
+              "impressions": 2,
+              "position": 5
             },
             "decision": "Protect this route until exact query-to-URL evidence supports a bounded architecture change."
           },
@@ -546,20 +554,12 @@
             "canonical": "https://www.framerestorationutah.com/blog/south-jordan/storm-damage-roof-repair-south-jordan-utah",
             "inboundInternalLinks": 1,
             "role": "city-editorial-guide",
-            "aggregateGsc": {
-              "window": {
-                "startDate": "2026-09-27",
-                "endDate": "2026-10-24"
-              },
-              "clicks": 0,
-              "impressions": 8,
-              "position": 4
-            },
+            "aggregateGsc": null,
             "decision": "Protect this route until exact query-to-URL evidence supports a bounded architecture change."
           },
           {
             "file": "locations/south-jordan/storm-damage.html",
-            "sha256": "3083f57977c2b18fa18255762365cfb77a4c50be50cba060c4d7106e52f5f256",
+            "sha256": "8834a48745e36a3e3ef9ef76e0c690a43623f5a2d8da06e5eac19504f40d6003",
             "title": "South Jordan Storm &amp; Hail Roof Repair | Frame Restoration Utah",
             "h1": "Storm and Hail Damage Roof Repair in South Jordan",
             "canonical": "https://www.framerestorationutah.com/locations/south-jordan/storm-damage",
@@ -608,10 +608,10 @@
         "aiOverviewCitations": 0
       },
       "targetedGsc": {
-        "snapshot": "data/seo/snapshots/2026-10-27.json",
+        "snapshot": "data/seo/snapshots/2026-11-22.json",
         "window": {
-          "startDate": "2026-09-27",
-          "endDate": "2026-10-24"
+          "startDate": "2026-10-23",
+          "endDate": "2026-11-19"
         },
         "fixedQueriesRequested": 4,
         "exactQueryPageRowsReturned": 0,
@@ -642,12 +642,12 @@
             "role": "commercial-city-hub",
             "aggregateGsc": {
               "window": {
-                "startDate": "2026-09-27",
-                "endDate": "2026-10-24"
+                "startDate": "2026-10-23",
+                "endDate": "2026-11-19"
               },
-              "clicks": 0,
+              "clicks": 1,
               "impressions": 96,
-              "position": 23.2
+              "position": 25.3
             },
             "decision": "Preserve as the intended commercial city hub selected by every fixed query with a measured organic rank."
           }
@@ -691,10 +691,10 @@
         "aiOverviewCitations": 0
       },
       "targetedGsc": {
-        "snapshot": "data/seo/snapshots/2026-10-27.json",
+        "snapshot": "data/seo/snapshots/2026-11-22.json",
         "window": {
-          "startDate": "2026-09-27",
-          "endDate": "2026-10-24"
+          "startDate": "2026-10-23",
+          "endDate": "2026-11-19"
         },
         "fixedQueriesRequested": 4,
         "exactQueryPageRowsReturned": 0,
@@ -725,11 +725,11 @@
             "role": "commercial-city-hub",
             "aggregateGsc": {
               "window": {
-                "startDate": "2026-09-27",
-                "endDate": "2026-10-24"
+                "startDate": "2026-10-23",
+                "endDate": "2026-11-19"
               },
               "clicks": 0,
-              "impressions": 149,
+              "impressions": 82,
               "position": 18.2
             },
             "decision": "Preserve as the intended commercial city hub selected by every fixed query with a measured organic rank."
@@ -742,15 +742,7 @@
             "canonical": "https://www.framerestorationutah.com/blog/bluffdale/storm-damage-roof-repair-bluffdale",
             "inboundInternalLinks": 1,
             "role": "city-editorial-guide",
-            "aggregateGsc": {
-              "window": {
-                "startDate": "2026-09-27",
-                "endDate": "2026-10-24"
-              },
-              "clicks": 0,
-              "impressions": 8,
-              "position": 8
-            },
+            "aggregateGsc": null,
             "decision": "Protect this route until exact query-to-URL evidence supports a bounded architecture change."
           }
         ],
@@ -793,10 +785,10 @@
         "aiOverviewCitations": 0
       },
       "targetedGsc": {
-        "snapshot": "data/seo/snapshots/2026-10-27.json",
+        "snapshot": "data/seo/snapshots/2026-11-22.json",
         "window": {
-          "startDate": "2026-09-27",
-          "endDate": "2026-10-24"
+          "startDate": "2026-10-23",
+          "endDate": "2026-11-19"
         },
         "fixedQueriesRequested": 4,
         "exactQueryPageRowsReturned": 0,
@@ -827,12 +819,12 @@
             "role": "commercial-city-hub",
             "aggregateGsc": {
               "window": {
-                "startDate": "2026-09-27",
-                "endDate": "2026-10-24"
+                "startDate": "2026-10-23",
+                "endDate": "2026-11-19"
               },
-              "clicks": 1,
-              "impressions": 270,
-              "position": 39.1
+              "clicks": 0,
+              "impressions": 185,
+              "position": 30.5
             },
             "decision": "Preserve as the intended commercial city hub selected by every fixed query with a measured organic rank."
           },
@@ -887,13 +879,13 @@
         "aiOverviewCitations": 0
       },
       "targetedGsc": {
-        "snapshot": "data/seo/snapshots/2026-10-27.json",
+        "snapshot": "data/seo/snapshots/2026-11-22.json",
         "window": {
-          "startDate": "2026-09-27",
-          "endDate": "2026-10-24"
+          "startDate": "2026-10-23",
+          "endDate": "2026-11-19"
         },
         "fixedQueriesRequested": 4,
-        "exactQueryPageRowsReturned": 2,
+        "exactQueryPageRowsReturned": 3,
         "status": "requested",
         "attributionState": "complete-request-with-unreturned-rows",
         "alternateNormalizedUrls": [],
@@ -921,12 +913,12 @@
             "role": "commercial-city-hub",
             "aggregateGsc": {
               "window": {
-                "startDate": "2026-09-27",
-                "endDate": "2026-10-24"
+                "startDate": "2026-10-23",
+                "endDate": "2026-11-19"
               },
               "clicks": 0,
-              "impressions": 362,
-              "position": 17.8
+              "impressions": 344,
+              "position": 17.9
             },
             "decision": "Preserve as the intended commercial city hub selected by every fixed query with a measured organic rank."
           },
@@ -940,12 +932,12 @@
             "role": "city-editorial-guide",
             "aggregateGsc": {
               "window": {
-                "startDate": "2026-09-27",
-                "endDate": "2026-10-24"
+                "startDate": "2026-10-23",
+                "endDate": "2026-11-19"
               },
               "clicks": 0,
-              "impressions": 63,
-              "position": 14.4
+              "impressions": 8,
+              "position": 15.3
             },
             "decision": "Protect this route until exact query-to-URL evidence supports a bounded architecture change."
           }
@@ -989,10 +981,10 @@
         "aiOverviewCitations": 0
       },
       "targetedGsc": {
-        "snapshot": "data/seo/snapshots/2026-10-27.json",
+        "snapshot": "data/seo/snapshots/2026-11-22.json",
         "window": {
-          "startDate": "2026-09-27",
-          "endDate": "2026-10-24"
+          "startDate": "2026-10-23",
+          "endDate": "2026-11-19"
         },
         "fixedQueriesRequested": 4,
         "exactQueryPageRowsReturned": 1,
@@ -1023,12 +1015,12 @@
             "role": "commercial-city-hub",
             "aggregateGsc": {
               "window": {
-                "startDate": "2026-09-27",
-                "endDate": "2026-10-24"
+                "startDate": "2026-10-23",
+                "endDate": "2026-11-19"
               },
               "clicks": 0,
-              "impressions": 360,
-              "position": 19.8
+              "impressions": 319,
+              "position": 23.6
             },
             "decision": "Preserve as the intended commercial city hub selected by every fixed query with a measured organic rank."
           },
@@ -1086,10 +1078,10 @@
         "aiOverviewCitations": 0
       },
       "targetedGsc": {
-        "snapshot": "data/seo/snapshots/2026-10-27.json",
+        "snapshot": "data/seo/snapshots/2026-11-22.json",
         "window": {
-          "startDate": "2026-09-27",
-          "endDate": "2026-10-24"
+          "startDate": "2026-10-23",
+          "endDate": "2026-11-19"
         },
         "fixedQueriesRequested": 4,
         "exactQueryPageRowsReturned": 0,
@@ -1120,12 +1112,12 @@
             "role": "commercial-city-hub",
             "aggregateGsc": {
               "window": {
-                "startDate": "2026-09-27",
-                "endDate": "2026-10-24"
+                "startDate": "2026-10-23",
+                "endDate": "2026-11-19"
               },
               "clicks": 0,
-              "impressions": 58,
-              "position": 42.6
+              "impressions": 73,
+              "position": 37.7
             },
             "decision": "Preserve as the intended commercial city hub selected by every fixed query with a measured organic rank."
           }
@@ -1172,10 +1164,10 @@
         "aiOverviewCitations": 0
       },
       "targetedGsc": {
-        "snapshot": "data/seo/snapshots/2026-10-27.json",
+        "snapshot": "data/seo/snapshots/2026-11-22.json",
         "window": {
-          "startDate": "2026-09-27",
-          "endDate": "2026-10-24"
+          "startDate": "2026-10-23",
+          "endDate": "2026-11-19"
         },
         "fixedQueriesRequested": 4,
         "exactQueryPageRowsReturned": 3,
@@ -1206,12 +1198,12 @@
             "role": "commercial-city-hub",
             "aggregateGsc": {
               "window": {
-                "startDate": "2026-09-27",
-                "endDate": "2026-10-24"
+                "startDate": "2026-10-23",
+                "endDate": "2026-11-19"
               },
-              "clicks": 1,
-              "impressions": 936,
-              "position": 15.4
+              "clicks": 0,
+              "impressions": 686,
+              "position": 21.1
             },
             "decision": "Preserve as the intended commercial city hub selected by every fixed query with a measured organic rank."
           },
@@ -1228,7 +1220,7 @@
           },
           {
             "file": "locations/west-jordan/storm-damage.html",
-            "sha256": "7a2e054cd4dbbd810610ac04a3c51766bf65b0b981c8970fdaac9e70cc205061",
+            "sha256": "f5d0f1c465e3b4ef51040a9bd11e1351e7eb90e423d17e5dd3100aaa19a5038f",
             "title": "West Jordan Storm &amp; Hail Roof Repair | Frame Restoration Utah",
             "h1": "Storm and Hail Damage Roof Repair in West Jordan",
             "canonical": "https://www.framerestorationutah.com/locations/west-jordan/storm-damage",
@@ -1239,7 +1231,7 @@
           },
           {
             "file": "locations/west-jordan/water-damage.html",
-            "sha256": "e2e59d968aba6e29df2f9821911f376c4137170e8f8882bd7ecc9afd74caedfe",
+            "sha256": "1675a187924f8ef0c496c8e7f7685bd87afd238fadacbf5afc5c200fd15d67de",
             "title": "West Jordan Water Damage Restoration, 24/7 | Frame Restoration Utah",
             "h1": "Water Damage Restoration in West Jordan",
             "canonical": "https://www.framerestorationutah.com/locations/west-jordan/water-damage",

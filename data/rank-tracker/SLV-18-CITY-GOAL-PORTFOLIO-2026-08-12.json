@@ -64,7 +64,7 @@
     "exactCidMapsTargetsMeasured": 72,
     "exactCidMapsNumberOne": 0,
     "googleAiOverviewCitations": 1,
-    "googleAiOverviewsPresent": 3,
+    "googleAiOverviewsPresent": 5,
     "consumerAiCompleteCityPanels": 0,
     "citiesAtSustainedGoal": 0
   },
@@ -129,7 +129,48 @@
       "identityEvidence": "verified-profile-identity-city",
       "serviceAreaStatus": "verified-profile-identity-city",
       "current": {
-        "observedAt": "2026-10-26T09:26:40.115Z",
+        "observedAt": "2026-11-16T09:16:41.673Z",
+        "organicRanks": [
+          null,
+          null,
+          null,
+          null
+        ],
+        "selectedOrganicUrls": [
+          null,
+          null,
+          null,
+          null
+        ],
+        "exactCidMapsRanks": [
+          null,
+          null,
+          null,
+          null
+        ],
+        "googleAiOverview": {
+          "present": 3,
+          "ownedCitations": 0
+        },
+        "consumerAi": "configured-scheduled-unmeasured-invalid-provider-credential"
+      },
+      "phase": "observe-existing-experiment",
+      "nextPermittedAction": "Run the fixed weekly Google panel and, after credential replacement, the fixed consumer-AI panel; do not change the page before 2026-09-09T04:40:58Z.",
+      "rankSource": "data/rank-tracker/latest.json"
+    },
+    {
+      "priority": 1,
+      "goalId": "slv-millcreek-number-one-v1",
+      "city": "Millcreek",
+      "slug": "millcreek",
+      "page": "locations/millcreek.html",
+      "panelId": "utah-millcreek-google-v1",
+      "cohort": "core-measured",
+      "measurementStatus": "measured",
+      "identityEvidence": "verified-profile-saved-service-area",
+      "serviceAreaStatus": "saved-service-area-observed",
+      "current": {
+        "observedAt": "2026-11-16T09:16:41.673Z",
         "organicRanks": [
           null,
           null,
@@ -154,47 +195,6 @@
         },
         "consumerAi": "configured-scheduled-unmeasured-invalid-provider-credential"
       },
-      "phase": "observe-existing-experiment",
-      "nextPermittedAction": "Run the fixed weekly Google panel and, after credential replacement, the fixed consumer-AI panel; do not change the page before 2026-09-09T04:40:58Z.",
-      "rankSource": "data/rank-tracker/latest.json"
-    },
-    {
-      "priority": 1,
-      "goalId": "slv-millcreek-number-one-v1",
-      "city": "Millcreek",
-      "slug": "millcreek",
-      "page": "locations/millcreek.html",
-      "panelId": "utah-millcreek-google-v1",
-      "cohort": "core-measured",
-      "measurementStatus": "measured",
-      "identityEvidence": "verified-profile-saved-service-area",
-      "serviceAreaStatus": "saved-service-area-observed",
-      "current": {
-        "observedAt": "2026-10-26T09:26:40.115Z",
-        "organicRanks": [
-          null,
-          null,
-          null,
-          15
-        ],
-        "selectedOrganicUrls": [
-          null,
-          null,
-          null,
-          "https://www.framerestorationutah.com/locations/millcreek"
-        ],
-        "exactCidMapsRanks": [
-          null,
-          null,
-          null,
-          null
-        ],
-        "googleAiOverview": {
-          "present": 1,
-          "ownedCitations": 0
-        },
-        "consumerAi": "configured-scheduled-unmeasured-invalid-provider-credential"
-      },
       "phase": "first-after-public-integrity-cleanup",
       "nextPermittedAction": "Preserve the first AIO foothold, replace the consumer-AI key, and prepare the claim/identity cleanup; publish only after explicit approval and the full release gate.",
       "rankSource": "data/rank-tracker/panels/millcreek/latest.json"
@@ -211,17 +211,17 @@
       "identityEvidence": "documented-slv-target-measurement-only",
       "serviceAreaStatus": "pending-current-profile-service-area-verification",
       "current": {
-        "observedAt": "2026-10-26T09:26:40.115Z",
+        "observedAt": "2026-11-16T09:16:41.673Z",
         "organicRanks": [
           null,
           null,
-          18,
+          null,
           null
         ],
         "selectedOrganicUrls": [
           null,
           null,
-          "https://www.framerestorationutah.com/locations/sandy",
+          null,
           null
         ],
         "exactCidMapsRanks": [
@@ -252,17 +252,17 @@
       "identityEvidence": "documented-slv-target-measurement-only",
       "serviceAreaStatus": "pending-current-profile-service-area-verification",
       "current": {
-        "observedAt": "2026-10-26T09:26:40.115Z",
+        "observedAt": "2026-11-16T09:16:41.673Z",
         "organicRanks": [
           null,
           null,
-          21,
+          null,
           null
         ],
         "selectedOrganicUrls": [
           null,
           null,
-          "https://www.framerestorationutah.com/locations/vineyard",
+          null,
           null
         ],
         "exactCidMapsRanks": [
@@ -293,7 +293,7 @@
       "identityEvidence": "documented-slv-target-measurement-only",
       "serviceAreaStatus": "pending-current-profile-service-area-verification",
       "current": {
-        "observedAt": "2026-10-26T09:26:40.115Z",
+        "observedAt": "2026-11-16T09:16:41.673Z",
         "organicRanks": [
           null,
           null,
@@ -334,17 +334,17 @@
       "identityEvidence": "documented-slv-target-measurement-only",
       "serviceAreaStatus": "pending-current-profile-service-area-verification",
       "current": {
-        "observedAt": "2026-10-26T09:26:40.115Z",
+        "observedAt": "2026-11-16T09:16:41.673Z",
         "organicRanks": [
-          6,
           null,
-          25,
+          null,
+          null,
           null
         ],
         "selectedOrganicUrls": [
-          "https://www.framerestorationutah.com/locations/draper",
           null,
-          "https://www.framerestorationutah.com/locations/draper",
+          null,
+          null,
           null
         ],
         "exactCidMapsRanks": [

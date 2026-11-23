@@ -140,7 +140,7 @@
     },
     "routing": {
       "file": "vercel.json",
-      "sha256": "b82cf7cb99323ac9658fe43528709021819022d2d406d9857b9b6f390d3be105",
+      "sha256": "a829a0017a693967ba60d6ff702e2614d6cc9ddb4af9c6f48382f04d6a980371",
       "legacySource": "/salt-lake-city",
       "destination": "/locations/salt-lake-city",
       "permanent": true,
@@ -198,7 +198,15 @@
       },
       {
         "file": "locations/salt-lake-city.html",
-        "sha256": "01b77bb4620abeca16dc8d53ad014b4a02e2221b40f0f93ac2cfb093ee375567",
+        "sha256": "a5b7e74aad370bb2bf2eafbc64beba0b8f13c06226b0bb9c01375a3d7d8b3a52",
+        "slcConversionSourceAmendment": {
+          "observedAt": "2026-11-11T17:45:00Z",
+          "priorSha256": "fbfe166c92d3c44e7fe854f1ee9ef4b257ecab459d4fac4ebc34e96461d9dd82",
+          "priorInboundInternalLinks": 86,
+          "currentInboundInternalLinks": 100,
+          "reason": "Supporting Salt Lake City hub byte and inbound pin only: owner-approved PR 369 adds a click-to-load Google Maps service-area embed, refreshes the visible and schema dateModified to 2026-11-11, and the new SLC roof-repair, roof-replacement and hail-damage child pages add breadcrumb and parent links to the hub. Title, H1, canonical, NAP, identity override and historical ranking/GSC observations, diagnoses and held experiments are unchanged. Not new ranking evidence or experiment authorization.",
+          "reviewRequiredBeforeMerge": true
+        },
         "qaBaselineSourceAmendment": {
           "observedAt": "2026-10-18T20:00:00Z",
           "priorSha256": "f68f51ad40a9f8a02d2f9d20702da884afa0c0f13458615832627a930103e895",
@@ -230,14 +238,20 @@
           "reviewRequiredBeforeMerge": true
         },
         "role": "separate-salt-lake-city-hub-and-legacy-redirect-destination",
-        "title": "Salt Lake City Roof Repair &amp; Replacement | Frame Restoration Utah",
+        "title": "Salt Lake City Roof Repair &amp; Replacement | Free Inspection",
         "h1": "Salt Lake City Roof Repair &amp; Replacement",
         "canonical": "https://www.framerestorationutah.com/locations/salt-lake-city",
-        "inboundInternalLinks": 86
+        "inboundInternalLinks": 100
       },
       {
         "file": "index.html",
-        "sha256": "3484a1d4c586bcedaf60c85c319276acd2b94babb569ea0a7536880ec16de674",
+        "sha256": "d4322029637f98ab8e1d6bec050ddf79c2ff69811154fa7b5106c6cd5723c1d5",
+        "reviewCount51SourceAmendment": {
+          "observedAt": "2026-11-17T16:23:00Z",
+          "priorSha256": "1790c1154d4ae4f955f7ace215175482c4118b9bd46c600d739ab90641bf0d03",
+          "reason": "Supporting homepage byte pin only: visible Google review count 36 to 51 (combined current totals: Heber GBP 42 at 5.0, verified in the Heber manager on 2026-11-17, plus SLC service-area listing 9 at 5.0, per Landon 2026-11-17 screenshot) and its freshness marker. Title, H1, canonical, hrefs, schema, NAP, hours, booking links, Holladay pages, experiments, and historical rank/GSC evidence are unchanged. Supporting-source amendment only; not a fresh ranking diagnosis or authority to launch the title experiment.",
+          "reviewRequiredBeforeMerge": true
+        },
         "qaBaselineOfficialLinksSourceAmendment": {
           "observedAt": "2026-10-18T20:00:00Z",
           "priorSha256": "38e7ab7377ea59c1e48ddfcb885a87bdb79879106f255b78aa9bd1826fe5e4a3",
@@ -274,12 +288,12 @@
           "reason": "Supporting homepage byte pin only: adds a nonvisual deployment-asset freshness meta tag for the brand-source exclusion. No visible copy, links, media, title, H1, canonical, schema, historical ranking/GSC observations or experiment authorization changed.",
           "reviewRequiredBeforeMerge": true
         },
-      "ownerCleanupSourceAmendment": {
-        "observedAt": "2026-09-28T16:42:26.498141+00:00",
-        "priorSha256": "8afca2ace1bc40372e0d6936fd655146a0d96b6d1b08afa17b7a074ea8b4aa9e",
-        "reason": "Supporting homepage byte pin only: removes the eight technical evidence cards and their unused CSS at the owner request. Title, H1, canonical, schema, business summary, hail guide links and project media are unchanged. Historical ranking/GSC observations, inbound counts, Holladay diagnosis and held experiment remain dated and unchanged. This is not new ranking evidence or experiment authorization.",
-        "reviewRequiredBeforeMerge": true
-      },
+        "ownerCleanupSourceAmendment": {
+          "observedAt": "2026-09-28T16:42:26.498141+00:00",
+          "priorSha256": "8afca2ace1bc40372e0d6936fd655146a0d96b6d1b08afa17b7a074ea8b4aa9e",
+          "reason": "Supporting homepage byte pin only: removes the eight technical evidence cards and their unused CSS at the owner request. Title, H1, canonical, schema, business summary, hail guide links and project media are unchanged. Historical ranking/GSC observations, inbound counts, Holladay diagnosis and held experiment remain dated and unchanged. This is not new ranking evidence or experiment authorization.",
+          "reviewRequiredBeforeMerge": true
+        },
         "davisDiscoverySourceAmendment": {
           "observedAt": "2026-09-18T22:55:00Z",
           "priorSha256": "d3931904e8e918cf22a5ea66bd8abddd083c1f3de71b378a0907f7568f5cf57f",
