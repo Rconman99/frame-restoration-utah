@@ -52,15 +52,15 @@
   "sources": {
     "portfolio": {
       "file": "data/rank-tracker/SLV-18-CITY-GOAL-PORTFOLIO-2026-08-12.json",
-      "sha256": "cb489a9d8105579db8db2897e50fe6a5747d6bc62989fa9ce306b2c8047ce4be"
+      "sha256": "0e16d08cabc559b15f95568e9afd9ce9b6f2f4962c28ebbeb45920d0a3e7c4ab"
     },
     "displacement": {
       "file": "data/rank-tracker/SLV-COMPETITOR-DISPLACEMENT-2026-08-12.json",
-      "sha256": "88d38e1ce8c7f3fbfe331f53cd132a87050cfa4a4a5880cf03dd15ef5c460876"
+      "sha256": "561fce36ca6f41402b6c43ebd0bf327334f7f5e2357952174dbf0a6356513ccd"
     },
     "entityHealth": {
       "file": "data/rank-tracker/SLV-ENTITY-HEALTH-2026-08-12.json",
-      "sha256": "d735affe56409404ea7b348635c0f54cc5ce8b88794ac4137c5434a8abc2f2ec"
+      "sha256": "98ad73925563a4805b84abc1a2d8e524a4e08ba8cdf04834c0bb08c2d33a97bd"
     },
     "serviceAreaRequest": {
       "file": "data/authority/SLV-SERVICE-AREA-EVIDENCE-REQUEST-2026-08-12.json",
@@ -148,11 +148,11 @@
         ],
         "dominantDisplacers": [
           {
-            "name": "Whitaker Roofing Services",
-            "cid": "11316815627233980109",
-            "domain": "whitakerroofing.com",
+            "name": "Shingle Pro Roofing",
+            "cid": "9926634112120129216",
+            "domain": "shingleproroofing.com",
             "appearances": 3,
-            "numberOneQueries": 2,
+            "numberOneQueries": 1,
             "bestRank": 1,
             "keywords": [
               "roof repair salt lake city",
@@ -161,9 +161,9 @@
             ]
           },
           {
-            "name": "Shingle Pro Roofing",
-            "cid": "9926634112120129216",
-            "domain": "shingleproroofing.com",
+            "name": "Whitaker Roofing Services",
+            "cid": "11316815627233980109",
+            "domain": "whitakerroofing.com",
             "appearances": 3,
             "numberOneQueries": 1,
             "bestRank": 1,
@@ -178,8 +178,8 @@
             "cid": "16329927680093228178",
             "domain": null,
             "appearances": 2,
-            "numberOneQueries": 0,
-            "bestRank": 2,
+            "numberOneQueries": 1,
+            "bestRank": 1,
             "keywords": [
               "roof repair salt lake city",
               "roof replacement salt lake city"
@@ -201,8 +201,8 @@
           "packState": "exact-cid-not-returned-in-pack",
           "exactCidRank": null,
           "numberOneEntity": {
-            "name": "Whitaker Roofing Services",
-            "cid": "11316815627233980109"
+            "name": "The Roof Doctor",
+            "cid": "16329927680093228178"
           }
         },
         {
@@ -272,11 +272,11 @@
         ],
         "dominantDisplacers": [
           {
-            "name": "Whitaker Roofing Services",
-            "cid": "11316815627233980109",
-            "domain": "whitakerroofing.com",
+            "name": "RoofTek",
+            "cid": "2008385778269964311",
+            "domain": null,
             "appearances": 4,
-            "numberOneQueries": 3,
+            "numberOneQueries": 2,
             "bestRank": 1,
             "keywords": [
               "roofing contractor millcreek",
@@ -286,11 +286,11 @@
             ]
           },
           {
-            "name": "RoofTek",
-            "cid": "2008385778269964311",
-            "domain": null,
+            "name": "Whitaker Roofing Services",
+            "cid": "11316815627233980109",
+            "domain": "whitakerroofing.com",
             "appearances": 4,
-            "numberOneQueries": 1,
+            "numberOneQueries": 2,
             "bestRank": 1,
             "keywords": [
               "roofing contractor millcreek",
@@ -352,8 +352,8 @@
           "packState": "exact-cid-not-returned-in-pack",
           "exactCidRank": null,
           "numberOneEntity": {
-            "name": "Whitaker Roofing Services",
-            "cid": "11316815627233980109"
+            "name": "RoofTek",
+            "cid": "2008385778269964311"
           }
         }
       ],
@@ -827,11 +827,10 @@
             "name": "Legacy Roofing",
             "cid": "2263621246550931916",
             "domain": "legacyroofingutah.com",
-            "appearances": 4,
+            "appearances": 3,
             "numberOneQueries": 0,
             "bestRank": 3,
             "keywords": [
-              "roofing contractor draper",
               "roof repair draper",
               "roof replacement draper",
               "roofer draper"
