@@ -554,6 +554,84 @@ Deno.test("a caller screened out before any Dial leaves answered unset, as the b
   assertEquals(log.lead_id, null);
 });
 
+Deno.test("before the migrations are live, calls still log without from_zip and answered", async () => {
+  // An internal line never alerts, so the missed-call SMS task stays inert.
+  Deno.env.set("INTERNAL_RELAY_NUMBERS", receptionParams().From);
+  try {
+    fakeDb = new FakeSupabaseRest();
+    fakeDb.missingCallLogColumns = new Set(["from_zip", "answered"]);
+    await handleCallRequest(
+      await signedRequest(
+        "handle-call",
+        receptionParams({
+          FromCity: "PROVO",
+          FromState: "UT",
+          FromZip: "84601",
+        }),
+      ),
+    );
+    const inserted = fakeDb.callLogs.get(CALL_SID)!;
+    assertEquals(inserted.from_number, receptionParams().From);
+    assertEquals("from_zip" in inserted, false);
+    await handleCallRequest(
+      await signedRequest("connect", receptionParams({ Digits: "1" })),
+    );
+    const response = await handleCallRequest(
+      await signedRequest(
+        "completed",
+        receptionParams({
+          DialCallStatus: "completed",
+          DialBridged: "true",
+          DialCallDuration: "42",
+          RecordingUrl: "https://recordings.test/bridged",
+        }),
+      ),
+    );
+    assertEquals(response.status, 200);
+    await flushBackgroundTasks();
+    const log = fakeDb.callLogs.get(CALL_SID)!;
+    assertEquals(log.status, "completed");
+    assertEquals(log.duration_seconds, 42);
+    assertEquals(log.recording_url, "https://recordings.test/bridged");
+    assertEquals("answered" in log, false);
+    // One rejected insert and one rejected Dial-action update, each retried.
+    assertEquals(fakeDb.callLogWriteRejections, 2);
+  } finally {
+    Deno.env.delete("INTERNAL_RELAY_NUMBERS");
+  }
+});
+Deno.test("once the migrations are live, calls write from_zip and answered on the first try", async () => {
+  Deno.env.set("INTERNAL_RELAY_NUMBERS", receptionParams().From);
+  try {
+    fakeDb = new FakeSupabaseRest();
+    await handleCallRequest(
+      await signedRequest(
+        "handle-call",
+        receptionParams({ FromZip: "84601" }),
+      ),
+    );
+    assertEquals(fakeDb.callLogs.get(CALL_SID)?.from_zip, "84601");
+    await handleCallRequest(
+      await signedRequest("connect", receptionParams({ Digits: "1" })),
+    );
+    await handleCallRequest(
+      await signedRequest(
+        "completed",
+        receptionParams({
+          DialCallStatus: "completed",
+          DialBridged: "true",
+          DialCallDuration: "42",
+        }),
+      ),
+    );
+    await flushBackgroundTasks();
+    assertEquals(fakeDb.callLogs.get(CALL_SID)?.answered, true);
+    assertEquals(fakeDb.callLogWriteRejections, 0);
+  } finally {
+    Deno.env.delete("INTERNAL_RELAY_NUMBERS");
+  }
+});
+
 // Seed the interview state that an already-active pre-v7 call would have.
 // Fresh inbound behavior is tested separately below; legacy callbacks stay real.
 async function startLegacyCall(): Promise<Response> {
@@ -610,6 +688,9 @@ class FakeSupabaseRest {
   failNextCallLogPatch = false;
   failNextCallLogPost = false;
   failNextCallLogGet = false;
+  // Columns this fake database does not have yet, as before a migration.
+  missingCallLogColumns = new Set<string>();
+  callLogWriteRejections = 0;
   failNextScreeningPatch = false;
   failNextReconcileRpc = false;
   failNextDecisionRpc:
@@ -633,6 +714,15 @@ class FakeSupabaseRest {
   leadRows: Record<string, unknown>[] = [];
   reconcileRpcCount = 0;
   finalizeRpcCount = 0;
+
+  private unknownCallLogColumn(body: string): string | null {
+    if (!body) return null;
+    const row = JSON.parse(body) as Record<string, unknown>;
+    return Object.keys(row).find((key) =>
+      this.missingCallLogColumns.has(key)
+    ) ??
+      null;
+  }
 
   private reconcileCall(callSid: string): number | null {
     this.reconcileRpcCount += 1;
@@ -889,6 +979,20 @@ class FakeSupabaseRest {
           return jsonResponse([staleRow]);
         }
         return jsonResponse(row ? [row] : []);
+      }
+      if (request.method === "PATCH" || request.method === "POST") {
+        const unknown = this.unknownCallLogColumn(await request.clone().text());
+        if (unknown) {
+          this.callLogWriteRejections += 1;
+          return jsonResponse(
+            {
+              code: "PGRST204",
+              message:
+                `Could not find the '${unknown}' column of 'call_logs' in the schema cache`,
+            },
+            400,
+          );
+        }
       }
       if (request.method === "PATCH") {
         this.callLogPatchCount += 1;
