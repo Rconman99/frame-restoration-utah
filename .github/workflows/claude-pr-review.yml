@@ -61,7 +61,8 @@ jobs:
             PR NUMBER: ${{ github.event.pull_request.number || github.event.issue.number }}
 
             Review this pull request. Read the diff with `gh pr diff` and the
-            description with `gh pr view`. Check it against this repo's
+            description with `gh pr view --json title,body,files` (plain
+            `gh pr view` fails here because this job can't read check status). Check it against this repo's
             CLAUDE.md and AGENTS.md rules: no invented certifications, awards,
             reviews or ratings; only the market's own public phone number and
             NAP on public pages; no cross-market data, copy or secrets; no
