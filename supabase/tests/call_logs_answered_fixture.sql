@@ -36,6 +36,16 @@ from (values
 ) as v(n, status, duration, lead_phone)
 left join public.leads l on l.phone = v.lead_phone;
 
+-- Outbound calls placed by the operator's CALL text command. The backfill
+-- leaves these NULL whatever their final status.
+insert into public.call_logs(call_sid, from_number, to_number, status,
+                             duration_seconds, source_page, notes)
+values
+  ('CA' || lpad('140', 32, '0'), '+14352928802', '+18015550140', 'completed',
+   45, 'test', 'Outbound call via SMS command'),
+  ('CA' || lpad('141', 32, '0'), '+14352928802', '+18015550141', 'no-answer',
+   null, 'test', 'Outbound call via SMS command');
+
 -- Legacy owner-whisper traces. None of these call_logs statuses is one the
 -- screening trigger rewrites, so the seeded statuses stay as written above.
 insert into public.call_screenings(call_sid, script_version, stage, state,
