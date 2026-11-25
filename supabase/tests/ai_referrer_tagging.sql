@@ -184,23 +184,46 @@ do $$ begin
 end $$;
 rollback;
 
--- 7. Control for section 6: with the grant gone, that same insert must be
---    refused. This is what makes the revoke/grant pair a tested contract
---    rather than a comment — dropping the grant line from the migration turns
---    every Utah lead insert into `permission denied for function
---    frame_ai_referrer`, and section 2's has_function_privilege assert is the
---    only other thing standing between that and production.
+-- 7. Control for section 6: with the grant gone, the same cold-transaction
+--    service_role insert must still LAND, and must land untagged. That pair of
+--    outcomes is what makes the revoke/grant pair a tested contract rather than
+--    a comment: section 6 proves the grant is what produces a tag, this proves
+--    nothing else does. It also pins the fail-safe on the exact failure the
+--    missing grant causes — before the exception block in
+--    frame_set_ai_referrer(), this insert died with `permission denied for
+--    function frame_ai_referrer` and the lead was lost.
 begin;
 revoke all on function public.frame_ai_referrer(text, text) from service_role;
 set local role service_role;
-do $$
-declare denied boolean := false;
-begin
-  begin
-    insert into public.leads(name, phone, source_page, referrer) values ('C-no-grant', '+18015550132', 'test', 'https://chatgpt.com/');
-  exception when insufficient_privilege then denied := true;
-  end;
-  assert denied, 'a lead insert succeeded without the service_role EXECUTE grant: the revoke/grant pair is untested';
-end $$;
+insert into public.leads(name, phone, source_page, referrer) values ('C-no-grant', '+18015550132', 'test', 'https://chatgpt.com/');
+insert into public.phone_clicks(click_type, phone, source_page, page_title, referrer) values ('call', '+14352928802', '/', 'C-no-grant', 'https://chatgpt.com/');
 reset role;
+do $$ begin
+  assert (select count(*) from public.leads where name = 'C-no-grant') = 1, 'a missing EXECUTE grant blocked the lead insert instead of leaving it untagged';
+  assert (select ai_referrer from public.leads where name = 'C-no-grant') is null, 'a lead was tagged without the service_role EXECUTE grant: section 6 proves nothing';
+  assert (select count(*) from public.phone_clicks where page_title = 'C-no-grant') = 1, 'a missing EXECUTE grant blocked the phone_click insert';
+  assert (select ai_referrer from public.phone_clicks where page_title = 'C-no-grant') is null, 'a phone click was tagged without the service_role EXECUTE grant';
+end $$;
+rollback;
+
+-- 8. Fail-safe, on its own terms: tagging is analytics, the row is revenue.
+--    With the classifier replaced by one that always raises — the shape a
+--    missing EXECUTE grant, a signature change or a bad regex produces — both
+--    inserts must still land, untagged. Then the real classifier is restored
+--    by the savepoint rollback, which the last assert checks.
+begin;
+savepoint ai_referrer_failsafe;
+create or replace function public.frame_ai_referrer(ref text, utm text) returns text
+  language plpgsql immutable set search_path = '' as $fail$
+begin raise exception 'classifier unavailable'; end $fail$;
+insert into public.leads(name, phone, source_page, referrer) values ('C-failsafe', '+18015550133', 'test', 'https://chatgpt.com/');
+insert into public.phone_clicks(click_type, phone, source_page, page_title, referrer) values ('call', '+14352928802', '/', 'C-failsafe', 'https://chatgpt.com/');
+do $$ begin
+  assert (select count(*) from public.leads where name = 'C-failsafe' and ai_referrer is null) = 1, 'a raising classifier blocked the lead insert or tagged it';
+  assert (select count(*) from public.phone_clicks where page_title = 'C-failsafe' and ai_referrer is null) = 1, 'a raising classifier blocked the phone_click insert or tagged it';
+end $$;
+rollback to savepoint ai_referrer_failsafe;
+do $$ begin
+  assert public.frame_ai_referrer('https://chatgpt.com/', null::text) = 'chatgpt', 'the real classifier was not restored after the fail-safe probe';
+end $$;
 rollback;

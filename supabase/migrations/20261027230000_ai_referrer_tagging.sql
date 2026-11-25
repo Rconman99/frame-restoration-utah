@@ -6,6 +6,16 @@
 -- MIGRATION FILE ONLY — not applied. Additive + idempotent. The trigger fills
 -- the tag on every insert regardless of which code path wrote the row, so no
 -- edge-function deploy is required. The trailing UPDATEs backfill history.
+--
+-- Wrapped in one transaction, the house shape of Utah's recent function
+-- migrations (20260807000095, 20260910200000, 20260914200000 — the last two are
+-- in the applied history, so the real runner takes it). Under a bare `psql -f`,
+-- as the contract workflow uses, every statement commits on its own, so a
+-- failure between the revoke on the classifier and its paired grant four lines
+-- later would leave the database in the one state that breaks every leads /
+-- phone_clicks insert. Inside one transaction that state is unreachable.
+
+begin;
 
 -- Both functions pin search_path = '' like Utah's other public helpers (e.g.
 -- resend_notification_status_rank in 20260807000100); every name they use is
@@ -42,9 +52,17 @@ as $$
 declare j jsonb := to_jsonb(new);
 begin
   if new.ai_referrer is null then
-    new.ai_referrer := public.frame_ai_referrer(
-      coalesce(j ->> 'referrer', '') || ' ' || coalesce(j ->> 'landing_page', ''),
-      j ->> 'utm_source');
+    -- The tag is analytics; the row is a lead or a phone tap. A classifier
+    -- failure (a writer role without EXECUTE, a future signature change) must
+    -- never abort the INSERT, so it degrades to an untagged row and a warning.
+    begin
+      new.ai_referrer := public.frame_ai_referrer(
+        coalesce(j ->> 'referrer', '') || ' ' || coalesce(j ->> 'landing_page', ''),
+        j ->> 'utm_source');
+    exception when others then
+      new.ai_referrer := null;
+      raise warning 'frame_set_ai_referrer: ai_referrer left null (%)', sqlerrm;
+    end;
   end if;
   return new;
 end
@@ -90,3 +108,5 @@ update public.phone_clicks p
                  to_jsonb(x) ->> 'utm_source') as tag
           from public.phone_clicks x where x.ai_referrer is null) t
  where p.id = t.id and t.tag is not null;
+
+commit;
