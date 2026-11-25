@@ -52,15 +52,15 @@
   "sources": {
     "portfolio": {
       "file": "data/rank-tracker/SLV-18-CITY-GOAL-PORTFOLIO-2026-08-12.json",
-      "sha256": "8f2273f2e60ae7a0d3c0c8174a3daf9ec5448413bfd0768093893d762b1e710c"
+      "sha256": "0e16d08cabc559b15f95568e9afd9ce9b6f2f4962c28ebbeb45920d0a3e7c4ab"
     },
     "displacement": {
       "file": "data/rank-tracker/SLV-COMPETITOR-DISPLACEMENT-2026-08-12.json",
-      "sha256": "ef056e38180074512fe4dfa243f85f566a59334f64c66a3216be359a7d546df4"
+      "sha256": "561fce36ca6f41402b6c43ebd0bf327334f7f5e2357952174dbf0a6356513ccd"
     },
     "entityHealth": {
       "file": "data/rank-tracker/SLV-ENTITY-HEALTH-2026-08-12.json",
-      "sha256": "12f42f0a18abc3a24ae9f4b8f1348f4f93bb9b28dec5bab3c8ee2b4c55252521"
+      "sha256": "5e5a2550270d8cf48d9b3f7aa8c1b2dd145c3f5d2b9d11349e8905599fbcad70"
     },
     "serviceAreaRequest": {
       "file": "data/authority/SLV-SERVICE-AREA-EVIDENCE-REQUEST-2026-08-12.json",
@@ -78,8 +78,8 @@
   "summary": {
     "cities": 18,
     "queries": 72,
-    "mapsPacksPresent": 71,
-    "mapsPacksAbsent": 1,
+    "mapsPacksPresent": 70,
+    "mapsPacksAbsent": 2,
     "exactCidReturned": 0,
     "exactCidNumberOne": 0,
     "profileVerifiedCities": 2,
@@ -136,8 +136,8 @@
         }
       },
       "maps": {
-        "packsPresent": 4,
-        "packsAbsent": 0,
+        "packsPresent": 3,
+        "packsAbsent": 1,
         "exactCidReturned": 0,
         "exactCidNumberOne": 0,
         "exactCidRanks": [
@@ -148,28 +148,27 @@
         ],
         "dominantDisplacers": [
           {
-            "name": "Whitaker Roofing Services",
-            "cid": "11316815627233980109",
-            "domain": "whitakerroofing.com",
-            "appearances": 4,
-            "numberOneQueries": 2,
+            "name": "Shingle Pro Roofing",
+            "cid": "9926634112120129216",
+            "domain": "shingleproroofing.com",
+            "appearances": 3,
+            "numberOneQueries": 1,
             "bestRank": 1,
             "keywords": [
-              "roofing contractor salt lake city",
               "roof repair salt lake city",
               "roof replacement salt lake city",
               "roofer salt lake city"
             ]
           },
           {
-            "name": "Shingle Pro Roofing",
-            "cid": "9926634112120129216",
-            "domain": "shingleproroofing.com",
+            "name": "Whitaker Roofing Services",
+            "cid": "11316815627233980109",
+            "domain": "whitakerroofing.com",
             "appearances": 3,
-            "numberOneQueries": 2,
+            "numberOneQueries": 1,
             "bestRank": 1,
             "keywords": [
-              "roofing contractor salt lake city",
+              "roof repair salt lake city",
               "roof replacement salt lake city",
               "roofer salt lake city"
             ]
@@ -178,13 +177,12 @@
             "name": "The Roof Doctor",
             "cid": "16329927680093228178",
             "domain": null,
-            "appearances": 3,
-            "numberOneQueries": 0,
-            "bestRank": 2,
+            "appearances": 2,
+            "numberOneQueries": 1,
+            "bestRank": 1,
             "keywords": [
               "roof repair salt lake city",
-              "roof replacement salt lake city",
-              "roofer salt lake city"
+              "roof replacement salt lake city"
             ]
           }
         ]
@@ -193,12 +191,9 @@
         {
           "queryId": "slc-roofing-contractor",
           "keyword": "roofing contractor salt lake city",
-          "packState": "exact-cid-not-returned-in-pack",
+          "packState": "local-pack-not-present",
           "exactCidRank": null,
-          "numberOneEntity": {
-            "name": "Shingle Pro Roofing",
-            "cid": "9926634112120129216"
-          }
+          "numberOneEntity": null
         },
         {
           "queryId": "slc-roof-repair",
@@ -206,8 +201,8 @@
           "packState": "exact-cid-not-returned-in-pack",
           "exactCidRank": null,
           "numberOneEntity": {
-            "name": "Whitaker Roofing Services",
-            "cid": "11316815627233980109"
+            "name": "The Roof Doctor",
+            "cid": "16329927680093228178"
           }
         },
         {
@@ -539,11 +534,11 @@
         ],
         "dominantDisplacers": [
           {
-            "name": "True North Roofing",
-            "cid": "5387650211366766810",
-            "domain": "truenorthroof.com",
+            "name": "Utah Roofing Pros",
+            "cid": "4118570990011609504",
+            "domain": "utahroofingpros.com",
             "appearances": 4,
-            "numberOneQueries": 2,
+            "numberOneQueries": 3,
             "bestRank": 1,
             "keywords": [
               "roofing contractor holladay",
@@ -553,15 +548,16 @@
             ]
           },
           {
-            "name": "Utah Roofing Pros",
-            "cid": "4118570990011609504",
-            "domain": "utahroofingpros.com",
-            "appearances": 3,
-            "numberOneQueries": 2,
+            "name": "True North Roofing",
+            "cid": "5387650211366766810",
+            "domain": "truenorthroof.com",
+            "appearances": 4,
+            "numberOneQueries": 1,
             "bestRank": 1,
             "keywords": [
               "roofing contractor holladay",
               "roof repair holladay",
+              "roof replacement holladay",
               "roofer holladay"
             ]
           },
@@ -569,12 +565,13 @@
             "name": "Holladay Roofing",
             "cid": "4608145956816988456",
             "domain": "holladayroofing.xyz",
-            "appearances": 3,
+            "appearances": 4,
             "numberOneQueries": 0,
-            "bestRank": 2,
+            "bestRank": 3,
             "keywords": [
               "roofing contractor holladay",
               "roof repair holladay",
+              "roof replacement holladay",
               "roofer holladay"
             ]
           }
@@ -607,8 +604,8 @@
           "packState": "exact-cid-not-returned-in-pack",
           "exactCidRank": null,
           "numberOneEntity": {
-            "name": "True North Roofing",
-            "cid": "5387650211366766810"
+            "name": "Utah Roofing Pros",
+            "cid": "4118570990011609504"
           }
         },
         {
@@ -803,7 +800,7 @@
             "cid": "15206834657984643450",
             "domain": "prideroofing.net",
             "appearances": 4,
-            "numberOneQueries": 3,
+            "numberOneQueries": 4,
             "bestRank": 1,
             "keywords": [
               "roofing contractor draper",
@@ -817,8 +814,8 @@
             "cid": "11642763325802433097",
             "domain": "rockymountainroofingut.net",
             "appearances": 4,
-            "numberOneQueries": 1,
-            "bestRank": 1,
+            "numberOneQueries": 0,
+            "bestRank": 2,
             "keywords": [
               "roofing contractor draper",
               "roof repair draper",
@@ -827,14 +824,14 @@
             ]
           },
           {
-            "name": "Patriot Roofing & Construction",
-            "cid": "103033090419837437",
-            "domain": "prcroofingpro.com",
+            "name": "Legacy Roofing",
+            "cid": "2263621246550931916",
+            "domain": "legacyroofingutah.com",
             "appearances": 3,
             "numberOneQueries": 0,
             "bestRank": 3,
             "keywords": [
-              "roofing contractor draper",
+              "roof repair draper",
               "roof replacement draper",
               "roofer draper"
             ]
@@ -878,8 +875,8 @@
           "packState": "exact-cid-not-returned-in-pack",
           "exactCidRank": null,
           "numberOneEntity": {
-            "name": "Rocky Mountain Roofing UT, LLC",
-            "cid": "11642763325802433097"
+            "name": "Pride Roofing & Contracting, LLC",
+            "cid": "15206834657984643450"
           }
         }
       ],

@@ -164,7 +164,7 @@ jobs:
         with:
           python-version: '3.12'
       - name: Exercise provider outages, atomic snapshots, and workflow contracts
-        run: python3 tests/test_provider_workflows.py
+        run: python3 tests/test_provider_workflows.py && python3 tests/test_close_to_page_one_queue.py
 
   edge-function-compile:
     name: Supabase Edge entrypoint typecheck (blocking)
@@ -191,7 +191,7 @@ jobs:
 
   lead-form-single-submit:
     name: Lead form single-submit contract (blocking)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 25
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
@@ -465,10 +465,14 @@ jobs:
           node-version: '24'
       - name: Fail on stale public SEO signals
         run: npm run audit:public-seo
+      - name: Fail when the newest published page is missing from sitemap.xml
+        run: |
+          git fetch --unshallow origin
+          node scripts/check-published-sitemap.mjs
 
   mobile-ui-quality:
     name: Mobile conversion UI quality (blocking)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 25
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1

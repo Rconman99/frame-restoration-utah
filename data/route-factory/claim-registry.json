@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "market": "UT",
-  "reviewedAt": "2026-08-12",
+  "reviewedAt": "2026-11-17",
   "verificationScope": "Version 1 locks identity and service-route facts already present in approved repository sources. It includes dated independent evidence for BBB accreditation but intentionally omits BBB letter grades, pricing, payout, ranking, review-count, warranty, certification, and claim-outcome assertions until each has independent evidence and an owner-approved review date.",
   "claims": [
     {
@@ -229,12 +229,12 @@
       "value": "BBB Accredited Business",
       "status": "verified",
       "verifiedBy": "official-public-profile-review",
-      "verifiedOn": "2026-08-12",
-      "expiresOn": "2026-11-12",
+      "verifiedOn": "2026-11-13",
+      "expiresOn": "2027-02-13",
       "evidence": [
         {
           "kind": "local-file",
-          "path": "data/authority/BBB-PROFILE-VERIFICATION-2026-08-12.md"
+          "path": "data/authority/BBB-PROFILE-VERIFICATION-2026-11-13.md"
         }
       ],
       "mirrors": [],
@@ -441,6 +441,91 @@
       "name": "Siding replacement and repair",
       "path": "/pages/siding",
       "sourceFile": "pages/siding.html"
+    },
+    {
+      "name": "Roof maintenance",
+      "path": "/pages/roof-maintenance",
+      "sourceFile": "pages/roof-maintenance.html"
+    }
+  ],
+  "featuredPages": [
+    {
+      "section": "Priority city pages",
+      "name": "Salt Lake City roofing",
+      "path": "/locations/salt-lake-city",
+      "sourceFile": "locations/salt-lake-city.html"
+    },
+    {
+      "section": "Priority city pages",
+      "name": "Salt Lake City roof repair",
+      "path": "/locations/salt-lake-city/roof-repair",
+      "sourceFile": "locations/salt-lake-city/roof-repair.html"
+    },
+    {
+      "section": "Priority city pages",
+      "name": "Salt Lake City roof replacement",
+      "path": "/locations/salt-lake-city/roof-replacement",
+      "sourceFile": "locations/salt-lake-city/roof-replacement.html"
+    },
+    {
+      "section": "Priority city pages",
+      "name": "Salt Lake City storm damage roof repair",
+      "path": "/locations/salt-lake-city/storm-damage",
+      "sourceFile": "locations/salt-lake-city/storm-damage.html"
+    },
+    {
+      "section": "Priority city pages",
+      "name": "Salt Lake City hail damage roof repair",
+      "path": "/locations/salt-lake-city/hail-damage",
+      "sourceFile": "locations/salt-lake-city/hail-damage.html"
+    },
+    {
+      "section": "Priority city pages",
+      "name": "Heber City roofing",
+      "path": "/locations/heber-city",
+      "sourceFile": "locations/heber-city.html"
+    },
+    {
+      "section": "Documented projects",
+      "name": "Heber Valley roof project",
+      "path": "/projects/heber-valley-roof",
+      "sourceFile": "projects/heber-valley-roof.html"
+    },
+    {
+      "section": "County roofing hubs",
+      "name": "Wasatch County roofing hub",
+      "path": "/locations/wasatch-county",
+      "sourceFile": "locations/wasatch-county/index.html"
+    },
+    {
+      "section": "County roofing hubs",
+      "name": "Summit County roofing hub",
+      "path": "/locations/summit-county",
+      "sourceFile": "locations/summit-county/index.html"
+    },
+    {
+      "section": "County roofing hubs",
+      "name": "Salt Lake County roofing hub",
+      "path": "/locations/salt-lake-county",
+      "sourceFile": "locations/salt-lake-county/index.html"
+    },
+    {
+      "section": "County roofing hubs",
+      "name": "Utah County roofing hub",
+      "path": "/locations/utah-county",
+      "sourceFile": "locations/utah-county/index.html"
+    },
+    {
+      "section": "County roofing hubs",
+      "name": "Davis County roofing hub",
+      "path": "/locations/davis-county",
+      "sourceFile": "locations/davis-county/index.html"
+    },
+    {
+      "section": "Published financing information",
+      "name": "Roof financing (Wisetack)",
+      "path": "/pages/roof-financing",
+      "sourceFile": "pages/roof-financing.html"
     }
   ],
   "surfacePolicy": {
