@@ -197,7 +197,7 @@ Real-proof rule (hub RADAR, ADOPT 2026-11-13) and the photo authenticity doctrin
 - CTAs say the action: "Get My Free Roof Inspection", "Call", "Text Us a Roof Photo", "Schedule Online", "View Our Work".
 - **Phone:** one public number only, the Twilio line in `CLAUDE.md`. Never put any other number on a
   public surface. Phone, address and hours come from this repo's NAP sources, never from memory.
-- **Hours:** Mon to Fri 8 AM to 7 PM, Sat 8 AM to 6 PM (`CLAUDE.md`).
+- **Hours:** Mon to Sun 8 AM to 6 PM (`CLAUDE.md`; source of truth is `index.html` openingHoursSpecification).
 - **Claims you may use:** Licensed & Insured in Utah, Free Roof Inspections, 24/7 Storm Response,
   Financing Available, 10-Year Workmanship Warranty, BBB Accredited.
 - **Claims you may not use:** any BBB letter grade, NRCA membership, GAF Master Elite, Owens Corning
