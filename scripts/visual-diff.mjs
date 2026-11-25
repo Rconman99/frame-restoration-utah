@@ -111,6 +111,24 @@ function startServer(root) {
   });
 }
 
+// Name the smallest visible elements inside each changed band (document coordinates).
+function probeElements(page, bands) {
+  return page.evaluate((bandsIn) => bandsIn.map((band) => {
+    const hits = [];
+    for (const el of document.querySelectorAll("body *")) {
+      const r = el.getBoundingClientRect();
+      const top = r.top + window.scrollY;
+      const bottom = top + r.height;
+      if (!r.width || !r.height || bottom < band.from || top > band.to) continue;
+      if (r.height > (band.to - band.from + 1) * 3 + 40) continue;
+      const cls = typeof el.className === "string" ? el.className.trim().split(/\s+/).slice(0, 3).join(".") : "";
+      const pos = getComputedStyle(el).position;
+      hits.push(`${el.tagName.toLowerCase()}${el.id ? `#${el.id}` : ""}${cls ? `.${cls}` : ""}${pos === "fixed" || pos === "sticky" ? `[${pos}]` : ""} @${Math.round(top)}+${Math.round(r.height)}`);
+    }
+    return { ...band, elements: hits.slice(0, 12) };
+  }), bands);
+}
+
 async function capture(browser, origin, pagePath, viewport, extraCss = "", probeBands = null) {
   const context = await browser.newContext({
     viewport: { width: viewport.width, height: viewport.height },
@@ -178,31 +196,23 @@ async function capture(browser, origin, pagePath, viewport, extraCss = "", probe
       timeout: 60000,
     });
     let png = await shoot();
+    let previous = null;
     let settled = false;
     for (let attempt = 0; attempt < 6 && !settled; attempt += 1) {
       await page.waitForTimeout(300);
       const next = await shoot();
       settled = next.equals(png);
+      previous = png;
       png = next;
     }
-    if (!settled) console.log(`  note: ${pagePath} at ${viewport.name} kept changing between shots`);
-    let probe = null;
-    if (probeBands) {
-      // Name the smallest visible elements inside each changed band (document coordinates).
-      probe = await page.evaluate((bandsIn) => bandsIn.map((band) => {
-        const hits = [];
-        for (const el of document.querySelectorAll("body *")) {
-          const r = el.getBoundingClientRect();
-          const top = r.top + window.scrollY;
-          const bottom = top + r.height;
-          if (!r.width || !r.height || bottom < band.from || top > band.to) continue;
-          if (r.height > (band.to - band.from + 1) * 3 + 40) continue;
-          const cls = typeof el.className === "string" ? el.className.trim().split(/\s+/).slice(0, 3).join(".") : "";
-          hits.push(`${el.tagName.toLowerCase()}${el.id ? `#${el.id}` : ""}${cls ? `.${cls}` : ""} @${Math.round(top)}+${Math.round(r.height)}`);
-        }
-        return { ...band, elements: hits.slice(0, 12) };
-      }), probeBands);
+    if (!settled) {
+      const moving = await diffImages(diffPage, previous, png);
+      console.log(`  note: ${pagePath} at ${viewport.name} kept changing between shots (${moving.changed} px, box ${JSON.stringify(moving.box)})`);
+      for (const band of await probeElements(page, moving.bands)) {
+        console.log(`    rows ${band.from}-${band.to} (${band.pixels} px): ${band.elements.join(" | ")}`);
+      }
     }
+    const probe = probeBands ? await probeElements(page, probeBands) : null;
     return { png, height, probe };
   } finally {
     await context.close();
@@ -347,6 +357,7 @@ try {
           ratio: verdict.ratio,
           beforeHeight: before.height,
           afterHeight: after.height,
+          where: result.bands.slice(0, 2).map((band) => `${band.from}–${band.to}`).join(", "),
         });
         // Keep files only where something moved, so the artifact stays small.
         if (verdict.flagged || result.changed > 0) {
@@ -374,9 +385,9 @@ const lines = [
     ? `**${flagged.length} of ${rows.length}** key page views look different from main. Open the screenshots below to check they're intended.`
     : `No visible change on the ${PAGES.length} key pages (${rows.length} desktop and phone views).`,
   "",
-  "| Page | View | Result | Pixels changed | Height (main → PR) |",
-  "| --- | --- | --- | --- | --- |",
-  ...rows.map((row) => `| \`${row.page}\` | ${row.viewport} | ${row.flagged ? "⚠️ " : ""}${row.status} | ${row.ratio === undefined ? "–" : pct(row.ratio)} | ${row.beforeHeight ?? "–"} → ${row.afterHeight ?? "–"} px |`),
+  "| Page | View | Result | Pixels changed | Biggest change (px from top) | Height (main → PR) |",
+  "| --- | --- | --- | --- | --- | --- |",
+  ...rows.map((row) => `| \`${row.page}\` | ${row.viewport} | ${row.flagged ? "⚠️ " : ""}${row.status} | ${row.ratio === undefined ? "–" : pct(row.ratio)} | ${row.flagged && row.where ? row.where : "–"} | ${row.beforeHeight ?? "–"} → ${row.afterHeight ?? "–"} px |`),
   "",
   `Report only: this check never blocks a merge. A view is flagged when over ${pct(RATIO_THRESHOLD)} of its pixels change or its height moves more than ${HEIGHT_TOLERANCE_PX}px. The reviews carousel, videos and embeds are masked. Self-test: clean re-render ${pct(selftest.stableRatio)}, injected shift ${pct(selftest.shiftRatio)} (flagged).`,
 ];
