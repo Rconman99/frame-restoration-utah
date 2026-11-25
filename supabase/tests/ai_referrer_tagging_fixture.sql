@@ -14,6 +14,9 @@ create role anon;
 create role authenticated;
 create role service_role bypassrls;
 grant usage on schema public to anon, authenticated, service_role;
+-- Live Utah's table posture (20260807000095): service_role writes, browsers do not.
+grant all privileges on table public.leads, public.phone_clicks to service_role;
+grant usage, select, update on all sequences in schema public to service_role;
 
 -- Every UPDATE the backfill performs is recorded, so the contract can prove it
 -- touches only rows that resolve to a tag, never overwrites a tag, and does
