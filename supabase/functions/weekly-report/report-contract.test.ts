@@ -9,6 +9,7 @@ import {
   parseReportDays,
   parseReportDetail,
   REPORT_LOCATION_SLUGS,
+  REPORT_METRIC_DEFINITIONS,
   REPORT_RENDERING_CONTRACT,
   shapeReportRows,
   sourceTrafficFromRows,
@@ -41,6 +42,33 @@ Deno.test("report detail accepts only full or summary", () => {
   assert(parseReportDetail("full") === "full", "full rejected");
   assert(parseReportDetail("summary") === "summary", "summary rejected");
   assert(parseReportDetail("private") === null, "unknown detail accepted");
+});
+
+Deno.test("report metric registry keeps unlike event grains out of conversion", () => {
+  assert(
+    REPORT_METRIC_DEFINITIONS.total_leads.grain ===
+      "reportable_lead_table_rows",
+    "lead rows lost their declared grain",
+  );
+  assert(
+    REPORT_METRIC_DEFINITIONS.total_leads.unique_qualified_opportunities ===
+      false,
+    "lead rows were mislabeled as unique qualified opportunities",
+  );
+  assert(
+    REPORT_METRIC_DEFINITIONS.total_job_value.collected_revenue === false,
+    "entered job value was mislabeled as collected revenue",
+  );
+  const conversion = REPORT_METRIC_DEFINITIONS.qualified_conversion_rate;
+  assert(
+    conversion.status === "unavailable",
+    "conversion was exposed without reconciled outcomes",
+  );
+  assert(
+    conversion.numerator === "deduplicated_qualified_opportunities" &&
+      conversion.denominator === "eligible_sessions",
+    "qualified conversion definition changed",
+  );
 });
 
 Deno.test("report test filtering uses explicit markers and operator identity", () => {
@@ -278,4 +306,33 @@ Deno.test("summary detail never returns row-level lead or call data", () => {
   );
   assert(shaped.leads.length === 0, "summary leaked lead rows");
   assert(shaped.calls.length === 0, "summary leaked call rows");
+});
+
+Deno.test("only commission-eligible (SEO/AEO) leads count as Ryan's", async () => {
+  const m = await import("./report-contract.ts");
+  const B = m.NOT_SEO_AEO_REPORT_BUCKET;
+  assert(m.leadOwnerBucket({ created_at: "2026-11-03T19:30:00Z", call_source: "google_website", commission_eligible: true }) === "ryan", "google call");
+  assert(m.leadOwnerBucket({ created_at: "2026-11-03T19:30:00Z", call_source: "not_seo_aeo:yelp", commission_eligible: false }) === B, "moved number");
+  assert(m.leadOwnerBucket({ created_at: "2026-11-03T19:30:00Z", call_source: "unknown", commission_eligible: false }) === B, "unmapped");
+  assert(m.leadOwnerBucket({ created_at: "2026-11-03T19:30:00Z", source_page: "inbound-call" }) === B, "call w/o flag");
+  assert(m.leadOwnerBucket({ created_at: "2026-11-03T19:30:00Z", source_page: "/contact", utm_source: "google" }) === m.WEBSITE_FORM_BUCKET, "site form: lead, no commission");
+  assert(m.leadOwnerBucket({ created_at: "2026-11-03T19:30:00Z", source_page: "/contact", utm_source: "Yelp" }) === B, "yelp form");
+  assert(!m.isRyanLead({ created_at: "2026-11-03T19:30:00Z", commission_eligible: true, is_test: true }), "test excluded");
+  assert(/Not SEO\/AEO/.test(m.LANDON_DIRECT_LABEL), "label");
+});
+
+Deno.test("pre-cutoff leads are grandfathered as Ryan's SEO/AEO leads (pre-#362 totals)", async () => {
+  const m = await import("./report-contract.ts");
+  const old = "2026-11-03T19:09:59Z";
+  for (const row of [
+    { created_at: old, source_page: "inbound-call" },
+    { created_at: old, call_source: "unknown", commission_eligible: false },
+    { created_at: old, source_page: "/contact", utm_source: "Yelp" },
+    { created_at: "2026-10-01T12:00:00Z", source_page: "/contact", utm_source: "google" },
+    { source_page: "inbound-call" },
+  ]) {
+    assert(m.leadOwnerBucket(row) === "ryan", JSON.stringify(row));
+    assert(m.isRyanLead(row), "counted " + JSON.stringify(row));
+  }
+  assert(m.leadOwnerBucket({ created_at: "2026-11-03T19:10:00Z", commission_eligible: false, call_source: "not_seo_aeo:yelp" }) === m.NOT_SEO_AEO_REPORT_BUCKET, "cutoff is inclusive for net new");
 });

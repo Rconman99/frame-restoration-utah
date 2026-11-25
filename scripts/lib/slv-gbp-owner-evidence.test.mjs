@@ -188,3 +188,15 @@ test("generated service-area states always restart from immutable identity evide
     "pending-current-profile-service-area-verification",
   );
 });
+
+test("owner evidence captured after the Workspace rename is accepted", () => {
+  const renamed = validInput();
+  renamed.observerAccount = "ryan@framerestoration.com";
+  const receipt = sanitizeOwnerEvidenceInput(renamed, { expectedCities: cities, now });
+  assert.equal(receipt.observerAccount, "ryan@framerestoration.com");
+  assert.doesNotThrow(() => validateOwnerEvidenceReceipt(receipt, { expectedCities: cities, now }));
+
+  const lookalike = validInput();
+  lookalike.observerAccount = "ryan@framerestoration.co";
+  assert.throws(() => sanitizeOwnerEvidenceInput(lookalike, { expectedCities: cities, now }));
+});
