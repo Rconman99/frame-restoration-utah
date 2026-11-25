@@ -144,6 +144,14 @@ def _req(url, method="GET", body=None, headers=None, timeout=60):
     return json.loads(raw) if raw.strip() else None
 
 
+def _error_body(err):
+    """PostgREST's JSON error body, truncated. Never contains the API key."""
+    try:
+        return err.read().decode()[:300]
+    except Exception:
+        return "(no response body)"
+
+
 def require_utah_project(url):
     parts = urllib.parse.urlsplit(url)
     host = parts.hostname or ""
@@ -237,6 +245,15 @@ def ask_model(text, meta):
         parsed = json.loads(content)
     except json.JSONDecodeError:
         print(f"  ! unparseable model output: {content[:80]!r}", file=sys.stderr)
+        return None
+
+    # format=json guarantees valid JSON, not a JSON *object*: qwen can answer
+    # `["spam"]`, `null` or a bare string. Without this, .get() raises
+    # AttributeError and the whole batch dies on one bad row, which breaks the
+    # HONESTY RULE above that unparseable output leaves a row unclassified.
+    if not isinstance(parsed, dict):
+        print(f"  ! model output is not a JSON object: {content[:80]!r}",
+              file=sys.stderr)
         return None
 
     label = str(parsed.get("label", "")).strip().lower()
@@ -362,7 +379,18 @@ def main():
         if reason:
             print(f"         └─ {reason}")
         if not args.dry_run:
-            write_label(lead["id"], label, score, reason)
+            try:
+                write_label(lead["id"], label, score, reason)
+            except urllib.error.HTTPError as e:
+                sys.exit(
+                    f"ERROR: writing spam_* on lead #{lead['id']} failed with "
+                    f"HTTP {e.code}: {_error_body(e)}\n"
+                    "If the spam_* columns are missing, apply "
+                    "supabase/migrations/"
+                    "20261027221000_lead_spam_classification.sql first — it is "
+                    "a file-only migration and nothing applies it "
+                    "automatically. Labels written before this row are kept; "
+                    "re-run to finish the rest.")
 
     print(f"\nspam={counts['spam']}  real={counts['real']}  "
           f"uncertain={counts['uncertain']}  skipped={counts['skipped']}")

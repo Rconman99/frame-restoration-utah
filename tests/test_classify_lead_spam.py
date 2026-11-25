@@ -6,8 +6,10 @@ transport are replaced, so this runs in CI. The prompt eval
 (scripts/classify-lead-spam.eval.py) needs a local model and stays a local run.
 """
 import importlib.util
+import io
 import os
 import unittest
+import urllib.error
 from pathlib import Path
 from unittest import mock
 
@@ -108,6 +110,94 @@ class MarketWordingTests(unittest.TestCase):
             "You classify inbound messages to a Utah residential ROOFING "
             "contractor (Frame Roofing Utah, Salt Lake Valley)."))
         self.assertNotIn("__MARKET__", classifier.SYSTEM_PROMPT)
+
+
+def model_says(content):
+    """Patch the transport so /api/chat returns this raw message content."""
+    return mock.patch.object(
+        classifier, "_req", return_value={"message": {"content": content}})
+
+
+class ModelOutputTests(unittest.TestCase):
+    def test_non_object_json_is_skipped_not_crashed(self):
+        # format=json guarantees valid JSON, not a JSON object. Any of these
+        # used to raise AttributeError and kill the whole batch run.
+        for content in ('["spam"]', 'null', '"spam"', '3', 'true', '[]'):
+            with self.subTest(content=content), model_says(content):
+                self.assertIsNone(classifier.ask_model("my roof leaks", "sms"))
+
+    def test_unparseable_output_is_skipped(self):
+        with model_says("I think this is spam."):
+            self.assertIsNone(classifier.ask_model("my roof leaks", "sms"))
+
+    def test_unknown_label_is_skipped(self):
+        with model_says('{"label": "maybe", "confidence": 0.9}'):
+            self.assertIsNone(classifier.ask_model("my roof leaks", "sms"))
+
+    def test_spam_score_always_means_probability_of_spam(self):
+        # The model reports certainty in its own label; the column must mean
+        # P(spam) whatever the label is, or a `spam_score > 0.8` filter drops
+        # real customers.
+        cases = [
+            ('{"label":"spam","confidence":0.93,"reason":"insurance pitch"}', ("spam", 0.93)),
+            ('{"label":"real","confidence":0.93,"reason":"own roof"}', ("real", 0.07)),
+            ('{"label":"uncertain","confidence":0.93,"reason":"greeting"}', ("uncertain", 0.5)),
+            ('{"label":"real","confidence":1.0,"reason":"own roof"}', ("real", 0.0)),
+        ]
+        for content, want in cases:
+            with self.subTest(content=content), model_says(content):
+                label, score, _ = classifier.ask_model("x", "sms")
+                self.assertEqual((label, score), want)
+
+    def test_out_of_range_and_non_numeric_confidence_are_clamped(self):
+        for content, want in (
+            ('{"label":"spam","confidence":7}', 1.0),
+            ('{"label":"spam","confidence":-2}', 0.0),
+            ('{"label":"spam","confidence":"high"}', 0.5),
+            ('{"label":"spam","confidence":{"a":1}}', 0.5),
+            ('{"label":"spam"}', 0.5),
+        ):
+            with self.subTest(content=content), model_says(content):
+                self.assertEqual(classifier.ask_model("x", "sms")[1], want)
+
+
+class WriteContractTests(unittest.TestCase):
+    SPAM_ONLY = {"spam_label", "spam_score", "spam_reason", "spam_classifier",
+                 "spam_classified_at"}
+
+    def test_write_touches_only_the_machine_owned_spam_columns(self):
+        with mock.patch.object(classifier, "SUPABASE_URL", UTAH), \
+                mock.patch.object(classifier, "SERVICE_KEY", "test-only-placeholder"), \
+                mock.patch.object(classifier, "_req", return_value=None) as req:
+            classifier.write_label(7, "spam", 0.9123, "insurance pitch")
+        url, method, body = req.call_args.args[:3]
+        self.assertEqual(url, f"{UTAH}/rest/v1/leads?id=eq.7")
+        self.assertEqual(method, "PATCH")
+        self.assertEqual(set(body), self.SPAM_ONLY)
+        self.assertEqual(body["spam_score"], 0.912)
+        self.assertNotIn("status", body)
+
+    def test_write_failure_names_the_unapplied_migration_and_stops(self):
+        # The migration is file-only: before it is applied PostgREST answers
+        # PGRST204 on every write. A raw HTTPError traceback mid-batch told
+        # nobody that; this must be a readable hard stop.
+        err = urllib.error.HTTPError(
+            f"{UTAH}/rest/v1/leads?id=eq.7", 400, "Bad Request", {},
+            io.BytesIO(b'{"code":"PGRST204","message":'
+                       b'"Could not find the \'spam_label\' column"}'))
+        leads = [{"id": 7, "message": "my roof leaks", "tier_classifier": "sms"}]
+        with mock.patch.object(classifier, "fetch_leads", return_value=leads), \
+                mock.patch.object(classifier, "call_durations", return_value={}), \
+                mock.patch.object(classifier, "ask_model",
+                                  return_value=("spam", 0.9, "pitch")), \
+                mock.patch.object(classifier, "write_label", side_effect=err), \
+                mock.patch.object(classifier, "print_stats"), \
+                mock.patch("sys.argv", ["classify-lead-spam.py"]):
+            with self.assertRaises(SystemExit) as caught:
+                classifier.main()
+        message = str(caught.exception)
+        self.assertIn("20261027221000_lead_spam_classification.sql", message)
+        self.assertIn("PGRST204", message)
 
 
 if __name__ == "__main__":
