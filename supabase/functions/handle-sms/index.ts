@@ -28,6 +28,12 @@ import {
   parseBlockCommand,
 } from "../_shared/missed-call-alert.ts";
 import { collectInboundMedia, createMediaProxyUrl } from "../_shared/inbound-media.ts";
+import {
+  applySmsComplianceAction,
+  classifySmsComplianceAction,
+  readSmsSuppression,
+  smsSendAllowed,
+} from "../_shared/sms-suppression.ts";
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
@@ -430,6 +436,21 @@ Deno.serve(async (req: Request) => {
         );
       }
 
+      // TCPA / FCC 26-67: never text a number that opted out. Fail closed if
+      // the suppression state can't be read.
+      const suppression = await readSmsSuppression(supabase, customerNumber);
+      if (!smsSendAllowed(suppression)) {
+        console.error(
+          "[handle-sms] operator send blocked by SMS suppression state:",
+          suppression.ok ? "suppressed" : suppression.error,
+        );
+        return twimlMessage(
+          suppression.ok
+            ? `Not sent: ${customerNumber} opted out of texts. Call instead if appropriate.`
+            : `Not sent: opt-out check unavailable for ${customerNumber}. Try again later.`,
+        );
+      }
+
       if (twilioSid && twilioAuth) {
         // Idempotency: claim before sending so a Twilio retry can't double-text
         // the customer (CODEX HIGH). fail-closed.
@@ -492,17 +513,32 @@ Deno.serve(async (req: Request) => {
     // it a sticky conversation or forward it as a normal message — that would
     // prompt a reply to someone who just unsubscribed.
     if (customerRoute === "optout") {
+      // Persist the opt-out so every later customer send is suppressed
+      // immediately (FCC 26-67 allows 10 business days; we do it now).
+      const preference = await applySmsComplianceAction(supabase, {
+        customerNumber: normalizePhone(from),
+        action: classifySmsComplianceAction({ optOutType, body }),
+        messageSid,
+      });
+      if (!preference.ok) {
+        console.error(
+          "[handle-sms] SMS opt-out state update failed:",
+          preference.error,
+        );
+      }
       await supabase.from("sms_logs").insert({
         message_sid: messageSid,
         direction: "inbound",
         from_number: from,
         to_number: to,
-        body: `[${optOutType}] ${body}`,
+        body: `[${optOutType || "STOP-KEYWORD"}] ${body}`,
       });
       return new Response(
         `<?xml version="1.0" encoding="UTF-8"?><Response><Message to="${LANDON_PHONE}">[opt-out: ${
-          escapeXml(optOutType)
-        }] ${escapeXml(from)} — do not reply</Message></Response>`,
+          escapeXml(optOutType || "STOP")
+        }] ${escapeXml(from)} — do not reply${
+          preference.ok ? "" : " (suppression save FAILED; check CRM)"
+        }</Message></Response>`,
         { headers: { "Content-Type": "text/xml" } },
       );
     }

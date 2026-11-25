@@ -27,8 +27,9 @@ from __future__ import annotations
 
 import hashlib
 import json
-import secrets
 import os
+import re
+import secrets
 import sys
 import time
 import urllib.parse
@@ -153,6 +154,41 @@ def get_account(api_key: str) -> dict:
         return {"_error": masked}
 
 
+
+# JWT-shaped values and Messenger/WhatsApp partner tokens sometimes appear in
+# SerpAPI local-pack fields (e.g. whatsapp URLs with ?partnertoken=eyJ...).
+# The repo is public; never commit those literals. This does not treat them as
+# Frame credentials and does not change the security-gate allowlist.
+_JWT_RE = re.compile(r"eyJ[A-Za-z0-9_-]{8,}\.[A-Za-z0-9_-]{8,}\.[A-Za-z0-9_-]{8,}")
+_REDACTED = "REDACTED"
+
+
+def redact_credential_shaped(value):
+    """Return a copy with JWT-shaped literals removed from strings and URL query values."""
+    if isinstance(value, dict):
+        return {k: redact_credential_shaped(v) for k, v in value.items()}
+    if isinstance(value, list):
+        return [redact_credential_shaped(v) for v in value]
+    if isinstance(value, tuple):
+        return tuple(redact_credential_shaped(v) for v in value)
+    if isinstance(value, str):
+        if "partnertoken=" not in value.lower() and not _JWT_RE.search(value):
+            return value
+        parts = urllib.parse.urlsplit(value)
+        if parts.scheme in ("http", "https"):
+            query = []
+            for key, val in urllib.parse.parse_qsl(parts.query, keep_blank_values=True):
+                if key.lower() == "partnertoken" or _JWT_RE.search(val):
+                    query.append((key, _REDACTED))
+                else:
+                    query.append((key, _JWT_RE.sub(_REDACTED, val)))
+            return urllib.parse.urlunsplit(
+                (parts.scheme, parts.netloc, parts.path, urllib.parse.urlencode(query), parts.fragment)
+            )
+        return _JWT_RE.sub(_REDACTED, value)
+    return value
+
+
 def slug_for(query: str) -> str:
     """Slug + 8-char hash. Prevents collisions on truncated similar queries."""
     base = "".join(c if c.isalnum() else "-" for c in query)[:40].strip("-")
@@ -161,10 +197,11 @@ def slug_for(query: str) -> str:
 
 
 def save_raw(name: str, payload: dict) -> Path:
-    """Save raw payload to durable run directory. Strips api_key from response."""
+    """Save raw payload to durable run directory. Strips api_key and JWT-shaped literals."""
     if isinstance(payload, dict) and "search_parameters" in payload:
         if isinstance(payload["search_parameters"], dict):
             payload["search_parameters"].pop("api_key", None)
+    payload = redact_credential_shaped(payload)
     path = RAW_DIR / f"{name}.json"
     path.write_text(json.dumps(payload, indent=2))
     return path
@@ -494,7 +531,7 @@ def main():
         "results": results,
         "calls_log": calls_log,
     }
-    RUN_JSON.write_text(json.dumps(run_summary, indent=2))
+    RUN_JSON.write_text(json.dumps(redact_credential_shaped(run_summary), indent=2))
 
     # ── .last_run.json for cron observability ──────────────────────────────────
     n_aio = sum(1 for r in results if r["aio_present"])

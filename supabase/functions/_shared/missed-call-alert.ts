@@ -96,6 +96,8 @@ export interface MissedCallAlertInput {
   callCount?: number;
   /** Local (Mountain) time string, e.g. "5:37 PM". */
   localTime?: string | null;
+  /** Tracking-number source label, e.g. "Yelp lead, not SEO" (tracking-numbers.ts). */
+  sourceLabel?: string | null;
 }
 
 /**
@@ -115,7 +117,8 @@ export function missedCallAlertText(input: MissedCallAlertInput): string {
     ? `\nCall #${input.callCount} from this number.`
     : "";
   const suffix = normalized.replace(/\D/g, "").slice(-4);
-  return `Missed call${when}: ${pretty}${city}${repeat}\nCall back: ${normalized}\nReply BLOCK ${suffix} to stop alerts from this number.`;
+  const label = input.sourceLabel ? ` (${input.sourceLabel})` : "";
+  return `Missed call${label}${when}: ${pretty}${city}${repeat}\nCall back: ${normalized}\nReply BLOCK ${suffix} to stop alerts from this number.`;
 }
 
 export interface BlockCommand {

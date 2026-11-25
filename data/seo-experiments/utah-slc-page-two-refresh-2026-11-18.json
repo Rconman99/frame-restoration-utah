@@ -1,0 +1,71 @@
+{
+  "artifact": "frame-seo-intervention",
+  "version": "frame-seo-intervention.v1",
+  "id": "utah-slc-page-two-refresh-2026-11-18",
+  "market": "utah",
+  "city": "salt-lake-city",
+  "status": "proposed",
+  "classification": "content-refresh-observed-for-ranking-impact",
+  "page": "https://www.framerestorationutah.com/locations/salt-lake-city",
+  "baseline": {
+    "searchConsole": {
+      "window": "2026-10-18..2026-11-14",
+      "sourceArtifact": "Search Console snapshot dated 2026-11-17 (command center)",
+      "page": {
+        "impressions": 5319,
+        "averagePosition": 23
+      },
+      "queries": [
+        { "query": "roof repair salt lake city", "impressions": 879, "position": 21.7 },
+        { "query": "roof replacement salt lake city", "impressions": 228, "position": 19.6 },
+        { "query": "roof repair salt lake city utah", "impressions": 180, "position": 20.7 },
+        { "query": "salt lake city roof repair", "impressions": 131, "position": 16 },
+        { "query": "roof repair in salt lake city", "impressions": 105, "position": 16.8 },
+        { "query": "commercial roof repair salt lake city", "impressions": 57, "position": 66.8 },
+        { "query": "which roofing companies in salt lake city provide roof repair and full roof replacement services?", "impressions": 50, "position": 23.5 }
+      ]
+    }
+  },
+  "hypothesis": "The page ranks on page two to three for roof-repair queries but its copy talks about inspections and documentation, not repairs. An answer-first repair section, a direct answer to the both-repair-and-replacement question, commercial and apartment repair wording, and five matching FAQs (visible and FAQPage schema) should move the repair cluster toward page one The title is also shortened so it is not cut off in results.",
+  "changeSet": {
+    "type": "content-refresh",
+    "scope": [
+      "answer-first Quick Facts copy using registered claims only (DOPL license, BBB Accredited Business)",
+      "new section: Roof Repair in Salt Lake City: What We Fix",
+      "new answers: who does both repair and full replacement; repair or replace",
+      "commercial card renamed to Commercial & Apartment Roof Repair",
+      "five FAQs added with visible and schema parity",
+      "meta, og, twitter and schema descriptions rewritten with a reason to click",
+      "title shortened to 58 characters with a reason to click (Free Inspection); H1 unchanged; og and twitter titles keep the brand"
+    ],
+    "evidence": [
+      "data/route-factory/claim-registry.json"
+    ]
+  },
+  "measurement": {
+    "startsAfterProductionDeployment": true,
+    "deployedAt": null,
+    "evaluationWindowDays": 28,
+    "earliestEvaluationAt": null,
+    "metrics": [
+      "gsc_position_by_query",
+      "gsc_impressions_and_clicks_for_page",
+      "organic_rank_by_fixed_query"
+    ],
+    "decision": "pending-owner-approval",
+    "result": null,
+    "decidedAt": null
+  },
+  "confounds": [
+    "utah-slc-entity-trust-correction-2026-08-12 is still recorded as running (integrity correction, keep regardless)",
+    "Search Console positions move with seasonality and Google updates"
+  ],
+  "publicSideEffects": [],
+  "prohibitedSideEffects": [
+    "no GBP edits or posts",
+    "no directory submissions",
+    "no review requests or incentives",
+    "no indexing requests",
+    "no invented prices, reviews, stats or credentials"
+  ]
+}

@@ -26,7 +26,7 @@
 // deploy lead-crm directly.
 
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { createClient } from "npm:@supabase/supabase-js@2.105.4";
 import {
   AUTH_THROTTLE_RPC,
   dashboardThrottleKey,
@@ -99,7 +99,8 @@ const LEAD_SELECT_BASE = `
   job_completed_at, balance_due, contract_url, warranty_doc_url, product,
   review_requested_at, review_link_clicked,
   won_at,
-  tier, tier_reason, tier_confidence, tier_classifier
+  tier, tier_reason, tier_confidence, tier_classifier,
+  call_source, commission_eligible, utm_source
 `;
 
 const LEAD_SELECT_PARITY = `
@@ -780,7 +781,18 @@ Deno.serve(async (req: Request) => {
     // Stamp won_at when transitioning to "won"
     if (patch.status === "won") {
       const { data: existing } = await supabase
-        .from("leads").select("status, won_at").eq("id", id).single();
+        .from("leads").select("status, won_at, job_value").eq("id", id)
+        .single();
+      // A won job needs a value so calls tie to revenue (fix plan gap #17).
+      const wonValue = "job_value" in patch
+        ? patch.job_value
+        : existing?.job_value;
+      if (!(Number(wonValue) > 0)) {
+        return jsonResp(req, {
+          error: "job_value_required",
+          message: "Add the job value before marking this lead won.",
+        }, 400);
+      }
       if (existing && existing.status !== "won" && !existing.won_at) {
         patch.won_at = new Date().toISOString();
       }
@@ -867,6 +879,12 @@ Deno.serve(async (req: Request) => {
     }
     if (margin !== null && !Number.isFinite(margin)) {
       return jsonResp(req, { error: "bad_margin" }, 400);
+    }
+    if (status === "won" && !(jobValue !== null && jobValue > 0)) {
+      return jsonResp(req, {
+        error: "job_value_required",
+        message: "Add the job value before marking this lead won.",
+      }, 400);
     }
 
     const insertRow: Record<string, unknown> = {

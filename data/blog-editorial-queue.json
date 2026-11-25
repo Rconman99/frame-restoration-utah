@@ -1,0 +1,336 @@
+{
+  "schemaVersion": 1,
+  "rule": "Each pending item is drafted at most once, in order, by scripts/blog-editorial-pick.py when no active NWS alert targets a city. Every local claim in a post must be one of the verbatim quotes in local_evidence, with its source linked. Add items only after copying each quote from the live source page.",
+  "items": [
+    {
+      "status": "pending",
+      "slug": "snow-load-roof-replacement-heber-city",
+      "city_slug": "heber-city",
+      "city_name": "Heber City",
+      "service_slug": "roof-replacement",
+      "service_name": "Roof Replacement",
+      "keyword": "roof snow load Heber City",
+      "editorial": {
+        "reader_question": "Why does snow load matter when replacing a roof in Heber City, and who decides the number for a house?",
+        "distinct_angle": "Heber City sits high in the Heber Valley, and Utah's ground snow load map is driven by elevation. Explain what ground snow load is, that Utah State University's map predicts it from elevation, and that an engineer or the building official decides what applies to a specific site, so a homeowner should ask about it whenever decking or framing changes. No snow load numbers, prices or ratings.",
+        "local_evidence": [
+          {
+            "claim": "These predictions are calculated using an adaptation of PRISM, which is a weighted linear regression model that uses elevation to calculate ground snow load at a local level.",
+            "source_url": "https://www.usu.edu/utahsnowload/",
+            "source_label": "Utah State University Utah Snow Load"
+          },
+          {
+            "claim": "Engineering judgement must be exercised where the predicted elevation greatly differs from the actual elevation at the site.",
+            "source_url": "https://www.usu.edu/utahsnowload/",
+            "source_label": "Utah State University Utah Snow Load"
+          }
+        ]
+      },
+      "review": {
+        "reviewed_on": "2026-11-18",
+        "reviewed_by": "Claude (agent); merge of this PR is the human approval",
+        "method": "Each claim was copied word for word from the live HTTPS page on 2026-11-18 and matched again by a second scripted fetch where the site allowed it (see PR). No fee amounts, prices, ratings or phone numbers are quoted."
+      }
+    },
+    {
+      "status": "pending",
+      "slug": "ice-dams-roof-leaks-utah",
+      "city_slug": "utah",
+      "city_name": "Utah",
+      "service_slug": "roof-repair",
+      "service_name": "Roof Repair",
+      "keyword": "ice dams on roofs Utah",
+      "editorial": {
+        "reader_question": "What causes ice dams on Utah roofs, and what actually stops them from leaking into the house?",
+        "distinct_angle": "A statewide winter guide: how the melt-and-refreeze cycle builds an ice dam, how water then backs up under shingles into the attic, and why attic venting and insulation are the long-term fix rather than chipping ice. Use the National Weather Service explanation as the source; do not claim it is Utah-specific data. No prices or ratings.",
+        "local_evidence": [
+          {
+            "claim": "They occur when heavy snow buildup melts during the day and then refreezes when temperatures drop overnight.",
+            "source_url": "https://www.weather.gov/grr/roofIceDams",
+            "source_label": "National Weather Service"
+          },
+          {
+            "claim": "After several days of melting-freezing cycles, it's common for the melted water and ice to work up under the shingles until water enters the attic and eventually does damage to the ceilings, wall and contents.",
+            "source_url": "https://www.weather.gov/grr/roofIceDams",
+            "source_label": "National Weather Service"
+          },
+          {
+            "claim": "The venting allows the attic air to stay cold enough to prevent or minimize the freeze/thaw cycle on the roof.",
+            "source_url": "https://www.weather.gov/grr/roofIceDams",
+            "source_label": "National Weather Service"
+          }
+        ]
+      },
+      "review": {
+        "reviewed_on": "2026-11-18",
+        "reviewed_by": "Claude (agent); merge of this PR is the human approval",
+        "method": "Each claim was copied word for word from the live HTTPS page on 2026-11-18 and matched again by a second scripted fetch where the site allowed it (see PR). No fee amounts, prices, ratings or phone numbers are quoted."
+      }
+    },
+    {
+      "status": "pending",
+      "slug": "canyon-wind-roof-damage-bountiful",
+      "city_slug": "bountiful",
+      "city_name": "Bountiful",
+      "service_slug": "storm-damage",
+      "service_name": "Storm Damage",
+      "keyword": "east wind roof damage Bountiful",
+      "editorial": {
+        "reader_question": "Why do east canyon winds hit Bountiful roofs so hard, and what should a homeowner check after one?",
+        "distinct_angle": "Bountiful sits at the base of the Wasatch on the northern Wasatch Front, where the National Weather Service describes strong easterly downslope wind events every few years. Explain in plain terms why winds at the base of the mountains can be stronger than anywhere above, then give a post-windstorm roof check (lifted shingles, ridge caps, flashing, debris). No wind speeds, dollar figures or ratings.",
+        "local_evidence": [
+          {
+            "claim": "Historically, strong easterly downslope wind events have impacted the northern Wasatch Front on average every few years.",
+            "source_url": "https://www.weather.gov/media/wrn/calendar/Day2WeatherScenario-Utah.pdf",
+            "source_label": "National Weather Service"
+          },
+          {
+            "claim": "Such events toppled semis along I-15 north of Salt Lake City, overturned Union Pacific train cars, disrupted air travel, and caused widespread damage to personal property.",
+            "source_url": "https://www.weather.gov/media/wrn/calendar/Day2WeatherScenario-Utah.pdf",
+            "source_label": "National Weather Service"
+          },
+          {
+            "claim": "This energy propagation is why it is possible to produce surface wind speeds at the base of the mountains far in excess of the wind speeds observed at any level in the free atmosphere.",
+            "source_url": "https://www.weather.gov/media/wrh/online_publications/TAs/ta9909.pdf",
+            "source_label": "National Weather Service Salt Lake City"
+          }
+        ]
+      },
+      "review": {
+        "reviewed_on": "2026-11-18",
+        "reviewed_by": "Claude (agent); merge of this PR is the human approval",
+        "method": "Each claim was copied word for word from the live HTTPS page on 2026-11-18 and matched again by a second scripted fetch where the site allowed it (see PR). No fee amounts, prices, ratings or phone numbers are quoted."
+      }
+    },
+    {
+      "status": "pending",
+      "slug": "roof-replacement-permit-tooele",
+      "city_slug": "tooele",
+      "city_name": "Tooele",
+      "service_slug": "roof-replacement",
+      "service_name": "Roof Replacement",
+      "keyword": "roof replacement Tooele",
+      "editorial": {
+        "reader_question": "What does Tooele City handle when a homeowner replaces a roof, and what stays the homeowner's responsibility?",
+        "distinct_angle": "Built only from Tooele City pages: the Building Safety Division issues permits and inspects, permits can be applied for and paid online, work must be inspected before it is covered, and code compliance stays the applicant's responsibility. Tooele's permit form has no roof-specific category, so do not claim a roof-specific permit; tell the homeowner to confirm with Building Safety. No prices, fees or ratings.",
+        "local_evidence": [
+          {
+            "claim": "The Building Safety Division is responsible for reviewing plans, issuing building permits, conducting field inspections of buildings to ensure compliance with local and state mandated regulations related to building construction, maintenance, rehabilitation, and conducting inspections of public infrastructure.",
+            "source_url": "https://files.tooelecity.gov/services/community_development/building_safety_division.php",
+            "source_label": "Tooele City Building Safety Division"
+          },
+          {
+            "claim": "You can now apply for and pay for a Building Permit online!",
+            "source_url": "https://files.tooelecity.gov/services/community_development/applications___forms.php",
+            "source_label": "Tooele City Applications and Forms"
+          },
+          {
+            "claim": "Inspections are required before any work is covered.",
+            "source_url": "https://files.tooelecity.gov/Documents/CommunityDevelopment/Applications&Forms/Building%20Permit%20Form%20(01-09-2025).pdf",
+            "source_label": "Tooele City Building Permit Form"
+          },
+          {
+            "claim": "Compliance with Tooele City Building and Zoning Codes is the responsibility of the applicant regardless of inspections or approvals by Tooele City Building officials.",
+            "source_url": "https://files.tooelecity.gov/Documents/CommunityDevelopment/Applications&Forms/Building%20Permit%20Form%20(01-09-2025).pdf",
+            "source_label": "Tooele City Building Permit Form"
+          }
+        ]
+      },
+      "review": {
+        "reviewed_on": "2026-11-18",
+        "reviewed_by": "Claude (agent); merge of this PR is the human approval",
+        "method": "Each claim was copied word for word from the live HTTPS page on 2026-11-18 and matched again by a second scripted fetch where the site allowed it (see PR). No fee amounts, prices, ratings or phone numbers are quoted."
+      }
+    },
+    {
+      "status": "pending",
+      "slug": "roof-storm-damage-claim-timing-utah",
+      "city_slug": "utah",
+      "city_name": "Utah",
+      "service_slug": "insurance-claims",
+      "service_name": "Insurance Claims",
+      "keyword": "roof storm damage claim timing Utah",
+      "editorial": {
+        "reader_question": "After a storm damages a Utah roof, what should a homeowner do first, and in what order?",
+        "distinct_angle": "A sequence guide built from the Utah Insurance Department: decide quickly, call the carrier with the policy number, make only temporary repairs until the carrier inspects, and know that policies set time limits. Frame Restoration documents the observed roof conditions and prepares a written scope the carrier can review; the homeowner files and the carrier decides coverage. Different from the existing Utah claims guide because it is about timing and order. No day counts, prices or ratings.",
+        "local_evidence": [
+          {
+            "claim": "Most insurance companies have a time requirement for filing a claim.",
+            "source_url": "https://insurance.utah.gov/consumers/disaster-preparedness/",
+            "source_label": "Utah Insurance Department"
+          },
+          {
+            "claim": "Make the decision on whether or not you plan to submit your claim as soon as possible.",
+            "source_url": "https://insurance.utah.gov/consumers/disaster-preparedness/",
+            "source_label": "Utah Insurance Department"
+          },
+          {
+            "claim": "Call your insurance company or agent with your policy number and other relevant information as soon as possible.",
+            "source_url": "https://insurance.utah.gov/consumers/home-insurance/home-claims-info/",
+            "source_label": "Utah Insurance Department"
+          },
+          {
+            "claim": "Do not have permanent repairs made until your insurance company has inspected the property and you have reached an agreement on the cost of repairs.",
+            "source_url": "https://insurance.utah.gov/consumers/home-insurance/home-claims-info/",
+            "source_label": "Utah Insurance Department"
+          }
+        ]
+      },
+      "review": {
+        "reviewed_on": "2026-11-18",
+        "reviewed_by": "Claude (agent); merge of this PR is the human approval",
+        "method": "Each claim was copied word for word from the live HTTPS page on 2026-11-18 and matched again by a second scripted fetch where the site allowed it (see PR). No fee amounts, prices, ratings or phone numbers are quoted."
+      }
+    },
+    {
+      "status": "pending",
+      "slug": "reroof-permit-inspections-kaysville",
+      "city_slug": "kaysville",
+      "city_name": "Kaysville",
+      "service_slug": "roof-replacement",
+      "service_name": "Roof Replacement",
+      "keyword": "reroof permit Kaysville",
+      "editorial": {
+        "reader_question": "What inspections does Kaysville require on a tear-off reroof, and what does the ice barrier rule mean for a homeowner?",
+        "distinct_angle": "Kaysville requires two roofing inspections, a dry-in and a final, and requires ice barriers per IRC R905.1.2. Explain what each inspection looks at, why the dry-in matters, and that the permit number is needed to schedule. Do not state the year Kaysville started requiring reroof permits, because the city's own pages disagree. No prices, fees or ratings.",
+        "local_evidence": [
+          {
+            "claim": "Kaysville City requires 2 inspections on roofing permits: a dry-in and the final.",
+            "source_url": "https://kaysville.gov/753/Roofing-Requirements",
+            "source_label": "Kaysville City Roofing Requirements"
+          },
+          {
+            "claim": "Ice barriers are required in Kaysville City as described in R905.1.2 of the IRC:",
+            "source_url": "https://kaysville.gov/753/Roofing-Requirements",
+            "source_label": "Kaysville City Roofing Requirements"
+          },
+          {
+            "claim": "The permit number is required to schedule an inspection.",
+            "source_url": "https://kaysville.gov/474/Building-Permit",
+            "source_label": "Kaysville City Building Permit"
+          }
+        ]
+      },
+      "review": {
+        "reviewed_on": "2026-11-18",
+        "reviewed_by": "Claude (agent); merge of this PR is the human approval",
+        "method": "Each claim was copied word for word from the live HTTPS page on 2026-11-18 and matched again by a second scripted fetch where the site allowed it (see PR). No fee amounts, prices, ratings or phone numbers are quoted."
+      }
+    },
+    {
+      "status": "pending",
+      "slug": "roof-replacement-permit-draper",
+      "city_slug": "draper",
+      "city_name": "Draper",
+      "service_slug": "roof-replacement",
+      "service_name": "Roof Replacement",
+      "keyword": "roof replacement permit Draper",
+      "editorial": {
+        "reader_question": "In Draper, what is the difference between a roof repair, a recover and a replacement, and which ones need a permit?",
+        "distinct_angle": "Draper's roofing permit policy separates a localized repair from a recover or a full replacement, and both of the latter need a city permit under IRC R908. Help the homeowner tell which one their job is, and plan around inspections, since Draper does not offer same-day inspections. No prices, fees or ratings.",
+        "local_evidence": [
+          {
+            "claim": "A roof recover and roof replacement both require a permit through the city.",
+            "source_url": "https://www.draperutah.gov/media/14kn2zbn/roofing-permit-policy.pdf",
+            "source_label": "Draper City Roofing Permit Policy"
+          },
+          {
+            "claim": "A Roof repair is limited to localized replacement of the damaged area of materials.",
+            "source_url": "https://www.draperutah.gov/media/14kn2zbn/roofing-permit-policy.pdf",
+            "source_label": "Draper City Roofing Permit Policy"
+          },
+          {
+            "claim": "Section 908 of the IRC addresses roof replacement (R908.3) and roof recover (R908.3.1).",
+            "source_url": "https://www.draperutah.gov/media/14kn2zbn/roofing-permit-policy.pdf",
+            "source_label": "Draper City Roofing Permit Policy"
+          },
+          {
+            "claim": "Remember, same-day inspections are NOT available and the date and time you request is not guaranteed.",
+            "source_url": "https://draperutah.gov/business-development/building-and-renovating/schedule-an-inspection",
+            "source_label": "Draper City Schedule an Inspection"
+          }
+        ]
+      },
+      "review": {
+        "reviewed_on": "2026-11-18",
+        "reviewed_by": "Claude (agent); merge of this PR is the human approval",
+        "method": "Each claim was copied word for word from the live HTTPS page on 2026-11-18 and matched again by a second scripted fetch where the site allowed it (see PR). No fee amounts, prices, ratings or phone numbers are quoted."
+      }
+    },
+    {
+      "status": "pending",
+      "slug": "reroof-permit-herriman",
+      "city_slug": "herriman",
+      "city_name": "Herriman",
+      "service_slug": "roof-replacement",
+      "service_name": "Roof Replacement",
+      "keyword": "reroof permit Herriman",
+      "editorial": {
+        "reader_question": "When does a Herriman reroof need a building permit, and who pulls it?",
+        "distinct_angle": "Herriman requires a permit for a residential reroof only under listed conditions and always for a roof conversion or alteration, and expects a state-licensed contractor to pull it. Explain the difference between a like-for-like reroof and an alteration, and tell homeowners to check the City's FAQ for the listed conditions rather than guessing. No prices, fees or ratings.",
+        "local_evidence": [
+          {
+            "claim": "On residential structures, a permit is required under the following conditions:",
+            "source_url": "https://www.herriman.gov/building-faqs",
+            "source_label": "Herriman City Building FAQs"
+          },
+          {
+            "claim": "Any roof conversion (raising the pitch of the roof) or roof alteration requires a building permit.",
+            "source_url": "https://www.herriman.gov/building-faqs",
+            "source_label": "Herriman City Building FAQs"
+          },
+          {
+            "claim": "Almost all contractors who do work that must be permitted must be licensed with the State of Utah.",
+            "source_url": "https://www.herriman.gov/building-faqs",
+            "source_label": "Herriman City Building FAQs"
+          },
+          {
+            "claim": "Generally, only the licensed general contractor is required to pull a building permit.",
+            "source_url": "https://www.herriman.gov/building-faqs",
+            "source_label": "Herriman City Building FAQs"
+          }
+        ]
+      },
+      "review": {
+        "reviewed_on": "2026-11-18",
+        "reviewed_by": "Claude (agent); merge of this PR is the human approval",
+        "method": "Each claim was copied word for word from the live HTTPS page on 2026-11-18 and matched again by a second scripted fetch where the site allowed it (see PR). No fee amounts, prices, ratings or phone numbers are quoted."
+      }
+    },
+    {
+      "status": "pending",
+      "slug": "reroof-permit-murray",
+      "city_slug": "murray",
+      "city_name": "Murray",
+      "service_slug": "roof-replacement",
+      "service_name": "Roof Replacement",
+      "keyword": "reroof permit Murray",
+      "editorial": {
+        "reader_question": "What does Murray require for a reroof permit, and how are inspections scheduled?",
+        "distinct_angle": "Murray has a dedicated re-roof form filed with the building permit application, inspects under the 2021 IRC, and has users schedule inspections themselves in eProcess 360. Turn that into a short homeowner checklist for a Murray reroof. No prices, fees or ratings.",
+        "local_evidence": [
+          {
+            "claim": "The International Residential Code (IRC) will remain 2021.",
+            "source_url": "https://murray.utah.gov/339/Building-Inspection",
+            "source_label": "Murray City Building Inspection"
+          },
+          {
+            "claim": "eProcess 360 will allow inspections to be scheduled online.",
+            "source_url": "https://murray.utah.gov/339/Building-Inspection",
+            "source_label": "Murray City Building Inspection"
+          },
+          {
+            "claim": "We will not schedule inspections in eProcess 360, they have to be scheduled by the user through their system.",
+            "source_url": "https://murray.utah.gov/339/Building-Inspection",
+            "source_label": "Murray City Building Inspection"
+          }
+        ]
+      },
+      "review": {
+        "reviewed_on": "2026-11-18",
+        "reviewed_by": "Claude (agent); merge of this PR is the human approval",
+        "method": "Each claim was copied word for word from the live HTTPS page on 2026-11-18 and matched again by a second scripted fetch where the site allowed it (see PR). No fee amounts, prices, ratings or phone numbers are quoted."
+      }
+    }
+  ]
+}
