@@ -9,7 +9,7 @@
 // deno-lint-ignore-file no-import-prefix no-unversioned-import
 
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { createClient } from "npm:@supabase/supabase-js@2.105.4";
 import { type AccessRole, normalizeAccessRole } from "../_shared/crm-access.ts";
 import {
   bearerToken,
@@ -22,6 +22,12 @@ import {
   configuredPreviewOrigins,
   isReportableCall,
   isReportableLead,
+  isRyanLead,
+  LANDON_DIRECT_BUCKET,
+  LANDON_DIRECT_LABEL,
+  leadOwnerBucket,
+  WEBSITE_FORM_BUCKET,
+  WEBSITE_FORM_LABEL,
   locationTrafficFromPageRows,
   parsePostHogAggregateCount,
   parsePostHogSourceSummary,
@@ -29,6 +35,7 @@ import {
   parseReportDetail,
   PRODUCTION_REPORT_ORIGINS,
   REPORT_LOCATION_SLUGS,
+  REPORT_METRIC_DEFINITIONS,
   REPORT_RENDERING_CONTRACT,
   shapeReportRows,
   sourceTrafficFromRows,
@@ -291,7 +298,7 @@ Deno.serve(async (req: Request) => {
       supabase
         .from("leads")
         .select(
-          "id, name, phone, service, source_page, status, job_value, commission, created_at, is_test",
+          "id, name, phone, service, source_page, status, job_value, commission, created_at, is_test, call_source, utm_source, commission_eligible",
         )
         .gte("created_at", sinceIso)
         .lt("created_at", untilIso)
@@ -397,7 +404,15 @@ Deno.serve(async (req: Request) => {
 
   const leads = leadResult.data;
   const calls = callResult.data;
-  const realLeads = leads.filter(isReportableLead);
+  const reportableLeads = leads.filter(isReportableLead);
+  // Ryan's commission leads = Twilio calls on seo_aeo numbers only.
+  const realLeads = reportableLeads.filter(isRyanLead);
+  const websiteFormLeads = reportableLeads.filter((lead) =>
+    leadOwnerBucket(lead) === WEBSITE_FORM_BUCKET
+  );
+  const landonDirectLeads = reportableLeads.filter((lead) =>
+    leadOwnerBucket(lead) === LANDON_DIRECT_BUCKET
+  );
   const completedCalls = calls.filter((call) =>
     call.status === "completed" && isReportableCall(call)
   );
@@ -413,19 +428,13 @@ Deno.serve(async (req: Request) => {
     (sum, lead) => sum + finiteNumber(lead.commission),
     0,
   );
-  const conversionRate = posthogTotal > 0
-    ? Number(
-      ((realLeads.length + completedCalls.length) / posthogTotal * 100)
-        .toFixed(1),
-    )
-    : 0;
-
   const rows = shapeReportRows(user.role, detail, realLeads, completedCalls);
   return jsonResponse(req, {
     generated_at: now.toISOString(),
     period_days: days,
     detail,
     rendering_contract: REPORT_RENDERING_CONTRACT,
+    metric_definitions: REPORT_METRIC_DEFINITIONS,
     provider_status: { posthog: "available" },
     user: { name: user.name, role: user.role },
     summary: {
@@ -437,7 +446,18 @@ Deno.serve(async (req: Request) => {
       total_call_minutes: Math.round(totalCallMinutes * 10) / 10,
       total_job_value: totalJobValue,
       total_commission: totalCommission,
-      conversion_rate_pct: conversionRate,
+    },
+    // Website forms: real leads, never commission.
+    website_form_no_commission: {
+      label: WEBSITE_FORM_LABEL,
+      leads: websiteFormLeads.length,
+      counted_in_commission: false,
+    },
+    // Separate bucket: never added to total_leads / job value / commission.
+    not_seo_aeo: {
+      label: LANDON_DIRECT_LABEL,
+      leads: landonDirectLeads.length,
+      counted_in_totals: false,
     },
     traffic_breakdown: trafficBreakdown,
     traffic_sources: Object.fromEntries(posthogSources),

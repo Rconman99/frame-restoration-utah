@@ -1,0 +1,124 @@
+name: Screenshot check
+
+# Before/after screenshots of five key pages (home, Salt Lake City, roof repair,
+# contact, one blog post) at desktop and phone size, so a layout break shows up
+# on the PR before it goes live. scripts/visual-diff.mjs renders main and the PR
+# on the same runner and diffs them pixel by pixel.
+#
+# REPORT ONLY (continue-on-error is not needed: the script exits 0 on a diff).
+# It never blocks a merge. It only fails if its own self-test fails (two clean
+# renders disagree, or an injected layout shift goes unnoticed) or it crashes.
+# RATCHET: once it has run clean on a few weeks of PRs, set VISUAL_DIFF_STRICT=1
+# to make a flagged page block.
+#
+# Results: the job summary always has the table. The screenshots (before, after,
+# diff) are in the run's artifact. One PR comment is posted, and then kept up to
+# date, only when a page looks different.
+#
+# Runs on drafts too (it is cheap and free on this public repo), and only when a
+# served file changes.
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+    paths:
+      - '**/*.html'
+      - '**/*.css'
+      - '**/*.js'
+      - 'images/**'
+      - 'assets/**'
+      - 'vendor/**'
+      - 'reviews.json'
+      - 'vercel.json'
+      - '!archive/**'
+      - '!build-intelligence/**'
+      - '!dashboard/**'
+      - '!docs/**'
+      - '!qa/**'
+      - '!scripts/**'
+      - 'scripts/visual-diff.mjs'
+      - '.github/workflows/visual-diff.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: write
+
+concurrency:
+  group: visual-diff-${{ github.event.pull_request.number || github.run_id }}
+  cancel-in-progress: true
+
+jobs:
+  screenshots:
+    name: Screenshot check (report only)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - name: Check out the PR
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          path: after
+      - name: Check out main (the PR base)
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          path: before
+          ref: ${{ github.event.pull_request.base.sha || github.sha }}
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+        with:
+          node-version: '24'
+          cache: npm
+          cache-dependency-path: after/package-lock.json
+      - name: Install locked dependencies
+        working-directory: after
+        run: npm ci
+      - name: Install Chromium
+        working-directory: after
+        run: npx playwright install --with-deps chromium
+      - name: Render and compare key pages
+        working-directory: after
+        env:
+          BEFORE_ROOT: ${{ github.workspace }}/before
+          AFTER_ROOT: ${{ github.workspace }}/after
+          OUT_DIR: ${{ github.workspace }}/visual-diff-out
+        run: node scripts/visual-diff.mjs
+      - name: Upload screenshots
+        id: upload
+        if: always() && hashFiles('visual-diff-out/**') != ''
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: screenshots-${{ github.event.pull_request.number || github.run_id }}-${{ github.run_attempt }}
+          path: visual-diff-out/
+          retention-days: 14
+      - name: Write the job summary
+        if: always() && hashFiles('visual-diff-out/summary.md') != ''
+        env:
+          ARTIFACT_URL: ${{ steps.upload.outputs.artifact-url }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          {
+            cat visual-diff-out/summary.md
+            echo
+            echo "Screenshots (before, after and diff for each changed view): ${ARTIFACT_URL:-$RUN_URL}"
+          } > visual-diff-out/comment.md
+          cat visual-diff-out/comment.md >> "$GITHUB_STEP_SUMMARY"
+      - name: Comment on the PR when a page looks different
+        # Dependabot and fork PRs get a read-only token; the summary still has the table.
+        if: always() && github.event_name == 'pull_request' && hashFiles('visual-diff-out/comment.md') != ''
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          PR: ${{ github.event.pull_request.number }}
+        run: |
+          flagged=$(node -e 'console.log(JSON.parse(require("fs").readFileSync("visual-diff-out/summary.json","utf8")).flagged)')
+          existing=$(gh api "repos/$REPO/issues/$PR/comments" --paginate \
+            --jq '[.[] | select(.user.login == "github-actions[bot]" and (.body | startswith("<!-- frame-visual-diff -->")))][0].id // empty')
+          if [ -n "$existing" ]; then
+            gh api -X PATCH "repos/$REPO/issues/comments/$existing" -F body=@visual-diff-out/comment.md >/dev/null
+            echo "Updated comment $existing"
+          elif [ "$flagged" != "0" ]; then
+            gh api -X POST "repos/$REPO/issues/$PR/comments" -F body=@visual-diff-out/comment.md >/dev/null
+            echo "Posted a comment ($flagged views flagged)"
+          else
+            echo "No visible change and no earlier comment: nothing to post"
+          fi

@@ -94,6 +94,20 @@ const CUSTOMER_FIXTURES: Array<{
     optOutType: "START",
     expected: "optout",
   },
+  // FCC 26-67 (2026-11-25): the seven revocation words are honored even with
+  // no Twilio OptOutType (Twilio never matches "OPT OUT").
+  { name: "FCC 26-67 body-only 'stop' → optout", from: "+18015551234", body: "stop", expected: "optout" },
+  { name: "FCC 26-67 body-only 'quit' → optout", from: "+18015551234", body: "quit", expected: "optout" },
+  { name: "FCC 26-67 body-only 'end' → optout", from: "+18015551234", body: "end", expected: "optout" },
+  { name: "FCC 26-67 body-only 'revoke' → optout", from: "+18015551234", body: "revoke", expected: "optout" },
+  { name: "FCC 26-67 body-only 'opt out' → optout", from: "+18015551234", body: "opt out", expected: "optout" },
+  { name: "FCC 26-67 body-only 'Opt-Out' → optout", from: "+18015551234", body: "Opt-Out", expected: "optout" },
+  { name: "FCC 26-67 body-only 'optout' → optout", from: "+18015551234", body: "optout", expected: "optout" },
+  { name: "FCC 26-67 body-only 'cancel' → optout", from: "+18015551234", body: "cancel", expected: "optout" },
+  { name: "FCC 26-67 body-only 'unsubscribe' → optout", from: "+18015551234", body: "unsubscribe", expected: "optout" },
+  { name: "FCC 26-67 body-only 'Stop.' → optout", from: "+18015551234", body: "Stop.", expected: "optout" },
+  { name: "'please stop by' is a conversation, not an opt-out", from: "+18015551234", body: "please stop by tomorrow", expected: "normal" },
+
   // A2P precedence guard (origin/main): opt-out must win EVEN when the sender is
   // an internal-relay number — never reply to / forward someone who unsubscribed.
   {
@@ -255,4 +269,35 @@ Deno.test("operator CALL-command parser fixtures", () => {
   assertEquals(parseCallCommand("CALL"), null); // no number
   assertEquals(parseCallCommand("hello there"), null);
   assertEquals(parseCallCommand("TO:8015551234 hi"), null);
+});
+
+// ── FCC 26-67 application suppression (sms-suppression.ts) ──────────────────
+import {
+  classifySmsComplianceAction,
+  readSmsSuppression,
+  smsSendAllowed,
+} from "./sms-suppression.ts";
+
+Deno.test("compliance action mapping: body opt-out words, OptOutType START/HELP", () => {
+  for (const w of ["stop", "quit", "end", "revoke", "opt out", "optout", "cancel", "unsubscribe", " STOP! "]) {
+    assertEquals(classifySmsComplianceAction({ body: w }), "stop", w);
+  }
+  assertEquals(classifySmsComplianceAction({ body: "yes" }), "none");
+  assertEquals(classifySmsComplianceAction({ optOutType: "START", body: "start" }), "start");
+  assertEquals(classifySmsComplianceAction({ optOutType: "HELP" }), "help");
+  assertEquals(classifySmsComplianceAction({ optOutType: "SOMETHING_NEW" }), "stop");
+});
+
+function lookupClient(result: { data: unknown; error: unknown }) {
+  return {
+    from: () => ({ select: () => ({ eq: () => ({ maybeSingle: () => Promise.resolve(result) }) }) }),
+    rpc: () => Promise.resolve({ data: null, error: null }),
+  };
+}
+
+Deno.test("suppression lookup fails closed", async () => {
+  assertEquals(smsSendAllowed(await readSmsSuppression(lookupClient({ data: null, error: null }), "+12145551234")), true);
+  assertEquals(smsSendAllowed(await readSmsSuppression(lookupClient({ data: { suppressed: true }, error: null }), "+12145551234")), false);
+  assertEquals(smsSendAllowed(await readSmsSuppression(lookupClient({ data: null, error: { message: "missing table" } }), "+12145551234")), false);
+  assertEquals(smsSendAllowed(await readSmsSuppression(lookupClient({ data: null, error: null }), "2145551234")), false);
 });
