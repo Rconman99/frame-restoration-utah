@@ -8,9 +8,11 @@ Deliberately NOT wired into .github/workflows/compliance-gate.yml — CI has no
 Ollama and no local model. Run it whenever SYSTEM_PROMPT or OLLAMA_MODEL changes;
 a prompt edit that regresses this set is a prompt edit that should not ship.
 
-Cases are drawn verbatim (lightly truncated, names kept as sent) from the TX
-`leads` table, 2026-05-27..2026-08-06. Every one of the SPAM cases below was
-sitting UNMARKED in production — the manual sweep had not caught them.
+Cases are real production messages (lightly truncated) captured in the first
+Frame market to run this classifier, 2026-05-27..2026-08-06, re-pointed to Utah:
+customer and staff names are synthetic and the city/owner references are
+Utah's. Every one of the SPAM cases below was sitting UNMARKED in production —
+the manual sweep had not caught them.
 """
 
 import importlib.util
@@ -37,7 +39,7 @@ CASES = [
     ("spam", "sms", "Hello, I saw your details online as a good hardwood floor installer, I need some work done. Send your email for details"),
     ("spam", "sms", "Frame Restoration any room for more hvac jobs in Sandy? I have qualified homeowners needing quotes. No setup fee"),
     ("spam", "sms", "Hi! :) There are new health insurance options for Architects w/ $0 deductibles. Would you like a quote?"),
-    ("spam", "sms", "Hi Mike, Liamgo launches next month and we're onboarding local handyman and home-service providers now."),
+    ("spam", "sms", "Hi Landon, Liamgo launches next month and we're onboarding local handyman and home-service providers now."),
     # Lead-broker pitches. Both of these shipped as "real" on 2026-08-07 — the
     # model read "roof" + casual tone as a customer. The tell is that the sender
     # offers OTHER people's work; a real customer describes their own property.
@@ -45,10 +47,10 @@ CASES = [
     ("spam", "sms", "Hey it's Princeten, we may have a few people looking to have their roof done & possibly some guttering. You guys got space for that?"),
     ("spam", "sms", "Hey it's Kingsley, we have a few people in the area looking to get their roofs done, do you have capacity this month?"),
     ("spam", "sms", "Logan here. I'm looking for one roofer to send exclusive estimate requests to in your area. $85 per qualified lead, nothing upfront."),
-    ("real", "sms", "Hello. This is Robert Swigart. I would like to know if I have reached the right contact for a roof replacement"),
+    ("real", "sms", "Hello. This is Thomas Reyes. I would like to know if I have reached the right contact for a roof replacement"),
     ("real", "sms", "Hi Landon.. Just keeping you updated.. Roof inspector is going to contact me in 1-2 days and I will then coordinate"),
     ("real", "form", "We had hail last week and I think our roof is leaking in the garage. Can someone come look at it?"),
-    ("uncertain", "sms", "Hello! Trying to get ahold of Mike or Matt"),
+    ("uncertain", "sms", "Hello! Trying to get ahold of Landon or Matt"),
     ("uncertain", "sms", "Is this David?"),
     ("uncertain", "sms", "fyi, just received this today"),
 ]
