@@ -35,7 +35,7 @@
 //   TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_MESSAGING_SERVICE_SID (or TWILIO_PHONE_NUMBER)
 
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { createClient } from "npm:@supabase/supabase-js@2.105.4";
 import { ipHashSecretReady } from "../_shared/client-ip.ts";
 import { applySender } from "../_shared/twilio-sender.ts";
 import {

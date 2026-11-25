@@ -39,7 +39,7 @@ import {
   TRACKING_NUMBERS,
 } from "../_shared/tracking-numbers.ts";
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { createClient } from "npm:@supabase/supabase-js@2.105.4";
 import { verifyTwilioRequest } from "../_shared/twilio-verify.ts";
 import {
   continueReceptionist,
