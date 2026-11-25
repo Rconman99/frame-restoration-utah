@@ -58,6 +58,19 @@ class CallTalkTimeTests(unittest.TestCase):
                                side_effect=AssertionError("model called")):
             classifier.classify({**CALL_LEAD, "message": "   "}, 7)
 
+    def test_text_free_reasons_claim_nothing_about_how_the_lead_arrived(self):
+        # spam_reason is an audit column. A text-free lead can be an inbound
+        # call, an empty-message form fill, an MMS-only SMS or a CRM row, and
+        # a call lead can predate press-one screening or come from the
+        # owner-accepted reconcile path, so neither reason may assert either.
+        forbidden = ("press-one", "press one", "screening", "inbound call",
+                     "caller passed")
+        for duration in (None, 0, 7, 44):
+            with self.subTest(duration=duration):
+                reason = classifier.classify(CALL_LEAD, duration)[2].lower()
+                for claim in forbidden:
+                    self.assertNotIn(claim, reason)
+
     def test_message_lead_is_labelled_by_the_model_not_talk_time(self):
         with mock.patch.object(classifier, "ask_model",
                                return_value=("real", 0.1, "own roof")) as ask:

@@ -291,16 +291,19 @@ def classify(lead, duration):
             return got
         return None  # model failed -> leave unclassified, retry next run
 
-    # No text at all: a raw inbound call. Talk time is the only signal, and it
-    # can only argue for 'real' (see CALL_REAL_MIN_SEC).
+    # No text at all. Usually a raw inbound call, but a form fill with an empty
+    # message, an MMS-only SMS and a hand-entered CRM row land here too, so the
+    # reasons below claim nothing about how the lead arrived. Talk time is the
+    # only signal and it can only argue for 'real' (see CALL_REAL_MIN_SEC).
     if duration is not None:
         if duration >= CALL_REAL_MIN_SEC:
             return ("real", 0.15,
                     f"answered call, {duration}s talk time")
         return ("uncertain", 0.50,
-                f"{duration}s talk time; caller passed press-one screening")
+                f"{duration}s talk time, under the {CALL_REAL_MIN_SEC}s "
+                "real-call floor")
 
-    return ("uncertain", 0.50, "inbound call, no talk time recorded yet")
+    return ("uncertain", 0.50, "no message text and no talk time recorded")
 
 
 def write_label(lead_id, label, score, reason):
@@ -373,7 +376,7 @@ def main():
             continue
         label, score, reason = result
         counts[label] += 1
-        preview = (lead.get("message") or "(no text — inbound call)")
+        preview = (lead.get("message") or "(no message text)")
         preview = " ".join(preview.split())[:58]
         print(f"  #{lead['id']:<5} {label:<9} {score:.2f}  {preview}")
         if reason:
