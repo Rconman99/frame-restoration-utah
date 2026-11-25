@@ -1,3 +1,11 @@
+import { assertEquals } from "jsr:@std/assert@1";
+import {
+  insertLeadRow,
+  isPendingLeadColumnError,
+  leadLocationColumns,
+  withoutPendingLeadColumns,
+} from "./lead-location-columns.ts";
+
 const handler = await Deno.readTextFile(
   new URL("../handle-lead/index.ts", import.meta.url),
 );
@@ -130,4 +138,122 @@ Deno.test("every public lead form carries one blank, non-focusable honeypot", ()
       "lead form lost its native POST target",
     );
   }
+});
+
+const missing = (column: string) => ({
+  code: "PGRST204",
+  message:
+    `Could not find the '${column}' column of 'leads' in the schema cache`,
+});
+
+Deno.test("a typed city is stored as typed and marked as coming from the form", () => {
+  assertEquals(leadLocationColumns("  Heber City ", "84032"), {
+    city: "Heber City",
+    zip: "84032",
+    city_source: "form",
+  });
+});
+
+Deno.test("a blank city stays null and is never guessed from the ZIP", () => {
+  assertEquals(leadLocationColumns("", "84032-1234"), {
+    city: null,
+    zip: "84032-1234",
+    city_source: null,
+  });
+  assertEquals(leadLocationColumns("   ", ""), {
+    city: null,
+    zip: null,
+    city_source: null,
+  });
+});
+
+Deno.test("text that is not a US ZIP is not stored as one", () => {
+  assertEquals(leadLocationColumns("Midway", "Utah").zip, null);
+  assertEquals(leadLocationColumns("Midway", "8403").zip, null);
+  assertEquals(leadLocationColumns("Midway", "840321").zip, null);
+});
+
+Deno.test("only a missing pending column counts as a pending-column error", () => {
+  assertEquals(isPendingLeadColumnError(missing("zip")), true);
+  assertEquals(isPendingLeadColumnError(missing("city_source")), true);
+  assertEquals(isPendingLeadColumnError(missing("city")), false);
+  assertEquals(
+    isPendingLeadColumnError({ code: "23505", message: "'zip'" }),
+    false,
+  );
+  assertEquals(isPendingLeadColumnError(null), false);
+});
+
+Deno.test("withoutPendingLeadColumns keeps city and every other field", () => {
+  assertEquals(
+    withoutPendingLeadColumns({
+      name: "A",
+      city: "Midway",
+      zip: "84049",
+      city_source: "form",
+    }),
+    { name: "A", city: "Midway" },
+  );
+});
+
+Deno.test("the insert runs once when the columns exist", async () => {
+  const seen: Record<string, unknown>[] = [];
+  const result = await insertLeadRow(
+    { name: "A", city: "Midway", zip: "84049", city_source: "form" },
+    (row) => {
+      seen.push(row);
+      return Promise.resolve({ data: { id: 1 }, error: null });
+    },
+  );
+  assertEquals(seen.length, 1);
+  assertEquals(result.retriedWithout, []);
+  assertEquals(result.data, { id: 1 });
+});
+
+Deno.test("a missing pending column retries once without it and still saves the lead", async () => {
+  const seen: Record<string, unknown>[] = [];
+  const result = await insertLeadRow(
+    { name: "A", city: "Midway", zip: "84049", city_source: "form" },
+    (row) => {
+      seen.push(row);
+      return Promise.resolve(
+        seen.length === 1
+          ? { data: null, error: missing("zip") }
+          : { data: { id: 2 }, error: null },
+      );
+    },
+  );
+  assertEquals(seen.length, 2);
+  assertEquals(seen[1], { name: "A", city: "Midway" });
+  assertEquals(result.retriedWithout, ["zip", "city_source"]);
+  assertEquals(result.data, { id: 2 });
+  assertEquals(result.error, null);
+});
+
+Deno.test("handle-lead writes the form's city and ZIP through the tolerant insert", () => {
+  const wrapped = handler.indexOf("await insertLeadRow(");
+  const columns = handler.indexOf("leadLocationColumns(city, zip)", wrapped);
+  const insert = handler.indexOf(".insert({", columns);
+  const spread = handler.indexOf("...location,", insert);
+  assertEquals(wrapped >= 0, true, "lead insert is not wrapped");
+  assertEquals(columns > wrapped, true, "form city and ZIP are not passed");
+  assertEquals(insert > columns, true, "insert is not inside the wrapper");
+  assertEquals(spread > insert, true, "location columns are not on the row");
+  // The lead row is written in exactly one place.
+  assertEquals(handler.split(".insert({").length - 1, 1);
+});
+
+Deno.test("any other insert error is returned untouched, with no retry", async () => {
+  let calls = 0;
+  const duplicate = { code: "23505", message: "duplicate key" };
+  const result = await insertLeadRow(
+    { name: "A", zip: "84049" },
+    () => {
+      calls += 1;
+      return Promise.resolve({ data: null, error: duplicate });
+    },
+  );
+  assertEquals(calls, 1);
+  assertEquals(result.error, duplicate);
+  assertEquals(result.retriedWithout, []);
 });

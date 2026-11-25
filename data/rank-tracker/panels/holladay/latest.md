@@ -1,41 +1,41 @@
-# Holladay Google rank tracker — 2026-10-26
+# Holladay Google rank tracker — 2026-11-23
 
 - Panel: `utah-holladay-google-v1`
 - Provider: DataForSEO task-queue
 - Location: Holladay,Utah,United States
 - Device/depth: mobile / top 30
-- Observed: 2026-10-26T09:26:40.115Z
+- Observed: 2026-11-23T09:15:54.833Z
 - Estimated panel cost: $0.0192
 
 | Query | Organic | Exact-CID map pack | AI Overview | Frame cited in AI Overview |
 |---|---:|---:|---:|---:|
-| roofing contractor holladay | Not found in top 30 | Not found in top 30 | No | No |
+| roofing contractor holladay | Not found in top 30 | Not found in top 30 | Yes | No |
 | roof repair holladay | Not found in top 30 | Not found in top 30 | No | No |
-| roof replacement holladay | #21 | Not found in top 30 | No | No |
+| roof replacement holladay | Not found in top 30 | Not found in top 30 | No | No |
 | roofer holladay | Not found in top 30 | Not found in top 30 | No | No |
 
 ## Displacement targets
 
 ### roofing contractor holladay
-- Organic top 3: #1 whiteridgeroofing.com; #2 m.yelp.com; #3 facebook.com.
+- Organic top 3: #1 google.com; #2 google.com; #3 google.com.
 - Map-pack top 3: #1 True North Roofing [CID 5387650211366766810]; #2 Utah Roofing Pros [CID 4118570990011609504]; #3 Holladay Roofing [CID 4608145956816988456].
 - Paid local placements (excluded from Maps rank): none.
-- AI Overview sources: no AI Overview.
+- AI Overview sources: google.com; google.com; google.com; google.com.
 
 ### roof repair holladay
-- Organic top 3: #1 bbb.org; #2 findroofingpros.com; #3 xperienceroofing.com.
-- Map-pack top 3: #1 Utah Roofing Pros [CID 4118570990011609504]; #2 Holladay Roofing [CID 4608145956816988456]; #3 True North Roofing [CID 5387650211366766810].
-- Paid local placements (excluded from Maps rank): none.
-- AI Overview sources: no AI Overview.
-
-### roof replacement holladay
-- Organic top 3: #1 threebrothersllc.com; #2 m.yelp.com; #3 holladayroofing.xyz.
-- Map-pack top 3: #1 True North Roofing [CID 5387650211366766810]; #2 Courtland Roofing [CID 10995185189699039051]; #3 Von Construction [CID 18253424708664372836].
+- Organic top 3: #1 google.com; #2 google.com; #3 google.com.
+- Map-pack top 3: #1 Utah Roofing Pros [CID 4118570990011609504]; #2 True North Roofing [CID 5387650211366766810]; #3 Holladay Roofing [CID 4608145956816988456].
 - Paid local placements (excluded from Maps rank): #1 On Top Roofing.
 - AI Overview sources: no AI Overview.
 
+### roof replacement holladay
+- Organic top 3: #1 google.com; #2 google.com; #3 google.com.
+- Map-pack top 3: #1 Utah Roofing Pros [CID 4118570990011609504]; #2 True North Roofing [CID 5387650211366766810]; #3 Holladay Roofing [CID 4608145956816988456].
+- Paid local placements (excluded from Maps rank): none.
+- AI Overview sources: no AI Overview.
+
 ### roofer holladay
-- Organic top 3: #1 m.yelp.com; #2 lovely-home-services.com; #3 findroofingpros.com.
+- Organic top 3: #1 google.com; #2 google.com; #3 google.com.
 - Map-pack top 3: #1 Utah Roofing Pros [CID 4118570990011609504]; #2 True North Roofing [CID 5387650211366766810]; #3 Holladay Roofing [CID 4608145956816988456].
 - Paid local placements (excluded from Maps rank): none.
 - AI Overview sources: no AI Overview.

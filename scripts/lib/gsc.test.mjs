@@ -1,7 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { generateKeyPairSync } from "node:crypto";
-import { fetchGscSections, trackedQueryFilter } from "./gsc.mjs";
+import { fetchGscSections, fetchQueryPageRows, last28Window, trackedQueryFilter } from "./gsc.mjs";
 
 // A real RSA key, so the JWT signing path executes for real. A dummy string key
 // makes every test in this file skip, which passes CI while verifying nothing.
@@ -137,4 +137,25 @@ test("queries_stored_impressions reports real coverage, not row count", async ()
   const sections = await fetchGscSections({ env, fetchImpl, now: new Date("2026-08-07T12:00:00Z") });
   assert.equal(sections.queries_stored_impressions, 100);
   assert.equal(sections.impressions28d, 1000); // 100/1000 = 10% coverage
+});
+
+test("close-to-page-one query+page pull keeps missing metrics null", async () => {
+  assert.equal(await fetchQueryPageRows({ env: {} }), null);
+  const { fetchImpl, calls } = fakeGsc({
+    queryPage: [
+      { keys: ["roof repair heber city ut", "https://www.framerestorationutah.com/locations/heber-city"], clicks: 0, impressions: 1972, position: 6.4 },
+      { keys: ["incomplete", "https://www.framerestorationutah.com/locations/orem"] },
+    ],
+  });
+  const now = new Date("2026-08-07T12:00:00Z");
+  const pulled = await fetchQueryPageRows({ env, fetchImpl, now });
+  const body = calls.at(-1);
+  assert.deepEqual(body.dimensions, ["query", "page"]);
+  assert.equal(body.rowLimit, 25000);
+  assert.equal(body.startDate, last28Window(now).startDate);
+  assert.equal(body.endDate, last28Window(now).endDate);
+  assert.equal(pulled.rows[0].impressions, 1972);
+  assert.equal(pulled.rows[1].clicks, null);
+  assert.equal(pulled.rows[1].impressions, null);
+  assert.equal(pulled.rows[1].position, null);
 });

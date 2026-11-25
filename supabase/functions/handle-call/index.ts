@@ -29,8 +29,17 @@
 //
 // Source pulled from prod 2026-05-16 (deployed v5) + lead-create patch + v3 screening.
 
+import {
+  attributeDialedNumber,
+  isTrackedNumber,
+  sendSourceAlertSafely,
+  sourceAlertSmsText,
+  sourceWhisperLabel,
+  sourceWhisperTwiml,
+  TRACKING_NUMBERS,
+} from "../_shared/tracking-numbers.ts";
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { createClient } from "npm:@supabase/supabase-js@2.105.4";
 import { verifyTwilioRequest } from "../_shared/twilio-verify.ts";
 import {
   continueReceptionist,
@@ -57,6 +66,14 @@ import {
   normalizeAlertPhone,
   shouldAlertMissedCall,
 } from "../_shared/missed-call-alert.ts";
+import { answeredFromDial } from "../_shared/call-outcome.ts";
+import { writeCallLog } from "../_shared/call-log-columns.ts";
+
+// Twilio FromZip is the calling number's exchange ZIP. Keep only a clean 5-digit value.
+function twilioZip(value: string | undefined): string | null {
+  const zip = String(value || "").trim().slice(0, 5);
+  return /^\d{5}$/.test(zip) ? zip : null;
+}
 
 declare const EdgeRuntime: {
   waitUntil(promise: Promise<unknown>): void;
@@ -91,18 +108,13 @@ const receptionistConfig = (): ScreeningConfig => ({
 // number in Twilio, point its voice webhook at this same function, then add a row
 // here. Unknown dialed numbers default to NON-commission so the ledger never
 // over-counts (a misroute or not-yet-mapped number is treated as not-Ryan's).
-const NUMBER_SOURCES: Record<string, { source: string; commission: boolean }> =
-  {
-    "+14352928802": { source: "google_website", commission: true }, // GBP + website NAP
-    "+14356108978": { source: "slc_backlink", commission: true }, // Contractor ReIndependence SLC tracking DID
-    "+18014620526": { source: "slc_gbp", commission: true }, // SLC office GBP tracking DID (SLC rate center; replaced released Springville-locality 801 on 2026-08-10)
-    // "+1XXXXXXXXXX": { source: "directory", commission: false },   // ← directory tracking line (add once provisioned)
-  };
+// Number → source/placement map now lives in ../_shared/tracking-numbers.ts.
+// Commission derives from placement (seo_aeo only); unmapped => not eligible.
 function classifyDialedNumber(
   toNumber: string,
 ): { source: string; commission: boolean } {
-  return NUMBER_SOURCES[normalizePhone(toNumber)] ??
-    { source: "unknown", commission: false };
+  const { source, commission } = attributeDialedNumber(toNumber);
+  return { source, commission };
 }
 // True if `toNumber` is any phone number we own (configured business line OR a
 // mapped tracking number). Gates the inbound webhook so a second tracking number
@@ -113,7 +125,7 @@ function isOurBusinessNumber(
 ): boolean {
   const norm = normalizePhone(toNumber);
   if (configuredPhone && norm === normalizePhone(configuredPhone)) return true;
-  return norm in NUMBER_SOURCES;
+  return isTrackedNumber(norm);
 }
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
@@ -166,15 +178,23 @@ function durableTwilioCallbackUrl(pathAndQuery: string): string {
 
 // Connect the caller to Landon. Screened callers get a private whisper before
 // the bridge opens; known customers retain the existing direct-ring behavior.
-function dialLandonTwiml(callerId: string, screenCallSid = ""): string {
+// Every bridged call also gets a source whisper (callee-only, via <Number url>)
+// so Landon hears e.g. "Yelp lead, not SEO" or "Google lead" before talking.
+// callerId stays the real caller (forwardedCallerId) so callbacks still work.
+function dialLandonTwiml(
+  callerId: string,
+  screenCallSid = "",
+  dialedNumber = "",
+): string {
   const statusCallbackUrl = `${SUPABASE_URL}/functions/v1/handle-call/status`;
   const screened = /^CA[0-9a-f]{32}$/i.test(screenCallSid);
   const completedCallbackUrl = durableTwilioCallbackUrl(
     screened ? "completed?screened=1" : "completed",
   );
+  const toParam = encodeURIComponent(dialedNumber);
   const whisperUrl = screened
-    ? `${SUPABASE_URL}/functions/v1/handle-call/whisper?screenCallSid=${screenCallSid}`
-    : "";
+    ? `${SUPABASE_URL}/functions/v1/handle-call/whisper?screenCallSid=${screenCallSid}&amp;to=${toParam}`
+    : `${SUPABASE_URL}/functions/v1/handle-call/source-whisper?to=${toParam}`;
   return `<Response>
   <Dial callerId="${xmlEscape(callerId)}" timeout="30"${
     screened ? ' answerOnBridge="true"' : ""
@@ -182,9 +202,7 @@ function dialLandonTwiml(callerId: string, screenCallSid = ""): string {
         action="${completedCallbackUrl}"
         record="record-from-answer-dual">
     <Number statusCallbackEvent="initiated ringing answered completed"
-            statusCallback="${statusCallbackUrl}"${
-    screened ? ` url="${whisperUrl}" method="POST"` : ""
-  }>
+            statusCallback="${statusCallbackUrl}" url="${whisperUrl}" method="POST">
       ${LANDON_PHONE}
     </Number>
   </Dial>
@@ -371,13 +389,16 @@ function internalAlertLines(): Set<string> {
     .map(normalizeAlertPhone)
     .filter(Boolean);
   return new Set(
-    [LANDON_PHONE, ...Object.keys(NUMBER_SOURCES), ...configured]
+    [LANDON_PHONE, ...Object.keys(TRACKING_NUMBERS), ...configured]
       .map(normalizeAlertPhone)
       .filter(Boolean),
   );
 }
 
-async function sendOwnerSMS(body: string): Promise<string | null> {
+async function sendOwnerSMS(
+  body: string,
+  fromOverride = "",
+): Promise<string | null> {
   const creds = await getTwilioCreds();
   if (!creds.sid || !creds.auth) {
     console.error(
@@ -391,7 +412,7 @@ async function sendOwnerSMS(body: string): Promise<string | null> {
   // Pin From to the A2P sender of record. The Messaging Service pool holds more
   // than one number and assigns a sender per NEW recipient, so without this an
   // alert could arrive from a tracking DID.
-  params.set("From", creds.phone || "+14352928802");
+  params.set("From", fromOverride || creds.phone || "+14352928802");
   try {
     const resp = await fetch(
       `https://api.twilio.com/2010-04-01/Accounts/${creds.sid}/Messages.json`,
@@ -647,16 +668,17 @@ export async function handleCallRequest(req: Request): Promise<Response> {
         logStatus = "screening"; // lead deferred until the caller presses one
       }
 
-      const { error } = await supabase.from("call_logs").insert({
+      const { error } = await writeCallLog({
         call_sid: callSid,
         from_number: fromNumber,
         to_number: toNumber,
         forwarded_to: LANDON_PHONE,
         status: logStatus,
         city: cityLabel,
+        from_zip: twilioZip(data.FromZip),
         source_page: attribution.source,
         lead_id: leadId,
-      });
+      }, (row) => supabase.from("call_logs").insert(row));
       if (error) console.error("[handle-call] call_logs insert error:", error);
       if (!error && route !== "blocked") {
         await enrichCallerId(callSid, fromNumber, data.CallerName, {
@@ -665,6 +687,15 @@ export async function handleCallRequest(req: Request): Promise<Response> {
           accountSid: creds.sid || "",
           authToken: creds.auth || "",
         });
+      }
+
+      // Ring-time source SMS to Landon from the dialed tracking number.
+      // Background + never-throws: an SMS failure must not drop the call.
+      if (route !== "blocked" && isTrackedNumber(toNumber)) {
+        const alert = sendSourceAlertSafely(() =>
+          sendOwnerSMS(sourceAlertSmsText(toNumber, fromNumber), toNumber)
+        );
+        if (typeof EdgeRuntime !== "undefined") EdgeRuntime.waitUntil(alert);
       }
 
       await sendPostHogEvent(
@@ -690,7 +721,7 @@ export async function handleCallRequest(req: Request): Promise<Response> {
     if (route === "screen") {
       return xml(screenTwiml());
     }
-    return xml(dialLandonTwiml(forwardedCallerId(fromNumber, toNumber)));
+    return xml(dialLandonTwiml(forwardedCallerId(fromNumber, toNumber), "", toNumber));
   }
 
   if (path === "receptionist") {
@@ -754,7 +785,7 @@ export async function handleCallRequest(req: Request): Promise<Response> {
           lead_id: leadId,
         });
       }
-      return xml(dialLandonTwiml(callerId));
+      return xml(dialLandonTwiml(callerId, "", data.To || ""));
     }
     // No valid keypress (robo-dialers, abandons) → voicemail, no lead.
     return xml(voicemailTwiml());
@@ -803,12 +834,20 @@ export async function handleCallRequest(req: Request): Promise<Response> {
 </Response>`);
     }
 
-    return xml(dialLandonTwiml(callerId, callSid));
+    return xml(dialLandonTwiml(callerId, callSid, data.To || ""));
   }
 
   // === PRIVATE OWNER WHISPER ===
   // Twilio runs this only on Landon's called leg. The caller continues hearing
   // ringing until Landon accepts, so the screening summary stays private.
+  // Callee-only source label for directly bridged (unscreened) calls.
+  if (path === "source-whisper") {
+    return xml(sourceWhisperTwiml(
+      sourceWhisperLabel(url.searchParams.get("to") || ""),
+      OWNER_WHISPER_VOICE,
+    ));
+  }
+
   if (path === "whisper") {
     const screenCallSid = url.searchParams.get("screenCallSid") || "";
     let transcript = "a caller provided a response";
@@ -844,6 +883,8 @@ export async function handleCallRequest(req: Request): Promise<Response> {
   <Gather input="dtmf" numDigits="1" timeout="10" actionOnEmptyResult="true"
           method="POST" action="${decisionUrl}">
     <Say voice="${OWNER_WHISPER_VOICE}">Frame call. ${
+      xmlEscape(sourceWhisperLabel(url.searchParams.get("to") || ""))
+    }. ${
       xmlEscape(
         approvedSummary || `${callerIdentity}The caller said: ${transcript}`,
       )
@@ -959,20 +1000,45 @@ export async function handleCallRequest(req: Request): Promise<Response> {
       const updateData: Record<string, unknown> = { status: callStatus };
       if (duration > 0) updateData.duration_seconds = duration;
       if (recordingUrl) updateData.recording_url = recordingUrl;
-
-      let update = supabase.from("call_logs").update(updateData).eq(
-        "call_sid",
-        callSid,
-      );
-      // Child-leg status callbacks must not race over the private owner decision.
-      if (path === "status") {
-        update = update.not(
-          "status",
-          "in",
-          '("screened-awaiting-owner","screened-owner-accepted","screened-owner-rejected")',
+      // Explicit answered/missed, decided only by the Dial action (child-leg
+      // /status events cannot tell a declined whisper from a real bridge).
+      if (path === "completed") {
+        const answered = answeredFromDial(
+          data.DialBridged,
+          data.DialCallStatus,
+          Number.isFinite(duration) ? duration : 0,
         );
+        if (answered !== null) updateData.answered = answered;
       }
-      const { error } = ownerDeclined ? { error: null } : await update;
+
+      const update = (row: Record<string, unknown>) => {
+        let query = supabase.from("call_logs").update(row).eq(
+          "call_sid",
+          callSid,
+        );
+        // Child-leg status callbacks must not race over the private owner
+        // decision.
+        if (path === "status") {
+          query = query.not(
+            "status",
+            "in",
+            '("screened-awaiting-owner","screened-owner-accepted","screened-owner-rejected")',
+          );
+        }
+        return query;
+      };
+      // A declined whisper keeps its private screened-* status (the owner
+      // decision is immutable), but for the caller it is still a missed call.
+      // Write a literal false: the whisper leg's own talk time would read as
+      // answered if DialBridged were ever absent. Before the answered
+      // migration is live this write fails and is only logged; it carries
+      // nothing else, so nothing else is lost.
+      const { error } = ownerDeclined
+        ? await supabase.from("call_logs").update({ answered: false }).eq(
+          "call_sid",
+          callSid,
+        )
+        : await writeCallLog(updateData, update);
       if (error) console.error("Update error:", error);
 
       if (duration > 0) {
@@ -1040,6 +1106,7 @@ export async function handleCallRequest(req: Request): Promise<Response> {
               : null,
             callCount: await callCountFor(caller),
             localTime,
+            sourceLabel: data.To ? sourceWhisperLabel(data.To) : null,
           }));
           if (messageSid) {
             const { error: receiptError } = await supabase.from("call_logs")

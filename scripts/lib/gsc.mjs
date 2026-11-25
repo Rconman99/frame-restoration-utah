@@ -303,3 +303,43 @@ export async function fetchGscSections({ env = process.env, fetchImpl = fetch, n
     impressions28d: by_date.reduce((n, r) => n + r.impressions, 0),
   };
 }
+
+// Search Analytics caps a single query at 25,000 rows. Position is not a filter
+// dimension, so the close-to-page-one step pulls query+page and filters
+// client-side. Hitting the cap is truncation, not a complete band.
+export const QUERY_PAGE_ROW_LIMIT = 25000;
+
+function finiteMetric(value) {
+  return Number.isFinite(value) ? value : null;
+}
+
+/**
+ * Query + page rows for the lagged 28-day window. Returns null when
+ * GSC_SERVICE_ACCOUNT_JSON is unset. Throws on auth or API failure.
+ * Missing metrics stay null — they are not filled in as zero.
+ */
+export async function fetchQueryPageRows({ env = process.env, fetchImpl = fetch, now = new Date(), rowLimit = QUERY_PAGE_ROW_LIMIT } = {}) {
+  const sa = readServiceAccount(env);
+  if (!sa) return null;
+  const siteUrl = env.GSC_SITE_URL || DEFAULT_SITE;
+  const token = await getAccessToken(sa, { fetchImpl, now: now.getTime() });
+  const window = last28Window(now);
+  const rows = await querySearchAnalytics(
+    token,
+    siteUrl,
+    { ...window, type: "web", dataState: "final", dimensions: ["query", "page"], rowLimit },
+    { fetchImpl },
+  );
+  return {
+    siteUrl,
+    window,
+    truncated: rows.length >= rowLimit,
+    rows: rows.map((row) => ({
+      query: row.keys?.[0] ?? null,
+      page: row.keys?.[1] ?? null,
+      clicks: finiteMetric(row.clicks),
+      impressions: finiteMetric(row.impressions),
+      position: finiteMetric(row.position),
+    })),
+  };
+}

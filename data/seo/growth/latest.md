@@ -1,6 +1,6 @@
 # Utah operational growth readout
 
-State: measurement_operational_outcomes_incomplete. Snapshot: 2026-10-27.
+State: measurement_operational_outcomes_incomplete. Snapshot: 2026-11-25.
 
 Qualified leads, inspections, sold jobs and collected revenue: **not measured** by this search report.
 
@@ -9,26 +9,28 @@ Qualified leads, inspections, sold jobs and collected revenue: **not measured** 
 - SLC: Review the mature SLC observation now: reconcile the measured Google panels and targeted GSC evidence, record missing same-window consumer-AI evidence and confounds, and retain required factual corrections. Do not claim causal ranking gains or start public edits from an expired time gate.
 - utah-homepage-commercial-title-2026-08-09: decision_recorded_review_source. Public changes remain separately gated.
 - utah-slc-entity-trust-correction-2026-08-12: observation_review_due. Public changes remain separately gated.
+- utah-slc-page-two-refresh-2026-11-18: deployment_evidence_missing. Public changes remain separately gated.
 
 ## Query discovery — exact query/page diagnosis required
 
-- slc: composite slate roofing salt lake city — 41 impressions, 0 clicks, position 9.5; exact_query_page_diagnosis_ready.
-- heber: roof repair heber city ut — 1741 impressions, 0 clicks, position 7.4; exact_query_page_diagnosis_ready.
-- heber: roofing heber city ut — 1174 impressions, 0 clicks, position 4.7; exact_query_page_diagnosis_ready.
-- heber: which roofing companies in heber city ut provide roof repair and replacement services? — 75 impressions, 0 clicks, position 6.5; exact_query_page_diagnosis_ready.
-- hail-service-area: roof repair midway ut — 1375 impressions, 0 clicks, position 4.7; exact_query_page_diagnosis_ready.
-- hail-service-area: roofing midway ut — 1299 impressions, 0 clicks, position 4.1; exact_query_page_diagnosis_ready.
-- davis-hail: roof repair farmington ut — 857 impressions, 0 clicks, position 11.1; exact_query_page_diagnosis_ready.
-- davis-hail: roofing farmington ut — 657 impressions, 0 clicks, position 13.6; exact_query_page_diagnosis_ready.
-- davis-hail: which roofing companies in farmington ut handle roof repairs and replacements? — 36 impressions, 0 clicks, position 8.1; exact_query_page_diagnosis_ready.
+- slc: wood roof salt lake city — 38 impressions, 0 clicks, position 14.9; exact_query_page_diagnosis_ready.
+- heber: roof repair heber city ut — 2645 impressions, 0 clicks, position 9.7; exact_query_page_diagnosis_ready.
+- heber: roofing heber city ut — 2197 impressions, 0 clicks, position 7; exact_query_page_diagnosis_ready.
+- heber: heber roofers — 56 impressions, 0 clicks, position 6.4; exact_query_page_diagnosis_ready.
+- hail-service-area: roof repair midway ut — 2097 impressions, 0 clicks, position 6.4; exact_query_page_diagnosis_ready.
+- hail-service-area: roofing midway ut — 1703 impressions, 0 clicks, position 5.3; exact_query_page_diagnosis_ready.
+- hail-service-area: roof replacement midway utah — 32 impressions, 0 clicks, position 8.5; exact_query_page_diagnosis_ready.
+- davis-hail: roof repair farmington ut — 790 impressions, 0 clicks, position 14.2; exact_query_page_diagnosis_ready.
+- davis-hail: which roofing companies in farmington ut handle roof repairs and replacements? — 289 impressions, 0 clicks, position 8.8; exact_query_page_diagnosis_ready.
+- davis-hail: roofing layton — 33 impressions, 0 clicks, position 14.3; exact_query_page_diagnosis_ready.
 
 ## Priority pages — rolling search window
 
-- slc: 2 clicks / 7246 impressions / position 26.3.
-- heber: 2 clicks / 1430 impressions / position 10.6.
-- midway: 0 clicks / 5 impressions / position 21.6.
-- hideout: 0 clicks / 7 impressions / position 5.7.
-- charleston: 0 clicks / 1 impressions / position 4.
+- slc: 2 clicks / 3520 impressions / position 19.3.
+- heber: 1 clicks / 1751 impressions / position 9.1.
+- midway: 0 clicks / 2 impressions / position 41.5.
+- hideout: 0 clicks / 5 impressions / position 5.6.
+- charleston: not measured or not returned.
 - layton: not measured or not returned.
 - farmington: not measured or not returned.
 

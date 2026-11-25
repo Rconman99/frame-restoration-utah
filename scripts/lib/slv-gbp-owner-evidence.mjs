@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { isFrameWorkspaceIdentity } from "./frame-workspace-identity.mjs";
 
 export const SLV_GBP_TARGET = Object.freeze({
   business: "Frame Restoration Utah LLC",
@@ -161,7 +162,7 @@ export function sanitizeOwnerEvidenceInput(input, { expectedCities, now = new Da
   exactKeys(input, ["schemaVersion", "observedAt", "observerAccount", "profile", "serviceAreas", "attestation"], "private owner evidence input");
   assert.equal(input.schemaVersion, 1);
   isoTimestamp(input.observedAt, "observedAt");
-  assert.equal(input.observerAccount, SLV_GBP_TARGET.requiredOwnerAccount);
+  assert.ok(isFrameWorkspaceIdentity(input.observerAccount), "observerAccount must be Ryan's Frame Workspace account");
   validateProfile(input.profile);
   validateServiceAreas(input.serviceAreas, expectedCities, ["saved", "not-saved", "unknown"]);
   exactKeys(input.attestation, ATTESTATION_KEYS, "attestation");
@@ -254,7 +255,7 @@ export function validateOwnerEvidenceReceipt(receipt, { expectedCities, now = ne
   assertCurrentEvidenceTimestamp(receipt.observedAt, now);
   assert.ok(Date.parse(receipt.sanitizedAt) >= Date.parse(receipt.observedAt), "receipt sanitizedAt cannot predate observedAt");
   assert.ok(Date.parse(receipt.sanitizedAt) <= now.getTime() + 5 * 60 * 1000, "receipt sanitizedAt cannot be dated in the future");
-  assert.equal(receipt.observerAccount, SLV_GBP_TARGET.requiredOwnerAccount);
+  assert.ok(isFrameWorkspaceIdentity(receipt.observerAccount), "observerAccount must be Ryan's Frame Workspace account");
   validateProfile(receipt.profile);
   validateServiceAreas(receipt.serviceAreas, expectedCities, ["saved", "not-saved", "unknown"]);
   const saved = receipt.serviceAreas.filter((row) => row.savedState === "saved").length;
