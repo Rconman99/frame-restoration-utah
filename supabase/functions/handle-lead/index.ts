@@ -35,9 +35,17 @@
 //   TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_MESSAGING_SERVICE_SID (or TWILIO_PHONE_NUMBER)
 
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { createClient } from "npm:@supabase/supabase-js@2.105.4";
 import { ipHashSecretReady } from "../_shared/client-ip.ts";
 import { applySender } from "../_shared/twilio-sender.ts";
+import {
+  insertLeadRow,
+  leadLocationColumns,
+} from "../_shared/lead-location-columns.ts";
+import {
+  readSmsSuppression,
+  smsSendAllowed,
+} from "../_shared/sms-suppression.ts";
 import {
   LEAD_INTAKE_RATE_LIMIT_RPC,
   leadIntakeThrottleKey,
@@ -702,37 +710,48 @@ Deno.serve(async (req: Request) => {
       );
 
       // 2. Save with the service role and select the exact notification row.
-      const { data: insertedLead, error: insertError } = await supabase.from(
-        "leads",
-      ).insert({
-        submission_key: submissionKey,
-        name: leadName,
-        email,
-        phone,
-        address: address || ((city || "") + " " + (zip || "")).trim(),
-        service: leadService,
-        message,
-        source_page: source_page || "/",
-        tier: classification.tier,
-        tier_reason: classification.reason,
-        tier_confidence: classification.confidence,
-        tier_classifier: classification.classifier,
-        gclid: gclid || null,
-        fbclid: fbclid || null,
-        msclkid: msclkid || null,
-        gbraid: gbraid || null,
-        wbraid: wbraid || null,
-        utm_source: utm_source || null,
-        utm_medium: utm_medium || null,
-        utm_campaign: utm_campaign || null,
-        utm_term: utm_term || null,
-        utm_content: utm_content || null,
-        landing_page: landing_page || null,
-        referrer: referrer || null,
-        sms_consent: sms_consent === true || sms_consent === "true" ||
-          sms_consent === "yes" || sms_consent === "on" ||
-          sms_consent === "1" || sms_consent === 1,
-      }).select(PERSISTED_LEAD_NOTIFICATION_SELECT).single();
+      // City and ZIP go in their own columns so the weekly rollup can place
+      // the lead. `zip` and `city_source` may not exist in this database yet;
+      // insertLeadRow retries once without them so the lead is never lost.
+      const {
+        data: insertedLead,
+        error: insertError,
+      } = await insertLeadRow(
+        leadLocationColumns(city, zip),
+        (location) =>
+          supabase.from(
+            "leads",
+          ).insert({
+            ...location,
+            submission_key: submissionKey,
+            name: leadName,
+            email,
+            phone,
+            address: address || ((city || "") + " " + (zip || "")).trim(),
+            service: leadService,
+            message,
+            source_page: source_page || "/",
+            tier: classification.tier,
+            tier_reason: classification.reason,
+            tier_confidence: classification.confidence,
+            tier_classifier: classification.classifier,
+            gclid: gclid || null,
+            fbclid: fbclid || null,
+            msclkid: msclkid || null,
+            gbraid: gbraid || null,
+            wbraid: wbraid || null,
+            utm_source: utm_source || null,
+            utm_medium: utm_medium || null,
+            utm_campaign: utm_campaign || null,
+            utm_term: utm_term || null,
+            utm_content: utm_content || null,
+            landing_page: landing_page || null,
+            referrer: referrer || null,
+            sms_consent: sms_consent === true || sms_consent === "true" ||
+              sms_consent === "yes" || sms_consent === "on" ||
+              sms_consent === "1" || sms_consent === 1,
+          }).select(PERSISTED_LEAD_NOTIFICATION_SELECT).single(),
+      );
 
       if (!insertError) {
         storedLead = insertedLead;
@@ -853,7 +872,17 @@ Deno.serve(async (req: Request) => {
           sms_consent,
           customerPhone,
         );
-        if (consentGate.send && config.TWILIO_ACCOUNT_SID) {
+        // TCPA / FCC 26-67: an opted-out number never gets the auto-text.
+        // Fail closed if the suppression state can't be read.
+        const suppression = consentGate.send && config.TWILIO_ACCOUNT_SID
+          ? await readSmsSuppression(supabase, customerPhone!)
+          : null;
+        if (suppression && !smsSendAllowed(suppression)) {
+          console.log(
+            "Auto-text skipped:",
+            suppression.ok ? "opted_out" : suppression.error,
+          );
+        } else if (consentGate.send && config.TWILIO_ACCOUNT_SID) {
           const autoReplyBody = customerAutoReply(effectiveTier, firstName);
           smsPromises.push(
             sendTwilioSMS(config, customerPhone!, autoReplyBody)

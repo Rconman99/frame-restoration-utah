@@ -218,7 +218,7 @@ Deno.test("worker deployment canary is authenticated, read-only, and no-send", (
 Deno.test("durable capture precedes role routing guards and claims remain blocked", () => {
   const handlerStart = handleLead.indexOf("Deno.serve(async (req: Request)");
   const leadInsert = handleLead.indexOf(
-    '.from(\n        "leads",',
+    '.from(\n            "leads",',
     handlerStart,
   );
   const ownerDispatch = handleLead.indexOf(

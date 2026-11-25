@@ -54,8 +54,13 @@ Deno.test("caller one dials Landon without another prompt and retains each sourc
       assertStringIncludes(body, '<Dial callerId="+12145550123"');
       assertStringIncludes(body, "+14353024422");
       assertEquals(
-        /<Say|<Gather|whisper|screened=1|answerOnBridge/.test(body),
+        /<Say|<Gather|\/whisper\?|screened=1|answerOnBridge/.test(body),
         false,
+      );
+      // Callee-only source whisper; caller ID stays the real caller.
+      assertStringIncludes(
+        body,
+        `handle-call/source-whisper?to=${encodeURIComponent(to)}`,
       );
     }
     assertEquals(fakeDb.leadRows.length, 1);
@@ -440,12 +445,207 @@ Deno.test("bridge outcome records only explicit provider proof, not missing data
   assertEquals(fakeDb.leadRows.length, 1);
 });
 
+Deno.test("a declined whisper is recorded as answered=false without rewriting the owner decision", async () => {
+  for (const ownerPressedTwo of [true, false]) {
+    fakeDb = new FakeSupabaseRest();
+    await startLegacyCall();
+    await handleCallRequest(
+      await signedRequest(
+        "receptionist?step=purpose",
+        receptionParams({ SpeechResult: "Human please" }),
+      ),
+    );
+    if (ownerPressedTwo) {
+      const declined = await handleCallRequest(
+        await signedRequest(
+          `whisper-decision?screenCallSid=${CALL_SID}`,
+          receptionParams({ Digits: "2" }),
+        ),
+      );
+      assertStringIncludes(await declined.text(), "voicemail");
+    }
+    // Pressing two stores the decision; a whisper that timed out has none yet.
+    assertEquals(
+      fakeDb.callLogs.get(CALL_SID)?.status,
+      ownerPressedTwo ? "screened-owner-rejected" : "screened-awaiting-owner",
+    );
+    // Twilio's Dial action once the whisper leg hangs up: completed, never
+    // bridged, and DialCallDuration is the whisper's own talk time.
+    const response = await handleCallRequest(
+      await signedRequest(
+        DIAL_RESULT_PATH,
+        receptionParams({
+          DialCallStatus: "completed",
+          DialBridged: "false",
+          DialCallDuration: "9",
+        }),
+      ),
+    );
+    assertStringIncludes(await response.text(), "<Record");
+    await flushBackgroundTasks();
+    const log = fakeDb.callLogs.get(CALL_SID)!;
+    assertEquals(log.status, "screened-owner-rejected");
+    assertEquals(log.answered, false);
+    assertEquals(fakeDb.leadRows.length, 0);
+  }
+});
+Deno.test("press-one Dial outcomes write answered from the Dial action; child-leg status callbacks never do", async () => {
+  // An internal line never alerts, so the missed-call SMS task stays inert.
+  Deno.env.set("INTERNAL_RELAY_NUMBERS", receptionParams().From);
+  try {
+    for (
+      const [dial, bridged, answered] of [
+        ["completed", "true", true],
+        ["no-answer", "false", false],
+        ["busy", "false", false],
+      ] as const
+    ) {
+      fakeDb = new FakeSupabaseRest();
+      await handleCallRequest(
+        await signedRequest("handle-call", receptionParams()),
+      );
+      await handleCallRequest(
+        await signedRequest("connect", receptionParams({ Digits: "1" })),
+      );
+      await handleCallRequest(
+        await signedRequest(
+          "status",
+          receptionParams({
+            CallSid: `CA${"3".repeat(32)}`,
+            ParentCallSid: CALL_SID,
+            CallStatus: dial,
+            CallDuration: answered ? "42" : "0",
+          }),
+        ),
+      );
+      assertEquals("answered" in fakeDb.callLogs.get(CALL_SID)!, false);
+      const response = await handleCallRequest(
+        await signedRequest(
+          "completed",
+          receptionParams({
+            DialCallStatus: dial,
+            DialBridged: bridged,
+            DialCallDuration: answered ? "42" : "0",
+          }),
+        ),
+      );
+      assertEquals(response.status, 200);
+      await flushBackgroundTasks();
+      assertEquals(fakeDb.callLogs.get(CALL_SID)?.answered, answered);
+      assertEquals(fakeDb.callLogs.get(CALL_SID)?.status, dial);
+    }
+  } finally {
+    Deno.env.delete("INTERNAL_RELAY_NUMBERS");
+  }
+});
+Deno.test("a caller screened out before any Dial leaves answered unset, as the backfill does", async () => {
+  fakeDb = new FakeSupabaseRest();
+  await handleCallRequest(
+    await signedRequest("handle-call", receptionParams()),
+  );
+  const gate = await handleCallRequest(
+    await signedRequest("connect", receptionParams({ Digits: "" })),
+  );
+  assertEquals((await gate.text()).includes("<Dial"), false);
+  await handleCallRequest(
+    await signedRequest(
+      "voicemail",
+      receptionParams({ RecordingUrl: "https://recordings.test/voicemail" }),
+    ),
+  );
+  const log = fakeDb.callLogs.get(CALL_SID)!;
+  assertEquals(log.status, "voicemail");
+  assertEquals("answered" in log, false);
+  assertEquals(log.lead_id, null);
+});
+
+Deno.test("before the migrations are live, calls still log without from_zip and answered", async () => {
+  // An internal line never alerts, so the missed-call SMS task stays inert.
+  Deno.env.set("INTERNAL_RELAY_NUMBERS", receptionParams().From);
+  try {
+    fakeDb = new FakeSupabaseRest();
+    fakeDb.missingCallLogColumns = new Set(["from_zip", "answered"]);
+    await handleCallRequest(
+      await signedRequest(
+        "handle-call",
+        receptionParams({
+          FromCity: "PROVO",
+          FromState: "UT",
+          FromZip: "84601",
+        }),
+      ),
+    );
+    const inserted = fakeDb.callLogs.get(CALL_SID)!;
+    assertEquals(inserted.from_number, receptionParams().From);
+    assertEquals("from_zip" in inserted, false);
+    await handleCallRequest(
+      await signedRequest("connect", receptionParams({ Digits: "1" })),
+    );
+    const response = await handleCallRequest(
+      await signedRequest(
+        "completed",
+        receptionParams({
+          DialCallStatus: "completed",
+          DialBridged: "true",
+          DialCallDuration: "42",
+          RecordingUrl: "https://recordings.test/bridged",
+        }),
+      ),
+    );
+    assertEquals(response.status, 200);
+    await flushBackgroundTasks();
+    const log = fakeDb.callLogs.get(CALL_SID)!;
+    assertEquals(log.status, "completed");
+    assertEquals(log.duration_seconds, 42);
+    assertEquals(log.recording_url, "https://recordings.test/bridged");
+    assertEquals("answered" in log, false);
+    // One rejected insert and one rejected Dial-action update, each retried.
+    assertEquals(fakeDb.callLogWriteRejections, 2);
+  } finally {
+    Deno.env.delete("INTERNAL_RELAY_NUMBERS");
+  }
+});
+Deno.test("once the migrations are live, calls write from_zip and answered on the first try", async () => {
+  Deno.env.set("INTERNAL_RELAY_NUMBERS", receptionParams().From);
+  try {
+    fakeDb = new FakeSupabaseRest();
+    await handleCallRequest(
+      await signedRequest(
+        "handle-call",
+        receptionParams({ FromZip: "84601" }),
+      ),
+    );
+    assertEquals(fakeDb.callLogs.get(CALL_SID)?.from_zip, "84601");
+    await handleCallRequest(
+      await signedRequest("connect", receptionParams({ Digits: "1" })),
+    );
+    await handleCallRequest(
+      await signedRequest(
+        "completed",
+        receptionParams({
+          DialCallStatus: "completed",
+          DialBridged: "true",
+          DialCallDuration: "42",
+        }),
+      ),
+    );
+    await flushBackgroundTasks();
+    assertEquals(fakeDb.callLogs.get(CALL_SID)?.answered, true);
+    assertEquals(fakeDb.callLogWriteRejections, 0);
+  } finally {
+    Deno.env.delete("INTERNAL_RELAY_NUMBERS");
+  }
+});
+
 // Seed the interview state that an already-active pre-v7 call would have.
 // Fresh inbound behavior is tested separately below; legacy callbacks stay real.
 async function startLegacyCall(): Promise<Response> {
   await handleCallRequest(
     await signedRequest("handle-call", receptionParams()),
   );
+  // Drain the ring-time source SMS so later steps assert only their own work.
+  await Promise.all(backgroundTasks);
+  backgroundTasks = [];
   const body = await startReceptionist(
     {
       supabaseUrl: "https://supabase.test",
@@ -496,6 +696,9 @@ class FakeSupabaseRest {
   failNextCallLogPatch = false;
   failNextCallLogPost = false;
   failNextCallLogGet = false;
+  // Columns this fake database does not have yet, as before a migration.
+  missingCallLogColumns = new Set<string>();
+  callLogWriteRejections = 0;
   failNextScreeningPatch = false;
   failNextReconcileRpc = false;
   failNextDecisionRpc:
@@ -516,9 +719,19 @@ class FakeSupabaseRest {
   };
   failNextTwilioCallGet = false;
   lookupCount = 0;
+  smsSent: URLSearchParams[] = [];
   leadRows: Record<string, unknown>[] = [];
   reconcileRpcCount = 0;
   finalizeRpcCount = 0;
+
+  private unknownCallLogColumn(body: string): string | null {
+    if (!body) return null;
+    const row = JSON.parse(body) as Record<string, unknown>;
+    return Object.keys(row).find((key) =>
+      this.missingCallLogColumns.has(key)
+    ) ??
+      null;
+  }
 
   private reconcileCall(callSid: string): number | null {
     this.reconcileRpcCount += 1;
@@ -583,6 +796,10 @@ class FakeSupabaseRest {
     }
 
     if (url.origin === "https://api.twilio.com") {
+      if (request.method === "POST" && url.pathname.endsWith("/Messages.json")) {
+        this.smsSent.push(new URLSearchParams(await request.text()));
+        return jsonResponse({ sid: "SM" + "0".repeat(32) });
+      }
       if (request.method !== "GET") {
         throw new Error(
           `Unexpected Twilio mutation in test: ${request.method}`,
@@ -631,9 +848,18 @@ class FakeSupabaseRest {
         failure !== "before-commit" && callLog && screening?.stage === "done"
       ) {
         screening.owner_decision ??= body.p_requested_decision;
-        callLog.status = screening.owner_decision === "accepted"
-          ? "screened-owner-accepted"
-          : "screened-owner-rejected";
+        // Like commit_owner_screen_decision, only a screened-* log row moves.
+        if (
+          [
+            "screened-awaiting-owner",
+            "screened-owner-accepted",
+            "screened-owner-rejected",
+          ].includes(callLog.status)
+        ) {
+          callLog.status = screening.owner_decision === "accepted"
+            ? "screened-owner-accepted"
+            : "screened-owner-rejected";
+        }
         if (
           table === "finalize_owner_screen_decision" &&
           screening.owner_decision === "accepted"
@@ -767,6 +993,20 @@ class FakeSupabaseRest {
         }
         return jsonResponse(row ? [row] : []);
       }
+      if (request.method === "PATCH" || request.method === "POST") {
+        const unknown = this.unknownCallLogColumn(await request.clone().text());
+        if (unknown) {
+          this.callLogWriteRejections += 1;
+          return jsonResponse(
+            {
+              code: "PGRST204",
+              message:
+                `Could not find the '${unknown}' column of 'call_logs' in the schema cache`,
+            },
+            400,
+          );
+        }
+      }
       if (request.method === "PATCH") {
         this.callLogPatchCount += 1;
         if (
@@ -837,6 +1077,9 @@ class FakeSupabaseRest {
       return new Response(null, { status: 204 });
     }
 
+    if (request.method === "GET" && table === "alert_suppressed_callers") {
+      return jsonResponse([]);
+    }
     if (
       request.method === "GET" &&
       (table === "blocked_callers" || table === "leads")
@@ -942,3 +1185,19 @@ function baseParams(
 ): Record<string, string> {
   return { AccountSid: ACCOUNT_SID, CallSid: CALL_SID, ...extra };
 }
+
+Deno.test("ring-time source SMS goes to Landon from the dialed tracking number", async () => {
+  fakeDb = new FakeSupabaseRest();
+  backgroundTasks = [];
+  const response = await handleCallRequest(
+    await signedRequest("handle-call", receptionParams({ To: "+18014620526" })),
+  );
+  assertEquals(response.status, 200);
+  await Promise.all(backgroundTasks);
+  backgroundTasks = [];
+  assertEquals(fakeDb.smsSent.length, 1);
+  const sms = fakeDb.smsSent[0];
+  assertEquals(sms.get("To"), "+14353024422");
+  assertEquals(sms.get("From"), "+18014620526");
+  assertStringIncludes(sms.get("Body") || "", "Google lead calling from +12145550123");
+});

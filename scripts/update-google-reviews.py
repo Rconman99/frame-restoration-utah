@@ -608,6 +608,7 @@ def _fetch_all_reviews_serpapi(limit: int = REVIEWS_FULL_LIMIT) -> list[dict]:
                 "date": str(r.get("iso_date") or r.get("date") or "")[:10],
                 "text": (text or "").strip(),
                 "has_text": bool(text and text.strip()),
+                **({"review_id": str(r["review_id"])} if r.get("review_id") else {}),
             })
         pages_fetched += 1
         next_page_token = (data.get("serpapi_pagination") or {}).get("next_page_token")
@@ -616,12 +617,59 @@ def _fetch_all_reviews_serpapi(limit: int = REVIEWS_FULL_LIMIT) -> list[dict]:
     return out[:limit]
 
 
+def _full_review_keys(r: dict) -> set[str]:
+    """Stable identity keys for a review in the audit pool. The provider
+    review_id wins when present; author+date+text hash is the fallback so
+    older entries (stored before review_id was kept) still dedupe."""
+    keys = set()
+    rid = str(r.get("review_id") or "").strip()
+    if rid:
+        keys.add("id:" + rid)
+    author = (r.get("author") or "").strip().casefold()
+    keys.add("sig:%s|%s|%s" % (author, str(r.get("date") or "")[:10], _review_text_sha256(r.get("text", ""))))
+    return keys
+
+
+def merge_review_pool(fresh: list[dict], existing: list[dict]) -> list[dict]:
+    """Merge freshly fetched reviews into the existing audit pool. Never drops
+    an existing review: a fetch that returns fewer (or overlapping) reviews
+    keeps every prior entry and adds only the new ones. Fresh copies replace
+    matching prior entries (keeping any prior review_id). Fresh-first order."""
+    out: list[dict] = []
+    seen: set[str] = set()
+    for r in fresh:
+        keys = _full_review_keys(r)
+        if keys & seen:
+            continue
+        seen |= keys
+        out.append(r)
+    for r in existing:
+        keys = _full_review_keys(r)
+        if keys & seen:
+            continue
+        seen |= keys
+        out.append(r)
+    return out
+
+
+def _load_existing_full_reviews() -> list[dict]:
+    if not REVIEWS_FULL_JSON.exists():
+        return []
+    try:
+        data = json.loads(REVIEWS_FULL_JSON.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return []
+    rows = data.get("reviews") if isinstance(data, dict) else None
+    return [r for r in rows or [] if isinstance(r, dict)]
+
+
 def write_reviews_full_json(reviews: list[dict], place: dict) -> bool:
     """Write data/reviews-full.json for the audit script. Preserves the prior
     file if `reviews` is empty (the SerpAPI call failed)."""
     REVIEWS_FULL_JSON.parent.mkdir(parents=True, exist_ok=True)
     if not reviews and REVIEWS_FULL_JSON.exists():
         return False
+    reviews = merge_review_pool(reviews, _load_existing_full_reviews())
     payload = {
         "source": "google_maps_reviews",
         **_source_identity(),
