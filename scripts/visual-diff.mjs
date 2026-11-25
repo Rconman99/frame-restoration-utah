@@ -157,17 +157,21 @@ async function capture(browser, origin, pagePath, viewport, extraCss = "", probe
     const response = await page.goto(`${origin}${pagePath}`, { waitUntil: "load", timeout: 30000 });
     if (!response || response.status() === 404) return { missing: true };
     await page.clock.runFor(1500);
+    // The site sets html { scroll-behavior: smooth }, which would leave the page
+    // mid-scroll when the shot is taken. Jump instantly instead.
+    await page.addStyleTag({ content: "html, body { scroll-behavior: auto !important; }" });
     // Load lazy images and fire reveal-on-scroll observers top to bottom.
     await page.evaluate(() => {
       for (const img of document.querySelectorAll('img[loading="lazy"]')) img.loading = "eager";
     });
     const total = await page.evaluate(() => document.documentElement.scrollHeight);
     for (let y = 0; y < Math.min(total, MAX_HEIGHT); y += viewport.height) {
-      await page.evaluate((top) => window.scrollTo(0, top), y);
+      await page.evaluate((top) => window.scrollTo({ top, left: 0, behavior: "instant" }), y);
       await page.clock.runFor(200);
       await page.waitForTimeout(50);
     }
-    await page.evaluate(() => window.scrollTo(0, 0));
+    await page.evaluate(() => window.scrollTo({ top: 0, left: 0, behavior: "instant" }));
+    await page.waitForFunction(() => window.scrollY === 0, null, { timeout: 5000 });
     // Long enough for count-up stats and fades, shorter than the 6.5s carousel step.
     await page.clock.runFor(4000);
     // The page's own timers are frozen, so the 8s cap runs on the Node side.
