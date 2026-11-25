@@ -111,7 +111,7 @@ function startServer(root) {
   });
 }
 
-async function capture(browser, origin, pagePath, viewport, extraCss = "") {
+async function capture(browser, origin, pagePath, viewport, extraCss = "", probeBands = null) {
   const context = await browser.newContext({
     viewport: { width: viewport.width, height: viewport.height },
     deviceScaleFactor: 1,
@@ -175,7 +175,24 @@ async function capture(browser, origin, pagePath, viewport, extraCss = "") {
       maskColor: "#d9d9d9",
       timeout: 60000,
     });
-    return { png, height };
+    let probe = null;
+    if (probeBands) {
+      // Name the smallest visible elements inside each changed band (document coordinates).
+      probe = await page.evaluate((bandsIn) => bandsIn.map((band) => {
+        const hits = [];
+        for (const el of document.querySelectorAll("body *")) {
+          const r = el.getBoundingClientRect();
+          const top = r.top + window.scrollY;
+          const bottom = top + r.height;
+          if (!r.width || !r.height || bottom < band.from || top > band.to) continue;
+          if (r.height > (band.to - band.from + 1) * 3 + 40) continue;
+          const cls = typeof el.className === "string" ? el.className.trim().split(/\s+/).slice(0, 3).join(".") : "";
+          hits.push(`${el.tagName.toLowerCase()}${el.id ? `#${el.id}` : ""}${cls ? `.${cls}` : ""} @${Math.round(top)}+${Math.round(r.height)}`);
+        }
+        return { ...band, elements: hits.slice(0, 12) };
+      }), probeBands);
+    }
+    return { png, height, probe };
   } finally {
     await context.close();
   }
@@ -210,12 +227,21 @@ async function diffImages(diffPage, beforePng, afterPng) {
     const out = new ImageData(width, height);
     const o = out.data;
     let changed = 0;
+    const rowCounts = new Uint32Array(height);
+    let minX = width, minY = height, maxX = -1, maxY = -1;
     for (let i = 0; i < da.length; i += 4) {
       const delta = Math.max(
         Math.abs(da[i] - db[i]), Math.abs(da[i + 1] - db[i + 1]), Math.abs(da[i + 2] - db[i + 2]),
       );
       if (delta > tolerance) {
         changed += 1;
+        const px = (i / 4) % width;
+        const py = Math.floor(i / 4 / width);
+        rowCounts[py] += 1;
+        if (px < minX) minX = px;
+        if (px > maxX) maxX = px;
+        if (py < minY) minY = py;
+        if (py > maxY) maxY = py;
         o[i] = 230; o[i + 1] = 20; o[i + 2] = 60; o[i + 3] = 255;
       } else {
         const luma = 0.299 * db[i] + 0.587 * db[i + 1] + 0.114 * db[i + 2];
@@ -228,7 +254,16 @@ async function diffImages(diffPage, beforePng, afterPng) {
     canvas.height = height;
     canvas.getContext("2d").putImageData(out, 0, 0);
     const diffPng = canvas.toDataURL("image/png").split(",")[1];
-    return { changed, total: width * height, diffPng };
+    // Horizontal bands of changed rows (gaps under 20px merged), largest first.
+    const bands = [];
+    for (let y = 0; y < height; y += 1) {
+      if (!rowCounts[y]) continue;
+      const last = bands[bands.length - 1];
+      if (last && y - last.to <= 20) { last.to = y; last.pixels += rowCounts[y]; } else bands.push({ from: y, to: y, pixels: rowCounts[y] });
+    }
+    bands.sort((p, q) => q.pixels - p.pixels);
+    const box = maxX < 0 ? null : { x: minX, y: minY, width: maxX - minX + 1, height: maxY - minY + 1 };
+    return { changed, total: width * height, diffPng, box, bands: bands.slice(0, 6) };
   }, { before: beforePng.toString("base64"), after: afterPng.toString("base64"), tolerance: PIXEL_TOLERANCE });
 }
 
@@ -261,10 +296,19 @@ try {
     const second = await capture(browser, afterSite.origin, "/", viewport);
     const shifted = await capture(browser, afterSite.origin, "/", viewport, "body { padding-top: 24px !important; }");
     assert(!first.missing && !second.missing && !shifted.missing, "self-test: the home page must render");
-    const stable = judge(await diffImages(diffPage, first.png, second.png), first.height, second.height);
+    const stableDiff = await diffImages(diffPage, first.png, second.png);
+    const stable = judge(stableDiff, first.height, second.height);
     const broken = judge(await diffImages(diffPage, first.png, shifted.png), first.height, shifted.height);
     selftest = { stableRatio: stable.ratio, stableFlagged: stable.flagged, shiftRatio: broken.ratio, shiftFlagged: broken.flagged };
     console.log(`self-test: two clean renders differ by ${pct(stable.ratio)}; injected 24px shift differs by ${pct(broken.ratio)}`);
+    if (stable.flagged) {
+      writeFileSync(resolve(outDir, "selftest-render-1.png"), first.png);
+      writeFileSync(resolve(outDir, "selftest-render-2.png"), second.png);
+      writeFileSync(resolve(outDir, "selftest-diff.png"), Buffer.from(stableDiff.diffPng, "base64"));
+      const probed = await capture(browser, afterSite.origin, "/", viewport, "", stableDiff.bands);
+      console.log(`self-test: changed box ${JSON.stringify(stableDiff.box)}; heights ${first.height} vs ${second.height}`);
+      for (const band of probed.probe) console.log(`  rows ${band.from}-${band.to} (${band.pixels} px): ${band.elements.join(" | ")}`);
+    }
     assert(!stable.flagged, `self-test: two renders of the same page differ by ${pct(stable.ratio)}, so the check would be flaky`);
     assert(broken.flagged, "self-test: an injected 24px layout shift was not flagged");
   }
