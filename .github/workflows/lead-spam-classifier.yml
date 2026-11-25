@@ -1,0 +1,37 @@
+name: Lead spam classifier contract
+
+# Offline unit tests for scripts/classify-lead-spam.py: the call talk-time rule
+# (talk time alone never labels a Utah lead spam) and the Utah-only Supabase
+# project guard. No model, no network, no market project. The prompt eval
+# (scripts/classify-lead-spam.eval.py) needs a local Ollama and stays a local
+# run. Standalone for the same reason as ai-referrer-tagging.yml:
+# compliance-gate.yml is a digest-pinned reviewed source
+# (scripts/audit-client-ip-probe-contract.mjs pins its bytes and action counts).
+on:
+  pull_request:
+    paths:
+      - 'scripts/classify-lead-spam.py'
+      - 'tests/test_classify_lead_spam.py'
+      - '.github/workflows/lead-spam-classifier.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/classify-lead-spam.py'
+      - 'tests/test_classify_lead_spam.py'
+      - '.github/workflows/lead-spam-classifier.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  offline-contract:
+    name: Lead spam classifier offline contract (blocking)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: '3.12'
+      - name: Talk-time rule and Utah project guard (no model, no network)
+        run: python3 tests/test_classify_lead_spam.py -v
