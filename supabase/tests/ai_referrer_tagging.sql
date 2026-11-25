@@ -166,3 +166,41 @@ do $$ begin
   assert (select count(*) from public.ai_referrer_update_log) = 12, 'inserts produced UPDATEs';
 end $$;
 rollback;
+
+-- 6. The service_role grant, on its own terms. plpgsql plans `new.ai_referrer
+--    := public.frame_ai_referrer(...)` once per transaction and EXECUTE is
+--    checked only at that moment, so section 5's `set local role service_role`
+--    inserts ride a plan the superuser inserts above already prepared and
+--    cannot prove the grant. Here a service_role insert is the FIRST firing of
+--    the trigger in the transaction, on both tables.
+begin;
+set local role service_role;
+insert into public.leads(name, phone, source_page, referrer) values ('C-cold-service-role', '+18015550131', 'test', 'https://chatgpt.com/');
+insert into public.phone_clicks(click_type, phone, source_page, page_title, referrer) values ('call', '+14352928802', '/', 'C-cold-service-role', 'https://www.perplexity.ai/');
+reset role;
+do $$ begin
+  assert (select ai_referrer from public.leads where name = 'C-cold-service-role') = 'chatgpt', 'cold-transaction service_role lead insert did not tag';
+  assert (select ai_referrer from public.phone_clicks where page_title = 'C-cold-service-role') = 'perplexity', 'cold-transaction service_role click insert did not tag';
+end $$;
+rollback;
+
+-- 7. Control for section 6: with the grant gone, that same insert must be
+--    refused. This is what makes the revoke/grant pair a tested contract
+--    rather than a comment — dropping the grant line from the migration turns
+--    every Utah lead insert into `permission denied for function
+--    frame_ai_referrer`, and section 2's has_function_privilege assert is the
+--    only other thing standing between that and production.
+begin;
+revoke all on function public.frame_ai_referrer(text, text) from service_role;
+set local role service_role;
+do $$
+declare denied boolean := false;
+begin
+  begin
+    insert into public.leads(name, phone, source_page, referrer) values ('C-no-grant', '+18015550132', 'test', 'https://chatgpt.com/');
+  exception when insufficient_privilege then denied := true;
+  end;
+  assert denied, 'a lead insert succeeded without the service_role EXECUTE grant: the revoke/grant pair is untested';
+end $$;
+reset role;
+rollback;
