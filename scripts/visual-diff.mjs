@@ -166,7 +166,9 @@ async function capture(browser, origin, pagePath, viewport, extraCss = "", probe
       document.documentElement.scrollHeight, document.body ? document.body.scrollHeight : 0,
     ));
     const clipHeight = Math.min(height, MAX_HEIGHT);
-    const png = await page.screenshot({
+    // Like Playwright's toHaveScreenshot: keep shooting until two shots in a
+    // row are identical, so late image decodes and quality re-rasters settle.
+    const shoot = () => page.screenshot({
       fullPage: true,
       clip: { x: 0, y: 0, width: viewport.width, height: clipHeight },
       animations: "disabled",
@@ -175,6 +177,15 @@ async function capture(browser, origin, pagePath, viewport, extraCss = "", probe
       maskColor: "#d9d9d9",
       timeout: 60000,
     });
+    let png = await shoot();
+    let settled = false;
+    for (let attempt = 0; attempt < 6 && !settled; attempt += 1) {
+      await page.waitForTimeout(300);
+      const next = await shoot();
+      settled = next.equals(png);
+      png = next;
+    }
+    if (!settled) console.log(`  note: ${pagePath} at ${viewport.name} kept changing between shots`);
     let probe = null;
     if (probeBands) {
       // Name the smallest visible elements inside each changed band (document coordinates).
