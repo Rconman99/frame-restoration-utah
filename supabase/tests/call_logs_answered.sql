@@ -34,7 +34,9 @@ begin
       (136, null, 'hung up at the keypad prompt'),
       (137, null, 'blocked caller'),
       (138, null, 'declined solicitation'),
-      (139, null, 'ringing with no Dial outcome stays unknown')
+      (139, null, 'ringing with no Dial outcome stays unknown'),
+      (140, null, 'outbound CALL-command call with talk time stays unknown'),
+      (141, null, 'outbound CALL-command call with no answer stays unknown')
     ) as v(n, expected, why)
     left join public.call_logs c on c.call_sid = 'CA' || lpad(v.n::text, 32, '0')
     order by v.n

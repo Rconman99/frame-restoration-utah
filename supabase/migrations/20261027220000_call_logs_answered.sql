@@ -12,11 +12,16 @@ comment on column public.call_logs.answered is
 -- missed only when a Dial is evidenced, either a linked lead (the ring and
 -- press-one routes link one before dialing) or a legacy whisper leg recorded
 -- unbridged or declined. Callers screened out before any Dial stay NULL.
+-- Outbound calls placed by the operator's CALL text command are left NULL
+-- (Ryan's pick, 2026-11-25): the live handler never decides answered for
+-- them, so the backfill doesn't either.
 update public.call_logs set answered = true
  where answered is null and status in ('completed', 'answered')
-   and coalesce(duration_seconds, 0) > 0;
+   and coalesce(duration_seconds, 0) > 0
+   and coalesce(notes, '') <> 'Outbound call via SMS command';
 update public.call_logs c set answered = false
  where c.answered is null
+   and coalesce(c.notes, '') <> 'Outbound call via SMS command'
    and (c.status in ('no-answer', 'busy', 'failed', 'canceled',
                      'screened-owner-rejected')
         or (c.status = 'voicemail'
