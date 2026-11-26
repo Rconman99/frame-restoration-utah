@@ -164,7 +164,7 @@ for (const step of [...admission.steps, ...deploy.steps]) {
 }
 const setupCli = deploy.steps.find((step) =>
   step.uses ===
-    "supabase/setup-cli@ab058987d8d6c725971f6cf9d0b5c98467e30bd1"
+    "supabase/setup-cli@689adcfb80d947100a1eab127289b97d1fb07b13"
 );
 assert.equal(setupCli.with.version, "2.113.0");
 

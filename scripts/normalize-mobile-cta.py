@@ -38,8 +38,8 @@ SMS_SVG = ('<svg width="18" height="18" viewBox="0 0 24 24" fill="none" '
 STICKY_BAR = f'''<div class="sticky-call" role="region" aria-label="Contact Frame Restoration Utah">
   <span class="sticky-call-microcopy">Free roof inspection</span>
   <div class="sticky-call-actions">
-    <a class="sticky-call-btn sticky-call-phone" href="tel:+14352928802" data-cta="mobile-call" aria-label="Call Frame Restoration Utah at 435-292-8802">{PHONE_SVG} Call Now</a>
-    <a class="sticky-call-btn sticky-call-text" href="sms:+14352928802" data-cta="mobile-sms" aria-label="Text Frame Restoration Utah at 435-292-8802">{SMS_SVG} Text Us</a>
+    <a class="sticky-call-btn sticky-call-phone" href="tel:+14352928802" data-cta="mobile-call" aria-label="Call Now: Frame Restoration Utah at 435-292-8802">{PHONE_SVG} Call Now</a>
+    <a class="sticky-call-btn sticky-call-text" href="sms:+14352928802" data-cta="mobile-sms" aria-label="Text Us: Frame Restoration Utah at 435-292-8802">{SMS_SVG} Text Us</a>
   </div>
 </div>'''
 

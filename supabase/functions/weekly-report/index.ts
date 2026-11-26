@@ -9,7 +9,7 @@
 // deno-lint-ignore-file no-import-prefix no-unversioned-import
 
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { createClient } from "npm:@supabase/supabase-js@2.105.4";
 import { type AccessRole, normalizeAccessRole } from "../_shared/crm-access.ts";
 import {
   bearerToken,
