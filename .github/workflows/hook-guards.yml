@@ -14,6 +14,21 @@ name: hook-guards
 #                   scripts/no-published-prices.test.mjs.
 #   blog-no-prices  no blog post publishes a dollar figure, apart from the cited
 #                   third-party figures allowlisted in the test (same owner rule)
+#   lead-migration-runner
+#                   scripts/run-lead-migrations.sh (the exact-target runner for
+#                   20261027221000 / 20261027230000 / 20261122230000) still fails
+#                   closed on every gate. Runs the real runner against a
+#                   throwaway git repository and a stub `supabase` executable;
+#                   no Supabase project is contacted and no migration is applied.
+#                   It lives here rather than in compliance-gate.yml because that
+#                   workflow is digest-pinned by
+#                   scripts/audit-client-ip-probe-contract.mjs.
+#   lead-migration-rollback
+#                   the rollback SQL printed in
+#                   docs/runbooks/utah-lead-migrations.md really does leave the
+#                   catalog AND supabase_migrations.schema_migrations agreeing,
+#                   on a throwaway postgres:16-alpine with the real Utah
+#                   baselines. No market project is touched.
 
 on:
   pull_request:
@@ -27,6 +42,17 @@ on:
       - "scripts/roof-cost-calculator.test.mjs"
       - "scripts/no-published-prices.test.mjs"
       - "scripts/no-published-prices-blog.test.mjs"
+      - "scripts/run-lead-migrations.sh"
+      - "scripts/run-lead-migrations.test.mjs"
+      - "supabase/migrations/20261027221000_lead_spam_classification.sql"
+      - "supabase/migrations/20261027230000_ai_referrer_tagging.sql"
+      - "supabase/migrations/20261122230000_leads_intake_zip_city_source.sql"
+      - "supabase/migration-baselines/remote-applied-history-guard.sql"
+      - "supabase/tests/lead_migrations_rollback*.sql"
+      - "supabase/migrations/20260401000003_baseline_leads.sql"
+      - "supabase/migrations/20260401000004_baseline_phone_clicks.sql"
+      - "supabase/migrations/20260510_add_attribution_columns.sql"
+      - "docs/runbooks/utah-lead-migrations.md"
       - "index.html"
       - "404.html"
       - "review.html"
@@ -81,3 +107,38 @@ jobs:
         with:
           node-version: 22
       - run: npm run test:no-prices-blog
+  lead-migration-runner:
+    name: Lead migration runner fails closed on every gate
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1
+        with:
+          node-version: 22
+      - run: npm run test:lead-migration-runner
+  lead-migration-rollback:
+    name: Documented lead-migration rollback leaves catalog and history agreeing
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_PASSWORD: synthetic-ci-only
+        ports: ['5432:5432']
+        options: --health-cmd pg_isready --health-interval 5s --health-timeout 5s --health-retries 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      - name: Real baselines, three targets applied, then the runbook's rollback
+        env:
+          PGPASSWORD: synthetic-ci-only
+        run: |
+          psql -h localhost -U postgres -v ON_ERROR_STOP=1 -f supabase/migrations/20260401000003_baseline_leads.sql
+          psql -h localhost -U postgres -v ON_ERROR_STOP=1 -f supabase/migrations/20260401000004_baseline_phone_clicks.sql
+          psql -h localhost -U postgres -v ON_ERROR_STOP=1 -f supabase/migrations/20260510_add_attribution_columns.sql
+          psql -h localhost -U postgres -v ON_ERROR_STOP=1 -f supabase/tests/lead_migrations_rollback_fixture.sql
+          psql -h localhost -U postgres -v ON_ERROR_STOP=1 -f supabase/migrations/20261027221000_lead_spam_classification.sql
+          psql -h localhost -U postgres -v ON_ERROR_STOP=1 -f supabase/migrations/20261027230000_ai_referrer_tagging.sql
+          psql -h localhost -U postgres -v ON_ERROR_STOP=1 -f supabase/migrations/20261122230000_leads_intake_zip_city_source.sql
+          psql -h localhost -U postgres -v ON_ERROR_STOP=1 -f supabase/tests/lead_migrations_rollback.sql
