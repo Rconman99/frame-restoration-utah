@@ -292,9 +292,12 @@ moved out of the run before it starts, so a resumed run applies only what is
 left; with all three recorded the run is a verified no-op
 ("All three targets are already recorded; postflight checks only.").
 
-Postflight requires: every object present **and armed** (both triggers enabled,
-`BEFORE INSERT … FOR EACH ROW`, bound to `public.frame_set_ai_referrer`; both
-spam indexes `indisvalid`), `service_role` holding EXECUTE on the classifier
+Postflight requires: every object present **and armed** (both triggers enabled
+with `tgtype` exactly 7 — row-level `BEFORE INSERT` and nothing else — no `WHEN`
+clause, bound to `public.frame_set_ai_referrer`; both spam indexes
+`indisvalid and indisready` **and** matching their pinned `pg_get_indexdef`
+byte for byte, so a renamed-over or redefined index fails),
+`service_role` holding EXECUTE on the classifier
 while `anon` and `authenticated` hold none on either function, all three
 versions recorded, the final `migration list` equal to the complete expected
 version set with no duplicates, and no poison-guard filename anywhere in the
