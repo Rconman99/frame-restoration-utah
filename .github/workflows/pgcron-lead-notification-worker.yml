@@ -1,0 +1,77 @@
+name: pg_cron lead-notification worker contract
+
+# Isolated-PostgreSQL contract for
+# supabase/migrations/20261118000000_pgcron_lead_notification_worker_v2.sql — the
+# pg_cron + pg_net replacement for the 15-minute GitHub schedule in
+# .github/workflows/lead-notification-worker.yml. That migration has never been
+# applied anywhere, and its health view is the stated go/no-go for cutting the
+# GitHub schedule, so the scoping and the privilege shape of that view need a
+# test rather than a hand read.
+#
+# Same pattern as ai-referrer-tagging.yml and voice-screening.yml, and
+# standalone for the same reason: compliance-gate.yml is a digest-pinned
+# reviewed source (scripts/audit-client-ip-probe-contract.mjs pins its bytes and
+# its exact action counts), so new contracts sit next to it rather than inside
+# it.
+#
+# supabase/tests/pgcron_lead_notification_worker_fixture.sql stubs the three
+# extension schemas the migration touches (cron, net, vault) plus the anon /
+# authenticated / service_role roles on an empty postgres:16-alpine — with no
+# grant at all to service_role in schema net, which is the state Supabase ships
+# and the reason the health view must be a definer view. The migration is then
+# applied TWICE (idempotency is part of the contract) and
+# supabase/tests/pgcron_lead_notification_worker.sql asserts: a missing or empty
+# Vault secret raises and issues nothing; one invocation issues exactly one
+# request and records exactly its id; the health view returns only responses
+# whose ids were recorded (an unrelated pg_net response is inserted and proven
+# excluded); anon and authenticated can reach neither the view nor the ledger;
+# service_role reads the view with no privilege on schema net and still cannot
+# read net._http_response directly; the view exposes no headers and no response
+# body; the ledger is pruned to its bounded window by the function itself; and
+# the schedule and the x-frame-worker-mode: recover header are unchanged.
+#
+# No secrets, no market project, no migration applied to anything real. The
+# synthetic database is discarded with the job.
+
+on:
+  pull_request:
+    paths:
+      - 'supabase/migrations/20261118000000_pgcron_lead_notification_worker_v2.sql'
+      - 'supabase/migrations/20260819000000_pgcron_lead_notification_worker.sql'
+      - 'supabase/tests/pgcron_lead_notification_worker*.sql'
+      - 'docs/runbooks/utah-lead-notification-pgcron.md'
+      - '.github/workflows/pgcron-lead-notification-worker.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'supabase/migrations/20261118000000_pgcron_lead_notification_worker_v2.sql'
+      - 'supabase/migrations/20260819000000_pgcron_lead_notification_worker.sql'
+      - 'supabase/tests/pgcron_lead_notification_worker*.sql'
+      - 'docs/runbooks/utah-lead-notification-pgcron.md'
+      - '.github/workflows/pgcron-lead-notification-worker.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  contract:
+    name: pg_cron worker request-scoping, privilege and idempotency contract (blocking)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_PASSWORD: synthetic-ci-only
+        ports: ['5432:5432']
+        options: --health-cmd pg_isready --health-interval 5s --health-timeout 5s --health-retries 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      - name: Synthetic extension stubs, migration applied twice, assertions
+        env:
+          PGPASSWORD: synthetic-ci-only
+        run: |
+          psql -h localhost -U postgres -v ON_ERROR_STOP=1 -f supabase/tests/pgcron_lead_notification_worker_fixture.sql
+          psql -h localhost -U postgres -v ON_ERROR_STOP=1 -f supabase/migrations/20261118000000_pgcron_lead_notification_worker_v2.sql
+          psql -h localhost -U postgres -v ON_ERROR_STOP=1 -f supabase/migrations/20261118000000_pgcron_lead_notification_worker_v2.sql
+          psql -h localhost -U postgres -v ON_ERROR_STOP=1 -f supabase/tests/pgcron_lead_notification_worker.sql
