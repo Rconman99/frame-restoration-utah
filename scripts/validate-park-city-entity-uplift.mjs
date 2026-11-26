@@ -73,7 +73,9 @@ assert.match(
 );
 assert.doesNotMatch(page, /images\/projects\/cities\/heber-valley-drone-poster\.webp/);
 assert.match(page, /images\/projects\/heber-valley-drone-poster\.webp/);
-assert.match(page, /<time datetime="2026-07-26">Last updated: July 26, 2026<\/time>/);
+// Repinned 2026-11-25: the maintenance section's dollar figures were removed under
+// the owner's no-prices rule, so the post's visible "Last updated" moved with it.
+assert.match(page, /<time datetime="2026-11-25">Last updated: November 25, 2026<\/time>/);
 assert.doesNotMatch(page, /Frame Roofing Utah/, "the live page must use one canonical brand");
 assert.doesNotMatch(JSON.stringify(manifest), /Frame Roofing Utah/, "the source manifest must use one canonical brand");
 
