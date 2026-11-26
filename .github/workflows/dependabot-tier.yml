@@ -5,7 +5,7 @@ name: Dependabot tier
 # holds, and otherwise leaves the PR to a human. It never approves, never merges with
 # admin rights, and never touches repo settings, secrets or variables.
 #
-#   tier-gate   (job, REQUIRED check once Ryan adds it to the ruleset)
+#   tier-gate   (job, REQUIRED check once the owner adds it to the ruleset)
 #     Runs on every PR so the required check always reports. Non-Dependabot PRs: no-op.
 #     Dependabot PRs: checks the rule, waits for the Claude review comment on this head
 #     commit, and if all conditions hold arms GitHub auto-merge (squash, pinned to the
