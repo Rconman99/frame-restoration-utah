@@ -2,14 +2,14 @@
   "schemaVersion": 1,
   "ledgerId": "frame-utah-slv-18-city-gsc-url-attribution-v1",
   "market": "utah-salt-lake-valley",
-  "asOfSnapshotDate": "2026-11-25",
-  "latestSeoSnapshotDate": "2026-11-25",
+  "asOfSnapshotDate": "2026-11-26",
+  "latestSeoSnapshotDate": "2026-11-26",
   "measurementFreshness": "latest-snapshot-measured",
   "status": "complete-targeted-request-evidence",
   "publicMutationPerformed": false,
   "evidenceWindow": {
-    "startDate": "2026-10-26",
-    "endDate": "2026-11-22"
+    "startDate": "2026-10-27",
+    "endDate": "2026-11-23"
   },
   "measurementContract": {
     "workflowTargetQueries": 72,
@@ -32,12 +32,12 @@
       "sha256": "272b73505c7100ba3002fbc2f47bd04463f37759966ad689d76e334871576195"
     },
     "gscSnapshot": {
-      "file": "data/seo/snapshots/2026-11-25.json",
-      "sha256": "9b05bee3e055e3e763c3e45f01e3a0751412c72f7db657f00b4700749dec18a2"
+      "file": "data/seo/snapshots/2026-11-26.json",
+      "sha256": "36df527be78a77377e1483059276f92bb2218f775b9af48fe250113d53c4a0a3"
     },
     "latestSeoSnapshot": {
-      "file": "data/seo/snapshots/2026-11-25.json",
-      "sha256": "9b05bee3e055e3e763c3e45f01e3a0751412c72f7db657f00b4700749dec18a2"
+      "file": "data/seo/snapshots/2026-11-26.json",
+      "sha256": "36df527be78a77377e1483059276f92bb2218f775b9af48fe250113d53c4a0a3"
     }
   },
   "policy": {
@@ -50,14 +50,14 @@
     "cities": 18,
     "fixedQueries": 72,
     "requestedQueries": 72,
-    "queriesWithRows": 35,
-    "exactRows": 43,
-    "intendedUrlOnlyQueries": 31,
-    "multiUrlIncludingIntendedQueries": 4,
-    "alternateUrlOnlyQueries": 0,
-    "requestedNoRowQueries": 37,
+    "queriesWithRows": 36,
+    "exactRows": 44,
+    "intendedUrlOnlyQueries": 30,
+    "multiUrlIncludingIntendedQueries": 5,
+    "alternateUrlOnlyQueries": 1,
+    "requestedNoRowQueries": 36,
     "unrequestedQueries": 0,
-    "citiesWithUrlCompetitionEvidence": 2,
+    "citiesWithUrlCompetitionEvidence": 3,
     "citiesWithAllFourQueriesRequested": 18,
     "publicMutations": 0
   },
@@ -65,6 +65,16 @@
     {
       "priority": 0,
       "city": "Salt Lake City",
+      "state": "url-competition-requires-diagnosis",
+      "protectedFootholds": {
+        "organicNumberOneQueries": [],
+        "googleAiOverviewCitedQueries": []
+      },
+      "action": "Inspect the alternate URLs against redirect dates, canonicals, current live routing, and query intent. Treat this blended 28-day evidence as a diagnosis trigger, not proof of current cannibalization or permission to redirect."
+    },
+    {
+      "priority": 1,
+      "city": "Cottonwood Heights",
       "state": "url-competition-requires-diagnosis",
       "protectedFootholds": {
         "organicNumberOneQueries": [],
@@ -111,16 +121,6 @@
     {
       "priority": 4,
       "city": "Bluffdale",
-      "state": "complete-request-with-unreturned-rows",
-      "protectedFootholds": {
-        "organicNumberOneQueries": [],
-        "googleAiOverviewCitedQueries": []
-      },
-      "action": "Preserve the intended city hub and all related routes; use the next complete targeted GSC read before selecting an architecture or intent experiment."
-    },
-    {
-      "priority": 4,
-      "city": "Cottonwood Heights",
       "state": "complete-request-with-unreturned-rows",
       "protectedFootholds": {
         "organicNumberOneQueries": [],
@@ -297,8 +297,8 @@
                 "https://www.framerestorationutah.com/locations/salt-lake-city"
               ],
               "clicks": 0,
-              "impressions": 5,
-              "position": 41.8,
+              "impressions": 3,
+              "position": 50.3,
               "intended": true
             }
           ],
@@ -320,8 +320,8 @@
                 "https://www.framerestorationutah.com/locations/salt-lake-city"
               ],
               "clicks": 0,
-              "impressions": 833,
-              "position": 22.1,
+              "impressions": 835,
+              "position": 22.3,
               "intended": true
             },
             {
@@ -330,8 +330,8 @@
                 "https://www.framerestorationutah.com/locations/salt-lake-city/roof-replacement"
               ],
               "clicks": 0,
-              "impressions": 37,
-              "position": 18.4,
+              "impressions": 41,
+              "position": 19.1,
               "intended": false
             },
             {
@@ -340,8 +340,8 @@
                 "https://www.framerestorationutah.com/locations/salt-lake-city/roof-repair"
               ],
               "clicks": 0,
-              "impressions": 24,
-              "position": 23.7,
+              "impressions": 25,
+              "position": 25.5,
               "intended": false
             }
           ],
@@ -363,9 +363,19 @@
                 "https://www.framerestorationutah.com/locations/salt-lake-city"
               ],
               "clicks": 0,
-              "impressions": 204,
-              "position": 17.8,
+              "impressions": 209,
+              "position": 18.1,
               "intended": true
+            },
+            {
+              "normalizedUrl": "framerestorationutah.com/locations/salt-lake-city/roof-repair",
+              "urlVariants": [
+                "https://www.framerestorationutah.com/locations/salt-lake-city/roof-repair"
+              ],
+              "clicks": 0,
+              "impressions": 20,
+              "position": 10.6,
+              "intended": false
             },
             {
               "normalizedUrl": "framerestorationutah.com/locations/salt-lake-city/roof-replacement",
@@ -375,16 +385,6 @@
               "clicks": 0,
               "impressions": 20,
               "position": 16.6,
-              "intended": false
-            },
-            {
-              "normalizedUrl": "framerestorationutah.com/locations/salt-lake-city/roof-repair",
-              "urlVariants": [
-                "https://www.framerestorationutah.com/locations/salt-lake-city/roof-repair"
-              ],
-              "clicks": 0,
-              "impressions": 19,
-              "position": 10.8,
               "intended": false
             }
           ],
@@ -571,8 +571,8 @@
                 "https://www.framerestorationutah.com/locations/sandy"
               ],
               "clicks": 0,
-              "impressions": 9,
-              "position": 17,
+              "impressions": 10,
+              "position": 16.9,
               "intended": true
             }
           ],
@@ -595,7 +595,7 @@
               ],
               "clicks": 0,
               "impressions": 43,
-              "position": 22.5,
+              "position": 22.7,
               "intended": true
             }
           ],
@@ -617,8 +617,8 @@
                 "https://www.framerestorationutah.com/locations/sandy"
               ],
               "clicks": 0,
-              "impressions": 14,
-              "position": 14.9,
+              "impressions": 13,
+              "position": 14.6,
               "intended": true
             }
           ],
@@ -652,7 +652,7 @@
         "fixedQueries": 4,
         "requestedQueries": 4,
         "returnedQueries": 4,
-        "exactRows": 8
+        "exactRows": 7
       },
       "protectedFootholds": {
         "organicNumberOneQueries": [],
@@ -660,7 +660,6 @@
       },
       "alternateNormalizedUrls": [
         "framerestorationutah.com/blog/holladay/roof-replacement-holladay-utah",
-        "framerestorationutah.com/locations/vineyard",
         "framerestorationutah.com/pages/residential-roofing",
         "framerestorationutah.com/salt-lake-city"
       ],
@@ -753,16 +752,6 @@
               "intended": true
             },
             {
-              "normalizedUrl": "framerestorationutah.com/locations/vineyard",
-              "urlVariants": [
-                "https://www.framerestorationutah.com/locations/vineyard"
-              ],
-              "clicks": 0,
-              "impressions": 1,
-              "position": 21,
-              "intended": false
-            },
-            {
               "normalizedUrl": "framerestorationutah.com/pages/residential-roofing",
               "urlVariants": [
                 "https://www.framerestorationutah.com/pages/residential-roofing"
@@ -809,19 +798,21 @@
       "page": "locations/cottonwood-heights.html",
       "intendedCanonical": "https://www.framerestorationutah.com/locations/cottonwood-heights",
       "intendedPageSha256": "8baa2331fde44871b445b4e65e952f20574341a583b4399a64822f0812a441b8",
-      "state": "complete-request-with-unreturned-rows",
+      "state": "url-competition-requires-diagnosis",
       "coverage": {
         "fixedQueries": 4,
         "requestedQueries": 4,
-        "returnedQueries": 3,
-        "exactRows": 3
+        "returnedQueries": 4,
+        "exactRows": 5
       },
       "protectedFootholds": {
         "organicNumberOneQueries": [],
         "googleAiOverviewCitedQueries": []
       },
-      "alternateNormalizedUrls": [],
-      "nextEvidenceAction": "Preserve the intended city hub and all related routes; use the next complete targeted GSC read before selecting an architecture or intent experiment.",
+      "alternateNormalizedUrls": [
+        "framerestorationutah.com/blog/cottonwood-heights/roof-replacement-cottonwood-heights-utah"
+      ],
+      "nextEvidenceAction": "Inspect the alternate URLs against redirect dates, canonicals, current live routing, and query intent. Treat this blended 28-day evidence as a diagnosis trigger, not proof of current cannibalization or permission to redirect.",
       "queries": [
         {
           "queryId": "cottonwood-heights-roofing-contractor",
@@ -850,12 +841,22 @@
           "queryId": "cottonwood-heights-roof-repair",
           "keyword": "roof repair cottonwood heights",
           "requested": true,
-          "state": "intended-url-only",
+          "state": "multi-url-including-intended",
           "intendedCanonical": "https://www.framerestorationutah.com/locations/cottonwood-heights",
           "intendedPageObserved": true,
-          "highestImpressionUrl": "framerestorationutah.com/locations/cottonwood-heights",
-          "highestImpressionUrlIsIntended": true,
+          "highestImpressionUrl": "framerestorationutah.com/blog/cottonwood-heights/roof-replacement-cottonwood-heights-utah",
+          "highestImpressionUrlIsIntended": false,
           "rows": [
+            {
+              "normalizedUrl": "framerestorationutah.com/blog/cottonwood-heights/roof-replacement-cottonwood-heights-utah",
+              "urlVariants": [
+                "https://www.framerestorationutah.com/blog/cottonwood-heights/roof-replacement-cottonwood-heights-utah"
+              ],
+              "clicks": 0,
+              "impressions": 2,
+              "position": 19,
+              "intended": false
+            },
             {
               "normalizedUrl": "framerestorationutah.com/locations/cottonwood-heights",
               "urlVariants": [
@@ -867,19 +868,30 @@
               "intended": true
             }
           ],
-          "interpretation": "Only the intended city hub appears in the exact query-to-page rows; preserve that route and canonical."
+          "interpretation": "The intended hub and at least one other Frame URL appear in the 28-day window; diagnose timing, redirects, canonicals, and intent before any architecture change."
         },
         {
           "queryId": "cottonwood-heights-roof-replacement",
           "keyword": "roof replacement cottonwood heights",
           "requested": true,
-          "state": "requested-no-row-returned",
+          "state": "alternate-url-only",
           "intendedCanonical": "https://www.framerestorationutah.com/locations/cottonwood-heights",
           "intendedPageObserved": false,
-          "highestImpressionUrl": null,
-          "highestImpressionUrlIsIntended": null,
-          "rows": [],
-          "interpretation": "The exact query was requested but GSC returned no row; this is withheld or absent row evidence, not zero demand or proof that no Frame URL ranks."
+          "highestImpressionUrl": "framerestorationutah.com/blog/cottonwood-heights/roof-replacement-cottonwood-heights-utah",
+          "highestImpressionUrlIsIntended": false,
+          "rows": [
+            {
+              "normalizedUrl": "framerestorationutah.com/blog/cottonwood-heights/roof-replacement-cottonwood-heights-utah",
+              "urlVariants": [
+                "https://www.framerestorationutah.com/blog/cottonwood-heights/roof-replacement-cottonwood-heights-utah"
+              ],
+              "clicks": 0,
+              "impressions": 1,
+              "position": 30,
+              "intended": false
+            }
+          ],
+          "interpretation": "Only another Frame URL appears in the exact query-to-page rows; verify current routing and intent before changing or redirecting any page."
         },
         {
           "queryId": "cottonwood-heights-roofer",
@@ -945,8 +957,8 @@
                 "https://www.framerestorationutah.com/locations/draper"
               ],
               "clicks": 0,
-              "impressions": 14,
-              "position": 14.7,
+              "impressions": 13,
+              "position": 15.2,
               "intended": true
             }
           ],
@@ -968,7 +980,7 @@
                 "https://www.framerestorationutah.com/locations/draper"
               ],
               "clicks": 0,
-              "impressions": 42,
+              "impressions": 43,
               "position": 19.3,
               "intended": true
             }
@@ -991,8 +1003,8 @@
                 "https://www.framerestorationutah.com/locations/draper"
               ],
               "clicks": 0,
-              "impressions": 51,
-              "position": 18,
+              "impressions": 52,
+              "position": 17.8,
               "intended": true
             }
           ],
@@ -1170,8 +1182,8 @@
                 "https://www.framerestorationutah.com/locations/herriman"
               ],
               "clicks": 0,
-              "impressions": 50,
-              "position": 15.9,
+              "impressions": 54,
+              "position": 16.4,
               "intended": true
             }
           ],
@@ -1501,8 +1513,8 @@
                 "https://www.framerestorationutah.com/locations/murray"
               ],
               "clicks": 0,
-              "impressions": 22,
-              "position": 7.6,
+              "impressions": 23,
+              "position": 7.7,
               "intended": true
             }
           ],
@@ -1680,8 +1692,8 @@
                 "https://www.framerestorationutah.com/locations/south-jordan"
               ],
               "clicks": 0,
-              "impressions": 5,
-              "position": 12.6,
+              "impressions": 4,
+              "position": 13,
               "intended": true
             }
           ],
@@ -1886,8 +1898,8 @@
                 "https://www.framerestorationutah.com/locations/west-jordan"
               ],
               "clicks": 0,
-              "impressions": 93,
-              "position": 22.1,
+              "impressions": 91,
+              "position": 22.3,
               "intended": true
             }
           ],
@@ -1909,8 +1921,8 @@
                 "https://www.framerestorationutah.com/locations/west-jordan"
               ],
               "clicks": 0,
-              "impressions": 43,
-              "position": 19.4,
+              "impressions": 45,
+              "position": 20.4,
               "intended": true
             }
           ],
@@ -1932,8 +1944,8 @@
                 "https://www.framerestorationutah.com/locations/west-jordan"
               ],
               "clicks": 0,
-              "impressions": 46,
-              "position": 19,
+              "impressions": 53,
+              "position": 20.6,
               "intended": true
             }
           ],
@@ -2003,8 +2015,8 @@
                 "https://www.framerestorationutah.com/locations/west-valley-city"
               ],
               "clicks": 0,
-              "impressions": 5,
-              "position": 23.2,
+              "impressions": 3,
+              "position": 33.3,
               "intended": true
             }
           ],

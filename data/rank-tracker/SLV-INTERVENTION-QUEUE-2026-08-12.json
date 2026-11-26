@@ -13,7 +13,7 @@
         "Holladay",
         "Herriman"
       ],
-      "activeSnapshotSha256": "9b05bee3e055e3e763c3e45f01e3a0751412c72f7db657f00b4700749dec18a2",
+      "activeSnapshotSha256": "36df527be78a77377e1483059276f92bb2218f775b9af48fe250113d53c4a0a3",
       "diagnosisSnapshotSha256": "a1b7d5aa2acc3a5b663da345ba6eb7242e411661807ae1296f50854702b1a7eb",
       "behavior": "Ignore the stale split-URL disposition and keep affected URL-competition cities in the diagnosis lane; do not suppress, redirect, canonicalize, noindex, delete, or rewrite a route from stale evidence.",
       "requiredAction": "Refresh the bounded Holladay/Herriman split-URL diagnosis against the current GSC attribution snapshot."
@@ -88,7 +88,7 @@
     },
     "gscAttribution": {
       "file": "data/rank-tracker/SLV-GSC-URL-ATTRIBUTION-LATEST.json",
-      "sha256": "44eb80a12e03fb2596b257b02f170d7e2559829923a3c54e8278828e104a96f6"
+      "sha256": "3f2724e4236b7107cd3b8848cdef03f4ffbb6494bdc7301d63c2ec31c3d1555f"
     },
     "gscSplitUrlDiagnosis": {
       "file": "data/rank-tracker/SLV-GSC-SPLIT-URL-DIAGNOSIS-2026-08-12.json",
@@ -108,7 +108,7 @@
     },
     "expansionArchitecture": {
       "file": "data/rank-tracker/SLV-EXPANSION-ARCHITECTURE-2026-08-12.json",
-      "sha256": "e9b196b5774b8eb64d32ff131051e7736af6e9f76c9efcc7708db45473890071"
+      "sha256": "0f93addafa91579c6fd645491ca7d992f1651f7657190f7f1a5bc5df090e2c6a"
     },
     "corePriority": {
       "file": "data/rank-tracker/SLV-PRIORITY-2026-08-12.json",
@@ -163,17 +163,17 @@
   },
   "summary": {
     "cities": 18,
-    "monitor": 3,
-    "requestInput": 15,
+    "monitor": 4,
+    "requestInput": 14,
     "protectedOrganicNumberOneQueries": 2,
     "protectedGoogleAiOverviewCitations": 1,
     "citiesPendingServiceAreaEvidence": 16,
     "citiesWithAllFourTargetedGscQueriesRequested": 18,
     "citiesAtSustainedGoal": 0,
     "laneCounts": {
-      "diagnose-url-consolidation-before-intent-change": 2,
+      "diagnose-url-consolidation-before-intent-change": 3,
       "observe-time-gated-slc-experiment": 1,
-      "owner-gated-core-integrity-then-single-variable-intent-test": 3,
+      "owner-gated-core-integrity-then-single-variable-intent-test": 2,
       "owner-gated-verified-identity-and-integrity-cleanup": 1,
       "protect-foothold-before-cleanup-or-intent-change": 2,
       "service-area-proof-and-targeted-gsc-before-intent-change": 9
@@ -799,7 +799,6 @@
         "gscReturnedQueries": 4,
         "gscAlternateNormalizedUrls": [
           "framerestorationutah.com/blog/holladay/roof-replacement-holladay-utah",
-          "framerestorationutah.com/locations/vineyard",
           "framerestorationutah.com/pages/residential-roofing",
           "framerestorationutah.com/salt-lake-city"
         ],
@@ -870,8 +869,8 @@
       "cohort": "core-measured",
       "page": "locations/cottonwood-heights.html",
       "panelId": "utah-cottonwood-heights-google-v1",
-      "lane": "owner-gated-core-integrity-then-single-variable-intent-test",
-      "decision": "Request input",
+      "lane": "diagnose-url-consolidation-before-intent-change",
+      "decision": "Monitor",
       "evidenceFeatures": {
         "observedAt": "2026-11-23T09:15:54.833Z",
         "organicRanks": [
@@ -904,10 +903,12 @@
         "googleAiOverviewOwnedQueries": [],
         "protectedOrganicNumberOneQueries": [],
         "intendedPageSelectedForEveryMeasuredRank": true,
-        "gscState": "complete-request-with-unreturned-rows",
+        "gscState": "url-competition-requires-diagnosis",
         "gscRequestedQueries": 4,
-        "gscReturnedQueries": 3,
-        "gscAlternateNormalizedUrls": [],
+        "gscReturnedQueries": 4,
+        "gscAlternateNormalizedUrls": [
+          "framerestorationutah.com/blog/cottonwood-heights/roof-replacement-cottonwood-heights-utah"
+        ],
         "gscUrlDiagnosis": null,
         "serviceAreaStatus": "pending-current-profile-service-area-verification",
         "identityProfile": "heber-keystone-cid",
@@ -924,17 +925,17 @@
         "leadValue": 2,
         "authorityValue": 7,
         "learningValue": 6,
-        "implementationCost": 5,
-        "complianceRisk": 8,
+        "implementationCost": 3,
+        "complianceRisk": 1,
         "customerBlockerRisk": 8,
         "maintenanceCost": 2,
         "sourceBiasRisk": 2,
         "recencyBiasRisk": 1
       },
-      "selectedAction": "Obtain current Salt Lake Valley service-area evidence for Cottonwood Heights's separate Maps lane and request the exact core cleanup approval; after a green production receipt and fresh baseline, activate at most the already-pinned single-title experiment with every other intent surface held constant.",
-      "gate": "service-area-evidence-plus-explicit-owner-cleanup-approval-then-separate-ranking-experiment-approval",
-      "ownerApprovalPhrase": "I explicitly approve editing and publishing the five-page integrity cleanup defined in PR #242 and the Millcreek storm-child identity correction defined in the pinned Millcreek scope amendment.",
-      "acceptanceCheck": "Keep only if roofing contractor cottonwood heights is position 10 or better in each of the final two weekly panels and the four-query mean rank is 11.5 or better in both panels. A current receipt separately classifies Cottonwood Heights for CID 5689850818145735734.",
+      "selectedAction": "Keep Cottonwood Heights's intended page, redirects, canonicals, related routes, and visible intent unchanged while the named stale-slv-gsc-split-url-diagnosis warning is open; refresh the bounded split-URL diagnosis against the current GSC attribution snapshot before suppressing or opening a URL intervention.",
+      "gate": "current-split-url-diagnosis-required",
+      "ownerApprovalPhrase": null,
+      "acceptanceCheck": "A refreshed diagnosis names the current GSC snapshot hash and classifies Cottonwood Heights's alternate URL evidence before any redirect, canonical, noindex, deletion, title, H1, copy, schema, or internal-link change is considered.",
       "feedback": {
         "cadence": "weekly",
         "requiredComparablePanels": 4,

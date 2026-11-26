@@ -51,7 +51,7 @@
     },
     "expansionArchitecture": {
       "file": "data/rank-tracker/SLV-EXPANSION-ARCHITECTURE-2026-08-12.json",
-      "sha256": "e9b196b5774b8eb64d32ff131051e7736af6e9f76c9efcc7708db45473890071"
+      "sha256": "0f93addafa91579c6fd645491ca7d992f1651f7657190f7f1a5bc5df090e2c6a"
     },
     "entityHealth": {
       "file": "data/rank-tracker/SLV-ENTITY-HEALTH-2026-08-12.json",
@@ -63,7 +63,7 @@
     },
     "gscAttribution": {
       "file": "data/rank-tracker/SLV-GSC-URL-ATTRIBUTION-LATEST.json",
-      "sha256": "44eb80a12e03fb2596b257b02f170d7e2559829923a3c54e8278828e104a96f6"
+      "sha256": "3f2724e4236b7107cd3b8848cdef03f4ffbb6494bdc7301d63c2ec31c3d1555f"
     },
     "consumerAi": {
       "file": "data/rank-tracker/SLV-CONSUMER-AI-LATEST.json",
@@ -71,7 +71,7 @@
     },
     "interventions": {
       "file": "data/rank-tracker/SLV-INTERVENTION-QUEUE-2026-08-12.json",
-      "sha256": "ab143eb05a91a1ef390b6c8fd64817397d47d20d9b380fb20812d5653618cf88"
+      "sha256": "646bf2be7987c659d37d2f475113c6d506189307973a04e282a985315f4d99a4"
     },
     "mapsReadiness": {
       "file": "data/rank-tracker/SLV-MAPS-READINESS-2026-08-12.json",
@@ -277,10 +277,10 @@
         "consumerAi": "configured-scheduled-unmeasured-invalid-provider-credential"
       },
       "gscAttribution": {
-        "snapshotDate": "2026-11-25",
+        "snapshotDate": "2026-11-26",
         "window": {
-          "startDate": "2026-10-26",
-          "endDate": "2026-11-22"
+          "startDate": "2026-10-27",
+          "endDate": "2026-11-23"
         },
         "state": "url-competition-requires-diagnosis",
         "requestedQueries": 4,
@@ -375,10 +375,10 @@
         "consumerAi": "configured-scheduled-unmeasured-invalid-provider-credential"
       },
       "gscAttribution": {
-        "snapshotDate": "2026-11-25",
+        "snapshotDate": "2026-11-26",
         "window": {
-          "startDate": "2026-10-26",
-          "endDate": "2026-11-22"
+          "startDate": "2026-10-27",
+          "endDate": "2026-11-23"
         },
         "state": "intended-url-only-for-all-returned-rows",
         "requestedQueries": 4,
@@ -475,10 +475,10 @@
         "consumerAi": "configured-manual-unmeasured-invalid-provider-credential"
       },
       "gscAttribution": {
-        "snapshotDate": "2026-11-25",
+        "snapshotDate": "2026-11-26",
         "window": {
-          "startDate": "2026-10-26",
-          "endDate": "2026-11-22"
+          "startDate": "2026-10-27",
+          "endDate": "2026-11-23"
         },
         "state": "complete-request-with-unreturned-rows",
         "requestedQueries": 4,
@@ -572,10 +572,10 @@
         "consumerAi": "configured-manual-unmeasured-invalid-provider-credential"
       },
       "gscAttribution": {
-        "snapshotDate": "2026-11-25",
+        "snapshotDate": "2026-11-26",
         "window": {
-          "startDate": "2026-10-26",
-          "endDate": "2026-11-22"
+          "startDate": "2026-10-27",
+          "endDate": "2026-11-23"
         },
         "state": "complete-request-with-unreturned-rows",
         "requestedQueries": 4,
@@ -668,10 +668,10 @@
         "consumerAi": "configured-manual-unmeasured-invalid-provider-credential"
       },
       "gscAttribution": {
-        "snapshotDate": "2026-11-25",
+        "snapshotDate": "2026-11-26",
         "window": {
-          "startDate": "2026-10-26",
-          "endDate": "2026-11-22"
+          "startDate": "2026-10-27",
+          "endDate": "2026-11-23"
         },
         "state": "complete-request-with-unreturned-rows",
         "requestedQueries": 4,
@@ -764,18 +764,17 @@
         "consumerAi": "configured-manual-unmeasured-invalid-provider-credential"
       },
       "gscAttribution": {
-        "snapshotDate": "2026-11-25",
+        "snapshotDate": "2026-11-26",
         "window": {
-          "startDate": "2026-10-26",
-          "endDate": "2026-11-22"
+          "startDate": "2026-10-27",
+          "endDate": "2026-11-23"
         },
         "state": "url-competition-requires-diagnosis",
         "requestedQueries": 4,
         "returnedQueries": 4,
-        "exactRows": 8,
+        "exactRows": 7,
         "alternateNormalizedUrls": [
           "framerestorationutah.com/blog/holladay/roof-replacement-holladay-utah",
-          "framerestorationutah.com/locations/vineyard",
           "framerestorationutah.com/pages/residential-roofing",
           "framerestorationutah.com/salt-lake-city"
         ],
@@ -865,38 +864,40 @@
         "consumerAi": "configured-manual-unmeasured-invalid-provider-credential"
       },
       "gscAttribution": {
-        "snapshotDate": "2026-11-25",
+        "snapshotDate": "2026-11-26",
         "window": {
-          "startDate": "2026-10-26",
-          "endDate": "2026-11-22"
+          "startDate": "2026-10-27",
+          "endDate": "2026-11-23"
         },
-        "state": "complete-request-with-unreturned-rows",
+        "state": "url-competition-requires-diagnosis",
         "requestedQueries": 4,
-        "returnedQueries": 3,
-        "exactRows": 3,
-        "alternateNormalizedUrls": [],
-        "nextEvidenceAction": "Preserve the intended city hub and all related routes; use the next complete targeted GSC read before selecting an architecture or intent experiment."
+        "returnedQueries": 4,
+        "exactRows": 5,
+        "alternateNormalizedUrls": [
+          "framerestorationutah.com/blog/cottonwood-heights/roof-replacement-cottonwood-heights-utah"
+        ],
+        "nextEvidenceAction": "Inspect the alternate URLs against redirect dates, canonicals, current live routing, and query intent. Treat this blended 28-day evidence as a diagnosis trigger, not proof of current cannibalization or permission to redirect."
       },
-      "lane": "owner-gated-core-integrity-then-single-variable-intent-test",
-      "action": "Obtain current Salt Lake Valley service-area evidence for Cottonwood Heights's separate Maps lane and request the exact core cleanup approval; after a green production receipt and fresh baseline, activate at most the already-pinned single-title experiment with every other intent surface held constant.",
-      "actionClass": "owner-or-evidence-input-needed",
-      "gate": "service-area-evidence-plus-explicit-owner-cleanup-approval-then-separate-ranking-experiment-approval",
+      "lane": "diagnose-url-consolidation-before-intent-change",
+      "action": "Keep Cottonwood Heights's intended page, redirects, canonicals, related routes, and visible intent unchanged while the named stale-slv-gsc-split-url-diagnosis warning is open; refresh the bounded split-URL diagnosis against the current GSC attribution snapshot before suppressing or opening a URL intervention.",
+      "actionClass": "system-monitor",
+      "gate": "current-split-url-diagnosis-required",
       "publicApprovalPacket": "data/authority/SLV-CITY-PUBLIC-REMEDIATION-PACKET-2026-08-12.json",
-      "ownerApprovalPhrase": "I explicitly approve editing and publishing the five-page integrity cleanup defined in PR #242 and the Millcreek storm-child identity correction defined in the pinned Millcreek scope amendment.",
+      "ownerApprovalPhrase": null,
       "intervention": {
-        "lane": "owner-gated-core-integrity-then-single-variable-intent-test",
-        "decision": "Request input",
-        "selectedAction": "Obtain current Salt Lake Valley service-area evidence for Cottonwood Heights's separate Maps lane and request the exact core cleanup approval; after a green production receipt and fresh baseline, activate at most the already-pinned single-title experiment with every other intent surface held constant.",
-        "gate": "service-area-evidence-plus-explicit-owner-cleanup-approval-then-separate-ranking-experiment-approval",
-        "acceptanceCheck": "Keep only if roofing contractor cottonwood heights is position 10 or better in each of the final two weekly panels and the four-query mean rank is 11.5 or better in both panels. A current receipt separately classifies Cottonwood Heights for CID 5689850818145735734.",
+        "lane": "diagnose-url-consolidation-before-intent-change",
+        "decision": "Monitor",
+        "selectedAction": "Keep Cottonwood Heights's intended page, redirects, canonicals, related routes, and visible intent unchanged while the named stale-slv-gsc-split-url-diagnosis warning is open; refresh the bounded split-URL diagnosis against the current GSC attribution snapshot before suppressing or opening a URL intervention.",
+        "gate": "current-split-url-diagnosis-required",
+        "acceptanceCheck": "A refreshed diagnosis names the current GSC snapshot hash and classifies Cottonwood Heights's alternate URL evidence before any redirect, canonical, noindex, deletion, title, H1, copy, schema, or internal-link change is considered.",
         "scoreVector": {
           "businessValue": 10,
           "confidence": 6,
           "leadValue": 2,
           "authorityValue": 7,
           "learningValue": 6,
-          "implementationCost": 5,
-          "complianceRisk": 8,
+          "implementationCost": 3,
+          "complianceRisk": 1,
           "customerBlockerRisk": 8,
           "maintenanceCost": 2,
           "sourceBiasRisk": 2,
@@ -961,10 +962,10 @@
         "consumerAi": "configured-manual-unmeasured-invalid-provider-credential"
       },
       "gscAttribution": {
-        "snapshotDate": "2026-11-25",
+        "snapshotDate": "2026-11-26",
         "window": {
-          "startDate": "2026-10-26",
-          "endDate": "2026-11-22"
+          "startDate": "2026-10-27",
+          "endDate": "2026-11-23"
         },
         "state": "complete-request-with-unreturned-rows",
         "requestedQueries": 4,
@@ -1057,10 +1058,10 @@
         "consumerAi": "configured-manual-unmeasured-invalid-provider-credential"
       },
       "gscAttribution": {
-        "snapshotDate": "2026-11-25",
+        "snapshotDate": "2026-11-26",
         "window": {
-          "startDate": "2026-10-26",
-          "endDate": "2026-11-22"
+          "startDate": "2026-10-27",
+          "endDate": "2026-11-23"
         },
         "state": "complete-request-with-unreturned-rows",
         "requestedQueries": 4,
@@ -1153,10 +1154,10 @@
         "consumerAi": "configured-manual-unmeasured-invalid-provider-credential"
       },
       "gscAttribution": {
-        "snapshotDate": "2026-11-25",
+        "snapshotDate": "2026-11-26",
         "window": {
-          "startDate": "2026-10-26",
-          "endDate": "2026-11-22"
+          "startDate": "2026-10-27",
+          "endDate": "2026-11-23"
         },
         "state": "complete-request-with-unreturned-rows",
         "requestedQueries": 4,
@@ -1249,10 +1250,10 @@
         "consumerAi": "configured-manual-unmeasured-invalid-provider-credential"
       },
       "gscAttribution": {
-        "snapshotDate": "2026-11-25",
+        "snapshotDate": "2026-11-26",
         "window": {
-          "startDate": "2026-10-26",
-          "endDate": "2026-11-22"
+          "startDate": "2026-10-27",
+          "endDate": "2026-11-23"
         },
         "state": "complete-request-with-unreturned-rows",
         "requestedQueries": 4,
@@ -1344,10 +1345,10 @@
         "consumerAi": "configured-manual-unmeasured-invalid-provider-credential"
       },
       "gscAttribution": {
-        "snapshotDate": "2026-11-25",
+        "snapshotDate": "2026-11-26",
         "window": {
-          "startDate": "2026-10-26",
-          "endDate": "2026-11-22"
+          "startDate": "2026-10-27",
+          "endDate": "2026-11-23"
         },
         "state": "complete-request-with-unreturned-rows",
         "requestedQueries": 4,
@@ -1440,10 +1441,10 @@
         "consumerAi": "configured-manual-unmeasured-invalid-provider-credential"
       },
       "gscAttribution": {
-        "snapshotDate": "2026-11-25",
+        "snapshotDate": "2026-11-26",
         "window": {
-          "startDate": "2026-10-26",
-          "endDate": "2026-11-22"
+          "startDate": "2026-10-27",
+          "endDate": "2026-11-23"
         },
         "state": "complete-request-with-unreturned-rows",
         "requestedQueries": 4,
@@ -1536,10 +1537,10 @@
         "consumerAi": "configured-manual-unmeasured-invalid-provider-credential"
       },
       "gscAttribution": {
-        "snapshotDate": "2026-11-25",
+        "snapshotDate": "2026-11-26",
         "window": {
-          "startDate": "2026-10-26",
-          "endDate": "2026-11-22"
+          "startDate": "2026-10-27",
+          "endDate": "2026-11-23"
         },
         "state": "complete-request-with-unreturned-rows",
         "requestedQueries": 4,
@@ -1632,10 +1633,10 @@
         "consumerAi": "configured-manual-unmeasured-invalid-provider-credential"
       },
       "gscAttribution": {
-        "snapshotDate": "2026-11-25",
+        "snapshotDate": "2026-11-26",
         "window": {
-          "startDate": "2026-10-26",
-          "endDate": "2026-11-22"
+          "startDate": "2026-10-27",
+          "endDate": "2026-11-23"
         },
         "state": "complete-request-with-unreturned-rows",
         "requestedQueries": 4,
@@ -1728,10 +1729,10 @@
         "consumerAi": "configured-manual-unmeasured-invalid-provider-credential"
       },
       "gscAttribution": {
-        "snapshotDate": "2026-11-25",
+        "snapshotDate": "2026-11-26",
         "window": {
-          "startDate": "2026-10-26",
-          "endDate": "2026-11-22"
+          "startDate": "2026-10-27",
+          "endDate": "2026-11-23"
         },
         "state": "complete-request-with-unreturned-rows",
         "requestedQueries": 4,
@@ -1824,10 +1825,10 @@
         "consumerAi": "configured-manual-unmeasured-invalid-provider-credential"
       },
       "gscAttribution": {
-        "snapshotDate": "2026-11-25",
+        "snapshotDate": "2026-11-26",
         "window": {
-          "startDate": "2026-10-26",
-          "endDate": "2026-11-22"
+          "startDate": "2026-10-27",
+          "endDate": "2026-11-23"
         },
         "state": "complete-request-with-unreturned-rows",
         "requestedQueries": 4,
@@ -1918,10 +1919,10 @@
         "consumerAi": "configured-manual-unmeasured-invalid-provider-credential"
       },
       "gscAttribution": {
-        "snapshotDate": "2026-11-25",
+        "snapshotDate": "2026-11-26",
         "window": {
-          "startDate": "2026-10-26",
-          "endDate": "2026-11-22"
+          "startDate": "2026-10-27",
+          "endDate": "2026-11-23"
         },
         "state": "intended-url-only-for-all-returned-rows",
         "requestedQueries": 4,
