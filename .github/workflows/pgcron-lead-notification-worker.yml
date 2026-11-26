@@ -30,8 +30,14 @@ name: pg_cron lead-notification worker contract
 # body; the ledger is pruned to its bounded window by the function itself; and
 # the schedule and the x-frame-worker-mode: recover header are unchanged.
 #
+# A second database in the same job reproduces pg_net v0.19.5's OWN install
+# grants (sql/pg_net.sql:355-357 — schema net and all its tables to PUBLIC,
+# which is the state of a stock Supabase project) and asserts that the migration
+# REFUSES to schedule there and leaves no cron job behind. Without that case the
+# token-isolation gate could silently never fire.
+#
 # No secrets, no market project, no migration applied to anything real. The
-# synthetic database is discarded with the job.
+# synthetic databases are discarded with the job.
 
 on:
   pull_request:
@@ -75,3 +81,17 @@ jobs:
           psql -h localhost -U postgres -v ON_ERROR_STOP=1 -f supabase/migrations/20261118000000_pgcron_lead_notification_worker_v2.sql
           psql -h localhost -U postgres -v ON_ERROR_STOP=1 -f supabase/migrations/20261118000000_pgcron_lead_notification_worker_v2.sql
           psql -h localhost -U postgres -v ON_ERROR_STOP=1 -f supabase/tests/pgcron_lead_notification_worker.sql
+      - name: With pg_net's own PUBLIC grants, the migration must refuse to schedule
+        env:
+          PGPASSWORD: synthetic-ci-only
+          PGDATABASE: upstream_grants
+        run: |
+          createdb -h localhost -U postgres upstream_grants
+          psql -h localhost -U postgres -v ON_ERROR_STOP=1 -f supabase/tests/pgcron_lead_notification_worker_fixture.sql
+          psql -h localhost -U postgres -v ON_ERROR_STOP=1 -f supabase/tests/pgcron_lead_notification_worker_upstream_grants.sql
+          if psql -h localhost -U postgres -v ON_ERROR_STOP=1 -f supabase/migrations/20261118000000_pgcron_lead_notification_worker_v2.sql > migration-attempt.log 2>&1; then
+            echo "FAIL: the migration scheduled the worker while PUBLIC could read the bearer header"
+            exit 1
+          fi
+          grep -q 'refusing to schedule the lead-notification worker' migration-attempt.log
+          psql -h localhost -U postgres -v ON_ERROR_STOP=1 -f supabase/tests/pgcron_lead_notification_worker_refusal.sql

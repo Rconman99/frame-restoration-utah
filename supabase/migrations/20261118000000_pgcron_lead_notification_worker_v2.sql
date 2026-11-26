@@ -61,14 +61,42 @@
 --      net._http_response. That is the normal Supabase state, and it is exactly
 --      why the health view must be a definer view.
 --
--- TOKEN EXPOSURE, inherent to pg_net and NOT fixed by this migration: the
--- Authorization header of each request sits in net.http_request_queue (and, for
--- requests pg_net could not complete, in its failed-request table) until pg_net
--- drains the queue. Those tables are in schema net, which is not reachable by
--- anon/authenticated/service_role; only a role with net access (postgres) can
--- read them. Nothing in this migration selects, copies or exposes a header or a
--- response body — the health view deliberately carries no headers and no
--- content column.
+-- 🔴 TOKEN EXPOSURE. An earlier revision of this file claimed schema net "is
+-- not reachable by anon/authenticated/service_role". THAT WAS FALSE for real
+-- pg_net defaults, and a 2026-11-26 review was right to reject it. pg_net
+-- v0.19.5's own installation script ends with (sql/pg_net.sql:355-357):
+--     grant usage on schema net to PUBLIC;
+--     grant all on all sequences in schema net to PUBLIC;
+--     grant all on all tables in schema net to PUBLIC;
+-- so after `create extension pg_net` every role — anon and authenticated
+-- included, because they are members of PUBLIC — can SELECT
+-- net.http_request_queue, which holds this worker's `Authorization: Bearer …`
+-- header until the background worker drains it, and can INSERT/UPDATE/DELETE
+-- net._http_response, which is the only evidence the health view reports on.
+-- Also: pg_net keeps exactly two tables (http_request_queue and
+-- _http_response). There is NO separate failed-request table — a failure lands
+-- in _http_response with error_msg/timed_out. The earlier claim of one was
+-- wrong and is corrected here.
+--
+-- So this migration no longer asserts isolation; it VERIFIES it and refuses to
+-- schedule without it. The guarded block below the view raises unless anon,
+-- authenticated and PUBLIC all lack queue-read and response-write access. The
+-- remediation, which is an owner decision because it changes an extension's
+-- objects and affects every other pg_net consumer on the project, is in
+-- docs/runbooks/utah-lead-notification-pgcron.md.
+--
+-- Browser reachability is a second, narrower question: PostgREST only exposes
+-- the schemas listed in the API settings, and `net` is not one of them by
+-- default. The privilege is still the thing that matters — anything running as
+-- anon/authenticated/service_role inside the database (a security-invoker view
+-- or function in public, an edge function using the service key) can read the
+-- queue while that grant stands.
+--
+-- Two further leaks that no SQL here can close, documented so nobody assumes
+-- otherwise: cron.job_run_details retains the TEXT of database errors raised by
+-- the job (including anything this function puts in an exception message — it
+-- puts no token there), and pg_net at log level DEBUG2 or finer logs outgoing
+-- request headers to the Postgres log.
 --
 -- ROLLBACK:
 --   select cron.unschedule('lead-notification-worker');
@@ -78,6 +106,13 @@
 --   -- then restore the 15-minute schedule in
 --   -- .github/workflows/lead-notification-worker.yml (the repo must be public
 --   -- again, or have minutes, for that to be free).
+--   -- NOTE: this rollback drops the objects but does NOT remove the
+--   -- supabase_migrations.schema_migrations row for 20261118000000, because
+--   -- only the gated runner that applied it may touch history. To restore
+--   -- afterwards, delete that history row in the SAME transaction as the drops
+--   -- (so catalog and history stay in agreement) and re-apply through the
+--   -- runner; a re-apply with the row still present would be skipped as
+--   -- already-applied and leave nothing scheduled. See the runbook.
 
 do $lead_notification_worker_extensions$
 begin
@@ -100,16 +135,26 @@ $lead_notification_worker_extensions$;
 -- Request ledger. One row per request this worker issues, holding the pg_net
 -- request id and when it was issued — no URL, no headers, no body. It exists so
 -- the health view can tell this worker's responses apart from every other
--- pg_net caller's. Private like every other Utah table: RLS on with no policy
--- at all (which denies every non-owner role) and browser roles revoked.
+-- pg_net caller's.
+--
+-- NOBODY gets direct privileges on it, service_role included. The earlier
+-- revision granted service_role select/insert/delete; a 2026-11-26 review was
+-- right that this is a hole, because hosted service_role carries BYPASSRLS, so
+-- a direct grant lets it insert ids the worker never issued (changing what the
+-- postgres-owned health view exposes) or delete the rows that are the only
+-- evidence of a failure. The definer function owns every write, and the definer
+-- view owns every read, so no role needs a grant here at all. The revoke list
+-- includes service_role and runs AFTER the create, which is what neutralises a
+-- project-level `alter default privileges in schema public grant ... to
+-- service_role`.
 create table if not exists public.lead_notification_worker_cron_requests (
   request_id bigint primary key,
   requested_at timestamptz not null default now()
 );
 
 alter table public.lead_notification_worker_cron_requests enable row level security;
-revoke all on table public.lead_notification_worker_cron_requests from public, anon, authenticated;
-grant select, insert, delete on table public.lead_notification_worker_cron_requests to service_role;
+revoke all on table public.lead_notification_worker_cron_requests
+  from public, anon, authenticated, service_role;
 
 create index if not exists lead_notification_worker_cron_requests_requested_at_idx
   on public.lead_notification_worker_cron_requests (requested_at desc);
@@ -127,7 +172,7 @@ create function public.invoke_lead_notification_worker()
 returns bigint
 language plpgsql
 security definer
-set search_path = public, vault, net, pg_temp
+set search_path = pg_catalog, pg_temp
 as $$
 declare
   v_token text;
@@ -215,6 +260,63 @@ comment on view public.lead_notification_worker_cron_health is
 
 revoke all on public.lead_notification_worker_cron_health from public, anon, authenticated;
 grant select on public.lead_notification_worker_cron_health to service_role;
+
+-- 🔴 Fail closed BEFORE scheduling anything: if the bearer header in
+-- net.http_request_queue or the response evidence in net._http_response is
+-- readable/writable by a browser role or by PUBLIC, do not start a cron job
+-- that posts that bearer every 15 minutes. pg_net v0.19.5 grants all of this to
+-- PUBLIC on install (sql/pg_net.sql:355-357), so on a stock project this block
+-- RAISES and nothing is scheduled until the owner has revoked those grants.
+-- has_table_privilege on anon/authenticated already accounts for privileges
+-- held via PUBLIC; the acl scan catches the PUBLIC grant itself even when those
+-- roles do not exist (a local or self-hosted database).
+do $lead_notification_worker_net_isolation$
+declare
+  v_role     pg_catalog.text;
+  v_findings pg_catalog.text[] := array[]::pg_catalog.text[];
+  v_public   pg_catalog.text[] := array[]::pg_catalog.text[];
+  v_relname  pg_catalog.text;
+begin
+  foreach v_role in array array['anon', 'authenticated', 'service_role'] loop
+    if not exists (select 1 from pg_catalog.pg_roles where rolname = v_role) then
+      continue;
+    end if;
+    if pg_catalog.has_schema_privilege(v_role, 'net', 'USAGE') then
+      if pg_catalog.has_table_privilege(v_role, 'net.http_request_queue', 'SELECT') then
+        v_findings := v_findings || (v_role || ' can read the bearer header in net.http_request_queue');
+      end if;
+      if pg_catalog.has_table_privilege(v_role, 'net._http_response', 'INSERT')
+         or pg_catalog.has_table_privilege(v_role, 'net._http_response', 'UPDATE')
+         or pg_catalog.has_table_privilege(v_role, 'net._http_response', 'DELETE') then
+        v_findings := v_findings || (v_role || ' can forge or delete health evidence in net._http_response');
+      end if;
+    end if;
+  end loop;
+
+  -- PUBLIC itself (grantee oid 0), which no role name can express.
+  foreach v_relname in array array['http_request_queue', '_http_response'] loop
+    if exists (
+      select 1
+        from pg_catalog.pg_class c
+        join pg_catalog.pg_namespace n on n.oid = c.relnamespace
+        cross join pg_catalog.aclexplode(c.relacl) a
+       where n.nspname = 'net' and c.relname = v_relname and a.grantee = 0
+    ) then
+      v_public := v_public || ('net.' || v_relname);
+    end if;
+  end loop;
+  if pg_catalog.array_length(v_public, 1) is not null then
+    v_findings := v_findings
+      || ('PUBLIC holds privileges on ' || pg_catalog.array_to_string(v_public, ', '));
+  end if;
+
+  if pg_catalog.array_length(v_findings, 1) is not null then
+    raise exception
+      'refusing to schedule the lead-notification worker: the bearer token and the health evidence are not protected (%). pg_net grants schema net and all its tables to PUBLIC on install. Remediation is an owner decision because it affects every pg_net consumer on this project — see docs/runbooks/utah-lead-notification-pgcron.md.',
+      pg_catalog.array_to_string(v_findings, '; ');
+  end if;
+end
+$lead_notification_worker_net_isolation$;
 
 -- Same minutes-past-the-hour as the GitHub schedule it replaces (7,22,37,52),
 -- so the cadence owners and dashboards expect does not change.
