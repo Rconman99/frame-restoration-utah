@@ -21,9 +21,14 @@ on:
   # lead retries.
   #
   # Double-run safety: the worker claims each job via its claim RPC with
-  # claim_version + lease, so overlapping runs cannot send twice. Still, once
-  # pg_cron is enabled, remove this schedule or run
-  # `select cron.unschedule('lead-notification-worker');` so only one scheduler owns it.
+  # claim_version + lease, so overlapping runs cannot send twice.
+  #
+  # The pg_cron path is PARKED as of 2026-11-26 and THIS SCHEDULE STAYS. Do not
+  # remove it, and do not read a health view as permission to. If a pg_cron job
+  # ever appears under this name it was applied by accident: unschedule it with
+  # `select cron.unschedule('lead-notification-worker');` and follow the
+  # incident steps in docs/runbooks/utah-lead-notification-pgcron.md — this
+  # workflow is the mechanism that should be running.
   schedule:
     # Every 15 minutes.
     - cron: '7,22,37,52 * * * *'

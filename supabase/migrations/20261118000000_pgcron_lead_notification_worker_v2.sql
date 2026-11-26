@@ -172,19 +172,29 @@ comment on function public.invoke_lead_notification_worker() is
 revoke all on function public.invoke_lead_notification_worker() from public, anon, authenticated;
 grant execute on function public.invoke_lead_notification_worker() to service_role;
 
--- Read-only health view: the worker answers non-2xx when notifications are in a
--- terminal or stale state, exactly like the GitHub run used to fail. pg_cron's
--- job_run_details only proves the request was QUEUED, because pg_net is
--- asynchronous; this view shows what the worker actually answered — and, by
--- joining the request ledger, ONLY what this worker answered.
+-- Read-only health view. PARKED along with the rest of this file, and it is NOT
+-- a cutover gate: a 2xx here does NOT authorise removing the GitHub schedule.
+-- Anyone who can execute public.invoke_lead_notification_worker() can mint a
+-- row that looks exactly like a scheduled success, so this view cannot prove
+-- the SCHEDULER fired — only that the endpoint answered something for a request
+-- id the ledger holds. Scheduler provenance is one of the requirements a
+-- supported design would have to meet; see
+-- docs/runbooks/utah-lead-notification-pgcron.md.
 --
--- security_invoker = false (a definer view owned by postgres) is deliberate and
--- is the point: service_role is the only grantee and Supabase does not give it
--- USAGE on schema net or SELECT on net._http_response, so an invoker view would
--- error for its one reader. The join is the restriction: a definer view that
--- exposed net._http_response unscoped would hand service_role every pg_net
--- caller's responses. No headers and no content/body column is exposed here,
--- ever.
+-- What it is still good for, and why it is kept: pg_cron's job_run_details only
+-- proves the request was QUEUED, because pg_net is asynchronous, so without this
+-- view there is no way to see what the endpoint answered at all — which is what
+-- made the original unscoped version actively misleading.
+--
+-- security_invoker = false (a definer view owned by postgres) is deliberate. An
+-- invoker view would depend on the reader's own privileges on schema net, and
+-- the honest statement about those is the one in this file's header: on a stock
+-- hosted project pg_net grants schema net and ALL its tables to PUBLIC, so
+-- service_role DOES have effective access today — an earlier comment here
+-- claimed the opposite, which was false. The definer view plus the ledger join
+-- is what keeps this surface narrow regardless of those grants: it exposes only
+-- responses to request ids this worker recorded, never the whole response
+-- table, and no headers and no content/body column, ever.
 drop view if exists public.lead_notification_worker_cron_health;
 
 create view public.lead_notification_worker_cron_health
@@ -205,7 +215,7 @@ select r.id,
 alter view public.lead_notification_worker_cron_health owner to postgres;
 
 comment on view public.lead_notification_worker_cron_health is
-  'What functions/v1/lead-notification-worker answered to THIS pg_cron worker, scoped by joining net._http_response to public.lead_notification_worker_cron_requests. Definer view (security_invoker = false, owned by postgres) so service_role needs no privilege on schema net. Carries no headers and no response body. A 2xx row here is the go/no-go for cutting the GitHub schedule.';
+  'PARKED 2026-11-26 with the rest of 20261118000000 — NOT a cutover gate. What functions/v1/lead-notification-worker answered to THIS pg_cron worker, scoped by joining net._http_response to public.lead_notification_worker_cron_requests. Definer view (security_invoker = false, owned by postgres), which keeps the surface narrow even though pg_net grants schema net to PUBLIC on a stock project. Carries no headers and no response body. A 2xx row here does NOT authorise removing the GitHub schedule: anyone who can execute the worker function can mint one, so it cannot prove the scheduler fired.';
 
 revoke all on public.lead_notification_worker_cron_health from public, anon, authenticated;
 grant select on public.lead_notification_worker_cron_health to service_role;

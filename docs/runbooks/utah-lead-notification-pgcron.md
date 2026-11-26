@@ -42,8 +42,10 @@ hosted project, for the reason in (1).
   but not sufficient: anyone who can execute the worker function can mint such a
   row. A real cutover needs evidence that the **scheduler** fired, not that the
   endpoint can return 200.
-- Only then: a gated exact-target runner to apply it (none exists), and a
-  separate PR to cut the GitHub schedule.
+These are **design requirements for a future proposal**, not a checklist to work
+through. Nothing in this runbook asks anyone to enable an extension, put a token
+in Vault, apply this migration, or change the GitHub schedule — the only
+procedure here is the incident check below.
 
 Nothing in this runbook has been run, and no production catalog was read while
 writing it.
@@ -59,7 +61,11 @@ function, no view, no job. An earlier revision said the objects would be left
 behind with only the job missing; that is only true under a bare `psql -f`
 without `-1`, and it is corrected.
 
-## Read this check FIRST (read-only, run before anything else)
+## Incident check: did someone apply it anyway?
+
+This is the only operational procedure left in this runbook. It is **read-only**
+and it is for answering one question — whether the parked migration was applied
+by accident — not for preparing an apply.
 
 **Run it as one block.** It must not error on a database where `pg_net`,
 `pg_cron` or `vault` is not installed yet — which is this project's state. Note
@@ -139,6 +145,37 @@ $check$;
 `<NULL>` for a value means "that extension or role is not installed yet".
 `queue_granted_to_public=t` is the parked-status reason, not an action item.
 
+## If someone applied it by accident
+
+**Do not treat this as a cutover.** Applying it is a mistake to undo, not a step
+to finish.
+
+1. **Check** with the read-only block above. `already_scheduled=t` means the job
+   exists; `extensions` naming `pg_cron`/`pg_net` means they were enabled.
+2. **Unschedule immediately** — while the job exists it is posting the worker
+   bearer token into `net.http_request_queue` every fifteen minutes, where
+   PUBLIC can read it:
+   ```sql
+   select cron.unschedule('lead-notification-worker');
+   ```
+3. **Drop the objects** (they are inert once the job is gone, but they advertise
+   a design that is parked):
+   ```sql
+   drop view if exists public.lead_notification_worker_cron_health;
+   drop function if exists public.invoke_lead_notification_worker();
+   drop table if exists public.lead_notification_worker_cron_requests;
+   ```
+4. **Treat the token as exposed** if the job ran even once: it sat in a
+   PUBLIC-readable queue. Rotate `lead_notification_worker_token` in Vault, the
+   `LEAD_NOTIFICATION_WORKER_TOKEN` GitHub secret and the edge-function secret
+   together, and redeploy `lead-notification-worker`.
+5. **Tell the owner (Ryan) and note it in the Frame Command Center.** A history
+   row for `20261118000000` now exists that no reviewed runner wrote; whoever
+   reconciles migration history needs to know. **Do not** delete that history row
+   to "clean up" — a history edit is a reviewed action, not an incident fix.
+6. **Leave the GitHub schedule alone.** It is the mechanism; it should have been
+   running the whole time.
+
 ## The defects this version fixes
 
 A review on 2026-11-26 confirmed both against a throwaway PostgreSQL with the
@@ -147,8 +184,9 @@ original file applied:
 1. **The health view was unscoped.** It selected every row of
    `net._http_response`. With one unrelated pg_net response inserted, the
    original view returned it — so a 2xx in that view did **not** prove this
-   worker had succeeded, and that view is the stated go/no-go for cutting the
-   GitHub schedule. Fixed by having the function record each request id it
+   worker had succeeded — and at the time that view was (wrongly) treated as the
+   go/no-go for cutting the GitHub schedule. It is not a cutover gate now; see
+   the scheduler-provenance requirement above. Fixed by having the function record each request id it
    issues in `public.lead_notification_worker_cron_requests` and having the view
    join `net._http_response` to that ledger.
 2. **The view was `security_invoker = true`.** Reproduced: `set role
@@ -203,7 +241,8 @@ So on a stock Supabase project, after `create extension pg_net`, **every role �
 - `SELECT net.http_request_queue`, which holds this worker's
   `Authorization: Bearer …` header until the background worker drains it, and
 - `INSERT`/`UPDATE`/`DELETE net._http_response`, which is the only evidence the
-  health view reports on — so the go/no-go signal is forgeable and erasable.
+  health view reports on — so that signal is forgeable and erasable, which is a
+  second reason it was never a cutover gate.
 
 Nothing in `supautils.conf` or Supabase's extension custom scripts revokes it
 (checked 2026-11-26: `pg_net` is in `supautils.privileged_extensions`, and the
@@ -242,94 +281,6 @@ Two further leaks that no SQL here can close, so nobody assumes otherwise:
 If the residency in `net.http_request_queue` is unacceptable even with PUBLIC
 revoked, the alternative is not this migration: it is leaving the schedule in
 GitHub Actions, where the token lives in an Actions secret instead.
-
-## Owner prerequisites that remain, in order
-
-1. **Enable `pg_cron` and `pg_net`** (Supabase dashboard → Database →
-   Extensions). Both are bundled at no extra charge on this project's plan. The
-   migration's guarded block creates them when they are installable and **raises**
-   when they are neither installed nor available, so an apply can never leave
-   the job silently unscheduled.
-2. **Create the Vault secret**, once, out of band:
-   ```sql
-   select vault.create_secret('<token>', 'lead_notification_worker_token',
-          'Bearer token for functions/v1/lead-notification-worker');
-   ```
-   Same value as the `LEAD_NOTIFICATION_WORKER_TOKEN` GitHub secret and
-   edge-function secret. Never paste it into chat, a PR, a doc or the migration.
-3. **Apply `20261118000000` through a gated exact-target runner that does not
-   exist yet.** There is no runner for this version. Utah production migrations
-   may only be applied by a hand-run exact-target runner
-   (`supabase/functions/handle-lead/DEPLOY.md`,
-   `DASHBOARD-SECURITY-CHECKLIST.md`); `scripts/run-call-tracking-migrations.sh`
-   and `scripts/run-lead-migrations.sh` are the two that exist, and neither
-   covers this file. Writing that runner is a separate PR. Never
-   `supabase db push`, never `migration repair`, never the SQL editor.
-
-   Note for whoever writes that runner: this file deliberately has **no**
-   explicit `begin`/`commit`, so the Supabase CLI owns the transaction and the
-   schema change and the `supabase_migrations.schema_migrations` row are atomic.
-   That matters because CLI 2.113.0 executes a migration file's own `COMMIT` and
-   only then inserts the history row — a file that commits itself can therefore
-   end up applied but unrecorded. `20261027230000_ai_referrer_tagging.sql` has
-   that shape and needs a recovery path in its runner
-   (see `docs/runbooks/utah-lead-migrations.md`); this one does not. **Keep it
-   that way.** The `create extension` guard is a `do` block, not a transaction,
-   so it does not reintroduce the problem.
-4. **See this worker's own 2xx**:
-   ```sql
-   select id, created, status_code, timed_out, error_msg, requested_at, healthy
-     from public.lead_notification_worker_cron_health
-    order by created desc
-    limit 10;
-   ```
-   Rows appear only for request ids this worker issued. pg_net keeps responses
-   for roughly six hours and the function prunes its ledger at 24 hours, so
-   check within a few hours of a scheduled minute (`7,22,37,52`). An empty
-   result means no response has landed yet — that is not a pass.
-5. **Only then**, in a **separate** PR, cut the GitHub schedule in
-   `.github/workflows/lead-notification-worker.yml` (or run
-   `select cron.unschedule('lead-notification-worker');`) so exactly one
-   scheduler owns the cadence. Both running at once is safe but wasteful — the
-   worker claims each job with `claim_version` + a lease, so overlapping runs
-   cannot send twice.
-
-## Rollback, and the supported restore path afterwards
-
-```sql
-select cron.unschedule('lead-notification-worker');
-drop view if exists public.lead_notification_worker_cron_health;
-drop function if exists public.invoke_lead_notification_worker();
-drop table if exists public.lead_notification_worker_cron_requests;
-```
-
-Then restore the 15-minute schedule in
-`.github/workflows/lead-notification-worker.yml` (the repository must be public
-again, or have Actions minutes, for that to be free).
-
-**That rollback drops the objects but leaves the
-`supabase_migrations.schema_migrations` row for `20261118000000` in place**, and
-that matters: a later re-apply through the runner would see the version as
-already applied, skip the file, and leave nothing scheduled while the health
-view does not exist. Only the gated runner may touch migration history, so the
-supported restore path is:
-
-1. Roll back **and** delete the history row for `20261118000000` in the **same
-   transaction** as the drops above, so the catalog and the history never
-   disagree:
-   ```sql
-   begin;
-   select cron.unschedule('lead-notification-worker');
-   drop view if exists public.lead_notification_worker_cron_health;
-   drop function if exists public.invoke_lead_notification_worker();
-   drop table if exists public.lead_notification_worker_cron_requests;
-   delete from supabase_migrations.schema_migrations where version = '20261118000000';
-   commit;
-   ```
-2. Re-apply through the gated runner, which will then see the version as
-   pending.
-
-Never `supabase migration repair` to make either half look right on its own.
 
 ## Tests
 
