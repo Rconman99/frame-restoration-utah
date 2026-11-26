@@ -27,6 +27,14 @@ export function legacyPinCandidate(value: unknown): value is string {
   return typeof value === "string" && /^[A-Za-z0-9_-]{4,32}$/.test(value);
 }
 
+export function loginPinCandidate(value: unknown): value is string {
+  // Sign-in accepts only the current 6-12 digit format, the same rule as new
+  // PINs. Older short or alphanumeric PINs (one appeared in public repository
+  // history) are refused before any lookup, even if the earlier transition path
+  // already stored their HMAC. Issue a new numeric PIN to anyone still on one.
+  return typeof value === "string" && /^\d{6,12}$/.test(value);
+}
+
 export async function hashDashboardPin(
   pepper: string,
   pin: string,

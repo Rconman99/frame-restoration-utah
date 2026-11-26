@@ -2,6 +2,7 @@ import {
   dashboardCredentialPepperReady,
   hashDashboardPin,
   legacyPinCandidate,
+  loginPinCandidate,
   parseDashboardAuthRpcResult,
 } from "./dashboard-credential.ts";
 
@@ -49,6 +50,28 @@ Deno.test("bounded legacy fallback accepts old alphanumeric shape only", () => {
       !legacyPinCandidate(value),
       `invalid legacy candidate accepted: ${value}`,
     );
+  }
+});
+
+Deno.test("sign-in accepts only 6-12 digit PINs", () => {
+  for (const value of ["123456", "000000", "123456789012"]) {
+    assert(loginPinCandidate(value), `current PIN rejected: ${value}`);
+  }
+  for (
+    const value of [
+      "1234",
+      "12345",
+      "1234567890123",
+      "legacy_26",
+      "legacy-credential-2026",
+      "12345a",
+      " 123456",
+      "",
+      123456,
+      null,
+    ]
+  ) {
+    assert(!loginPinCandidate(value), `old-style PIN accepted: ${value}`);
   }
 });
 

@@ -41,7 +41,7 @@ import {
 import {
   dashboardCredentialPepperReady,
   hashDashboardPin,
-  legacyPinCandidate,
+  loginPinCandidate,
   parseDashboardAuthRpcResult,
 } from "../_shared/dashboard-credential.ts";
 import {
@@ -359,12 +359,12 @@ Deno.serve(async (req: Request) => {
     const body = bodyResult.value;
     const routingKey = cleanText(body.routing_key, 240);
     const pin = cleanText(body.pin, 32);
-    if (routingKey !== API_KEY || !legacyPinCandidate(pin)) {
+    if (routingKey !== API_KEY || !loginPinCandidate(pin)) {
       return jsonResp(req, { error: "invalid_credentials" }, 403);
     }
 
     const pinHash = await hashDashboardPin(CREDENTIAL_PEPPER, pin);
-    // Both the plaintext transition candidate and its HMAC stay in this RPC's
+    // Both the plaintext PIN and its HMAC stay in this RPC's
     // POST body. PostgREST filters would put either value into a request URL.
     const { data: authData, error: authError } = await supabase.rpc(
       "authenticate_dashboard_access",
