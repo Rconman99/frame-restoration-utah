@@ -30,27 +30,44 @@ different-lane review before first use.
 1. **Merged release.** `RELEASE_SHA` is the full 40-character `origin/main` tip,
    not a branch head, preview or dirty worktree. The runner refuses anything
    else and refuses a SHA that is not exactly the current tip.
-2. **The pinned CLI, named by one absolute path.** Official Supabase CLI
+2. **A clean checkout of the release commit.** The runner hashes **its own
+   bytes** and refuses to run unless they equal
+   `git show <RELEASE_SHA>:scripts/run-lead-migrations.sh`. Launch it from a
+   fresh checkout of `RELEASE_SHA`; a local edit, a stale working tree or a copy
+   of the script stops the run before anything else happens.
+3. **The pinned CLI, named by one absolute path.** Official Supabase CLI
    **2.113.0**, macOS **arm64**, binary SHA-256
    `ad4957e507ffc178fa27dd9256eb666f34bade172058b66e97f230413564494a`. 2.112.0 is
    forbidden (its generated Management API schema rejects valid offset timestamps
    during `link`), as is the bundled internal `supabase-go` compatibility binary.
-   `SUPABASE_BIN` must be an **absolute path** and must not be a symlink: a bare
-   command name would be resolved through `PATH` at execution time while
-   `shasum` hashed something else. The runner resolves the directory part to its
-   physical path (`pwd -P`, which discards every symlinked component), refuses a
-   symlink as the final component, and then hashes **and executes that one
-   resolved path** — the digest check happens before the binary is executed at
-   all, `--version` included. Residual, stated plainly: if a *directory*
-   component of that path is re-pointed between the digest and the run, no shell
-   script can detect it. A whole-path symlink ban is not usable, because on
-   macOS `/var` is itself a symlink to `/private/var`.
-3. **A clean environment, a pinned profile, and a private working directory.**
-   The runner refuses to start if any `SUPABASE_*` variable other than
-   `SUPABASE_BIN`, `SUPABASE_ACCESS_TOKEN` and `SUPABASE_NO_KEYRING` is set, if
-   any `PG*` variable is set, if shell tracing is on, or if `PS4` was inherited.
-   On top of that it passes `--profile supabase` and an absolute `--workdir` on
-   **every** call and executes the binary only from its own 0700 directory.
+   `SUPABASE_BIN` must be an **absolute path** and must not be a symlink. The
+   runner then **copies it into a private 0700 directory, hashes the copy with
+   `/usr/bin/shasum`, and executes only the copy** — so the file that was
+   verified is the file that runs, and the TOCTOU window on the operator's own
+   path is closed rather than documented. The private directory is created with
+   `mktemp -d` under a **fixed trusted root, `/private/tmp`** (checked to exist
+   and not be a symlink, and verified 0700 afterwards); `TMPDIR` is **never
+   read**, so a caller-supplied value has no effect at all.
+4. **A clean environment, an allowlisted one for the CLI, a pinned profile, and
+   a private working directory.** The deny-list pre-check refuses to start if any
+   `SUPABASE_*` variable other than `SUPABASE_BIN`, `SUPABASE_ACCESS_TOKEN` and
+   `SUPABASE_NO_KEYRING` is set, if any `PG*` variable is set, if shell tracing
+   is on, or if `PS4` was inherited. On top of that **every CLI call runs under
+   `env -i` with an explicit allowlist** — `HOME`, `PATH`, `LANG`, `LC_ALL`,
+   `SUPABASE_NO_KEYRING` and the token — with `--profile supabase` and an
+   absolute `--workdir`, and the binary is executed only from its own 0700
+   directory, never from the checkout.
+   `HOME` is passed, deliberately, but **redirected into the private
+   directory**: the CLI reads `~/.supabase/access-token` and
+   `~/.supabase/profile` and may write config there, so a private `HOME` stops
+   it reading the operator's persisted profile or token and keeps any write
+   inside the receipt directory. Omitting `HOME` is worse — tools then fall back
+   to the passwd entry, i.e. the real home.
+   The runner's own utilities are pinned: `PATH` is fixed to
+   `/usr/bin:/bin:/usr/sbin:/sbin`, and `shasum`, `git` and `curl` are the
+   absolute `/usr/bin/...` binaries. Only `jq` is configurable
+   (`LEAD_MIGRATION_JQ`, which must be an absolute path) because its location
+   genuinely varies.
    Verified against supabase/cli v2.113.0 (commit `03880bb1`):
    - `apps/cli/src/legacy/config/legacy-cli-config.layer.ts:38-80` — with no
      `--profile` flag and no `SUPABASE_PROFILE`, the CLI falls back to the
@@ -76,16 +93,16 @@ different-lane review before first use.
      tag (`apps/cli/src/legacy/commands/migration/{up,list}/*.command.ts`), so
      the linked ref file plus the pinned profile are the whole of the project
      binding.
-4. **Sign-in.** Either the Mac's Supabase CLI Keychain profile
-   (`LEAD_MIGRATION_AUTH_MODE=keychain-profile`, and `SUPABASE_ACCESS_TOKEN`
-   must be absent) or a token injected from approved secret storage
-   (`LEAD_MIGRATION_AUTH_MODE=injected-token`). Never print the value.
-5. **An exclusive Utah migration-writer window**, secured before the first
+5. **Sign-in: injected token only.**
+   `LEAD_MIGRATION_AUTH_MODE=injected-token` with `SUPABASE_ACCESS_TOKEN` from
+   approved secret storage. `keychain-profile` is **refused** — see the auth
+   subsection below for why. Never print the value.
+6. **An exclusive Utah migration-writer window**, secured before the first
    linked list and held through the final list: no other operator, workflow,
    Supabase Studio action, CLI process or automation may apply, repair, revert,
    squash or otherwise change migration history or the public schema. Bind
    `LEAD_MIGRATION_EXCLUSIVE_WRITER_ACK` to the exact `RELEASE_SHA`.
-6. **`jq`** on PATH. Any version from 1.6 to 1.8.1 — this runner's catalog
+7. **`jq`** on PATH. Any version from 1.6 to 1.8.1 — this runner's catalog
    validator was checked against 1.6, 1.7, 1.7.1, jq-1.7.1-apple, 1.8.0 and
    1.8.1 and behaves identically on all six.
    ⚠️ **`scripts/run-call-tracking-migrations.sh` is not jq-1.8 safe.** Its
@@ -96,7 +113,7 @@ different-lane review before first use.
    Homebrew's current `jq` is 1.8.x. If the call-tracking pair still needs
    applying, either run it on a jq-1.7 host or fix that validator first. This is
    reported, not fixed here.
-7. **Accepted starting history** (anything else is a hard stop): the reviewed
+8. **Accepted starting history** (anything else is a hard stop): the reviewed
    36-version baseline, or that baseline plus **both** call-tracking versions
    (`20261027200000` + `20261027220000`), in either case plus any already
    recorded subset of the three targets. One of the two call-tracking versions
@@ -122,58 +139,42 @@ you to finish the call-tracking runner first. Preflight still runs on the bare
 36-version baseline and reports `call_tracking_recorded=false`, so the state can
 be inspected before anything is applied.
 
-## 🔴 `20261027230000` commits itself: the COMMIT-before-history gap
+## 🔴 `20261027230000` commits itself: stop and escalate, there is no replay
 
 `20261027230000_ai_referrer_tagging.sql` contains an explicit `begin; … commit;`.
 CLI 2.113.0 executes the file — **including its `COMMIT`** — and only then
-inserts the row into `supabase_migrations.schema_migrations`. A failure in that
-gap (connection drop, statement timeout on the insert) leaves the AI-referrer
-columns, functions and triggers **present in the database with no history row**.
-The other two targets have no explicit transaction, so for them the schema
-change and the history row are in one transaction and this cannot happen; a test
-asserts that only `20261027230000` carries a `begin`/`commit`.
+inserts the row into `supabase_migrations.schema_migrations`, so a failure in
+that gap can leave the AI-referrer objects present with no history row. The
+other two targets have no explicit transaction, so for them the schema change
+and the history row are in one transaction; a test asserts that only
+`20261027230000` carries a `begin`/`commit`.
 
-The runner recognises exactly that state — **narrowly** — and stops with the one
-sanctioned recovery rather than a message that reads as production drift. The
-state it recognises is: `20261027221000` **recorded** (`migration up` applies in
-timestamp order, so `20261027230000` can only have run after its predecessor was
-recorded), `20261027230000` **not** recorded, and the **full strengthened**
-AI-referrer catalog present and armed — both triggers enabled with `tgtype`
-exactly 7 and no `WHEN` clause, bound to `public.frame_set_ai_referrer`,
-`service_role` holding EXECUTE on the classifier and `anon`/`authenticated`
-holding none. `20261122230000` may be recorded or not; a resumed run can have
-reached it. Anything weaker falls through to the generic contract and is
-reported as drift, not offered a recovery.
+**The runner no longer offers a recovery mode. It stops and tells you to
+escalate.** An earlier revision had a `LEAD_MIGRATION_RECOVER_*` opt-in; it has
+been removed, because the evidence it asked for does not exist:
 
-The recovery itself:
+- `migration up`'s exit codes are **only 0 and 1**, and 1 covers both a database
+  connection failure and a SQL execution error
+  (`apps/cli/src/legacy/commands/migration/up/SIDE_EFFECTS.md` at v2.113.0);
+- the `Applying migration <file>...` line is printed to stderr **before** the
+  file executes, so finding the filename in a failed run's stderr proves only
+  that the CLI was about to run it;
+- the structured `applied` list is emitted **only on success**.
 
-1. Find the **receipt directory of the run that left it this way** and check
-   that its `cli.migration-up.stderr.txt` names `20261027230000`. Note what this
-   does *not* ask for: a failed `migration up` never emits an `applied` list, so
-   the evidence is the CLI's own stderr for that run, plus the `run.json` this
-   runner writes before it mutates anything.
-2. Re-run with both of:
-   ```
-   export LEAD_MIGRATION_RECOVER_UNRECORDED_AI_REFERRER="$RELEASE_SHA"
-   export LEAD_MIGRATION_RECOVER_RECEIPT_DIR=/path/to/that/receipt_dir
-   ```
-   The runner refuses unless that directory holds a `run.json` whose
-   `release_sha` equals this `RELEASE_SHA`, whose `mode` is `apply`, and whose
-   `pending` list contains `20261027230000_ai_referrer_tagging.sql`.
-3. **The replay is a second apply window, not a metadata fix.** Every statement
-   in the migration is idempotent (`add column if not exists`,
-   `create or replace function`, `drop trigger if exists` + `create trigger`, and
-   a backfill scoped to `ai_referrer is null`), so the data does not change —
-   but the DDL and the backfill **run again** and **re-take `ACCESS EXCLUSIVE`**
-   on `public.leads` and `public.phone_clicks`. Schedule it like an apply.
-4. Never `migration repair`. It would write a history row for SQL nobody
-   verified ran.
+So "objects present, history row absent" is indistinguishable from a
+hand-applied migration, a partial manual run, or a different failure entirely.
+A runner cannot responsibly replay on that evidence, and a wrong replay re-runs
+DDL and a backfill and re-takes `ACCESS EXCLUSIVE` on both tables.
+
+When the runner hits that state it prints `STOP AND ESCALATE`, names the receipt
+directory, and exits non-zero. Escalate with the receipt directory, decide by
+hand what actually happened, and **never** use `migration repair` — it would
+write a history row for SQL nobody verified ran.
 
 The clean long-term fix is for `20261027230000` to lose its explicit
 `begin`/`commit` and let the CLI own the transaction. That changes the file's
-SHA-256, so it needs its own reviewed PR and a re-pin in this runner; it is
-deliberately **not** done here, because the file is already merged and this
-runner pins its current bytes.
+SHA-256, so it needs its own reviewed PR and a re-pin here; it is deliberately
+not done in this change.
 
 ## Lock note (read before choosing the window)
 
@@ -195,85 +196,133 @@ runner.
 
 ## Receipts contain CLI diagnostics
 
-The receipt directory is mode 0700 and also holds the linked workdir, which
-includes `supabase/.temp/pooler-url` and the CLI's raw stderr. **Sanitise before
-sharing a receipt** in a PR, a hub snapshot, chat, or anywhere else. The runner
-prints `receipt_dir=` as its very first line — before anything can mutate — so a
-crashed run is still recoverable, and prints the sanitise reminder again at the
-end of an apply.
+The receipt directory is created under `/private/tmp` with `mktemp -d`, is mode
+0700 (verified after creation), and holds the private copy of the CLI, the
+private `HOME` the CLI runs with, the staged migration workdir, `probe.sql`,
+every read-only request body and status, every catalog read, `run.json`, the
+staged-set manifests, and the **stdout and stderr of every CLI call**. In apply
+mode it also holds the linked workdir, including `supabase/.temp/pooler-url`.
+**Sanitise before sharing a receipt** in a PR, a hub snapshot, chat or anywhere
+else. The runner prints `receipt_dir=` as its very first line — before anything
+can mutate — so a crashed run is still recoverable, and prints
+`receipts_contain_cli_diagnostics=1` in every summary.
 
-## 🔴 Preflight is NOT read-only
+Nothing from a CLI or curl stream is ever echoed to the terminal: the CLI puts
+server response bodies into its login-role errors, and a Management API error
+body can echo request content. A failed call reports its exit status or HTTP
+code and the path to its retained stream, and nothing more.
 
-Earlier revisions of this runbook called the preflight "read-only, no
-mutation". **That was wrong, and the claim has been removed everywhere.** The
-SELECT is catalog-only, but `db query --linked` resolves a live database
-connection *before* it runs the query over the Management API, and that
-resolution has project-visible side effects. Verified against supabase/cli
-v2.113.0 (commit `03880bb1`):
+## Preflight is read-only. Apply is not, and cannot be.
 
-- `apps/cli/src/legacy/shared/legacy-db-config.layer.ts:101-117` — it mints a
-  **temporary postgres login role** via
-  `POST /v1/projects/<ref>/cli/login-role` with `read_only: false`, and prints
-  `Initialising login role...` to stderr unconditionally.
-- the same file, `119-127` and `157-161` — from the **third** pooler connect
-  failure onward it calls `listAllNetworkBans` and then `deleteNetworkBans`:
-  it **lists and removes this project's IPv4 network bans**.
-- `apps/cli/src/legacy/commands/db/query/query.handler.ts:283-289` — all of that
-  runs purely for pre-run parity with the Go CLI, and the resolved connection is
-  then **discarded**.
-
-There is no way to opt out from inside the approved path. `db query` exposes no
-`--password` flag at this tag, and the passwordless branch is exactly the one
-that mints the role; supplying `SUPABASE_DB_PASSWORD` would skip the mint
-(`legacy-db-config.layer.ts:288-290`) but the runner **refuses** that variable,
-because holding a database password in the runner's environment is the worse of
-the two risks. `migration up --linked` has no `--password` flag either, so the
-same mint happens on the apply step regardless — this is not new behaviour
-introduced by the preflight, only newly stated.
-
-The operator acknowledges it explicitly, bound to the release, and the runner
-echoes a `side_effects=` banner on every run:
+An earlier revision of this runbook asked the operator to *acknowledge* that the
+preflight mutated the project. That acknowledgement is gone, and so is the
+mutation: **every preflight read now goes to the Supabase Management API
+read-only query endpoint**, the same surface
+`.github/workflows/deploy-edge-function.yml` already uses in production:
 
 ```
-export LEAD_MIGRATION_DB_QUERY_SIDE_EFFECT_ACK="$RELEASE_SHA"
+POST https://api.supabase.com/v1/projects/hdcflshhomzildwqlmwh/database/query/read-only
+Authorization: Bearer <token>
+Content-Type: application/json
+User-Agent: SupabaseCLI/2.113.0
+{"query":"<the catalog probe>","read_only":true}
 ```
 
-What that means in practice: run it inside the exclusive window, expect a
-short-lived `cli_login_role_*`-style role to appear and expire, and check the
-project's network-ban list afterwards if the pooler was flaky during the run.
+The project ref is a **literal in the URL**, so no profile, environment variable
+or linked-ref file can redirect it. That the read-only role can see what the
+probe needs is not an assumption: that deploy workflow's own production query
+selects `m.version::text from supabase_migrations.schema_migrations`, which is
+the history table this probe reads, and the rest of the probe is catalog views
+plus two `count(*)`s. **I could not call the endpoint myself** — this is read
+from the workflow and the API docs, not observed.
+
+**Why the CLI is not used for reads.** `db query --linked` resolves a live
+database connection before it runs anything, and that resolution (verified in
+supabase/cli v2.113.0, commit `03880bb1`):
+
+- mints a **temporary postgres login role** via
+  `POST /v1/projects/<ref>/cli/login-role` with `read_only: false`
+  (`apps/cli/src/legacy/shared/legacy-db-config.layer.ts:101-117`);
+- from the **third** pooler connect failure onward, lists and **deletes this
+  project's IPv4 network bans** (same file, `119-127` and `157-161`);
+- and then **discards the connection**, because the query itself goes over the
+  Management API anyway (`…/commands/db/query/query.handler.ts:283-289`).
+
+Preflight therefore makes exactly **two** CLI calls, `--version` and
+`projects list`, neither of which opens a database connection, and it does
+**not** `link`. It prints `cli_calls=version,projects-list` and
+`reads=management-api-read-only` so you can see that.
+
+### 🔴 Apply is not read-only
+
+`migration up --linked` needs a database connection and has **no `--password`
+flag** at this tag, so the login-role mint and the possible network-ban removal
+happen on apply. They are unavoidable apply-time effects, not something an
+acknowledgement can remove. The runner prints them as `apply_side_effects=…`
+before it mutates anything. Expect a short-lived `cli_login_role`-style role to
+appear and expire, and check the project's network-ban list afterwards if the
+pooler was flaky during the run.
+
+Apply's own pre-mutation re-probe and its postflight both use the read-only
+endpoint; the CLI is used only for `init`, `link` and `migration up`
+(`cli_calls=version,projects-list,init,link,migration-up`).
+
+### Auth: injected token only
+
+`LEAD_MIGRATION_AUTH_MODE=injected-token` is the only accepted value, and
+`SUPABASE_ACCESS_TOKEN` must be present. **`keychain-profile` mode is refused.**
+The read-only endpoint needs a bearer token in both modes, and the only other
+source is the macOS Keychain — getting it out would mean running
+`security find-generic-password -w` to print the operator's token into a shell
+variable, which this repository's rules forbid and which can raise an
+interactive Keychain prompt in a non-interactive run. Half-supporting it would
+be worse than refusing it.
+
+The token never reaches a process argument list or a file: `curl` reads its
+configuration from **stdin** (`--config -`), the config is built by a shell
+builtin, and a test asserts that no retained receipt contains the token.
+
+### How the local-vs-remote comparison is done now
+
+There is no `migration list --linked` anywhere — it needs the same database
+connection. The comparison is rebuilt locally from the history the read-only
+probe returned plus the staged file set: exactly one poison guard per recorded
+version, plus exactly the pending targets, compared with `cmp` in both
+directions. Postflight re-reads the history and requires it to equal the
+matched history plus exactly what was pending.
 
 ## Preflight
 
 ```bash
-cd /path/to/frame-restoration-utah          # clean checkout of main
+cd /path/to/a/clean/checkout/of/RELEASE_SHA       # the self-check requires it
 export RELEASE_SHA="$(git rev-parse origin/main)"
 export SUPABASE_BIN='/absolute/path/to/reviewed/supabase'   # absolute, not a symlink
+export SUPABASE_ACCESS_TOKEN='<injected from approved secret storage>'
 export LEAD_MIGRATION_EXCLUSIVE_WRITER_ACK="$RELEASE_SHA"
-export LEAD_MIGRATION_DB_QUERY_SIDE_EFFECT_ACK="$RELEASE_SHA"
-export LEAD_MIGRATION_AUTH_MODE='keychain-profile'   # or injected-token
+export LEAD_MIGRATION_AUTH_MODE='injected-token'
+# only if jq is not at /opt/homebrew/bin/jq:
+# export LEAD_MIGRATION_JQ='/absolute/path/to/jq'
 LEAD_MIGRATION_EXECUTION_MODE=preflight scripts/run-lead-migrations.sh
 ```
 
-Expected output: `receipt_dir=` **first** (before anything can mutate), then
-`mode=preflight`, the `side_effects=` banner, the `pending=` list in timestamp
-order, `lead_rows=`/`phone_click_rows=`, `call_tracking_recorded=`, the
-`lock_note=` line, and one JSON line of catalog state with the history elided.
-Retain `receipt_dir`: a later COMMIT-before-history recovery needs the
-`run.json` and `cli.migration-up.stderr.txt` it holds.
+Expected output, in this order and nothing else — the summary is an explicit
+field allowlist and the catalog JSON is **never** echoed:
 
-Preflight hard-stops, each fail-closed: operator inputs (SHA shape, SHA is not
-the tip, missing/non-executable `SUPABASE_BIN`, unbound writer ack, unknown
-execution or auth mode, token present in keychain mode or absent in injected
-mode, unavailable Keychain profile), platform and binary (not macOS arm64, CLI
-not 2.113.0, `supabase-go`, binary digest mismatch), identity (the login cannot
-resolve exactly `hdcflshhomzildwqlmwh`, the runner linked to another project),
-release bytes (any target or the poison guard differs from its pinned SHA-256,
-or the archive produced anything other than the three targets), history
-(unreviewed remote history, one of two call-tracking versions, a half-applied
-target without its history row, a recorded target whose objects are missing),
-the guarded `migration list` not being the matched history plus exactly the
-pending targets, and any catalog movement between the first and final
-preflight.
+```
+receipt_dir=/private/tmp/utah-lead-migrations.XXXXXX
+mode=preflight
+release_sha=… project_ref=… mode=… pending=… lead_rows=… phone_click_rows=…
+call_tracking_recorded=… row_count_warning=0 receipt_dir=…
+lock_note=…
+receipts_contain_cli_diagnostics=1
+reads=management-api-read-only
+cli_calls=version,projects-list
+```
+
+`receipt_dir` is printed **first**, before anything else can happen, so a
+crashed run is still recoverable. Retain it: it holds `probe.sql`, the
+read-only request bodies and statuses, both catalog reads, `run.json`, the
+staged-set manifests, and the stdout **and** stderr of every CLI call.
 
 ## Apply
 
@@ -431,32 +480,40 @@ rollback takes the same `ACCESS EXCLUSIVE` locks as its apply.
 ## Tests
 
 `node --test scripts/run-lead-migrations.test.mjs` (blocking job
-`lead-migration-runner` in `.github/workflows/hook-guards.yml`) drives the real
-runner against a throwaway git repository and a **strict** stub `supabase`
-executable that dispatches on the exact argument vector, refuses any call that
-does not carry the pinned `--profile supabase` and absolute `--workdir`, records
-the working directory of every invocation, records the exact staged migration
-set at mutation time, and exits 90/91 on anything unexpected. The throwaway
-checkout contains a `.env` file, and the suite asserts the CLI is never executed
-from there. Each gate above is exercised to its hard stop, plus happy-path
-preflight, happy-path apply, the already-applied no-op, the COMMIT-before-history
-recovery (both the refusal and the opt-in), and the row-count warning. It
-touches no Supabase project.
+`lead-migration-runner`) drives the **real** script: each case commits a copy of
+it into a throwaway git repository, so the self-verification passes only because
+the executed bytes are the reviewed bytes. The stubs are strict — `supabase`
+records its argv **NUL-separated** so arguments are compared as an array and
+never as a joined string, dispatches on the exact vector including `init`
+(whose `--workdir` must equal the pinned global one) and exits 90/91 on
+anything unexpected; `curl` parses the config the runner pipes into its stdin
+and asserts the method, URL, headers, `read_only` flag and the SQL body;
+`shasum` answers the pinned CLI digest only for a file carrying the stub CLI's
+marker and computes a real SHA-256 for everything else. One documented seam,
+`LEAD_MIGRATION_TEST_HARNESS_ROOT`, is what makes this possible; the runner
+prints `test_harness=1` and warns on stderr whenever it is set, and it must
+never be set in production.
 
-`scripts/test-lead-migration-probe.mjs` (blocking job `lead-migration-probe`)
-closes the one thing the stub cannot: the stub reads the probe's SQL to
-`/dev/null` and replays a fixture, so the SELECT itself was never executed
-anywhere. That job extracts the **real** probe SQL and the runner's **own** jq
-validator and COMMIT-before-history detector out of the script, runs them
-against a throwaway `postgres:16-alpine` carrying the real Utah baselines, and
-checks three states — pristine, the COMMIT-before-history state built for real
-(`20261027230000` applied with its history row deliberately not inserted), and
-fully applied — plus a disabled trigger, an `EXECUTE` grant leaked through
-`PUBLIC`, and a redefined index. Because the SQL and the jq are extracted rather
-than copied, they cannot drift.
+Covered: the binary copy and the hashed copy (including that nothing executes
+before the digest matches), the `env -i` allowlist and the redirected `HOME`,
+the refusal of every CLI-redirecting variable *before* any call, the read-only
+request shape and that no retained receipt holds the token, non-200 and failed
+read-only calls, the keychain refusal, the apply call sequence, the escalation
+state, the retained streams and the printed field allowlist, the
+self-verification, and every history/catalog/staging gate.
+
+`node scripts/test-lead-migration-probe.mjs` (blocking job
+`lead-migration-probe`) extracts the **real** probe SQL and the runner's **own**
+jq validator and escalation detector out of the script and runs them against a
+throwaway `postgres:16-alpine` with the real Utah baselines, across three states
+— pristine, the COMMIT-before-history state built for real, and fully applied —
+plus a disabled trigger, an `EXECUTE` grant leaked through `PUBLIC` and a
+redefined index.
 
 `supabase/tests/lead_migrations_rollback.sql` (blocking job
-`lead-migration-rollback`) verifies the rollback above on real Postgres.
+`lead-migration-rollback`) runs a verbatim copy of the rollback above on real
+Postgres and asserts catalog and history end up agreeing; a unit test fails if
+the runbook and that file drift apart.
 
-A passing run of either is **not** evidence about production state and is not a
-substitute for the live preflight.
+A passing run of any of them is **not** evidence about production state and is
+not a substitute for the live preflight.

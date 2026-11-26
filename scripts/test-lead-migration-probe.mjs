@@ -46,7 +46,8 @@ const T3 = "20261122230000";
 
 /** The probe SELECT, exactly as the runner sends it. */
 function probeSql() {
-  const sql = runnerSource.split("<<'SQL'\n")[1].split("\nSQL\n")[0];
+  const sql = runnerSource.split("cat > \"$RECEIPT_DIR/probe.sql\" <<'SQL'\n")[1]
+    .split("\nSQL\n")[0];
   assert.ok(sql.trim().startsWith("select"), "probe SQL not found in the runner");
   assert.ok(sql.includes("spam_indexes_exact"), "probe SQL is missing the strengthened fields");
   return sql.trim().replace(/;$/, "");
@@ -55,7 +56,7 @@ function probeSql() {
 /** The runner's catalog validator, extracted verbatim. */
 function validatorProgram() {
   const program = runnerSource
-    .split('--argjson recover_t2 "$RECOVER_UNRECORDED_T2" \'')[1]
+    .split('--arg t1 "$T1_VERSION" --arg t2 "$T2_VERSION" --arg t3 "$T3_VERSION" \'')[1]
     .split("\n    ' \"$1\"")[0];
   assert.ok(program.includes("spam_indexes_exact"), "validator program not found");
   return program;
@@ -64,9 +65,12 @@ function validatorProgram() {
 /** The runner's COMMIT-before-history detector, extracted verbatim. */
 function detectorProgram() {
   const body = runnerSource.split("is_unrecorded_t2_state() {")[1];
-  const program = body.split("jq -e --arg t1 \"$T1_VERSION\" --arg t2 \"$T2_VERSION\" '")[1]
+  const program = body.split("--arg t1 \"$T1_VERSION\" --arg t2 \"$T2_VERSION\" '")[1]
     .split("\n  ' \"$1\"")[0];
-  assert.ok(program.includes("ai_referrer_triggers_armed"), "detector program not found");
+  assert.ok(
+    program.includes("ai_referrer_trigger_function"),
+    "detector program not found",
+  );
   return program;
 }
 
@@ -117,13 +121,12 @@ function jqAccepts(program, rows, args) {
   return result.status === 0;
 }
 
-const validatorArgs = (recover) => [
+const validatorArgs = () => [
   ["--argjson", "baseline", JSON.stringify(BASELINE)],
   ["--argjson", "calltracking", JSON.stringify(CALL_TRACKING)],
   ["--arg", "t1", T1],
   ["--arg", "t2", T2],
   ["--arg", "t3", T3],
-  ["--argjson", "recover_t2", String(recover)],
 ];
 const detectorArgs = [
   ["--arg", "t1", T1],
@@ -158,7 +161,7 @@ for (
 psql(
   `insert into supabase_migrations.schema_migrations (version) values ${
     [...BASELINE, ...CALL_TRACKING].map((v) => `('${v}')`).join(", ")
-  };`,
+  } on conflict (version) do nothing;`,
 );
 
 const pristine = runProbe();
@@ -220,7 +223,7 @@ check("a pristine catalog reports every target absent", () => {
 });
 
 check("the real validator accepts the pristine state", () => {
-  assert.equal(jqAccepts(validatorProgram(), pristine, validatorArgs(false)), true);
+  assert.equal(jqAccepts(validatorProgram(), pristine, validatorArgs()), true);
 });
 check("the real detector rejects the pristine state", () => {
   assert.equal(jqAccepts(detectorProgram(), pristine, detectorArgs), false);
@@ -231,7 +234,7 @@ check("the real detector rejects the pristine state", () => {
 // history row — the COMMIT-before-history gap, reproduced for real
 // ---------------------------------------------------------------------------
 psqlFile("supabase/migrations/20261027221000_lead_spam_classification.sql");
-psql(`insert into supabase_migrations.schema_migrations (version) values ('${T1}');`);
+psql(`insert into supabase_migrations.schema_migrations (version) values ('${T1}') on conflict (version) do nothing;`);
 psqlFile("supabase/migrations/20261027230000_ai_referrer_tagging.sql");
 // Deliberately NOT inserting the history row for T2: this is what the CLI
 // leaves behind when the file's own COMMIT succeeds and the history insert
@@ -263,49 +266,60 @@ check("the probe sees the AI-referrer objects armed while its history row is abs
 check("the real detector recognises the COMMIT-before-history state", () => {
   assert.equal(jqAccepts(detectorProgram(), unrecorded, detectorArgs), true);
 });
-check("the real validator rejects it without the recovery opt-in", () => {
-  assert.equal(jqAccepts(validatorProgram(), unrecorded, validatorArgs(false)), false);
-});
-check("the real validator accepts it with the recovery opt-in", () => {
-  assert.equal(jqAccepts(validatorProgram(), unrecorded, validatorArgs(true)), true);
+check("the real validator rejects the unrecorded state outright", () => {
+  // There is no recovery opt-in any more: the runner stops and escalates.
+  assert.equal(jqAccepts(validatorProgram(), unrecorded, validatorArgs()), false);
 });
 
+// Each of these perturbs the database, so the undo runs in a finally: an
+// assertion failure must not leak state into the checks that follow.
 check("a disabled trigger is not armed, on real Postgres", () => {
   psql("alter table public.leads disable trigger leads_set_ai_referrer;");
-  const disabled = runProbe();
-  assert.equal(disabled[0].ai_referrer_triggers, 2, "existence alone still passes");
-  assert.equal(disabled[0].ai_referrer_triggers_armed, 1, "armed must not");
-  assert.equal(jqAccepts(detectorProgram(), disabled, detectorArgs), false);
-  psql("alter table public.leads enable trigger leads_set_ai_referrer;");
+  try {
+    const disabled = runProbe();
+    assert.equal(disabled[0].ai_referrer_triggers, 2, "existence alone still passes");
+    assert.equal(disabled[0].ai_referrer_triggers_armed, 1, "armed must not");
+    // The validator is what must reject it. (The escalation detector looks at
+    // existence only, by design — it exists to produce a better message, not to
+    // decide anything.)
+    assert.equal(jqAccepts(validatorProgram(), disabled, validatorArgs()), false);
+  } finally {
+    psql("alter table public.leads enable trigger leads_set_ai_referrer;");
+  }
 });
 
 check("EXECUTE granted to PUBLIC surfaces on anon and authenticated, on real Postgres", () => {
   psql("grant execute on function public.frame_ai_referrer(text, text) to public;");
-  const leaked = runProbe();
-  assert.equal(leaked[0].ai_referrer_anon_execute, true);
-  assert.equal(leaked[0].ai_referrer_authenticated_execute, true);
-  assert.equal(jqAccepts(validatorProgram(), leaked, validatorArgs(true)), false);
-  assert.equal(jqAccepts(detectorProgram(), leaked, detectorArgs), false);
-  psql("revoke execute on function public.frame_ai_referrer(text, text) from public;");
+  try {
+    const leaked = runProbe();
+    assert.equal(leaked[0].ai_referrer_anon_execute, true);
+    assert.equal(leaked[0].ai_referrer_authenticated_execute, true);
+    assert.equal(jqAccepts(validatorProgram(), leaked, validatorArgs()), false);
+  } finally {
+    psql("revoke execute on function public.frame_ai_referrer(text, text) from public;");
+  }
 });
 
 check("a redefined index fails the exact-definition check, on real Postgres", () => {
   psql("drop index public.leads_spam_label_created_idx;");
   psql("create index leads_spam_label_created_idx on public.leads (spam_label);");
-  const redefined = runProbe();
-  assert.equal(redefined[0].spam_indexes, 2, "the name is still there");
-  assert.equal(redefined[0].spam_indexes_exact, 1, "the definition is not");
-  assert.equal(jqAccepts(validatorProgram(), redefined, validatorArgs(true)), false);
-  psql("drop index public.leads_spam_label_created_idx;");
-  psql("create index leads_spam_label_created_idx on public.leads (spam_label, created_at desc);");
+  try {
+    const redefined = runProbe();
+    assert.equal(redefined[0].spam_indexes, 2, "the name is still there");
+    assert.equal(redefined[0].spam_indexes_exact, 1, "the definition is not");
+    assert.equal(jqAccepts(validatorProgram(), redefined, validatorArgs()), false);
+  } finally {
+    psql("drop index public.leads_spam_label_created_idx;");
+    psql("create index leads_spam_label_created_idx on public.leads (spam_label, created_at desc);");
+  }
 });
 
 // ---------------------------------------------------------------------------
 // State 3: all three applied and recorded
 // ---------------------------------------------------------------------------
-psql(`insert into supabase_migrations.schema_migrations (version) values ('${T2}');`);
+psql(`insert into supabase_migrations.schema_migrations (version) values ('${T2}') on conflict (version) do nothing;`);
 psqlFile("supabase/migrations/20261122230000_leads_intake_zip_city_source.sql");
-psql(`insert into supabase_migrations.schema_migrations (version) values ('${T3}');`);
+psql(`insert into supabase_migrations.schema_migrations (version) values ('${T3}') on conflict (version) do nothing;`);
 
 const applied = runProbe();
 
@@ -316,7 +330,7 @@ check("the fully applied state passes the validator and is not a recovery state"
   assert.equal(row.leads_city_source, true);
   assert.equal(row.spam_indexes_exact, 2);
   assert.equal(row.ai_referrer_triggers_armed, 2);
-  assert.equal(jqAccepts(validatorProgram(), applied, validatorArgs(false)), true);
+  assert.equal(jqAccepts(validatorProgram(), applied, validatorArgs()), true);
   assert.equal(jqAccepts(detectorProgram(), applied, detectorArgs), false);
 });
 
