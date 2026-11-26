@@ -85,7 +85,8 @@
     "audit:draper-storm-guide": "node scripts/validate-draper-storm-guide.mjs",
     "test:hooks": "node --test scripts/test/hooks.test.mjs",
     "test:roof-calculator": "node --test scripts/roof-cost-calculator.test.mjs",
-    "test:no-prices-blog": "node --test scripts/no-published-prices-blog.test.mjs"
+    "test:no-prices-blog": "node --test scripts/no-published-prices-blog.test.mjs",
+    "test:no-published-prices": "node --test scripts/no-published-prices.test.mjs"
   },
   "dependencies": {
     "playwright": "^1.59.1"

@@ -119,10 +119,11 @@ assert.equal(portfolio.gates.businessDriveEvidence, ownerEvidence.status === "ME
     : "business-account-search-complete-partial-current-owner-view-gbp-proof-registered"
   : "business-account-search-complete-current-owner-view-gbp-proof-required");
 assert.equal(expansionIntegrity.summary.checkedPages, 12);
-assert.equal(expansionIntegrity.summary.blockingFindingClasses, 73);
+// 61 since the owner's no-prices decision (2026-11-25) cleared pricing-ranges from all 12 pages.
+assert.equal(expansionIntegrity.summary.blockingFindingClasses, 61);
 assert.equal(expansionIntegrity.summary.provisionalWarningClasses, 12);
 assert.equal(expansionIntegrity.summary.pagesWithHeberKeystone, 12);
-assert.match(portfolio.gates.expansionIntegrity, /^73-blocking-finding-classes/);
+assert.match(portfolio.gates.expansionIntegrity, /^61-blocking-finding-classes/);
 assert.ok(portfolio.prohibited.includes("treating an unmeasured expansion city as zero"));
 assert.ok(portfolio.prohibited.some((rule) => rule.includes("18-city portfolio complete")));
 
