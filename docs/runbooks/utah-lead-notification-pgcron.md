@@ -150,8 +150,20 @@ $check$;
 **Do not treat this as a cutover.** Applying it is a mistake to undo, not a step
 to finish.
 
-1. **Check** with the read-only block above. `already_scheduled=t` means the job
-   exists; `extensions` naming `pg_cron`/`pg_net` means they were enabled.
+1. **Check and write down what you find, before changing anything.** Run the
+   read-only block above: `already_scheduled=t` means a job exists;
+   `extensions` naming `pg_cron`/`pg_net` means they were enabled. Then
+   establish WHICH version ran, because the job name `lead-notification-worker`
+   is shared with the older `20260819000000` file and the cleanup below removes
+   the evidence:
+   ```sql
+   select version from supabase_migrations.schema_migrations
+    where version in ('20260819000000', '20261118000000') order by version;
+   select pg_catalog.to_regclass('public.lead_notification_worker_cron_requests') as v2_ledger,
+          pg_catalog.to_regclass('public.lead_notification_worker_cron_health')   as health_view;
+   ```
+   Only this version creates `lead_notification_worker_cron_requests`. Record
+   the history rows and whether each object exists.
 2. **Unschedule immediately** — while the job exists it is posting the worker
    bearer token into `net.http_request_queue` every fifteen minutes, where
    PUBLIC can read it:
@@ -172,13 +184,9 @@ to finish.
    new token in Vault.** Vault is readable by `service_role`, which is one of
    the two reasons this path is parked. Retire the abandoned
    `lead_notification_worker_token` Vault entry instead of updating it.
-5. **Tell the owner (Ryan) and note it in the Frame Command Center.** Before
-   saying what was applied, check it: the job name `lead-notification-worker`
-   is shared with the older `20260819000000` file, so a scheduled job does not
-   prove this version ran. Read `supabase_migrations.schema_migrations` for
-   `20261118000000`, and look for the objects only this version creates
-   (`public.lead_notification_worker_cron_requests` and
-   `public.lead_notification_worker_cron_health`). If a history row exists, no
+5. **Tell the owner (Ryan) and note it in the Frame Command Center,** using
+   what you recorded in step 1: which history rows existed and which objects
+   were present before cleanup. If a history row for `20261118000000` exists, no
    reviewed runner wrote it, and whoever reconciles migration history needs to
    know. **Do not** delete a history row to "clean up" — a history edit is a
    reviewed action, not an incident fix.
