@@ -7,6 +7,8 @@ name: hook-guards
 #   hook-fixtures   the .claude / .cursor hook fixtures still behave
 #   roof-calculator the roof size calculator publishes no dollar figure
 #                   (owner rule: no prices on a contractor site, 2026-11-25)
+#   blog-no-prices  no blog post publishes a dollar figure, apart from the cited
+#                   third-party figures allowlisted in the test (same owner rule)
 
 on:
   pull_request:
@@ -18,6 +20,8 @@ on:
       - "assets/roof-cost-calculator.js"
       - "pages/roof-cost-calculator.html"
       - "scripts/roof-cost-calculator.test.mjs"
+      - "blog/**"
+      - "scripts/no-published-prices-blog.test.mjs"
       - "package.json"
   workflow_dispatch:
 permissions:
@@ -42,3 +46,13 @@ jobs:
         with:
           node-version: 22
       - run: npm run test:roof-calculator
+  blog-no-prices:
+    name: Blog publishes no price
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1
+        with:
+          node-version: 22
+      - run: npm run test:no-prices-blog
