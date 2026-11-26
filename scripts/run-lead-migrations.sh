@@ -3,33 +3,52 @@
 #   20261027221000_lead_spam_classification.sql
 #   20261027230000_ai_referrer_tagging.sql
 #   20261122230000_leads_intake_zip_city_source.sql
-# Shape and gates follow scripts/run-call-tracking-migrations.sh, with the
-# blocking findings of the 2026-11-26 independent review of the Texas sibling
-# built in (hostile CLI-redirecting environment, digest-before-execution,
-# COMMIT-before-history recovery, trigger/privilege strength, complete
-# migration-list predicates, FETCH_HEAD, xtrace). It never runs `supabase db
-# push`, never repairs history, and never touches any other migration. Only
-# these three files and the remote-history poison guard are archived from the
-# exact release commit into an empty workdir, and every version already recorded
-# in production gets a poison guard, so `migration up --include-all` can only
-# apply these three, in timestamp order, in one guarded run. Preflight and apply
-# are separate processes; receipts are kept in a mode-0700 directory.
+#
+# It never runs `supabase db push`, never repairs history, and never touches any
+# other migration. Only these three files and the remote-history poison guard
+# are archived from the exact release commit into an empty workdir, and every
+# version already recorded in production gets a poison guard, so
+# `migration up --include-all` can only apply these three, in timestamp order,
+# in one guarded run. Preflight and apply are separate processes; receipts and
+# every CLI stderr stream are kept in a mode-0700 directory.
+#
+# ⚠️ PREFLIGHT IS NOT READ-ONLY. `db query --linked` resolves a live database
+# connection before it runs the query over the Management API, and that
+# resolution has project-visible side effects. Verified against supabase/cli
+# v2.113.0 (commit 03880bb1):
+#   * apps/cli/src/legacy/shared/legacy-db-config.layer.ts:101-117 mints a
+#     TEMPORARY POSTGRES LOGIN ROLE via POST /v1/projects/<ref>/cli/login-role
+#     with read_only:false, and prints "Initialising login role..." to stderr;
+#   * the same file, 119-127 and 157-161: from the THIRD pooler connect failure
+#     onward it calls listAllNetworkBans and then deleteNetworkBans — it LISTS
+#     AND REMOVES the project's IPv4 network bans;
+#   * apps/cli/src/legacy/commands/db/query/query.handler.ts:283-289 does this
+#     purely for pre-run parity and then DISCARDS the connection.
+# `db query` exposes no --password flag (apps/cli/src/legacy/commands/db/query/
+# query.command.ts), and this runner refuses SUPABASE_DB_PASSWORD, so the
+# passwordless login-role path is always taken. That is a deliberate trade:
+# holding a database password in the runner's environment is worse. The operator
+# acknowledges these effects through LEAD_MIGRATION_DB_QUERY_SIDE_EFFECT_ACK.
+# `migration up --linked` has no --password flag either, so the same mint
+# happens on the apply step regardless.
 #
 # Usage, from a clean checkout of main:
 #   RELEASE_SHA=<origin/main tip> SUPABASE_BIN=<absolute path to the 2.113.0 CLI> \
 #   LEAD_MIGRATION_EXCLUSIVE_WRITER_ACK=<same SHA> \
+#   LEAD_MIGRATION_DB_QUERY_SIDE_EFFECT_ACK=<same SHA> \
 #   LEAD_MIGRATION_EXECUTION_MODE=preflight|apply \
 #   LEAD_MIGRATION_AUTH_MODE=keychain-profile|injected-token \
 #   scripts/run-lead-migrations.sh
 #
-# ORDER: scripts/run-call-tracking-migrations.sh MUST run before this runner.
-# Its validator accepts only the 36-version baseline plus a prefix of its own
-# two versions, so once a lead target is recorded that sibling can never run
-# again. See docs/runbooks/utah-lead-migrations.md.
+# ORDER: scripts/run-call-tracking-migrations.sh MUST run first. Its validator
+# accepts only the 36-version baseline plus a prefix of its own two versions, so
+# once a lead target is recorded it can never run again. Apply mode here REFUSES
+# to run until both call-tracking versions are recorded; preflight still reports
+# on the bare baseline so the state can be inspected.
 #
-# RECEIPTS CONTAIN CLI DIAGNOSTICS. The receipt directory also ends up holding
-# the linked workdir, including supabase/.temp/pooler-url, and raw CLI stderr.
-# Sanitise before sharing a receipt anywhere.
+# RECEIPTS CONTAIN CLI DIAGNOSTICS AND THE LINKED WORKDIR, including
+# supabase/.temp/pooler-url and raw CLI stderr (the CLI puts server response
+# bodies into login-role errors). Sanitise before sharing a receipt anywhere.
 
 set -euo pipefail
 umask 077
@@ -101,11 +120,7 @@ BASELINE_VERSIONS="$(cat <<'VERSIONS'
 VERSIONS
 )"
 
-# The call-tracking pair applied by scripts/run-call-tracking-migrations.sh. The
-# only accepted remote histories are the 36-version baseline, or that baseline
-# plus BOTH of these (38), in either case plus any already-recorded subset of
-# the three lead targets. One of the two is a hard stop: that is an interrupted
-# call-tracking run, and it must finish through its own runner first.
+# The call-tracking pair applied by scripts/run-call-tracking-migrations.sh.
 CALL_TRACKING_VERSIONS="$(cat <<'VERSIONS'
 20261027200000
 20261027220000
@@ -124,15 +139,23 @@ RELEASE_SHA="${RELEASE_SHA:-}"
 EXECUTION_MODE="${LEAD_MIGRATION_EXECUTION_MODE:-}"
 AUTH_MODE="${LEAD_MIGRATION_AUTH_MODE:-}"
 RECOVER_ACK="${LEAD_MIGRATION_RECOVER_UNRECORDED_AI_REFERRER:-}"
+RECOVER_RECEIPT_DIR="${LEAD_MIGRATION_RECOVER_RECEIPT_DIR:-}"
 
 # --- hostile environment ----------------------------------------------------
-# In CLI 2.113.0 an inherited SUPABASE_PROJECT_ID takes precedence over the
-# linked project-ref file for --linked commands, so a verified link is not by
-# itself proof of which project the CLI will talk to. The same is true of
-# SUPABASE_DB_URL and of anything that moves the CLI's workdir or profile. The
-# runner refuses to start with ANY Supabase or libpq environment variable
-# present beyond SUPABASE_BIN and the two credential variables it manages
-# itself, rather than trying to enumerate one release's precedence rules.
+# Verified against supabase/cli v2.113.0 (commit 03880bb1):
+#   * apps/cli/src/legacy/config/legacy-cli-config.layer.ts:38-80 — with no
+#     --profile flag and no SUPABASE_PROFILE, the CLI falls back to the
+#     PERSISTED ~/.supabase/profile file, and that token may itself be a path to
+#     a viper config file (apps/cli/src/legacy/shared/legacy-profile-load.ts:
+#     101-145). A profile supplies api_url, project_host and pooler_host
+#     (same file, 215-221), so every ref check can agree while the CLI talks to
+#     another endpoint entirely.
+#   * the same layer, 98-126 — an explicit --workdir beats SUPABASE_WORKDIR.
+#   * legacy-cli-config.layer.ts:31-33 and 49-52 — an explicit
+#     `--profile supabase` shadows BOTH the env var and the persisted file even
+#     though `supabase` is the default value, and legacy-profile-load.ts:
+#     106-117 resolves the built-in name without reading any file.
+# So: refuse a hostile environment AND pin --profile/--workdir on every call.
 while IFS= read -r env_name; do
   test -n "$env_name" || continue
   case "$env_name" in
@@ -160,6 +183,8 @@ case "$RELEASE_SHA" in
 esac
 test "${LEAD_MIGRATION_EXCLUSIVE_WRITER_ACK:-}" = "$RELEASE_SHA" || \
   fail 'secure the exclusive migration-writer window and bind its acknowledgement to RELEASE_SHA'
+test "${LEAD_MIGRATION_DB_QUERY_SIDE_EFFECT_ACK:-}" = "$RELEASE_SHA" || \
+  fail 'preflight is NOT read-only: db query --linked mints a temporary postgres login role (POST /v1/projects/<ref>/cli/login-role, read_only:false) and, from the third pooler connect failure onward, lists and DELETES the IPv4 network bans on this project. Read docs/runbooks/utah-lead-migrations.md, then bind LEAD_MIGRATION_DB_QUERY_SIDE_EFFECT_ACK to RELEASE_SHA'
 case "$EXECUTION_MODE" in
   preflight|apply) ;;
   *) fail 'LEAD_MIGRATION_EXECUTION_MODE must be preflight or apply' ;;
@@ -172,19 +197,35 @@ RECOVER_UNRECORDED_T2='false'
 if test -n "$RECOVER_ACK"; then
   test "$RECOVER_ACK" = "$RELEASE_SHA" || \
     fail 'LEAD_MIGRATION_RECOVER_UNRECORDED_AI_REFERRER must be bound to RELEASE_SHA'
+  test -n "$RECOVER_RECEIPT_DIR" || \
+    fail 'recovery requires LEAD_MIGRATION_RECOVER_RECEIPT_DIR: the receipt directory of the run that left 20261027230000 unrecorded'
+  test -d "$RECOVER_RECEIPT_DIR" || fail 'LEAD_MIGRATION_RECOVER_RECEIPT_DIR is not a directory'
   RECOVER_UNRECORDED_T2='true'
 fi
 command -v jq >/dev/null || fail 'jq is required'
 
 # --- the CLI binary, resolved and hashed BEFORE it is ever executed ---------
-# One absolute path, hashed, then used for every invocation including after the
-# cd into the runner workdir. A bare command name is refused outright: it would
-# be resolved through PATH at execution time while `shasum` read something else.
+# One absolute path, every component checked for a symlink, hashed, then used
+# for every invocation. A bare command name is refused outright: it would be
+# resolved through PATH at execution time while `shasum` read something else.
 case "${SUPABASE_BIN:-}" in
   '') fail 'SUPABASE_BIN must name the reviewed executable Supabase CLI' ;;
   /*) ;;
   *) fail 'SUPABASE_BIN must be an absolute path, never a PATH-resolved command name' ;;
 esac
+# Resolve the directory part to its PHYSICAL path (`pwd -P` follows and discards
+# every symlinked component, so the resolved directory contains none), then
+# refuse a symlink as the final component and use that one resolved path for the
+# digest and for every execution. A whole-path symlink ban is not usable here:
+# on macOS /var is itself a symlink to /private/var, so every mktemp path and
+# many install paths would be rejected. Residual, documented in the runbook: if
+# a directory component is re-pointed between the digest and the run, no shell
+# script can detect it — the path is the operator's own and the writer window is
+# exclusive.
+supabase_bin_dir="$(cd "$(dirname "$SUPABASE_BIN")" >/dev/null 2>&1 && pwd -P)" || \
+  fail 'the directory holding SUPABASE_BIN does not exist'
+SUPABASE_BIN="$supabase_bin_dir/$(basename "$SUPABASE_BIN")"
+unset supabase_bin_dir
 test ! -L "$SUPABASE_BIN" || \
   fail 'SUPABASE_BIN must be the reviewed file itself, not a symlink whose target can change'
 test -f "$SUPABASE_BIN" && test -x "$SUPABASE_BIN" || \
@@ -195,12 +236,10 @@ test "$(uname -s)" = 'Darwin' && test "$(uname -m)" = 'arm64' || \
   fail 'the reviewed CLI binary receipt is only valid on macOS arm64'
 test "$(shasum -a 256 "$SUPABASE_BIN" | awk '{print $1}')" = "$CLI_SHA256" || \
   fail 'Supabase CLI binary digest differs from the reviewed official release'
-test "$("$SUPABASE_BIN" --version | head -n 1)" = '2.113.0' || \
-  fail 'Supabase CLI 2.113.0 is required'
 
 # --- the release commit -----------------------------------------------------
 # FETCH_HEAD, not origin/main: the remote-tracking ref can be stale or have been
-# set by hand, while FETCH_HEAD is what this fetch actually received.
+# set by hand, while FETCH_HEAD is what this fetch received.
 git -C "$REPO_ROOT" fetch --quiet origin main
 test "$(git -C "$REPO_ROOT" rev-parse --verify "${RELEASE_SHA}^{commit}")" = "$RELEASE_SHA" || \
   fail 'RELEASE_SHA does not resolve to a commit'
@@ -215,6 +254,27 @@ mkdir -p "$RUNNER_DIR"
 chmod 700 "$RECEIPT_DIR" "$RUNNER_DIR"
 # Printed before anything can mutate, so a crashed run is still recoverable.
 printf 'receipt_dir=%s\nmode=%s\n' "$RECEIPT_DIR" "$EXECUTION_MODE"
+
+# The release is a Bun single-file executable (apps/cli/scripts/build.ts:144-156
+# at v2.113.0 — `bun build --compile`, with no --env control), and Bun loads a
+# dotenv file from the process working directory at runtime. So the CLI is never
+# executed while the working directory is the repository checkout: cd into the
+# private 0700 receipt directory FIRST, before the very first invocation.
+cd "$RUNNER_DIR"
+
+# Every CLI call is pinned to the built-in profile and to this absolute workdir,
+# and every call's stderr is captured in the receipt directory. Nothing from a
+# CLI stream is echoed: the CLI puts server response bodies into login-role
+# errors.
+cli() {
+  local label="$1"
+  shift
+  "$SUPABASE_BIN" --profile supabase --workdir "$RUNNER_DIR" "$@" \
+    2> "$RECEIPT_DIR/cli.${label}.stderr.txt"
+}
+
+cli_version="$("$SUPABASE_BIN" --version 2> "$RECEIPT_DIR/cli.version.stderr.txt" | head -n 1)"
+test "$cli_version" = '2.113.0' || fail 'Supabase CLI 2.113.0 is required'
 
 case "$AUTH_MODE" in
   injected-token)
@@ -232,19 +292,19 @@ case "$AUTH_MODE" in
     ;;
 esac
 
-# Credential-free diagnostic: the CLI's own failure text can echo a token, so
-# only its exit status is reported.
+printf 'side_effects=a temporary postgres login role is minted for every db query --linked and for migration up --linked; on repeated pooler failures the CLI deletes the IPv4 network bans on this project\n'
+
 projects_exit=0
-projects_json="$("$SUPABASE_BIN" --agent no --output-format json projects list 2>/dev/null)" || \
+projects_json="$(cli projects-list --agent no --output-format json projects list)" || \
   projects_exit=$?
 test "$projects_exit" = '0' || \
-  fail "the pinned CLI could not list projects (exit $projects_exit); re-authenticate and retry. No CLI output is reproduced here because it can contain a credential."
+  fail "the pinned CLI could not list projects (exit $projects_exit). Its stderr is in $RECEIPT_DIR/cli.projects-list.stderr.txt and is NOT reproduced here: the CLI puts server response bodies into its errors. Re-authenticate and retry."
 jq -e --arg project "$PROJECT_REF" '
   ([.projects[]? | select(.id == $project)] | length) == 1
 ' <<< "$projects_json" >/dev/null || fail 'the CLI login cannot resolve the exact Utah project'
 unset projects_json
 
-"$SUPABASE_BIN" init --workdir "$RUNNER_DIR" >/dev/null
+cli init init --workdir "$RUNNER_DIR" >/dev/null
 test -f "$RUNNER_DIR/supabase/config.toml" || fail 'the runner workdir has no generated config'
 git -C "$REPO_ROOT" archive --format=tar "$RELEASE_SHA" -- \
   "supabase/migrations/$T1_BASENAME" "supabase/migrations/$T2_BASENAME" \
@@ -264,28 +324,31 @@ test "$(find "$RUNNER_DIR/supabase/migrations" -mindepth 1 -maxdepth 1 -type f -
   | wc -l | tr -d '[:space:]')" = '3' || \
   fail 'the release archive produced something other than the three reviewed targets'
 
-cd "$RUNNER_DIR"
 test ! -e supabase/.temp/project-ref || fail 'runner was linked before validation'
-"$SUPABASE_BIN" link --project-ref "$PROJECT_REF" --yes >/dev/null
+cli link link --project-ref "$PROJECT_REF" --yes >/dev/null
 test "$(cat supabase/.temp/project-ref)" = "$PROJECT_REF" || fail 'runner linked to the wrong project'
 
 baseline_json="$(printf '%s\n' "$BASELINE_VERSIONS" | jq -Rsc 'split("\n") | map(select(length > 0))')"
 call_tracking_json="$(printf '%s\n' "$CALL_TRACKING_VERSIONS" | jq -Rsc 'split("\n") | map(select(length > 0))')"
 
-# Read-only catalog probe, specific to the three targets. Same mechanism as the
-# call-tracking sibling: one catalog-only SELECT through `db query --linked`.
-#   20261027221000  five leads.spam_* columns + two VALID indexes
+# Catalog probe, specific to the three targets, through the one `db query
+# --linked` statement the reviewed rollout permits. The SELECT itself reads only
+# catalogs and two row counts; the CLI's connection resolution around it is what
+# has the side effects documented at the top of this file.
+#   20261027221000  five leads.spam_* columns + two indexes, matched by EXACT
+#                   pg_get_indexdef, valid and ready
 #   20261027230000  leads.ai_referrer, phone_clicks.ai_referrer, the classifier
-#                   and trigger functions, both triggers (existence AND enabled
-#                   + BEFORE INSERT FOR EACH ROW + bound to the reviewed
-#                   function), service_role EXECUTE on the classifier, and NO
-#                   EXECUTE for anon/authenticated on either function
+#                   and trigger functions, both triggers with tgtype EXACTLY 7
+#                   (row-level BEFORE INSERT and nothing else), no WHEN clause,
+#                   bound to the reviewed function and enabled; service_role
+#                   EXECUTE on the classifier; and NO EXECUTE for
+#                   anon/authenticated on either function
 #   20261122230000  leads.zip, leads.city_source
 # Row counts size the lock window: 20261027230000 takes ACCESS EXCLUSIVE on both
 # public.leads and public.phone_clicks (ALTER TABLE) and holds it through its
 # in-transaction backfill. No lock_timeout is set — see the runbook.
 run_catalog_probe() {
-  "$SUPABASE_BIN" --agent no --output-format json db query --linked <<'SQL'
+  cli "db-query-$1" --agent no --output-format json db query --linked <<'SQL'
 select
   (select coalesce(jsonb_agg(version::text order by version::text), '[]'::jsonb)
      from supabase_migrations.schema_migrations) as history,
@@ -303,8 +366,10 @@ select
       join pg_namespace n on n.oid = tc.relnamespace
      where n.nspname = 'public' and tc.relname = 'leads'
        and i.indisvalid and i.indisready
-       and ic.relname in ('leads_spam_unclassified_idx',
-                          'leads_spam_label_created_idx')) as spam_indexes_valid,
+       and pg_get_indexdef(i.indexrelid) in (
+         'CREATE INDEX leads_spam_unclassified_idx ON public.leads USING btree (created_at DESC) WHERE (spam_label IS NULL)',
+         'CREATE INDEX leads_spam_label_created_idx ON public.leads USING btree (spam_label, created_at DESC)'
+       )) as spam_indexes_exact,
   exists (select 1 from information_schema.columns where table_schema = 'public'
            and table_name = 'leads' and column_name = 'ai_referrer') as leads_ai_referrer,
   exists (select 1 from information_schema.columns where table_schema = 'public'
@@ -324,9 +389,8 @@ select
       join pg_namespace fn on fn.oid = p.pronamespace
      where n.nspname = 'public' and not t.tgisinternal
        and t.tgenabled = 'O'
-       and (t.tgtype & 1) = 1
-       and (t.tgtype & 2) = 2
-       and (t.tgtype & 4) = 4
+       and t.tgtype = 7
+       and t.tgqual is null
        and fn.nspname = 'public' and p.proname = 'frame_set_ai_referrer'
        and ((c.relname = 'leads' and t.tgname = 'leads_set_ai_referrer')
          or (c.relname = 'phone_clicks' and t.tgname = 'phone_clicks_set_ai_referrer'))) as ai_referrer_triggers_armed,
@@ -361,21 +425,19 @@ SQL
 # half-applied target without a history row is a hard stop, as is one of the two
 # call-tracking versions.
 #
-# The one exception, and it has to be opted into: 20261027230000 contains an
-# explicit `begin; … commit;`. CLI 2.113.0 executes the file's COMMIT and only
-# then inserts the schema_migrations row, so a failure in that gap leaves the
-# AI-referrer objects present with NO history row. $recover_t2 is the operator's
-# acknowledgement of exactly that state; nothing else about it is relaxed.
+# The one exception, and it has to be opted into with evidence: 20261027230000
+# contains an explicit `begin; … commit;`. CLI 2.113.0 executes the file's COMMIT
+# and only then inserts the schema_migrations row, so a failure in that gap
+# leaves the AI-referrer objects present with NO history row. $recover_t2 is the
+# operator's acknowledgement of exactly that state; nothing else is relaxed, and
+# the FULL strengthened AI-referrer catalog is still required.
 #
 # The `if … then … else … end` wrapper is deliberate. `a and b and .[0] as $s |
 # …` — the shape scripts/run-call-tracking-migrations.sh uses — changed meaning
 # in jq 1.8: `as` now takes the whole `and` chain instead of just `.[0]`, so $s
 # is a boolean and every field read dies with "Cannot index boolean with
 # string". Verified: that shape returns true/false under jq 1.6, 1.7, 1.7.1 and
-# jq-1.7.1-apple, and errors under 1.8.0 and 1.8.1. It fails closed, but it
-# fails closed on EVERY input, so on a jq-1.8 host the runner can never complete
-# and the hard stop reads as production drift. This form behaves identically on
-# all six builds.
+# jq-1.7.1-apple, and errors under 1.8.0 and 1.8.1.
 validate_catalog_state() {
   jq -e --argjson baseline "$baseline_json" --argjson calltracking "$call_tracking_json" \
     --arg t1 "$T1_VERSION" --arg t2 "$T2_VERSION" --arg t3 "$T3_VERSION" \
@@ -388,7 +450,7 @@ validate_catalog_state() {
       | ($s.history | any(.[]; . == $t3)) as $r3
       | ($s.history | any(.[]; . == $calltracking[0])) as $c1
       | ($s.history | any(.[]; . == $calltracking[1])) as $c2
-      | ($r2 or ($recover_t2 and $s.leads_ai_referrer)) as $p2
+      | ($r2 or ($recover_t2 and $r1 and $s.leads_ai_referrer)) as $p2
       | ($c1 == $c2)
       and (($s.history | sort) == (($baseline
             + (if $c1 then $calltracking else [] end)
@@ -397,7 +459,7 @@ validate_catalog_state() {
             + (if $r3 then [$t3] else [] end)) | sort))
       and ($s.spam_columns == (if $r1 then 5 else 0 end))
       and ($s.spam_indexes == (if $r1 then 2 else 0 end))
-      and ($s.spam_indexes_valid == (if $r1 then 2 else 0 end))
+      and ($s.spam_indexes_exact == (if $r1 then 2 else 0 end))
       and ($s.leads_ai_referrer == $p2)
       and ($s.phone_clicks_ai_referrer == $p2)
       and ($s.ai_referrer_function == $p2)
@@ -417,21 +479,35 @@ validate_catalog_state() {
     ' "$1" >/dev/null || fail "catalog state in $1 differs from the reviewed contract"
 }
 
-run_catalog_probe > "$RECEIPT_DIR/catalog.before.json"
+# The COMMIT-before-history state, recognised narrowly: 20261027221000 recorded
+# (migration up applies in timestamp order, so 20261027230000 can only have run
+# after its predecessor was recorded), 20261027230000 NOT recorded, and the FULL
+# strengthened AI-referrer catalog present. 20261122230000 may be recorded or
+# not — a resumed run can have reached it.
+is_unrecorded_t2_state() {
+  jq -e --arg t1 "$T1_VERSION" --arg t2 "$T2_VERSION" '
+    if type != "array" or length != 1 then false else
+    .[0] | . as $s
+    | ($s.history | any(.[]; . == $t1)) as $r1
+    | ($s.history | any(.[]; . == $t2)) as $r2
+    | $r1 and ($r2 | not)
+      and $s.leads_ai_referrer and $s.phone_clicks_ai_referrer
+      and $s.ai_referrer_function and $s.ai_referrer_trigger_function
+      and $s.ai_referrer_triggers == 2 and $s.ai_referrer_triggers_armed == 2
+      and $s.ai_referrer_service_role_execute
+      and ($s.ai_referrer_anon_execute | not)
+      and ($s.ai_referrer_authenticated_execute | not)
+      and ($s.ai_referrer_trigger_anon_execute | not)
+      and ($s.ai_referrer_trigger_authenticated_execute | not)
+    end
+  ' "$1" >/dev/null 2>&1
+}
 
-# Recognise the COMMIT-before-history state before the generic contract rejects
-# it, so the operator gets the one sanctioned recovery instead of a message that
-# reads as production drift.
+run_catalog_probe before > "$RECEIPT_DIR/catalog.before.json"
+
 if test "$RECOVER_UNRECORDED_T2" != 'true'; then
-  if jq -e --arg t2 "$T2_VERSION" '
-       if type != "array" or length != 1 then false else
-       .[0] | . as $s
-       | ($s.history | any(.[]; . == $t2)) as $r2
-       | ($r2 | not) and $s.leads_ai_referrer and $s.phone_clicks_ai_referrer
-         and $s.ai_referrer_function and $s.ai_referrer_trigger_function
-       end
-     ' "$RECEIPT_DIR/catalog.before.json" >/dev/null 2>&1; then
-    fail "20261027230000 is applied but NOT recorded: its objects are all present with no history row. This is the COMMIT-before-history gap (the file contains an explicit begin/commit, so CLI 2.113.0 commits the schema change before it inserts the history row). Sanctioned recovery, and the only one: confirm from the previous run's receipts that migration up reported 20261027230000, then re-run this runner with LEAD_MIGRATION_RECOVER_UNRECORDED_AI_REFERRER set to RELEASE_SHA. Every statement in that migration is idempotent, so the re-apply only adds the missing history row. Never use migration repair."
+  if is_unrecorded_t2_state "$RECEIPT_DIR/catalog.before.json"; then
+    fail "20261027230000 is applied but NOT recorded: 20261027221000 is recorded, the full AI-referrer catalog is present, and there is no history row for 20261027230000. This is the COMMIT-before-history gap (the file contains an explicit begin/commit, so CLI 2.113.0 commits the schema change before it inserts the history row). Sanctioned recovery, and the only one: find the receipt directory of the run that left it this way, confirm its cli.migration-up.stderr.txt names 20261027230000, then re-run with LEAD_MIGRATION_RECOVER_UNRECORDED_AI_REFERRER=RELEASE_SHA and LEAD_MIGRATION_RECOVER_RECEIPT_DIR set to that directory. The replay re-runs the migration's DDL and backfill and RE-TAKES ACCESS EXCLUSIVE on public.leads and public.phone_clicks, so treat it as a second apply window. Never use migration repair."
   fi
 fi
 
@@ -442,14 +518,34 @@ r3="$(jq -r --arg v "$T3_VERSION" '.[0].history | any(.[]; . == $v)' "$RECEIPT_D
 lead_rows="$(jq -er '.[0].lead_rows' "$RECEIPT_DIR/catalog.before.json")"
 phone_click_rows="$(jq -er '.[0].phone_click_rows' "$RECEIPT_DIR/catalog.before.json")"
 matched_json="$(jq -c '.[0].history' "$RECEIPT_DIR/catalog.before.json")"
+call_tracking_recorded="$(jq -r --argjson ct "$call_tracking_json" \
+  '.[0].history | (any(.[]; . == $ct[0]) and any(.[]; . == $ct[1]))' \
+  "$RECEIPT_DIR/catalog.before.json")"
+
+if test "$EXECUTION_MODE" = 'apply' && test "$call_tracking_recorded" != 'true'; then
+  fail 'scripts/run-call-tracking-migrations.sh must be applied first. Its own validator accepts only the 36-version baseline plus a prefix of its two versions, so once a lead target is recorded it can never run again. Finish 20261027200000 + 20261027220000 through that runner, then re-run this one.'
+fi
 
 if test "$RECOVER_UNRECORDED_T2" = 'true'; then
-  test "$r2" = 'false' || \
-    fail 'LEAD_MIGRATION_RECOVER_UNRECORDED_AI_REFERRER is set but 20261027230000 is already recorded; unset it and re-run'
-  jq -e '.[0] | .leads_ai_referrer and .phone_clicks_ai_referrer' \
-    "$RECEIPT_DIR/catalog.before.json" >/dev/null || \
-    fail 'LEAD_MIGRATION_RECOVER_UNRECORDED_AI_REFERRER is set but the AI-referrer objects are not present; unset it and re-run'
-  warn 're-applying 20261027230000 onto present objects to record its missing history row (every statement in it is idempotent)'
+  is_unrecorded_t2_state "$RECEIPT_DIR/catalog.before.json" || \
+    fail 'LEAD_MIGRATION_RECOVER_UNRECORDED_AI_REFERRER is set but the catalog is not in the COMMIT-before-history state (20261027221000 recorded, 20261027230000 unrecorded, full AI-referrer catalog armed). Unset it and re-run.'
+  # The previous attempt has to be the same release, and its own receipt has to
+  # name this target. A failed `migration up` never emits an `applied` list, so
+  # the evidence required is the CLI's stderr for that run plus the run record
+  # this runner writes before it mutates anything.
+  prev_run="$RECOVER_RECEIPT_DIR/run.json"
+  test -f "$prev_run" || \
+    fail "LEAD_MIGRATION_RECOVER_RECEIPT_DIR has no run.json; that is not a receipt directory from this runner"
+  jq -e --arg sha "$RELEASE_SHA" --arg t2 "$T2_BASENAME" '
+    .release_sha == $sha and .mode == "apply" and (.pending | index($t2) != null)
+  ' "$prev_run" >/dev/null || \
+    fail "the previous run recorded in $prev_run is not an apply of this RELEASE_SHA with 20261027230000 pending"
+  prev_stderr="$RECOVER_RECEIPT_DIR/cli.migration-up.stderr.txt"
+  test -f "$prev_stderr" || \
+    fail "$prev_stderr is missing: without the failed run's own CLI stderr there is no evidence that 20261027230000 was the statement that committed"
+  grep -Fq "$T2_VERSION" "$prev_stderr" || \
+    fail "$prev_stderr does not name 20261027230000; the AI-referrer objects did not come from that run"
+  warn "replaying 20261027230000 onto present objects to record its missing history row. Every statement in it is idempotent, but the replay RE-RUNS the DDL and the backfill and RE-TAKES ACCESS EXCLUSIVE on public.leads and public.phone_clicks."
 fi
 
 mkdir -p supabase/reviewed-targets
@@ -474,6 +570,15 @@ else
 fi
 test -n "$pending" || printf 'All three targets are already recorded; postflight checks only.\n'
 
+pending_json="$(printf '%s\n' "$pending" | sed '/^$/d' | sed 's/_.*//' | jq -Rsc 'split("\n") | map(select(length > 0))')"
+pending_files_json="$(printf '%s\n' "$pending" | sed '/^$/d' | jq -Rsc 'split("\n") | map(select(length > 0))')"
+# The run record a later recovery must be able to match, written BEFORE any
+# mutation.
+jq -n --arg sha "$RELEASE_SHA" --arg ref "$PROJECT_REF" --arg mode "$EXECUTION_MODE" \
+  --argjson pending "$pending_files_json" --argjson recover "$RECOVER_UNRECORDED_T2" \
+  '{release_sha: $sha, project_ref: $ref, mode: $mode, pending: $pending, recover_unrecorded_ai_referrer: $recover}' \
+  > "$RECEIPT_DIR/run.json"
+
 jq -r '.[0].history[]' "$RECEIPT_DIR/catalog.before.json" | while IFS= read -r version; do
   test -n "$version" || continue
   cp "$GUARD_PATH" "supabase/migrations/${version}_remote_applied_history_guard.sql"
@@ -495,8 +600,7 @@ LC_ALL=C sort -o "$RECEIPT_DIR/staged-migrations.expected.txt" \
 cmp -s "$RECEIPT_DIR/staged-migrations.txt" "$RECEIPT_DIR/staged-migrations.expected.txt" || \
   fail 'the staged migration set is not exactly one guard per recorded version plus the pending targets'
 
-pending_json="$(printf '%s\n' "$pending" | sed '/^$/d' | sed 's/_.*//' | jq -Rsc 'split("\n") | map(select(length > 0))')"
-"$SUPABASE_BIN" --agent no --output-format json migration list --linked \
+cli migration-list-guarded --agent no --output-format json migration list --linked \
   > "$RECEIPT_DIR/migration-list.guarded.json"
 # The COMPLETE expected set, both directions, no duplicates: an empty list and a
 # list that merely lacks contradictions both fail here.
@@ -513,16 +617,16 @@ jq -e --argjson pending "$pending_json" --argjson matched "$matched_json" '
 ' "$RECEIPT_DIR/migration-list.guarded.json" >/dev/null || \
   fail 'guarded migration list is not the complete matched history plus exactly the pending targets'
 
-run_catalog_probe > "$RECEIPT_DIR/catalog.final-preflight.json"
+run_catalog_probe final-preflight > "$RECEIPT_DIR/catalog.final-preflight.json"
 validate_catalog_state "$RECEIPT_DIR/catalog.final-preflight.json"
 test "$(jq -Sc '.[0] | del(.lead_rows, .phone_click_rows)' "$RECEIPT_DIR/catalog.before.json")" = \
   "$(jq -Sc '.[0] | del(.lead_rows, .phone_click_rows)' "$RECEIPT_DIR/catalog.final-preflight.json")" || \
   fail 'catalog changed between preflight and final preflight'
 
 if test "$EXECUTION_MODE" = 'preflight'; then
-  printf 'release_sha=%s\nproject_ref=%s\nmode=preflight\npending=%s\nlead_rows=%s\nphone_click_rows=%s\nreceipt_dir=%s\n' \
+  printf 'release_sha=%s\nproject_ref=%s\nmode=preflight\npending=%s\nlead_rows=%s\nphone_click_rows=%s\ncall_tracking_recorded=%s\nreceipt_dir=%s\n' \
     "$RELEASE_SHA" "$PROJECT_REF" "$(printf '%s' "$pending" | tr '\n' ' ')" \
-    "$lead_rows" "$phone_click_rows" "$RECEIPT_DIR"
+    "$lead_rows" "$phone_click_rows" "$call_tracking_recorded" "$RECEIPT_DIR"
   printf 'lock_note=20261027230000 holds ACCESS EXCLUSIVE on public.leads (%s rows) and public.phone_clicks (%s rows) through its backfill; no lock_timeout is set, so run off-peak\n' \
     "$lead_rows" "$phone_click_rows"
   jq -c '.[0] | del(.history)' "$RECEIPT_DIR/catalog.before.json"
@@ -531,34 +635,33 @@ fi
 
 if test -n "$pending"; then
   migration_exit=0
-  "$SUPABASE_BIN" --agent no --output-format json \
+  cli migration-up --agent no --output-format json \
     migration up --linked --include-all --yes \
-    > "$RECEIPT_DIR/migration-up.stdout.json" \
-    2> "$RECEIPT_DIR/migration-up.stderr.txt" || migration_exit=$?
+    > "$RECEIPT_DIR/migration-up.stdout.json" || migration_exit=$?
   # A grep read error is a hard stop, not a clean scan.
   guard_scan=0
   grep -Fq 'remote_applied_history_guard.sql' \
     "$RECEIPT_DIR/migration-up.stdout.json" \
-    "$RECEIPT_DIR/migration-up.stderr.txt" || guard_scan=$?
+    "$RECEIPT_DIR/cli.migration-up.stderr.txt" || guard_scan=$?
   case "$guard_scan" in
     0) fail 'a remote-history poison guard was selected' ;;
     1) ;;
     *) fail "could not scan the CLI output for a selected poison guard (grep exit $guard_scan)" ;;
   esac
   test "$migration_exit" = '0' || \
-    fail 'migration up failed; retain receipts and do not repair history. If 20261027230000 reported as applied, see the COMMIT-before-history recovery in docs/runbooks/utah-lead-migrations.md'
+    fail "migration up failed; retain receipts and do not repair history. If $RECEIPT_DIR/cli.migration-up.stderr.txt names 20261027230000, see the COMMIT-before-history recovery in docs/runbooks/utah-lead-migrations.md and pass this directory as LEAD_MIGRATION_RECOVER_RECEIPT_DIR"
   applied="$(jq -r '.applied[]? | split("/")[-1]' "$RECEIPT_DIR/migration-up.stdout.json")"
   test "$applied" = "$pending" || fail 'migration up did not apply exactly the pending targets in order'
 fi
 
-run_catalog_probe > "$RECEIPT_DIR/catalog.postflight.json"
+run_catalog_probe postflight > "$RECEIPT_DIR/catalog.postflight.json"
 jq -e --arg t1 "$T1_VERSION" --arg t2 "$T2_VERSION" --arg t3 "$T3_VERSION" \
   '.[0].history | any(.[]; . == $t1) and any(.[]; . == $t2) and any(.[]; . == $t3)' \
   "$RECEIPT_DIR/catalog.postflight.json" >/dev/null || \
-  fail 'postflight history lacks a target. If the catalog shows the AI-referrer objects present, this is the COMMIT-before-history gap; see the recovery in docs/runbooks/utah-lead-migrations.md'
+  fail "postflight history lacks a target. If the catalog shows the AI-referrer objects present, this is the COMMIT-before-history gap; see the recovery in docs/runbooks/utah-lead-migrations.md and pass $RECEIPT_DIR as LEAD_MIGRATION_RECOVER_RECEIPT_DIR"
 RECOVER_UNRECORDED_T2='false'
 validate_catalog_state "$RECEIPT_DIR/catalog.postflight.json"
-jq -e '.[0] | .spam_columns == 5 and .spam_indexes == 2 and .spam_indexes_valid == 2
+jq -e '.[0] | .spam_columns == 5 and .spam_indexes == 2 and .spam_indexes_exact == 2
   and .leads_ai_referrer and .phone_clicks_ai_referrer
   and .ai_referrer_function and .ai_referrer_trigger_function
   and .ai_referrer_triggers == 2 and .ai_referrer_triggers_armed == 2
@@ -568,9 +671,9 @@ jq -e '.[0] | .spam_columns == 5 and .spam_indexes == 2 and .spam_indexes_valid 
   and (.ai_referrer_trigger_authenticated_execute | not)
   and .leads_zip and .leads_city_source' \
   "$RECEIPT_DIR/catalog.postflight.json" >/dev/null || \
-  fail 'postflight catalog is missing, disabled, or over-granted on an object the three targets create'
+  fail 'postflight catalog is missing, disabled, mis-shaped, or over-granted on an object the three targets create'
 
-"$SUPABASE_BIN" --agent no --output-format json migration list --linked \
+cli migration-list-after --agent no --output-format json migration list --linked \
   > "$RECEIPT_DIR/migration-list.after.json"
 expected_json="$(jq -cn --argjson matched "$matched_json" --argjson pending "$pending_json" \
   '($matched + $pending) | sort')"

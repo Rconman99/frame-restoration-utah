@@ -23,6 +23,15 @@ name: hook-guards
 #                   It lives here rather than in compliance-gate.yml because that
 #                   workflow is digest-pinned by
 #                   scripts/audit-client-ip-probe-contract.mjs.
+#   lead-migration-probe
+#                   the REAL catalog-probe SELECT inside
+#                   scripts/run-lead-migrations.sh, and the runner's own jq
+#                   validator and COMMIT-before-history detector extracted from
+#                   it, run against a throwaway postgres:16-alpine carrying the
+#                   real Utah baselines — including the state where
+#                   20261027230000 is applied with its history row missing. The
+#                   stub-driven suite discards that SQL, so without this job it
+#                   is never executed anywhere.
 #   lead-migration-rollback
 #                   the rollback SQL printed in
 #                   docs/runbooks/utah-lead-migrations.md really does leave the
@@ -49,6 +58,7 @@ on:
       - "supabase/migrations/20261122230000_leads_intake_zip_city_source.sql"
       - "supabase/migration-baselines/remote-applied-history-guard.sql"
       - "supabase/tests/lead_migrations_rollback*.sql"
+      - "scripts/test-lead-migration-probe.mjs"
       - "supabase/migrations/20260401000003_baseline_leads.sql"
       - "supabase/migrations/20260401000004_baseline_phone_clicks.sql"
       - "supabase/migrations/20260510_add_attribution_columns.sql"
@@ -117,6 +127,28 @@ jobs:
         with:
           node-version: 22
       - run: npm run test:lead-migration-runner
+  lead-migration-probe:
+    name: Real catalog probe SQL and validator agree on real Postgres
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_PASSWORD: synthetic-ci-only
+        ports: ['5432:5432']
+        options: --health-cmd pg_isready --health-interval 5s --health-timeout 5s --health-retries 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1
+        with:
+          node-version: 22
+      - name: Execute the probe SELECT and the runner's own jq programs
+        env:
+          PGHOST: localhost
+          PGUSER: postgres
+          PGPASSWORD: synthetic-ci-only
+        run: node scripts/test-lead-migration-probe.mjs
   lead-migration-rollback:
     name: Documented lead-migration rollback leaves catalog and history agreeing
     runs-on: ubuntu-latest
