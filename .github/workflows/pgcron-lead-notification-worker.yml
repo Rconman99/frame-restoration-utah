@@ -4,9 +4,10 @@ name: pg_cron lead-notification worker contract
 # supabase/migrations/20261118000000_pgcron_lead_notification_worker_v2.sql — the
 # pg_cron + pg_net replacement for the 15-minute GitHub schedule in
 # .github/workflows/lead-notification-worker.yml. That migration has never been
-# applied anywhere, and its health view is the stated go/no-go for cutting the
-# GitHub schedule, so the scoping and the privilege shape of that view need a
-# test rather than a hand read.
+# applied anywhere and is PARKED as of 2026-11-26: do not apply it, and do not
+# cut the GitHub schedule on the strength of its health view. See
+# docs/runbooks/utah-lead-notification-pgcron.md. This contract stays so the
+# file's scoping and privilege shape cannot drift while it sits in the tree.
 #
 # Same pattern as ai-referrer-tagging.yml and voice-screening.yml, and
 # standalone for the same reason: compliance-gate.yml is a digest-pinned

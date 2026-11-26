@@ -238,8 +238,8 @@ begin
     raise exception 'ASSERT FAILED: an unrelated pg_net response leaked into the health view';
   end if;
 
-  -- A non-2xx for this worker is reported unhealthy; the go/no-go must be able
-  -- to fail as well as pass.
+  -- A non-2xx for this worker is reported unhealthy; the view must be able to
+  -- report failure as well as success.
   update net._http_response set status_code = 503 where id = v_recorded;
   if (select healthy from public.lead_notification_worker_cron_health) then
     raise exception 'ASSERT FAILED: a 503 for this worker is reported healthy';

@@ -69,14 +69,14 @@ begin
     execute 'create extension if not exists pg_cron';
   elsif to_regclass('cron.job') is null then
     raise exception
-      'pg_cron is neither installed nor available: enable it in Database > Extensions before applying';
+      'pg_cron is not installed. This migration is PARKED (2026-11-26): do not enable extensions to make it apply. See docs/runbooks/utah-lead-notification-pgcron.md';
   end if;
 
   if exists (select 1 from pg_available_extensions where name = 'pg_net') then
     execute 'create extension if not exists pg_net';
   elsif to_regclass('net._http_response') is null then
     raise exception
-      'pg_net is neither installed nor available: enable it in Database > Extensions before applying';
+      'pg_net is not installed. This migration is PARKED (2026-11-26): do not enable extensions to make it apply. See docs/runbooks/utah-lead-notification-pgcron.md';
   end if;
 end
 $lead_notification_worker_extensions$;

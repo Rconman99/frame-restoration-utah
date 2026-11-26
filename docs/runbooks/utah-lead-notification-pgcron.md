@@ -166,13 +166,22 @@ to finish.
    drop table if exists public.lead_notification_worker_cron_requests;
    ```
 4. **Treat the token as exposed** if the job ran even once: it sat in a
-   PUBLIC-readable queue. Rotate `lead_notification_worker_token` in Vault, the
-   `LEAD_NOTIFICATION_WORKER_TOKEN` GitHub secret and the edge-function secret
-   together, and redeploy `lead-notification-worker`.
-5. **Tell the owner (Ryan) and note it in the Frame Command Center.** A history
-   row for `20261118000000` now exists that no reviewed runner wrote; whoever
-   reconciles migration history needs to know. **Do not** delete that history row
-   to "clean up" — a history edit is a reviewed action, not an incident fix.
+   PUBLIC-readable queue. Rotate the two credentials that are actually in use,
+   the `LEAD_NOTIFICATION_WORKER_TOKEN` GitHub secret and the edge-function
+   secret, together, and redeploy `lead-notification-worker`. **Do not put the
+   new token in Vault.** Vault is readable by `service_role`, which is one of
+   the two reasons this path is parked. Retire the abandoned
+   `lead_notification_worker_token` Vault entry instead of updating it.
+5. **Tell the owner (Ryan) and note it in the Frame Command Center.** Before
+   saying what was applied, check it: the job name `lead-notification-worker`
+   is shared with the older `20260819000000` file, so a scheduled job does not
+   prove this version ran. Read `supabase_migrations.schema_migrations` for
+   `20261118000000`, and look for the objects only this version creates
+   (`public.lead_notification_worker_cron_requests` and
+   `public.lead_notification_worker_cron_health`). If a history row exists, no
+   reviewed runner wrote it, and whoever reconciles migration history needs to
+   know. **Do not** delete a history row to "clean up" — a history edit is a
+   reviewed action, not an incident fix.
 6. **Leave the GitHub schedule alone.** It is the mechanism; it should have been
    running the whole time.
 
