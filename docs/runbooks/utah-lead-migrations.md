@@ -44,7 +44,17 @@ different-lane review before first use.
    Supabase Studio action, CLI process or automation may apply, repair, revert,
    squash or otherwise change migration history or the public schema. Bind
    `LEAD_MIGRATION_EXCLUSIVE_WRITER_ACK` to the exact `RELEASE_SHA`.
-5. **`jq`** on PATH.
+5. **`jq`** on PATH. Any version from 1.6 to 1.8.1 — this runner's catalog
+   validator was checked against 1.6, 1.7, 1.7.1, jq-1.7.1-apple, 1.8.0 and
+   1.8.1 and behaves identically on all six.
+   ⚠️ **`scripts/run-call-tracking-migrations.sh` is not jq-1.8 safe.** Its
+   validator uses `… and .[0] as $s | …`, whose binding changed in jq 1.8, so
+   under 1.8.x it dies with `Cannot index boolean with string "history"` and
+   hard-stops with *"catalog state … differs from the reviewed contract"* on
+   **every** input — which reads as production drift but is a jq incompatibility.
+   Homebrew's current `jq` is 1.8.x. If the call-tracking pair still needs
+   applying, either run it on a jq-1.7 host or fix that validator first. This is
+   reported, not fixed here.
 6. **Accepted starting history** (anything else is a hard stop): the reviewed
    36-version baseline, or that baseline plus **both** call-tracking versions
    (`20261027200000` + `20261027220000`), in either case plus any already

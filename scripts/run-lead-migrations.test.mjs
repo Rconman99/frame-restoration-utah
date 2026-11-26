@@ -389,6 +389,16 @@ test("the runner never reaches for a forbidden write path and owns its env names
     assert.equal(runnerSource.includes(name), false, `${name} must not be reused`);
   }
   assert.ok(runnerSource.includes("migration up --linked --include-all --yes"));
+  // `a and b and .[0] as $s | …` changed meaning in jq 1.8: `as` takes the
+  // whole `and` chain, so every field read dies with "Cannot index boolean with
+  // string" and the runner can never complete. Keep the `if … else … end` form,
+  // which behaves the same on jq 1.6 through 1.8.1.
+  assert.equal(
+    /and\s+\.\[0\]\s+as\s+\$/.test(executable),
+    false,
+    "the catalog validator must not rely on jq's ambiguous `and … as` binding",
+  );
+  assert.ok(runnerSource.includes('if type != "array" or length != 1 then false else'));
   assert.ok(runnerSource.includes("set -euo pipefail"));
   assert.ok(runnerSource.includes("umask 077"));
   // Only the three reviewed targets, never the other two pending Utah files.

@@ -251,11 +251,21 @@ SQL
 # all-absent when its version is not recorded and all-present when it is; a
 # half-applied target without a history row is a hard stop, as is one of the two
 # call-tracking versions.
+# The `if … then … else … end` wrapper is deliberate. `a and b and .[0] as $s |
+# …` — the shape scripts/run-call-tracking-migrations.sh uses — changed meaning
+# in jq 1.8: `as` now takes the whole `and` chain instead of just `.[0]`, so $s
+# is a boolean and every field read dies with "Cannot index boolean with
+# string". Verified: that shape returns true/false under jq 1.6, 1.7, 1.7.1 and
+# jq-1.7.1-apple, and errors under 1.8.0 and 1.8.1. It fails closed, but it
+# fails closed on EVERY input, so on a jq-1.8 host the runner can never complete
+# and the hard stop reads as production drift. This form behaves identically on
+# all six builds.
 validate_catalog_state() {
   jq -e --argjson baseline "$baseline_json" --argjson calltracking "$call_tracking_json" \
     --arg t1 "$T1_VERSION" --arg t2 "$T2_VERSION" --arg t3 "$T3_VERSION" '
-      type == "array" and length == 1
-      and .[0] as $s
+      if type != "array" or length != 1 then false else
+      .[0]
+      | . as $s
       | ($s.history | any(.[]; . == $t1)) as $r1
       | ($s.history | any(.[]; . == $t2)) as $r2
       | ($s.history | any(.[]; . == $t3)) as $r3
@@ -279,6 +289,7 @@ validate_catalog_state() {
       and ($s.leads_city_source == $r3)
       and ($s.lead_rows | type == "number")
       and ($s.phone_click_rows | type == "number")
+      end
     ' "$1" >/dev/null || fail "catalog state in $1 differs from the reviewed contract"
 }
 
