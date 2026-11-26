@@ -10,15 +10,20 @@
  * executable on PATH, so each fail-closed gate can be driven to its hard stop
  * and the happy paths can be driven end to end offline.
  *
- * Two environment facts the runner checks cannot be produced on a Linux CI
- * runner, so the harness stubs exactly those two and nothing else:
+ * The stub is STRICT: it dispatches on the exact argument vector, logs every
+ * invocation, records the exact staged migration set at mutation time, and
+ * exits 90 on anything it was not told to expect. Flag drift in the runner
+ * therefore fails the suite instead of being absorbed by a wildcard.
+ *
+ * Three environment facts a Linux CI runner cannot reproduce are stubbed and
+ * nothing else:
  *   - `uname` reports Darwin/arm64 (the reviewed CLI binary receipt is macOS
  *     arm64 only);
  *   - `shasum` answers with the pinned official CLI digest for the one stub CLI
  *     path, and computes a real SHA-256 for every other input — the migration
- *     bytes, the poison guard, the history baselines.
- * A passing run is not proof that production is in any particular state, and is
- * not a substitute for the live read-only preflight.
+ *     bytes, the poison guard and the history baselines are digested for real;
+ *   - `grep` can be told to return an I/O error for the poison-guard scan, so
+ *     the "a failed scan is not a clean scan" gate is exercised.
  */
 
 import assert from "node:assert/strict";
@@ -71,18 +76,26 @@ function catalog(options = {}) {
     ...TARGETS.filter((target) => recorded.has(target.version)).map((t) => t.version),
   ].sort();
   const t1 = recorded.has(TARGETS[0].version);
-  const t2 = recorded.has(TARGETS[1].version);
+  // `aiPresent` lets a case describe the COMMIT-before-history state: the
+  // AI-referrer objects present while 20261027230000 is not recorded.
+  const t2 = options.aiPresent ?? recorded.has(TARGETS[1].version);
   const t3 = recorded.has(TARGETS[2].version);
   return [{
     history,
     spam_columns: t1 ? 5 : 0,
     spam_indexes: t1 ? 2 : 0,
+    spam_indexes_valid: t1 ? 2 : 0,
     leads_ai_referrer: t2,
     phone_clicks_ai_referrer: t2,
     ai_referrer_function: t2,
     ai_referrer_trigger_function: t2,
     ai_referrer_triggers: t2 ? 2 : 0,
+    ai_referrer_triggers_armed: t2 ? 2 : 0,
     ai_referrer_service_role_execute: t2,
+    ai_referrer_anon_execute: false,
+    ai_referrer_authenticated_execute: false,
+    ai_referrer_trigger_anon_execute: false,
+    ai_referrer_trigger_authenticated_execute: false,
     leads_zip: t3,
     leads_city_source: t3,
     lead_rows: options.leadRows ?? 412,
@@ -102,35 +115,18 @@ function pendingFor(recorded) {
   return TARGETS.filter((target) => !recorded.includes(target.version));
 }
 
+function guardNames(history) {
+  return history.map((version) => `${version}_remote_applied_history_guard.sql`);
+}
+
 // ---------------------------------------------------------------------------
-// Harness
+// Stubs
 // ---------------------------------------------------------------------------
 
 const STUB_CLI = `#!/bin/sh
 set -eu
 state="$STUB_STATE_DIR"
-case "$*" in
-  *--version*) cat "$state/version.txt"; exit 0 ;;
-esac
-mode=''
-workdir=''
-project=''
-prev=''
-for arg in "$@"; do
-  case "$arg" in
-    projects) mode='projects' ;;
-    init) mode='init' ;;
-    link) mode='link' ;;
-    query) mode='query' ;;
-    list) test "$mode" = 'projects' || mode='list' ;;
-    up) mode='up' ;;
-  esac
-  case "$prev" in
-    --workdir) workdir="$arg" ;;
-    --project-ref) project="$arg" ;;
-  esac
-  prev="$arg"
-done
+printf '%s\\n' "$*" >> "$state/argv.log"
 next_fixture() {
   prefix="$1"
   counter="$state/$prefix.count"
@@ -144,18 +140,45 @@ next_fixture() {
   done
   cat "$file"
 }
-case "$mode" in
-  projects) cat "$state/projects.json" ;;
-  init) mkdir -p "$workdir/supabase"; cp "$state/config.toml" "$workdir/supabase/config.toml" ;;
-  link) mkdir -p supabase/.temp; cat "$state/linked-ref.txt" > supabase/.temp/project-ref ;;
-  query) cat >/dev/null; next_fixture catalog ;;
-  list) next_fixture list ;;
-  up)
+case "$*" in
+  '--version')
+    cat "$state/version.txt"
+    ;;
+  '--agent no --output-format json projects list')
+    exit_code=$(cat "$state/projects.exit.txt")
+    if [ "$exit_code" != '0' ]; then
+      printf 'stub supabase: refusing, token=%s\\n' "would-be-leaked" >&2
+      exit "$exit_code"
+    fi
+    cat "$state/projects.json"
+    ;;
+  'init --workdir '*)
+    workdir=$(printf '%s' "$*" | sed 's/^init --workdir //')
+    mkdir -p "$workdir/supabase"
+    cp "$state/config.toml" "$workdir/supabase/config.toml"
+    ;;
+  'link --project-ref ${PROJECT_REF} --yes')
+    mkdir -p supabase/.temp
+    cat "$state/linked-ref.txt" > supabase/.temp/project-ref
+    ;;
+  '--agent no --output-format json db query --linked')
+    cat >/dev/null
+    next_fixture catalog
+    ;;
+  '--agent no --output-format json migration list --linked')
+    next_fixture list
+    ;;
+  '--agent no --output-format json migration up --linked --include-all --yes')
+    find supabase/migrations -maxdepth 1 -type f -name '*.sql' -exec basename {} ';' \\
+      | LC_ALL=C sort > "$state/staged.txt"
     cat "$state/up.stdout.json"
     cat "$state/up.stderr.txt" >&2
     exit "$(cat "$state/up.exit.txt")"
     ;;
-  *) echo "stub supabase: unexpected invocation: $*" >&2; exit 90 ;;
+  *)
+    printf 'stub supabase: unexpected invocation: %s\\n' "$*" >&2
+    exit 90
+    ;;
 esac
 `;
 
@@ -187,6 +210,24 @@ const STUB_SECURITY = `#!/bin/sh
 exit "$(cat "$STUB_STATE_DIR/security.exit.txt")"
 `;
 
+// Delegates to the real grep, except that the poison-guard scan can be told to
+// return an I/O error so the runner's "a failed scan is not a clean scan" gate
+// can be driven.
+const STUB_GREP = `#!/bin/sh
+if [ -n "\${STUB_GREP_GUARD_EXIT:-}" ]; then
+  for arg in "$@"; do
+    if [ "$arg" = 'remote_applied_history_guard.sql' ]; then
+      exit "$STUB_GREP_GUARD_EXIT"
+    fi
+  done
+fi
+for candidate in /usr/bin/grep /bin/grep; do
+  if [ -x "$candidate" ]; then exec "$candidate" "$@"; fi
+done
+echo 'no real grep found' >&2
+exit 127
+`;
+
 function git(cwd, ...args) {
   const result = spawnSync("git", args, {
     cwd,
@@ -211,9 +252,22 @@ function writeStub(dir, name, body, mode = 0o755) {
   return file;
 }
 
+/** process.env minus anything the runner is required to refuse. */
+function cleanBaseEnv() {
+  const base = {};
+  for (const [key, value] of Object.entries(process.env)) {
+    if (/^SUPABASE_/.test(key) || /^PG/.test(key) || key === "PS4" || key === "SHELLOPTS") {
+      continue;
+    }
+    base[key] = value;
+  }
+  return base;
+}
+
 /**
- * Builds a throwaway world and runs the real runner in it.
- * Returns { status, stdout, stderr }.
+ * Builds a throwaway world and runs the real runner in it. Returns the exit
+ * status, both streams, the stub's exact invocation log, the exact staged
+ * migration set seen at mutation time, and the retained receipt files.
  */
 function runCase(options = {}) {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), "lead-runner-case-"));
@@ -246,20 +300,20 @@ function runCase(options = {}) {
   git(work, "push", "--quiet", "origin", "main");
   git(work, "fetch", "--quiet", "origin", "main");
   if (options.advanceHead) {
-    // A commit that exists locally but is ahead of origin/main.
+    // A commit that exists locally but is ahead of what a fetch receives.
     fs.writeFileSync(path.join(work, "local-only.txt"), "ahead of origin/main\n");
     git(work, "add", "-A");
     git(work, "commit", "-m", "local only");
   }
   const tip = git(work, "rev-parse", "HEAD");
 
-  // Stub CLI + the two environment facts a Linux runner cannot reproduce.
   fs.writeFileSync(path.join(state, "version.txt"), `${options.cliVersion ?? "2.113.0"}\n`);
   fs.writeFileSync(path.join(state, "config.toml"), "# runner-only generated config\n");
   fs.writeFileSync(
     path.join(state, "projects.json"),
     `${JSON.stringify(options.projects ?? { projects: [{ id: PROJECT_REF }] })}\n`,
   );
+  fs.writeFileSync(path.join(state, "projects.exit.txt"), `${options.projectsExit ?? 0}\n`);
   fs.writeFileSync(
     path.join(state, "linked-ref.txt"),
     `${options.linkedRef ?? PROJECT_REF}\n`,
@@ -281,37 +335,79 @@ function runCase(options = {}) {
   }
 
   const cliName = options.cliName ?? "supabase";
-  const cliPath = path.join(bin, cliName);
+  let cliPath = path.join(bin, cliName);
+  writeStub(bin, cliName, STUB_CLI.replace("${PROJECT_REF}", PROJECT_REF), options.cliMode ?? 0o755);
+  if (options.cliSymlink) {
+    const linkPath = path.join(bin, `${cliName}-link`);
+    fs.symlinkSync(cliPath, linkPath);
+    cliPath = linkPath;
+  }
+  writeStub(bin, "uname", STUB_UNAME);
+  writeStub(bin, "shasum", STUB_SHASUM);
+  writeStub(bin, "security", STUB_SECURITY);
+  writeStub(bin, "grep", STUB_GREP);
+
   const env = {
-    ...process.env,
+    ...cleanBaseEnv(),
     PATH: `${bin}${path.delimiter}${process.env.PATH}`,
     TMPDIR: root,
     STUB_STATE_DIR: state,
-    STUB_CLI_PATH: cliPath,
+    STUB_CLI_PATH: path.join(bin, cliName),
     STUB_CLI_DIGEST: options.cliDigest ?? CLI_DIGEST,
     RELEASE_SHA: options.releaseSha ?? tip,
-    SUPABASE_BIN: options.supabaseBin === null ? "" : (options.supabaseBin ?? cliPath),
+    SUPABASE_BIN: options.supabaseBin === null
+      ? ""
+      : (options.supabaseBin ?? cliPath),
     LEAD_MIGRATION_EXECUTION_MODE: options.executionMode ?? "preflight",
     LEAD_MIGRATION_AUTH_MODE: options.authMode ?? "injected-token",
     LEAD_MIGRATION_EXCLUSIVE_WRITER_ACK: options.ack ?? options.releaseSha ?? tip,
+    ...(options.extraEnv ?? {}),
   };
+  if (options.supabaseBinRelative) env.SUPABASE_BIN = `bin/${cliName}`;
   if (options.unsetAck) delete env.LEAD_MIGRATION_EXCLUSIVE_WRITER_ACK;
+  if (options.recoverAck !== undefined) {
+    env.LEAD_MIGRATION_RECOVER_UNRECORDED_AI_REFERRER = options.recoverAck === true
+      ? (options.releaseSha ?? tip)
+      : options.recoverAck;
+  }
   if (env.LEAD_MIGRATION_AUTH_MODE === "injected-token" && options.accessToken !== null) {
     env.SUPABASE_ACCESS_TOKEN = options.accessToken ?? "stub-token-not-a-real-credential";
   } else if (options.accessToken) {
     env.SUPABASE_ACCESS_TOKEN = options.accessToken;
-  } else {
-    delete env.SUPABASE_ACCESS_TOKEN;
+  }
+  if (options.grepGuardExit !== undefined) {
+    env.STUB_GREP_GUARD_EXIT = String(options.grepGuardExit);
   }
 
-  writeStub(bin, cliName, STUB_CLI, options.cliMode ?? 0o755);
-  writeStub(bin, "uname", STUB_UNAME);
-  writeStub(bin, "shasum", STUB_SHASUM);
-  writeStub(bin, "security", STUB_SECURITY);
+  const result = spawnSync("bash", [...(options.bashArgs ?? []), runner], {
+    cwd: work,
+    encoding: "utf8",
+    env,
+  });
+  const stdout = result.stdout ?? "";
 
-  const result = spawnSync("bash", [runner], { cwd: work, encoding: "utf8", env });
+  const argvLogPath = path.join(state, "argv.log");
+  const argv = fs.existsSync(argvLogPath)
+    ? fs.readFileSync(argvLogPath, "utf8").split("\n").filter((line) => line.length > 0)
+    : [];
+  const stagedPath = path.join(state, "staged.txt");
+  const staged = fs.existsSync(stagedPath)
+    ? fs.readFileSync(stagedPath, "utf8").split("\n").filter((line) => line.length > 0)
+    : null;
+
+  // Keep the receipts before the throwaway world goes away.
+  const receipts = {};
+  const receiptDir = stdout.match(/^receipt_dir=(.+)$/m)?.[1];
+  if (receiptDir && fs.existsSync(receiptDir)) {
+    for (const entry of fs.readdirSync(receiptDir, { withFileTypes: true })) {
+      if (entry.isFile()) {
+        receipts[entry.name] = fs.readFileSync(path.join(receiptDir, entry.name), "utf8");
+      }
+    }
+  }
+
   fs.rmSync(root, { recursive: true, force: true });
-  return { status: result.status, stdout: result.stdout ?? "", stderr: result.stderr ?? "" };
+  return { status: result.status, stdout, stderr: result.stderr ?? "", argv, staged, receipts };
 }
 
 /** Preflight with no target recorded: the ordinary first run. */
@@ -331,7 +427,7 @@ function expectHardStop(result, fragment) {
 }
 
 // ---------------------------------------------------------------------------
-// Pinned constants
+// Pinned constants and shape
 // ---------------------------------------------------------------------------
 
 test("the pinned baselines are the digests of the runner's own embedded lists", () => {
@@ -365,6 +461,52 @@ test("each reviewed target and the poison guard are pinned to their release byte
   assert.match(runnerSource, new RegExp(`GUARD_SHA256='${guard}'`));
 });
 
+test("only 20261027230000 carries an explicit transaction, which is why only it needs recovery", () => {
+  const withTransaction = TARGETS.filter((target) => {
+    const sql = fs.readFileSync(
+      path.join(repoRoot, `supabase/migrations/${target.basename}`),
+      "utf8",
+    );
+    const statements = sql.split("\n").filter((line) => !line.trimStart().startsWith("--"));
+    return statements.some((line) => /^\s*(begin|commit)\s*;/i.test(line));
+  });
+  assert.deepEqual(
+    withTransaction.map((t) => t.version),
+    ["20261027230000"],
+    "the COMMIT-before-history recovery path is scoped to the one target that commits itself",
+  );
+});
+
+test("the runbook's rollback blocks are exactly the ones the rollback contract runs", () => {
+  const transactions = (source) =>
+    [...source.matchAll(/^begin;$\n([\s\S]*?)^commit;$/gm)]
+      .map((match) =>
+        match[1]
+          .split("\n")
+          .map((line) => line.replace(/\s+/g, " ").trim())
+          .filter((line) => line.length > 0 && !line.startsWith("--"))
+          .join("\n")
+      );
+  const runbook = transactions(
+    fs.readFileSync(path.join(repoRoot, "docs/runbooks/utah-lead-migrations.md"), "utf8"),
+  );
+  const contract = transactions(
+    fs.readFileSync(path.join(repoRoot, "supabase/tests/lead_migrations_rollback.sql"), "utf8"),
+  );
+  assert.equal(runbook.length, 3, "the runbook must document one rollback per target");
+  assert.deepEqual(
+    contract,
+    runbook,
+    "the verified rollback and the documented rollback have drifted apart",
+  );
+  // Each block drops its objects AND removes its history row, in one
+  // transaction: catalog and history can never be left disagreeing.
+  for (const [index, version] of TARGETS.map((t) => t.version).reverse().entries()) {
+    assert.match(runbook[index], new RegExp(`schema_migrations where version = '${version}'`));
+    assert.match(runbook[index], /drop (column if exists|trigger if exists|index if exists|function if exists)/);
+  }
+});
+
 test("the runner never reaches for a forbidden write path and owns its env names", () => {
   // Executable lines only: the header comment names the forbidden paths on
   // purpose, to say the runner does not use them.
@@ -372,13 +514,24 @@ test("the runner never reaches for a forbidden write path and owns its env names
     .split("\n")
     .filter((line) => !line.trimStart().startsWith("#"))
     .join("\n");
+  // Every subcommand the runner actually hands the CLI, with line
+  // continuations joined, so a forbidden path named inside a diagnostic string
+  // is not mistaken for one the runner runs.
+  const invocations = [...runnerSource.replace(/\\\n\s*/g, " ")
+    .matchAll(/"\$SUPABASE_BIN"([^\n|>]*)/g)].map((match) => match[1]);
+  assert.ok(invocations.length >= 5, "no CLI invocations found to inspect");
   for (const forbidden of ["db push", "migration repair", "db reset", "db dump"]) {
-    assert.equal(executable.includes(forbidden), false, `runner runs ${forbidden}`);
+    assert.equal(
+      invocations.some((invocation) => invocation.includes(forbidden)),
+      false,
+      `runner runs ${forbidden}`,
+    );
   }
   for (const name of [
     "LEAD_MIGRATION_EXECUTION_MODE",
     "LEAD_MIGRATION_EXCLUSIVE_WRITER_ACK",
     "LEAD_MIGRATION_AUTH_MODE",
+    "LEAD_MIGRATION_RECOVER_UNRECORDED_AI_REFERRER",
   ]) {
     assert.ok(runnerSource.includes(name), `${name} missing`);
   }
@@ -389,6 +542,8 @@ test("the runner never reaches for a forbidden write path and owns its env names
     assert.equal(runnerSource.includes(name), false, `${name} must not be reused`);
   }
   assert.ok(runnerSource.includes("migration up --linked --include-all --yes"));
+  assert.ok(runnerSource.includes("set -euo pipefail"));
+  assert.ok(runnerSource.includes("umask 077"));
   // `a and b and .[0] as $s | …` changed meaning in jq 1.8: `as` takes the
   // whole `and` chain, so every field read dies with "Cannot index boolean with
   // string" and the runner can never complete. Keep the `if … else … end` form,
@@ -399,11 +554,70 @@ test("the runner never reaches for a forbidden write path and owns its env names
     "the catalog validator must not rely on jq's ambiguous `and … as` binding",
   );
   assert.ok(runnerSource.includes('if type != "array" or length != 1 then false else'));
-  assert.ok(runnerSource.includes("set -euo pipefail"));
-  assert.ok(runnerSource.includes("umask 077"));
   // Only the three reviewed targets, never the other two pending Utah files.
   for (const excluded of ["20261111160000", "20261118000000"]) {
     assert.equal(runnerSource.includes(excluded), false, `${excluded} must not be in scope`);
+  }
+});
+
+// ---------------------------------------------------------------------------
+// Hostile environment
+// ---------------------------------------------------------------------------
+
+test("any CLI-redirecting environment variable is refused before anything runs", () => {
+  for (
+    const name of [
+      "SUPABASE_PROJECT_ID",
+      "SUPABASE_DB_URL",
+      "SUPABASE_DB_PASSWORD",
+      "SUPABASE_WORKDIR",
+      "SUPABASE_PROFILE",
+      "SUPABASE_CONFIG",
+      "PGHOST",
+      "PGDATABASE",
+      "PGSERVICE",
+      "PGUSER",
+    ]
+  ) {
+    const result = runCase({
+      ...pristinePreflight(),
+      extraEnv: { [name]: name === "SUPABASE_PROJECT_ID" ? "wroaxatalhzslxkfmpse" : "x" },
+    });
+    expectHardStop(result, new RegExp(`unset ${name} before running`));
+    assert.deepEqual(result.argv, [], `${name} was refused only after invoking the CLI`);
+  }
+  // The two the runner manages itself are not refused.
+  const ok = runCase(pristinePreflight());
+  assert.equal(ok.status, 0, ok.stderr);
+});
+
+// Newer bash builds (Debian's bash 5.2, and so the CI runner) refuse to import
+// PS4 from the environment at all, while the bash the runner actually targets —
+// macOS /bin/bash 3.2 — does import it. Drive the gate where it can be driven
+// and assert its presence where it cannot.
+const BASH_IMPORTS_PS4 = spawnSync("bash", ["-c", 'printf %s "${PS4:-}"'], {
+  encoding: "utf8",
+  env: { ...process.env, PS4: "SENTINEL" },
+}).stdout === "SENTINEL";
+
+test("shell tracing and a custom PS4 are refused", () => {
+  expectHardStop(
+    runCase({ ...pristinePreflight(), bashArgs: ["-x"] }),
+    /shell tracing is on/,
+  );
+  assert.ok(
+    /case "\$\{PS4:-\+ \}" in/.test(runnerSource),
+    "the PS4 gate must accept only bash's own default",
+  );
+  if (BASH_IMPORTS_PS4) {
+    expectHardStop(
+      runCase({ ...pristinePreflight(), extraEnv: { PS4: "$(id)" } }),
+      /unset PS4/,
+    );
+  } else {
+    // This bash drops an inherited PS4, so a clean run must still pass.
+    const ok = runCase({ ...pristinePreflight(), extraEnv: { PS4: "$(id)" } });
+    assert.equal(ok.status, 0, ok.stderr);
   }
 });
 
@@ -423,17 +637,31 @@ test("RELEASE_SHA must be a full lowercase 40-character commit", () => {
   );
 });
 
-test("RELEASE_SHA must be the exact current origin/main tip", () => {
-  expectHardStop(
-    runCase({ ...pristinePreflight(), advanceHead: true }),
-    /RELEASE_SHA is not the exact current origin\/main tip/,
+test("RELEASE_SHA is compared against what the fetch received, not a trusted ref", () => {
+  const result = runCase({ ...pristinePreflight(), advanceHead: true });
+  expectHardStop(result, /RELEASE_SHA is not the main tip this fetch received/);
+  assert.ok(
+    runnerSource.includes("'FETCH_HEAD^{commit}'"),
+    "the tip comparison must use FETCH_HEAD",
   );
 });
 
-test("SUPABASE_BIN must name an executable CLI", () => {
+test("SUPABASE_BIN must be one absolute, non-symlink, executable path", () => {
   expectHardStop(
     runCase({ ...pristinePreflight(), supabaseBin: null }),
     /SUPABASE_BIN must name the reviewed executable/,
+  );
+  expectHardStop(
+    runCase({ ...pristinePreflight(), supabaseBin: "supabase" }),
+    /must be an absolute path, never a PATH-resolved command name/,
+  );
+  expectHardStop(
+    runCase({ ...pristinePreflight(), supabaseBinRelative: true }),
+    /must be an absolute path, never a PATH-resolved command name/,
+  );
+  expectHardStop(
+    runCase({ ...pristinePreflight(), cliSymlink: true }),
+    /not a symlink whose target can change/,
   );
   expectHardStop(
     runCase({ ...pristinePreflight(), cliMode: 0o644 }),
@@ -452,7 +680,7 @@ test("the exclusive-writer acknowledgement must equal RELEASE_SHA", () => {
   );
 });
 
-test("execution mode and auth mode are closed enumerations", () => {
+test("execution mode, auth mode and the recovery ack are closed enumerations", () => {
   expectHardStop(
     runCase({ ...pristinePreflight(), executionMode: "yolo" }),
     /LEAD_MIGRATION_EXECUTION_MODE must be preflight or apply/,
@@ -464,6 +692,10 @@ test("execution mode and auth mode are closed enumerations", () => {
   expectHardStop(
     runCase({ ...pristinePreflight(), authMode: "anonymous" }),
     /LEAD_MIGRATION_AUTH_MODE must be injected-token or keychain-profile/,
+  );
+  expectHardStop(
+    runCase({ ...pristinePreflight(), recoverAck: SHA }),
+    /RECOVER_UNRECORDED_AI_REFERRER must be bound to RELEASE_SHA/,
   );
 });
 
@@ -489,7 +721,7 @@ test("injected-token mode needs a token and keychain-profile mode forbids one", 
 });
 
 // ---------------------------------------------------------------------------
-// Platform and binary gates
+// Platform, binary and identity gates
 // ---------------------------------------------------------------------------
 
 test("the reviewed CLI receipt is refused off macOS arm64", () => {
@@ -503,19 +735,23 @@ test("the reviewed CLI receipt is refused off macOS arm64", () => {
   );
 });
 
-test("only Supabase CLI 2.113.0, not supabase-go, and only the reviewed digest", () => {
-  expectHardStop(
-    runCase({ ...pristinePreflight(), cliVersion: "2.112.0" }),
-    /Supabase CLI 2\.113\.0 is required/,
+test("the binary is hashed before it is ever executed", () => {
+  const badDigest = runCase({ ...pristinePreflight(), cliDigest: "f".repeat(64) });
+  expectHardStop(badDigest, /binary digest differs from the reviewed official release/);
+  assert.deepEqual(
+    badDigest.argv,
+    [],
+    "the CLI must not be executed, not even --version, before its digest is verified",
   );
+  const wrongPlatform = runCase({ ...pristinePreflight(), unameS: "Linux" });
+  assert.deepEqual(wrongPlatform.argv, []);
   expectHardStop(
     runCase({ ...pristinePreflight(), cliName: "supabase-go" }),
     /supabase-go compatibility binary is forbidden/,
   );
-  expectHardStop(
-    runCase({ ...pristinePreflight(), cliDigest: "f".repeat(64) }),
-    /binary digest differs from the reviewed official release/,
-  );
+  const wrongVersion = runCase({ ...pristinePreflight(), cliVersion: "2.112.0" });
+  expectHardStop(wrongVersion, /Supabase CLI 2\.113\.0 is required/);
+  assert.deepEqual(wrongVersion.argv, ["--version"]);
 });
 
 test("the CLI login must resolve exactly the Utah project, and link must hit it", () => {
@@ -530,6 +766,17 @@ test("the CLI login must resolve exactly the Utah project, and link must hit it"
   expectHardStop(
     runCase({ ...pristinePreflight(), linkedRef: "wroaxatalhzslxkfmpse" }),
     /runner linked to the wrong project/,
+  );
+});
+
+test("a failed projects list reports its status without reproducing CLI output", () => {
+  const result = runCase({ ...pristinePreflight(), projectsExit: 7 });
+  expectHardStop(result, /could not list projects \(exit 7\)/);
+  assert.match(result.stderr, /No CLI output is reproduced here because it can contain a credential/);
+  assert.equal(
+    result.stderr.includes("would-be-leaked"),
+    false,
+    "the CLI's own failure text must not reach the operator's terminal",
   );
 });
 
@@ -561,13 +808,17 @@ test("release bytes of every target and of the poison guard are verified", () =>
 // Remote-history and catalog gates
 // ---------------------------------------------------------------------------
 
+function catalogCase(rows, pendingVersions) {
+  return {
+    catalogs: [rows, rows],
+    lists: [migrationList(rows, pendingVersions ?? TARGETS.map((t) => t.version))],
+  };
+}
+
 test("an unreviewed remote history is a hard stop", () => {
   const rows = catalog({ extraHistory: ["20261118000000"] });
   expectHardStop(
-    runCase({
-      catalogs: [rows, rows],
-      lists: [migrationList(rows, TARGETS.map((t) => t.version))],
-    }),
+    runCase(catalogCase(rows)),
     /catalog state in .*catalog\.before\.json differs/,
   );
 });
@@ -576,10 +827,7 @@ test("one of the two call-tracking versions is a hard stop", () => {
   for (const version of CALL_TRACKING) {
     const rows = catalog({ extraHistory: [version] });
     expectHardStop(
-      runCase({
-        catalogs: [rows, rows],
-        lists: [migrationList(rows, TARGETS.map((t) => t.version))],
-      }),
+      runCase(catalogCase(rows)),
       /catalog state in .*catalog\.before\.json differs/,
     );
   }
@@ -590,56 +838,86 @@ test("a half-applied target without its history row is a hard stop", () => {
     const override of [
       { spam_columns: 3 },
       { spam_indexes: 1 },
-      { leads_ai_referrer: true },
-      { phone_clicks_ai_referrer: true },
-      { ai_referrer_function: true },
-      { ai_referrer_trigger_function: true },
-      { ai_referrer_triggers: 1 },
-      { ai_referrer_service_role_execute: true },
+      { spam_indexes_valid: 1 },
       { leads_zip: true },
       { leads_city_source: true },
+      { ai_referrer_triggers: 1 },
+      { ai_referrer_service_role_execute: true },
     ]
   ) {
     const rows = catalog({ overrides: override });
     expectHardStop(
-      runCase({
-        catalogs: [rows, rows],
-        lists: [migrationList(rows, TARGETS.map((t) => t.version))],
-      }),
+      runCase(catalogCase(rows)),
       /catalog state in .*catalog\.before\.json differs/,
     );
   }
 });
 
-test("a recorded target whose objects are missing is a hard stop", () => {
-  const recorded = [TARGETS[0].version];
-  const rows = catalog({ recorded, overrides: { spam_indexes: 0 } });
-  expectHardStop(
-    runCase({
-      catalogs: [rows, rows],
-      lists: [migrationList(rows, pendingFor(recorded).map((t) => t.version))],
-    }),
-    /catalog state in .*catalog\.before\.json differs/,
-  );
+test("a recorded target whose objects are missing, disabled or over-granted is a hard stop", () => {
+  const recorded = TARGETS.map((t) => t.version);
+  const pending = [];
+  for (
+    const override of [
+      { spam_indexes: 0 },
+      { spam_indexes_valid: 1 }, // an INVALID index passes an existence check
+      { ai_referrer_triggers_armed: 1 }, // a DISABLED trigger passes an existence check
+      { ai_referrer_triggers_armed: 0 },
+      { ai_referrer_anon_execute: true }, // EXECUTE granted via PUBLIC
+      { ai_referrer_authenticated_execute: true },
+      { ai_referrer_trigger_anon_execute: true },
+      { ai_referrer_trigger_authenticated_execute: true },
+      { ai_referrer_service_role_execute: false },
+    ]
+  ) {
+    const rows = catalog({ recorded, overrides: override });
+    expectHardStop(
+      runCase(catalogCase(rows, pending)),
+      /catalog state in .*catalog\.before\.json differs/,
+    );
+  }
 });
 
-test("the guarded migration list must be the matched history plus exactly the pending targets", () => {
+test("the guarded migration list must be the COMPLETE matched history plus exactly the pending targets", () => {
   const rows = catalog();
   const pending = TARGETS.map((t) => t.version);
+
   const remoteOnly = migrationList(rows, pending);
   remoteOnly.migrations.push({ local: "", remote: "20261118000000" });
   expectHardStop(
     runCase({ catalogs: [rows, rows], lists: [remoteOnly] }),
-    /guarded migration list is not the matched history/,
+    /guarded migration list is not the complete matched history/,
   );
+
   expectHardStop(
     runCase({ catalogs: [rows, rows], lists: [migrationList(rows, pending.slice(0, 2))] }),
-    /guarded migration list is not the matched history/,
+    /guarded migration list is not the complete matched history/,
   );
-  const extraLocal = migrationList(rows, [...pending, "20261111160000"]);
+
   expectHardStop(
-    runCase({ catalogs: [rows, rows], lists: [extraLocal] }),
-    /guarded migration list is not the matched history/,
+    runCase({ catalogs: [rows, rows], lists: [migrationList(rows, [...pending, "20261111160000"])] }),
+    /guarded migration list is not the complete matched history/,
+  );
+
+  // An empty list must not pass.
+  expectHardStop(
+    runCase({ catalogs: [rows, rows], lists: [{ migrations: [] }] }),
+    /guarded migration list is not the complete matched history/,
+  );
+
+  // A list that omits a recorded version must not pass, even with no contradiction.
+  const short = migrationList(rows, pending);
+  short.migrations.splice(0, 1);
+  expectHardStop(
+    runCase({ catalogs: [rows, rows], lists: [short] }),
+    /guarded migration list is not the complete matched history/,
+  );
+
+  // Duplicates must not pass.
+  const duplicated = migrationList(rows, pending);
+  duplicated.migrations.push({ ...duplicated.migrations[0] });
+  expectHardStop(
+    runCase({ catalogs: [rows, rows], lists: [duplicated] }),
+    /guarded migration list is not the complete matched history/,
   );
 });
 
@@ -653,8 +931,7 @@ test("a catalog that moves between preflight and final preflight is a hard stop"
     }),
     /catalog state in .*catalog\.final-preflight\.json differs|catalog changed between preflight/,
   );
-  // Same history, different object state: caught by the explicit comparison.
-  const drifted = catalog({ overrides: {} });
+  const drifted = catalog();
   drifted[0].lead_rows = 500;
   const ok = runCase({
     catalogs: [before, drifted],
@@ -664,12 +941,94 @@ test("a catalog that moves between preflight and final preflight is a hard stop"
 });
 
 // ---------------------------------------------------------------------------
-// Happy paths
+// COMMIT-before-history recovery
+// ---------------------------------------------------------------------------
+
+test("AI-referrer objects present with no history row stop with the sanctioned recovery", () => {
+  const rows = catalog({ aiPresent: true });
+  const result = runCase(catalogCase(rows));
+  expectHardStop(result, /20261027230000 is applied but NOT recorded/);
+  assert.match(result.stderr, /COMMIT-before-history gap/);
+  assert.match(result.stderr, /LEAD_MIGRATION_RECOVER_UNRECORDED_AI_REFERRER/);
+  assert.match(result.stderr, /Never use migration repair/);
+});
+
+test("a history insert that fails after the file's own COMMIT lands in exactly that state", () => {
+  // migration up applies 20261027221000, then 20261027230000 commits itself and
+  // the history insert fails: the run dies, and the catalog is left with the
+  // AI-referrer objects present and unrecorded.
+  const before = catalog();
+  const afterPartial = catalog({ recorded: [TARGETS[0].version], aiPresent: true });
+  const failed = runCase({
+    executionMode: "apply",
+    catalogs: [before, before, afterPartial],
+    lists: [migrationList(before, TARGETS.map((t) => t.version))],
+    up: { applied: ["supabase/migrations/20261027221000_lead_spam_classification.sql"] },
+    upStderr: "ERROR: could not record 20261027230000 in supabase_migrations.schema_migrations\n",
+    upExit: 1,
+  });
+  expectHardStop(failed, /migration up failed; retain receipts and do not repair history/);
+  assert.match(failed.stderr, /COMMIT-before-history recovery/);
+
+  // The next preflight recognises the state rather than reading as drift.
+  const nextPreflight = runCase(
+    catalogCase(afterPartial, [TARGETS[1].version, TARGETS[2].version]),
+  );
+  expectHardStop(nextPreflight, /20261027230000 is applied but NOT recorded/);
+});
+
+test("the recovery opt-in re-applies the idempotent target and records it", () => {
+  const unrecorded = catalog({ recorded: [TARGETS[0].version], aiPresent: true });
+  const pendingVersions = [TARGETS[1].version, TARGETS[2].version];
+  const preflight = runCase({
+    ...catalogCase(unrecorded, pendingVersions),
+    recoverAck: true,
+  });
+  assert.equal(preflight.status, 0, preflight.stderr);
+  assert.match(preflight.stderr, /re-applying 20261027230000 onto present objects/);
+  assert.match(
+    preflight.stdout,
+    /pending=20261027230000_ai_referrer_tagging\.sql 20261122230000_leads_intake_zip_city_source\.sql/,
+  );
+
+  const after = catalog({ recorded: TARGETS.map((t) => t.version) });
+  const applied = runCase({
+    executionMode: "apply",
+    recoverAck: true,
+    catalogs: [unrecorded, unrecorded, after],
+    lists: [migrationList(unrecorded, pendingVersions), migrationList(after, [])],
+    up: {
+      applied: [
+        "supabase/migrations/20261027230000_ai_referrer_tagging.sql",
+        "supabase/migrations/20261122230000_leads_intake_zip_city_source.sql",
+      ],
+    },
+  });
+  assert.equal(applied.status, 0, applied.stderr);
+  assert.match(applied.stdout, /mode=apply/);
+});
+
+test("the recovery opt-in is refused when the state does not call for it", () => {
+  const recordedRows = catalog({ recorded: TARGETS.map((t) => t.version) });
+  expectHardStop(
+    runCase({ ...catalogCase(recordedRows, []), recoverAck: true }),
+    /20261027230000 is already recorded; unset it/,
+  );
+  const absentRows = catalog();
+  expectHardStop(
+    runCase({ ...catalogCase(absentRows), recoverAck: true }),
+    /AI-referrer objects are not present; unset it/,
+  );
+});
+
+// ---------------------------------------------------------------------------
+// Happy paths, exact staging and exact CLI flags
 // ---------------------------------------------------------------------------
 
 test("preflight on a pristine baseline reports three pending targets and the lock sizing", () => {
   const result = runCase(pristinePreflight());
   assert.equal(result.status, 0, result.stderr);
+  assert.match(result.stdout.split("\n")[0], /^receipt_dir=/);
   assert.match(result.stdout, /mode=preflight/);
   assert.match(
     result.stdout,
@@ -677,23 +1036,65 @@ test("preflight on a pristine baseline reports three pending targets and the loc
   );
   assert.match(result.stdout, /lead_rows=412/);
   assert.match(result.stdout, /phone_click_rows=1308/);
-  assert.match(result.stdout, /ACCESS EXCLUSIVE on public\.leads \(412 rows\) and public\.phone_clicks \(1308 rows\)/);
+  assert.match(
+    result.stdout,
+    /ACCESS EXCLUSIVE on public\.leads \(412 rows\) and public\.phone_clicks \(1308 rows\)/,
+  );
+  assert.match(result.stdout, /no lock_timeout is set, so run off-peak/);
   assert.equal(result.stdout.includes("history"), false);
+
+  // Exact flags, in order, and nothing else.
+  assert.deepEqual(result.argv, [
+    "--version",
+    "--agent no --output-format json projects list",
+    `init --workdir ${result.stdout.match(/^receipt_dir=(.+)$/m)[1]}/runner`,
+    `link --project-ref ${PROJECT_REF} --yes`,
+    "--agent no --output-format json db query --linked",
+    "--agent no --output-format json migration list --linked",
+    "--agent no --output-format json db query --linked",
+  ]);
+  assert.equal(result.staged, null, "preflight must not reach the mutation");
+
+  // Receipts retained, and the staged-set receipt agrees with itself.
+  for (
+    const name of [
+      "catalog.before.json",
+      "catalog.final-preflight.json",
+      "migration-list.guarded.json",
+      "staged-migrations.txt",
+      "staged-migrations.expected.txt",
+    ]
+  ) {
+    assert.ok(result.receipts[name], `missing receipt ${name}`);
+  }
+  assert.equal(
+    result.receipts["staged-migrations.txt"],
+    result.receipts["staged-migrations.expected.txt"],
+  );
+  assert.deepEqual(
+    result.receipts["staged-migrations.txt"].split("\n").filter(Boolean).sort(),
+    [...guardNames(BASELINE), ...TARGETS.map((t) => t.basename)].sort(),
+  );
+  assert.equal(result.receipts["migration-up.stdout.json"], undefined);
 });
 
 test("preflight accepts the call-tracking baseline and an already-recorded subset", () => {
   const recorded = [TARGETS[0].version, TARGETS[2].version];
   const rows = catalog({ callTracking: true, recorded });
   const pending = pendingFor(recorded);
-  const result = runCase({
-    catalogs: [rows, rows],
-    lists: [migrationList(rows, pending.map((t) => t.version))],
-  });
+  const result = runCase(catalogCase(rows, pending.map((t) => t.version)));
   assert.equal(result.status, 0, result.stderr);
   assert.match(result.stdout, /pending=20261027230000_ai_referrer_tagging\.sql\s/);
+  assert.deepEqual(
+    result.receipts["staged-migrations.txt"].split("\n").filter(Boolean).sort(),
+    [
+      ...guardNames([...BASELINE, ...CALL_TRACKING, ...recorded].sort()),
+      TARGETS[1].basename,
+    ].sort(),
+  );
 });
 
-test("apply applies exactly the pending targets in timestamp order", () => {
+test("apply stages exactly the guarded set and applies the pending targets in order", () => {
   const before = catalog();
   const after = catalog({ recorded: TARGETS.map((t) => t.version), leadRows: 413 });
   const pending = TARGETS.map((t) => t.basename);
@@ -708,7 +1109,30 @@ test("apply applies exactly the pending targets in timestamp order", () => {
   });
   assert.equal(result.status, 0, result.stderr);
   assert.match(result.stdout, /mode=apply/);
-  assert.match(result.stdout, /applied=20261027221000_lead_spam_classification\.sql 20261027230000_ai_referrer_tagging\.sql 20261122230000_leads_intake_zip_city_source\.sql/);
+  assert.match(
+    result.stdout,
+    /applied=20261027221000_lead_spam_classification\.sql 20261027230000_ai_referrer_tagging\.sql 20261122230000_leads_intake_zip_city_source\.sql/,
+  );
+  assert.match(result.stdout, /row_count_warning=0/);
+  assert.match(result.stdout, /receipts_contain_cli_diagnostics=1/);
+
+  // The exact file set the CLI saw at mutation time: one guard per recorded
+  // version, plus the three pending targets, and nothing else.
+  assert.deepEqual(
+    [...result.staged].sort(),
+    [...guardNames(BASELINE), ...pending].sort(),
+  );
+  assert.equal(result.staged.length, BASELINE.length + 3);
+
+  assert.deepEqual(result.argv.slice(-4), [
+    "--agent no --output-format json db query --linked",
+    "--agent no --output-format json migration up --linked --include-all --yes",
+    "--agent no --output-format json db query --linked",
+    "--agent no --output-format json migration list --linked",
+  ]);
+  for (const name of ["migration-up.stdout.json", "migration-up.stderr.txt", "catalog.postflight.json", "migration-list.after.json"]) {
+    assert.ok(result.receipts[name] !== undefined, `missing receipt ${name}`);
+  }
 });
 
 test("apply is a verified no-op when all three targets are already recorded", () => {
@@ -722,6 +1146,11 @@ test("apply is a verified no-op when all three targets are already recorded", ()
   assert.equal(result.status, 0, result.stderr);
   assert.match(result.stdout, /All three targets are already recorded; postflight checks only\./);
   assert.match(result.stdout, /mode=apply/);
+  assert.equal(result.staged, null, "a no-op run must not invoke the mutation");
+  assert.equal(
+    result.argv.includes("--agent no --output-format json migration up --linked --include-all --yes"),
+    false,
+  );
 });
 
 // ---------------------------------------------------------------------------
@@ -739,19 +1168,32 @@ test("a failed migration up stops without repairing history", () => {
     upExit: 1,
   });
   expectHardStop(result, /migration up failed; retain receipts and do not repair history/);
+  assert.match(result.stdout, /^receipt_dir=/m);
 });
 
-test("a selected poison guard is a hard stop", () => {
+test("a selected poison guard is a hard stop, and a failed scan is not a clean scan", () => {
   const before = catalog();
-  const result = runCase({
+  const base = {
     executionMode: "apply",
     catalogs: [before, before, before],
     lists: [migrationList(before, TARGETS.map((t) => t.version))],
-    up: { applied: ["supabase/migrations/20260610_remote_applied_history_guard.sql"] },
-    upStderr: "UTAH_REMOTE_HISTORY_GUARD_SELECTED\n",
-    upExit: 1,
+  };
+  expectHardStop(
+    runCase({
+      ...base,
+      up: { applied: ["supabase/migrations/20260610_remote_applied_history_guard.sql"] },
+      upStderr: "UTAH_REMOTE_HISTORY_GUARD_SELECTED\n",
+      upExit: 1,
+    }),
+    /remote-history poison guard was selected/,
+  );
+  const scanError = runCase({
+    ...base,
+    up: { applied: [] },
+    upExit: 0,
+    grepGuardExit: 2,
   });
-  expectHardStop(result, /remote-history poison guard was selected/);
+  expectHardStop(scanError, /could not scan the CLI output for a selected poison guard \(grep exit 2\)/);
 });
 
 test("migration up must report exactly the pending targets", () => {
@@ -766,44 +1208,55 @@ test("migration up must report exactly the pending targets", () => {
   expectHardStop(result, /did not apply exactly the pending targets in order/);
 });
 
-test("postflight requires every object, both row counts and a fully matched list", () => {
+test("postflight requires every object armed, the complete list, and reads a row drop as a delete", () => {
   const before = catalog();
+  const recorded = TARGETS.map((t) => t.version);
   const pendingPaths = TARGETS.map((t) => `supabase/migrations/${t.basename}`);
   const applyCase = (after, lists) => runCase({
     executionMode: "apply",
     catalogs: [before, before, after],
-    lists: [migrationList(before, TARGETS.map((t) => t.version)), ...lists],
+    lists: [migrationList(before, recorded), ...lists],
     up: { applied: pendingPaths },
   });
 
-  const missingObject = catalog({ recorded: TARGETS.map((t) => t.version) });
-  missingObject[0].ai_referrer_triggers = 1;
+  const disabledTrigger = catalog({ recorded, overrides: { ai_referrer_triggers_armed: 1 } });
   expectHardStop(
-    applyCase(missingObject, [migrationList(missingObject, [])]),
+    applyCase(disabledTrigger, [migrationList(disabledTrigger, [])]),
     /catalog state in .*catalog\.postflight\.json differs/,
   );
 
-  const lostLeads = catalog({ recorded: TARGETS.map((t) => t.version), leadRows: 400 });
+  const publicExecute = catalog({ recorded, overrides: { ai_referrer_anon_execute: true } });
   expectHardStop(
-    applyCase(lostLeads, [migrationList(lostLeads, [])]),
-    /leads lost rows during the migration/,
+    applyCase(publicExecute, [migrationList(publicExecute, [])]),
+    /catalog state in .*catalog\.postflight\.json differs/,
   );
 
-  const lostClicks = catalog({
-    recorded: TARGETS.map((t) => t.version),
-    phoneClickRows: 1000,
-  });
+  const invalidIndex = catalog({ recorded, overrides: { spam_indexes_valid: 1 } });
   expectHardStop(
-    applyCase(lostClicks, [migrationList(lostClicks, [])]),
-    /phone_clicks lost rows during the migration/,
+    applyCase(invalidIndex, [migrationList(invalidIndex, [])]),
+    /catalog state in .*catalog\.postflight\.json differs/,
   );
 
-  const after = catalog({ recorded: TARGETS.map((t) => t.version) });
+  const after = catalog({ recorded });
   const unmatched = migrationList(after, []);
   unmatched.migrations.push({ local: "20261111160000", remote: "" });
   expectHardStop(
     applyCase(after, [unmatched]),
-    /final migration list is not fully matched/,
+    /final migration list is not the complete expected version set/,
+  );
+
+  const shortFinal = migrationList(after, []);
+  shortFinal.migrations.splice(0, 1);
+  expectHardStop(
+    applyCase(after, [shortFinal]),
+    /final migration list is not the complete expected version set/,
+  );
+
+  const duplicatedFinal = migrationList(after, []);
+  duplicatedFinal.migrations.push({ ...duplicatedFinal.migrations[0] });
+  expectHardStop(
+    applyCase(after, [duplicatedFinal]),
+    /final migration list is not the complete expected version set/,
   );
 
   const missingHistoryRow = catalog({ recorded: [TARGETS[0].version, TARGETS[1].version] });
@@ -811,4 +1264,15 @@ test("postflight requires every object, both row counts and a fully matched list
     applyCase(missingHistoryRow, [migrationList(missingHistoryRow, [])]),
     /postflight history lacks a target/,
   );
+
+  // A row count that fell after a committed, recorded, fully matched apply is a
+  // concurrent delete — reported as exactly that, and NOT as a failed migration.
+  const fewerLeads = catalog({ recorded, leadRows: 400, phoneClickRows: 1200 });
+  const warned = applyCase(fewerLeads, [migrationList(fewerLeads, [])]);
+  assert.equal(warned.status, 0, warned.stderr);
+  assert.match(warned.stdout, /row_count_warning=1/);
+  assert.match(warned.stderr, /public\.leads fell from 412 to 400 rows/);
+  assert.match(warned.stderr, /NOT a failed migration/);
+  assert.match(warned.stderr, /public\.phone_clicks fell from 1308 to 1200 rows/);
+  assert.equal(warned.stderr.includes("Hard stop"), false);
 });

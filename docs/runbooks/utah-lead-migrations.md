@@ -30,21 +30,35 @@ different-lane review before first use.
 1. **Merged release.** `RELEASE_SHA` is the full 40-character `origin/main` tip,
    not a branch head, preview or dirty worktree. The runner refuses anything
    else and refuses a SHA that is not exactly the current tip.
-2. **The pinned CLI.** Official Supabase CLI **2.113.0**, macOS **arm64**, binary
-   SHA-256 `ad4957e507ffc178fa27dd9256eb666f34bade172058b66e97f230413564494a`.
-   2.112.0 is forbidden (its generated Management API schema rejects valid
-   offset timestamps during `link`), as is the bundled internal `supabase-go`
-   compatibility binary.
-3. **Sign-in.** Either the Mac's Supabase CLI Keychain profile
+2. **The pinned CLI, named by one absolute path.** Official Supabase CLI
+   **2.113.0**, macOS **arm64**, binary SHA-256
+   `ad4957e507ffc178fa27dd9256eb666f34bade172058b66e97f230413564494a`. 2.112.0 is
+   forbidden (its generated Management API schema rejects valid offset timestamps
+   during `link`), as is the bundled internal `supabase-go` compatibility binary.
+   `SUPABASE_BIN` must be an **absolute path** and must not be a symlink: a bare
+   command name would be resolved through `PATH` at execution time while
+   `shasum` hashed something else, and a symlink's target can change between the
+   hash and the run. The runner hashes the binary **before it executes it at
+   all**, `--version` included.
+3. **A clean environment.** The runner refuses to start if any `SUPABASE_*`
+   variable other than `SUPABASE_BIN`, `SUPABASE_ACCESS_TOKEN` and
+   `SUPABASE_NO_KEYRING` is set, if any `PG*` variable is set, if shell tracing
+   is on, or if `PS4` was inherited. This is not hygiene theatre: in CLI 2.113.0
+   an inherited `SUPABASE_PROJECT_ID` takes precedence over the linked
+   project-ref file for `--linked` commands, so a *verified* link is not by
+   itself proof of which project the CLI will talk to. `SUPABASE_DB_URL`,
+   `SUPABASE_WORKDIR` and `SUPABASE_PROFILE` redirect it in other ways. Clear
+   them rather than reasoning about one release's precedence rules.
+4. **Sign-in.** Either the Mac's Supabase CLI Keychain profile
    (`LEAD_MIGRATION_AUTH_MODE=keychain-profile`, and `SUPABASE_ACCESS_TOKEN`
    must be absent) or a token injected from approved secret storage
    (`LEAD_MIGRATION_AUTH_MODE=injected-token`). Never print the value.
-4. **An exclusive Utah migration-writer window**, secured before the first
+5. **An exclusive Utah migration-writer window**, secured before the first
    linked list and held through the final list: no other operator, workflow,
    Supabase Studio action, CLI process or automation may apply, repair, revert,
    squash or otherwise change migration history or the public schema. Bind
    `LEAD_MIGRATION_EXCLUSIVE_WRITER_ACK` to the exact `RELEASE_SHA`.
-5. **`jq`** on PATH. Any version from 1.6 to 1.8.1 — this runner's catalog
+6. **`jq`** on PATH. Any version from 1.6 to 1.8.1 — this runner's catalog
    validator was checked against 1.6, 1.7, 1.7.1, jq-1.7.1-apple, 1.8.0 and
    1.8.1 and behaves identically on all six.
    ⚠️ **`scripts/run-call-tracking-migrations.sh` is not jq-1.8 safe.** Its
@@ -55,7 +69,7 @@ different-lane review before first use.
    Homebrew's current `jq` is 1.8.x. If the call-tracking pair still needs
    applying, either run it on a jq-1.7 host or fix that validator first. This is
    reported, not fixed here.
-6. **Accepted starting history** (anything else is a hard stop): the reviewed
+7. **Accepted starting history** (anything else is a hard stop): the reviewed
    36-version baseline, or that baseline plus **both** call-tracking versions
    (`20261027200000` + `20261027220000`), in either case plus any already
    recorded subset of the three targets. One of the two call-tracking versions
@@ -64,6 +78,49 @@ different-lane review before first use.
 
 Never `supabase db push`. Never `supabase migration repair`. Never paste the SQL
 into the SQL editor or the Management API as a substitute.
+
+## Order relative to `scripts/run-call-tracking-migrations.sh`
+
+**The call-tracking runner must go first.** Its own validator accepts only the
+36-version baseline plus a prefix of its two versions — nothing else — so the
+moment any lead target is recorded, `scripts/run-call-tracking-migrations.sh`
+hard-stops on every input and can never be run again without editing its
+baseline. This runner, by contrast, accepts the history both before and after
+the call-tracking pair. So: call-tracking pair, then these three. Verified by
+reading that sibling's `validate_catalog_state`, not assumed.
+
+## 🔴 `20261027230000` commits itself: the COMMIT-before-history gap
+
+`20261027230000_ai_referrer_tagging.sql` contains an explicit `begin; … commit;`.
+CLI 2.113.0 executes the file — **including its `COMMIT`** — and only then
+inserts the row into `supabase_migrations.schema_migrations`. A failure in that
+gap (connection drop, statement timeout on the insert) leaves the AI-referrer
+columns, functions and triggers **present in the database with no history row**.
+The other two targets have no explicit transaction, so for them the schema
+change and the history row are in one transaction and this cannot happen; a test
+asserts that only `20261027230000` carries a `begin`/`commit`.
+
+The runner recognises exactly that state and stops with the one sanctioned
+recovery rather than a message that reads as production drift:
+
+1. Confirm from the **previous run's receipts** (`migration-up.stdout.json` /
+   `migration-up.stderr.txt` in its `receipt_dir`) that `migration up` reported
+   `20261027230000` as applied. If it did not, stop and get a review — the
+   objects came from somewhere else.
+2. Re-run the runner with `LEAD_MIGRATION_RECOVER_UNRECORDED_AI_REFERRER` set to
+   the same `RELEASE_SHA`. Every statement in that migration is idempotent
+   (`add column if not exists`, `create or replace function`,
+   `drop trigger if exists` + `create trigger`, and a backfill that only touches
+   rows where `ai_referrer is null`), so the re-apply does nothing to the data
+   and adds the missing history row.
+3. Never `migration repair`. It would write a history row for SQL nobody
+   verified ran.
+
+The clean long-term fix is for `20261027230000` to lose its explicit
+`begin`/`commit` and let the CLI own the transaction. That changes the file's
+SHA-256, so it needs its own reviewed PR and a re-pin in this runner; it is
+deliberately **not** done here, because the file is already merged and this
+runner pins its current bytes.
 
 ## Lock note (read before choosing the window)
 
@@ -74,6 +131,23 @@ both tables **inside its own transaction**, so it holds `ACCESS EXCLUSIVE` on
 lead-form inserts and phone-tap inserts block. Preflight prints both row counts
 (`lead_rows=`, `phone_click_rows=`) plus a `lock_note=` line so the window can
 be sized; run it at a low-traffic hour.
+
+**No `lock_timeout` is set.** The runner does not set one, because the only
+statement that would hit it is the `ALTER TABLE` inside the migration's own
+transaction, and a half-applied transaction is worse than a wait. The mitigation
+is procedural: run off-peak, inside the exclusive window, and if the apply has
+not returned within a few minutes at the printed row counts, investigate the
+blocking session (`pg_locks` / `pg_stat_activity`) rather than killing the
+runner.
+
+## Receipts contain CLI diagnostics
+
+The receipt directory is mode 0700 and also holds the linked workdir, which
+includes `supabase/.temp/pooler-url` and the CLI's raw stderr. **Sanitise before
+sharing a receipt** in a PR, a hub snapshot, chat, or anywhere else. The runner
+prints `receipt_dir=` as its very first line — before anything can mutate — so a
+crashed run is still recoverable, and prints the sanitise reminder again at the
+end of an apply.
 
 ## Preflight (read-only, no mutation)
 
@@ -122,10 +196,23 @@ moved out of the run before it starts, so a resumed run applies only what is
 left; with all three recorded the run is a verified no-op
 ("All three targets are already recorded; postflight checks only.").
 
-Postflight requires: every object present, `leads` and `phone_clicks` row counts
-not decreased, all three versions recorded, the final `migration list` fully
-matched, and no poison-guard filename anywhere in the CLI's stdout or stderr.
-On failure: keep the receipts, release nothing, and **do not** repair history.
+Postflight requires: every object present **and armed** (both triggers enabled,
+`BEFORE INSERT … FOR EACH ROW`, bound to `public.frame_set_ai_referrer`; both
+spam indexes `indisvalid`), `service_role` holding EXECUTE on the classifier
+while `anon` and `authenticated` hold none on either function, all three
+versions recorded, the final `migration list` equal to the complete expected
+version set with no duplicates, and no poison-guard filename anywhere in the
+CLI's stdout or stderr (a `grep` that cannot read those files is a hard stop,
+not a clean scan). On failure: keep the receipts, release nothing, and **do not**
+repair history.
+
+**A row count that fell is reported as a concurrent delete, not a failed
+migration.** All three targets are additive; none deletes a row. So if the apply
+committed, is recorded, and the final list is fully matched, a lower
+`leads`/`phone_clicks` count means something wrote from outside the exclusive
+window. The runner prints `row_count_warning=1` and a `WARNING:` line saying
+exactly that, and exits 0. Investigate the writer; **do not roll back on that
+signal alone.**
 
 ## Post-apply verification (read-only)
 
@@ -177,7 +264,18 @@ Each target is additive, so rollback is a drop. Dropping a column **destroys the
 data in it**; for `ai_referrer` that is the backfill, which the migration can
 recompute on a re-apply, and for `spam_*` that is classifier output, which
 `scripts/classify-lead-spam.py` can recompute. Removing the history row is only
-correct when the objects are gone too — never remove one without the other.
+correct when the objects are gone too — never remove one without the other,
+which is why each block below drops the objects and deletes the history row in
+**one transaction**.
+
+**This is verified, not asserted.** `supabase/tests/lead_migrations_rollback.sql`
+holds a verbatim copy of these three blocks and runs them against a throwaway
+`postgres:16-alpine` with the real Utah baselines, the three targets applied and
+history rows present (blocking job `lead-migration-rollback` in
+`.github/workflows/hook-guards.yml`). It asserts afterwards that every object is
+gone, that no history row survived, that no history row it does not own was
+touched, and that `leads`/`phone_clicks` row counts are unchanged — i.e. that
+catalog and history **agree**. If a block here drifts from that file, CI fails.
 
 ```sql
 -- 20261122230000_leads_intake_zip_city_source.sql
@@ -235,8 +333,16 @@ rollback takes the same `ACCESS EXCLUSIVE` locks as its apply.
 
 `node --test scripts/run-lead-migrations.test.mjs` (blocking job
 `lead-migration-runner` in `.github/workflows/hook-guards.yml`) drives the real
-runner against a throwaway git repository and a stub `supabase` executable: each
-gate above is exercised to its hard stop, plus happy-path preflight, happy-path
-apply and the already-applied no-op. It touches no Supabase project. A passing
-run is **not** evidence about production state and is not a substitute for the
-live read-only preflight.
+runner against a throwaway git repository and a **strict** stub `supabase`
+executable that dispatches on the exact argument vector, logs every invocation,
+records the exact staged migration set at mutation time and exits 90 on anything
+unexpected. Each gate above is exercised to its hard stop, plus happy-path
+preflight, happy-path apply, the already-applied no-op, the COMMIT-before-history
+recovery (both the refusal and the opt-in), and the row-count warning. It
+touches no Supabase project.
+
+`supabase/tests/lead_migrations_rollback.sql` (blocking job
+`lead-migration-rollback`) verifies the rollback above on real Postgres.
+
+A passing run of either is **not** evidence about production state and is not a
+substitute for the live read-only preflight.
