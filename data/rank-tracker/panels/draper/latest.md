@@ -1,32 +1,32 @@
-# Draper Google rank tracker — 2026-11-16
+# Draper Google rank tracker — 2026-11-23
 
 - Panel: `utah-draper-google-v1`
 - Provider: DataForSEO task-queue
 - Location: Draper,Utah,United States
 - Device/depth: mobile / top 30
-- Observed: 2026-11-16T09:16:41.673Z
+- Observed: 2026-11-23T09:15:54.833Z
 - Estimated panel cost: $0.0192
 
 | Query | Organic | Exact-CID map pack | AI Overview | Frame cited in AI Overview |
 |---|---:|---:|---:|---:|
-| roofing contractor draper | Not found in top 30 | Not found in top 30 | No | No |
-| roof repair draper | Not found in top 30 | Not found in top 30 | No | No |
+| roofing contractor draper | Not found in top 30 | Not found in top 30 | Yes | No |
+| roof repair draper | Not found in top 30 | Not found in top 30 | Yes | No |
 | roof replacement draper | Not found in top 30 | Not found in top 30 | No | No |
-| roofer draper | Not found in top 30 | Not found in top 30 | No | No |
+| roofer draper | Not found in top 30 | Not found in top 30 | Yes | No |
 
 ## Displacement targets
 
 ### roofing contractor draper
 - Organic top 3: #1 google.com; #2 google.com; #3 google.com.
-- Map-pack top 3: #1 Pride Roofing & Contracting, LLC [CID 15206834657984643450]; #2 Rocky Mountain Roofing UT, LLC [CID 11642763325802433097]; #3 Legacy Roofing [CID 2263621246550931916].
+- Map-pack top 3: #1 Pride Roofing & Contracting, LLC [CID 15206834657984643450]; #2 Rocky Mountain Roofing UT, LLC [CID 11642763325802433097]; #3 Patriot Roofing & Construction [CID 103033090419837437].
 - Paid local placements (excluded from Maps rank): none.
-- AI Overview sources: no AI Overview.
+- AI Overview sources: google.com; google.com; google.com; google.com; google.com; google.com; google.com; google.com; google.com; google.com.
 
 ### roof repair draper
 - Organic top 3: #1 google.com; #2 google.com; #3 google.com.
 - Map-pack top 3: #1 Pride Roofing & Contracting, LLC [CID 15206834657984643450]; #2 Rocky Mountain Roofing UT, LLC [CID 11642763325802433097]; #3 Legacy Roofing [CID 2263621246550931916].
 - Paid local placements (excluded from Maps rank): none.
-- AI Overview sources: no AI Overview.
+- AI Overview sources: google.com; google.com; google.com; google.com.
 
 ### roof replacement draper
 - Organic top 3: #1 google.com; #2 google.com; #3 google.com.
@@ -38,5 +38,5 @@
 - Organic top 3: #1 google.com; #2 google.com; #3 google.com.
 - Map-pack top 3: #1 Pride Roofing & Contracting, LLC [CID 15206834657984643450]; #2 Rocky Mountain Roofing UT, LLC [CID 11642763325802433097]; #3 Legacy Roofing [CID 2263621246550931916].
 - Paid local placements (excluded from Maps rank): none.
-- AI Overview sources: no AI Overview.
+- AI Overview sources: google.com; google.com.
 > A missing rank means the exact target was not found within this fixed top-30 mobile panel. It is not proof of visibility outside the measured depth or location.
