@@ -10,9 +10,21 @@
 --   supabase/migrations/20260401000003_baseline_leads.sql
 --   supabase/migrations/20260401000004_baseline_phone_clicks.sql
 --   supabase/migrations/20260510_add_attribution_columns.sql
-create role anon;
-create role authenticated;
-create role service_role bypassrls;
+-- Roles are cluster-wide, so guard them: the probe contract and this one can
+-- run against two databases in the same throwaway cluster.
+do $$
+begin
+  if not exists (select 1 from pg_roles where rolname = 'anon') then
+    create role anon nologin noinherit;
+  end if;
+  if not exists (select 1 from pg_roles where rolname = 'authenticated') then
+    create role authenticated nologin noinherit;
+  end if;
+  if not exists (select 1 from pg_roles where rolname = 'service_role') then
+    create role service_role nologin noinherit bypassrls;
+  end if;
+end
+$$;
 grant usage on schema public to anon, authenticated, service_role;
 grant all privileges on table public.leads, public.phone_clicks to service_role;
 grant usage, select, update on all sequences in schema public to service_role;

@@ -9,3 +9,11 @@ seo-report.html:generic-api-key:104
 scripts/test-dashboard-session-client.mjs:generic-api-key:66
 supabase/functions/_shared/lead-notification.test.ts:generic-api-key:116
 supabase/functions/_shared/lead-notification.test.ts:generic-api-key:131
+
+# Commit-bound (not just line-bound): the synthetic needle the
+# token-not-in-argv test greps for was written as one high-entropy literal in
+# 12130a3d and matched generic-api-key. It is NOT a credential, and the current
+# tree no longer contains it — the value is assembled from words at runtime. This
+# entry exists only so the commit-range scan can pass over that one historical
+# blob; it names the commit, so it cannot mask a future finding anywhere.
+12130a3d442741e8e162dfe7ba43d40e6047c693:scripts/run-lead-migrations.test.mjs:generic-api-key:839

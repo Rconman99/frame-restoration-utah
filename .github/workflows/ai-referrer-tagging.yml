@@ -10,7 +10,10 @@ name: AI referrer tagging contract
 # The REAL Utah baselines (leads, phone_clicks, the 20260510 attribution columns) go onto an
 # empty postgres:16-alpine, synthetic history rows plus an UPDATE log trigger go in
 # (supabase/tests/ai_referrer_tagging_fixture.sql), the migration is applied TWICE
-# (idempotency is part of the contract), then supabase/tests/ai_referrer_tagging.sql asserts
+# with `psql -1` — it carries no `begin;`/`commit;` of its own since 2026-11-26, so
+# the applier must supply the single transaction exactly as the Supabase CLI does;
+# a bare `psql -f` could leave the classifier REVOKE applied without its paired
+# service_role GRANT — then supabase/tests/ai_referrer_tagging.sql asserts
 # the classifier table, the trigger/function shape, the backfill scope (only resolving rows,
 # never an overwrite, no second-pass UPDATE) and the insert path. No market project is
 # touched; the synthetic database is discarded with the job.
@@ -58,6 +61,6 @@ jobs:
           psql -h localhost -U postgres -v ON_ERROR_STOP=1 -f supabase/migrations/20260401000004_baseline_phone_clicks.sql
           psql -h localhost -U postgres -v ON_ERROR_STOP=1 -f supabase/migrations/20260510_add_attribution_columns.sql
           psql -h localhost -U postgres -v ON_ERROR_STOP=1 -f supabase/tests/ai_referrer_tagging_fixture.sql
-          psql -h localhost -U postgres -v ON_ERROR_STOP=1 -f supabase/migrations/20261027230000_ai_referrer_tagging.sql
-          psql -h localhost -U postgres -v ON_ERROR_STOP=1 -f supabase/migrations/20261027230000_ai_referrer_tagging.sql
+          psql -h localhost -U postgres -1 -v ON_ERROR_STOP=1 -f supabase/migrations/20261027230000_ai_referrer_tagging.sql
+          psql -h localhost -U postgres -1 -v ON_ERROR_STOP=1 -f supabase/migrations/20261027230000_ai_referrer_tagging.sql
           psql -h localhost -U postgres -v ON_ERROR_STOP=1 -f supabase/tests/ai_referrer_tagging.sql
