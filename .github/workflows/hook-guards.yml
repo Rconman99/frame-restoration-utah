@@ -148,6 +148,9 @@ jobs:
           PGHOST: localhost
           PGUSER: postgres
           PGPASSWORD: synthetic-ci-only
+        # No PGDATABASE on purpose: the contract refuses to run unless it can
+        # create and drop its own disposable database, so it can never apply
+        # migrations or perturb catalogs in a database the caller chose.
         run: node scripts/test-lead-migration-probe.mjs
   lead-migration-rollback:
     name: Documented lead-migration rollback leaves catalog and history agreeing
@@ -162,7 +165,7 @@ jobs:
         options: --health-cmd pg_isready --health-interval 5s --health-timeout 5s --health-retries 10
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
-      - name: Real baselines, three targets applied, then the runbook's rollback
+      - name: Real baselines, three targets applied with -1, then the runbook's rollback
         env:
           PGPASSWORD: synthetic-ci-only
         run: |
@@ -170,7 +173,7 @@ jobs:
           psql -h localhost -U postgres -v ON_ERROR_STOP=1 -f supabase/migrations/20260401000004_baseline_phone_clicks.sql
           psql -h localhost -U postgres -v ON_ERROR_STOP=1 -f supabase/migrations/20260510_add_attribution_columns.sql
           psql -h localhost -U postgres -v ON_ERROR_STOP=1 -f supabase/tests/lead_migrations_rollback_fixture.sql
-          psql -h localhost -U postgres -v ON_ERROR_STOP=1 -f supabase/migrations/20261027221000_lead_spam_classification.sql
-          psql -h localhost -U postgres -v ON_ERROR_STOP=1 -f supabase/migrations/20261027230000_ai_referrer_tagging.sql
-          psql -h localhost -U postgres -v ON_ERROR_STOP=1 -f supabase/migrations/20261122230000_leads_intake_zip_city_source.sql
+          psql -h localhost -U postgres -1 -v ON_ERROR_STOP=1 -f supabase/migrations/20261027221000_lead_spam_classification.sql
+          psql -h localhost -U postgres -1 -v ON_ERROR_STOP=1 -f supabase/migrations/20261027230000_ai_referrer_tagging.sql
+          psql -h localhost -U postgres -1 -v ON_ERROR_STOP=1 -f supabase/migrations/20261122230000_leads_intake_zip_city_source.sql
           psql -h localhost -U postgres -v ON_ERROR_STOP=1 -f supabase/tests/lead_migrations_rollback.sql

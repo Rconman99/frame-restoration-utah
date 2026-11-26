@@ -68,6 +68,9 @@ export PATH
 SHASUM='/usr/bin/shasum'
 GIT='/usr/bin/git'
 CURL='/usr/bin/curl'
+ENV='/usr/bin/env'
+AWK='/usr/bin/awk'
+BASH='/bin/bash'
 TRUSTED_TMP_ROOT='/private/tmp'
 API_BASE='https://api.supabase.com'
 
@@ -86,7 +89,7 @@ T1_BASENAME='20261027221000_lead_spam_classification.sql'
 T1_SHA256='2fecd49d87cebaa3e785a99b32294708fdc4241da0ceb3ee4863448fe512a507'
 T2_VERSION='20261027230000'
 T2_BASENAME='20261027230000_ai_referrer_tagging.sql'
-T2_SHA256='153386fa51d487fdb58c4c926065f256913e9b1e262f15a8a6b23181eee458b8'
+T2_SHA256='d9dbc7c8d1ada8244301ff2b72a12838610e5f3d60314ac2420f1ed330470fda'
 T3_VERSION='20261122230000'
 T3_BASENAME='20261122230000_leads_intake_zip_city_source.sql'
 T3_SHA256='5e4bc10232c0426cd3eac03ce6395444af6472028586610631b9c489deb46cf0'
@@ -145,19 +148,17 @@ CALL_TRACKING_VERSIONS="$(cat <<'VERSIONS'
 VERSIONS
 )"
 
+cli_calls_made=''
 RELEASE_SHA="${RELEASE_SHA:-}"
 EXECUTION_MODE="${LEAD_MIGRATION_EXECUTION_MODE:-}"
 AUTH_MODE="${LEAD_MIGRATION_AUTH_MODE:-}"
-# jq is not in the fixed system PATH on macOS, so it is named explicitly. It
-# must be an absolute path. Nothing else is overridable.
-JQ="${LEAD_MIGRATION_JQ:-/opt/homebrew/bin/jq}"
-# The ONE harness seam, used only by scripts/run-lead-migrations.test.mjs. When
-# set it prepends <root> to PATH and takes curl and shasum from there, so the
-# Management API, the CLI binary digest and the macOS platform gate can be
-# stubbed and the suite can run on a Linux CI runner against the real script.
-# Every run that sets it prints test_harness=1 and warns on stderr, so a
-# production run under it is unmistakable. It must never be set in production.
-TEST_HARNESS_ROOT="${LEAD_MIGRATION_TEST_HARNESS_ROOT:-}"
+# jq is not in the fixed system PATH on macOS, so it is the one tool named by a
+# short list of absolute candidates rather than one literal: Homebrew's path
+# first, then the system path. Nothing about it is configurable.
+JQ=''
+for jq_candidate in /opt/homebrew/bin/jq /usr/bin/jq; do
+  if test -x "$jq_candidate"; then JQ="$jq_candidate"; break; fi
+done
 
 # --- hostile environment ----------------------------------------------------
 # Deny-list pre-check, kept in front of the env -i allowlist. Verified against
@@ -185,32 +186,28 @@ case "${PS4:-+ }" in
   *) fail 'unset PS4: a custom trace prompt can execute a command substitution' ;;
 esac
 
-case "$JQ" in
-  /*) ;;
-  *) fail 'LEAD_MIGRATION_JQ must be an absolute path to jq' ;;
+test -n "$JQ" || \
+  fail 'jq must be installed at /opt/homebrew/bin/jq or /usr/bin/jq; this runner accepts no path override'
+# jq's `as` binding changed in 1.8 and the catalog validator is written for both,
+# but a version outside the reviewed range is still a stop.
+jq_version="$("$JQ" --version 2>/dev/null || true)"
+case "$jq_version" in
+  jq-1.6*|jq-1.7*|jq-1.8*) ;;
+  *) fail "jq version '$jq_version' is outside the reviewed range (jq-1.6 to jq-1.8)" ;;
 esac
-test -x "$JQ" || fail "jq not found at $JQ; set LEAD_MIGRATION_JQ to its absolute path"
 
-if test -n "$TEST_HARNESS_ROOT"; then
-  case "$TEST_HARNESS_ROOT" in
-    /*) ;;
-    *) fail 'LEAD_MIGRATION_TEST_HARNESS_ROOT must be an absolute path' ;;
-  esac
-  test -d "$TEST_HARNESS_ROOT" || fail 'LEAD_MIGRATION_TEST_HARNESS_ROOT is not a directory'
-  PATH="$TEST_HARNESS_ROOT:$PATH"
-  export PATH
-  CURL="$TEST_HARNESS_ROOT/curl"
-  test -x "$CURL" || fail 'the test harness root has no executable curl stub'
-  if test -x "$TEST_HARNESS_ROOT/shasum"; then SHASUM="$TEST_HARNESS_ROOT/shasum"; fi
-  # /private/tmp is a macOS path and this suite also runs the real script on a
-  # Linux CI runner, so the harness supplies its own trusted root.
-  TRUSTED_TMP_ROOT="$TEST_HARNESS_ROOT/private-tmp"
-  warn 'LEAD_MIGRATION_TEST_HARNESS_ROOT is set: the Management API and the trusted utilities are STUBBED and nothing here talks to a real project. Never set this in production.'
-fi
-
-for trusted in "$SHASUM" "$GIT" "$CURL"; do
-  test -x "$trusted" || fail "$trusted is missing; this runner only uses trusted absolute utilities"
+for trusted_tool in "$SHASUM" "$GIT" "$CURL" "$ENV" "$AWK" "$BASH"; do
+  test -x "$trusted_tool" || \
+    fail "$trusted_tool is missing; this runner only uses trusted absolute utilities"
 done
+
+# The access token is handled by this script, so it must be a single clean line:
+# anything else could break out of the curl config document or the launcher's
+# `read`.
+case "${SUPABASE_ACCESS_TOKEN:-}" in
+  *[!0-9A-Za-z._-]*)
+    fail 'SUPABASE_ACCESS_TOKEN contains a character outside [0-9A-Za-z._-]; refusing to pass it through a curl config or a shell read' ;;
+esac
 
 # --- operator inputs --------------------------------------------------------
 test "${#RELEASE_SHA}" -eq 40 || fail 'RELEASE_SHA must be a full 40-character commit'
@@ -240,10 +237,10 @@ esac
 test -n "${SUPABASE_ACCESS_TOKEN:-}" || \
   fail 'inject SUPABASE_ACCESS_TOKEN from approved secret storage'
 
-test "$("$SHASUM" -a 256 <<< "$BASELINE_VERSIONS" | awk '{print $1}')" = \
+test "$("$SHASUM" -a 256 <<< "$BASELINE_VERSIONS" | "$AWK" '{print $1}')" = \
   "$BASELINE_SHA256" || fail 'reviewed migration-history baseline digest differs'
 test "$(printf '%s\n%s\n' "$BASELINE_VERSIONS" "$CALL_TRACKING_VERSIONS" \
-  | sed '/^$/d' | LC_ALL=C sort | "$SHASUM" -a 256 | awk '{print $1}')" = \
+  | sed '/^$/d' | LC_ALL=C sort | "$SHASUM" -a 256 | "$AWK" '{print $1}')" = \
   "$CALL_TRACKING_BASELINE_SHA256" || \
   fail 'reviewed call-tracking migration-history baseline digest differs'
 
@@ -265,9 +262,9 @@ test "$("$GIT" -C "$REPO_ROOT" rev-parse origin/main)" = "$RELEASE_SHA" || \
 # this from a clean checkout of RELEASE_SHA; a local edit, a stale checkout or a
 # copied script all stop here.
 SELF_PATH="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd -P)/$(basename "${BASH_SOURCE[0]}")"
-self_digest="$("$SHASUM" -a 256 "$SELF_PATH" | awk '{print $1}')"
+self_digest="$("$SHASUM" -a 256 "$SELF_PATH" | "$AWK" '{print $1}')"
 release_digest="$("$GIT" -C "$REPO_ROOT" show "${RELEASE_SHA}:scripts/run-lead-migrations.sh" \
-  | "$SHASUM" -a 256 | awk '{print $1}')"
+  | "$SHASUM" -a 256 | "$AWK" '{print $1}')"
 test "$self_digest" = "$release_digest" || \
   fail "the running script is not the reviewed release bytes ($SELF_PATH). Run it from a clean checkout of RELEASE_SHA"
 
@@ -278,16 +275,16 @@ RECEIPT_DIR="$(mktemp -d "$TRUSTED_TMP_ROOT/utah-lead-migrations.XXXXXX")"
 chmod 700 "$RECEIPT_DIR"
 RUNNER_DIR="$RECEIPT_DIR/runner"
 CLI_HOME="$RECEIPT_DIR/cli-home"
+CURL_HOME="$RECEIPT_DIR/curl-home"
 BIN_DIR="$RECEIPT_DIR/bin"
-mkdir -p "$RUNNER_DIR" "$CLI_HOME" "$BIN_DIR"
-chmod 700 "$RUNNER_DIR" "$CLI_HOME" "$BIN_DIR"
+mkdir -p "$RUNNER_DIR" "$CLI_HOME" "$CURL_HOME" "$BIN_DIR"
+chmod 700 "$RUNNER_DIR" "$CLI_HOME" "$CURL_HOME" "$BIN_DIR"
 # `find -perm` rather than stat: BSD and GNU stat disagree on flags, and this
 # suite runs the real script on Linux as well as on the macOS it targets.
 test -n "$(find "$RECEIPT_DIR" -maxdepth 0 -type d -perm 700 -print)" || \
   fail 'the private directory is not mode 0700'
 # Printed before anything else can happen, so a crashed run is still recoverable.
 printf 'receipt_dir=%s\nmode=%s\n' "$RECEIPT_DIR" "$EXECUTION_MODE"
-if test -n "$TEST_HARNESS_ROOT"; then printf 'test_harness=1\n'; fi
 
 # The CLI release is a Bun single-file executable and Bun reads a dotenv file
 # from the process working directory at runtime, so no CLI process may ever have
@@ -313,7 +310,7 @@ CLI="$BIN_DIR/supabase"
 cp "$SUPABASE_BIN" "$CLI"
 chmod 500 "$CLI"
 test ! -L "$CLI" || fail 'the private CLI copy is a symlink'
-test "$("$SHASUM" -a 256 "$CLI" | awk '{print $1}')" = "$CLI_SHA256" || \
+test "$("$SHASUM" -a 256 "$CLI" | "$AWK" '{print $1}')" = "$CLI_SHA256" || \
   fail 'the private copy of the Supabase CLI does not match the reviewed official release digest'
 
 # Every CLI invocation: the private copy, under env -i with an explicit
@@ -325,16 +322,26 @@ test "$("$SHASUM" -a 256 "$CLI" | awk '{print $1}')" = "$CLI_SHA256" || \
 # HOME stops it reading the operator's persisted profile or token and keeps any
 # write inside the receipt directory. Omitting HOME entirely is worse: tools
 # then fall back to the passwd entry, i.e. the real home.
+# The token is NEVER an argument. `env -i VAR=secret …` would put it in env's
+# own argv, where `ps` shows it to every user on the machine; instead it is
+# piped in and exported inside a one-line launcher that reads it from stdin and
+# then re-points stdin at /dev/null. printf is a shell builtin, so the value
+# never appears in any process's argv and is never written to a file.
 cli() {
   local label="$1"
   shift
-  /usr/bin/env -i \
+  cli_calls_made="${cli_calls_made:+$cli_calls_made,}$label"
+  printf '%s' "$SUPABASE_ACCESS_TOKEN" | "$ENV" -i \
     HOME="$CLI_HOME" \
     PATH='/usr/bin:/bin:/usr/sbin:/sbin' \
     LANG=C \
     LC_ALL=C \
     SUPABASE_NO_KEYRING=1 \
-    SUPABASE_ACCESS_TOKEN="$SUPABASE_ACCESS_TOKEN" \
+    "$BASH" -c 'IFS= read -r injected_token
+export SUPABASE_ACCESS_TOKEN="$injected_token"
+unset injected_token
+exec 0</dev/null
+exec "$@"' lead-migration-launcher \
     "$CLI" --profile supabase --workdir "$RUNNER_DIR" "$@" \
     > "$RECEIPT_DIR/cli.${label}.stdout.txt" \
     2> "$RECEIPT_DIR/cli.${label}.stderr.txt"
@@ -348,8 +355,11 @@ projects_exit=0
 cli projects-list --agent no --output-format json projects list || projects_exit=$?
 test "$projects_exit" = '0' || \
   fail "the pinned CLI could not list projects (exit $projects_exit). Its streams are in $RECEIPT_DIR/cli.projects-list.std*.txt and are NOT reproduced here: the CLI puts server response bodies into its errors. Re-authenticate and retry."
-"$JQ" -e --arg project "$PROJECT_REF" '
-  ([.projects[]? | select(.id == $project)] | length) == 1
+"$JQ" -e -s --arg project "$PROJECT_REF" '
+  length == 1
+  and (.[0] | type == "object")
+  and (.[0].projects | type == "array")
+  and (([.[0].projects[] | select(.id == $project)] | length) == 1)
 ' "$RECEIPT_DIR/cli.projects-list.stdout.txt" >/dev/null || \
   fail 'the CLI login cannot resolve the exact Utah project'
 
@@ -365,11 +375,24 @@ test "$projects_exit" = '0' || \
 # reads its configuration from stdin (`--config -`), and the config is produced
 # by a shell builtin, so the value exists only in that pipe. The SQL body goes
 # in a 0600 file, which holds no secret.
+# Request body is exactly {"query": "<sql>"} — the documented schema for this
+# endpoint (Supabase API reference, "Run a sql query as supabase_read_only_user":
+# `query` required string, `parameters` optional array, and NO `read_only`
+# member; the read-only behaviour comes from the path). An earlier revision sent
+# an undocumented `read_only: true`; it is removed. Documented success is 201;
+# 200 is accepted too because the reference shows only 201 and the endpoint is
+# marked Beta, and anything else is a hard stop.
+#
+# curl runs isolated: `env -i` drops HTTPS_PROXY, ALL_PROXY, CURL_CA_BUNDLE,
+# SSL_CERT_FILE and everything else from the caller; HOME points at an empty
+# private directory; and `-q` is the FIRST argument, so no ~/.curlrc or
+# $CURL_HOME/.curlrc is read. The token reaches curl only through the config
+# document on stdin, produced by a shell builtin — never an argv, never a file.
 ro_query() {
-  local label="$1" sql_file="$2" out_file="$3" status_file
+  local label="$1" sql_file="$2" out_file="$3" status_file raw_file
   status_file="$RECEIPT_DIR/ro.${label}.status.txt"
-  "$JQ" -Rs '{query: ., read_only: true}' < "$sql_file" \
-    > "$RECEIPT_DIR/ro.${label}.body.json"
+  raw_file="$RECEIPT_DIR/ro.${label}.raw.json"
+  "$JQ" -Rs '{query: .}' < "$sql_file" > "$RECEIPT_DIR/ro.${label}.body.json"
   printf '%s\n' \
     "request = \"POST\"" \
     "url = \"$API_BASE/v1/projects/$PROJECT_REF/database/query/read-only\"" \
@@ -377,17 +400,45 @@ ro_query() {
     "header = \"Content-Type: application/json\"" \
     "header = \"User-Agent: SupabaseCLI/2.113.0\"" \
     "data-binary = \"@$RECEIPT_DIR/ro.${label}.body.json\"" \
-    "output = \"$out_file\"" \
+    "output = \"$raw_file\"" \
     "write-out = \"%{http_code}\"" \
     "fail-with-body" \
     "silent" \
     "show-error" \
     "retry = \"3\"" \
-    | "$CURL" --config - > "$status_file" 2> "$RECEIPT_DIR/ro.${label}.stderr.txt" || {
+    | "$ENV" -i HOME="$CURL_HOME" PATH='/usr/bin:/bin:/usr/sbin:/sbin' \
+        LANG=C LC_ALL=C \
+        "$CURL" -q --config - \
+        > "$status_file" 2> "$RECEIPT_DIR/ro.${label}.stderr.txt" || {
       fail "the read-only query ($label) failed. Its streams are in $RECEIPT_DIR/ro.${label}.* and are NOT reproduced here: a Management API error body can echo request content."
     }
-  test "$(cat "$status_file")" = '200' || \
-    fail "the read-only query ($label) returned HTTP $(cat "$status_file"); see $RECEIPT_DIR/ro.${label}.*"
+  case "$(cat "$status_file")" in
+    200|201) ;;
+    *) fail "the read-only query ($label) returned HTTP $(cat "$status_file"); only 200 and 201 are accepted. See $RECEIPT_DIR/ro.${label}.*" ;;
+  esac
+  # Fail closed on the response shape before anything reads a field. `-s` makes
+  # an empty body or an empty stream a zero-length slurp, which fails length==1
+  # on jq 1.6 through 1.8 instead of silently yielding null. Flags must be JSON
+  # booleans and counts non-negative integers: a string "false" is a hard stop,
+  # and nothing is coerced.
+  "$JQ" -e -s --argjson bools "$RO_BOOLEAN_FIELDS" --argjson counts "$RO_COUNT_FIELDS" '
+    length == 1
+    and (.[0] | type == "array")
+    and (.[0] | length == 1)
+    and (.[0][0] | type == "object")
+    and (.[0][0] as $row
+         | ($row.history | type == "array")
+         and ($row.history | all(type == "string"))
+         and (all($bools[]; . as $f | ($row | has($f)) and ($row[$f] | type == "boolean")))
+         and (all($counts[]; . as $f
+                  | ($row | has($f))
+                    and ($row[$f] | type == "number")
+                    and ($row[$f] >= 0)
+                    and ($row[$f] | floor == .))))
+  ' "$raw_file" >/dev/null || \
+    fail "the read-only query ($label) did not return exactly one array of one row object with JSON booleans and non-negative integer counts; see $raw_file"
+  # Normalise to the one-row array every later program expects.
+  "$JQ" -s '.[0]' "$raw_file" > "$out_file"
 }
 
 # Catalog probe, specific to the three targets. Read-only by construction: it
@@ -405,26 +456,31 @@ ro_query() {
 # Row counts size the lock window: 20261027230000 takes ACCESS EXCLUSIVE on both
 # public.leads and public.phone_clicks and holds it through its in-transaction
 # backfill. No lock_timeout is set — see the runbook.
+# The exact fields the probe returns, split by JSON type. The shape gate above
+# requires every one of them to be present with the right type.
+RO_BOOLEAN_FIELDS='["leads_ai_referrer","phone_clicks_ai_referrer","ai_referrer_function","ai_referrer_trigger_function","ai_referrer_service_role_execute","ai_referrer_anon_execute","ai_referrer_authenticated_execute","ai_referrer_trigger_anon_execute","ai_referrer_trigger_authenticated_execute","leads_zip","leads_city_source"]'
+RO_COUNT_FIELDS='["spam_columns","spam_indexes","spam_indexes_exact","ai_referrer_triggers","ai_referrer_triggers_armed","lead_rows","phone_click_rows"]'
+
 write_probe_sql() {
   cat > "$RECEIPT_DIR/probe.sql" <<'SQL'
 select
-  (select coalesce(jsonb_agg(version::text order by version::text), '[]'::jsonb)
+  (select coalesce(pg_catalog.jsonb_agg(version::text order by version::text), '[]'::jsonb)
      from supabase_migrations.schema_migrations) as history,
-  (select count(*) from information_schema.columns
+  (select pg_catalog.count(*) from information_schema.columns
      where table_schema = 'public' and table_name = 'leads'
        and column_name in ('spam_label', 'spam_score', 'spam_reason',
                            'spam_classifier', 'spam_classified_at')) as spam_columns,
-  (select count(*) from pg_indexes
+  (select pg_catalog.count(*) from pg_catalog.pg_indexes
      where schemaname = 'public' and tablename = 'leads'
        and indexname in ('leads_spam_unclassified_idx',
                          'leads_spam_label_created_idx')) as spam_indexes,
-  (select count(*) from pg_index i
-      join pg_class ic on ic.oid = i.indexrelid
-      join pg_class tc on tc.oid = i.indrelid
-      join pg_namespace n on n.oid = tc.relnamespace
+  (select pg_catalog.count(*) from pg_catalog.pg_index i
+      join pg_catalog.pg_class ic on ic.oid = i.indexrelid
+      join pg_catalog.pg_class tc on tc.oid = i.indrelid
+      join pg_catalog.pg_namespace n on n.oid = tc.relnamespace
      where n.nspname = 'public' and tc.relname = 'leads'
        and i.indisvalid and i.indisready
-       and pg_get_indexdef(i.indexrelid) in (
+       and pg_catalog.pg_get_indexdef(i.indexrelid) in (
          'CREATE INDEX leads_spam_unclassified_idx ON public.leads USING btree (created_at DESC) WHERE (spam_label IS NULL)',
          'CREATE INDEX leads_spam_label_created_idx ON public.leads USING btree (spam_label, created_at DESC)'
        )) as spam_indexes_exact,
@@ -432,19 +488,19 @@ select
            and table_name = 'leads' and column_name = 'ai_referrer') as leads_ai_referrer,
   exists (select 1 from information_schema.columns where table_schema = 'public'
            and table_name = 'phone_clicks' and column_name = 'ai_referrer') as phone_clicks_ai_referrer,
-  to_regprocedure('public.frame_ai_referrer(text,text)') is not null as ai_referrer_function,
-  to_regprocedure('public.frame_set_ai_referrer()') is not null as ai_referrer_trigger_function,
-  (select count(*) from pg_trigger t
-      join pg_class c on c.oid = t.tgrelid
-      join pg_namespace n on n.oid = c.relnamespace
+  pg_catalog.to_regprocedure('public.frame_ai_referrer(text,text)') is not null as ai_referrer_function,
+  pg_catalog.to_regprocedure('public.frame_set_ai_referrer()') is not null as ai_referrer_trigger_function,
+  (select pg_catalog.count(*) from pg_catalog.pg_trigger t
+      join pg_catalog.pg_class c on c.oid = t.tgrelid
+      join pg_catalog.pg_namespace n on n.oid = c.relnamespace
      where n.nspname = 'public' and not t.tgisinternal
        and ((c.relname = 'leads' and t.tgname = 'leads_set_ai_referrer')
          or (c.relname = 'phone_clicks' and t.tgname = 'phone_clicks_set_ai_referrer'))) as ai_referrer_triggers,
-  (select count(*) from pg_trigger t
-      join pg_class c on c.oid = t.tgrelid
-      join pg_namespace n on n.oid = c.relnamespace
-      join pg_proc p on p.oid = t.tgfoid
-      join pg_namespace fn on fn.oid = p.pronamespace
+  (select pg_catalog.count(*) from pg_catalog.pg_trigger t
+      join pg_catalog.pg_class c on c.oid = t.tgrelid
+      join pg_catalog.pg_namespace n on n.oid = c.relnamespace
+      join pg_catalog.pg_proc p on p.oid = t.tgfoid
+      join pg_catalog.pg_namespace fn on fn.oid = p.pronamespace
      where n.nspname = 'public' and not t.tgisinternal
        and t.tgenabled = 'O'
        and t.tgtype = 7
@@ -452,27 +508,27 @@ select
        and fn.nspname = 'public' and p.proname = 'frame_set_ai_referrer'
        and ((c.relname = 'leads' and t.tgname = 'leads_set_ai_referrer')
          or (c.relname = 'phone_clicks' and t.tgname = 'phone_clicks_set_ai_referrer'))) as ai_referrer_triggers_armed,
-  (case when to_regprocedure('public.frame_ai_referrer(text,text)') is null then false
-        else has_function_privilege('service_role',
+  (case when pg_catalog.to_regprocedure('public.frame_ai_referrer(text,text)') is null then false
+        else pg_catalog.has_function_privilege('service_role',
                'public.frame_ai_referrer(text,text)', 'EXECUTE') end) as ai_referrer_service_role_execute,
-  (case when to_regprocedure('public.frame_ai_referrer(text,text)') is null then false
-        else has_function_privilege('anon',
+  (case when pg_catalog.to_regprocedure('public.frame_ai_referrer(text,text)') is null then false
+        else pg_catalog.has_function_privilege('anon',
                'public.frame_ai_referrer(text,text)', 'EXECUTE') end) as ai_referrer_anon_execute,
-  (case when to_regprocedure('public.frame_ai_referrer(text,text)') is null then false
-        else has_function_privilege('authenticated',
+  (case when pg_catalog.to_regprocedure('public.frame_ai_referrer(text,text)') is null then false
+        else pg_catalog.has_function_privilege('authenticated',
                'public.frame_ai_referrer(text,text)', 'EXECUTE') end) as ai_referrer_authenticated_execute,
-  (case when to_regprocedure('public.frame_set_ai_referrer()') is null then false
-        else has_function_privilege('anon',
+  (case when pg_catalog.to_regprocedure('public.frame_set_ai_referrer()') is null then false
+        else pg_catalog.has_function_privilege('anon',
                'public.frame_set_ai_referrer()', 'EXECUTE') end) as ai_referrer_trigger_anon_execute,
-  (case when to_regprocedure('public.frame_set_ai_referrer()') is null then false
-        else has_function_privilege('authenticated',
+  (case when pg_catalog.to_regprocedure('public.frame_set_ai_referrer()') is null then false
+        else pg_catalog.has_function_privilege('authenticated',
                'public.frame_set_ai_referrer()', 'EXECUTE') end) as ai_referrer_trigger_authenticated_execute,
   exists (select 1 from information_schema.columns where table_schema = 'public'
            and table_name = 'leads' and column_name = 'zip') as leads_zip,
   exists (select 1 from information_schema.columns where table_schema = 'public'
            and table_name = 'leads' and column_name = 'city_source') as leads_city_source,
-  (select count(*) from public.leads) as lead_rows,
-  (select count(*) from public.phone_clicks) as phone_click_rows
+  (select pg_catalog.count(*) from public.leads) as lead_rows,
+  (select pg_catalog.count(*) from public.phone_clicks) as phone_click_rows
 SQL
 }
 write_probe_sql
@@ -587,7 +643,7 @@ fi
   "supabase/migrations/$T3_BASENAME" "$GUARD_PATH" \
   | tar -xf - -C "$RUNNER_DIR"
 
-sha_of() { "$SHASUM" -a 256 "$1" | awk '{print $1}'; }
+sha_of() { "$SHASUM" -a 256 "$1" | "$AWK" '{print $1}'; }
 test "$(sha_of "$RUNNER_DIR/supabase/migrations/$T1_BASENAME")" = "$T1_SHA256" || \
   fail "release bytes of $T1_BASENAME differ from the reviewed target"
 test "$(sha_of "$RUNNER_DIR/supabase/migrations/$T2_BASENAME")" = "$T2_SHA256" || \
@@ -672,7 +728,7 @@ print_summary() {
 
 if test "$EXECUTION_MODE" = 'preflight'; then
   print_summary 0
-  printf 'reads=management-api-read-only\ncli_calls=version,projects-list\n'
+  printf 'reads=management-api-read-only\ncli_calls=%s\n' "$cli_calls_made"
   exit 0
 fi
 
@@ -701,7 +757,18 @@ if test -n "$pending"; then
   esac
   test "$migration_exit" = '0' || \
     fail "migration up failed; retain $RECEIPT_DIR, release nothing, and do not repair history. If the catalog now shows the AI-referrer objects present without their history row, STOP AND ESCALATE — this runner has no replay path."
-  applied="$("$JQ" -r '.applied[]? | split("/")[-1]' "$RECEIPT_DIR/cli.migration-up.stdout.txt")"
+  # Same fail-closed shape gate for the CLI's JSON: exactly one document, an
+  # object, with `applied` an array of strings. An empty stdout slurps to [] and
+  # fails length==1.
+  "$JQ" -e -s '
+    length == 1
+    and (.[0] | type == "object")
+    and (.[0] | has("applied"))
+    and (.[0].applied | type == "array")
+    and (.[0].applied | all(type == "string"))
+  ' "$RECEIPT_DIR/cli.migration-up.stdout.txt" >/dev/null || \
+    fail "migration up did not return one JSON object with an applied string array; see $RECEIPT_DIR/cli.migration-up.stdout.txt"
+  applied="$("$JQ" -r -s '.[0].applied[] | split("/")[-1]' "$RECEIPT_DIR/cli.migration-up.stdout.txt")"
   test "$applied" = "$pending" || fail 'migration up did not apply exactly the pending targets in order'
 else
   printf 'All three targets are already recorded; postflight checks only.\n'
@@ -749,4 +816,5 @@ if test "$postflight_phone_click_rows" -lt "$phone_click_rows"; then
 fi
 
 print_summary "$row_count_warning"
-printf 'reads=management-api-read-only\ncli_calls=version,projects-list,init,link,migration-up\n'
+# Only what actually ran: a no-op apply never reports init, link or migration-up.
+printf 'reads=management-api-read-only\ncli_calls=%s\n' "$cli_calls_made"

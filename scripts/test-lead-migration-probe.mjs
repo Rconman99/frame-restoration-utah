@@ -22,6 +22,7 @@
  */
 
 import assert from "node:assert/strict";
+import crypto from "node:crypto";
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
@@ -34,6 +35,38 @@ const runnerSource = fs.readFileSync(
   "utf8",
 );
 const scratch = fs.mkdtempSync(path.join(os.tmpdir(), "lead-probe-"));
+
+// This test creates and drops its OWN disposable database. It refuses to touch
+// whatever database the caller's PG* environment points at: it applies
+// migrations and perturbs catalogs, which must never land on something a person
+// cares about.
+if (process.env.PGDATABASE) {
+  console.error(
+    "refusing to run: PGDATABASE is set. This contract creates its own disposable database; unset PGDATABASE so it cannot touch the caller's.",
+  );
+  process.exit(2);
+}
+const ADMIN_DATABASE = "postgres";
+const WORK_DATABASE = `lead_probe_${crypto.randomBytes(6).toString("hex")}`;
+
+function psqlAdmin(sql) {
+  const result = spawnSync(
+    "psql",
+    ["-d", ADMIN_DATABASE, "-v", "ON_ERROR_STOP=1", "-q", "-c", sql],
+    { encoding: "utf8" },
+  );
+  assert.equal(result.status, 0, `admin psql failed:\n${result.stderr}\n--- sql ---\n${sql}`);
+}
+
+psqlAdmin(`create database ${WORK_DATABASE}`);
+process.env.PGDATABASE = WORK_DATABASE;
+const dropWorkDatabase = () => {
+  delete process.env.PGDATABASE;
+  spawnSync("psql", ["-d", ADMIN_DATABASE, "-q", "-c", `drop database if exists ${WORK_DATABASE}`], {
+    encoding: "utf8",
+  });
+};
+process.on("exit", dropWorkDatabase);
 
 const BASELINE = (() => {
   const block = runnerSource.split("BASELINE_VERSIONS=\"$(cat <<'VERSIONS'\n")[1];
@@ -48,6 +81,10 @@ const T3 = "20261122230000";
 function probeSql() {
   const sql = runnerSource.split("cat > \"$RECEIPT_DIR/probe.sql\" <<'SQL'\n")[1]
     .split("\nSQL\n")[0];
+  assert.ok(
+    sql.includes("pg_catalog.pg_trigger") && sql.includes("pg_catalog.pg_index"),
+    "probe SQL must be schema-qualified, as the endpoint requires",
+  );
   assert.ok(sql.trim().startsWith("select"), "probe SQL not found in the runner");
   assert.ok(sql.includes("spam_indexes_exact"), "probe SQL is missing the strengthened fields");
   return sql.trim().replace(/;$/, "");
@@ -88,10 +125,16 @@ function psql(sql, { expectOk = true } = {}) {
   return { status: result.status, stdout: (result.stdout ?? "").trim(), stderr: result.stderr ?? "" };
 }
 
+/**
+ * Applies a file. Migrations go in as ONE transaction (`-1`), because
+ * 20261027230000 carries no begin/commit of its own: the applier must supply it,
+ * exactly as the Supabase CLI does.
+ */
 function psqlFile(relative) {
+  const single = relative.startsWith("supabase/migrations/") ? ["-1"] : [];
   const result = spawnSync(
     "psql",
-    ["-v", "ON_ERROR_STOP=1", "-q", "-f", path.join(repoRoot, relative)],
+    [...single, "-v", "ON_ERROR_STOP=1", "-q", "-f", path.join(repoRoot, relative)],
     { encoding: "utf8" },
   );
   assert.equal(result.status, 0, `psql -f ${relative} failed:\n${result.stderr}`);
@@ -339,5 +382,5 @@ process.stdout.write(`${checks.join("\n")}\n`);
 process.stdout.write(
   process.exitCode
     ? "lead-migration probe contract: FAILED\n"
-    : "lead-migration probe contract: the real probe SQL and the real jq programs agree on all three states\n",
+    : `lead-migration probe contract: the real probe SQL and the real jq programs agree on all three states (disposable database ${WORK_DATABASE})\n`,
 );

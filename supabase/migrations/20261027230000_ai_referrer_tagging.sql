@@ -7,15 +7,34 @@
 -- the tag on every insert regardless of which code path wrote the row, so no
 -- edge-function deploy is required. The trailing UPDATEs backfill history.
 --
--- Wrapped in one transaction, the house shape of Utah's recent function
--- migrations (20260807000095, 20260910200000, 20260914200000 — the last two are
--- in the applied history, so the real runner takes it). Under a bare `psql -f`,
--- as the contract workflow uses, every statement commits on its own, so a
--- failure between the revoke on the classifier and its paired grant four lines
--- later would leave the database in the one state that breaks every leads /
--- phone_clicks insert. Inside one transaction that state is unreachable.
-
-begin;
+-- TRANSACTION — this file carries NO `begin;`/`commit;` on purpose, and must
+-- never be applied statement by statement. The APPLIER supplies the single
+-- transaction. Verified in the pinned CLI (supabase/cli v2.113.0, commit
+-- 03880bb1, apps/cli/src/legacy/shared/legacy-migration-apply.ts:145-153 and
+-- 205-234): the CLI wraps a migration file's statements AND the
+-- `supabase_migrations.schema_migrations` history insert in ONE BEGIN/COMMIT —
+-- "The history insert goes in the final batch, so the migration is recorded
+-- only after every statement succeeds. A file with no such statements is a
+-- single `BEGIN`/`COMMIT`."
+--
+-- An earlier revision of this file had its own `begin;`/`commit;`. That inner
+-- `commit;` ended the CLI's transaction BEFORE the history insert, so a failed
+-- history insert left the schema change and both backfills committed with the
+-- version unrecorded — an applied-but-unrecorded state no runner can safely
+-- repair, because CLI 2.113.0 gives no way to prove a history-write failure
+-- (exit codes 0/1 only). Removing the inner transaction closes that window: the
+-- objects and the history row now commit or roll back together.
+--
+-- Consequences, both mandatory:
+--   * Apply only through scripts/run-lead-migrations.sh, or an applier that
+--     wraps the whole file in one transaction. A bare `psql -f` runs each
+--     statement on its own and can leave the REVOKE on the classifier applied
+--     without its paired service_role GRANT four lines later — the one state
+--     that breaks every leads / phone_clicks insert with "permission denied for
+--     function frame_ai_referrer".
+--   * Tests must pass `--single-transaction` (`-1`) to psql.
+--     .github/workflows/ai-referrer-tagging.yml and the hook-guards contracts
+--     do.
 
 -- Both functions pin search_path = '' like Utah's other public helpers (e.g.
 -- resend_notification_status_rank in 20260807000100); every name they use is
@@ -108,5 +127,3 @@ update public.phone_clicks p
                  to_jsonb(x) ->> 'utm_source') as tag
           from public.phone_clicks x where x.ai_referrer is null) t
  where p.id = t.id and t.tag is not null;
-
-commit;

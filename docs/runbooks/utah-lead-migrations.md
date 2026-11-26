@@ -25,6 +25,41 @@ this file is the operator section for these three targets only.
 and no production catalog was read while writing it. The runner needs a
 different-lane review before first use.
 
+## 🔴 What the owner is accepting by approving a run
+
+Three things. Read them before the prerequisites; nothing below removes them.
+
+1. **An apply mints a temporary postgres login role, and can clear this
+   project's IP bans.** `migration up --linked` needs a database connection and
+   has no `--password` flag at CLI 2.113.0, so the CLI mints a temporary role via
+   `POST /v1/projects/<ref>/cli/login-role` with `read_only: false`
+   (`legacy-db-config.layer.ts:101-117`) and, from the **third** pooler connect
+   failure onward, lists and **deletes** the project's IPv4 network bans
+   (`119-127`, `157-161`), logging that only at `--debug`. Preflight does not do
+   this — it reads only through the Management API read-only endpoint — but an
+   apply cannot avoid it. Expect a short-lived role to appear and expire, and
+   check the ban list afterwards if the pooler was flaky.
+2. **`20261027230000` holds `ACCESS EXCLUSIVE` on `public.leads` and
+   `public.phone_clicks` through its backfill, and no `lock_timeout` is set.**
+   Lead-form inserts and phone-tap inserts block for the duration. Preflight
+   prints both row counts and a `lock_note=` line so the window can be sized.
+   **Run it off-peak**, inside the exclusive writer window. If it has not
+   returned within a few minutes at the printed row counts, investigate the
+   blocking session (`pg_locks` / `pg_stat_activity`) rather than killing the
+   runner.
+3. **If the history write ever fails, reconciliation is manual.** As of this
+   change `20261027230000` carries no `begin;`/`commit;` of its own, so the CLI
+   wraps the statements **and** the `schema_migrations` insert in one
+   transaction and they commit or roll back together — the applied-but-unrecorded
+   window is closed for all three targets. The runner still **hard-stops and
+   says STOP AND ESCALATE** if it ever sees that state, because CLI 2.113.0
+   cannot prove a history-write failure (exit codes 0/1 only, the
+   `Applying migration …` line prints before the file runs, and `applied` is
+   emitted only on success), so the state is indistinguishable from a
+   hand-applied migration. There is no replay path and the runner will never
+   write history. Reconciling it is a human decision; `migration repair` is
+   never the answer.
+
 ## Operator prerequisites
 
 1. **Merged release.** `RELEASE_SHA` is the full 40-character `origin/main` tip,
@@ -63,11 +98,18 @@ different-lane review before first use.
    it reading the operator's persisted profile or token and keeps any write
    inside the receipt directory. Omitting `HOME` is worse — tools then fall back
    to the passwd entry, i.e. the real home.
-   The runner's own utilities are pinned: `PATH` is fixed to
-   `/usr/bin:/bin:/usr/sbin:/sbin`, and `shasum`, `git` and `curl` are the
-   absolute `/usr/bin/...` binaries. Only `jq` is configurable
-   (`LEAD_MIGRATION_JQ`, which must be an absolute path) because its location
-   genuinely varies.
+   The runner's own utilities are pinned and **nothing about them is
+   configurable**: `PATH` is fixed to `/usr/bin:/bin:/usr/sbin:/sbin`, and
+   `shasum`, `git`, `curl`, `env`, `awk` and `bash` are absolute
+   `/usr/bin/...` (`/bin/bash`) paths. `jq` is the one tool chosen from a short
+   candidate list, with a version gate. There is **no test mode**: no
+   environment variable changes which tools the shipped script uses, where its
+   private root is, or which PATH it searches. The suite substitutes those
+   constants itself, in `scripts/test/lead-migration-runner-harness.mjs`, and a
+   test asserts the shipped script contains no test-mode switch.
+   The access token is also validated before use: anything outside
+   `[0-9A-Za-z._-]` is refused, because the script hands it to a curl config
+   document and to a shell `read`.
    Verified against supabase/cli v2.113.0 (commit `03880bb1`):
    - `apps/cli/src/legacy/config/legacy-cli-config.layer.ts:38-80` — with no
      `--profile` flag and no `SUPABASE_PROFILE`, the CLI falls back to the
@@ -102,9 +144,13 @@ different-lane review before first use.
    Supabase Studio action, CLI process or automation may apply, repair, revert,
    squash or otherwise change migration history or the public schema. Bind
    `LEAD_MIGRATION_EXCLUSIVE_WRITER_ACK` to the exact `RELEASE_SHA`.
-7. **`jq`** on PATH. Any version from 1.6 to 1.8.1 — this runner's catalog
-   validator was checked against 1.6, 1.7, 1.7.1, jq-1.7.1-apple, 1.8.0 and
-   1.8.1 and behaves identically on all six.
+7. **`jq` at `/opt/homebrew/bin/jq` or `/usr/bin/jq`**, whichever exists first.
+   There is **no path override** — the runner takes a short list of absolute
+   candidates and nothing else — and it checks `jq --version` is in the reviewed
+   range `jq-1.6` to `jq-1.8`, because `as` binding changed in 1.8 and the
+   catalog validator is written for both. The validator was checked against 1.6,
+   1.7, 1.7.1, jq-1.7.1-apple, 1.8.0 and 1.8.1 and behaves identically on all
+   six.
    ⚠️ **`scripts/run-call-tracking-migrations.sh` is not jq-1.8 safe.** Its
    validator uses `… and .[0] as $s | …`, whose binding changed in jq 1.8, so
    under 1.8.x it dies with `Cannot index boolean with string "history"` and
@@ -139,42 +185,36 @@ you to finish the call-tracking runner first. Preflight still runs on the bare
 36-version baseline and reports `call_tracking_recorded=false`, so the state can
 be inspected before anything is applied.
 
-## 🔴 `20261027230000` commits itself: stop and escalate, there is no replay
+## `20261027230000` no longer commits itself
 
-`20261027230000_ai_referrer_tagging.sql` contains an explicit `begin; … commit;`.
-CLI 2.113.0 executes the file — **including its `COMMIT`** — and only then
-inserts the row into `supabase_migrations.schema_migrations`, so a failure in
-that gap can leave the AI-referrer objects present with no history row. The
-other two targets have no explicit transaction, so for them the schema change
-and the history row are in one transaction; a test asserts that only
-`20261027230000` carries a `begin`/`commit`.
+It used to. The file carried its own `begin;`/`commit;`, and CLI 2.113.0 executes
+a migration file's statements and then inserts the `schema_migrations` row —
+verified in the pinned source, `apps/cli/src/legacy/shared/
+legacy-migration-apply.ts:145-153` and `205-234`: the batch is
+`BEGIN` → statements → history insert → `COMMIT`, and *"A file with no such
+statements is a single BEGIN/COMMIT"*. An inner `commit;` therefore ended the
+CLI's transaction **before** the history insert, leaving a window where the
+schema change and both backfills were committed with the version unrecorded.
 
-**The runner no longer offers a recovery mode. It stops and tells you to
-escalate.** An earlier revision had a `LEAD_MIGRATION_RECOVER_*` opt-in; it has
-been removed, because the evidence it asked for does not exist:
+**That window is now closed at the source.** The file has been re-cut in place
+without its own transaction (it has never been applied anywhere, so there is no
+recorded history row or deployed schema to contradict), its SHA-256 is re-pinned
+in the runner, and every contract that applies it now passes `--single-transaction`
+(`-1`) to psql — `.github/workflows/ai-referrer-tagging.yml`, the
+`lead-migration-rollback` job and `scripts/test-lead-migration-probe.mjs`. A
+test asserts that **none** of the three targets contains a `begin;`/`commit;`.
 
-- `migration up`'s exit codes are **only 0 and 1**, and 1 covers both a database
-  connection failure and a SQL execution error
-  (`apps/cli/src/legacy/commands/migration/up/SIDE_EFFECTS.md` at v2.113.0);
-- the `Applying migration <file>...` line is printed to stderr **before** the
-  file executes, so finding the filename in a failed run's stderr proves only
-  that the CLI was about to run it;
-- the structured `applied` list is emitted **only on success**.
+**Why `-1` is now mandatory for any psql-based applier:** without a surrounding
+transaction, a bare `psql -f` runs each statement on its own and can leave the
+`revoke all on function public.frame_ai_referrer(...)` applied without its
+paired `grant execute … to service_role` four lines later — the one state that
+breaks every `leads` and `phone_clicks` insert with *permission denied for
+function frame_ai_referrer*. The migration's own header says so.
 
-So "objects present, history row absent" is indistinguishable from a
-hand-applied migration, a partial manual run, or a different failure entirely.
-A runner cannot responsibly replay on that evidence, and a wrong replay re-runs
-DDL and a backfill and re-takes `ACCESS EXCLUSIVE` on both tables.
-
-When the runner hits that state it prints `STOP AND ESCALATE`, names the receipt
-directory, and exits non-zero. Escalate with the receipt directory, decide by
-hand what actually happened, and **never** use `migration repair` — it would
-write a history row for SQL nobody verified ran.
-
-The clean long-term fix is for `20261027230000` to lose its explicit
-`begin`/`commit` and let the CLI own the transaction. That changes the file's
-SHA-256, so it needs its own reviewed PR and a re-pin here; it is deliberately
-not done in this change.
+**The hard stop stays anyway.** If the runner ever sees the AI-referrer objects
+present with no history row, it prints `STOP AND ESCALATE`, names the receipt
+directory and exits non-zero. See acceptance item 3 above for why there is no
+replay path.
 
 ## Lock note (read before choosing the window)
 
@@ -225,8 +265,38 @@ POST https://api.supabase.com/v1/projects/hdcflshhomzildwqlmwh/database/query/re
 Authorization: Bearer <token>
 Content-Type: application/json
 User-Agent: SupabaseCLI/2.113.0
-{"query":"<the catalog probe>","read_only":true}
+{"query":"<the catalog probe>"}
 ```
+
+The body is **exactly** `{"query": "…"}`. That is the documented schema — the
+API reference for *Run a sql query as supabase_read_only_user* lists `query`
+(required string) and `parameters` (optional array) and **no `read_only`
+member**; the read-only behaviour comes from the path. An earlier revision of
+this runner sent an undocumented `read_only: true`; it has been removed.
+Documented success is **201**; the runner accepts **200 or 201** (the reference
+shows only 201 and the endpoint is marked Beta) and hard-stops on anything else,
+including 401/403/429/500.
+
+The reference also states **"All entity references must be schema qualified."**
+Every relation and catalog function in the probe is therefore fully qualified —
+`pg_catalog.pg_trigger`, `pg_catalog.pg_class`, `pg_catalog.pg_index`,
+`pg_catalog.pg_indexes`, `pg_catalog.pg_namespace`, `pg_catalog.pg_proc`,
+`information_schema.columns`, `supabase_migrations.schema_migrations`,
+`public.leads`, `public.phone_clicks`, and `pg_catalog.to_regprocedure`,
+`pg_catalog.has_function_privilege`, `pg_catalog.pg_get_indexdef`,
+`pg_catalog.jsonb_agg`, `pg_catalog.count`. (`coalesce`, `exists` and `case` are
+SQL constructs, not schema-qualifiable.) The qualified probe was executed
+against a real PostgreSQL 16 to confirm it parses and returns the same values.
+
+**The response is fail-closed before any field is read.** The runner slurps it
+(`jq -s`) and requires exactly **one** document that is an **array of exactly
+one row object**, with `history` an array of strings, every flag a **JSON
+boolean** and every count a **non-negative integer**. Nothing is coerced: a
+string `"false"` or `"0"` is a hard stop, and an empty body or empty stream
+fails the same gate on jq 1.6 through 1.8. The documented 201 response body is
+`{}` in the reference, so the array-of-rows shape is **not** documented — which
+is exactly why an unexpected shape can only produce a hard stop, never a
+verdict.
 
 The project ref is a **literal in the URL**, so no profile, environment variable
 or linked-ref file can redirect it. That the read-only role can see what the
@@ -480,40 +550,58 @@ rollback takes the same `ACCESS EXCLUSIVE` locks as its apply.
 ## Tests
 
 `node --test scripts/run-lead-migrations.test.mjs` (blocking job
-`lead-migration-runner`) drives the **real** script: each case commits a copy of
-it into a throwaway git repository, so the self-verification passes only because
-the executed bytes are the reviewed bytes. The stubs are strict — `supabase`
-records its argv **NUL-separated** so arguments are compared as an array and
-never as a joined string, dispatches on the exact vector including `init`
-(whose `--workdir` must equal the pinned global one) and exits 90/91 on
-anything unexpected; `curl` parses the config the runner pipes into its stdin
-and asserts the method, URL, headers, `read_only` flag and the SQL body;
-`shasum` answers the pinned CLI digest only for a file carrying the stub CLI's
-marker and computes a real SHA-256 for everything else. One documented seam,
-`LEAD_MIGRATION_TEST_HARNESS_ROOT`, is what makes this possible; the runner
-prints `test_harness=1` and warns on stderr whenever it is set, and it must
-never be set in production.
+`lead-migration-runner`) drives the **real** script. The shipped script has **no
+test mode**, so the substitution happens in a TEST-ONLY file,
+`scripts/test/lead-migration-runner-harness.mjs`, which rewrites a fixed,
+asserted list of production constants (the `PATH` line, `SHASUM`, `CURL`,
+`TRUSTED_TMP_ROOT`, the jq candidate list) and hands the result to the suite to
+commit into its throwaway repository. Each substitution must still match the
+shipped text or the harness throws, so the suite cannot drift into testing
+something else. The runner's self-verification then compares the executed bytes
+with `git show <RELEASE_SHA>:scripts/run-lead-migrations.sh` **inside that
+repository**, so it still proves the bytes that ran are the bytes that were
+committed — and a working-tree edit after the commit still stops the run. A
+separate test asserts the shipped script contains no `TEST_HARNESS`,
+`LEAD_MIGRATION_JQ` or `test_harness` string and that nothing outside the test
+tree references the harness file.
 
-Covered: the binary copy and the hashed copy (including that nothing executes
-before the digest matches), the `env -i` allowlist and the redirected `HOME`,
-the refusal of every CLI-redirecting variable *before* any call, the read-only
-request shape and that no retained receipt holds the token, non-200 and failed
-read-only calls, the keychain refusal, the apply call sequence, the escalation
-state, the retained streams and the printed field allowlist, the
-self-verification, and every history/catalog/staging gate.
+The stubs are strict: `supabase` **dispatches on the argument array**, never on a
+joined string, records argv NUL-separated, logs its cwd, `HOME`, `PATH` and the
+full key set of its environment, captures `ps` output for itself and its parent,
+and exits 90/91/92 on an unexpected vector, missing pinned flags, or an `init`
+whose `--workdir` differs from the pinned one. `curl` requires `-q` as its
+**first** argument, parses the config from stdin, records the environment it was
+given, and asserts the method, URL, headers and body.
+
+Cases added in this revision: the documented 201 and 200 are accepted and
+202/204/400/401/403/429/500 are hard stops; fifteen malformed response bodies —
+empty, whitespace, non-JSON, object-not-array, empty array, two rows, two
+documents, a string `"false"` where a boolean belongs, a string `"0"` where a
+count belongs, a negative and a fractional count, a missing field, and a
+malformed `history` — each stop **before any field is read**; the body is exactly
+`{"query": …}`; the token reaches the CLI's environment and curl's header but
+appears in no argv, no `ps` line, no receipt and no output; a token with a quote,
+backslash, space, `$(…)` or newline is refused before anything runs; a hostile
+`.curlrc` in the real `HOME` plus `HTTPS_PROXY`/`https_proxy`/`ALL_PROXY`/
+`CURL_CA_BUNDLE`/`SSL_CERT_FILE` in the caller's environment all fail to reach
+curl; the exact runbook launch form (relative path) works and `SELF_PATH`
+resolves before the `cd`; a no-op apply reports `cli_calls=version,projects-list`
+and never claims `init`, `link` or `migration-up`; and the CLI's own JSON is
+shape-gated the same way.
 
 `node scripts/test-lead-migration-probe.mjs` (blocking job
 `lead-migration-probe`) extracts the **real** probe SQL and the runner's **own**
-jq validator and escalation detector out of the script and runs them against a
-throwaway `postgres:16-alpine` with the real Utah baselines, across three states
-— pristine, the COMMIT-before-history state built for real, and fully applied —
-plus a disabled trigger, an `EXECUTE` grant leaked through `PUBLIC` and a
-redefined index.
+jq validator and escalation detector and runs them against a throwaway
+`postgres:16-alpine`. It **refuses to run if `PGDATABASE` is set**: it creates
+and drops its own disposable database, so it can never apply migrations or
+perturb catalogs in a database the caller chose. It also asserts the probe SQL
+is schema-qualified, as the endpoint requires.
 
 `supabase/tests/lead_migrations_rollback.sql` (blocking job
 `lead-migration-rollback`) runs a verbatim copy of the rollback above on real
 Postgres and asserts catalog and history end up agreeing; a unit test fails if
-the runbook and that file drift apart.
+the runbook and that file drift apart. All three targets are applied there with
+`psql -1`, as every psql-based applier now must.
 
 A passing run of any of them is **not** evidence about production state and is
 not a substitute for the live preflight.

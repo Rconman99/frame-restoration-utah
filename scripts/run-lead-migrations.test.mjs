@@ -35,6 +35,10 @@ import path from "node:path";
 import { spawnSync } from "node:child_process";
 import test from "node:test";
 import { fileURLToPath } from "node:url";
+import {
+  rewriteForTests,
+  SUBSTITUTIONS,
+} from "./test/lead-migration-runner-harness.mjs";
 
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const RUNNER_RELATIVE = "scripts/run-lead-migrations.sh";
@@ -125,87 +129,91 @@ function guardNames(history) {
 // variable survives into it.
 // ---------------------------------------------------------------------------
 
-const stubCli = (state) => `#!${"/bin/sh"}
-${CLI_MARKER}
-set -eu
-state='${state}'
-# argv recorded NUL-separated, one record per call, so the test compares an
-# array and never a joined string.
-for arg in "$@"; do
-  printf '%s\\0' "$arg" >> "$state/argv.nul"
-done
-printf '\\036' >> "$state/argv.nul"
-printf '%s\\n' "$(pwd -P)" >> "$state/cwd.log"
-printf '%s\\n' "\${HOME:-<unset>}" >> "$state/home.log"
-printf 'PATH=%s\\n' "\${PATH:-<unset>}" >> "$state/path.log"
-printf 'TOKEN_PRESENT=%s\\n' "\${SUPABASE_ACCESS_TOKEN:+yes}" >> "$state/env.log"
-printf 'NO_KEYRING=%s\\n' "\${SUPABASE_NO_KEYRING:-<unset>}" >> "$state/env.log"
-printf 'LC_ALL=%s\\n' "\${LC_ALL:-<unset>}" >> "$state/env.log"
-printf 'LEAKED=%s\\n' "\${STUB_STATE_DIR:+LEAK}\${STUB_STATE_DIR:-none}" >> "$state/env.log"
-argv="$*"
-case "$argv" in
-  '--version') ;;
-  '--profile supabase --workdir '*)
-    seen=$(printf '%s' "$argv" | sed 's|^--profile supabase --workdir \\([^ ]*\\).*|\\1|')
-    printf '%s\\n' "$seen" >> "$state/workdir.log"
-    argv=$(printf '%s' "$argv" | sed "s|^--profile supabase --workdir $seen ||")
-    ;;
-  *)
-    printf 'stub supabase: missing pinned global flags: %s\\n' "$*" >&2
-    exit 91
-    ;;
-esac
-next_fixture() {
-  prefix="$1"
-  counter="$state/$prefix.count"
-  n=1
-  if [ -f "$counter" ]; then n=$(cat "$counter"); fi
-  echo $((n + 1)) > "$counter"
-  file="$state/$prefix.$n.json"
-  while [ ! -f "$file" ] && [ "$n" -gt 1 ]; do
-    n=$((n - 1))
-    file="$state/$prefix.$n.json"
-  done
-  cat "$file"
+const stubCli = (state) => `#!${process.execPath}
+// ${CLI_MARKER}  (the digest stub recognises this marker; it must be a JS comment)
+// Dispatch on the argument ARRAY, never on a joined string: an argument
+// containing a space or a newline cannot forge a boundary here.
+const fs = require("node:fs");
+const path = require("node:path");
+const { execFileSync } = require("node:child_process");
+const state = ${JSON.stringify(state)};
+const argv = process.argv.slice(2);
+fs.appendFileSync(state + "/argv.nul", argv.join("\\u0000") + "\\u0000" + "\\u001e");
+fs.appendFileSync(state + "/cwd.log", fs.realpathSync(process.cwd()) + "\\n");
+fs.appendFileSync(state + "/home.log", (process.env.HOME ?? "<unset>") + "\\n");
+fs.appendFileSync(state + "/path.log", "PATH=" + (process.env.PATH ?? "<unset>") + "\\n");
+fs.appendFileSync(
+  state + "/env.log",
+  [
+    "TOKEN_PRESENT=" + (process.env.SUPABASE_ACCESS_TOKEN ? "yes" : "no"),
+    "TOKEN_VALUE_SEEN=" + (process.env.SUPABASE_ACCESS_TOKEN ?? "<unset>"),
+    "NO_KEYRING=" + (process.env.SUPABASE_NO_KEYRING ?? "<unset>"),
+    "LC_ALL=" + (process.env.LC_ALL ?? "<unset>"),
+    "ENV_KEYS=" + Object.keys(process.env).sort().join(","),
+  ].join("\\n") + "\\n",
+);
+// The whole visible command line of this process AND of its parents, so the
+// suite can prove the token is in no argv anywhere in the chain.
+try {
+  const ps = execFileSync("/bin/ps", ["-o", "args=", "-p", String(process.pid) + "," + String(process.ppid)], { encoding: "utf8" });
+  fs.appendFileSync(state + "/ps.log", ps);
+} catch (error) {
+  fs.appendFileSync(state + "/ps.log", "ps-failed\\n");
 }
-case "$argv" in
-  '--version')
-    cat "$state/version.txt"
-    ;;
-  '--agent no --output-format json projects list')
-    exit_code=$(cat "$state/projects.exit.txt")
-    if [ "$exit_code" != '0' ]; then
-      printf 'stub supabase: refusing, token=%s\\n' "would-be-leaked" >&2
-      exit "$exit_code"
-    fi
-    cat "$state/projects.json"
-    ;;
-  'init --workdir /'*)
-    init_workdir=$(printf '%s' "$argv" | sed 's|^init --workdir ||')
-    if [ "$init_workdir" != "$seen" ]; then
-      printf 'stub supabase: init --workdir %s does not match the pinned --workdir %s\\n' \\
-        "$init_workdir" "$seen" >&2
-      exit 92
-    fi
-    mkdir -p "$init_workdir/supabase"
-    cp "$state/config.toml" "$init_workdir/supabase/config.toml"
-    ;;
-  'link --project-ref ${PROJECT_REF} --yes')
-    mkdir -p supabase/.temp
-    cat "$state/linked-ref.txt" > supabase/.temp/project-ref
-    ;;
-  '--agent no --output-format json migration up --linked --include-all --yes')
-    find supabase/migrations -maxdepth 1 -type f -name '*.sql' -exec basename {} ';' \\
-      | LC_ALL=C sort > "$state/staged.txt"
-    cat "$state/up.stdout.json"
-    cat "$state/up.stderr.txt" >&2
-    exit "$(cat "$state/up.exit.txt")"
-    ;;
-  *)
-    printf 'stub supabase: unexpected invocation: %s\\n' "$argv" >&2
-    exit 90
-    ;;
-esac
+
+const die = (code, message) => {
+  process.stderr.write("stub supabase: " + message + "\\n");
+  process.exit(code);
+};
+const eq = (a, b) => a.length === b.length && a.every((v, i) => v === b[i]);
+
+let rest = argv;
+if (!eq(argv, ["--version"])) {
+  if (argv[0] !== "--profile" || argv[1] !== "supabase" || argv[2] !== "--workdir" ||
+      !(argv[3] ?? "").startsWith("/")) {
+    die(91, "missing pinned global flags: " + JSON.stringify(argv));
+  }
+  fs.appendFileSync(state + "/workdir.log", argv[3] + "\\n");
+  rest = argv.slice(4);
+}
+
+const read = (name) => fs.readFileSync(path.join(state, name), "utf8");
+const nextFixture = (prefix) => {
+  const counter = path.join(state, prefix + ".count");
+  let n = 1;
+  try { n = Number(fs.readFileSync(counter, "utf8").trim()) || 1; } catch {}
+  fs.writeFileSync(counter, String(n + 1));
+  let file = path.join(state, prefix + "." + n + ".json");
+  while (!fs.existsSync(file) && n > 1) { n -= 1; file = path.join(state, prefix + "." + n + ".json"); }
+  return fs.readFileSync(file, "utf8");
+};
+
+if (eq(rest, ["--version"])) {
+  process.stdout.write(read("version.txt"));
+} else if (eq(rest, ["--agent", "no", "--output-format", "json", "projects", "list"])) {
+  const code = Number(read("projects.exit.txt").trim());
+  if (code !== 0) {
+    process.stderr.write("refusing, token=would-be-leaked\\n");
+    process.exit(code);
+  }
+  process.stdout.write(read("projects.json"));
+} else if (rest.length === 3 && rest[0] === "init" && rest[1] === "--workdir") {
+  // exact: init's workdir must equal the pinned global one
+  if (rest[2] !== argv[3]) die(92, "init --workdir " + rest[2] + " != pinned " + argv[3]);
+  fs.mkdirSync(path.join(rest[2], "supabase"), { recursive: true });
+  fs.copyFileSync(path.join(state, "config.toml"), path.join(rest[2], "supabase", "config.toml"));
+} else if (eq(rest, ["link", "--project-ref", ${JSON.stringify(PROJECT_REF)}, "--yes"])) {
+  fs.mkdirSync("supabase/.temp", { recursive: true });
+  fs.writeFileSync("supabase/.temp/project-ref", read("linked-ref.txt"));
+} else if (eq(rest, ["--agent", "no", "--output-format", "json", "migration", "up", "--linked", "--include-all", "--yes"])) {
+  const staged = fs.readdirSync("supabase/migrations").filter((f) => f.endsWith(".sql")).sort();
+  fs.writeFileSync(path.join(state, "staged.txt"), staged.join("\\n") + "\\n");
+  process.stdout.write(read("up.stdout.json"));
+  process.stderr.write(read("up.stderr.txt"));
+  process.exit(Number(read("up.exit.txt").trim()));
+} else {
+  die(90, "unexpected invocation: " + JSON.stringify(rest));
+}
 `;
 
 // curl stub: reads the runner's config from stdin, asserts the request it
@@ -214,10 +222,23 @@ const stubCurl = (state) => `#!${process.execPath}
 const fs = require("node:fs");
 const state = ${JSON.stringify(state)};
 const argv = process.argv.slice(2);
-if (argv.join(" ") !== "--config -") {
-  process.stderr.write("stub curl: expected --config - but got " + argv.join(" ") + "\\n");
+// -q must be FIRST, so no .curlrc anywhere can be read.
+if (argv[0] !== "-q" || argv.join(" ") !== "-q --config -") {
+  process.stderr.write("stub curl: expected '-q --config -' but got " + argv.join(" ") + "\\n");
   process.exit(81);
 }
+fs.appendFileSync(
+  state + "/curl.env.jsonl",
+  JSON.stringify({
+    HOME: process.env.HOME ?? null,
+    HTTPS_PROXY: process.env.HTTPS_PROXY ?? null,
+    https_proxy: process.env.https_proxy ?? null,
+    ALL_PROXY: process.env.ALL_PROXY ?? null,
+    CURL_CA_BUNDLE: process.env.CURL_CA_BUNDLE ?? null,
+    SSL_CERT_FILE: process.env.SSL_CERT_FILE ?? null,
+    keys: Object.keys(process.env).sort(),
+  }) + "\\n",
+);
 const config = fs.readFileSync(0, "utf8");
 const value = (key) => {
   const line = config.split("\\n").find((l) => l.startsWith(key + " = "));
@@ -348,10 +369,20 @@ function runCase(options = {}) {
     path.join(work, GUARD_PATH),
     tamper[GUARD_PATH] ?? fs.readFileSync(path.join(repoRoot, GUARD_PATH), "utf8"),
   );
-  // The runner itself, committed into the fixture: its self-verification
-  // compares its own bytes with `git show <RELEASE_SHA>:scripts/...`.
+  // The runner, rewritten by the TEST-ONLY harness and committed into the
+  // fixture: the shipped script has no test mode, so the substitution happens
+  // here. Its self-verification then compares the executed bytes with
+  // `git show <RELEASE_SHA>:scripts/...` inside this repository.
   const fixtureRunner = path.join(work, RUNNER_RELATIVE);
-  fs.writeFileSync(fixtureRunner, runnerSource, { mode: 0o755 });
+  fs.writeFileSync(
+    fixtureRunner,
+    rewriteForTests(runnerSource, {
+      harnessDir: bin,
+      privateRoot: path.join(bin, "private-tmp"),
+      jq: JQ,
+    }),
+    { mode: 0o755 },
+  );
   // A dotenv file in the checkout: the CLI release is a Bun single-file
   // executable, which reads one from its working directory.
   fs.writeFileSync(path.join(work, ".env"), "SUPABASE_PROJECT_ID=wroaxatalhzslxkfmpse\n");
@@ -385,12 +416,18 @@ function runCase(options = {}) {
   fs.writeFileSync(path.join(state, "cli-digest.txt"), `${options.cliDigest ?? CLI_DIGEST}\n`);
   fs.writeFileSync(
     path.join(state, "up.stdout.json"),
-    `${JSON.stringify(options.up ?? { applied: [] })}\n`,
+    options.upRaw !== undefined
+      ? options.upRaw
+      : `${JSON.stringify(options.up ?? { applied: [] })}\n`,
   );
   fs.writeFileSync(path.join(state, "up.stderr.txt"), options.upStderr ?? "");
   fs.writeFileSync(path.join(state, "up.exit.txt"), `${options.upExit ?? 0}\n`);
   for (const [index, rows] of (options.catalogs ?? []).entries()) {
     fs.writeFileSync(path.join(state, `ro.${index + 1}.json`), `${JSON.stringify(rows)}\n`);
+  }
+  // Raw, un-JSON-encoded bodies, for the response-shape cases.
+  for (const [index, raw] of (options.roRaw ?? []).entries()) {
+    fs.writeFileSync(path.join(state, `ro.${index + 1}.json`), raw);
   }
   for (const [index, status] of (options.roStatus ?? []).entries()) {
     fs.writeFileSync(path.join(state, `ro.status.${index + 1}.txt`), `${status}\n`);
@@ -416,8 +453,6 @@ function runCase(options = {}) {
 
   const env = {
     ...cleanBaseEnv(),
-    LEAD_MIGRATION_TEST_HARNESS_ROOT: options.harnessRoot === null ? undefined : bin,
-    LEAD_MIGRATION_JQ: options.jq ?? JQ,
     RELEASE_SHA: options.releaseSha ?? tip,
     SUPABASE_BIN: options.supabaseBin === null ? "" : (options.supabaseBin ?? cliPath),
     LEAD_MIGRATION_EXECUTION_MODE: options.executionMode ?? "preflight",
@@ -432,7 +467,11 @@ function runCase(options = {}) {
   if (options.supabaseBinRelative) env.SUPABASE_BIN = `harness/supabase`;
   if (options.unsetAck) delete env.LEAD_MIGRATION_EXCLUSIVE_WRITER_ACK;
 
-  const result = spawnSync("bash", [...(options.bashArgs ?? []), fixtureRunner], {
+  // By default the suite launches the script the way the runbook does — by its
+  // RELATIVE path from the checkout root — which also proves the self-path
+  // resolution happens before the cd. `absoluteLaunch` uses the absolute form.
+  const launchPath = options.absoluteLaunch ? fixtureRunner : RUNNER_RELATIVE;
+  const result = spawnSync("bash", [...(options.bashArgs ?? []), launchPath], {
     cwd: work,
     encoding: "utf8",
     env,
@@ -479,13 +518,15 @@ function runCase(options = {}) {
     paths: readLines("path.log"),
     envLog: readLines("env.log"),
     workdirs: readLines("workdir.log"),
+    psLog: readLines("ps.log"),
+    curlEnv: readLines("curl.env.jsonl").map((l) => JSON.parse(l)),
   };
 
   if (process.env.LEAD_RUNNER_DEBUG) {
     console.error(
       `[debug] status=${result.status}\n--stdout--\n${stdout}\n--stderr--\n${result.stderr}\n--calls--\n${
         calls.map((c) => c.join(" ")).join("\n")
-      }\n--curl--\n${curlLog.map((c) => `${c.method} ${c.url}`).join("\n")}`,
+      }\n--curl--\n${curlLog.map((c) => `${c.method} ${c.url}`).join("\n")}\n--receipts--\n${receiptDir && fs.existsSync(receiptDir) ? fs.readdirSync(receiptDir).join(" ") : "(none)"}\n--state--\n${fs.readdirSync(state).join(" ")}\n--cli.version--\n${receiptDir && fs.existsSync(receiptDir + "/cli.version.stderr.txt") ? fs.readFileSync(receiptDir + "/cli.version.stderr.txt", "utf8") + "|OUT:" + fs.readFileSync(receiptDir + "/cli.version.stdout.txt", "utf8") : "(none)"}`,
     );
   }
 
@@ -581,6 +622,41 @@ test("each reviewed target and the poison guard are pinned to their release byte
   assert.match(runnerSource, new RegExp(`GUARD_SHA256='${guard}'`));
 });
 
+test("no target carries its own transaction, so the CLI owns it", () => {
+  // The CLI wraps a file's statements AND the schema_migrations insert in one
+  // BEGIN/COMMIT (legacy-migration-apply.ts:145-153, 205-234). A file with its
+  // own `commit;` would end that transaction before the history insert and
+  // reopen the applied-but-unrecorded window, which is why 20261027230000 was
+  // re-cut without one.
+  for (const target of TARGETS) {
+    const sql = fs.readFileSync(
+      path.join(repoRoot, `supabase/migrations/${target.basename}`),
+      "utf8",
+    );
+    const statements = sql.split("\n")
+      .filter((line) => !line.trimStart().startsWith("--"))
+      .filter((line) => /^\s*(begin|commit|rollback)\s*;/i.test(line));
+    assert.deepEqual(
+      statements,
+      [],
+      `${target.basename} carries its own transaction control: ${statements.join(" ")}`,
+    );
+  }
+  // And every psql-based applier supplies the transaction itself.
+  for (
+    const [file, pattern] of [
+      [".github/workflows/ai-referrer-tagging.yml", /psql [^\n]*-1 [^\n]*20261027230000_ai_referrer_tagging\.sql/],
+      [".github/workflows/hook-guards.yml", /psql [^\n]*-1 [^\n]*20261027230000_ai_referrer_tagging\.sql/],
+    ]
+  ) {
+    assert.match(fs.readFileSync(path.join(repoRoot, file), "utf8"), pattern, file);
+  }
+  assert.match(
+    fs.readFileSync(path.join(repoRoot, "scripts/test-lead-migration-probe.mjs"), "utf8"),
+    /relative\.startsWith\("supabase\/migrations\/"\) \? \["-1"\]/,
+  );
+});
+
 test("the runbook's rollback blocks are exactly the ones the rollback contract runs", () => {
   const transactions = (source) =>
     [...source.matchAll(/^begin;$\n([\s\S]*?)^commit;$/gm)].map((match) =>
@@ -600,16 +676,53 @@ test("the runbook's rollback blocks are exactly the ones the rollback contract r
   }
 });
 
+test("the shipped runner has no test-mode switch and no configurable tool paths", () => {
+  for (
+    const forbidden of [
+      "TEST_HARNESS",
+      "LEAD_MIGRATION_JQ",
+      "LEAD_MIGRATION_TEST",
+      "test_harness",
+    ]
+  ) {
+    assert.equal(
+      runnerSource.includes(forbidden),
+      false,
+      `${forbidden} must not exist in the shipped script`,
+    );
+  }
+  // Only these constants may be rewritten, and each must still be present
+  // verbatim — otherwise the harness is silently testing something else.
+  for (const { name, from } of SUBSTITUTIONS) {
+    assert.ok(runnerSource.includes(from), `${name} is not in its expected shipped form`);
+  }
+  // jq comes from a fixed candidate list with a version gate, not a variable.
+  assert.match(runnerSource, /for jq_candidate in \/opt\/homebrew\/bin\/jq \/usr\/bin\/jq; do/);
+  assert.match(runnerSource, /jq-1\.6\*\|jq-1\.7\*\|jq-1\.8\*/);
+  // and the harness file is test-only: nothing in scripts/ outside the test
+  // tree may reference it.
+  const referrers = fs.readdirSync(path.join(repoRoot, "scripts"))
+    .filter((f) => f.endsWith(".sh") || f.endsWith(".mjs"))
+    .filter((f) =>
+      fs.readFileSync(path.join(repoRoot, "scripts", f), "utf8")
+        .includes("lead-migration-runner-harness")
+    );
+  assert.deepEqual(referrers, ["run-lead-migrations.test.mjs"]);
+});
+
 test("the runner uses trusted absolute utilities and a fixed PATH", () => {
   assert.match(runnerSource, /^PATH='\/usr\/bin:\/bin:\/usr\/sbin:\/sbin'$/m);
   assert.match(runnerSource, /^SHASUM='\/usr\/bin\/shasum'$/m);
   assert.match(runnerSource, /^GIT='\/usr\/bin\/git'$/m);
   assert.match(runnerSource, /^CURL='\/usr\/bin\/curl'$/m);
+  assert.match(runnerSource, /^ENV='\/usr\/bin\/env'$/m);
+  assert.match(runnerSource, /^AWK='\/usr\/bin\/awk'$/m);
+  assert.match(runnerSource, /^BASH='\/bin\/bash'$/m);
   assert.match(runnerSource, /^TRUSTED_TMP_ROOT='\/private\/tmp'$/m);
   // TMPDIR is never read: the private root is fixed.
   assert.equal(/\$\{?TMPDIR/.test(runnerSource), false, "TMPDIR must never be read");
   // and every CLI call goes through env -i
-  assert.match(runnerSource, /\/usr\/bin\/env -i \\/);
+  assert.match(runnerSource, /"\$ENV" -i \\/);
 });
 
 test("the runner has no recovery mode and no side-effect acknowledgement left", () => {
@@ -655,7 +768,7 @@ test("the CLI is copied into the private root and the COPY is what gets hashed a
   assert.match(runnerSource, /CLI="\$BIN_DIR\/supabase"/);
   assert.match(
     runnerSource,
-    /test "\$\("\$SHASUM" -a 256 "\$CLI" \| awk '\{print \$1\}'\)" = "\$CLI_SHA256"/,
+    /test "\$\("\$SHASUM" -a 256 "\$CLI" \| "\$AWK" '\{print \$1\}'\)" = "\$CLI_SHA256"/,
   );
   // A wrong digest stops before the copy is ever executed.
   const badDigest = runCase({ ...pristinePreflight(), cliDigest: "f".repeat(64) });
@@ -705,8 +818,109 @@ test("every CLI call runs under env -i with only the allowlisted variables", () 
   assert.ok(result.envLog.includes("TOKEN_PRESENT=yes"));
   assert.ok(result.envLog.includes("NO_KEYRING=1"));
   assert.ok(result.envLog.includes("LC_ALL=C"));
-  // Nothing from the harness leaks into the CLI's environment.
-  assert.ok(result.envLog.includes("LEAKED=none"), result.envLog.join(","));
+  // The child's environment is exactly the allowlist (plus what the shell adds
+  // for itself: PWD, SHLVL and macOS's __CF_USER_TEXT_ENCODING).
+  const shellAdded = new Set(["PWD", "SHLVL", "_", "__CF_USER_TEXT_ENCODING", "OLDPWD"]);
+  for (const line of result.envLog.filter((l) => l.startsWith("ENV_KEYS="))) {
+    const keys = line.slice("ENV_KEYS=".length).split(",").filter(Boolean)
+      .filter((k) => !shellAdded.has(k));
+    assert.deepEqual(keys.sort(), [
+      "HOME",
+      "LANG",
+      "LC_ALL",
+      "PATH",
+      "SUPABASE_ACCESS_TOKEN",
+      "SUPABASE_NO_KEYRING",
+    ]);
+  }
+});
+
+test("the token reaches the child's environment but never any argv", () => {
+  const token = "tok-never-in-argv-0123456789";
+  const result = runCase({ ...pristinePreflight(), accessToken: token });
+  assert.equal(result.status, 0, result.stderr);
+
+  // It arrived: the CLI saw it in its environment.
+  assert.ok(result.envLog.includes(`TOKEN_VALUE_SEEN=${token}`));
+  // And curl received it, as a header in the config it read from stdin.
+  assert.ok(
+    result.curlLog.every((c) => c.headers.includes(`Authorization: Bearer ${token}`)),
+  );
+
+  // But no recorded argument vector contains it — not the CLI's own, and not
+  // any ancestor's as `ps` sees them (which is where `env VAR=secret` would
+  // put it).
+  for (const args of result.calls) {
+    for (const arg of args) {
+      assert.equal(arg.includes(token), false, `token in CLI argv: ${arg}`);
+    }
+  }
+  assert.ok(result.psLog.length > 0, "ps produced no output to check");
+  for (const line of result.psLog) {
+    assert.equal(line.includes(token), false, `token visible in ps: ${line}`);
+  }
+  // Nor any retained receipt, nor the terminal.
+  for (const [name, body] of Object.entries(result.receipts)) {
+    assert.equal(body.includes(token), false, `token retained in ${name}`);
+  }
+  assert.equal(result.stdout.includes(token), false);
+  assert.equal(result.stderr.includes(token), false);
+  // The launcher shape that makes this true.
+  assert.match(runnerSource, /printf '%s' "\$SUPABASE_ACCESS_TOKEN" \| "\$ENV" -i/);
+  assert.equal(
+    /SUPABASE_ACCESS_TOKEN="\$SUPABASE_ACCESS_TOKEN" \\/.test(runnerSource),
+    false,
+    "the token must not be an argument to env",
+  );
+});
+
+test("a token with a character outside the safe set is refused before use", () => {
+  for (
+    const bad of [
+      'tok"quote',
+      "tok\\backslash",
+      "tok with space",
+      "tok$(id)",
+      "tok\nnewline",
+    ]
+  ) {
+    const result = runCase({ ...pristinePreflight(), accessToken: bad });
+    expectHardStop(result, /SUPABASE_ACCESS_TOKEN contains a character outside/);
+    assert.deepEqual(result.calls, [], "nothing may run on a malformed token");
+  }
+});
+
+test("curl runs isolated: no .curlrc, no proxy, no CA override", () => {
+  // A hostile .curlrc in the REAL home, and proxy/CA variables in the caller's
+  // environment. Neither may reach curl.
+  const hostileHome = fs.mkdtempSync(path.join(os.tmpdir(), "hostile-home-"));
+  fs.writeFileSync(
+    path.join(hostileHome, ".curlrc"),
+    'proxy = "http://127.0.0.1:9"\ninsecure\n',
+  );
+  const result = runCase({
+    ...pristinePreflight(),
+    extraEnv: {
+      HOME: hostileHome,
+      HTTPS_PROXY: "http://127.0.0.1:9",
+      https_proxy: "http://127.0.0.1:9",
+      ALL_PROXY: "socks5://127.0.0.1:9",
+      CURL_CA_BUNDLE: "/nonexistent/ca.pem",
+      SSL_CERT_FILE: "/nonexistent/ca.pem",
+    },
+  });
+  fs.rmSync(hostileHome, { recursive: true, force: true });
+  assert.equal(result.status, 0, result.stderr);
+  assert.ok(result.curlEnv.length > 0, "the curl stub recorded no environment");
+  for (const env of result.curlEnv) {
+    assert.equal(env.HOME, `${result.receiptDir}/curl-home`, `curl HOME was ${env.HOME}`);
+    assert.notEqual(env.HOME, hostileHome);
+    for (const key of ["HTTPS_PROXY", "https_proxy", "ALL_PROXY", "CURL_CA_BUNDLE", "SSL_CERT_FILE"]) {
+      assert.equal(env[key], null, `${key} reached curl`);
+    }
+  }
+  // -q first is what makes the .curlrc unreadable even if HOME pointed at it.
+  assert.match(runnerSource, /"\$CURL" -q --config -/);
 });
 
 test("any CLI-redirecting environment variable is refused before anything runs", () => {
@@ -761,7 +975,10 @@ test("preflight reads only through the Management API read-only endpoint", () =>
     );
     assert.ok(call.headers.includes("Content-Type: application/json"));
     assert.ok(call.headers.includes("User-Agent: SupabaseCLI/2.113.0"));
-    assert.equal(call.body.read_only, true);
+    // The documented body is exactly {"query": …}; `read_only` is not a member
+    // of it and must not be sent.
+    assert.deepEqual(Object.keys(call.body), ["query"]);
+    assert.equal(call.body.read_only, undefined);
     assert.match(call.body.query, /^select\s/);
     assert.match(call.body.query, /supabase_migrations\.schema_migrations/);
     assert.match(call.body.query, /from public\.leads\) as lead_rows/);
@@ -793,7 +1010,7 @@ test("preflight reads only through the Management API read-only endpoint", () =>
     assert.ok(call.flags.includes("silent"));
   }
   // The token is passed through curl's stdin config, never argv, never a file.
-  assert.match(runnerSource, /"\$CURL" --config -/);
+  assert.match(runnerSource, /"\$CURL" -q --config -/);
   for (const name of Object.keys(result.receipts)) {
     assert.equal(
       result.receipts[name].includes("stub-token-not-a-real-credential"),
@@ -803,15 +1020,61 @@ test("preflight reads only through the Management API read-only endpoint", () =>
   }
 });
 
-test("a non-200 or failing read-only call is a hard stop that reproduces nothing", () => {
-  expectHardStop(
-    runCase({ ...pristinePreflight(), roStatus: ["403"] }),
-    /read-only query \(catalog-before\) returned HTTP 403/,
-  );
+test("the documented 201 is accepted, 200 is accepted, anything else stops", () => {
+  // The API reference documents 201 as the only success for this endpoint.
+  const created = runCase({ ...pristinePreflight(), roStatus: ["201", "201"] });
+  assert.equal(created.status, 0, created.stderr);
+  const ok = runCase({ ...pristinePreflight(), roStatus: ["200", "200"] });
+  assert.equal(ok.status, 0, ok.stderr);
+  for (const status of ["202", "204", "400", "401", "403", "429", "500"]) {
+    expectHardStop(
+      runCase({ ...pristinePreflight(), roStatus: [status] }),
+      new RegExp(`returned HTTP ${status}; only 200 and 201 are accepted`),
+    );
+  }
   expectHardStop(
     runCase({ ...pristinePreflight(), roExit: [22] }),
     /read-only query \(catalog-before\) failed/,
   );
+});
+
+test("the read-only response shape is fail-closed, with no type coercion", () => {
+  const good = catalog()[0];
+  const cases = [
+    { label: "empty body", raw: "" },
+    { label: "whitespace only", raw: "   \n" },
+    { label: "not json", raw: "not json\n" },
+    { label: "an object, not an array", raw: JSON.stringify(good) },
+    { label: "an empty array", raw: "[]" },
+    { label: "two rows", raw: JSON.stringify([good, good]) },
+    { label: "an array of a non-object", raw: JSON.stringify([1]) },
+    { label: "two documents", raw: `${JSON.stringify([good])}\n${JSON.stringify([good])}` },
+    {
+      label: 'a string "false" where a boolean belongs',
+      raw: JSON.stringify([{ ...good, leads_zip: "false" }]),
+    },
+    {
+      label: 'a string "0" where a count belongs',
+      raw: JSON.stringify([{ ...good, spam_columns: "0" }]),
+    },
+    { label: "a negative count", raw: JSON.stringify([{ ...good, lead_rows: -1 }]) },
+    { label: "a fractional count", raw: JSON.stringify([{ ...good, lead_rows: 1.5 }]) },
+    { label: "a missing field", raw: JSON.stringify([(() => { const { leads_zip, ...rest } = good; return rest; })()]) },
+    { label: "history not an array", raw: JSON.stringify([{ ...good, history: "x" }]) },
+    { label: "history with a non-string", raw: JSON.stringify([{ ...good, history: [1] }]) },
+  ];
+  for (const { label, raw } of cases) {
+    const result = runCase({ ...pristinePreflight(), roRaw: [raw] });
+    expectHardStop(
+      result,
+      /did not return exactly one array of one row object with JSON booleans and non-negative integer counts/,
+    );
+    assert.equal(
+      /catalog state in/.test(result.stderr),
+      false,
+      `${label}: the shape gate must fire before any field is read`,
+    );
+  }
 });
 
 test("keychain-profile mode is refused and a token is required", () => {
@@ -919,7 +1182,6 @@ test("every CLI stream is retained and the summary prints only allowlisted field
   assert.deepEqual(printed, [
     "receipt_dir",
     "mode",
-    "test_harness",
     "release_sha",
     "project_ref",
     "mode",
@@ -953,6 +1215,68 @@ test("an apply that fails still prints the receipt directory first", () => {
 // ---------------------------------------------------------------------------
 // 6. Self-verification
 // ---------------------------------------------------------------------------
+
+test("the exact runbook launch form works, and so does the absolute form", () => {
+  // The runbook says: cd into a clean checkout, then
+  // `LEAD_MIGRATION_EXECUTION_MODE=preflight scripts/run-lead-migrations.sh`.
+  // That relative form only works if the script resolves its own absolute path
+  // BEFORE it cds into the private directory.
+  const relative = runCase(pristinePreflight());
+  assert.equal(relative.status, 0, relative.stderr);
+  const absolute = runCase({ ...pristinePreflight(), absoluteLaunch: true });
+  assert.equal(absolute.status, 0, absolute.stderr);
+  // and the resolution really is ahead of the cd
+  const selfAt = runnerSource.indexOf("SELF_PATH=");
+  const cdAt = runnerSource.indexOf('\ncd "$RUNNER_DIR"');
+  assert.ok(selfAt > 0 && cdAt > 0 && selfAt < cdAt, "SELF_PATH must resolve before the cd");
+});
+
+test("a no-op apply reports only the CLI calls it actually made", () => {
+  const rows = catalog({ callTracking: true, recorded: TARGETS.map((t) => t.version) });
+  const result = runCase({ executionMode: "apply", catalogs: [rows, rows, rows] });
+  assert.equal(result.status, 0, result.stderr);
+  // It skipped init, link and migration up, so it must not claim them.
+  assert.match(result.stdout, /^cli_calls=version,projects-list$/m);
+  for (const skipped of ["init", "link", "migration-up"]) {
+    assert.equal(
+      new RegExp(`cli_calls=[^\\n]*${skipped}`).test(result.stdout),
+      false,
+      `a no-op apply reported ${skipped}`,
+    );
+  }
+  // A real apply does report them.
+  const before = catalog({ callTracking: true });
+  const after = catalog({ callTracking: true, recorded: TARGETS.map((t) => t.version) });
+  const applied = runCase({
+    executionMode: "apply",
+    catalogs: [before, before, after],
+    up: { applied: TARGETS.map((t) => `supabase/migrations/${t.basename}`) },
+  });
+  assert.equal(applied.status, 0, applied.stderr);
+  assert.match(applied.stdout, /^cli_calls=version,projects-list,init,link,migration-up$/m);
+});
+
+test("the CLI's own JSON is shape-gated too", () => {
+  const before = catalog({ callTracking: true });
+  const after = catalog({ callTracking: true, recorded: TARGETS.map((t) => t.version) });
+  for (
+    const raw of [
+      "",
+      "not json\n",
+      "[]",
+      JSON.stringify({}),
+      JSON.stringify({ applied: "x" }),
+      JSON.stringify({ applied: [1] }),
+    ]
+  ) {
+    const result = runCase({
+      executionMode: "apply",
+      catalogs: [before, before, after],
+      upRaw: raw,
+    });
+    expectHardStop(result, /migration up did not return one JSON object with an applied string array/);
+  }
+});
 
 test("the runner refuses to execute bytes that differ from the release", () => {
   const result = runCase({ ...pristinePreflight(), tamperSelf: true });
