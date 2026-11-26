@@ -15,7 +15,7 @@ concurrency:
 
 jobs:
   measure:
-    runs-on: ubuntu-latest
+    runs-on: ${{ fromJSON(vars.FRAME_CI_RUNNER || '["ubuntu-latest"]') }}
     # Must stay above the tracker's own 24-minute poll deadline plus the
     # surrounding steps, so the script's fail-closed message is what surfaces
     # rather than an opaque job kill.

@@ -17,7 +17,7 @@ permissions:
 jobs:
   lane-prefix:
     name: Branch declares its lane
-    runs-on: ubuntu-latest
+    runs-on: ${{ fromJSON(vars.FRAME_CI_RUNNER || '["ubuntu-latest"]') }}
     steps:
       - name: Check the head branch declares a lane
         env:
