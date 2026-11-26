@@ -15,6 +15,7 @@ import io
 import json
 import os
 import re
+import subprocess
 import sys
 import tempfile
 import unittest
@@ -605,24 +606,35 @@ class WorkflowContractTests(unittest.TestCase):
         self.assertNotIn('gh pr view "$BRANCH"', workflow)
         self.assertNotIn("1st & 15th", workflow)
 
-    def test_blog_workflow_is_gated_draft_only(self) -> None:
+    def test_blog_workflow_is_gated_approval_pr_only(self) -> None:
+        # Since 2026-11-18 (Ryan's approval) the Utah lane stages each gated
+        # draft on a claude/blog-approval-* branch and opens an "Approve to
+        # publish" PR. It must still never push main, never deploy, and keep
+        # quarantining drafts that fail the gates.
         autopost = (REPO / ".github/workflows/blog-autopost.yml").read_text(encoding="utf-8")
         traction = (REPO / ".github/workflows/blog-traction.yml").read_text(encoding="utf-8")
         publisher = (REPO / "scripts/blog-publish.py").read_text(encoding="utf-8")
-        self.assertIn("contents: read", autopost)
-        self.assertNotIn("contents: write", autopost)
+        self.assertIn("contents: write", autopost)
+        self.assertIn("pull-requests: write", autopost)
         self.assertNotIn("actions: write", autopost)
+        self.assertIn("APPROVAL_BRANCH: claude/blog-approval-${{ github.run_id }}", autopost)
         self.assertIn('python3 scripts/blog-publish.py --manifest "$DRAFT_PATH"', autopost)
+        self.assertEqual(autopost.count("--push "), 1)
+        self.assertIn('--push --push-ref "$APPROVAL_BRANCH"', autopost)
+        self.assertIn('--base main --head "$APPROVAL_BRANCH"', autopost)
+        self.assertIn("if: steps.gate.outcome == 'success'", autopost)
         self.assertIn('manifest["status"] = "needs-review"', autopost)
-        self.assertIn("actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a", autopost)
+        self.assertIn("actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9", autopost)
         self.assertIn("always() && steps.target.outputs.count != '0'", autopost)
         self.assertIn("steps.draft.outcome == 'success'", autopost)
         self.assertIn('GATE_OUTCOME: ${{ steps.gate.outcome }}', autopost)
         self.assertIn("steps.quarantine.outcome == 'success'", autopost)
         self.assertIn("node scripts/close-to-page-one.mjs --print-queue", autopost)
         self.assertIn('tee "$GATE_LOG"', autopost)
-        self.assertNotIn("--push", autopost)
         self.assertNotIn("git push", autopost)
+        self.assertNotIn("HEAD:main", autopost)
+        self.assertNotIn("--push-ref main", autopost)
+        self.assertNotIn("gh pr merge", autopost)
         self.assertNotIn("gh workflow run", autopost)
         self.assertNotIn("FRAME_TX_VERCEL_DEPLOY_HOOK_URL", autopost)
         self.assertNotIn("vercel deploy", autopost.lower())
@@ -790,6 +802,124 @@ class BlogDraftFenceParityTests(unittest.TestCase):
         self.assertIn("REJECTED by the legal compliance fence", prompts[1])
         self.assertNotIn("insurance claim", written["title"].lower())
         self.assertIn("fence clean", err.getvalue())
+
+
+
+class BlogDraftClaudeFailureLogTests(unittest.TestCase):
+    """Masked CLI failure logs for the Utah blog drafter (empty-stderr fix)."""
+
+    FAKE_OAUTH = "oauth-plan-token-TESTONLY-do-not-use-0001"
+    FAKE_ANTHROPIC = "anthropic-key-TESTONLY-do-not-use-0002"
+
+    def test_mask_secrets_redacts_env_values(self) -> None:
+        env = {
+            "CLAUDE_CODE_OAUTH_TOKEN": self.FAKE_OAUTH,
+            "ANTHROPIC_API_KEY": self.FAKE_ANTHROPIC,
+        }
+        text = f"token={self.FAKE_OAUTH} key={self.FAKE_ANTHROPIC} ok"
+        masked = blog_drafter.mask_secrets(text, env)
+        self.assertNotIn(self.FAKE_OAUTH, masked)
+        self.assertNotIn(self.FAKE_ANTHROPIC, masked)
+        self.assertIn("[REDACTED]", masked)
+        self.assertIn("ok", masked)
+
+    def test_mask_secrets_redacts_token_like_strings(self) -> None:
+        jwt = (
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9."
+            "eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4ifQ."
+            "signaturepartgoeshereok"
+        )
+        b64 = "QUJDREVGR0hJSktMTU5PUFFSU1RVVldYWVphYmNkZWZnaGlq+" + "A" * 8 + "=="
+        text = (
+            "sk-ant-api03-abcdefghijklmnopqrstuvwxyz "
+            "Bearer abcdefghijklmnopqrstuvwxyz012345 "
+            f"{jwt} {b64} leftover"
+        )
+        masked = blog_drafter.mask_secrets(text, {})
+        self.assertNotIn("sk-ant-api03-abcdefghijklmnopqrstuvwxyz", masked)
+        self.assertNotIn("abcdefghijklmnopqrstuvwxyz012345", masked)
+        self.assertNotIn(jwt, masked)
+        self.assertNotIn(b64, masked)
+        self.assertIn("sk-ant-[REDACTED]", masked)
+        self.assertIn("Bearer [REDACTED]", masked)
+        self.assertIn("[JWT-REDACTED]", masked)
+        self.assertIn("[B64-REDACTED]", masked)
+        self.assertIn("leftover", masked)
+
+    def test_tail_text_keeps_last_4kb(self) -> None:
+        body = ("HEAD" + ("x" * 5000) + "TAIL")
+        tailed = blog_drafter.tail_text(body, 4096)
+        self.assertTrue(tailed.endswith("TAIL"))
+        self.assertNotIn("HEAD", tailed)
+        self.assertLessEqual(len(tailed.encode("utf-8")), 4096)
+
+    def test_token_sanity_reports_presence_not_value(self) -> None:
+        env = {"CLAUDE_CODE_OAUTH_TOKEN": self.FAKE_OAUTH}
+        report = blog_drafter.token_sanity_report(env)
+        self.assertIn("present: yes", report)
+        self.assertIn("length>0: yes", report)
+        self.assertNotIn(self.FAKE_OAUTH, report)
+        empty = blog_drafter.token_sanity_report({})
+        self.assertIn("present: no", empty)
+        self.assertIn("length>0: no", empty)
+
+    def test_format_and_summary_include_stdout_when_stderr_empty(self) -> None:
+        proc = subprocess.CompletedProcess(
+            args=["claude"],
+            returncode=1,
+            stdout=f"model error; token {self.FAKE_OAUTH}",
+            stderr="",
+        )
+        env = {"CLAUDE_CODE_OAUTH_TOKEN": self.FAKE_OAUTH}
+        dumped = blog_drafter.format_claude_cli_failure(proc, env)
+        self.assertIn("exit_code=1", dumped)
+        self.assertIn("signal=none", dumped)
+        self.assertIn("model error", dumped)
+        self.assertIn("(empty)", dumped)
+        self.assertNotIn(self.FAKE_OAUTH, dumped)
+        summary = blog_drafter.claude_cli_error_summary(proc, env)
+        self.assertIn("claude CLI exit 1, signal none", summary)
+        self.assertIn("stderr=(empty)", summary)
+        self.assertIn("stdout=model error", summary)
+        self.assertNotIn(self.FAKE_OAUTH, summary)
+
+    def test_format_reports_signal_for_negative_returncode(self) -> None:
+        proc = subprocess.CompletedProcess(
+            args=["claude"], returncode=-15, stdout="", stderr="killed"
+        )
+        dumped = blog_drafter.format_claude_cli_failure(proc, {})
+        self.assertIn("exit_code=-15", dumped)
+        self.assertIn("SIGTERM (15)", dumped)
+        self.assertIn("killed", dumped)
+
+    def test_call_claude_plan_logs_masked_streams_on_failure(self) -> None:
+        proc = subprocess.CompletedProcess(
+            args=["claude"],
+            returncode=1,
+            stdout=f"CLI wrote the error here {self.FAKE_OAUTH}",
+            stderr="",
+        )
+        env = {"CLAUDE_CODE_OAUTH_TOKEN": self.FAKE_OAUTH}
+        with (
+            mock.patch.object(blog_drafter.subprocess, "run", return_value=proc),
+            contextlib.redirect_stderr(io.StringIO()) as err,
+        ):
+            with self.assertRaises(RuntimeError) as raised:
+                blog_drafter.call_claude_plan("claude-sonnet-5-5", "hello", env)
+        logged = err.getvalue()
+        message = str(raised.exception)
+        self.assertIn("exit_code=1", logged)
+        self.assertIn("CLI wrote the error here", logged)
+        self.assertIn("stderr=(empty)", message)
+        self.assertIn("CLI wrote the error here", message)
+        self.assertNotIn(self.FAKE_OAUTH, logged)
+        self.assertNotIn(self.FAKE_OAUTH, message)
+
+    def test_retry_default_stays_three_attempts(self) -> None:
+        source = (REPO / "scripts/blog-draft-openrouter.py").read_text(encoding="utf-8")
+        self.assertIn('ap.add_argument("--retries", type=int, default=3)', source)
+        self.assertIn("for attempt in range(1, args.retries + 1):", source)
+
 
 
 if __name__ == "__main__":

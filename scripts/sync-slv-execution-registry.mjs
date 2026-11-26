@@ -5,6 +5,7 @@ import crypto from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { isFrameWorkspaceIdentity } from "./lib/frame-workspace-identity.mjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const write = process.argv.includes("--write");
@@ -75,8 +76,8 @@ for (const query of displacement.queries) {
 
 const driveReceipt = read(externalEvidence.businessDriveReceipt);
 assert.equal(driveReceipt.status, "BUSINESS_ACCOUNT_SEARCH_COMPLETE_CURRENT_GBP_PROOF_NOT_FOUND");
-assert.equal(driveReceipt.connector.requiredAccount, "ryan@framerestorations.com");
-assert.equal(driveReceipt.connector.observedAccount, "ryan@framerestorations.com");
+assert.ok(isFrameWorkspaceIdentity(driveReceipt.connector.requiredAccount));
+assert.ok(isFrameWorkspaceIdentity(driveReceipt.connector.observedAccount));
 assert.equal(driveReceipt.connector.match, true);
 assert.equal(driveReceipt.evidenceSearchPerformed, true);
 assert.equal(driveReceipt.acceptedCurrentGbpProfileEvidenceCount, 0);

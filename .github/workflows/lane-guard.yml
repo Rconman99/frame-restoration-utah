@@ -23,6 +23,7 @@ jobs:
         env:
           HEAD_REF: ${{ github.head_ref }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
+          PR_AUTHOR: ${{ github.event.pull_request.user.login }}
         run: |
           set -euo pipefail
 
@@ -46,6 +47,17 @@ jobs:
 
           prefix="${HEAD_REF%%/*}"
           today="$(date -u +%F)"
+
+          # Dependabot is its own lane. Its branches are always named
+          # dependabot/<ecosystem>/<name> and cannot be renamed, so the prefix is
+          # accepted only when GitHub itself reports the PR author as
+          # dependabot[bot]. A person or agent cannot pass by naming a branch
+          # dependabot/..., because the author check fails for them.
+          if [ "$prefix" = "dependabot" ] && [ "$PR_AUTHOR" = "dependabot[bot]" ]; then
+            echo "::notice title=Lane::dependabot"
+            echo "Branch '$HEAD_REF' was opened by dependabot[bot]; lane 'dependabot'."
+            exit 0
+          fi
 
           for lane in $LANES; do
             if [ "$prefix" = "$lane" ]; then

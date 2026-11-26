@@ -39,7 +39,7 @@ import {
   TRACKING_NUMBERS,
 } from "../_shared/tracking-numbers.ts";
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { createClient } from "npm:@supabase/supabase-js@2.105.4";
 import { verifyTwilioRequest } from "../_shared/twilio-verify.ts";
 import {
   continueReceptionist,
@@ -66,6 +66,14 @@ import {
   normalizeAlertPhone,
   shouldAlertMissedCall,
 } from "../_shared/missed-call-alert.ts";
+import { answeredFromDial } from "../_shared/call-outcome.ts";
+import { writeCallLog } from "../_shared/call-log-columns.ts";
+
+// Twilio FromZip is the calling number's exchange ZIP. Keep only a clean 5-digit value.
+function twilioZip(value: string | undefined): string | null {
+  const zip = String(value || "").trim().slice(0, 5);
+  return /^\d{5}$/.test(zip) ? zip : null;
+}
 
 declare const EdgeRuntime: {
   waitUntil(promise: Promise<unknown>): void;
@@ -660,16 +668,17 @@ export async function handleCallRequest(req: Request): Promise<Response> {
         logStatus = "screening"; // lead deferred until the caller presses one
       }
 
-      const { error } = await supabase.from("call_logs").insert({
+      const { error } = await writeCallLog({
         call_sid: callSid,
         from_number: fromNumber,
         to_number: toNumber,
         forwarded_to: LANDON_PHONE,
         status: logStatus,
         city: cityLabel,
+        from_zip: twilioZip(data.FromZip),
         source_page: attribution.source,
         lead_id: leadId,
-      });
+      }, (row) => supabase.from("call_logs").insert(row));
       if (error) console.error("[handle-call] call_logs insert error:", error);
       if (!error && route !== "blocked") {
         await enrichCallerId(callSid, fromNumber, data.CallerName, {
@@ -991,20 +1000,45 @@ export async function handleCallRequest(req: Request): Promise<Response> {
       const updateData: Record<string, unknown> = { status: callStatus };
       if (duration > 0) updateData.duration_seconds = duration;
       if (recordingUrl) updateData.recording_url = recordingUrl;
-
-      let update = supabase.from("call_logs").update(updateData).eq(
-        "call_sid",
-        callSid,
-      );
-      // Child-leg status callbacks must not race over the private owner decision.
-      if (path === "status") {
-        update = update.not(
-          "status",
-          "in",
-          '("screened-awaiting-owner","screened-owner-accepted","screened-owner-rejected")',
+      // Explicit answered/missed, decided only by the Dial action (child-leg
+      // /status events cannot tell a declined whisper from a real bridge).
+      if (path === "completed") {
+        const answered = answeredFromDial(
+          data.DialBridged,
+          data.DialCallStatus,
+          Number.isFinite(duration) ? duration : 0,
         );
+        if (answered !== null) updateData.answered = answered;
       }
-      const { error } = ownerDeclined ? { error: null } : await update;
+
+      const update = (row: Record<string, unknown>) => {
+        let query = supabase.from("call_logs").update(row).eq(
+          "call_sid",
+          callSid,
+        );
+        // Child-leg status callbacks must not race over the private owner
+        // decision.
+        if (path === "status") {
+          query = query.not(
+            "status",
+            "in",
+            '("screened-awaiting-owner","screened-owner-accepted","screened-owner-rejected")',
+          );
+        }
+        return query;
+      };
+      // A declined whisper keeps its private screened-* status (the owner
+      // decision is immutable), but for the caller it is still a missed call.
+      // Write a literal false: the whisper leg's own talk time would read as
+      // answered if DialBridged were ever absent. Before the answered
+      // migration is live this write fails and is only logged; it carries
+      // nothing else, so nothing else is lost.
+      const { error } = ownerDeclined
+        ? await supabase.from("call_logs").update({ answered: false }).eq(
+          "call_sid",
+          callSid,
+        )
+        : await writeCallLog(updateData, update);
       if (error) console.error("Update error:", error);
 
       if (duration > 0) {

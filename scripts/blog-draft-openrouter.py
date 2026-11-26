@@ -26,6 +26,7 @@ import os
 import pathlib
 import re
 import shutil
+import signal
 import subprocess
 import sys
 import urllib.request
@@ -44,6 +45,20 @@ CLAUDE_MODEL = os.getenv("FRAME_BLOG_CLAUDE_MODEL", "claude-sonnet-5-5")
 METERED_ENV = ("ANTHROPIC_API_KEY", "ANTHROPIC_AUTH_TOKEN", "ANTHROPIC_BASE_URL",
                "CLAUDE_CODE_USE_BEDROCK", "CLAUDE_CODE_USE_VERTEX", "OPENROUTER_API_KEY")
 PENDING = ROOT / "data" / "blog-pending"
+# Last ~4KB of each CLI stream, logged on non-zero exit (bytes, not chars).
+CLI_LOG_TAIL_BYTES = 4096
+_MIN_SECRET_LEN = 8
+_SK_ANT_RE = re.compile(r"sk-ant-[A-Za-z0-9_-]+")
+_BEARER_RE = re.compile(r"(?i)Bearer\s+[A-Za-z0-9._\-]+")
+_JWT_RE = re.compile(r"eyJ[A-Za-z0-9_-]{20,}\.[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}")
+# Long base64-looking strings: 40+ chars with + / or padding, or 64+ alnum.
+_B64_RE = re.compile(
+    r"(?<![A-Za-z0-9+/=])(?:"
+    r"[A-Za-z0-9+/]{40,}={1,2}"
+    r"|[A-Za-z0-9+/]*[+\/][A-Za-z0-9+/=]{39,}={0,2}"
+    r"|[A-Za-z0-9+/]{64,}={0,2}"
+    r")(?![A-Za-z0-9+/=])"
+)
 
 # Compliance contract baked into the system prompt. Mirrors the hard-fence in
 # blog-publish.py (FORBIDDEN_PHRASES) + the Utah §31A-26-201 rules.
@@ -112,6 +127,99 @@ def call_openrouter(key: str, model: str, user: str,
     return (data["choices"][0]["message"]["content"] or "").strip()
 
 
+def _is_secret_env_name(name: str) -> bool:
+    return name == "CLAUDE_CODE_OAUTH_TOKEN" or name.startswith("ANTHROPIC_")
+
+
+def _secret_env_values(*envs: dict) -> list[str]:
+    """Exact secret values to redact, longest first. Never returns the names alone."""
+    seen: set[str] = set()
+    values: list[str] = []
+    for mapping in envs:
+        if not mapping:
+            continue
+        for key, val in mapping.items():
+            if not _is_secret_env_name(key) or not isinstance(val, str):
+                continue
+            if len(val) < _MIN_SECRET_LEN or val in seen:
+                continue
+            seen.add(val)
+            values.append(val)
+    values.sort(key=len, reverse=True)
+    return values
+
+
+def mask_secrets(text: str | None, env: dict | None = None) -> str:
+    """Redact plan/API secrets and token-like strings. Never returns raw secrets."""
+    if not text:
+        return ""
+    out = text
+    for value in _secret_env_values(env or {}, os.environ):
+        out = out.replace(value, "[REDACTED]")
+    out = _SK_ANT_RE.sub("sk-ant-[REDACTED]", out)
+    out = _BEARER_RE.sub("Bearer [REDACTED]", out)
+    out = _JWT_RE.sub("[JWT-REDACTED]", out)
+    out = _B64_RE.sub("[B64-REDACTED]", out)
+    return out
+
+
+def tail_text(text: str | None, limit: int = CLI_LOG_TAIL_BYTES) -> str:
+    """Return the last `limit` bytes of text (UTF-8), or empty string."""
+    if not text:
+        return ""
+    raw = text.encode("utf-8", errors="replace")
+    if len(raw) <= limit:
+        return text
+    return raw[-limit:].decode("utf-8", errors="replace")
+
+
+def token_sanity_report(env: dict | None = None) -> str:
+    """Presence / non-empty only. Never the value, never a network auth call."""
+    src = env if env is not None else os.environ
+    present = "CLAUDE_CODE_OAUTH_TOKEN" in src
+    length_gt0 = bool(src.get("CLAUDE_CODE_OAUTH_TOKEN"))
+    return (f"token sanity: CLAUDE_CODE_OAUTH_TOKEN present: "
+            f"{'yes' if present else 'no'}; length>0: "
+            f"{'yes' if length_gt0 else 'no'}")
+
+
+def _signal_label(returncode: int | None) -> str:
+    if returncode is None or returncode >= 0:
+        return "none"
+    sig = -returncode
+    try:
+        name = signal.Signals(sig).name
+    except ValueError:
+        name = f"SIG{sig}"
+    return f"{name} ({sig})"
+
+
+def format_claude_cli_failure(proc, env: dict | None = None) -> str:
+    """Exit code, signal, and last ~4KB of stdout/stderr, with secrets masked."""
+    code = proc.returncode
+    sig = _signal_label(code)
+    stdout = mask_secrets(tail_text(proc.stdout), env)
+    stderr = mask_secrets(tail_text(proc.stderr), env)
+    return "\n".join([
+        f"claude CLI failed: exit_code={code} signal={sig}",
+        "--- stdout (last 4096 bytes, secrets masked) ---",
+        stdout if stdout else "(empty)",
+        "--- stderr (last 4096 bytes, secrets masked) ---",
+        stderr if stderr else "(empty)",
+    ])
+
+
+def claude_cli_error_summary(proc, env: dict | None = None) -> str:
+    """Short masked line for the existing retry logger (includes stdout)."""
+    code = proc.returncode
+    sig = _signal_label(code)
+    err = mask_secrets((proc.stderr or "").strip(), env)[:300]
+    out = mask_secrets((proc.stdout or "").strip(), env)[:300]
+    err = err or "(empty)"
+    out = out or "(empty)"
+    return f"claude CLI exit {code}, signal {sig}: stderr={err}; stdout={out}"
+
+
 def claude_plan_env() -> dict:
     """Child env for the Claude CLI: metered-billing vars removed (fail-safe $0).
 
@@ -120,6 +228,8 @@ def claude_plan_env() -> dict:
     Mac the CLI's existing plan login is used.
     """
     env = {k: v for k, v in os.environ.items() if k not in METERED_ENV}
+    # Presence/non-empty only — never the value, never a refresh/auth call.
+    print(token_sanity_report(env), file=sys.stderr)
     if os.getenv("CI") and not env.get("CLAUDE_CODE_OAUTH_TOKEN"):
         sys.exit("CLAUDE_CODE_OAUTH_TOKEN not set in CI; refusing to draft "
                  "(no metered fallback). Ryan-only: add the plan token secret.")
@@ -135,7 +245,8 @@ def call_claude_plan(model: str, user: str, env: dict, timeout: int = 600) -> st
     proc = subprocess.run(cmd, input=user, capture_output=True, text=True,
                           env=env, timeout=timeout)
     if proc.returncode != 0:
-        raise RuntimeError(f"claude CLI exit {proc.returncode}: {proc.stderr.strip()[:300]}")
+        print(format_claude_cli_failure(proc, env), file=sys.stderr)
+        raise RuntimeError(claude_cli_error_summary(proc, env))
     return proc.stdout.strip()
 
 
