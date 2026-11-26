@@ -101,6 +101,17 @@ secret instead.
    and `scripts/run-lead-migrations.sh` are the two that exist, and neither
    covers this file. Writing that runner is a separate PR. Never
    `supabase db push`, never `migration repair`, never the SQL editor.
+
+   Note for whoever writes that runner: this file deliberately has **no**
+   explicit `begin`/`commit`, so the Supabase CLI owns the transaction and the
+   schema change and the `supabase_migrations.schema_migrations` row are atomic.
+   That matters because CLI 2.113.0 executes a migration file's own `COMMIT` and
+   only then inserts the history row — a file that commits itself can therefore
+   end up applied but unrecorded. `20261027230000_ai_referrer_tagging.sql` has
+   that shape and needs a recovery path in its runner
+   (see `docs/runbooks/utah-lead-migrations.md`); this one does not. **Keep it
+   that way.** The `create extension` guard is a `do` block, not a transaction,
+   so it does not reintroduce the problem.
 4. **See this worker's own 2xx**:
    ```sql
    select id, created, status_code, timed_out, error_msg, requested_at, healthy
