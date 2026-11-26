@@ -1,42 +1,22 @@
 /*
- * Roof cost calculator (Frame Restoration).
+ * Roof size calculator (Frame Restoration).
  *
  * Roof size comes from geometry only: ground footprint x eaves allowance x pitch factor.
- * Dollar ranges come ONLY from ROOF_PRICING below. A material whose low or high is null
- * shows the roof size and an inspection prompt, never a made-up number.
- *
- * ROOF_PRICING values must be owner-confirmed before they are filled in. Record who
- * confirmed them and when in `confirmedBy` and `confirmedOn`.
+ * This calculator never prints a dollar figure. Prices were removed by owner decision
+ * on 2026-11-25: Frame prices every roof from a free inspection and a written scope,
+ * so there is no price path here to fill in.
  */
 (function () {
   "use strict";
 
-  var ROOF_PRICING = {
+  var ROOF_CALC = {
     "market": "UT",
-    "confirmedBy": null,
-    "confirmedOn": null,
     "materials": [
-      {
-        "id": "architectural",
-        "label": "Architectural shingles",
-        "lowPerSquare": null,
-        "highPerSquare": null
-      },
-      {
-        "id": "class4",
-        "label": "Class 4 impact-resistant shingles",
-        "lowPerSquare": null,
-        "highPerSquare": null
-      },
-      {
-        "id": "metal",
-        "label": "Standing-seam metal",
-        "lowPerSquare": null,
-        "highPerSquare": null
-      }
+      { "id": "architectural", "label": "Architectural shingles" },
+      { "id": "class4", "label": "Class 4 impact-resistant shingles" },
+      { "id": "metal", "label": "Standing-seam metal" }
     ],
-    "rangeNote": "A planning range for a full tear-off and replacement, not a quote. Pitch, tear-off layers, decking, ventilation, access and elevation move the final number. Your written price comes after a free inspection.",
-    "unpricedNote": "Frame Restoration Utah prices every roof from a free inspection and a written scope, because pitch, tear-off layers, decking and ventilation change the number. Use the roof size above when you compare bids.",
+    "sizeNote": "Frame Restoration Utah prices every roof from a free inspection and a written scope, because pitch, tear-off layers, decking and ventilation change the work. Use the roof size above when you compare bids.",
     "ctaHref": "/#contact",
     "ctaAttr": "data-booking-trigger",
     "phoneTel": "+14352928802",
@@ -54,20 +34,14 @@
   var OVERHANG = 1.1;
 
   function $(id) { return document.getElementById(id); }
-  function round500(n) { return Math.round(n / 500) * 500; }
-  function money(n) { return "$" + round500(n).toLocaleString("en-US"); }
 
   function fillMaterials(select) {
-    ROOF_PRICING.materials.forEach(function (m) {
+    ROOF_CALC.materials.forEach(function (m) {
       var o = document.createElement("option");
       o.value = m.id;
       o.textContent = m.label;
       select.appendChild(o);
     });
-  }
-
-  function priced(m) {
-    return m && typeof m.lowPerSquare === "number" && typeof m.highPerSquare === "number";
   }
 
   function estimate() {
@@ -82,27 +56,19 @@
       squares = footprint > 0 ? (footprint * OVERHANG * pitch.factor) / 100 : NaN;
     }
     if (!(squares > 0) || squares > 400) {
-      out.innerHTML = '<p class="rc-note">Enter a ground footprint (or roof squares) to see an estimate.</p>';
+      out.innerHTML = '<p class="rc-note">Enter a ground footprint (or roof squares) to see your roof size.</p>';
       return;
     }
     squares = Math.round(squares * 10) / 10;
-    var m = ROOF_PRICING.materials.filter(function (x) { return x.id === $("rc-material").value; })[0];
+    var m = ROOF_CALC.materials.filter(function (x) { return x.id === $("rc-material").value; })[0];
     var size = "<p><strong>Estimated roof size:</strong> about " + squares + " squares (" +
       Math.round(squares * 100).toLocaleString("en-US") + " sq ft of roof surface).</p>";
-    var price;
-    if (priced(m)) {
-      price = '<p class="rc-range"><strong>Planning range for ' + m.label.toLowerCase() + ":</strong> " +
-        money(squares * m.lowPerSquare) + " to " + money(squares * m.highPerSquare) + "</p>" +
-        '<p class="rc-note">' + ROOF_PRICING.rangeNote + "</p>";
-    } else {
-      price = '<p class="rc-note">' + ROOF_PRICING.unpricedNote + "</p>";
-    }
-    out.innerHTML = size + price +
-      '<p><a href="' + ROOF_PRICING.ctaHref + '" class="btn-primary" ' + (ROOF_PRICING.ctaAttr || "data-inspection-modal") + '>Get my written quote</a> ' +
-      '<a href="tel:' + ROOF_PRICING.phoneTel + '" class="btn-secondary">Call ' + ROOF_PRICING.phoneDisplay + "</a></p>";
+    out.innerHTML = size + '<p class="rc-note">' + ROOF_CALC.sizeNote + "</p>" +
+      '<p><a href="' + ROOF_CALC.ctaHref + '" class="btn-primary" ' + (ROOF_CALC.ctaAttr || "data-inspection-modal") + '>Get my written quote</a> ' +
+      '<a href="tel:' + ROOF_CALC.phoneTel + '" class="btn-secondary">Call ' + ROOF_CALC.phoneDisplay + "</a></p>";
     if (window.posthog) {
-      window.posthog.capture("roof_cost_estimate", {
-        page: window.location.pathname, squares: squares, material: m ? m.id : "", priced: priced(m)
+      window.posthog.capture("roof_size_estimate", {
+        page: window.location.pathname, squares: squares, material: m ? m.id : ""
       });
     }
   }
@@ -121,7 +87,7 @@
   }
 
   if (typeof module !== "undefined" && module.exports) {
-    module.exports = { ROOF_PRICING: ROOF_PRICING, PITCH: PITCH, OVERHANG: OVERHANG, priced: priced };
+    module.exports = { ROOF_CALC: ROOF_CALC, PITCH: PITCH, OVERHANG: OVERHANG };
   } else if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", init);
   } else {
