@@ -1,22 +1,30 @@
 name: Utah Lead Notification Recovery
 
 on:
-  # 15-MINUTE CADENCE MOVED TO SUPABASE pg_cron (2026-11-18, prep for making this
-  # repo private without GitHub Actions overage). Owner:
-  # supabase/migrations/20261118000000_pgcron_lead_notification_worker_v2.sql,
-  # job 'lead-notification-worker' at 7,22,37,52 * * * *.
-  # MERGE THIS ONLY AFTER that pg_cron job is live and has answered 2xx; until
-  # then the old 15-minute GitHub schedule must stay on main.
-  # This workflow keeps ONE daily recover run as a safety net and as the alert
-  # path: the worker answers non-2xx on terminal/stale notification state, and a
-  # failed scheduled run emails the repo owner. ~30 billed min/month.
+  # SCHEDULE RESTORED 2026-10-16. The 2026-08-19 pg_cron replacement
+  # (supabase/migrations/20260819000000_pgcron_lead_notification_worker.sql)
+  # is NOT active in production: pg_cron/pg_net were not installed on 10/16
+  # (read-only check), so nothing was retrying missed owner notifications.
+  #
+  # THIS 15-MINUTE GITHUB SCHEDULE STAYS (owner decision 2026-11-25). A v2
+  # replacement migration
+  # (supabase/migrations/20261118000000_pgcron_lead_notification_worker_v2.sql)
+  # is checked in on this branch, but a migration file is inert until it is
+  # applied: pg_cron/pg_net are still not verified enabled, the worker token is
+  # not known to be in Supabase Vault, and nothing in CI applies migrations.
+  # Do NOT cut this schedule to daily here. Flipping the cadence is a separate
+  # follow-up PR, and only after the 20261118000000 job is applied through the
+  # gated path AND `public.lead_notification_worker_cron_health` shows a 2xx
+  # response for it. Until then GitHub Actions is the only scheduler that is
+  # actually running, and dropping it would silently stop owner lead retries.
+  #
   # Double-run safety: the worker claims each job via its claim RPC with
-  # claim_version + lease, so pg_cron and this run overlapping cannot send twice.
-  # ROLLBACK: restore cron '7,22,37,52 * * * *' below and run
+  # claim_version + lease, so overlapping runs cannot send twice. Still, once
+  # pg_cron is enabled, remove this schedule or run
   # `select cron.unschedule('lead-notification-worker');` so only one scheduler owns it.
   schedule:
-    # Daily safety-net sweep, 08:07 MST / 09:07 MDT (15:07 UTC).
-    - cron: '7 15 * * *'
+    # Every 15 minutes.
+    - cron: '7,22,37,52 * * * *'
   workflow_dispatch:
     inputs:
       dry_run:
