@@ -14,9 +14,11 @@
 -- pg_available_extensions lists neither pg_cron nor pg_net here, and does not
 -- raise because cron.job and net._http_response both exist by then.
 
--- Browser + server roles, as they exist on a Supabase project. Deliberately NO
--- grant on schema net to service_role: proving the health view works without
--- one is the point of this contract.
+-- Browser + server roles, as they exist on a HOSTED Supabase project.
+-- service_role carries BYPASSRLS there, so the contract has to use a realistic
+-- one: RLS alone does not keep it out of a table it holds a grant on. And
+-- deliberately NO grant on schema net to service_role — proving the health view
+-- works without one is the point of this contract.
 do $$
 begin
   if not exists (select 1 from pg_roles where rolname = 'anon') then
@@ -26,12 +28,17 @@ begin
     create role authenticated nologin noinherit;
   end if;
   if not exists (select 1 from pg_roles where rolname = 'service_role') then
-    create role service_role nologin noinherit;
+    create role service_role nologin noinherit bypassrls;
   end if;
 end
 $$;
 
 grant usage on schema public to anon, authenticated, service_role;
+
+-- Supabase's own default privileges in schema public: every new table is
+-- granted to the API roles. The migration has to revoke them back off the
+-- ledger AFTER creating it, and this is what makes that test real.
+alter default privileges in schema public grant all on tables to anon, authenticated, service_role;
 
 -- ---------------------------------------------------------------- cron stub --
 create schema if not exists cron;

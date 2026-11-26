@@ -75,7 +75,7 @@ begin
   if (select array_to_string(p.proconfig, ',') from pg_proc p
         join pg_namespace n on n.oid = p.pronamespace
        where n.nspname = 'public' and p.proname = 'invoke_lead_notification_worker')
-     <> 'search_path=public, vault, net, pg_temp' then
+     <> 'search_path=pg_catalog, pg_temp' then
     raise exception 'ASSERT FAILED: worker function search_path is not hardened with pg_temp last';
   end if;
 
@@ -238,8 +238,8 @@ begin
     raise exception 'ASSERT FAILED: an unrelated pg_net response leaked into the health view';
   end if;
 
-  -- A non-2xx for this worker is reported unhealthy; the go/no-go must be able
-  -- to fail as well as pass.
+  -- A non-2xx for this worker is reported unhealthy; the view must be able to
+  -- report failure as well as success.
   update net._http_response set status_code = 503 where id = v_recorded;
   if (select healthy from public.lead_notification_worker_cron_health) then
     raise exception 'ASSERT FAILED: a 503 for this worker is reported healthy';
@@ -260,6 +260,18 @@ begin
   if not has_table_privilege('service_role', 'public.lead_notification_worker_cron_health', 'SELECT') then
     raise exception 'ASSERT FAILED: service_role cannot select the health view';
   end if;
+  -- service_role gets NO direct privilege on the ledger. It carries BYPASSRLS
+  -- on a hosted project, so a grant here would let it insert ids the worker
+  -- never issued or delete the only evidence of a failure.
+  for i in 1..4 loop
+    declare
+      v_privilege text := (array['SELECT', 'INSERT', 'UPDATE', 'DELETE'])[i];
+    begin
+      if has_table_privilege('service_role', 'public.lead_notification_worker_cron_requests', v_privilege) then
+        raise exception 'ASSERT FAILED: service_role holds % on the request ledger', v_privilege;
+      end if;
+    end;
+  end loop;
 
   for i in 1..2 loop
     declare
@@ -343,6 +355,36 @@ end
 $$;
 reset role;
 
+-- service_role is refused every write to the ledger at run time, BYPASSRLS and
+-- all, while the definer view still reads.
+set role service_role;
+do $$
+declare v_raised boolean;
+begin
+  for i in 1..3 loop
+    v_raised := false;
+    begin
+      if i = 1 then
+        insert into public.lead_notification_worker_cron_requests (request_id) values (424242);
+      elsif i = 2 then
+        delete from public.lead_notification_worker_cron_requests;
+      else
+        update public.lead_notification_worker_cron_requests set requested_at = now();
+      end if;
+    exception when others then
+      v_raised := true;
+    end;
+    if not v_raised then
+      raise exception 'ASSERT FAILED: service_role performed write % on the request ledger', i;
+    end if;
+  end loop;
+  if (select count(*) from public.lead_notification_worker_cron_health) <> 1 then
+    raise exception 'ASSERT FAILED: the health view stopped working for service_role';
+  end if;
+end
+$$;
+reset role;
+
 -- --------------------------------------------------- 8. the bounded window --
 do $$
 declare v_request_id bigint;
@@ -372,6 +414,52 @@ begin
   end if;
   if v_command !~ 'public\.invoke_lead_notification_worker\(\)' then
     raise exception 'ASSERT FAILED: cron command is "%"', v_command;
+  end if;
+end
+$$;
+
+-- ------------------------------- 10. the upgrade path from the void version --
+-- 20260819000000 declares public.invoke_lead_notification_worker() as RETURNS
+-- void. A plain `create or replace` cannot change a return type, so this file
+-- drops it by signature first. Prove both halves: that the old shape errors
+-- under `create or replace`, and that this migration replaces it cleanly.
+do $$
+declare v_raised boolean := false; v_msg text;
+begin
+  -- Rebuild the old void-returning shape, as 20260819000000 leaves it.
+  drop view if exists public.lead_notification_worker_cron_health;
+  drop function if exists public.invoke_lead_notification_worker();
+  execute $void$
+    create function public.invoke_lead_notification_worker() returns void
+    language plpgsql as $body$ begin return; end $body$;
+  $void$;
+
+  begin
+    execute $replace$
+      create or replace function public.invoke_lead_notification_worker() returns bigint
+      language plpgsql as $body$ begin return 1; end $body$;
+    $replace$;
+  exception when others then
+    v_raised := true;
+    v_msg := sqlerrm;
+  end;
+  if not v_raised then
+    raise exception 'ASSERT FAILED: create or replace changed a return type, so the drop-first is unnecessary — re-check this contract';
+  end if;
+  if position('return type' in v_msg) = 0 then
+    raise exception 'ASSERT FAILED: unexpected error replacing the void function: %', v_msg;
+  end if;
+
+  -- And the drop-first path this file uses works.
+  drop function if exists public.invoke_lead_notification_worker();
+  execute $recreate$
+    create function public.invoke_lead_notification_worker() returns bigint
+    language plpgsql as $body$ begin return 1; end $body$;
+  $recreate$;
+  if (select pg_get_function_result(p.oid) from pg_proc p
+        join pg_namespace n on n.oid = p.pronamespace
+       where n.nspname = 'public' and p.proname = 'invoke_lead_notification_worker') <> 'bigint' then
+    raise exception 'ASSERT FAILED: the drop-first upgrade path did not land a bigint function';
   end if;
 end
 $$;
