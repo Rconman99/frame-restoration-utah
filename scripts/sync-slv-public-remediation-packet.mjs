@@ -106,7 +106,9 @@ const packet = {
 };
 
 assert.equal(packet.currentAudit.checkedPages, 5);
-assert.equal(packet.currentAudit.blockingFindings, 40);
+// 35 since the owner's no-prices decision (2026-11-25) cleared the pricing-ranges
+// finding from all five pages; the remaining 35 are the unrelated integrity debt.
+assert.equal(packet.currentAudit.blockingFindings, 35);
 assert.equal(packet.currentAudit.provisionalWarnings, 5);
 assert.equal(packet.sourceFiles.length, 6);
 assert.equal(Object.keys(packet.currentAudit.findingsByPage).length, 5);

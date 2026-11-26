@@ -7,6 +7,11 @@ name: hook-guards
 #   hook-fixtures   the .claude / .cursor hook fixtures still behave
 #   roof-calculator the roof size calculator publishes no dollar figure
 #                   (owner rule: no prices on a contractor site, 2026-11-25)
+#   no-prices       no served customer-facing page publishes a dollar figure
+#                   for Frame's work. Same owner rule, whole-corpus. The scan
+#                   covers everything outside blog/; the blog sweep ships on its
+#                   own branch and turns blog/ on by flipping SCAN_BLOG in
+#                   scripts/no-published-prices.test.mjs.
 
 on:
   pull_request:
@@ -18,6 +23,17 @@ on:
       - "assets/roof-cost-calculator.js"
       - "pages/roof-cost-calculator.html"
       - "scripts/roof-cost-calculator.test.mjs"
+      - "scripts/no-published-prices.test.mjs"
+      - "index.html"
+      - "404.html"
+      - "review.html"
+      - "privacy.html"
+      - "terms.html"
+      - "thank-you.html"
+      - "pages/**"
+      - "locations/**"
+      - "projects/**"
+      - "blog/**"
       - "package.json"
   workflow_dispatch:
 permissions:
@@ -42,3 +58,13 @@ jobs:
         with:
           node-version: 22
       - run: npm run test:roof-calculator
+  no-published-prices:
+    name: Served pages publish no price
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1
+        with:
+          node-version: 22
+      - run: npm run test:no-published-prices

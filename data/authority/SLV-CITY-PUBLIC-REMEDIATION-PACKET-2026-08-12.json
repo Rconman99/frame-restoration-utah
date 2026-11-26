@@ -10,23 +10,23 @@
   "sourceFiles": [
     {
       "file": "locations/millcreek.html",
-      "sha256": "379c2e0fb1a15d65971e7d88d116e2ae251807f0c9cdd15ab841acb40350b47b"
+      "sha256": "78dfc0cd67774ba5a683f1ca9241a587a461c99f53ca1bf8bd9bd93641b0713f"
     },
     {
       "file": "locations/sandy.html",
-      "sha256": "94231187a309b0c19261f1e251d610a1d1268d97a291882225020b0616690f00"
+      "sha256": "1593db7044c9c406f205a01498d13d49fa26f6e2c4a6e538065b77693b03f2c3"
     },
     {
       "file": "locations/holladay.html",
-      "sha256": "b9f5cbf8ba0305266d75d8b0a66252b08caa4b4fe799d996cb692c1b2ec48d82"
+      "sha256": "1449f8eb003474815549b69d29d3aefa840e2040747bc2b4a746e31ee0d2d036"
     },
     {
       "file": "locations/cottonwood-heights.html",
-      "sha256": "887b22417a00ccb1cd949ffee2cd42571dfd0141f8e03f23087b68d2b066e766"
+      "sha256": "8baa2331fde44871b445b4e65e952f20574341a583b4399a64822f0812a441b8"
     },
     {
       "file": "locations/draper.html",
-      "sha256": "b954986699bade50c71c4a3ad030c2cde85c406b90b806c96d39afce31557e66"
+      "sha256": "2e092957fdbc4efd9de2a7eb0b13f08f120af67e5d1c2c2ffabdb7fe440ca85f"
     },
     {
       "file": "data/route-factory/business.json",
@@ -60,15 +60,10 @@
   },
   "currentAudit": {
     "checkedPages": 5,
-    "blockingFindings": 40,
+    "blockingFindings": 35,
     "provisionalWarnings": 5,
     "findingsByPage": {
       "locations/millcreek.html": [
-        {
-          "id": "pricing-ranges",
-          "count": 5,
-          "guidance": "Replace unsupported dollar figures with scope-dependent factors and a written-estimate invitation."
-        },
         {
           "id": "exact-response-or-availability",
           "count": 7,
@@ -117,11 +112,6 @@
       ],
       "locations/sandy.html": [
         {
-          "id": "pricing-ranges",
-          "count": 5,
-          "guidance": "Replace unsupported dollar figures with scope-dependent factors and a written-estimate invitation."
-        },
-        {
           "id": "exact-response-or-availability",
           "count": 7,
           "guidance": "Remove exact availability, response-window, or travel-time promises until an operating policy is registered."
@@ -158,11 +148,6 @@
         }
       ],
       "locations/holladay.html": [
-        {
-          "id": "pricing-ranges",
-          "count": 5,
-          "guidance": "Replace unsupported dollar figures with scope-dependent factors and a written-estimate invitation."
-        },
         {
           "id": "exact-response-or-availability",
           "count": 7,
@@ -201,11 +186,6 @@
       ],
       "locations/cottonwood-heights.html": [
         {
-          "id": "pricing-ranges",
-          "count": 5,
-          "guidance": "Replace unsupported dollar figures with scope-dependent factors and a written-estimate invitation."
-        },
-        {
           "id": "exact-response-or-availability",
           "count": 7,
           "guidance": "Remove exact availability, response-window, or travel-time promises until an operating policy is registered."
@@ -237,11 +217,6 @@
         }
       ],
       "locations/draper.html": [
-        {
-          "id": "pricing-ranges",
-          "count": 5,
-          "guidance": "Replace unsupported dollar figures with scope-dependent factors and a written-estimate invitation."
-        },
         {
           "id": "exact-response-or-availability",
           "count": 7,
