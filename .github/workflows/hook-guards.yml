@@ -12,6 +12,8 @@ name: hook-guards
 #                   covers everything outside blog/; the blog sweep ships on its
 #                   own branch and turns blog/ on by flipping SCAN_BLOG in
 #                   scripts/no-published-prices.test.mjs.
+#   blog-no-prices  no blog post publishes a dollar figure, apart from the cited
+#                   third-party figures allowlisted in the test (same owner rule)
 
 on:
   pull_request:
@@ -24,6 +26,7 @@ on:
       - "pages/roof-cost-calculator.html"
       - "scripts/roof-cost-calculator.test.mjs"
       - "scripts/no-published-prices.test.mjs"
+      - "scripts/no-published-prices-blog.test.mjs"
       - "index.html"
       - "404.html"
       - "review.html"
@@ -68,3 +71,13 @@ jobs:
         with:
           node-version: 22
       - run: npm run test:no-published-prices
+  blog-no-prices:
+    name: Blog publishes no price
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1
+        with:
+          node-version: 22
+      - run: npm run test:no-prices-blog
