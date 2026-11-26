@@ -28,10 +28,10 @@ const EXPECTED_TEMPLATE_SHA256 =
   "1a45cf1b9d7dcc7ca514ff334b81e93b5024ff45301489c1f4e9ed20535e0c53";
 const ACTION_SHAS = Object.freeze({
   checkout: "3d3c42e5aac5ba805825da76410c181273ba90b1",
-  setupNode: "820762786026740c76f36085b0efc47a31fe5020",
+  setupNode: "949feb2413d6458794dcd2491c4babbbce0c15c1",
   setupDeno: "22d081ff2d3a40755e97629de92e3bcbfa7cf2ed",
-  setupPython: "5fda3b95a4ea91299a34e894583c3862153e4b97",
-  setupSupabase: "ab058987d8d6c725971f6cf9d0b5c98467e30bd1",
+  setupPython: "6d4fd22b20465ccc0f7354476588e8df7c9ca0e0",
+  setupSupabase: "689adcfb80d947100a1eab127289b97d1fb07b13",
 });
 const APPROVED_DEPLOY_FUNCTIONS = [
   "track-click",
@@ -83,11 +83,11 @@ const ISSUER_SECURITY_SURFACE_SHA256 =
 const RENDERER_OUTPUT_SURFACE_SHA256 =
   "9a96422d770af9e6bddcd1a91313db157648faa9cc516b17eca992af04fbf414";
 const CLIENT_TEST_SPAWN_SURFACE_SHA256 =
-  "f48b36674e18d1c8c8853078407e9850d1fcefeef879b8a675dc4cbc25afa406";
+  "f93cfbc194b44c08272dd6cd6cea48e7f3bca05ed25fb0324affa99b852ada8a";
 const OWNER_TEST_SPAWN_SURFACE_SHA256 =
   "506d45a03413389a4ab1d07aeedfc9b4b1908420a156e0714b614d5dc233080a";
 const SCANNER_NORMALIZED_SOURCE_SHA256 =
-  "e363dcef1ba0659531b7b3b6355161db7fca110b2fce8bd2c63394c7e2a95138";
+  "d813e065f1f2825ef97b537880bb89f612eeae055d448a71fee8188c8be73aa2";
 const SIGNED_RECEIPT_PARSER_SHA256 =
   "1e854738f0555804f52266a1833cd279ef83482b4946a63c226781be045114df";
 const ISSUER_SIGNER_SHA256 =
@@ -96,15 +96,15 @@ const FINAL_DEPLOY_STEP_SHA256 =
   "51684632cec58637dac60f1d85dbeb442e31bd4f7a9ee6551c2c370015acdcf0";
 const REVIEWED_CRITICAL_SOURCE_SHA256 = Object.freeze({
   ".github/workflows/compliance-gate.yml":
-    "2098286ed6d63f8d674325c74b4c1745303042ca928e26cfdbb26c4a8735719f",
+    "c1081d0afbcc48dc23c617ccce2001fbbf1df832336ee80196b4cb7b14ff19e2",
   ".github/workflows/deploy-edge-function.yml":
-    "5e4eec18dd4bbbf84286ae6b8ce9e29373350451828a182a2c5a37fdeadbb02b",
+    "862b253361d954cdaf98ac230a266ca5a8e6ecc946a3f52c2d5153f846c44373",
   "scripts/issue-client-ip-deploy-receipt.mjs":
     "73d295e7d088347fceef4f8fb0aea5d50e596ef276e2766789598ff257a31894",
   "scripts/render-client-ip-probe.mjs":
     "b78a424c672f9df9309748b85608b653038fc7eddd806d1d2526dbd692b9fee0",
   "scripts/test-client-ip-deploy-receipt.mjs":
-    "920d5bac3b512e3b48ea5c474d6119352401bd06f827930be8c65c5682f722cd",
+    "38fe6eaf41b386239e56592f71ee4d5f2696631f3eb53896ac251edbd78402b8",
   "scripts/test-owner-notification-deploy-receipt.mjs":
     "37b1d7a82ad3f0feedb461fcd3301f92e91323eb3c3710a8d6bbbf1c48a0d8e3",
   "scripts/verify-client-ip-deploy-receipt.mjs":

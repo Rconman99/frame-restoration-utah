@@ -863,7 +863,7 @@ for (const [label, source] of [
     "actions/checkout@v4",
   )],
   ["mutable setup-cli action", deployWorkflowSource.replace(
-    "supabase/setup-cli@ab058987d8d6c725971f6cf9d0b5c98467e30bd1",
+    "supabase/setup-cli@689adcfb80d947100a1eab127289b97d1fb07b13",
     "supabase/setup-cli@v1",
   )],
 ]) {
@@ -907,7 +907,7 @@ for (const source of [
   `${complianceSource}\ndefaults:\n  run:\n    shell: bash {0} || true`,
   complianceSource.replace("    runs-on: ubuntu-latest", "    runs-on: ubuntu-latest\n    defaults:\n      run:\n        working-directory: scripts"),
   complianceSource.replace(
-    "actions/setup-node@820762786026740c76f36085b0efc47a31fe5020",
+    "actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1",
     "actions/setup-node@v4",
   ),
 ]) {
@@ -1158,7 +1158,7 @@ for (const [label, relative, source] of [
     "compliance workflow mutable action",
     ".github/workflows/compliance-gate.yml",
     complianceSource.replace(
-      "actions/setup-node@820762786026740c76f36085b0efc47a31fe5020",
+      "actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1",
       "actions/setup-node@v4",
     ),
   ],
@@ -2016,7 +2016,7 @@ assert.equal(
 assert(
   deploySteps.some((step) =>
     step.uses ===
-      "supabase/setup-cli@ab058987d8d6c725971f6cf9d0b5c98467e30bd1" &&
+      "supabase/setup-cli@689adcfb80d947100a1eab127289b97d1fb07b13" &&
     step.with?.version === "2.113.0"
   ),
 );
