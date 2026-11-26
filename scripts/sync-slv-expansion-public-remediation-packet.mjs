@@ -108,11 +108,12 @@ const packet = {
   },
 };
 
-assert.equal(packet.currentAudit.blockingFindingClasses, 73);
-assert.equal(packet.currentAudit.blockingOccurrences, 320);
+// 61 since the owner's no-prices decision (2026-11-25) cleared pricing-ranges from all 12 pages.
+assert.equal(packet.currentAudit.blockingFindingClasses, 61);
+assert.equal(packet.currentAudit.blockingOccurrences, 260);
 assert.equal(packet.currentAudit.provisionalWarningClasses, 12);
 assert.equal(packet.pages.length, 12);
-assert.equal(packet.pages.reduce((sum, page) => sum + page.findings.length, 0), 73);
+assert.equal(packet.pages.reduce((sum, page) => sum + page.findings.length, 0), 61);
 assert.equal(packet.pages.reduce((sum, page) => sum + page.warnings.length, 0), 12);
 assert.deepEqual(
   packet.pages.filter((page) => page.organicNumberOneQueries.length).map((page) => page.city),

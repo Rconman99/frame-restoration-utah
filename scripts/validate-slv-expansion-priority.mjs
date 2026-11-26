@@ -81,4 +81,4 @@ assert.ok(ledger.cities.slice(0, 2).every((city) => city.lane === "protect-exist
 assert.ok(ledger.prohibited.includes("public page edits from this ledger"));
 assert.ok(ledger.prohibited.some((rule) => rule.includes("missing GSC rows")));
 
-console.log("PASS SLV expansion priority: protect Magna/Kearns, organic #1 2/48, exact-CID Maps #1 0/48, 73 integrity finding classes, no public authorization");
+console.log("PASS SLV expansion priority: protect Magna/Kearns, organic #1 2/48, exact-CID Maps #1 0/48, 61 integrity finding classes, no public authorization");

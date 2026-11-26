@@ -10,11 +10,11 @@
   "evidence": {
     "integrityAudit": {
       "file": "data/authority/SLV-EXPANSION-INTEGRITY-AUDIT-2026-08-12.json",
-      "sha256": "901d7e23188137212b5b16e8e17635dcc1e0b14684bc45ad05a7a5cdb690e94a"
+      "sha256": "7fb7c434cec6e064997ca05c95a21cc443c06c891899749f012ed428f38b423c"
     },
     "priorityLedger": {
       "file": "data/rank-tracker/SLV-EXPANSION-PRIORITY-2026-08-12.json",
-      "sha256": "26070f9084485b6c50ccff5901aa9ee7fedf946a1e3421d35bf29186b71926ad"
+      "sha256": "aef896d80683cdba534c7cac3028ed8b76092d0cca2ad79c8f0d92f831e836ff"
     }
   },
   "scope": {
@@ -50,8 +50,8 @@
   },
   "currentAudit": {
     "checkedPages": 12,
-    "blockingFindingClasses": 73,
-    "blockingOccurrences": 320,
+    "blockingFindingClasses": 61,
+    "blockingOccurrences": 260,
     "provisionalWarningClasses": 12,
     "provisionalOccurrences": 14,
     "pagesWithSaltLakeValleyIdentity": 0,
@@ -63,7 +63,7 @@
       "priority": 7,
       "lane": "broader-commercial-relevance-after-integrity",
       "file": "locations/bluffdale.html",
-      "sha256": "588fefebc1065fd6784b33e57af9839440c155ea986c682fb81f5f7a0137605d",
+      "sha256": "bb42ee1ebb6fbaf388bb7da6816b1a82491022e0925f337c631b64b74d3a3e20",
       "title": "Premium Reroofing Bluffdale UT | Frame Restoration Utah",
       "h1": "Premium Reroofing in Bluffdale",
       "canonical": "https://www.framerestorationutah.com/locations/bluffdale",
@@ -84,11 +84,6 @@
         "blog/bluffdale/storm-damage-roof-repair-bluffdale.html"
       ],
       "findings": [
-        {
-          "id": "pricing-ranges",
-          "count": 5,
-          "guidance": "Replace unsupported dollar figures with scope-dependent factors and a written-estimate invitation."
-        },
         {
           "id": "exact-response-or-availability",
           "count": 6,
@@ -133,7 +128,7 @@
       "priority": 9,
       "lane": "broader-commercial-relevance-after-integrity",
       "file": "locations/herriman.html",
-      "sha256": "839a74e8b4907542e4242daebd45d6200c3046d0ff0ed43bdf4837540379064a",
+      "sha256": "e1afe3515ace04d19cd4d8540ef41fc6992a53d50c798bb334a12b5f61edb445",
       "title": "Premium Reroofing Herriman UT | Frame Restoration Utah",
       "h1": "Premium Reroofing in Herriman",
       "canonical": "https://www.framerestorationutah.com/locations/herriman",
@@ -154,11 +149,6 @@
         "blog/herriman/hail-damage-new-homes.html"
       ],
       "findings": [
-        {
-          "id": "pricing-ranges",
-          "count": 5,
-          "guidance": "Replace unsupported dollar figures with scope-dependent factors and a written-estimate invitation."
-        },
         {
           "id": "exact-response-or-availability",
           "count": 6,
@@ -198,7 +188,7 @@
       "priority": 2,
       "lane": "protect-existing-number-one-and-aio-footholds",
       "file": "locations/kearns.html",
-      "sha256": "38a02d5efd320fdd0c7009ae88876feb18269589abdc9878d7ed2d800c089d79",
+      "sha256": "67c4d12014c4efa68d024c6c6f83a544716ff2d2b2e7cd947f929d263fb0d394",
       "title": "Premium Reroofing Kearns UT | Frame Restoration Utah",
       "h1": "Premium Reroofing in Kearns",
       "canonical": "https://www.framerestorationutah.com/locations/kearns",
@@ -219,11 +209,6 @@
       },
       "protectedRelatedRoutes": [],
       "findings": [
-        {
-          "id": "pricing-ranges",
-          "count": 5,
-          "guidance": "Replace unsupported dollar figures with scope-dependent factors and a written-estimate invitation."
-        },
         {
           "id": "exact-response-or-availability",
           "count": 6,
@@ -263,7 +248,7 @@
       "priority": 1,
       "lane": "protect-existing-number-one-and-aio-footholds",
       "file": "locations/magna.html",
-      "sha256": "0c98b5aac6fb36dac373139d815a126ea93f6d3f4849bc5499993f071ad0f609",
+      "sha256": "f1e87643162cd1c7d24e7eefaef730e69d92a18071027a20b8e56123d932d9c6",
       "title": "Premium Reroofing Magna UT | Frame Restoration Utah",
       "h1": "Premium Reroofing in Magna",
       "canonical": "https://www.framerestorationutah.com/locations/magna",
@@ -284,11 +269,6 @@
       },
       "protectedRelatedRoutes": [],
       "findings": [
-        {
-          "id": "pricing-ranges",
-          "count": 5,
-          "guidance": "Replace unsupported dollar figures with scope-dependent factors and a written-estimate invitation."
-        },
         {
           "id": "exact-response-or-availability",
           "count": 6,
@@ -328,7 +308,7 @@
       "priority": 8,
       "lane": "broader-commercial-relevance-after-integrity",
       "file": "locations/midvale.html",
-      "sha256": "17e1bbf6cbac328b2c5cb80b89e41f3d568c8ec78e0e23901459c4eef1ccc5f8",
+      "sha256": "649ecfa4036504669264b155e9c65361a962d1d09e457cf47aa22045cfa44259",
       "title": "Premium Reroofing Midvale UT | Frame Restoration Utah",
       "h1": "Premium Reroofing in Midvale",
       "canonical": "https://www.framerestorationutah.com/locations/midvale",
@@ -349,11 +329,6 @@
         "locations/midvale/storm-damage.html"
       ],
       "findings": [
-        {
-          "id": "pricing-ranges",
-          "count": 5,
-          "guidance": "Replace unsupported dollar figures with scope-dependent factors and a written-estimate invitation."
-        },
         {
           "id": "exact-response-or-availability",
           "count": 6,
@@ -388,7 +363,7 @@
       "priority": 3,
       "lane": "closest-organic-improvement-after-integrity",
       "file": "locations/murray.html",
-      "sha256": "7524a3ab33ce1adefbcd11f95e055bdea88e3d0a39206a9bb952e5268b20196c",
+      "sha256": "1c7f1aea97e57a0fc2b5b8afb2c632d2351a405a96d61dd9392a5557a36875f2",
       "title": "Premium Reroofing Murray UT | Frame Restoration Utah",
       "h1": "Premium Reroofing in Murray",
       "canonical": "https://www.framerestorationutah.com/locations/murray",
@@ -411,11 +386,6 @@
         "blog/murray/storm-damage-roofing-murray-utah.html"
       ],
       "findings": [
-        {
-          "id": "pricing-ranges",
-          "count": 5,
-          "guidance": "Replace unsupported dollar figures with scope-dependent factors and a written-estimate invitation."
-        },
         {
           "id": "exact-response-or-availability",
           "count": 4,
@@ -455,7 +425,7 @@
       "priority": 4,
       "lane": "closest-organic-improvement-after-integrity",
       "file": "locations/riverton.html",
-      "sha256": "373b3fc7426765d33dc9b541b3c118eaac124a7dc80d7f9f235ecffdd4f6aba0",
+      "sha256": "41190092f198a2def5d937bf7711e226c7a95ad47c8f1a624d97c87c20c9c0d2",
       "title": "Premium Reroofing Riverton UT | Frame Restoration Utah",
       "h1": "Premium Reroofing in Riverton",
       "canonical": "https://www.framerestorationutah.com/locations/riverton",
@@ -476,11 +446,6 @@
         "blog/riverton/hail-damage-roof-inspection.html"
       ],
       "findings": [
-        {
-          "id": "pricing-ranges",
-          "count": 5,
-          "guidance": "Replace unsupported dollar figures with scope-dependent factors and a written-estimate invitation."
-        },
         {
           "id": "exact-response-or-availability",
           "count": 6,
@@ -520,7 +485,7 @@
       "priority": 5,
       "lane": "closest-organic-improvement-after-integrity",
       "file": "locations/south-jordan.html",
-      "sha256": "5b86698c7c6da8a61a852920e07c7950b7e1fa1ce03869fb1349796610f08f84",
+      "sha256": "3a8bc8439ff44639c8e369b00ee7a1fc9339c0ab9b2dc20f438545c36f1fc3c7",
       "title": "Premium Reroofing South Jordan UT | Frame Restoration Utah",
       "h1": "Premium Reroofing in South Jordan",
       "canonical": "https://www.framerestorationutah.com/locations/south-jordan",
@@ -543,11 +508,6 @@
         "locations/south-jordan/storm-damage.html"
       ],
       "findings": [
-        {
-          "id": "pricing-ranges",
-          "count": 5,
-          "guidance": "Replace unsupported dollar figures with scope-dependent factors and a written-estimate invitation."
-        },
         {
           "id": "exact-response-or-availability",
           "count": 6,
@@ -592,7 +552,7 @@
       "priority": 11,
       "lane": "architecture-first-before-intent-experiment",
       "file": "locations/south-salt-lake.html",
-      "sha256": "25871aacc7a3c7bfd4fbec21db67ed7b559a6bf306c187b068f1470b2ca5017b",
+      "sha256": "37138cdf86baed8f9141a21d310b373027af446910ea378696f1afc661ca7255",
       "title": "Premium Reroofing South Salt Lake UT | Frame Restoration Utah",
       "h1": "Premium Reroofing in South Salt Lake",
       "canonical": "https://www.framerestorationutah.com/locations/south-salt-lake",
@@ -611,11 +571,6 @@
       },
       "protectedRelatedRoutes": [],
       "findings": [
-        {
-          "id": "pricing-ranges",
-          "count": 5,
-          "guidance": "Replace unsupported dollar figures with scope-dependent factors and a written-estimate invitation."
-        },
         {
           "id": "exact-response-or-availability",
           "count": 6,
@@ -655,7 +610,7 @@
       "priority": 6,
       "lane": "closest-organic-improvement-after-integrity",
       "file": "locations/taylorsville.html",
-      "sha256": "2b376e1437de4af0e71549e0f10861e93c69db22790cdee587669153dbfdb103",
+      "sha256": "db10e0c5ab170325e66770a76c60e4f91886af108b007e4291cadb71d1d814ff",
       "title": "Premium Reroofing Taylorsville UT | Frame Restoration Utah",
       "h1": "Premium Reroofing in Taylorsville",
       "canonical": "https://www.framerestorationutah.com/locations/taylorsville",
@@ -674,11 +629,6 @@
       },
       "protectedRelatedRoutes": [],
       "findings": [
-        {
-          "id": "pricing-ranges",
-          "count": 5,
-          "guidance": "Replace unsupported dollar figures with scope-dependent factors and a written-estimate invitation."
-        },
         {
           "id": "exact-response-or-availability",
           "count": 6,
@@ -718,7 +668,7 @@
       "priority": 12,
       "lane": "architecture-first-before-intent-experiment",
       "file": "locations/west-jordan.html",
-      "sha256": "93f0bd6f998fcf2b4a0f42f589fc86837c95b7d90bbbdae66f50dedf5bbe287e",
+      "sha256": "dfb48cd7d787854ffc166ff436524d022621ac9fc63b406f2917c817ac0d4616",
       "title": "Premium Reroofing West Jordan UT | Frame Restoration Utah",
       "h1": "Premium Reroofing in West Jordan",
       "canonical": "https://www.framerestorationutah.com/locations/west-jordan",
@@ -741,11 +691,6 @@
         "locations/west-jordan/water-damage.html"
       ],
       "findings": [
-        {
-          "id": "pricing-ranges",
-          "count": 5,
-          "guidance": "Replace unsupported dollar figures with scope-dependent factors and a written-estimate invitation."
-        },
         {
           "id": "exact-response-or-availability",
           "count": 6,
@@ -785,7 +730,7 @@
       "priority": 10,
       "lane": "broader-commercial-relevance-after-integrity",
       "file": "locations/west-valley-city.html",
-      "sha256": "58fc7d4d72d0e044e9b4749c268f1e08bf77bdbe4ece8bf265adbae1b231f427",
+      "sha256": "15f313f8acdda85645eeb6074ebcac579871f57a5414353c2104c3bbffb619ad",
       "title": "Premium Reroofing West Valley City UT | Frame Restoration Utah",
       "h1": "Premium Reroofing in West Valley City",
       "canonical": "https://www.framerestorationutah.com/locations/west-valley-city",
@@ -806,11 +751,6 @@
         "blog/west-valley-city/roof-replacement-cost.html"
       ],
       "findings": [
-        {
-          "id": "pricing-ranges",
-          "count": 5,
-          "guidance": "Replace unsupported dollar figures with scope-dependent factors and a written-estimate invitation."
-        },
         {
           "id": "exact-response-or-availability",
           "count": 6,
