@@ -1,118 +1,67 @@
--- Utah lead-notification recovery: move the 15-minute cadence from GitHub
--- Actions (GitHub-hosted, ~2,660 billed min/30 days) onto pg_cron + pg_net so
--- frame-restoration-utah can go private without Actions overage or a gap in
--- owner lead alerts.
+-- ╔══════════════════════════════════════════════════════════════════════════╗
+-- ║  🛑 PARKED — DO NOT APPLY. Owner decision, 2026-11-26.                   ║
+-- ╚══════════════════════════════════════════════════════════════════════════╝
 --
--- EDITED IN PLACE 2026-11-26, BEFORE ITS FIRST APPLY. This file has never been
--- applied anywhere (pg_cron/pg_net are not verified enabled on this project and
--- nothing in CI applies migrations), so there is no recorded history row for
--- version 20261118000000 to contradict and no deployed schema that depends on
--- the previous text. It is edited rather than superseded by a v3 so that the
--- only reference to it outside this file — the comment in
--- .github/workflows/lead-notification-worker.yml, which names 20261118000000 as
--- the job that must be applied and seen 2xx before the GitHub schedule may be
--- cut — stays accurate with that workflow untouched. Three defects a review
--- confirmed on 2026-11-26 are fixed here:
+-- This migration has NEVER been applied anywhere and is NOT to be applied. The
+-- pg_cron + pg_net approach to the lead-notification cadence is parked. The
+-- 15-minute GitHub Actions schedule in
+-- .github/workflows/lead-notification-worker.yml stays as the mechanism.
 --
---   1. The health view selected EVERY row of net._http_response with no
---      scoping, so a 2xx in it did not prove THIS worker succeeded — and that
---      view is the stated go/no-go for cutting the GitHub schedule. The
---      function now records each request id it issues in
---      public.lead_notification_worker_cron_requests and the view joins
---      net._http_response to that table, so it can only ever show this
---      worker's own responses.
---   2. The view was security_invoker = true, so service_role — its only
---      grantee — needed SELECT on net._http_response, which Supabase does not
---      grant by default; the view would most likely have errored for the one
---      role meant to read it. It is now a definer view
---      (security_invoker = false, owned by postgres) restricted by the join, so
---      service_role reads it with no privilege on schema net at all.
---   3. 20260819000000_pgcron_lead_notification_worker.sql declares
---      public.invoke_lead_notification_worker() as RETURNS void. A plain
---      `create or replace` cannot change a function's return type, so applying
---      that older file first and this one second would have ERRORED rather than
---      replacing the function, contrary to this file's own earlier claim. The
---      function is now dropped by signature before it is created.
+-- The two reasons, both specific to hosted Supabase:
 --
--- SUPERSEDES 20260819000000_pgcron_lead_notification_worker.sql, which was never
--- applied in production (pg_cron/pg_net were not installed as of 2026-11-17) and
--- which would NOT have worked: it posted without the `x-frame-worker-mode`
--- header, and lead-notification-worker rejects any request whose mode is not
--- `recover` or `health-only`. If both files are applied in order, this one now
--- really does replace the function and the job, so the end state is the same.
--- That file is intentionally left in place: the workflow comment cites it too,
--- and `scripts/voice-screening-migration.mjs` carries the same version string in
--- an unrelated market's history baseline.
+--   1. The bearer token cannot be kept out of a PUBLIC-readable queue.
+--      pg_net stores each request's Authorization header in
+--      net.http_request_queue until its background worker drains it, and
+--      pg_net's own installation script grants schema net and all of its
+--      tables to PUBLIC (pg_net v0.19.5, sql/pg_net.sql:355-357) — so anon,
+--      authenticated and service_role can all read it. Those objects are owned
+--      by supabase_admin on a hosted project, so the grants cannot be revoked
+--      safely from a migration: doing so would reach into an extension this
+--      project does not own and would break every other pg_net consumer on it.
+--   2. The Vault secret is readable by service_role, so storing the worker
+--      token there does not contain it either.
 --
--- PREREQUISITES (owner-approved, out of band, BEFORE applying):
---   1. Database > Extensions: enable pg_cron and pg_net (both bundled with
---      Supabase at no extra charge; this project is on the Pro org plan). The
---      guarded block below creates them when they are installable and raises
---      when they are neither installed nor available, so an apply can never
---      leave the job silently unscheduled.
---   2. Store the worker token in Supabase Vault ONCE (same value as the
---      LEAD_NOTIFICATION_WORKER_TOKEN GitHub secret / edge-function secret):
---        select vault.create_secret('<token>', 'lead_notification_worker_token',
---               'Bearer token for functions/v1/lead-notification-worker');
---      Never paste the token into chat, a PR, or this file.
---   3. Read-only grant check to run FIRST (see
---      docs/runbooks/utah-lead-notification-pgcron.md): confirm that
---      service_role has no USAGE on schema net and no SELECT on
---      net._http_response. That is the normal Supabase state, and it is exactly
---      why the health view must be a definer view.
+-- Together those mean this design cannot hold the credential it has to post
+-- every fifteen minutes. That is a design problem, not a bug to patch, which is
+-- why this file is parked rather than hardened further.
 --
--- 🔴 TOKEN EXPOSURE. An earlier revision of this file claimed schema net "is
--- not reachable by anon/authenticated/service_role". THAT WAS FALSE for real
--- pg_net defaults, and a 2026-11-26 review was right to reject it. pg_net
--- v0.19.5's own installation script ends with (sql/pg_net.sql:355-357):
---     grant usage on schema net to PUBLIC;
---     grant all on all sequences in schema net to PUBLIC;
---     grant all on all tables in schema net to PUBLIC;
--- so after `create extension pg_net` every role — anon and authenticated
--- included, because they are members of PUBLIC — can SELECT
--- net.http_request_queue, which holds this worker's `Authorization: Bearer …`
--- header until the background worker drains it, and can INSERT/UPDATE/DELETE
--- net._http_response, which is the only evidence the health view reports on.
--- Also: pg_net keeps exactly two tables (http_request_queue and
--- _http_response). There is NO separate failed-request table — a failure lands
--- in _http_response with error_msg/timed_out. The earlier claim of one was
--- wrong and is corrected here.
+-- An earlier revision of this header claimed schema net "is not reachable by
+-- anon/authenticated/service_role", and a later one claimed a hosted revoke
+-- would fix it. BOTH CLAIMS WERE FALSE and are removed. What a supported design
+-- would need is recorded in docs/runbooks/utah-lead-notification-pgcron.md.
 --
--- So this migration no longer asserts isolation; it VERIFIES it and refuses to
--- schedule without it. The guarded block below the view raises unless anon,
--- authenticated and PUBLIC all lack queue-read and response-write access. The
--- remediation, which is an owner decision because it changes an extension's
--- objects and affects every other pg_net consumer on the project, is in
--- docs/runbooks/utah-lead-notification-pgcron.md.
+-- The SQL below is kept, not deleted, so the work is reviewable and so the
+-- refuse-to-schedule gate stays in the file as a safety net if anyone ever
+-- tries to apply it: it RAISES rather than scheduling while anon,
+-- authenticated or PUBLIC can read the queue or write the responses. The gate
+-- is deliberately NOT extended any further.
 --
--- Browser reachability is a second, narrower question: PostgREST only exposes
--- the schemas listed in the API settings, and `net` is not one of them by
--- default. The privilege is still the thing that matters — anything running as
--- anon/authenticated/service_role inside the database (a security-invoker view
--- or function in public, an edge function using the service key) can read the
--- queue while that grant stands.
+-- Under the Supabase CLI's migration transaction, that refusal rolls the whole
+-- file back — no table, no function, no view, no job. An earlier note in the
+-- test fixtures described a "partial state" where the objects exist and only
+-- the job is missing; that is only true under a bare `psql -f` without -1, and
+-- it is corrected here.
 --
--- Two further leaks that no SQL here can close, documented so nobody assumes
--- otherwise: cron.job_run_details retains the TEXT of database errors raised by
--- the job (including anything this function puts in an exception message — it
--- puts no token there), and pg_net at log level DEBUG2 or finer logs outgoing
--- request headers to the Postgres log.
---
--- ROLLBACK:
+-- ROLLBACK (only relevant if someone applied it anyway):
 --   select cron.unschedule('lead-notification-worker');
 --   drop view if exists public.lead_notification_worker_cron_health;
 --   drop function if exists public.invoke_lead_notification_worker();
 --   drop table if exists public.lead_notification_worker_cron_requests;
---   -- then restore the 15-minute schedule in
---   -- .github/workflows/lead-notification-worker.yml (the repo must be public
---   -- again, or have minutes, for that to be free).
---   -- NOTE: this rollback drops the objects but does NOT remove the
---   -- supabase_migrations.schema_migrations row for 20261118000000, because
---   -- only the gated runner that applied it may touch history. To restore
---   -- afterwards, delete that history row in the SAME transaction as the drops
---   -- (so catalog and history stay in agreement) and re-apply through the
---   -- runner; a re-apply with the row still present would be skipped as
---   -- already-applied and leave nothing scheduled. See the runbook.
+--   -- The supabase_migrations.schema_migrations row for 20261118000000 is NOT
+--   -- removed by those drops; see the runbook for the one-transaction form.
+--
+-- Original intent, for the record: move the 15-minute cadence off GitHub
+-- Actions (GitHub-hosted, ~2,660 billed min/30 days) so frame-restoration-utah
+-- could go private without Actions overage or a gap in owner lead alerts.
+-- SUPERSEDED 20260819000000_pgcron_lead_notification_worker.sql, which was also
+-- never applied; that file is left in place because the workflow comment cites
+-- it and the same version string appears in an unrelated market's history
+-- baseline in scripts/voice-screening-migration.mjs.
+--
+-- Two leaks no SQL here can close, recorded because they informed the parking
+-- decision: cron.job_run_details retains the TEXT of database errors raised by
+-- the job, and pg_net at log level DEBUG2 or finer logs outgoing request
+-- headers to the Postgres log.
 
 do $lead_notification_worker_extensions$
 begin
@@ -261,12 +210,14 @@ comment on view public.lead_notification_worker_cron_health is
 revoke all on public.lead_notification_worker_cron_health from public, anon, authenticated;
 grant select on public.lead_notification_worker_cron_health to service_role;
 
--- 🔴 Fail closed BEFORE scheduling anything: if the bearer header in
+-- 🔴 The safety net, kept exactly as it is and NOT extended: if the bearer header in
 -- net.http_request_queue or the response evidence in net._http_response is
 -- readable/writable by a browser role or by PUBLIC, do not start a cron job
 -- that posts that bearer every 15 minutes. pg_net v0.19.5 grants all of this to
 -- PUBLIC on install (sql/pg_net.sql:355-357), so on a stock project this block
--- RAISES and nothing is scheduled until the owner has revoked those grants.
+-- RAISES and nothing is scheduled. That is the end state, not a step: the
+-- approach is parked, and under the CLI's migration transaction the raise rolls
+-- the whole file back.
 -- has_table_privilege on anon/authenticated already accounts for privileges
 -- held via PUBLIC; the acl scan catches the PUBLIC grant itself even when those
 -- roles do not exist (a local or self-hosted database).
@@ -312,7 +263,7 @@ begin
 
   if pg_catalog.array_length(v_findings, 1) is not null then
     raise exception
-      'refusing to schedule the lead-notification worker: the bearer token and the health evidence are not protected (%). pg_net grants schema net and all its tables to PUBLIC on install. Remediation is an owner decision because it affects every pg_net consumer on this project — see docs/runbooks/utah-lead-notification-pgcron.md.',
+      'refusing to schedule the lead-notification worker: the bearer token and the health evidence are not protected (%). pg_net grants schema net and all its tables to PUBLIC on install, and on a hosted project those objects belong to supabase_admin, so this cannot be fixed from here. THIS MIGRATION IS PARKED (2026-11-26) — do not try to make it schedule. See docs/runbooks/utah-lead-notification-pgcron.md.',
       pg_catalog.array_to_string(v_findings, '; ');
   end if;
 end

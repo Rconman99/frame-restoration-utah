@@ -2,60 +2,142 @@
 
 For `supabase/migrations/20261118000000_pgcron_lead_notification_worker_v2.sql`.
 
-**Status: merged, never applied, and it still cannot be applied.** There is no
-gated runner for this version, pg_cron/pg_net are not verified enabled on the
-Utah project, and the Vault secret is not known to exist. Nothing in this
-runbook has been run, and no production catalog was read while writing it. The
-15-minute GitHub schedule in `.github/workflows/lead-notification-worker.yml`
-remains the only scheduler that is actually running; do not cut it here.
+## 🛑 Status: PARKED. Do not apply. Owner decision, 2026-11-26.
+
+The pg_cron + pg_net approach to the lead-notification cadence is **parked**.
+The 15-minute GitHub Actions schedule in
+`.github/workflows/lead-notification-worker.yml` **stays** as the mechanism.
+This migration has never been applied anywhere and is not to be applied.
+
+**Why, both specific to hosted Supabase:**
+
+1. **The bearer token cannot be kept out of a PUBLIC-readable queue.** pg_net
+   stores each request's `Authorization` header in `net.http_request_queue`
+   until its background worker drains it, and pg_net's own installation script
+   grants schema `net` and all of its tables to PUBLIC (pg_net v0.19.5,
+   `sql/pg_net.sql:355-357`) — so `anon`, `authenticated` and `service_role` can
+   all read it. On a hosted project those objects are owned by
+   `supabase_admin`, so those grants **cannot be revoked safely** from this
+   project: it would reach into an extension the project does not own and would
+   break every other pg_net consumer on it.
+2. **The Vault secret is readable by `service_role`,** so moving the token there
+   does not contain it either.
+
+Together those mean the design cannot hold the credential it has to post every
+fifteen minutes. That is a design problem, not a bug to patch.
+
+**An earlier revision of this runbook gave a "revoke PUBLIC on schema net"
+remediation. That remediation has been deleted** — it is not safe to run on a
+hosted project, for the reason in (1).
+
+**What a supported design would need:**
+
+- **The token must not be stored anywhere a PUBLIC-readable queue or a
+  `service_role`-readable secret store can expose it.** A scheduler that holds
+  the credential outside the database (which is what GitHub Actions does today)
+  satisfies this; pg_net as currently granted does not.
+- **Scheduler provenance must be verifiable.** A 2xx that a human can produce by
+  hand must not be able to satisfy the cutover gate. The health view in this
+  file scopes responses to request ids the worker recorded, which is necessary
+  but not sufficient: anyone who can execute the worker function can mint such a
+  row. A real cutover needs evidence that the **scheduler** fired, not that the
+  endpoint can return 200.
+- Only then: a gated exact-target runner to apply it (none exists), and a
+  separate PR to cut the GitHub schedule.
+
+Nothing in this runbook has been run, and no production catalog was read while
+writing it.
+
+## What is still in the file, and why
+
+The SQL is kept rather than deleted so the work stays reviewable, and so the
+**refuse-to-schedule gate remains in the file as a safety net** if anyone ever
+tries to apply it. The gate is deliberately **not** extended any further. Under
+the Supabase CLI's migration transaction (and under `psql -1`, which is how the
+contract tests it), that refusal **rolls the whole file back** — no table, no
+function, no view, no job. An earlier revision said the objects would be left
+behind with only the job missing; that is only true under a bare `psql -f`
+without `-1`, and it is corrected.
 
 ## Read this check FIRST (read-only, run before anything else)
 
-Run it as a single block. Every check is guarded, so it answers instead of
-erroring when `pg_net`, `pg_cron` or `vault` is not installed yet — which, on
-this project, is the expected starting state.
+**Run it as one block.** It must not error on a database where `pg_net`,
+`pg_cron` or `vault` is not installed yet — which is this project's state. Note
+why the obvious form does **not** work: PostgreSQL parses a whole statement
+before executing it, so a `select … case when to_regclass('vault.secrets') is
+null then null else (select … from vault.secrets) end` still raises
+`42P01 relation "vault.secrets" does not exist` at parse time. An earlier
+revision of this runbook had exactly that bug. Every reference to a
+possibly-absent relation therefore goes through `execute`:
 
 ```sql
-select
+do $check$
+declare
+  v_extensions text;
+  v_queue_public boolean;
+  v_responses_public boolean;
+  v_sr_net_usage boolean;
+  v_token_present boolean;
+  v_scheduled boolean;
+begin
   -- 1. are the extensions actually installed? (the whole premise)
-  (select coalesce(string_agg(extname || ' ' || extversion, ', '), 'none')
-     from pg_extension where extname in ('pg_cron', 'pg_net')) as extensions,
+  select coalesce(string_agg(extname || ' ' || extversion, ', '), 'none')
+    into v_extensions
+    from pg_catalog.pg_extension
+   where extname in ('pg_cron', 'pg_net');
 
-  -- 2. who can reach pg_net's queue and responses? On a STOCK project pg_net's
+  -- 2. who can reach pg_net's queue and responses? On a stock project pg_net's
   --    own install script grants schema net and ALL its tables to PUBLIC
-  --    (pg_net v0.19.5 sql/pg_net.sql:355-357), so expect `true` here and treat
-  --    it as a BLOCKER, not a surprise. net.http_request_queue holds the
-  --    worker's Authorization header; net._http_response is the evidence the
-  --    health view reports on.
-  (select case when to_regclass('net.http_request_queue') is null then null
-          else exists (select 1 from pg_catalog.aclexplode(
-                 (select relacl from pg_class c join pg_namespace n on n.oid = c.relnamespace
-                   where n.nspname = 'net' and c.relname = 'http_request_queue')) a
-                 where a.grantee = 0) end) as queue_granted_to_public,
-  (select case when to_regclass('net._http_response') is null then null
-          else exists (select 1 from pg_catalog.aclexplode(
-                 (select relacl from pg_class c join pg_namespace n on n.oid = c.relnamespace
-                   where n.nspname = 'net' and c.relname = '_http_response')) a
-                 where a.grantee = 0) end) as responses_granted_to_public,
-  (select case when to_regnamespace('net') is null then null
-          else has_schema_privilege('service_role', 'net', 'USAGE') end) as service_role_net_usage,
-  (select case when to_regclass('net._http_response') is null then null
-          else has_table_privilege('service_role', 'net._http_response', 'SELECT') end) as service_role_net_select,
+  --    (pg_net v0.19.5 sql/pg_net.sql:355-357). Expect true, and treat it as
+  --    the reason this approach is parked, not as something to fix here.
+  --    Catalog-only, so these two are always safe to run.
+  select exists (
+    select 1 from pg_catalog.pg_class c
+      join pg_catalog.pg_namespace n on n.oid = c.relnamespace
+      cross join pg_catalog.aclexplode(c.relacl) a
+     where n.nspname = 'net' and c.relname = 'http_request_queue' and a.grantee = 0
+  ) into v_queue_public;
+  select exists (
+    select 1 from pg_catalog.pg_class c
+      join pg_catalog.pg_namespace n on n.oid = c.relnamespace
+      cross join pg_catalog.aclexplode(c.relacl) a
+     where n.nspname = 'net' and c.relname = '_http_response' and a.grantee = 0
+  ) into v_responses_public;
 
-  -- 3. is the worker token in Vault? (presence only — never decrypt it here)
-  (select case when to_regclass('vault.secrets') is null then null
-          else exists (select 1 from vault.secrets
-                        where name = 'lead_notification_worker_token') end) as worker_token_present,
+  v_sr_net_usage := case
+    when pg_catalog.to_regnamespace('net') is null then null
+    when not exists (select 1 from pg_catalog.pg_roles where rolname = 'service_role') then null
+    else pg_catalog.has_schema_privilege('service_role', 'net', 'USAGE')
+  end;
+
+  -- 3. is the worker token in Vault? Presence only — never decrypt it here.
+  if pg_catalog.to_regclass('vault.secrets') is null then
+    v_token_present := null;
+  else
+    execute 'select exists (select 1 from vault.secrets where name = $1)'
+      into v_token_present using 'lead_notification_worker_token';
+  end if;
 
   -- 4. is anything already scheduled under this name?
-  (select case when to_regclass('cron.job') is null then null
-          else exists (select 1 from cron.job
-                        where jobname = 'lead-notification-worker') end) as already_scheduled;
+  if pg_catalog.to_regclass('cron.job') is null then
+    v_scheduled := null;
+  else
+    execute 'select exists (select 1 from cron.job where jobname = $1)'
+      into v_scheduled using 'lead-notification-worker';
+  end if;
+
+  raise notice 'extensions=%', v_extensions;
+  raise notice 'queue_granted_to_public=%', v_queue_public;
+  raise notice 'responses_granted_to_public=%', v_responses_public;
+  raise notice 'service_role_net_usage=%', v_sr_net_usage;
+  raise notice 'worker_token_present=%', v_token_present;
+  raise notice 'already_scheduled=%', v_scheduled;
+end
+$check$;
 ```
 
-`null` in a column means "the extension is not installed yet". `true` in either
-`*_granted_to_public` column is the **blocker described below**; the migration
-itself refuses to schedule while it holds.
+`<NULL>` for a value means "that extension or role is not installed yet".
+`queue_granted_to_public=t` is the parked-status reason, not an action item.
 
 ## The defects this version fixes
 
@@ -137,27 +219,17 @@ one was wrong.
 **What the migration now does about it.** It no longer asserts isolation; it
 verifies it. A guarded block sitting immediately before `cron.schedule` raises
 unless `anon`, `authenticated` and `PUBLIC` all lack queue-read and
-response-write access, so on a stock project the migration **refuses to
-schedule** and nothing starts posting a bearer every fifteen minutes into a
-database where PUBLIC can read it back out. The objects are created; the job is
-not.
+response-write access, so on a stock project the migration **refuses** and
+nothing starts posting a bearer every fifteen minutes into a database where
+PUBLIC can read it back out. Under one transaction — the CLI's own, and `psql
+-1` in the contract — that refusal rolls the entire file back: no job, no
+ledger, no view, no function.
 
-**Remediation — an owner decision, because it changes an extension's objects and
-affects every other pg_net consumer on the project:**
-
-```sql
--- Run as postgres. Check first whether anything else on this project uses
--- pg_net through a browser or server role; this takes that access away.
-revoke all on net.http_request_queue from public;
-revoke all on net._http_response from public;
-revoke all on all sequences in schema net from public;
-revoke usage on schema net from public;
-```
-
-`postgres` keeps its own access as the owner, which is all the definer function
-and the definer view need. Re-run the read-only check above: both
-`*_granted_to_public` columns must come back `false`, and then the migration
-will schedule.
+**There is no remediation offered here.** The earlier "revoke PUBLIC on schema
+net" block has been deleted: on a hosted project `net.http_request_queue` and
+`net._http_response` are owned by `supabase_admin`, so revoking those grants is
+not this project's to do and would break every other pg_net consumer. This is
+the reason the approach is parked rather than hardened.
 
 Two further leaks that no SQL here can close, so nobody assumes otherwise:
 

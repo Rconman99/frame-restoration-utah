@@ -1,11 +1,14 @@
 -- ONLY for an empty disposable test database. Never apply to a market project.
 --
--- Runs after 20261118000000 has been applied on top of
+-- Runs after 20261118000000 has been attempted with `psql -1` on top of
 -- pgcron_lead_notification_worker_upstream_grants.sql and has FAILED (the
--- workflow asserts the non-zero exit). This proves the failure was fail-closed:
--- the worker is not scheduled, so nothing is posting a bearer token every
--- fifteen minutes into a database where PUBLIC can read it back out of
--- net.http_request_queue.
+-- workflow asserts the non-zero exit). `-1` is what the Supabase CLI's own
+-- migration transaction does, so this is the real end state: the refusal rolls
+-- the WHOLE file back. Nothing is scheduled, and no object is left behind.
+--
+-- An earlier revision of this file asserted the opposite — that the ledger
+-- would survive because the gate sits just before cron.schedule. That is only
+-- true under a bare `psql -f` without -1, and it is corrected here.
 
 \set ON_ERROR_STOP on
 
@@ -18,12 +21,16 @@ begin
       'ASSERT FAILED: the migration raised on unprotected pg_net grants but still left % cron job(s) scheduled', v_jobs;
   end if;
 
-  -- The refusal happens after the objects are created (the gate sits
-  -- immediately before cron.schedule), which is deliberate: creating a table,
-  -- a function and a view schedules nothing and posts nothing. What must not
-  -- exist is the job.
-  if to_regclass('public.lead_notification_worker_cron_requests') is null then
-    raise exception 'ASSERT FAILED: expected the ledger to exist; the gate is meant to sit just before cron.schedule';
+  -- Full rollback: under one transaction the refusal undoes the whole file, so
+  -- NONE of its objects may exist.
+  if to_regclass('public.lead_notification_worker_cron_requests') is not null then
+    raise exception 'ASSERT FAILED: the ledger survived a refused single-transaction apply';
+  end if;
+  if to_regclass('public.lead_notification_worker_cron_health') is not null then
+    raise exception 'ASSERT FAILED: the health view survived a refused single-transaction apply';
+  end if;
+  if to_regprocedure('public.invoke_lead_notification_worker()') is not null then
+    raise exception 'ASSERT FAILED: the worker function survived a refused single-transaction apply';
   end if;
 
   -- And the refusal must name the reason, not just fail. The workflow captures
@@ -42,4 +49,4 @@ begin
 end
 $$;
 
-select 'pgcron worker refuses to schedule while pg_net grants PUBLIC access' as result;
+select 'pgcron worker refuses to schedule and rolls back fully while pg_net grants PUBLIC access' as result;

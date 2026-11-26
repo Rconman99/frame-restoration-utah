@@ -6,17 +6,19 @@ on:
   # is NOT active in production: pg_cron/pg_net were not installed on 10/16
   # (read-only check), so nothing was retrying missed owner notifications.
   #
-  # THIS 15-MINUTE GITHUB SCHEDULE STAYS (owner decision 2026-11-25). A v2
-  # replacement migration
-  # (supabase/migrations/20261118000000_pgcron_lead_notification_worker_v2.sql)
-  # is checked in on this branch, but a migration file is inert until it is
-  # applied: pg_cron/pg_net are still not verified enabled, the worker token is
-  # not known to be in Supabase Vault, and nothing in CI applies migrations.
-  # Do NOT cut this schedule to daily here. Flipping the cadence is a separate
-  # follow-up PR, and only after the 20261118000000 job is applied through the
-  # gated path AND `public.lead_notification_worker_cron_health` shows a 2xx
-  # response for it. Until then GitHub Actions is the only scheduler that is
-  # actually running, and dropping it would silently stop owner lead retries.
+  # THIS 15-MINUTE GITHUB SCHEDULE STAYS (owner decision 2026-11-25, reaffirmed
+  # 2026-11-26). The pg_cron replacement path is now PARKED as of 2026-11-26:
+  # supabase/migrations/20261118000000_pgcron_lead_notification_worker_v2.sql is
+  # marked DO NOT APPLY, because on hosted Supabase pg_net keeps the bearer
+  # header in net.http_request_queue, whose PUBLIC grants are owned by
+  # supabase_admin and cannot be safely revoked from this project, and the Vault
+  # secret is readable by service_role. See
+  # docs/runbooks/utah-lead-notification-pgcron.md.
+  #
+  # So this schedule is the mechanism, not a stopgap: do NOT cut it to daily and
+  # do NOT remove it on the strength of a health view. GitHub Actions is the only
+  # scheduler that is actually running, and dropping it would silently stop owner
+  # lead retries.
   #
   # Double-run safety: the worker claims each job via its claim RPC with
   # claim_version + lease, so overlapping runs cannot send twice. Still, once
