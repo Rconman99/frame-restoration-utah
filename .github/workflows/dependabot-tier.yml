@@ -1,0 +1,280 @@
+name: Dependabot tier
+
+# Tier 1 Dependabot pilot (window 2026-11-30 to 2026-12-13, Pacific time).
+# Merges Dependabot patch and minor bumps on its own ONLY when every condition below
+# holds, and otherwise leaves the PR to a human. It never approves, never merges with
+# admin rights, and never touches repo settings, secrets or variables.
+#
+#   tier-gate   (job, REQUIRED check once the owner adds it to the ruleset)
+#     Runs on every PR so the required check always reports. Non-Dependabot PRs: no-op.
+#     Dependabot PRs: checks the rule, waits for the Claude review comment on this head
+#     commit, and if all conditions hold arms GitHub auto-merge (squash, pinned to the
+#     head commit). GitHub then merges only after the required checks pass.
+#   tier-sweep  (schedule + manual) disarms auto-merge when the switch is off or a PR
+#     has the tier-hold label, and posts a note on each tier-merged PR.
+#
+# Rule (all must hold, else the PR gets the tier-human label and is never armed):
+#   - author is dependabot[bot]; commits verified (dependabot/fetch-metadata checks this)
+#   - every updated dependency is a semver patch or minor bump; npm 0.x minors are human
+#   - npm: only package.json, package-lock.json, deno.lock change
+#   - Actions: every action is actions/*, only workflow files change, only `uses:` lines
+#     change, and none of the always-human workflows (listed below) is touched
+#   - no excluded path (supabase, migrations, sql, auth, session, twilio, sms, voice,
+#     lead handling, money, vercel/redirect/middleware config, dependabot.yml)
+#   - not the security group / security label, no maintainer-change flag, no tier-hold
+#   - Claude review comment for THIS head commit ends with `VERDICT: PASS`
+#     (a skipped review job does not count: the comment must exist)
+#   - repo variable DEPENDABOT_TIER_ENABLED is exactly "true" (unset = OFF)
+#   - today (Pacific) is inside the pilot window
+#   - repo setting allow_auto_merge is on and `tier-gate` is a required check on main
+#
+# OFF SWITCH: set repo variable DEPENDABOT_TIER_ENABLED to false (or delete it), then run
+# this workflow once from the Actions tab (tier-sweep disarms every armed PR).
+# Per-PR brake: add the tier-hold label to the PR.
+#
+# This workflow uses no PR code: it never checks anything out, and PR-controlled text
+# only reaches shell steps through environment variables.
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize, ready_for_review]
+  schedule:
+    # Pilot days only (UTC cron): Nov 30, then Dec 1-15. Each run is a few seconds.
+    - cron: '17 */4 30 11 *'
+    - cron: '17 */4 1-15 12 *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  WINDOW_START: '2026-11-30'
+  WINDOW_END: '2026-12-13'
+
+jobs:
+  tier-gate:
+    name: tier-gate
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: write
+      pull-requests: write
+      issues: write
+      checks: read
+    concurrency:
+      group: dependabot-tier-gate-${{ github.event.pull_request.number }}
+      cancel-in-progress: true
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      GH_REPO: ${{ github.repository }}
+      PR_NUMBER: ${{ github.event.pull_request.number }}
+      PR_AUTHOR: ${{ github.event.pull_request.user.login }}
+      HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+      TIER_ENABLED: ${{ vars.DEPENDABOT_TIER_ENABLED }}
+    steps:
+      - name: Not a Dependabot PR (nothing to do)
+        id: who
+        run: |
+          if [ "$PR_AUTHOR" = "dependabot[bot]" ]; then
+            echo "dependabot=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "dependabot=false" >> "$GITHUB_OUTPUT"
+            echo "PR #$PR_NUMBER is not from dependabot[bot]; tier-gate has nothing to decide." | tee -a "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - name: Dependabot metadata
+        id: metadata
+        if: steps.who.outputs.dependabot == 'true'
+        continue-on-error: true
+        uses: dependabot/fetch-metadata@25dd0e34f4fe68f24cc83900b1fe3fe149efef98 # v3.1.0
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Decide, wait for the Claude verdict, arm auto-merge
+        if: steps.who.outputs.dependabot == 'true'
+        env:
+          META_OUTCOME: ${{ steps.metadata.outcome }}
+          META_JSON: ${{ steps.metadata.outputs.updated-dependencies-json }}
+          DEP_GROUP: ${{ steps.metadata.outputs.dependency-group }}
+          MAINTAINER_CHANGES: ${{ steps.metadata.outputs.maintainer-changes }}
+        run: |
+          set -euo pipefail
+          API="repos/$GH_REPO"
+
+          summary() { printf '%s\n' "$*" | tee -a "$GITHUB_STEP_SUMMARY"; }
+          label_add() { gh api -X POST "$API/issues/$PR_NUMBER/labels" -f 'labels[]='"$1" >/dev/null || true; }
+          label_del() { gh api -X DELETE "$API/issues/$PR_NUMBER/labels/$1" >/dev/null 2>&1 || true; }
+          disarm() { gh pr merge "$PR_NUMBER" --disable-auto >/dev/null 2>&1 || true; }
+
+          # ---- 1. Off switch and pilot window: neutral, no label ----
+          today="$(TZ=America/Los_Angeles date +%F)"
+          if [ "${TIER_ENABLED:-}" != "true" ]; then
+            disarm
+            summary "tier-gate: OFF (DEPENDABOT_TIER_ENABLED is not 'true'). Nothing armed; a human decides PR #$PR_NUMBER."
+            exit 0
+          fi
+          if [[ "$today" < "$WINDOW_START" || "$today" > "$WINDOW_END" ]]; then
+            disarm
+            summary "tier-gate: outside the pilot window $WINDOW_START..$WINDOW_END (today $today PT). Nothing armed."
+            exit 0
+          fi
+
+          reasons=()
+          hold() { reasons+=("$1"); }
+
+          # ---- 2. Deterministic rule ----
+          pr_json="$(gh api "$API/pulls/$PR_NUMBER")"
+          labels="$(jq -r '[.labels[].name]|join(",")' <<<"$pr_json")"
+          [ "$(jq -r .draft <<<"$pr_json")" = "false" ] || hold "PR is a draft"
+          [[ ",$labels," != *",tier-hold,"* ]] || hold "tier-hold label is set"
+          [[ ",$labels," != *",security,"* ]] || hold "security label (security updates are human during the pilot)"
+          [ "${DEP_GROUP:-}" != "security" ] || hold "security group (human during the pilot)"
+          [ "${MAINTAINER_CHANGES:-false}" != "true" ] || hold "PR body reports maintainer changes"
+
+          if [ "$META_OUTCOME" != "success" ] || ! jq -e 'type=="array" and length>0' <<<"${META_JSON:-null}" >/dev/null 2>&1; then
+            hold "Dependabot metadata unavailable or commits not verified"
+            deps='[]'
+          else
+            deps="$META_JSON"
+          fi
+
+          jq -e 'all(.[]; .updateType=="version-update:semver-patch" or .updateType=="version-update:semver-minor")' <<<"$deps" >/dev/null || hold "a dependency is a major bump or has an unknown update type"
+          eco="$(jq -r '[.[].packageEcosystem]|unique|join(",")' <<<"$deps")"
+          case "$eco" in
+            npm_and_yarn)
+              jq -e 'all(.[]; (.updateType=="version-update:semver-minor" and (.prevVersion|test("^v?0\\."))) | not)' <<<"$deps" >/dev/null || hold "npm 0.x minor bump (breaking by semver convention)"
+              ;;
+            github_actions)
+              jq -e 'all(.[]; .dependencyName|startswith("actions/"))' <<<"$deps" >/dev/null || hold "a non-GitHub-owned action is in the PR"
+              ;;
+            *) hold "unsupported ecosystem '$eco'" ;;
+          esac
+
+          files_json="$(gh api --paginate "$API/pulls/$PR_NUMBER/files?per_page=100" | jq -s 'add')"
+          [ "$(jq length <<<"$files_json")" -lt 300 ] || hold "more than 299 files changed"
+          always_human='^\.github/workflows/(claude-pr-review|deploy-edge-function|twilio-signed-synthetic-tests|voice-screening|google-reviews-sync|fast-security-gate|frame-guards|hook-guards|compliance-gate|lane-guard|dependabot-tier)\.ya?ml$'
+          excluded='(^|/)(supabase|migrations)/|\.sql$|/auth/|session|twilio|sms|(^|/)voice|handle-lead|stripe|invoice|commission|payout|billing|(^|/)vercel\.json$|(^|/)_redirects$|(^|/)middleware\.|(^|/)\.github/dependabot\.ya?ml$'
+          while IFS= read -r f; do
+            if grep -qiE "$excluded" <<<"$f"; then hold "excluded path: $f"; fi
+            if grep -qE "$always_human" <<<"$f"; then hold "always-human workflow: $f"; fi
+            case "$eco" in
+              npm_and_yarn)
+                case "$f" in package.json|package-lock.json|deno.lock) ;; *) hold "npm PR changes a file outside package.json/package-lock.json/deno.lock: $f" ;; esac ;;
+              github_actions)
+                grep -qE '^\.github/workflows/[^/]+\.ya?ml$' <<<"$f" || hold "Actions PR changes a non-workflow file: $f" ;;
+            esac
+          done < <(jq -r '.[].filename' <<<"$files_json")
+          if [ "$eco" = "github_actions" ]; then
+            jq -e 'all(.[]; .patch != null)' <<<"$files_json" >/dev/null || hold "a workflow diff is too large to inspect"
+            bad="$(jq -r '.[] | .filename as $f | (.patch // "") | split("\n")[] | select(test("^[+-]") and (test("^(\\+\\+\\+|---)")|not)) | select(test("^[+-]\\s*(-\\s+)?uses:\\s*actions/[A-Za-z0-9._/-]+@[^\\s]+(\\s+#.*)?$")|not) | $f + ": " + .' <<<"$files_json" | head -5)"
+            [ -z "$bad" ] || hold "Actions diff changes more than 'uses:' version lines: $(tr '\n' ' ' <<<"$bad")"
+          fi
+
+          # ---- 3. Settings must make auto-merge safe (otherwise gh would merge at once) ----
+          [ "$(gh api "$API" --jq '.allow_auto_merge // false')" = "true" ] || hold "repo setting 'Allow auto-merge' is off (or not visible to the workflow token)"
+          if ! gh api "$API/rules/branches/main" --jq '[.[]|select(.type=="required_status_checks")|.parameters.required_status_checks[]?.context]|index("tier-gate")' 2>/dev/null | grep -qE '^[0-9]+$'; then
+            hold "tier-gate is not a required status check on main"
+          fi
+
+          # ---- 4. A check already failed on this head commit ----
+          failed="$(gh api --paginate "$API/commits/$HEAD_SHA/check-runs?per_page=100" --jq '.check_runs[]|select(.name!="tier-gate")|select(.conclusion=="failure" or .conclusion=="timed_out" or .conclusion=="cancelled" or .conclusion=="action_required")|.name' | sort -u | head -5 | tr '\n' ';')"
+          [ -z "$failed" ] || hold "checks already failing on this commit: $failed"
+
+          # ---- 5. Claude review verdict for THIS head commit (only if nothing else failed) ----
+          verdict=""
+          verdict_url=""
+          if [ "${#reasons[@]}" -eq 0 ]; then
+            deadline=$(( $(date +%s) + 1320 ))
+            while :; do
+              found="$(gh api --paginate "$API/issues/$PR_NUMBER/comments?per_page=100" | jq -s --arg sha "$HEAD_SHA" '
+                add | map(select(.user.login=="github-actions[bot]" and (.body|startswith("Claude review:"))
+                  and ((.body|split("\n")|map(gsub("\\s+$";""))) | index("HEAD: "+$sha)) != null))
+                | sort_by(.created_at) | last // empty
+                | {url: .html_url, verdict: ((.body|split("\n")|map(gsub("\\s+$";""))|map(select(test("^VERDICT: (PASS|BLOCK)$")))|last) // "")}')"
+              if [ -n "$found" ]; then
+                verdict="$(jq -r .verdict <<<"$found")"; verdict_url="$(jq -r .url <<<"$found")"
+                [ -n "$verdict" ] && break
+              fi
+              if [ "$(date +%s)" -ge "$deadline" ]; then break; fi
+              sleep 30
+            done
+            case "$verdict" in
+              "VERDICT: PASS") ;;
+              "VERDICT: BLOCK") hold "Claude review verdict is BLOCK ($verdict_url)" ;;
+              *) hold "no Claude review verdict for head $HEAD_SHA within 22 minutes (a skipped review job does not count)" ;;
+            esac
+          fi
+
+          # ---- 6. Decide ----
+          if [ "${#reasons[@]}" -gt 0 ]; then
+            disarm
+            label_add tier-human
+            summary "### tier-gate: HUMAN (PR #$PR_NUMBER, head $HEAD_SHA)"
+            for r in "${reasons[@]}"; do summary "- $r"; done
+            exit 0
+          fi
+
+          label_del tier-human
+          gh api -X POST "$API/labels" -f name=tier-auto -f color=0e8a16 -f description='Armed for auto-merge by the Dependabot tier pilot' >/dev/null 2>&1 || true
+          label_add tier-auto
+          gh pr merge "$PR_NUMBER" --auto --squash --match-head-commit "$HEAD_SHA"
+          summary "### tier-gate: ELIGIBLE, auto-merge armed (PR #$PR_NUMBER, head $HEAD_SHA)"
+          summary "- ecosystem: $eco"
+          summary "- packages: $(jq -r '[.[]|"\(.dependencyName) \(.prevVersion)→\(.newVersion)"]|join(", ")' <<<"$deps")"
+          summary "- Claude: $verdict_url"
+          summary "- GitHub merges it once the required checks pass. Off switch: set DEPENDABOT_TIER_ENABLED=false and run this workflow."
+
+  tier-sweep:
+    name: tier-sweep (off switch and merge notes)
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+      pull-requests: write
+      issues: write
+      actions: write
+    concurrency:
+      group: dependabot-tier-sweep
+      cancel-in-progress: false
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      GH_REPO: ${{ github.repository }}
+      TIER_ENABLED: ${{ vars.DEPENDABOT_TIER_ENABLED }}
+    steps:
+      - name: Disarm when the switch is off or tier-hold is set; note each tier merge
+        run: |
+          set -euo pipefail
+          API="repos/$GH_REPO"
+          today="$(TZ=America/Los_Angeles date +%F)"
+
+          # Off switch: nothing may stay armed. tier-hold: that PR may not stay armed.
+          while IFS=$'\t' read -r n hold; do
+            [ -n "$n" ] || continue
+            if [ "${TIER_ENABLED:-}" != "true" ] || [ "$hold" = "true" ]; then
+              gh pr merge "$n" --disable-auto && echo "Disarmed auto-merge on #$n (switch off or tier-hold)." | tee -a "$GITHUB_STEP_SUMMARY"
+            fi
+          done < <(gh pr list --state open --author 'app/dependabot' --limit 100 --json number,autoMergeRequest,labels \
+            --jq '.[]|select(.autoMergeRequest != null)|[.number, ([.labels[].name]|index("tier-hold") != null)]|@tsv')
+
+          # A merge made with the workflow token starts no new runs, so post the note here.
+          while IFS=$'\t' read -r n url sha merged title; do
+            [ -n "$n" ] || continue
+            if gh api --paginate "$API/issues/$n/comments?per_page=100" --jq '.[].body' | grep -q 'tier-merge-note'; then continue; fi
+            verdict_url="$(gh api --paginate "$API/issues/$n/comments?per_page=100" --jq '[.[]|select(.user.login=="github-actions[bot]" and (.body|startswith("Claude review:")))]|last|.html_url // "not found"')"
+            body="<!-- tier-merge-note -->
+          **Dependabot tier pilot: merged automatically.**
+          - PR: $url
+          - Change: $title
+          - Merge commit: \`$sha\` at $merged (UTC)
+          - Claude review: $verdict_url
+          - Rollback: open a revert PR with \`git revert $sha\`; a human merges it. If the site is broken in prod, promote the previous Vercel deployment first.
+          - Off switch: set repo variable DEPENDABOT_TIER_ENABLED to false, then run the 'Dependabot tier' workflow."
+            gh pr comment "$n" --body "$body"
+            echo "Merge note posted on #$n ($sha)." | tee -a "$GITHUB_STEP_SUMMARY"
+            # Actions run on push events are not started by token merges; re-run the guards on main.
+            gh workflow run frame-guards.yml --ref main || echo "could not dispatch frame-guards.yml"
+          done < <(gh pr list --state merged --label tier-auto --limit 30 --json number,url,title,mergedAt,mergeCommit \
+            --jq '.[]|[.number,.url,.mergeCommit.oid,.mergedAt,.title]|@tsv')
+          echo "tier-sweep finished on $today PT." >> "$GITHUB_STEP_SUMMARY"
