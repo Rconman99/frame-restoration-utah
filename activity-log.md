@@ -1,5 +1,25 @@
 # Activity Log
 
+## 2026-11-06 — Mac broken-link loop (brief #6): diagnose, harden, dry-run, own-market guard
+
+**Routine:** Mac job: broken-link loop. Lane `claude/`, branch `claude/mac-broken-link-loop-fu76gw`, draft PR #364 (commit `f56e514`).
+
+**Diagnosis (from code; no Mac access):** the repo had no entrypoint or plist for the job. `scripts/audit-links.mjs` took its root from `process.cwd()`; launchd starts jobs at `/`, so the walker hit EPERM on protected macOS folders and crashed before scanning a page. launchd PATH has no Homebrew node (exit 127). Header still said "Frame Restoration TX".
+
+**Actions this run:**
+- Hardened `scripts/audit-links.mjs`: root from the script location (`--root` / `FRAME_UTAH_REPO`), unreadable folders warn, zero files scanned exits 2, `--json`, Utah header.
+- Added `scripts/check-broken-links.mjs`: live checker over the public sitemap or a URL list; `--dry-run` is read-only. Own-market guard: refuses any `--site` that is not the Utah host or loopback, never fetches listed URLs or links on other hosts (counted + listed only), does not follow off-origin redirects, flags the retired `frameroofingutah.com` host.
+- Added `scripts/broken-link-cron.sh`: report-only Mac entrypoint (PATH fix, repo resolution, host allowlist, log + JSON under `~/.cache`, never commits/pushes/deploys).
+- Added `scripts/check-broken-links.test.mjs` (8 loopback-only tests) and wired it into compliance-gate link-integrity; npm scripts `audit:links`, `links:live`, `links:loop`, `test:links`; runbook `docs/seo/BROKEN-LINK-LOOP.md` with launchd plist template.
+
+**Acceptance checks:** tests 8/8; static gate from cwd `/` exit 0 (195 files, 0 broken); dry-run over the real `sitemap.xml` on a loopback fixture: 172 pages, 288 internal targets, 0 broken, 1299 external links on 132 hosts not fetched, no other Frame market host; cron wrapper refuses `FRAME_UTAH_SITE=https://example.com` (exit 2); frame-guards, repository-security, doc-isolation pass.
+
+**Skipped:** live run against production (cloud egress blocked; first real run is on the Mac), plist install (owner), `fru-indexnow` (other repo), hub claim/decisions entry (hub out of session scope).
+
+**Errors:** `EGRESS_BLOCKED` — the cloud container proxy refused www.framerestorationutah.com (CONNECT 403), so the live dry-run could not reach production; recorded in `state.json` `last_error`, production link status is unmeasured by this run. Two test-file bugs during development (external host keyed by hostname; spawnSync blocked the in-process fixture server) were fixed before commit.
+
+**Guardrails honored:** draft PR only; no merge, deploy, GBP/Twilio/Vercel/DNS change, migration, secret or spend; one repo touched; no cross-market content.
+
 ## 2026-09-05 — AEO Citation Monitor (flat score, improving positions, two instrumentation defects found)
 
 **Routine:** AEO citation monitor (5-query core panel: best roofer Heber City / roof replacement cost Utah 2026 / storm damage Park City / Utah roof insurance / licensed roofer Wasatch Front).
